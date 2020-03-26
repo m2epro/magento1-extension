@@ -45,7 +45,7 @@ class Ess_M2ePro_Sql_Upgrade_v6_1_8__v6_1_9_AllFeatures extends Ess_M2ePro_Model
 
         $installer->run(<<<SQL
 
-CREATE TABLE IF NOT EXISTS `m2epro_ebay_dictionary_motor_ktype` (
+CREATE TABLE IF NOT EXISTS `{$this->_installer->getTable('m2epro_ebay_dictionary_motor_ktype')}` (
   id int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   marketplace_id int(11) UNSIGNED NOT NULL,
   ktype int(11) UNSIGNED NOT NULL,
@@ -94,7 +94,7 @@ SQL;
 
             $installer->run(<<<SQL
 
-INSERT INTO `m2epro_synchronization_config` (`group`,`key`,`value`,`notice`,`update_date`,`create_date`) VALUES
+INSERT INTO `{$this->_installer->getTable('m2epro_synchronization_config')}` (`group`,`key`,`value`,`notice`,`update_date`,`create_date`) VALUES
 ('/ebay/marketplaces/motors_ktypes/', 'mode', '1', '0 - disable, \r\n1 - enable',
  '2013-09-18 00:00:00', '2013-09-18 00:00:00'),
 ('/ebay/marketplaces/motors_ktypes/', 'part_size', '10000', '0 - disable, \r\n1 - enable',

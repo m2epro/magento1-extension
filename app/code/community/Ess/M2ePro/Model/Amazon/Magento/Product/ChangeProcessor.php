@@ -190,7 +190,10 @@ class Ess_M2ePro_Model_Amazon_Magento_Product_ChangeProcessor
             $amazonDescriptionTemplate = $this->getAmazonListingProduct()->getAmazonDescriptionTemplate();
 
             $trackingAttributes = array_merge(
-                $trackingAttributes, $amazonDescriptionTemplate->getDefinitionTemplate()->getUsedImagesAttributes()
+                $trackingAttributes,
+                $amazonDescriptionTemplate->getDefinitionTemplate()->getImageMainAttributes(),
+                $amazonDescriptionTemplate->getDefinitionTemplate()->getImageVariationDifferenceAttributes(),
+                $amazonDescriptionTemplate->getDefinitionTemplate()->getGalleryImagesAttributes()
             );
         }
 

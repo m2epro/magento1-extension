@@ -214,7 +214,7 @@ HTML;
      */
     public function checkTablesStructureValidityAction()
     {
-        $tablesInfo = Mage::helper('M2ePro/Module_Database_Structure')->getModuleTablesInfo();
+        $tablesInfo = Mage::helper('M2ePro/Module_Database_Structure')->getTablesInfo();
 
         $dispatcherObject = Mage::getModel('M2ePro/M2ePro_Connector_Dispatcher');
         $connectorObj = $dispatcherObject->getVirtualConnector(

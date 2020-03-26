@@ -150,9 +150,6 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Add_CategoryTemplate_Category
             '{$this->getChild('grid')->getId()}',
             {$this->getListing()->getId()}
         );
-
-        ListingGridHandlerObj.actionHandler.setOptions(M2ePro);
-        ListingGridHandlerObj.templateCategoryHandler.setOptions(M2ePro);
     });
 
 </script>

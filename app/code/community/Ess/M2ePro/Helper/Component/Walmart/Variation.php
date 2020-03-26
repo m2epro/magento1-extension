@@ -134,15 +134,15 @@ class Ess_M2ePro_Helper_Component_Walmart_Variation extends Mage_Core_Helper_Abs
             $productToListingProductIds = array_flip($listingProductToProductIds);
 
             foreach ($productsData as $product) {
-                if ($product['type_id'] == Ess_M2ePro_Model_Magento_Product::TYPE_BUNDLE) {
+                if (Mage::helper('M2ePro/Magento_Product')->isBundleType($product['type_id'])) {
                     unset($productToListingProductIds[$product['entity_id']]);
                 }
 
-                if ($product['type_id'] == Ess_M2ePro_Model_Magento_Product::TYPE_DOWNLOADABLE) {
+                if (Mage::helper('M2ePro/Magento_Product')->isDownloadableType($product['type_id'])) {
                     unset($productToListingProductIds[$product['entity_id']]);
                 }
 
-                if ($product['type_id'] == Ess_M2ePro_Model_Magento_Product::TYPE_SIMPLE &&
+                if (Mage::helper('M2ePro/Magento_Product')->isSimpleType($product['type_id']) &&
                     !empty($product['option_id'])) {
                     unset($productToListingProductIds[$product['entity_id']]);
                 }

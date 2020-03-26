@@ -144,7 +144,10 @@ abstract class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Product_Grid
 
         $collection->addFieldToFilter(
             array(
-                array('attribute'=>'type_id','neq'=>'virtual'),
+                array(
+                    'attribute' => 'type_id',
+                    'in' => Mage::helper('M2ePro/Magento_Product')->getOriginKnownTypes()
+                ),
             )
         );
 
@@ -181,9 +184,6 @@ abstract class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Product_Grid
             )
         );
 
-        $types = Mage::getSingleton('catalog/product_type')->getOptionArray();
-        unset($types['virtual']);
-
         $this->addColumn(
             'type', array(
             'header'    => Mage::helper('M2ePro')->__('Type'),
@@ -193,7 +193,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Product_Grid
             'sortable'  => false,
             'index'     => 'type_id',
             'filter_index' => 'type_id',
-            'options'   => $types
+            'options' => Mage::helper('M2ePro/Magento_Product')->getTypesOptionArray()
             )
         );
 

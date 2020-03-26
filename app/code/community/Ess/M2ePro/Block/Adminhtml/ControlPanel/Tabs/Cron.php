@@ -31,7 +31,8 @@ class Ess_M2ePro_Block_Adminhtml_ControlPanel_Tabs_Cron extends Mage_Adminhtml_B
                 $optGroup = array_shift($titleParts);
             }
 
-            if ($index = array_search('cron', $titleParts)) {
+            $index = array_search('cron', $titleParts, true);
+            if ($index !== false) {
                 unset($titleParts[$index]);
             }
 

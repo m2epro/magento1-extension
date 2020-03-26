@@ -1,3 +1,56 @@
+* 6.5.8 (r14908) (22/03/2020)
+
+Common: [Fixed] "Base table or view %s not found" when prefixes are presented in a database on upgrade (rename and create tables fix)
+Common: [Fixed] Fatal error “Class Ess_M2ePro_Helper_Module_HelpCenter not found
+Common: [Fixed] "Table is not installed" in Check Tables Structure Validity
+Common: [Fixed] Cron runner doesn’t switch in some cases
+Common: [Fixed] Start configuration button redirects to the Support page if Walmart component is disabled
+Common: [Fixed] Escape data in the License form
+Common: [Fixed] Inventory Synchronization works after upgrade even if it was disabled before
+Common: [Fixed] "Instance does not exist" error when Account with orders is removed
+Common: [Fixed] Upgrade script was finished with error
+Common: [Fixed] Extra instructions were added to the instruction table in special case [amazon|walmart]
+Common: [Improved] Logs & Events
+Common: [Improved] Make the latest Extension versions for M1 and M2 match
+Common: [Improved] Make database corresponding for M1 and M2
+Common: [Improved] Remove revision from Extension
+Common: [Improved] Move server messages from primary configuration
+Common: [Improved] Review a backup tables list for upgrades
+Common: [Improved] 3rd Party items mapping
+Common: [Improved] PHP Compatibility – code standard fixes (now compatible with PHP 7.4)
+Common: [Improved] Add limits for DetectDirectlyDeleted task
+Common: [Improved] Review priority coefficients for actions
+Common: [Improved] Remove Revise total
+Common: [Improved] Provide the ability to add custom product types
+Common: [Improved] Amazon/Walmart Parent Product Revise
+Common: [Improved] Show all attributes in MagentoAttribute dropdowns
+Common: [Improved] Use shipment item observer instead of shipment one
+eBay: [Removed] Fixed Price only GTC listing duration
+eBay: [Removed] Magento Order creation Rules: "Immediately" and Payment is received"
+eBay: [Fixed] A variation could not be found for the given SKU number during Revise action
+eBay: [Fixed] "Please enter a valid price for your item (e.g. the US $0.99)" on Revise when Child product was deleted in Magento
+eBay: [Improved] Improve Charity field in eBay Selling Policy
+eBay: [Improved] Rename eBay Return Policy
+eBay: [Improved] Add Lot Size instance to Revise by Other
+eBay: [Improved] New eBay Orders IDs
+Amazon: [Removed] Remove unsupported marketplaces from list
+Amazon: [Fixed] Incorrect Category Warning displayed in Amazon Description policy
+Amazon: [Fixed] Description data block can not be deleted after it was selected once on Specific tab
+Amazon: [Fixed] Do not send gift data on List action if it is not specified
+Amazon: [Improved] Import Fulfillment Center ID for each Order Item
+Amazon: [Improved] Token update – automatic save
+Amazon: [Improved] Add Details\Images option to Revise Rules
+Walmart: [Added] Walmart Product ID (GTIN, EAN, UPC, ISBN) exemption
+Walmart: [Removed] Walmart Product Link
+Walmart: [Fixed] Error log "The Item was not listed due to the unexpected error on Walmart side..." on List action
+Walmart: [Fixed] Item Status was successfully changed from "Active" to "Inactive (Blocked)" after success List action
+Walmart: [Fixed] Online product data is not updated
+Walmart: [Fixed] Walmart edit SKU fix
+Walmart: [Fixed] The price index was not reset for Walmart when saving product
+Walmart: [Fixed] Reset Inactive (Blocked) Items" action is not visible in mass actions when resetting products
+Walmart: [Improved] Add Details option to Revise Rules
+Walmart: [Improved] Move duplicated code in Order/Proxy models to abstract one
+
 * 6.5.7 (r14620) (26/11/2019)
 
 * Common: [Added] Advanced Rules for Synchronization Policy

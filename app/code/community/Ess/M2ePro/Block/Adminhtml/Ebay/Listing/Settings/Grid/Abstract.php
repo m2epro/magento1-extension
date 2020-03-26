@@ -75,7 +75,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Settings_Grid_Abstract
 
         $templatePayment  = Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_PAYMENT;
         $templateShipping = Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SHIPPING;
-        $templateReturn   = Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_RETURN;
+        $templateReturn   = Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_RETURN_POLICY;
 
         $this->addColumn(
             'general_settings', array(
@@ -420,13 +420,13 @@ abstract class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Settings_Grid_Abstract
         $paymentSettings = '';
         switch ($tm->getModeValue()) {
             case Ess_M2ePro_Model_Ebay_Template_Manager::MODE_PARENT:
-                $paymentSettings = $helper->__('Use from Listing Settings'); 
+                $paymentSettings = $helper->__('Use from Listing Settings');
                 break;
             case Ess_M2ePro_Model_Ebay_Template_Manager::MODE_CUSTOM:
-                $paymentSettings = $helper->__('Custom Settings'); 
+                $paymentSettings = $helper->__('Custom Settings');
                 break;
             case Ess_M2ePro_Model_Ebay_Template_Manager::MODE_TEMPLATE:
-                $paymentSettings = $tm->getResultObject()->getTitle(); 
+                $paymentSettings = $tm->getResultObject()->getTitle();
                 break;
         }
 
@@ -435,28 +435,28 @@ abstract class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Settings_Grid_Abstract
         $shippingSettings = '';
         switch ($tm->getModeValue()) {
             case Ess_M2ePro_Model_Ebay_Template_Manager::MODE_PARENT:
-                $shippingSettings = $helper->__('Use from Listing Settings'); 
+                $shippingSettings = $helper->__('Use from Listing Settings');
                 break;
             case Ess_M2ePro_Model_Ebay_Template_Manager::MODE_CUSTOM:
-                $shippingSettings = $helper->__('Custom Settings'); 
+                $shippingSettings = $helper->__('Custom Settings');
                 break;
             case Ess_M2ePro_Model_Ebay_Template_Manager::MODE_TEMPLATE:
-                $shippingSettings = $tm->getResultObject()->getTitle(); 
+                $shippingSettings = $tm->getResultObject()->getTitle();
                 break;
         }
 
-        $tm = $listingProduct->getTemplateManager(Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_RETURN);
+        $tm = $listingProduct->getTemplateManager(Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_RETURN_POLICY);
 
         $returnSettings = '';
         switch ($tm->getModeValue()) {
             case Ess_M2ePro_Model_Ebay_Template_Manager::MODE_PARENT:
-                $returnSettings = $helper->__('Use from Listing Settings'); 
+                $returnSettings = $helper->__('Use from Listing Settings');
                 break;
             case Ess_M2ePro_Model_Ebay_Template_Manager::MODE_CUSTOM:
-                $returnSettings = $helper->__('Custom Settings'); 
+                $returnSettings = $helper->__('Custom Settings');
                 break;
             case Ess_M2ePro_Model_Ebay_Template_Manager::MODE_TEMPLATE:
-                $returnSettings = $tm->getResultObject()->getTitle(); 
+                $returnSettings = $tm->getResultObject()->getTitle();
                 break;
         }
 
@@ -492,13 +492,13 @@ HTML;
         $sellingSettings = '';
         switch ($tm->getModeValue()) {
             case Ess_M2ePro_Model_Ebay_Template_Manager::MODE_PARENT:
-                $sellingSettings = $helper->__('Use from Listing Settings'); 
+                $sellingSettings = $helper->__('Use from Listing Settings');
                 break;
             case Ess_M2ePro_Model_Ebay_Template_Manager::MODE_CUSTOM:
-                $sellingSettings = $helper->__('Custom Settings'); 
+                $sellingSettings = $helper->__('Custom Settings');
                 break;
             case Ess_M2ePro_Model_Ebay_Template_Manager::MODE_TEMPLATE:
-                $sellingSettings = $tm->getResultObject()->getTitle(); 
+                $sellingSettings = $tm->getResultObject()->getTitle();
                 break;
         }
 
@@ -507,13 +507,13 @@ HTML;
         $descriptionSettings = '';
         switch ($tm->getModeValue()) {
             case Ess_M2ePro_Model_Ebay_Template_Manager::MODE_PARENT:
-                $descriptionSettings = $helper->__('Use from Listing Settings'); 
+                $descriptionSettings = $helper->__('Use from Listing Settings');
                 break;
             case Ess_M2ePro_Model_Ebay_Template_Manager::MODE_CUSTOM:
-                $descriptionSettings = $helper->__('Custom Settings'); 
+                $descriptionSettings = $helper->__('Custom Settings');
                 break;
             case Ess_M2ePro_Model_Ebay_Template_Manager::MODE_TEMPLATE:
-                $descriptionSettings = $tm->getResultObject()->getTitle(); 
+                $descriptionSettings = $tm->getResultObject()->getTitle();
                 break;
         }
 
@@ -546,13 +546,13 @@ HTML;
         $synchSettings = '';
         switch ($tm->getModeValue()) {
             case Ess_M2ePro_Model_Ebay_Template_Manager::MODE_PARENT:
-                $synchSettings = $helper->__('Use from Listing Settings'); 
+                $synchSettings = $helper->__('Use from Listing Settings');
                 break;
             case Ess_M2ePro_Model_Ebay_Template_Manager::MODE_CUSTOM:
-                $synchSettings = $helper->__('Custom Settings'); 
+                $synchSettings = $helper->__('Custom Settings');
                 break;
             case Ess_M2ePro_Model_Ebay_Template_Manager::MODE_TEMPLATE:
-                $synchSettings = $tm->getResultObject()->getTitle(); 
+                $synchSettings = $tm->getResultObject()->getTitle();
                 break;
         }
 

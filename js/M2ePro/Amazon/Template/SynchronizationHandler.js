@@ -52,6 +52,10 @@ AmazonTemplateSynchronizationHandler.prototype = Object.extend(new AmazonTemplat
                 return true;
             }
 
+            if (AmazonTemplateSynchronizationHandlerObj.isStopModeDisabled()) {
+                return true;
+            }
+
             if ($('stop_status_disabled').value == 1 && $('relist_status_enabled').value == 0) {
                 return false;
             }
@@ -62,6 +66,10 @@ AmazonTemplateSynchronizationHandler.prototype = Object.extend(new AmazonTemplat
         Validation.add('M2ePro-validate-stop-relist-conditions-stock-availability', M2ePro.translator.translate('Inconsistent Settings in Relist and Stop Rules.'), function(value, el) {
 
             if (AmazonTemplateSynchronizationHandlerObj.isRelistModeDisabled()) {
+                return true;
+            }
+
+            if (AmazonTemplateSynchronizationHandlerObj.isStopModeDisabled()) {
                 return true;
             }
 
@@ -380,6 +388,62 @@ AmazonTemplateSynchronizationHandler.prototype = Object.extend(new AmazonTemplat
 
         $('revise_update_qty_max_applied_value_mode').selectedIndex = 0;
         $('revise_update_qty_max_applied_value_mode').simulate('change');
+    },
+
+    // ---------------------------------------
+
+    reviseDetailsOrImagesMode_change: function()
+    {
+        var self = AmazonTemplateSynchronizationHandlerObj;
+
+        if (this.value == 1) {
+            self.openReviseDetailsOrImagesEnableConfirmationPopUp(this);
+        }
+    },
+
+    openReviseDetailsOrImagesEnableConfirmationPopUp: function(elem)
+    {
+        Dialog.info(null, {
+            draggable: true,
+            resizable: true,
+            closable: true,
+            className: "magento",
+            windowClassName: "popup-window",
+            title: 'Are you sure?',
+            width: 600,
+            height: 400,
+            zIndex: 100,
+            hideEffect: Element.hide,
+            showEffect: Element.show,
+            onClose: function() {
+                elem.selectedIndex = 0;
+            }
+        });
+
+        $('modal_dialog_message').update($(elem.id + '_confirmation_popup_template').innerHTML);
+
+        setTimeout(function() {
+            Windows.getFocusedWindow().content.style.height = '';
+            Windows.getFocusedWindow().content.style.maxHeight = '630px';
+        }, 50);
+    },
+
+    reviseDetailsEnableConfirm: function()
+    {
+        //if (Windows.getFocusedWindow() !== null) {
+        Windows.getFocusedWindow().close();
+        //}
+
+        $('revise_update_details').selectedIndex = 1;
+    },
+
+    reviseImagesEnableConfirm: function()
+    {
+        //if (Windows.getFocusedWindow() !== null) {
+        Windows.getFocusedWindow().close();
+        //}
+
+        $('revise_update_images').selectedIndex = 1;
     },
 
     // ---------------------------------------

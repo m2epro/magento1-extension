@@ -57,26 +57,20 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_V
     {
         parent::__construct();
 
-        // Initialization block
-        // ---------------------------------------
         $this->setId('walmartVariationProductManageGrid');
         $this->setDefaultSort('id');
         $this->setDefaultDir('ASC');
         $this->setUseAjax(true);
-        // ---------------------------------------
     }
 
     //########################################
 
     protected function _prepareCollection()
     {
-        // Get collection
-        // ---------------------------------------
         /** @var Ess_M2ePro_Model_Resource_Walmart_Listing_Product_Collection $collection */
         $collection = Mage::helper('M2ePro/Component_Walmart')->getCollection('Listing_Product');
         $collection->getSelect()->distinct();
         $collection->getSelect()->where("`second_table`.`variation_parent_id` = ?", (int)$this->getListingProductId());
-        // ---------------------------------------
 
         $collection->getSelect()->columns(
             array(
@@ -103,7 +97,6 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_V
             )
         );
 
-        // Set collection to grid
         $this->setCollection($collection);
 
         return parent::_prepareCollection();
@@ -223,10 +216,12 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_V
             'filter_condition_callback' => array($this, 'callbackFilterStatus')
         );
 
-        $listingData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
-        if (Mage::helper('M2ePro/View_Walmart')->isResetFilterShouldBeShown($listingData['id'], true)) {
-            $statusColumn['filter'] = 'M2ePro/adminhtml_walmart_grid_column_filter_status';
-        }
+        $isResetFilterShouldBeShown = Mage::helper('M2ePro/View_Walmart')->isResetFilterShouldBeShown(
+            'variation_parent_id',
+            $this->getListingProduct()->getId()
+        );
+
+        $isResetFilterShouldBeShown && $statusColumn['filter'] = 'M2ePro/adminhtml_walmart_grid_column_filter_status';
 
         $this->addColumn('status', $statusColumn);
 
@@ -235,14 +230,9 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_V
 
     protected function _prepareMassaction()
     {
-        // Set massaction identifiers
-        // ---------------------------------------
         $this->setMassactionIdField('id');
         $this->setMassactionIdFieldOnlyIndexValue(true);
-        // ---------------------------------------
 
-        // Set mass-action
-        // ---------------------------------------
         $groups = array(
             'actions' => Mage::helper('M2ePro')->__('Actions'),
             'other'   => Mage::helper('M2ePro')->__('Other'),
@@ -299,16 +289,13 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_V
 
         // ---------------------------------------
 
-        $listingData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
-        if (Mage::helper('M2ePro/View_Walmart')->isResetFilterShouldBeShown($listingData['id'], true)) {
-            $this->getMassactionBlock()->addItem(
-                'resetProducts', array(
+        $this->getMassactionBlock()->addItem(
+            'resetProducts', array(
                 'label'    => Mage::helper('M2ePro')->__('Reset Inactive (Blocked) Item(s)'),
                 'url'      => '',
                 'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
-                ), 'other'
-            );
-        }
+            ), 'other'
+        );
 
         // ---------------------------------------
 
@@ -443,8 +430,11 @@ HTML;
         $html = '<div class="m2ePro-variation-attributes" style="color: grey; margin-left: 7px">';
 
         if (!empty($gtin) && !empty($itemId)) {
-            $url = Mage::helper('M2ePro/Component_Walmart')->getItemUrl(
-                $itemId, $this->getListingProduct()->getListing()->getMarketplaceId()
+            $walmartHelper = Mage::helper('M2ePro/Component_Walmart');
+            $marketplaceId = $this->getListingProduct()->getListing()->getMarketplaceId();
+            $url = $walmartHelper->getItemUrl(
+                $walmartListingProduct->getData($walmartHelper->getIdentifierForItemUrl($marketplaceId)),
+                $marketplaceId
             );
 
             $html .= '<a href="' . $url . '" target="_blank" title="' . $gtin . '" >';
@@ -493,26 +483,12 @@ HTML;
 HTML;
         }
 
-        if ($row->getData('is_details_data_changed') || $row->getData('is_online_price_invalid')) {
-            $msg = '';
-
-            if ($row->getData('is_details_data_changed')) {
-                $message = <<<HTML
-Item Details, e.g. Product Tax Code, Lag Time, Shipping, Description, Image, Category, etc. settings, need to be
-updated on Walmart.<br>
-To submit new Item Details, apply the Revise action.
-HTML;
-                $msg .= '<p>'.Mage::helper('M2ePro')->__($message).'</p>';
-            }
-
-            if ($row->getData('is_online_price_invalid')) {
-                $message = <<<HTML
+        if ($row->getData('is_online_price_invalid')) {
+            $message = <<<HTML
 Item Price violates Walmart pricing rules. Please adjust the Item Price to comply with the Walmart requirements.<br>
 Once the changes are applied, Walmart Item will become Active automatically.
 HTML;
-                $msg .= '<p>'.Mage::helper('M2ePro')->__($message).'</p>';
-            }
-
+            $msg = '<p>'.Mage::helper('M2ePro')->__($message).'</p>';
             if (empty($msg)) {
                 return $value;
             }
@@ -542,7 +518,13 @@ HTML;
 
         $productId = $row->getData('id');
         $gtinHtml = Mage::helper('M2ePro')->escapeHtml($gtin);
-        $channelUrl = $row->getData('channel_url');
+
+        $walmartHelper = Mage::helper('M2ePro/Component_Walmart');
+        $marketplaceId = $this->getListingProduct()->getListing()->getMarketplaceId();
+        $channelUrl = $walmartHelper->getItemUrl(
+            $row->getData($walmartHelper->getIdentifierForItemUrl($marketplaceId)),
+            $marketplaceId
+        );
 
         if (!empty($channelUrl)) {
             $gtinHtml = <<<HTML
@@ -1631,9 +1613,6 @@ HTML;
             'walmartVariationProductManageGrid',
             {$listingId}
         );
-
-        ListingGridHandlerObj.actionHandler.setOptions(M2ePro);
-        ListingGridHandlerObj.templateCategoryHandler.setOptions(M2ePro);
 
         ListingProgressBarObj = new ProgressBar('listing_view_progress_bar');
         GridWrapperObj = new AreaWrapper('listing_view_content_container');

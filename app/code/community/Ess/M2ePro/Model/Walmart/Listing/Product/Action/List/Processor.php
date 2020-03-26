@@ -14,6 +14,8 @@ use Ess_M2ePro_Model_Resource_Walmart_Listing_Product_Action_ProcessingList_Coll
 
 class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_Processor
 {
+    const LIST_PRIORITY = 25;
+
     const PENDING_REQUEST_MAX_LIFE_TIME = 86400;
 
     const CONNECTION_ERROR_REPEAT_TIMEOUT = 180;
@@ -21,6 +23,11 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_Processor
 
     //########################################
 
+    /**
+     * @throws Ess_M2ePro_Model_Exception
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     * @throws Zend_Db_Statement_Exception
+     */
     public function process()
     {
         $this->executeReadyForList();
@@ -32,6 +39,10 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_Processor
 
     //########################################
 
+    /**
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     * @throws Zend_Db_Statement_Exception
+     */
     protected function executeReadyForList()
     {
         $throttlingManager = Mage::getModel('M2ePro/Walmart_ThrottlingManager');
@@ -53,7 +64,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_Processor
 
             $this->fillFeedsPacks(
                 $feedsPacks,
-                $this->getScheduledActionsDataStatement($account, true)
+                $this->getScheduledActionsDataStatement($account)
             );
 
             $actionsDataForProcessing = $this->processExistedSkus($feedsPacks);
@@ -133,6 +144,9 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_Processor
         }
     }
 
+    /**
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     protected function executeCheckListResults()
     {
         $requestIds = Mage::getResourceModel('M2ePro/Walmart_Listing_Product_Action_Processing')
@@ -191,8 +205,8 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_Processor
 
                 $resultActionData = array();
 
-                if (isset($resultData['data'][$processingAction->getListingProductId().'-id'])) {
-                    $resultActionData = $resultData['data'][$processingAction->getListingProductId().'-id'];
+                if (isset($resultData[$processingAction->getListingProductId().'-id'])) {
+                    $resultActionData = $resultData[$processingAction->getListingProductId().'-id'];
                 }
 
                 if (empty($resultActionData['errors'])) {
@@ -243,6 +257,10 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_Processor
 
     // ---------------------------------------
 
+    /**
+     * @throws Ess_M2ePro_Model_Exception
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     protected function executeReadyForRelist()
     {
         /** @var Ess_M2ePro_Model_Walmart_ThrottlingManager $throttlingManager */
@@ -382,6 +400,10 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_Processor
         }
     }
 
+    /**
+     * @throws Ess_M2ePro_Model_Exception
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     protected function executeCheckRelistResults()
     {
         /** @var Ess_M2ePro_Model_Resource_Walmart_Listing_Product_Action_ProcessingList $processingListResource */
@@ -451,8 +473,8 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_Processor
 
                 $resultActionData = array();
 
-                if (isset($resultData['data'][$processingAction->getListingProductId().'-id'])) {
-                    $resultActionData = $resultData['data'][$processingAction->getListingProductId().'-id'];
+                if (isset($resultData[$processingAction->getListingProductId().'-id'])) {
+                    $resultActionData = $resultData[$processingAction->getListingProductId().'-id'];
                 }
 
                 if (empty($resultActionData['errors'])) {
@@ -481,6 +503,11 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_Processor
 
     //########################################
 
+    /**
+     * @param $processingActionsIds
+     * @throws Ess_M2ePro_Model_Exception
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     protected function failedOnRelistAttemptCallback($processingActionsIds)
     {
         /** @var Ess_M2ePro_Model_Resource_Walmart_Listing_Product_Action_Processing_Collection $actionCollection */
@@ -495,6 +522,11 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_Processor
 
     // ---------------------------------------
 
+    /**
+     * @param Ess_M2ePro_Model_Walmart_Listing_Product_Action_Processing $processingAction
+     * @throws Ess_M2ePro_Model_Exception
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     protected function completeListProcessingActionSuccess(ActionProcessing $processingAction)
     {
         $processing       = $processingAction->getProcessing();
@@ -540,6 +572,11 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_Processor
         $processingAction->deleteInstance();
     }
 
+    /**
+     * @param Ess_M2ePro_Model_Walmart_Listing_Product_Action_Processing $processingAction
+     * @throws Ess_M2ePro_Model_Exception
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     protected function completeListProcessingActionFail(ActionProcessing $processingAction)
     {
         $processing       = $processingAction->getProcessing();
@@ -572,7 +609,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_Processor
     /**
      * @param array $feedsPacks
      * @param Zend_Db_Statement $scheduledActionsDataStatement
-     * @throws Ess_M2ePro_Model_Exception_Logic
+     * @throws Zend_Db_Statement_Exception
      */
     protected function fillFeedsPacks(
         array &$feedsPacks,
@@ -718,7 +755,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_Processor
     }
 
     /**
-     * @param $actionType
      * @param array $listingsProductsData
      * @return string
      */
@@ -768,6 +804,9 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_Processor
         return $groupHash;
     }
 
+    /**
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     protected function prepareProcessingActions()
     {
         $processingActionPreparationLimit = (int)$this->getConfigValue(
@@ -854,6 +893,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_Processor
     /**
      * @param array $processingActions
      * @param array $serverCommand
+     * @throws Ess_M2ePro_Model_Exception_Logic
      */
     protected function processGroupedProcessingActions(array $processingActions, array $serverCommand)
     {
@@ -960,33 +1000,23 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_Processor
     //########################################
 
     /**
+     * @param Ess_M2ePro_Model_Account $account
      * @return Zend_Db_Statement
+     * @throws Ess_M2ePro_Model_Exception_Logic
      */
-    protected function getScheduledActionsDataStatement(
-        Ess_M2ePro_Model_Account $account,
-        $withCreateDateFilter = false,
-        $excludedListingsProductsIds = array()
-    ) {
-        $priorityCoefficient = (int)$this->getConfigValue(
-            '/walmart/listing/product/action/list/', 'priority_coefficient'
-        );
-        $waitIncreaseCoefficient = (int)$this->getConfigValue(
-            '/walmart/listing/product/action/list/', 'wait_increase_coefficient'
-        );
+    protected function getScheduledActionsDataStatement(Ess_M2ePro_Model_Account $account)
+    {
+        /** @var Ess_M2ePro_Model_Resource_Listing_Product_ScheduledAction_Collection $collection */
+        $collection = Mage::getResourceModel('M2ePro/Listing_Product_ScheduledAction_Collection');
+        $collection->setComponentMode(Ess_M2ePro_Helper_Component_Walmart::NICK)
+            ->getScheduledActionsPreparedCollection(
+                self::LIST_PRIORITY,
+                Ess_M2ePro_Model_Listing_Product::ACTION_LIST
+            )
+            ->addFilteredTagColumnToSelect(new Zend_Db_Expr("''"))
+            ->addFieldToFilter('l.account_id', $account->getId());
 
-        $collection = $this->getScheduledActionsPreparedCollection(
-            $priorityCoefficient, $waitIncreaseCoefficient
-        );
-        $collection->addFieldToFilter('main_table.action_type', Ess_M2ePro_Model_Listing_Product::ACTION_LIST);
-        $collection->addFieldToFilter('aa.account_id', $account->getId());
-
-        if (!empty($excludedListingsProductsIds)) {
-            $collection->addFieldToFilter('listing_product_id', array('nin' => $excludedListingsProductsIds));
-        }
-
-        $collection->getSelect()->columns(array('filtered_tag' => new Zend_Db_Expr('\'\'')));
-
-        if ($withCreateDateFilter && Mage::helper('M2ePro/Module')->isProductionEnvironment()) {
+        if (Mage::helper('M2ePro/Module')->isProductionEnvironment()) {
             $minAllowedWaitInterval = (int)$this->getConfigValue(
                 '/walmart/listing/product/action/list/', 'min_allowed_wait_interval'
             );
@@ -1004,58 +1034,13 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_Processor
         return $select->query();
     }
 
-    // ---------------------------------------
-
-    /**
-     * @param $priorityCoefficient
-     * @param $waitIncreaseCoefficient
-     * @return Ess_M2ePro_Model_Resource_Listing_Product_ScheduledAction_Collection
-     */
-    protected function getScheduledActionsPreparedCollection($priorityCoefficient, $waitIncreaseCoefficient)
-    {
-        $collection = Mage::getResourceModel('M2ePro/Listing_Product_ScheduledAction_Collection');
-        $collection->getSelect()->joinLeft(
-            array('lp' => Mage::getResourceModel('M2ePro/Listing_Product')->getMainTable()),
-            'main_table.listing_product_id = lp.id'
-        );
-        $collection->getSelect()->joinLeft(
-            array('l' => Mage::getResourceModel('M2ePro/Listing')->getMainTable()),
-            'lp.listing_id = l.id'
-        );
-        $collection->getSelect()->joinLeft(
-            array('aa' => Mage::getResourceModel('M2ePro/Walmart_Account')->getMainTable()),
-            'l.account_id = aa.account_id'
-        );
-        $collection->getSelect()->joinLeft(
-            array('pl' => Mage::getResourceModel('M2ePro/Processing_Lock')->getMainTable()),
-            'pl.object_id = main_table.listing_product_id AND model_name = \'M2ePro/Listing_Product\''
-        );
-
-        $collection->addFieldToFilter('component', Ess_M2ePro_Helper_Component_Walmart::NICK);
-        $collection->addFieldToFilter('pl.id', array('null' => true));
-
-        $now = Mage::helper('M2ePro')->getCurrentGmtDate();
-        $collection->getSelect()->reset(Zend_Db_Select::COLUMNS)
-            ->columns(
-                array(
-                'listing_product_id' => 'main_table.listing_product_id',
-                'account_id'         => 'aa.account_id',
-                'action_type'        => 'main_table.action_type',
-                'tag'                => new Zend_Db_Expr('NULL'),
-                'additional_data'    => 'main_table.additional_data',
-                'coefficient'        => new Zend_Db_Expr(
-                    "{$priorityCoefficient} +
-                    (time_to_sec(timediff('{$now}', main_table.create_date)) / 3600) * {$waitIncreaseCoefficient}"
-                ),
-                'create_date'        => 'create_date',
-                )
-            );
-
-        return $collection;
-    }
-
     //########################################
 
+    /**
+     * @param array $feedsPacks
+     * @param int $accountId
+     * @return bool
+     */
     protected function canAddToLastExistedPack(array $feedsPacks, $accountId)
     {
         if (empty($feedsPacks[$accountId])) {
@@ -1068,6 +1053,10 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_Processor
         return count($feedsPacks[$accountId][$lastPackIndex]) < $maxPackSize;
     }
 
+    /**
+     * @param array $feedsPacks
+     * @param array $scheduled
+     */
     protected function addToLastExistedPack(array &$feedsPacks, $scheduled)
     {
         if (empty($feedsPacks[$scheduled['account_id']])) {
@@ -1081,6 +1070,10 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_Processor
 
     // ---------------------------------------
 
+    /**
+     * @param array $feedsPacks
+     * @param array $scheduled
+     */
     protected function addToNewPack(array &$feedsPacks, $scheduled)
     {
         if (empty($feedsPacks[$scheduled['account_id']])) {
@@ -1094,6 +1087,10 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_Processor
 
     //########################################
 
+    /**
+     * @param string $feedType
+     * @return int
+     */
     protected function getMaxPackSize($feedType = null)
     {
         if ($feedType == ActionProcessor::FEED_TYPE_UPDATE_DETAILS) {
@@ -1105,6 +1102,9 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_Processor
 
     //########################################
 
+    /**
+     * @return mixed
+     */
     protected function getFirstConnectionErrorDate()
     {
         $registry = Mage::getModel('M2ePro/Registry');
@@ -1113,6 +1113,10 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_Processor
         return $registry->getValue();
     }
 
+    /**
+     * @param $date
+     * @throws Exception
+     */
     protected function setFirstConnectionErrorDate($date)
     {
         $registry = Mage::getModel('M2ePro/Registry');
@@ -1124,6 +1128,9 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_Processor
         $registry->save();
     }
 
+    /**
+     * @throws Exception
+     */
     protected function removeFirstConnectionErrorDate()
     {
         $registry = Mage::getModel('M2ePro/Registry');
@@ -1136,6 +1143,12 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_Processor
 
     //########################################
 
+    /**
+     * @param int $accountId
+     * @param array $skus
+     * @return array
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     protected function receiveProductsData($accountId, array $skus)
     {
         if (empty($skus)) {
@@ -1195,6 +1208,11 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_Processor
 
     //########################################
 
+    /**
+     * @param Ess_M2ePro_Model_Walmart_Listing_Product_Action_Processing $action
+     * @param array $data
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     protected function completeProcessingAction(ActionProcessing $action, array $data)
     {
         $processing = $action->getProcessing();
@@ -1209,6 +1227,11 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_Processor
 
     // ---------------------------------------
 
+    /**
+     * @param $group
+     * @param $key
+     * @return mixed
+     */
     protected function getConfigValue($group, $key)
     {
         return Mage::helper('M2ePro/Module')->getConfig()->getGroupValue($group, $key);

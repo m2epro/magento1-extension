@@ -11,7 +11,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Description_Edit_Form_Data extend
     protected $_attributeSets = array();
 
     public $attributes = array();
-    public $generalAttributes = array();
     public $M2eProAttributes = array();
     public $attributesConfigurable = array();
 
@@ -30,7 +29,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Description_Edit_Form_Data extend
 
         $this->_attributeSets = Mage::helper('M2ePro/Data_Global')->getValue('ebay_attribute_sets');
         $this->attributes = Mage::helper('M2ePro/Magento_Attribute')->getAll();
-        $this->generalAttributes = Mage::helper('M2ePro/Magento_Attribute')->getGeneralFromAllAttributeSets();
         $this->attributesConfigurable = Mage::helper('M2ePro/Magento_Attribute')->getAllConfigurable();
 
         $this->M2eProAttributes = array(

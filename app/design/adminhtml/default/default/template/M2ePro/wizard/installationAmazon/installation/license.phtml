@@ -205,7 +205,7 @@ $wizardHelper = $this->helper('M2ePro/Module_Wizard');
 <!-- ### LICENSE EDIT POPUP ### -->
 
 <div id="license_popup_content" style="display: none;">
-    <div style="padding: 10px; height: 300px">
+    <div style="padding: 10px; height: 300px; overflow:auto;">
         <div class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Please verify the information is valid before we register you with M2E Pro.'); ?>" subtitle="" collapseable="no" hideblock="no" always_show="yes"></div>
 
         <form id="popup_license_form">
@@ -219,7 +219,7 @@ $wizardHelper = $this->helper('M2ePro/Module_Wizard');
                                 <?php echo Mage::helper('M2ePro')->__('Email') ?>: <span class="required">*</span>
                             </td>
                             <td class="value">
-                                <input type="text" name="email" class="input-text required-entry validate-email" value="" />
+                                <input type="text" name="email" class="input-text required-entry validate-email validate-length maximum-length-80" value="" />
                             </td>
                         </tr>
 
@@ -228,7 +228,7 @@ $wizardHelper = $this->helper('M2ePro/Module_Wizard');
                                 <?php echo Mage::helper('M2ePro')->__('First Name') ?>: <span class="required">*</span>
                             </td>
                             <td class="value">
-                                <input type="text" name="firstname" class="input-text required-entry" value="" />
+                                <input type="text" name="firstname" class="input-text required-entry validate-length maximum-length-40" value="" />
                             </td>
                         </tr>
 
@@ -237,7 +237,7 @@ $wizardHelper = $this->helper('M2ePro/Module_Wizard');
                                 <?php echo Mage::helper('M2ePro')->__('Last Name') ?>: <span class="required">*</span>
                             </td>
                             <td class="value">
-                                <input type="text" name="lastname" class="input-text required-entry" value="" />
+                                <input type="text" name="lastname" class="input-text required-entry validate-length maximum-length-40" value="" />
                             </td>
                         </tr>
 
@@ -246,7 +246,7 @@ $wizardHelper = $this->helper('M2ePro/Module_Wizard');
                                 <?php echo Mage::helper('M2ePro')->__('Phone') ?>: <span class="required">*</span>
                             </td>
                             <td class="value">
-                                <input type="text" name="phone" class="input-text required-entry" value="" />
+                                <input type="text" name="phone" class="input-text required-entry validate-length maximum-length-40" value="" />
                             </td>
                         </tr>
 
@@ -269,7 +269,7 @@ $wizardHelper = $this->helper('M2ePro/Module_Wizard');
                                 <?php echo Mage::helper('M2ePro')->__('City') ?>: <span class="required">*</span>
                             </td>
                             <td class="value">
-                                <input type="text" name="city" class="input-text required-entry" value="" />
+                                <input type="text" name="city" class="input-text required-entry validate-length maximum-length-40" value="" />
                             </td>
                         </tr>
 
@@ -278,7 +278,7 @@ $wizardHelper = $this->helper('M2ePro/Module_Wizard');
                                 <?php echo Mage::helper('M2ePro')->__('Postal Code') ?>: <span class="required">*</span>
                             </td>
                             <td class="value">
-                                <input type="text" name="postal_code" class="input-text required-entry" value="" />
+                                <input type="text" name="postal_code" class="input-text required-entry validate-length maximum-length-40" value="" />
                             </td>
                         </tr>
 
@@ -290,7 +290,7 @@ $wizardHelper = $this->helper('M2ePro/Module_Wizard');
         </form>
     </div>
 
-    <div style="padding-right: 5px">
+    <div style="margin-top: 10px">
         <div class="clear"></div>
         <div class="right">
             <a id="license_popup_cancel_link" href="javascript:void(0);" onclick=""><?php echo Mage::helper('M2ePro')->__('Cancel'); ?></a>

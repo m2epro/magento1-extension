@@ -1652,55 +1652,6 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
 
     //########################################
 
-    /**
-     * @return array
-     */
-    public function getUsedDetailsAttributes()
-    {
-        return array_unique(
-            array_merge(
-
-                $this->getTitleAttributes(),
-                $this->getBrandAttributes(),
-                $this->getNumberOfItemsAttributes(),
-                $this->getItemPackageQuantityAttributes(),
-                $this->getDescriptionAttributes(),
-                $this->getBulletPointsAttributes(),
-                $this->getSearchTermsAttributes(),
-                $this->getTargetAudienceAttributes(),
-                $this->getManufacturerAttributes(),
-                $this->getManufacturerPartNumberAttributes(),
-                $this->getMsrpRrpAttributes(),
-                $this->getItemDimensionsVolumeAttributes(),
-                $this->getItemDimensionsVolumeUnitOfMeasureAttributes(),
-                $this->getItemDimensionsWeightAttributes(),
-                $this->getItemDimensionsWeightUnitOfMeasureAttributes(),
-                $this->getPackageDimensionsVolumeAttributes(),
-                $this->getPackageDimensionsVolumeUnitOfMeasureAttributes(),
-                $this->getPackageWeightAttributes(),
-                $this->getPackageWeightUnitOfMeasureAttributes(),
-                $this->getShippingWeightAttributes(),
-                $this->getShippingWeightUnitOfMeasureAttributes()
-            )
-        );
-    }
-
-    /**
-     * @return array
-     */
-    public function getUsedImagesAttributes()
-    {
-        return array_unique(
-            array_merge(
-                $this->getImageMainAttributes(),
-                $this->getImageVariationDifferenceAttributes(),
-                $this->getGalleryImagesAttributes()
-            )
-        );
-    }
-
-    //########################################
-
     public function save()
     {
         Mage::helper('M2ePro/Data_Cache_Permanent')->removeTagValues('template_description_definition');

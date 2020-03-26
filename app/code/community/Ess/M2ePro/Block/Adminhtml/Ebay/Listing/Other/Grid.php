@@ -60,7 +60,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_Grid extends Mage_Adminhtml_
 
         $this->addColumn(
             'marketplace', array(
-                'header'         => Mage::helper('M2ePro')->__('eBay Site'),
+                'header'         => Mage::helper('M2ePro')->__('Marketplace'),
                 'align'          => 'left',
                 'type'           => 'text',
                 'sortable'       => false,

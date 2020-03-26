@@ -41,7 +41,8 @@ class Ess_M2ePro_Observer_CreditMemo extends Ess_M2ePro_Observer_Abstract
         $order->getLog()->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION);
 
         /** @var Ess_M2ePro_Model_Order_CreditMemo_Handler $handler */
-        $handler = Ess_M2ePro_Model_Order_CreditMemo_Handler::factory($order->getComponentMode());
+        $componentMode = ucfirst($order->getComponentMode());
+        $handler = Mage::getModel("M2ePro/{$componentMode}_Order_CreditMemo_Handler");
         $handler->handle($order, $creditmemo);
     }
 

@@ -443,12 +443,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
             return false;
         }
 
-        $ebaySellingFormatTemplate = $ebayListingProduct->getEbaySellingFormatTemplate();
-
-        if (!$ebayListingProduct->getOutOfStockControl() && $ebaySellingFormatTemplate->getOutOfStockControl()) {
-            return true;
-        }
-
         $isMaxAppliedValueModeOn = $ebaySynchronizationTemplate->isReviseUpdateQtyMaxAppliedValueModeOn();
         $maxAppliedValue = $ebaySynchronizationTemplate->getReviseUpdateQtyMaxAppliedValue();
 

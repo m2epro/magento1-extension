@@ -70,8 +70,12 @@ class Ess_M2ePro_Sql_Upgrade_v6_3_6__v6_3_7_AllFeatures extends Ess_M2ePro_Model
 
             $installer->run(<<<SQL
 DROP TABLE IF EXISTS `m2epro_ebay_dictionary_motor_epid`;
-RENAME TABLE `m2epro_ebay_dictionary_motor_specific` TO `m2epro_ebay_dictionary_motor_epid`;
 SQL
+            );
+
+            $this->_installer->getTablesObject()->renameTable(
+                'm2epro_ebay_dictionary_motor_specific',
+                'm2epro_ebay_dictionary_motor_epid'
             );
         }
 
@@ -80,7 +84,7 @@ SQL
         if (!$installer->getTablesObject()->isExists('ebay_motor_filter')) {
 
             $installer->run(<<<SQL
-CREATE TABLE `m2epro_ebay_motor_filter` (
+CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_motor_filter')}` (
     `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
     `title` varchar(255) NOT NULL,
     `type` TINYINT(2) UNSIGNED NOT NULL,
@@ -103,7 +107,7 @@ SQL
         if (!$installer->getTablesObject()->isExists('ebay_motor_group')) {
 
             $installer->run(<<<SQL
-CREATE TABLE `m2epro_ebay_motor_group` (
+CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_motor_group')}` (
     `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
     `title` varchar(255) NOT NULL,
     `mode` TINYINT(2) UNSIGNED NOT NULL,
@@ -127,7 +131,7 @@ SQL
         if (!$installer->getTablesObject()->isExists('ebay_motor_filter_to_group')) {
 
             $installer->run(<<<SQL
-CREATE TABLE `m2epro_ebay_motor_filter_to_group` (
+CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_motor_filter_to_group')}` (
     id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
     `filter_id` INT(11) UNSIGNED NOT NULL,
     `group_id` INT(11) UNSIGNED NOT NULL,

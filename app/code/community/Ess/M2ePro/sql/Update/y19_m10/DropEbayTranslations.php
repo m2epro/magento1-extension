@@ -6,16 +6,6 @@ class Ess_M2ePro_Sql_Update_y19_m10_DropEbayTranslations extends Ess_M2ePro_Mode
 {
     //########################################
 
-    public function getBackupTables()
-    {
-        return array(
-            'ebay_listing_product',
-            'ebay_marketplace',
-            'ebay_account',
-            'config'
-        );
-    }
-
     public function execute()
     {
         $this->_installer->getTableModifier('ebay_listing_product')

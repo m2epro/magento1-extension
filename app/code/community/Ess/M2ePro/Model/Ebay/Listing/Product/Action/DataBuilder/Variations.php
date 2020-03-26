@@ -234,7 +234,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Variations
             $this->addWarningMessage(
                 Mage::helper('M2ePro')->__(
                     'The Product was Listed as a Simple Product as it has limitation for Multi-Variation Items. '.
-                    'Reason: eBay Site allows to list only Simple Items.'
+                    'Reason: Marketplace allows to list only Simple Items.'
                 )
             );
             return;

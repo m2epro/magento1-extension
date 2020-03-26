@@ -152,8 +152,8 @@
                     <td class="value">
                         <select name="deleting_mode" id="deleting_mode" style="width: 275px;">
                             <option value="<?php echo Ess_M2ePro_Model_Listing::DELETING_MODE_NONE ?>" <?php if ($formData['deleting_mode'] == Ess_M2ePro_Model_Listing::DELETING_MODE_NONE): ?>selected="selected"<?php endif; ?> ><?php echo Mage::helper('M2ePro')->__('No Action') ?></option>
-                            <option value="<?php echo Ess_M2ePro_Model_Listing::DELETING_MODE_STOP ?>" <?php if ($formData['deleting_mode'] == Ess_M2ePro_Model_Listing::DELETING_MODE_STOP): ?>selected="selected"<?php endif; ?> ><?php echo Mage::helper('M2ePro')->__('Stop on eBay') ?></option>
-                            <option value="<?php echo Ess_M2ePro_Model_Listing::DELETING_MODE_STOP_REMOVE ?>" <?php if ($formData['deleting_mode'] == Ess_M2ePro_Model_Listing::DELETING_MODE_STOP_REMOVE): ?>selected="selected"<?php endif; ?> ><?php echo Mage::helper('M2ePro')->__('Stop on eBay and Delete from Listing') ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Listing::DELETING_MODE_STOP ?>" <?php if ($formData['deleting_mode'] == Ess_M2ePro_Model_Listing::DELETING_MODE_STOP): ?>selected="selected"<?php endif; ?> ><?php echo Mage::helper('M2ePro')->__('Stop on Channel') ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Listing::DELETING_MODE_STOP_REMOVE ?>" <?php if ($formData['deleting_mode'] == Ess_M2ePro_Model_Listing::DELETING_MODE_STOP_REMOVE): ?>selected="selected"<?php endif; ?> ><?php echo Mage::helper('M2ePro')->__('Stop on Channel and Delete from Listing') ?></option>
                         </select>
                     </td>
                     <td class="value">

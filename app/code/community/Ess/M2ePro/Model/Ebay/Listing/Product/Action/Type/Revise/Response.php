@@ -27,7 +27,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Revise_Response
         $data = $this->appendOnlinePriceValues($data);
         $data = $this->appendOnlineInfoDataValues($data);
 
-        $data = $this->appendOutOfStockValues($data);
         $data = $this->appendItemFeesValues($data, $response);
         $data = $this->appendStartDateEndDateValues($data, $response);
         $data = $this->appendGalleryImagesValues($data, $response);
@@ -142,7 +141,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Revise_Response
         }
 
         if ($this->getConfigurator()->isOtherAllowed()) {
-            $sequenceStrings[] = 'Condition, Condition Note, Tax, Best Offer, Donation';
+            $sequenceStrings[] = 'Condition, Condition Note, Lot Size, Tax, Best Offer, Donation';
             $isPlural = true;
         }
 

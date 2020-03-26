@@ -85,7 +85,6 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Search_Other_Grid
                 'ean'                          => new Zend_Db_Expr('NULL'),
                 'isbn'                         => new Zend_Db_Expr('NULL'),
                 'wpid'                         => 'second_table.wpid',
-                'channel_url'                  => 'second_table.channel_url',
                 'item_id'                      => 'second_table.item_id',
                 'online_title'                 => new Zend_Db_Expr('NULL'),
                 'online_qty'                   => 'second_table.online_qty',

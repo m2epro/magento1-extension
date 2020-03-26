@@ -18,7 +18,11 @@ class Ess_M2ePro_Model_Amazon_Template_Synchronization_Diff
                $this->isReviseQtySettingsChanged() ||
                $this->isRevisePriceEnabled() ||
                $this->isRevisePriceDisabled() ||
-               $this->isRevisePriceSettingsChanged();
+               $this->isRevisePriceSettingsChanged() ||
+               $this->isReviseDetailsDisabled() ||
+               $this->isReviseDetailsEnabled() ||
+               $this->isReviseImagesDisabled() ||
+               $this->isReviseImagesEnabled();
     }
 
     //########################################
@@ -79,6 +83,42 @@ class Ess_M2ePro_Model_Amazon_Template_Synchronization_Diff
         );
 
         return $this->isSettingsDifferent($keys);
+    }
+
+    //########################################
+
+    public function isReviseDetailsEnabled()
+    {
+        $newSnapshotData = $this->_newSnapshot;
+        $oldSnapshotData = $this->_oldSnapshot;
+
+        return empty($oldSnapshotData['revise_update_details']) && !empty($newSnapshotData['revise_update_details']);
+    }
+
+    public function isReviseDetailsDisabled()
+    {
+        $newSnapshotData = $this->_newSnapshot;
+        $oldSnapshotData = $this->_oldSnapshot;
+
+        return !empty($oldSnapshotData['revise_update_details']) && empty($newSnapshotData['revise_update_details']);
+    }
+
+    //########################################
+
+    public function isReviseImagesEnabled()
+    {
+        $newSnapshotData = $this->_newSnapshot;
+        $oldSnapshotData = $this->_oldSnapshot;
+
+        return empty($oldSnapshotData['revise_update_images']) && !empty($newSnapshotData['revise_update_images']);
+    }
+
+    public function isReviseImagesDisabled()
+    {
+        $newSnapshotData = $this->_newSnapshot;
+        $oldSnapshotData = $this->_oldSnapshot;
+
+        return !empty($oldSnapshotData['revise_update_images']) && empty($newSnapshotData['revise_update_images']);
     }
 
     //########################################

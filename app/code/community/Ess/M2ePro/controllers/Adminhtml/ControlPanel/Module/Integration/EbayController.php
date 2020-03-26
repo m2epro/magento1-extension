@@ -228,7 +228,7 @@ class Ess_M2ePro_Adminhtml_ControlPanel_Module_Integration_EbayController
             Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_DESCRIPTION,
             Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SHIPPING,
             Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_PAYMENT,
-            Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_RETURN,
+            Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_RETURN_POLICY,
         );
         foreach ($difficultTemplates as $templateName) {
             $tempResult = $this->getNonexistentTemplatesByDifficultLogic($templateName);
@@ -600,7 +600,7 @@ HTML;
     <th>Product Title</th>
     <th>Listing Product ID</th>
     <th>eBay Item ID</th>
-    <th>eBay Site</th>
+    <th>Marketplace</th>
     <th>Date</th>
 </tr>
 HTML;

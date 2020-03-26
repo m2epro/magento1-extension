@@ -229,11 +229,16 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_RemovePotentialDuplicates
         is_object($timeFrom) && $timeFrom = $timeFrom->format('Y-m-d H:i:s');
         is_object($timeTo)   && $timeTo = $timeTo->format('Y-m-d H:i:s');
 
+        $inputData = array(
+            'since_time' => $timeFrom,
+            'to_time'    => $timeTo,
+            'realtime'   => true
+        );
+
         $dispatcherObj = Mage::getModel('M2ePro/Ebay_Connector_Dispatcher');
         $connectorObj = $dispatcherObj->getVirtualConnector(
-            'item', 'get', 'all',
-            array('since_time'=>$timeFrom,
-                                                                  'to_time'=>$timeTo), null,
+            'inventory', 'get', 'items',
+            $inputData, null,
             null, $accountId
         );
 

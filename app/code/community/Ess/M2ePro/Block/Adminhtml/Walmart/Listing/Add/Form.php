@@ -86,11 +86,6 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Add_Form
         // ---------------------------------------
 
         $this->setData(
-            'general_attributes',
-            Mage::helper('M2ePro/Magento_Attribute')->getGeneralFromAllAttributeSets()
-        );
-
-        $this->setData(
             'all_attributes',
             Mage::helper('M2ePro/Magento_Attribute')->getAll()
         );

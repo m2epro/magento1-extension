@@ -225,7 +225,7 @@ class Ess_M2ePro_Helper_Module_Wizard extends Mage_Core_Helper_Abstract
     {
         $parts = explode('_', get_class($wizard));
         $nick = array_pop($parts);
-        $nick{0} = strtolower($nick{0});
+        $nick[0] = strtolower($nick[0]);
         return $nick;
     }
 

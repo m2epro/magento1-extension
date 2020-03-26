@@ -15,7 +15,7 @@ class Ess_M2ePro_Sql_Update_y18_m09_OrderNote extends Ess_M2ePro_Model_Upgrade_F
         $this->_installer->run(
             <<<SQL
             
-CREATE TABLE `m2epro_order_note` (
+CREATE TABLE `{$this->_installer->getTable('m2epro_order_note')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `order_id` INT(11) UNSIGNED NOT NULL,
   `note` TEXT DEFAULT NULL,

@@ -92,7 +92,6 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Description_Edit_Form extends 
         // ---------------------------------------
         $attributeHelper = Mage::helper('M2ePro/Magento_Attribute');
         $this->setData('all_attributes', $attributeHelper->getAll());
-        $this->setData('general_attributes', $attributeHelper->getGeneralFromAllAttributeSets());
         // ---------------------------------------
 
         return parent::_beforeToHtml();

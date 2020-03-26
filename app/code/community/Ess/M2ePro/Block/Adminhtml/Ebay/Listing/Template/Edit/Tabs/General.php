@@ -55,7 +55,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Edit_Tabs_General extends
 
         // ---------------------------------------
         $parameters = array(
-            'template_nick' => Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_RETURN,
+            'template_nick' => Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_RETURN_POLICY,
             'policy_localization' => $this->getData('policy_localization')
         );
         $switcherBlock = $this->getLayout()

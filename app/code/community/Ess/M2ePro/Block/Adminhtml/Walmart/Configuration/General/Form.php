@@ -41,11 +41,6 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Configuration_General_Form extends Mage
     protected function _beforeToHtml()
     {
         $this->setData(
-            'general_attributes',
-            Mage::helper('M2ePro/Magento_Attribute')->getGeneralFromAllAttributeSets()
-        );
-
-        $this->setData(
             'all_attributes',
             Mage::helper('M2ePro/Magento_Attribute')->getAll()
         );

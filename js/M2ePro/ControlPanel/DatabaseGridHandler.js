@@ -3,6 +3,7 @@ ControlPanelDatabaseGridHandler = Class.create(GridHandler, {
     // ---------------------------------------
 
     mergeModeCookieKey: 'database_tables_merge_mode_cookie_key',
+    mergeModeCookieTime: 31536000e3, // 1 year in milliseconds
 
     // ---------------------------------------
 
@@ -30,7 +31,7 @@ ControlPanelDatabaseGridHandler = Class.create(GridHandler, {
 
     setMergeMode: function(value)
     {
-        setCookie(this.mergeModeCookieKey, value, 3*365, '/');
+        setCookie(this.mergeModeCookieKey, value, this.mergeModeCookieTime, '/');
     },
 
     // ---------------------------------------

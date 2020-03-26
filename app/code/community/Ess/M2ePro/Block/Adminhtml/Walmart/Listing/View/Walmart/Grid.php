@@ -6,8 +6,6 @@
  * @license    Commercial use is forbidden
  */
 
-use Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_Processor as ListProcessor;
-
 class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View_Walmart_Grid
     extends Ess_M2ePro_Block_Adminhtml_Magento_Product_Grid_Abstract
 {
@@ -20,6 +18,8 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View_Walmart_Grid
 
     protected $_hideSwitchToIndividualConfirm;
     protected $_hideSwitchToParentConfirm;
+
+    protected $_parentAndChildReviseScheduledCache = array();
 
     //########################################
 
@@ -121,12 +121,10 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View_Walmart_Grid
                 'ean'                            => 'ean',
                 'isbn'                           => 'isbn',
                 'wpid'                           => 'wpid',
-                'channel_url'                    => 'channel_url',
                 'item_id'                        => 'item_id',
                 'online_qty'                     => 'online_qty',
                 'online_price'                   => 'online_price',
                 'is_variation_parent'            => 'is_variation_parent',
-                'is_details_data_changed'        => 'is_details_data_changed',
                 'is_online_price_invalid'        => 'is_online_price_invalid',
                 'online_start_date'              => 'online_start_date',
                 'online_end_date'                => 'online_end_date',
@@ -145,6 +143,38 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View_Walmart_Grid
         $result = parent::_prepareCollection();
 
         return $result;
+    }
+
+    protected function _afterLoadCollection()
+    {
+        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $collection */
+        $collection = Mage::helper('M2ePro/Component_Walmart')->getCollection('Listing_Product');
+        $collection->getSelect()->join(
+            array('lps' => Mage::getResourceModel('M2ePro/Listing_Product_ScheduledAction')->getMainTable()),
+            'lps.listing_product_id=main_table.id',
+            array()
+        );
+
+        $collection->addFieldToFilter('is_variation_parent', 0);
+        $collection->addFieldToFilter(
+            'variation_parent_id', array('in' => $this->getCollection()->getColumnValues('id'))
+        );
+        $collection->addFieldToFilter('lps.action_type', Ess_M2ePro_Model_Listing_Product::ACTION_REVISE);
+
+        $collection->getSelect()->reset(Zend_Db_Select::COLUMNS);
+        $collection->getSelect()->columns(
+            array(
+                'variation_parent_id' => 'second_table.variation_parent_id',
+                'count'               => new Zend_Db_Expr('COUNT(lps.id)')
+            )
+        );
+        $collection->getSelect()->group('variation_parent_id');
+
+        foreach ($collection->getItems() as $item) {
+            $this->_parentAndChildReviseScheduledCache[$item->getData('variation_parent_id')] = true;
+        }
+
+        return parent::_afterLoadCollection();
     }
 
     protected function _prepareColumns()
@@ -250,9 +280,12 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View_Walmart_Grid
         );
 
         $listingData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
-        if (Mage::helper('M2ePro/View_Walmart')->isResetFilterShouldBeShown($listingData['id'])) {
-            $statusColumn['filter'] = 'M2ePro/adminhtml_walmart_grid_column_filter_status';
-        }
+        $isResetFilterShouldBeShown = Mage::helper('M2ePro/View_Walmart')->isResetFilterShouldBeShown(
+            'listing_id',
+            $listingData['id']
+        );
+
+        $isResetFilterShouldBeShown && $statusColumn['filter'] = 'M2ePro/adminhtml_walmart_grid_column_filter_status';
 
         $this->addColumn('status', $statusColumn);
 
@@ -326,16 +359,13 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View_Walmart_Grid
 
         // ---------------------------------------
 
-        $listingData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
-        if (Mage::helper('M2ePro/View_Walmart')->isResetFilterShouldBeShown($listingData['id'])) {
-            $this->getMassactionBlock()->addItem(
-                'resetProducts', array(
+        $this->getMassactionBlock()->addItem(
+            'resetProducts', array(
                 'label'    => Mage::helper('M2ePro')->__('Reset Inactive (Blocked) Item(s)'),
                 'url'      => '',
                 'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
-                ), 'other'
-            );
-        }
+            ), 'other'
+        );
 
         return parent::_prepareMassaction();
     }
@@ -587,29 +617,13 @@ HTML;
 HTML;
         }
 
-        if (!$isVariationParent &&
-            ($row->getData('is_details_data_changed') || $row->getData('is_online_price_invalid')))
-        {
-            $msg = '';
+        if (!$isVariationParent && $row->getData('is_online_price_invalid')) {
 
-            if ($row->getData('is_details_data_changed')) {
-                $message = <<<HTML
-Item Details, e.g. Product Tax Code, Lag Time, Shipping, Description, Image, Category, etc. settings, need to be
-updated on Walmart.<br>
-To submit new Item Details, apply the Revise action. Use the Advanced Filter to select all Items with the Details
-changes and update them in bulk.
-HTML;
-                $msg .= '<p>'.Mage::helper('M2ePro')->__($message).'</p>';
-            }
-
-            if ($row->getData('is_online_price_invalid')) {
-                $message = <<<HTML
+            $message = <<<HTML
 Item Price violates Walmart pricing rules. Please adjust the Item Price to comply with the Walmart requirements.<br>
 Once the changes are applied, Walmart Item will become Active automatically.
 HTML;
-                $msg .= '<p>'.Mage::helper('M2ePro')->__($message).'</p>';
-            }
-
+            $msg = '<p>'.Mage::helper('M2ePro')->__($message).'</p>';
             if (empty($msg)) {
                 return $value;
             }
@@ -639,7 +653,13 @@ HTML;
 
         $productId = $row->getData('id');
         $gtinHtml = Mage::helper('M2ePro')->escapeHtml($gtin);
-        $channelUrl = $row->getData('channel_url');
+        $listingData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
+
+        $walmartHelper = Mage::helper('M2ePro/Component_Walmart');
+        $channelUrl = $walmartHelper->getItemUrl(
+            $row->getData($walmartHelper->getIdentifierForItemUrl($listingData['marketplace_id'])),
+            $listingData['marketplace_id']
+        );
 
         if (!empty($channelUrl)) {
             $gtinHtml = <<<HTML
@@ -1069,7 +1089,8 @@ HTML;
                 $reviseParts = array();
 
                 $additionalData = $scheduledAction->getAdditionalData();
-                if (!empty($additionalData['configurator'])) {
+                if (!empty($additionalData['configurator']) &&
+                    !isset($this->_parentAndChildReviseScheduledCache[$row->getData('id')])) {
                     $configurator = Mage::getModel('M2ePro/Walmart_Listing_Product_Action_Configurator');
                     $configurator->setData($additionalData['configurator']);
 
@@ -1254,8 +1275,21 @@ SQL;
         }
 
         if (is_array($value) && isset($value['is_reset'])) {
-            $collection->addFieldToFilter($index, Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED)
-                       ->addFieldToFilter('is_online_price_invalid', 0);
+            /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $childProducts */
+            $collectionVariationParent = Mage::helper('M2ePro/Component_Walmart')->getCollection('Listing_Product');
+            $collectionVariationParent->addFieldToFilter('status', Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED);
+            $collectionVariationParent->addFieldToFilter('variation_parent_id', array('notnull' => true));
+            $collectionVariationParent->getSelect()->reset(Zend_Db_Select::COLUMNS);
+            $collectionVariationParent->getSelect()->columns(array('second_table.variation_parent_id'));
+
+            $variationParentIds = $collectionVariationParent->getColumnValues('variation_parent_id');
+
+            $collection->addFieldToFilter(
+                array(
+                    array('attribute' => $index, 'eq' => Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED),
+                    array('attribute' => 'id', 'in' => $variationParentIds)
+                )
+            )->addFieldToFilter('is_online_price_invalid', 0);
         }
     }
 

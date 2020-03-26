@@ -47,15 +47,10 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion651_NewProcessing extends Ess_
 
     protected function createStructure()
     {
-        if ($this->_installer->getTablesObject()->isExists('locked_object') &&
-            !$this->_installer->getTablesObject()->isExists('processing_lock')
-        ) {
-            $this->_installer->run(
-                <<<SQL
-RENAME TABLE `m2epro_locked_object` TO `m2epro_processing_lock`;
-SQL
-            );
-        }
+        $this->_installer->getTablesObject()->renameTable(
+            'm2epro_locked_object',
+            'm2epro_processing_lock'
+        );
 
         $this->_installer->getTableModifier('processing_lock')
                          ->addColumn('processing_id', 'INT(11) UNSIGNED NOT NULL', null, 'id', true, false)

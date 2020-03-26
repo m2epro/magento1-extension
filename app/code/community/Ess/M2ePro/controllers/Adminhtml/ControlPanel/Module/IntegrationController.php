@@ -12,113 +12,6 @@ class Ess_M2ePro_Adminhtml_ControlPanel_Module_IntegrationController
     //########################################
 
     /**
-     * @title "Revise Total"
-     * @description "Full Force Revise"
-     */
-    public function reviseTotalAction()
-    {
-        $html = '';
-        foreach (Mage::helper('M2ePro/Component')->getEnabledComponents() as $component) {
-            $reviseAllStartDate = Mage::helper('M2ePro/Module')->getSynchronizationConfig()->getGroupValue(
-                "/{$component}/templates/synchronization/revise/total/", 'start_date'
-            );
-
-            $reviseAllEndDate = Mage::helper('M2ePro/Module')->getSynchronizationConfig()->getGroupValue(
-                "/{$component}/templates/synchronization/revise/total/", 'end_date'
-            );
-
-            $reviseAllInProcessingState = Mage::helper('M2ePro/Module')->getSynchronizationConfig()->getGroupValue(
-                "/{$component}/templates/synchronization/revise/total/", 'last_listing_product_id'
-            ) !== null;
-
-            $urlHelper = Mage::helper('adminhtml');
-
-            $runNowUrl = $urlHelper->getUrl('*/*/processReviseTotal', array('component' => $component));
-            $resetUrl = $urlHelper->getUrl('*/*/resetReviseTotal', array('component' => $component));
-
-            $html .= <<<HTML
-<div>
-    <span style="display:inline-block; width: 100px;">{$component}</span>
-    <span style="display:inline-block; width: 150px;">
-        <button onclick="window.location='{$runNowUrl}'">turn on</button>
-        <button onclick="window.location='{$resetUrl}'">stop</button>
-    </span>
-    <span id="{$component}_start_date" style="color: indianred; display: none;">
-        Started at - {$reviseAllStartDate}
-    </span>
-    <span id="{$component}_end_date" style="color: green; display: none;">
-        Finished at - {$reviseAllEndDate}
-    </span>
-</div>
-
-HTML;
-            $html.= "<script type=\"text/javascript\">";
-            if ($reviseAllInProcessingState) {
-                $html .= "document.getElementById('{$component}_start_date').style.display = 'inline-block';";
-            } else {
-                if ($reviseAllEndDate) {
-                    $html .= "document.getElementById('{$component}_end_date').style.display = 'inline-block';";
-                }
-            }
-
-            $html.= "</script>";
-        }
-
-        return $this->getResponse()->setBody($html);
-    }
-
-    /**
-     * @title "Process Revise Total for Component"
-     * @hidden
-    */
-    public function processReviseTotalAction()
-    {
-        $component = $this->getRequest()->getParam('component', false);
-
-        if (!$component) {
-            $this->_getSession()->addError('Component is not presented.');
-            $this->_redirectUrl(Mage::helper('M2ePro/View_ControlPanel')->getPageModuleTabUrl());
-        }
-
-        Mage::helper('M2ePro/Module')->getSynchronizationConfig()->setGroupValue(
-            "/{$component}/templates/synchronization/revise/total/", 'start_date',
-            Mage::helper('M2ePro')->getCurrentGmtDate()
-        );
-
-        Mage::helper('M2ePro/Module')->getSynchronizationConfig()->setGroupValue(
-            "/{$component}/templates/synchronization/revise/total/", 'end_date', null
-        );
-
-        Mage::helper('M2ePro/Module')->getSynchronizationConfig()->setGroupValue(
-            "/{$component}/templates/synchronization/revise/total/", 'last_listing_product_id', 0
-        );
-
-        $this->_redirect('*/*/reviseTotal');
-    }
-
-    /**
-     * @title "Reset Revise Total for Component"
-     * @hidden
-     */
-    public function resetReviseTotalAction()
-    {
-        $component = $this->getRequest()->getParam('component', false);
-
-        if (!$component) {
-            $this->_getSession()->addError('Component is not presented.');
-            $this->_redirectUrl(Mage::helper('M2ePro/View_ControlPanel')->getPageModuleTabUrl());
-        }
-
-        Mage::helper('M2ePro/Module')->getSynchronizationConfig()->setGroupValue(
-            "/{$component}/templates/revise/synchronization/total/", 'last_listing_product_id', null
-        );
-
-        $this->_redirect('*/*/reviseTotal');
-    }
-
-    //########################################
-
-    /**
      * @title "Print Request Data"
      * @description "Print [List/Relist/Revise] Request Data"
      */
@@ -135,9 +28,6 @@ HTML;
 
             if ($componentMode == 'ebay') {
 
-                /** @var Ess_M2ePro_Model_Ebay_Listing_Product $elp */
-                $elp = $lp->getChildObject();
-
                 /** @var Ess_M2ePro_Model_Ebay_Listing_Product_Action_Configurator $configurator */
                 $configurator = Mage::getModel('M2ePro/Ebay_Listing_Product_Action_Configurator');
 
@@ -145,25 +35,6 @@ HTML;
                 $request = Mage::getModel("M2ePro/Ebay_Listing_Product_Action_Type_{$requestType}_Request");
                 $request->setListingProduct($lp);
                 $request->setConfigurator($configurator);
-
-                if ($requestType == 'Revise') {
-                    $outOfStockControlCurrentState  = $elp->getOutOfStockControl();
-                    $outOfStockControlTemplateState = $elp->getEbaySellingFormatTemplate()->getOutOfStockControl();
-
-                    if (!$outOfStockControlCurrentState && $outOfStockControlTemplateState) {
-                        $outOfStockControlCurrentState = true;
-                    }
-
-                    $outOfStockControlResult = $outOfStockControlCurrentState ||
-                                               $elp->getEbayAccount()->getOutOfStockControl();
-
-                    $request->setParams(
-                        array(
-                        'out_of_stock_control_current_state' => $outOfStockControlCurrentState,
-                        'out_of_stock_control_result'        => $outOfStockControlResult,
-                        )
-                    );
-                }
 
                 return $this->getResponse()->setBody('<pre>'.print_r($request->getData(), true).'</pre>');
             }
@@ -182,9 +53,9 @@ HTML;
                 if ($requestType == 'List') {
                     $request->setCachedData(
                         array(
-                                                    'sku'        => 'placeholder',
-                                                    'general_id' => 'placeholder',
-                                                    'list_type'  => 'placeholder'
+                            'sku'        => 'placeholder',
+                            'general_id' => 'placeholder',
+                            'list_type'  => 'placeholder'
                         )
                     );
                 }

@@ -27,33 +27,4 @@ class Ess_M2ePro_Model_Ebay_Connector_Item_Revise_Requester
     }
 
     //########################################
-
-    public function process()
-    {
-        $this->initOutOfStockControlLogic();
-        parent::process();
-    }
-
-    //########################################
-
-    protected function initOutOfStockControlLogic()
-    {
-        /** @var Ess_M2ePro_Model_Ebay_Listing_Product $ebayListingProduct */
-        $ebayListingProduct = $this->_listingProduct->getChildObject();
-
-        $outOfStockControlCurrentState = $ebayListingProduct->getOutOfStockControl();
-        $outOfStockControlTemplateState = $ebayListingProduct->getEbaySellingFormatTemplate()
-                                                             ->getOutOfStockControl();
-
-        if (!$outOfStockControlCurrentState && $outOfStockControlTemplateState) {
-            $outOfStockControlCurrentState = true;
-        }
-
-        $this->_params['out_of_stock_control_current_state'] = $outOfStockControlCurrentState;
-        $this->_params['out_of_stock_control_result']        = $outOfStockControlCurrentState
-                                                               || $ebayListingProduct->getEbayAccount()
-                                                                             ->getOutOfStockControl();
-    }
-
-    //########################################
 }

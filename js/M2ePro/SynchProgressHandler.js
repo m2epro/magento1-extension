@@ -54,42 +54,6 @@ SynchProgressHandler.prototype = Object.extend(new CommonHandler(), {
 
     // ---------------------------------------
 
-    initPageCheckState: function(callBackWhenEnd)
-    {
-        callBackWhenEnd = callBackWhenEnd || '';
-
-        var self = this;
-        new Ajax.Request(M2ePro.url.get('adminhtml_general/synchCheckState'), {
-            method: 'get',
-            asynchronous: true,
-            onSuccess: function(transport) {
-
-                if (transport.responseText == self.stateExecuting) {
-
-                    self.start(
-                        M2ePro.translator.translate('Another Synchronization Is Already Running.'),
-                        M2ePro.translator.translate('Getting information. Please wait ...')
-                    );
-
-                    setTimeout(function() {
-                        self.startGetExecutingInfo(callBackWhenEnd);
-                    },2000);
-
-                } else {
-
-                    self.end();
-
-                    if (callBackWhenEnd != '') {
-                        eval(callBackWhenEnd);
-                    }
-
-                }
-            }
-        });
-    },
-
-    // ---------------------------------------
-
     runTask: function(title, url, components, callBackWhenEnd)
     {
         title = title || '';
@@ -118,73 +82,6 @@ SynchProgressHandler.prototype = Object.extend(new CommonHandler(), {
 
     // ---------------------------------------
 
-    startGetExecutingInfo: function(callBackWhenEnd)
-    {
-        callBackWhenEnd = callBackWhenEnd || '';
-
-        var self = this;
-        new Ajax.Request(M2ePro.url.get('adminhtml_general/synchGetExecutingInfo'), {
-            method:'get',
-            asynchronous: true,
-            onSuccess: function(transport) {
-
-                var data = transport.responseText.evalJSON(true);
-
-                if (data.ajaxExpired && response.ajaxRedirect) {
-
-                    alert(M2ePro.translator.translate('Unauthorized! Please login again.'));
-                    setLocation(response.ajaxRedirect);
-                }
-
-                if (data.mode == self.stateExecuting) {
-
-                    self.progressBarObj.setTitle(data.title);
-                    if (data.percents <= 0) {
-                        self.progressBarObj.setPercents(0,0);
-                    } else if (data.percents >= 100) {
-                        self.progressBarObj.setPercents(100,0);
-                    } else {
-                        self.progressBarObj.setPercents(data.percents,1);
-                    }
-                    self.progressBarObj.setStatus(data.status);
-
-                    self.wrapperObj.lock();
-                    self.loadingMask.setStyle({visibility: 'hidden'});
-
-                    setTimeout(function() {
-                        self.startGetExecutingInfo(callBackWhenEnd);
-                    },3000);
-
-                } else {
-
-                    self.progressBarObj.setPercents(100,0);
-
-                    // ---------------------------------------
-                    setTimeout(function() {
-
-                        if (callBackWhenEnd != '') {
-                            eval(callBackWhenEnd);
-                        } else {
-
-                            new Ajax.Request(M2ePro.url.get('adminhtml_general/synchGetLastResult'), {
-                                method: 'get',
-                                asynchronous: true,
-                                onSuccess: function(transport) {
-                                    self.end();
-                                    self.printFinalMessage(transport.responseText);
-                                    self.addProcessingNowWarning();
-                                }
-                            });
-                        }
-                    },1500);
-                    // ---------------------------------------
-                }
-            }
-        });
-    },
-
-    // ---------------------------------------
-
     printFinalMessage: function(resultType)
     {
         var self = this;
@@ -204,28 +101,6 @@ SynchProgressHandler.prototype = Object.extend(new CommonHandler(), {
             MagentoMessageObj.addSuccess(M2ePro.translator.translate('Synchronization has successfully ended.'));
         }
     },
-
-    // ---------------------------------------
-
-    addProcessingNowWarning: function()
-    {
-        new Ajax.Request(M2ePro.url.get('synchCheckProcessingNow'), {
-            method: 'get',
-            asynchronous: true,
-            onSuccess: function(transport) {
-
-                var messages = transport.responseText.evalJSON().messages;
-
-                if (messages.length < 1) {
-                    return;
-                }
-
-                messages.each(function(message) {
-                    MagentoMessageObj.addWarning(message);
-                });
-            }
-        });
-}
 
     // ---------------------------------------
 });

@@ -620,7 +620,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Preview extends Mage_Adminhtml_Blo
             $this->_ebayListingProduct->getShippingTemplateSource()->getAddress(),
             $this->getCountryHumanTitle($this->_ebayListingProduct->getShippingTemplateSource()->getCountry())
         );
-        return implode($itemLocation, ', ');
+        return implode(', ', $itemLocation);
     }
 
     public function getShippingDispatchTime()
@@ -918,7 +918,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Preview extends Mage_Adminhtml_Blo
     public function isDomesticReturnsAccepted()
     {
         $template = $this->_ebayListingProduct->getReturnTemplate();
-        return $template->getAccepted() === Ess_M2ePro_Model_Ebay_Template_Return::RETURNS_ACCEPTED;
+        return $template->getAccepted() === Ess_M2ePro_Model_Ebay_Template_ReturnPolicy::RETURNS_ACCEPTED;
     }
 
     public function isInternationalReturnsAccepted()
@@ -926,7 +926,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Preview extends Mage_Adminhtml_Blo
         $template = $this->_ebayListingProduct->getReturnTemplate();
 
         return $this->isDomesticReturnsAccepted() &&
-               $template->getInternationalAccepted() === Ess_M2ePro_Model_Ebay_Template_Return::RETURNS_ACCEPTED;
+               $template->getInternationalAccepted() === Ess_M2ePro_Model_Ebay_Template_ReturnPolicy::RETURNS_ACCEPTED;
     }
 
     //########################################

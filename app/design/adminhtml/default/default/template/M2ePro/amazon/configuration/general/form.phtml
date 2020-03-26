@@ -18,10 +18,6 @@ $businessMode = Mage::helper('M2ePro/Component_Amazon_Business')->isEnabled();
         'formSubmit' => $this->getUrl('M2ePro/adminhtml_amazon_general/save'),
     )); ?>);
 
-    M2ePro.translator.add(<?php echo json_encode(array(
-        'Settings have been saved.' => Mage::helper('M2ePro')->__('Settings have been saved.'),
-    )); ?>);
-
     Event.observe(window, 'load', function() {
         editForm = new varienForm('<?php echo $this->getForm()->getId(); ?>', '<?php echo $this->getValidationUrl(); ?>');
 

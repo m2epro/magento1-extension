@@ -44,7 +44,7 @@ $showWarning = false;
 $magentoAttributeHelper = Mage::helper('M2ePro/Magento_Attribute');
 
 $attributesByInputTypes = array(
-    'text' => $magentoAttributeHelper->filterByInputTypes($this->getData('general_attributes'), array('text')),
+    'text' => $magentoAttributeHelper->filterByInputTypes($this->getData('all_attributes'), array('text')),
 );
 
 ?>

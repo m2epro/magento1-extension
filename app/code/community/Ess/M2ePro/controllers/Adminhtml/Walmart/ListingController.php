@@ -377,29 +377,16 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
             return $this->getResponse()->setBody('You should select Products');
         }
 
-        $params['status_changer'] = Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_USER;
-
-        $listingsProductsIds = explode(',', $listingsProductsIds);
-
-        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $listingsProductsCollection */
-        $listingsProductsCollection = Mage::helper('M2ePro/Component_Walmart')->getCollection('Listing_Product');
-        $listingsProductsCollection->addFieldToFilter('id', $listingsProductsIds);
+        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $productsCollection */
+        $productsCollection = Mage::helper('M2ePro/Component_Walmart')->getCollection('Listing_Product');
+        $productsCollection->addFieldToFilter('id', explode(',', $listingsProductsIds));
 
         /** @var Ess_M2ePro_Model_Listing_Product[] $listingsProducts */
-        $listingsProducts = $listingsProductsCollection->getItems();
+        $listingsProducts = $productsCollection->getItems();
 
         $childListingsProducts = array();
 
         foreach ($listingsProducts as $index => $listingProduct) {
-            if (in_array(
-                $action, array(Ess_M2ePro_Model_Listing_Product::ACTION_STOP,
-                Ess_M2ePro_Model_Listing_Product::ACTION_DELETE)
-            ) &&
-                !empty($params['remove'])
-            ) {
-                continue;
-            }
-
             /** @var Ess_M2ePro_Model_Walmart_Listing_Product $walmartListingProduct */
             $walmartListingProduct = $listingProduct->getChildObject();
 
@@ -415,15 +402,34 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
                 continue;
             }
 
-            unset($listingsProducts[$index]);
+            if ($action != Ess_M2ePro_Model_Listing_Product::ACTION_REVISE) {
+                unset($listingsProducts[$index]);
+            }
 
             $childListingsProducts = array_merge($childListingsProducts, $tempChildListingsProducts);
         }
 
         $listingsProducts = array_merge($listingsProducts, $childListingsProducts);
-
         $logsActionId = Mage::getResourceModel('M2ePro/Listing_Log')->getNextActionId();
 
+        $this->checkLocking($listingsProducts, $logsActionId, $action);
+        if (empty($listingsProducts)) {
+            return Mage::helper('M2ePro')->jsonEncode(array('result' => 'error', 'action_id' => $logsActionId));
+        }
+
+        $this->createUpdateScheduledActions(
+            $listingsProducts,
+            $action,
+            $params
+        );
+
+        return Mage::helper('M2ePro')->jsonEncode(array('result' => 'success', 'action_id' => $logsActionId));
+    }
+
+    //########################################
+
+    protected function checkLocking(&$listingsProducts, $logsActionId, $action)
+    {
         foreach ($listingsProducts as $index => $listingProduct) {
             $lockManager = Mage::getModel(
                 'M2ePro/Listing_Product_LockManager', array('listing_product' => $listingProduct)
@@ -436,108 +442,56 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
                 unset($listingsProducts[$index]);
             }
         }
+    }
 
-        if (empty($listingsProducts)) {
-            return $this->getResponse()->setBody(
-                Mage::helper('M2ePro')->jsonEncode(
-                    array(
-                    'result'    => 'error',
-                    'action_id' => $logsActionId
-                    )
-                )
-            );
-        }
-
-        if (in_array(
-            $action, array(Ess_M2ePro_Model_Listing_Product::ACTION_STOP,
-            Ess_M2ePro_Model_Listing_Product::ACTION_DELETE)
-        ) &&
-            !empty($params['remove'])
-        ) {
-            foreach ($listingsProducts as $index => $listingProduct) {
-                if ($action == Ess_M2ePro_Model_Listing_Product::ACTION_DELETE && !$listingProduct->isNotListed()) {
-                    continue;
-                }
-
-                if ($action == Ess_M2ePro_Model_Listing_Product::ACTION_STOP && $listingProduct->isStoppable()) {
-                    continue;
-                }
-
-                $removeHandler = Mage::getModel(
-                    'M2ePro/Walmart_Listing_Product_RemoveHandler', array('listing_product' => $listingProduct)
-                );
-                $removeHandler->process();
-
-                unset($listingsProducts[$index]);
-            }
-        }
-
-        if (empty($listingsProducts)) {
-            return $this->getResponse()->setBody(
-                Mage::helper('M2ePro')->jsonEncode(
-                    array(
-                    'result' => 'success'
-                    )
-                )
-            );
-        }
-
+    protected function createUpdateScheduledActions(&$listingsProducts, $action, array $params)
+    {
         $listingsProductsIds = array();
-
         foreach ($listingsProducts as $listingProduct) {
             $listingsProductsIds[] = $listingProduct->getId();
         }
 
-        $existedScheduledActionsCollection = Mage::getResourceModel(
-            'M2ePro/Listing_Product_ScheduledAction_Collection'
-        );
-        $existedScheduledActionsCollection->addFieldToFilter('listing_product_id', $listingsProductsIds);
-
-        $additionalData = array(
-            'params' => $params,
-        );
-        $tag = null;
-
-        if ($action == Ess_M2ePro_Model_Listing_Product::ACTION_REVISE) {
-            $configurator = Mage::getModel('M2ePro/Walmart_Listing_Product_Action_Configurator');
-
-            $configurator->enableAll();
-            $tag = '/qty/lag_time/price/promotions/details/';
-
-            $additionalData['configurator'] = $configurator->getData();
-        }
+        $existedScheduled = Mage::getResourceModel('M2ePro/Listing_Product_ScheduledAction_Collection');
+        $existedScheduled->addFieldToFilter('listing_product_id', $listingsProductsIds);
 
         $scheduledActionManager = Mage::getModel('M2ePro/Listing_Product_ScheduledAction_Manager');
 
         foreach ($listingsProducts as $listingProduct) {
             $scheduledAction = Mage::getModel('M2ePro/Listing_Product_ScheduledAction');
             $scheduledAction->setData(
-                array(
-                'listing_product_id' => $listingProduct->getId(),
-                'component'          => Ess_M2ePro_Helper_Component_Walmart::NICK,
-                'action_type'        => $action,
-                'is_force'           => true,
-                'tag'                => $tag,
-                'additional_data'    => Mage::helper('M2ePro')->jsonEncode($additionalData),
-                )
+                $this->createUpdateScheduledActionsDataCallback($listingProduct, $action, $params)
             );
 
-            $item = $existedScheduledActionsCollection->getItemByColumnValue(
-                'listing_product_id', $listingProduct->getId()
-            );
-            if ($item) {
+            if ($existedScheduled->getItemByColumnValue('listing_product_id', $listingProduct->getId())) {
                 $scheduledActionManager->updateAction($scheduledAction);
             } else {
                 $scheduledActionManager->addAction($scheduledAction);
             }
         }
+    }
 
-        return $this->getResponse()->setBody(
-            Mage::helper('M2ePro')->jsonEncode(
-                array(
-                'result' => 'success'
-                )
-            )
+    protected function createUpdateScheduledActionsDataCallback($listingProduct, $action, array $params)
+    {
+        $tag = null;
+        $params['status_changer'] = Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_USER;
+        $additionalData = array('params' => $params,);
+
+        if ($action == Ess_M2ePro_Model_Listing_Product::ACTION_REVISE) {
+            /** @var Ess_M2ePro_Model_Walmart_Listing_Product_Action_Configurator $configurator */
+            $configurator = Mage::getModel('M2ePro/Walmart_Listing_Product_Action_Configurator');
+            $configurator->enableAll();
+            $tag = '/qty/lag_time/price/promotions/details/';
+
+            $additionalData['configurator'] = $configurator->getData();
+        }
+
+        return array(
+            'listing_product_id' => $listingProduct->getId(),
+            'component'          => Ess_M2ePro_Helper_Component_Walmart::NICK,
+            'action_type'        => $action,
+            'is_force'           => true,
+            'tag'                => $tag,
+            'additional_data'    => Mage::helper('M2ePro')->jsonEncode($additionalData)
         );
     }
 
@@ -573,11 +527,46 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
 
     public function runStopAndRemoveProductsAction()
     {
-        return $this->getResponse()->setBody(
-            $this->scheduleAction(
-                Ess_M2ePro_Model_Listing_Product::ACTION_STOP, array('remove' => true)
-            )
+        if (!$listingsProductsIds = $this->getRequest()->getParam('selected_products')) {
+            return Mage::helper('M2ePro')->__('You should select Products');
+        }
+
+        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $productsCollection */
+        $productsCollection = Mage::helper('M2ePro/Component_Walmart')->getCollection('Listing_Product');
+        $productsCollection->addFieldToFilter('id', explode(',', $listingsProductsIds));
+
+        /** @var Ess_M2ePro_Model_Listing_Product[] $listingsProducts */
+        $listingsProducts = $productsCollection->getItems();
+        $logsActionId = Mage::getModel('M2ePro/Listing_Log')->getResource()->getNextActionId();
+
+        $this->checkLocking($listingsProducts, $logsActionId, Ess_M2ePro_Model_Listing_Product::ACTION_STOP);
+        if (empty($listingsProducts)) {
+            return Mage::helper('M2ePro')->jsonEncode(array('result' => 'error', 'action_id' => $logsActionId));
+        }
+
+        foreach ($listingsProducts as $index => $listingProduct) {
+            if (!$listingProduct->isStoppable()) {
+                /** @var Ess_M2ePro_Model_Walmart_Listing_Product_RemoveHandler $removeHandler */
+                $removeHandler = Mage::getModel(
+                    'M2ePro/Walmart_Listing_Product_RemoveHandler', array('listing_product' => $listingProduct)
+                );
+                $removeHandler->process();
+
+                unset($listingsProducts[$index]);
+            }
+        }
+
+        if (empty($listingsProducts)) {
+            return Mage::helper('M2ePro')->jsonEncode(array('result' => 'success', 'action_id' => $logsActionId));
+        }
+
+        $this->createUpdateScheduledActions(
+            $listingsProducts,
+            Ess_M2ePro_Model_Listing_Product::ACTION_STOP,
+            array('remove' => true)
         );
+
+        return Mage::helper('M2ePro')->jsonEncode(array('result' => 'success', 'action_id' => $logsActionId));
     }
 
     public function runDeleteAndRemoveProductsAction()
@@ -586,16 +575,13 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
             return $this->getResponse()->setBody('You should select Products');
         }
 
-        $logsActionId = Mage::getResourceModel('M2ePro/Listing_Log')->getNextActionId();
-
-        $listingsProductsIds = explode(',', $listingsProductsIds);
-
-        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $listingsProductsCollection */
-        $listingsProductsCollection = Mage::helper('M2ePro/Component_Walmart')->getCollection('Listing_Product');
-        $listingsProductsCollection->addFieldToFilter('id', $listingsProductsIds);
+        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $productsCollection */
+        $productsCollection = Mage::helper('M2ePro/Component_Walmart')->getCollection('Listing_Product');
+        $productsCollection->addFieldToFilter('id', explode(',', $listingsProductsIds));
 
         /** @var Ess_M2ePro_Model_Listing_Product[] $listingsProducts */
-        $listingsProducts = $listingsProductsCollection->getItems();
+        $listingsProducts = $productsCollection->getItems();
+        $logsActionId = Mage::getResourceModel('M2ePro/Listing_Log')->getNextActionId();
 
         /** @var Ess_M2ePro_Model_Listing_Product[] $parentListingsProducts */
         $parentListingsProducts = array();
@@ -708,11 +694,19 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
 
         $listingsProductsIds = explode(',', $productsIds);
 
+        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $childProducts */
+        $childProducts = Mage::helper('M2ePro/Component_Walmart')->getCollection('Listing_Product');
+        $childProducts->addFieldToFilter('variation_parent_id', $listingsProductsIds);
+        $childProducts->getSelect()->reset(Zend_Db_Select::COLUMNS);
+        $childProducts->getSelect()->columns(array('second_table.listing_product_id'));
+
+        $childProductsIds = $childProducts->getColumnValues('listing_product_id');
+
         /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $listingsProducts */
         $listingsProducts = Mage::helper('M2ePro/Component_Walmart')->getCollection('Listing_Product');
-        $listingsProducts->addFieldToFilter('listing_product_id', $listingsProductsIds);
+        $listingsProducts->addFieldToFilter('listing_product_id', array_merge($childProductsIds, $listingsProductsIds));
 
-        if ($listingsProducts->getSize() <= 0) {
+        if (!$listingsProducts->getSize()) {
             return $this->getResponse()->setBody('No products provided.');
         }
 
@@ -724,11 +718,13 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
         $logger->setAction(Ess_M2ePro_Model_Listing_Log::ACTION_RESET_BLOCKED_PRODUCT);
         $logger->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_USER);
 
+        $instructionsData = array();
         foreach ($listingsProducts->getItems() as $index => $listingProduct) {
             /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
 
-            if ($listingProduct->getChildObject()->isOnlinePriceInvalid() ||
-                $listingProduct->getStatus() != Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED) {
+            $isVariationParent = (bool)$listingProduct->getChildObject()->getData('is_variation_parent');
+            if (!$isVariationParent && ($listingProduct->getChildObject()->isOnlinePriceInvalid() ||
+                    $listingProduct->getStatus() != Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED)) {
                 $result = 'error';
                 $message = Mage::getModel('M2ePro/Connector_Connection_Response_Message');
                 $message->initFromPreparedData(
@@ -753,6 +749,14 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
                 continue;
             }
 
+            $instructionsData[] = array(
+                'listing_product_id' => $index,
+                'component'          => Ess_M2ePro_Helper_Component_Walmart::NICK,
+                'type'               => Ess_M2ePro_Model_Listing::INSTRUCTION_TYPE_PRODUCT_ADDED,
+                'initiator'          => Ess_M2ePro_Model_Listing::INSTRUCTION_INITIATOR_ADDING_PRODUCT,
+                'priority'           => 30,
+            );
+
             $listingProduct->addData(
                 array(
                 'status'                  => Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED,
@@ -760,7 +764,6 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
                 'online_price'            => null,
                 'online_promotions'       => null,
                 'online_details'          => null,
-                'is_details_data_changed' => 0,
                 'is_online_price_invalid' => 0,
                 'status_change_reasons'   => null,
                 'is_missed_on_channel'    => 0,
@@ -777,17 +780,6 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
                 $parentType = $parentListingProduct->getChildObject()->getVariationManager()->getTypeModel();
                 $parentType->getProcessor()->process();
             }
-        }
-
-        $instructionsData = array();
-        foreach ($listingsProductsIds as $listingProductId) {
-            $instructionsData[] = array(
-                'listing_product_id' => $listingProductId,
-                'component'          => Ess_M2ePro_Helper_Component_Walmart::NICK,
-                'type'               => Ess_M2ePro_Model_Listing::INSTRUCTION_TYPE_PRODUCT_ADDED,
-                'initiator'          => Ess_M2ePro_Model_Listing::INSTRUCTION_INITIATOR_ADDING_PRODUCT,
-                'priority'           => 30,
-            );
         }
 
         Mage::getResourceModel('M2ePro/Listing_Product_Instruction')->add($instructionsData);
@@ -1253,22 +1245,6 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
 
         $this->setCategoryTemplateFroProductsByChunks($productsIds, $templateId);
 
-        /** @var Ess_M2ePro_Model_Walmart_Template_Category $template */
-        $template = Mage::getModel('M2ePro/Walmart_Template_Category')->load($templateId);
-
-        $snapshotBuilder = Mage::getModel('M2ePro/Walmart_Template_Category_SnapshotBuilder');
-        $snapshotBuilder->setModel($template);
-
-        $diff = Mage::getModel('M2ePro/Walmart_Template_Category_Diff');
-        $diff->setOldSnapshot(array());
-        $diff->setNewSnapshot($snapshotBuilder->getSnapshot());
-
-        $listingsProductsCollection = Mage::getResourceModel('M2ePro/Listing_Product_Collection');
-        $listingsProductsCollection->addFieldToFilter('id', $productsIds);
-
-        $changeProcessor = Mage::getModel('M2ePro/Walmart_Template_Category_ChangeProcessor');
-        $changeProcessor->process($diff, $listingsProductsCollection->getData());
-
         $messages[] = Mage::helper('M2ePro')->__(
             'Category Policy was successfully assigned to %count% Products',
             count($productsIds)
@@ -1452,8 +1428,8 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
             return $this->getResponse()->setBody(
                 Mage::helper('M2ePro')->jsonEncode(
                     array(
-                    'result' => false,
-                    'message' => Mage::helper('M2ePro')->__('Wrong parameters.')
+                        'result' => false,
+                        'message' => Mage::helper('M2ePro')->__('Wrong parameters.')
                     )
                 )
             );
@@ -1465,8 +1441,8 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
             return $this->getResponse()->setBody(
                 Mage::helper('M2ePro')->jsonEncode(
                     array(
-                    'result' => false,
-                    'message' => Mage::helper('M2ePro')->__('Listing product does not exist.')
+                        'result' => false,
+                        'message' => Mage::helper('M2ePro')->__('Listing product does not exist.')
                     )
                 )
             );
@@ -1479,29 +1455,13 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
         $lockManager->setLogsAction($this->getLogsAction(Ess_M2ePro_Model_Listing_Product::ACTION_REVISE));
 
         if ($lockManager->checkLocking()) {
-            $actionId = Mage::getResourceModel('M2ePro/Listing_Log')->getNextActionId();
-
-            Mage::getModel('M2ePro/Walmart_Listing_Log')->addProductMessage(
-                $listingProduct->getListingId(),
-                $listingProduct->getProductId(),
-                $listingProduct->getId(),
-                Ess_M2ePro_Helper_Data::INITIATOR_USER,
-                $actionId,
-                $this->getLogsAction(Ess_M2ePro_Model_Listing_Product::ACTION_REVISE),
-                Mage::helper('M2ePro')->__(
-                    'Another Action is being processed. Try again when the Action is completed.'
-                ),
-                Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
-                Ess_M2ePro_Model_Log_Abstract::PRIORITY_MEDIUM
-            );
-
             return $this->getResponse()->setBody(
                 Mage::helper('M2ePro')->jsonEncode(
                     array(
-                    'result'  => false,
-                    'message' => Mage::helper('M2ePro')->__(
-                        'Another Action is being processed. Try again when the Action is completed.'
-                    )
+                        'result'  => false,
+                        'message' => Mage::helper('M2ePro')->__(
+                            'Another Action is being processed. Try again when the Action is completed.'
+                        )
                     )
                 )
             );
@@ -1512,67 +1472,54 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
             $this->getResponse()->setBody(
                 Mage::helper('M2ePro')->jsonEncode(
                     array(
-                    'result' => true,
-                    'message' => ''
+                        'result' => true,
+                        'message' => ''
                     )
                 )
             );
         }
 
-        try {
-            $configurator = Mage::getModel('M2ePro/Walmart_Listing_Product_Action_Configurator');
+        $configurator = Mage::getModel('M2ePro/Walmart_Listing_Product_Action_Configurator');
+        $configurator->disableAll();
+        $configurator->allowDetails();
 
-            $configurator->disableAll();
-            $configurator->allowDetails();
-
-            $additionalData = array(
-                'params' => array(
-                    'changed_sku'    => $value,
-                    'status_changer' => Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_USER
-                ),
-                'configurator' => $configurator->getData(),
-            );
-
-            $scheduledActionManager = Mage::getModel('M2ePro/Listing_Product_ScheduledAction_Manager');
-
-            $scheduledAction = Mage::getModel('M2ePro/Listing_Product_ScheduledAction');
-            $scheduledAction->setData(
-                array(
+        $scheduledAction = Mage::getModel('M2ePro/Listing_Product_ScheduledAction');
+        $scheduledAction->setData(
+            array(
                 'listing_product_id' => $listingProduct->getId(),
                 'component'          => Ess_M2ePro_Helper_Component_Walmart::NICK,
                 'action_type'        => Ess_M2ePro_Model_Listing_Product::ACTION_REVISE,
                 'is_force'           => true,
                 'tag'                => '/details/',
-                'additional_data'    => Mage::helper('M2ePro')->jsonEncode($additionalData),
-                )
-            );
-
-            /** @var Ess_M2ePro_Model_Listing_Product_ScheduledAction $existedScheduledAction */
-            $existedScheduledAction = Mage::getModel('M2ePro/Listing_Product_ScheduledAction')->load(
-                $listingProduct->getId(), 'listing_product_id'
-            );
-
-            if ($existedScheduledAction->getId()) {
-                $scheduledActionManager->updateAction($scheduledAction);
-            } else {
-                $scheduledActionManager->addAction($scheduledAction);
-            }
-        } catch (Exception $exception) {
-            return $this->getResponse()->setBody(
-                Mage::helper('M2ePro')->jsonEncode(
+                'additional_data'    => Mage::helper('M2ePro')->jsonEncode(
                     array(
-                    'result' => false,
-                    'message' => $exception->getMessage()
+                        'params' => array(
+                            'changed_sku'    => $value,
+                            'status_changer' => Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_USER
+                        ),
+                        'configurator' => $configurator->getData(),
                     )
-                )
-            );
+                ),
+            )
+        );
+
+        /** @var Ess_M2ePro_Model_Listing_Product_ScheduledAction $existedScheduledAction */
+        $existedScheduledAction = Mage::getModel('M2ePro/Listing_Product_ScheduledAction')->load(
+            $listingProduct->getId(), 'listing_product_id'
+        );
+
+        $scheduledActionManager = Mage::getModel('M2ePro/Listing_Product_ScheduledAction_Manager');
+        if ($existedScheduledAction->getId()) {
+            $scheduledActionManager->updateAction($scheduledAction);
+        } else {
+            $scheduledActionManager->addAction($scheduledAction);
         }
 
         return $this->getResponse()->setBody(
             Mage::helper('M2ePro')->jsonEncode(
                 array(
-                'result' => true,
-                'message' => ''
+                    'result' => true,
+                    'message' => ''
                 )
             )
         );
@@ -1600,8 +1547,8 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
             return $this->getResponse()->setBody(
                 Mage::helper('M2ePro')->jsonEncode(
                     array(
-                    'result' => false,
-                    'message' => Mage::helper('M2ePro')->__('Wrong parameters.')
+                        'result' => false,
+                        'message' => Mage::helper('M2ePro')->__('Wrong parameters.')
                     )
                 )
             );
@@ -1613,8 +1560,8 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
             return $this->getResponse()->setBody(
                 Mage::helper('M2ePro')->jsonEncode(
                     array(
-                    'result' => false,
-                    'message' => Mage::helper('M2ePro')->__('Listing product does not exist.')
+                        'result' => false,
+                        'message' => Mage::helper('M2ePro')->__('Listing product does not exist.')
                     )
                 )
             );
@@ -1627,29 +1574,13 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
         $lockManager->setLogsAction($this->getLogsAction(Ess_M2ePro_Model_Listing_Product::ACTION_REVISE));
 
         if ($lockManager->checkLocking()) {
-            $actionId = Mage::getResourceModel('M2ePro/Listing_Log')->getNextActionId();
-
-            Mage::getModel('M2ePro/Walmart_Listing_Log')->addProductMessage(
-                $listingProduct->getListingId(),
-                $listingProduct->getProductId(),
-                $listingProduct->getId(),
-                Ess_M2ePro_Helper_Data::INITIATOR_USER,
-                $actionId,
-                $this->getLogsAction(Ess_M2ePro_Model_Listing_Product::ACTION_REVISE),
-                Mage::helper('M2ePro')->__(
-                    'Another Action is being processed. Try again when the Action is completed.'
-                ),
-                Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
-                Ess_M2ePro_Model_Log_Abstract::PRIORITY_MEDIUM
-            );
-
             return $this->getResponse()->setBody(
                 Mage::helper('M2ePro')->jsonEncode(
                     array(
-                    'result'  => false,
-                    'message' => Mage::helper('M2ePro')->__(
-                        'Another Action is being processed. Try again when the Action is completed.'
-                    )
+                        'result'  => false,
+                        'message' => Mage::helper('M2ePro')->__(
+                            'Another Action is being processed. Try again when the Action is completed.'
+                        )
                     )
                 )
             );
@@ -1660,70 +1591,58 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
             return $this->getResponse()->setBody(
                 Mage::helper('M2ePro')->jsonEncode(
                     array(
-                    'result' => true,
-                    'message' => ''
+                        'result' => true,
+                        'message' => ''
                     )
                 )
             );
         }
 
-        try {
-            $configurator = Mage::getModel('M2ePro/Walmart_Listing_Product_Action_Configurator');
+        $configurator = Mage::getModel('M2ePro/Walmart_Listing_Product_Action_Configurator');
+        $configurator->disableAll();
+        $configurator->allowDetails();
 
-            $configurator->disableAll();
-            $configurator->allowDetails();
+        $scheduledActionManager = Mage::getModel('M2ePro/Listing_Product_ScheduledAction_Manager');
 
-            $additionalData = array(
-                'params' => array(
-                    'status_changer' => Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_USER,
-                    'changed_identifier' => array(
-                        'type'  => $type,
-                        'value' => $value,
-                    )
-                ),
-                'configurator' => $configurator->getData(),
-            );
-
-            $scheduledActionManager = Mage::getModel('M2ePro/Listing_Product_ScheduledAction_Manager');
-
-            $scheduledAction = Mage::getModel('M2ePro/Listing_Product_ScheduledAction');
-            $scheduledAction->setData(
-                array(
+        $scheduledAction = Mage::getModel('M2ePro/Listing_Product_ScheduledAction');
+        $scheduledAction->setData(
+            array(
                 'listing_product_id' => $listingProduct->getId(),
                 'component'          => Ess_M2ePro_Helper_Component_Walmart::NICK,
                 'action_type'        => Ess_M2ePro_Model_Listing_Product::ACTION_REVISE,
                 'is_force'           => true,
                 'tag'                => '/details/',
-                'additional_data'    => Mage::helper('M2ePro')->jsonEncode($additionalData),
-                )
-            );
-
-            /** @var Ess_M2ePro_Model_Listing_Product_ScheduledAction $existedScheduledAction */
-            $existedScheduledAction = Mage::getModel('M2ePro/Listing_Product_ScheduledAction')->load(
-                $listingProduct->getId(), 'listing_product_id'
-            );
-
-            if ($existedScheduledAction->getId()) {
-                $scheduledActionManager->updateAction($scheduledAction);
-            } else {
-                $scheduledActionManager->addAction($scheduledAction);
-            }
-        } catch (Exception $exception) {
-            return $this->getResponse()->setBody(
-                Mage::helper('M2ePro')->jsonEncode(
+                'additional_data'    => Mage::helper('M2ePro')->jsonEncode(
                     array(
-                    'result' => false,
-                    'message' => $exception->getMessage()
+                        'params' => array(
+                            'status_changer' => Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_USER,
+                            'changed_identifier' => array(
+                                'type'  => $type,
+                                'value' => $value,
+                            )
+                        ),
+                        'configurator' => $configurator->getData(),
                     )
-                )
-            );
+                ),
+            )
+        );
+
+        /** @var Ess_M2ePro_Model_Listing_Product_ScheduledAction $existedScheduledAction */
+        $existedScheduledAction = Mage::getModel('M2ePro/Listing_Product_ScheduledAction')->load(
+            $listingProduct->getId(), 'listing_product_id'
+        );
+
+        if ($existedScheduledAction->getId()) {
+            $scheduledActionManager->updateAction($scheduledAction);
+        } else {
+            $scheduledActionManager->addAction($scheduledAction);
         }
 
         return $this->getResponse()->setBody(
             Mage::helper('M2ePro')->jsonEncode(
                 array(
-                'result' => true,
-                'message' => ''
+                    'result' => true,
+                    'message' => ''
                 )
             )
         );

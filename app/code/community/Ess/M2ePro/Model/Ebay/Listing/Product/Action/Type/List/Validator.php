@@ -108,7 +108,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_List_Validator
         $this->addMessage(
             Mage::helper('M2ePro/Module_Log')->encodeDescription(
                 'There is another Item with the same eBay User ID, '.
-                'Product ID and eBay Site presented in "%listing_title%" (%listing_id%) Listing.',
+                'Product ID and Marketplace presented in "%listing_title%" (%listing_id%) Listing.',
                 array(
                 '!listing_title' => $theSameListingProduct->getListing()->getTitle(),
                 '!listing_id' => $theSameListingProduct->getListing()->getId()

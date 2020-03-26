@@ -58,7 +58,10 @@ class Ess_M2ePro_Block_Adminhtml_Listing_Other_Mapping_Grid extends Mage_Adminht
 
         $collection->addFieldToFilter(
             array(
-                array('attribute'=>'type_id','neq'=>'virtual'),
+                array(
+                    'attribute' => 'type_id',
+                    'in' => Mage::helper('M2ePro/Magento_Product')->getOriginKnownTypes()
+                ),
             )
         );
 
@@ -94,11 +97,6 @@ class Ess_M2ePro_Block_Adminhtml_Listing_Other_Mapping_Grid extends Mage_Adminht
             )
         );
 
-        $tempTypes = Mage::getSingleton('catalog/product_type')->getOptionArray();
-        if (isset($tempTypes['virtual'])) {
-            unset($tempTypes['virtual']);
-        }
-
         $this->addColumn(
             'type', array(
             'header'    => Mage::helper('M2ePro')->__('Type'),
@@ -108,7 +106,7 @@ class Ess_M2ePro_Block_Adminhtml_Listing_Other_Mapping_Grid extends Mage_Adminht
             'sortable'  => false,
             'index'     => 'type_id',
             'filter_index' => 'type_id',
-            'options' => $tempTypes
+            'options'   => Mage::helper('M2ePro/Magento_Product')->getTypesOptionArray()
             )
         );
 
@@ -204,7 +202,7 @@ class Ess_M2ePro_Block_Adminhtml_Listing_Other_Mapping_Grid extends Mage_Adminht
     public function callbackColumnActions($value, $row, $column, $isExport)
     {
         $return = '&nbsp;<a href="javascript:void(0);" ';
-        $return .= 'onclick="$(\'product_id\').setValue(\''.$row->getId().'\'); ';
+        $return .= 'onclick="$(\'mapped_product_id\').setValue(\''.$row->getId().'\'); ';
         $return .= '$(\'sku\').setValue(\'\'); ';
         $return .= '$$(\'.mapping_submit_button\')[0].click(); ">';
         $return .= Mage::helper('M2ePro')->__('Map To This Product');

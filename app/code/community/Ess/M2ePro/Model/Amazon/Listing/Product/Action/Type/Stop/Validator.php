@@ -23,7 +23,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Stop_Validator
             return false;
         }
 
-        if ($this->getVariationManager()->isRelationParentType() && !$this->validateParentListingProductFlags()) {
+        if ($this->getVariationManager()->isRelationParentType() && !$this->validateParentListingProduct()) {
             return false;
         }
 

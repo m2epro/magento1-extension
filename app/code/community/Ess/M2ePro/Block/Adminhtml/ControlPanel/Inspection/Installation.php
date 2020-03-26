@@ -63,13 +63,14 @@ class Ess_M2ePro_Block_Adminhtml_ControlPanel_Inspection_Installation
             return false;
         }
 
-        $compareResult = version_compare(Mage::helper('M2ePro/Module')->getVersion(), $this->latestVersion);
+        $compareResult = version_compare(Mage::helper('M2ePro/Module')->getPublicVersion(), $this->latestVersion);
         if ($compareResult >= 0 && !$this->latestUpgradeDate) {
             return false;
         }
 
-        $daysLeftFromLastUpgrade = (Mage::helper('M2ePro')->getCurrentGmtDate(true) -
-                                    Mage::helper('M2ePro')->getDate($this->latestUpgradeDate, true)) / 60 / 60 / 24;
+        $daysLeftFromLastUpgrade = Mage::helper('M2ePro')->getCurrentGmtDate(true) -
+                                   Mage::helper('M2ePro')->getDate($this->latestUpgradeDate, true);
+        $daysLeftFromLastUpgrade = $daysLeftFromLastUpgrade / 60 / 60 / 24;
 
         if ($compareResult >= 0 && $daysLeftFromLastUpgrade >= 7) {
             return false;

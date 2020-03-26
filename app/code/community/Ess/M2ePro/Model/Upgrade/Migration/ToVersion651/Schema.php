@@ -21,7 +21,7 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion651_Schema extends Ess_M2ePro_
         $this->_installer->run(
             <<<SQL
 
-CREATE TABLE IF NOT EXISTS `m2epro_processing` (
+CREATE TABLE IF NOT EXISTS `{$this->_installer->getTable('m2epro_processing')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `model` VARCHAR(255) NOT NULL,
   `params` LONGTEXT DEFAULT NULL,
@@ -42,7 +42,7 @@ ENGINE = MYISAM
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-CREATE TABLE IF NOT EXISTS `m2epro_request_pending_single` (
+CREATE TABLE IF NOT EXISTS `{$this->_installer->getTable('m2epro_request_pending_single')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `component` VARCHAR(12) NOT NULL,
   `server_hash` VARCHAR(255) NOT NULL,
@@ -61,7 +61,7 @@ ENGINE = MYISAM
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-CREATE TABLE IF NOT EXISTS `m2epro_request_pending_partial` (
+CREATE TABLE IF NOT EXISTS `{$this->_installer->getTable('m2epro_request_pending_partial')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `component` VARCHAR(12) NOT NULL,
   `server_hash` VARCHAR(255) NOT NULL,
@@ -81,7 +81,7 @@ ENGINE = MYISAM
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-CREATE TABLE IF NOT EXISTS `m2epro_request_pending_partial_data` (
+CREATE TABLE IF NOT EXISTS `{$this->_installer->getTable('m2epro_request_pending_partial_data')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `request_pending_partial_id` INT(11) UNSIGNED NOT NULL,
   `part_number` INT(11) UNSIGNED NOT NULL,
@@ -94,7 +94,7 @@ ENGINE = MYISAM
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-CREATE TABLE IF NOT EXISTS `m2epro_connector_command_pending_processing_single` (
+CREATE TABLE IF NOT EXISTS `{$this->_installer->getTable('m2epro_connector_command_pending_processing_single')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `processing_id` INT(11) UNSIGNED NOT NULL,
   `request_pending_single_id` INT(11) UNSIGNED NOT NULL NULL,
@@ -108,7 +108,7 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-CREATE TABLE IF NOT EXISTS `m2epro_connector_command_pending_processing_partial` (
+CREATE TABLE IF NOT EXISTS `{$this->_installer->getTable('m2epro_connector_command_pending_processing_partial')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `processing_id` INT(11) UNSIGNED NOT NULL,
   `request_pending_partial_id` INT(11) UNSIGNED NOT NULL,
@@ -121,7 +121,7 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-CREATE TABLE IF NOT EXISTS `m2epro_ebay_listing_product_action_processing` (
+CREATE TABLE IF NOT EXISTS `{$this->_installer->getTable('m2epro_ebay_listing_product_action_processing')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `processing_id` INT(11) UNSIGNED NOT NULL,
   `listing_product_id` INT(11) UNSIGNED DEFAULT NULL,
@@ -139,7 +139,7 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-CREATE TABLE IF NOT EXISTS `m2epro_amazon_listing_product_action_processing` (
+CREATE TABLE IF NOT EXISTS `{$this->_installer->getTable('m2epro_amazon_listing_product_action_processing')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `processing_id` INT(11) UNSIGNED NOT NULL,
   `request_pending_single_id` INT(11) UNSIGNED DEFAULT NULL,
@@ -162,7 +162,7 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-CREATE TABLE IF NOT EXISTS `m2epro_amazon_listing_product_action_processing_list_sku` (
+CREATE TABLE IF NOT EXISTS `{$this->_installer->getTable('m2epro_amazon_listing_product_action_processing_list_sku')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `account_id` INT(11) UNSIGNED NOT NULL,
   `sku` VARCHAR(255) NOT NULL,
@@ -174,7 +174,7 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-CREATE TABLE IF NOT EXISTS `m2epro_amazon_order_action_processing` (
+CREATE TABLE IF NOT EXISTS `{$this->_installer->getTable('m2epro_amazon_order_action_processing')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `order_id` INT(11) UNSIGNED DEFAULT NULL,
   `processing_id` INT(11) UNSIGNED NOT NULL,
@@ -193,7 +193,7 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-CREATE TABLE IF NOT EXISTS `m2epro_ebay_listing_product_action_processing` (
+CREATE TABLE IF NOT EXISTS `{$this->_installer->getTable('m2epro_ebay_listing_product_action_processing')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `processing_id` INT(11) UNSIGNED NOT NULL,
   `listing_product_id` INT(11) UNSIGNED DEFAULT NULL,
@@ -211,7 +211,7 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-CREATE TABLE IF NOT EXISTS `m2epro_listing_product_scheduled_action` (
+CREATE TABLE IF NOT EXISTS `{$this->_installer->getTable('m2epro_listing_product_scheduled_action')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `listing_product_id` INT(11) UNSIGNED NOT NULL,
   `component` VARCHAR(10) DEFAULT NULL,
@@ -232,7 +232,7 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-CREATE TABLE IF NOT EXISTS `m2epro_listing_product_instruction` (
+CREATE TABLE IF NOT EXISTS `{$this->_installer->getTable('m2epro_listing_product_instruction')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `listing_product_id` INT(11) UNSIGNED NOT NULL,
   `component` VARCHAR(10) DEFAULT NULL,
@@ -252,7 +252,7 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-CREATE TABLE IF NOT EXISTS `m2epro_ebay_account_pickup_store` (
+CREATE TABLE IF NOT EXISTS `{$this->_installer->getTable('m2epro_ebay_account_pickup_store')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(255) NOT NULL,
   `location_id` VARCHAR(255) DEFAULT NULL,
@@ -291,7 +291,7 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-CREATE TABLE IF NOT EXISTS `m2epro_ebay_account_pickup_store_state` (
+CREATE TABLE IF NOT EXISTS `{$this->_installer->getTable('m2epro_ebay_account_pickup_store_state')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `account_pickup_store_id` INT(11) UNSIGNED NOT NULL,
   `is_in_processing` TINYINT(2) UNSIGNED DEFAULT 0,
@@ -311,7 +311,7 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-CREATE TABLE IF NOT EXISTS `m2epro_ebay_listing_product_pickup_store` (
+CREATE TABLE IF NOT EXISTS `{$this->_installer->getTable('m2epro_ebay_listing_product_pickup_store')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `listing_product_id` INT(11) UNSIGNED,
   `account_pickup_store_id` INT(11) UNSIGNED,
@@ -325,7 +325,7 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-CREATE TABLE IF NOT EXISTS `m2epro_ebay_account_pickup_store_log` (
+CREATE TABLE IF NOT EXISTS `{$this->_installer->getTable('m2epro_ebay_account_pickup_store_log')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `account_pickup_store_state_id` INT(11) UNSIGNED DEFAULT NULL,
   `location_id` VARCHAR(255) NOT NULL,
@@ -350,7 +350,7 @@ ENGINE = MYISAM
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-CREATE TABLE IF NOT EXISTS `m2epro_ebay_indexer_listing_product_parent` (
+CREATE TABLE IF NOT EXISTS `{$this->_installer->getTable('m2epro_ebay_indexer_listing_product_parent')}` (
     `listing_product_id` INT(11) UNSIGNED NOT NULL,
     `listing_id` INT(11) UNSIGNED NOT NULL,
     `component_mode` VARCHAR(10) DEFAULT NULL,
@@ -365,7 +365,7 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-CREATE TABLE IF NOT EXISTS `m2epro_amazon_indexer_listing_product_parent` (
+CREATE TABLE IF NOT EXISTS `{$this->_installer->getTable('m2epro_amazon_indexer_listing_product_parent')}` (
     `listing_product_id` INT(11) UNSIGNED NOT NULL,
     `listing_id` INT(11) UNSIGNED NOT NULL,
     `component_mode` VARCHAR(10) DEFAULT NULL,
@@ -382,7 +382,7 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-CREATE TABLE IF NOT EXISTS `m2epro_amazon_template_shipping` (
+CREATE TABLE IF NOT EXISTS `{$this->_installer->getTable('m2epro_amazon_template_shipping')}` (
     `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
     `title` varchar(255) NOT NULL,
     `template_name_mode` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
@@ -397,7 +397,7 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-CREATE TABLE IF NOT EXISTS `m2epro_amazon_template_product_tax_code` (
+CREATE TABLE IF NOT EXISTS `{$this->_installer->getTable('m2epro_amazon_template_product_tax_code')}` (
     `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
     `title` VARCHAR(255) NOT NULL,
     `product_tax_code_mode` TINYINT(2) NOT NULL,
@@ -412,7 +412,7 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-CREATE TABLE IF NOT EXISTS `m2epro_amazon_template_selling_format_business_discount` (
+CREATE TABLE IF NOT EXISTS `{$this->_installer->getTable('m2epro_amazon_template_selling_format_business_discount')}` (
     `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
     `template_selling_format_id` INT(11) UNSIGNED NOT NULL,
     `qty` INT(11) UNSIGNED NOT NULL,
@@ -426,7 +426,7 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-CREATE TABLE IF NOT EXISTS `m2epro_lock_transactional` (
+CREATE TABLE IF NOT EXISTS `{$this->_installer->getTable('m2epro_lock_transactional')}` (
    `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
    `nick` VARCHAR(255) NOT NULL,
    `create_date` DATETIME DEFAULT NULL,
@@ -437,7 +437,7 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-CREATE TABLE IF NOT EXISTS `m2epro_archived_entity` (
+CREATE TABLE IF NOT EXISTS `{$this->_installer->getTable('m2epro_archived_entity')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `origin_id` INT(11) UNSIGNED NOT NULL,
   `name` VARCHAR(255) NOT NULL,
@@ -450,7 +450,7 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-CREATE TABLE IF NOT EXISTS `m2epro_magento_product_websites_update` (
+CREATE TABLE IF NOT EXISTS `{$this->_installer->getTable('m2epro_magento_product_websites_update')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `product_id` INT(11) NOT NULL,
   `action` TINYINT(2) UNSIGNED NOT NULL,

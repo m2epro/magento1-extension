@@ -2,22 +2,6 @@ AmazonRepricingHandler = Class.create(ActionHandler, {
 
     // ---------------------------------------
 
-    initialize: function ($super, gridHandler) {
-        var self = this;
-        $super(gridHandler);
-    },
-
-    // ---------------------------------------
-
-    options: {},
-
-    setOptions: function (options) {
-        this.options = Object.extend(this.options, options);
-        return this;
-    },
-
-    // ---------------------------------------
-
     openManagement: function () {
         window.open(M2ePro.url.get('adminhtml_amazon_listing_repricing/openManagement'));
     },

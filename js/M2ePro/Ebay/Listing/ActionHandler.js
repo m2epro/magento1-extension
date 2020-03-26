@@ -25,8 +25,8 @@ EbayListingActionHandler = Class.create(ListingActionHandler, {
         var requestParams = {'is_realtime': (this.gridHandler.getSelectedProductsArray().length <= 10)};
 
         this.startActions(
-            this.options.text.stopping_selected_items_message,
-            this.options.url.runStopProducts,
+            M2ePro.text.stopping_selected_items_message,
+            M2ePro.url.runStopProducts,
             selectedProductsParts,
             requestParams
         );
@@ -42,8 +42,8 @@ EbayListingActionHandler = Class.create(ListingActionHandler, {
         var requestParams = {'is_realtime': (this.gridHandler.getSelectedProductsArray().length <= 10)};
 
         this.startActions(
-            this.options.text.stopping_and_removing_selected_items_message,
-            this.options.url.runStopAndRemoveProducts,
+            M2ePro.text.stopping_and_removing_selected_items_message,
+            M2ePro.url.runStopAndRemoveProducts,
             selectedProductsParts,
             requestParams
         );

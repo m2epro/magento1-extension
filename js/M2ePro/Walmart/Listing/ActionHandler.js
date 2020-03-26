@@ -10,8 +10,8 @@ WalmartListingActionHandler = Class.create(ListingActionHandler, {
         }
 
         this.startActions(
-            this.options.text.deleting_and_removing_selected_items_message,
-            this.options.url.runDeleteAndRemoveProducts,
+            M2ePro.text.deleting_and_removing_selected_items_message,
+            M2ePro.url.runDeleteAndRemoveProducts,
             selectedProductsParts,
             {"is_realtime": true}
         );
@@ -25,8 +25,8 @@ WalmartListingActionHandler = Class.create(ListingActionHandler, {
         }
 
         this.startActions(
-            this.options.text.reset_blocked_products_message,
-            this.options.url.runResetProducts,
+            M2ePro.text.reset_blocked_products_message,
+            M2ePro.url.runResetProducts,
             selectedProductsParts,
             {"is_realtime": true}
         );

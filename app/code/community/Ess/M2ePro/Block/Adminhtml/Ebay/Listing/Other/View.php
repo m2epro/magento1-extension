@@ -126,37 +126,31 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View extends Mage_Adminhtml_
     M2ePro.url.add({$urls});
     M2ePro.translator.add({$translations});
 
-    M2eProEbay = {};
-    M2eProEbay.url = {};
-    M2eProEbay.formData = {};
-    M2eProEbay.customData = {};
-    M2eProEbay.text = {};
+    M2ePro.url.mapAutoToProduct = '{$mapAutoToProductUrl}';
+    M2ePro.text.failed_mapped = '{$someProductsWereNotMappedMessage}';
 
-    M2eProEbay.url.mapAutoToProduct = '{$mapAutoToProductUrl}';
-    M2eProEbay.text.failed_mapped = '{$someProductsWereNotMappedMessage}';
+    M2ePro.url.prepareData = '{$prepareData}';
+    M2ePro.url.getGridHtml = '{$getMoveToListingGridHtml}';
+    M2ePro.url.moveToListing = '{$moveToListing}';
 
-    M2eProEbay.url.prepareData = '{$prepareData}';
-    M2eProEbay.url.getGridHtml = '{$getMoveToListingGridHtml}';
-    M2eProEbay.url.moveToListing = '{$moveToListing}';
+    M2ePro.url.removingProducts = '{$removingProductsUrl}';
+    M2ePro.url.unmappingProducts = '{$unmappingProductsUrl}';
 
-    M2eProEbay.url.removingProducts = '{$removingProductsUrl}';
-    M2eProEbay.url.unmappingProducts = '{$unmappingProductsUrl}';
+    M2ePro.text.successfully_mapped = '{$successfullyMappedMessage}';
+    M2ePro.text.automap_progress_title = '{$autoMapProgressTitle}';
+    M2ePro.text.processing_data_message = '{$processingDataMessage}';
 
-    M2eProEbay.text.successfully_mapped = '{$successfullyMappedMessage}';
-    M2eProEbay.text.automap_progress_title = '{$autoMapProgressTitle}';
-    M2eProEbay.text.processing_data_message = '{$processingDataMessage}';
+    M2ePro.text.popup_title = '{$popupTitle}';
 
-    M2eProEbay.text.popup_title = '{$popupTitle}';
+    M2ePro.text.not_enough_data = '{$notEnoughDataMessage}';
+    M2ePro.text.successfully_unmapped = '{$successfullyUnmappedMessage}';
+    M2ePro.text.successfully_removed = '{$successfullyRemovedMessage}';
 
-    M2eProEbay.text.not_enough_data = '{$notEnoughDataMessage}';
-    M2eProEbay.text.successfully_unmapped = '{$successfullyUnmappedMessage}';
-    M2eProEbay.text.successfully_removed = '{$successfullyRemovedMessage}';
+    M2ePro.text.select_items_message = '{$selectItemsMessage}';
+    M2ePro.text.select_action_message = '{$selectActionMessage}';
 
-    M2eProEbay.text.select_items_message = '{$selectItemsMessage}';
-    M2eProEbay.text.select_action_message = '{$selectActionMessage}';
-
-    M2eProEbay.customData.componentMode = '{$component}';
-    M2eProEbay.customData.gridId = 'ebayListingOtherGrid';
+    M2ePro.customData.componentMode = '{$component}';
+    M2ePro.customData.gridId = 'ebayListingOtherGrid';
 
     // ---------------------------------------
 
@@ -167,12 +161,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View extends Mage_Adminhtml_
 
         EbayListingOtherGridHandlerObj = new EbayListingOtherGridHandler('ebayListingOtherViewGrid');
         EbayListingOtherMappingHandlerObj = new ListingOtherMappingHandler(EbayListingOtherGridHandlerObj,'ebay');
-
-        EbayListingOtherGridHandlerObj.movingHandler.setOptions(M2eProEbay);
-        EbayListingOtherGridHandlerObj.autoMappingHandler.setOptions(M2eProEbay);
-        EbayListingOtherGridHandlerObj.removingHandler.setOptions(M2eProEbay);
-        EbayListingOtherGridHandlerObj.unmappingHandler.setOptions(M2eProEbay);
-
     });
 
 </script>

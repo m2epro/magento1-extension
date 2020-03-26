@@ -116,9 +116,9 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Settings_Grid
                 'template_category_id'  => 'template_category_id',
                 'template_other_category_id'  => 'template_other_category_id',
 
-                'template_payment_mode'  => 'template_payment_mode',
-                'template_shipping_mode' => 'template_shipping_mode',
-                'template_return_mode'   => 'template_return_mode',
+                'template_payment_mode'       => 'template_payment_mode',
+                'template_shipping_mode'      => 'template_shipping_mode',
+                'template_return_policy_mode' => 'template_return_policy_mode',
 
                 'template_description_mode'     => 'template_description_mode',
                 'template_selling_format_mode'  => 'template_selling_format_mode',
@@ -183,10 +183,9 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Settings_Grid
         );
 
         if ($this->_motorsAttribute) {
-            $attributeCode = $this->_motorsAttribute->getAttributeCode();
             $collection->joinAttribute(
-                $attributeCode,
-                'catalog_product/'.$attributeCode,
+                $this->_motorsAttribute->getAttributeCode(),
+                $this->_motorsAttribute,
                 'entity_id',
                 null,
                 'left',
@@ -320,7 +319,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Settings_Grid
 
         $this->getMassactionBlock()->addItem(
             'transferring', array(
-            'label'    => Mage::helper('M2ePro')->__('Sell on Another eBay Site'),
+            'label'    => Mage::helper('M2ePro')->__('Sell on Another Marketplace'),
             'url'      => '',
             ), 'other'
         );
@@ -516,39 +515,23 @@ HTML;
             return;
         }
 
-        if ($value == 1) {
-            $attributeCode = $this->_motorsAttribute->getAttributeCode();
-            $collection->joinAttribute(
-                $attributeCode, 'catalog_product/'.$attributeCode, 'entity_id', null, 'left',
-                $this->getListing()->getStoreId()
-            );
+        $attributeCode = $this->_motorsAttribute->getAttributeCode();
 
+        if ($value == 1) {
             $collection->addFieldToFilter($attributeCode, array('notnull'=>true));
             $collection->addFieldToFilter($attributeCode, array('neq'=>''));
             $collection->addFieldToFilter(
-                'is_motors_attribute_in_product_attribute_set', array('notnull'=>true)
+                'is_motors_attribute_in_product_attribute_set',
+                array('notnull'=>true)
             );
         } else {
-            $attributeId = $this->_motorsAttribute->getId();
-            $storeId = $this->getListing()->getStoreId();
-
-            $joinCondition = 'eaa.entity_id = e.entity_id and eaa.attribute_id = '.$attributeId;
-            if (!$this->_motorsAttribute->isScopeGlobal()) {
-                $joinCondition .= ' and eaa.store_id = '.$storeId;
-            }
-
-            $collection->getSelect()->joinLeft(
+            $collection->addFieldToFilter(
                 array(
-                    'eaa' => Mage::helper('M2ePro/Module_Database_Structure')
-                        ->getTableNameWithPrefix('catalog_product_entity_text')
-                ),
-                $joinCondition,
-                array('value')
+                    array('attribute' => $attributeCode, 'null' => true),
+                    array('attribute' => $attributeCode, 'eq' => ''),
+                    array('attribute' => 'is_motors_attribute_in_product_attribute_set', 'null' => true)
+                )
             );
-
-            $collection->getSelect()->where('eaa.value IS NULL');
-            $collection->getSelect()->orWhere('eaa.value = \'\'');
-            $collection->getSelect()->orWhere('eea.entity_attribute_id IS NULL');
         }
     }
 
@@ -883,8 +866,6 @@ HTML;
 
     Event.observe(window, 'load', function() {
         EbayListingTransferringHandlerObj = new EbayListingTransferringHandler();
-        EbayListingSettingsGridHandlerObj.movingHandler.setOptions(M2ePro);
-
         EbayListingTransferringPaymentHandlerObj = new EbayListingTransferringPaymentHandler();
 
         EbayMotorsHandlerObj = new EbayMotorsHandler({$this->getListing()->getId()}, '{$motorsType}');

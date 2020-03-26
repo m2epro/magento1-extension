@@ -46,7 +46,7 @@ class Ess_M2ePro_Helper_Module_Log extends Mage_Core_Helper_Abstract
             return '';
         }
 
-        if ($string{0} != '{') {
+        if ($string[0] != '{') {
             return Mage::helper('M2ePro')->__($string);
         }
 
@@ -69,12 +69,12 @@ class Ess_M2ePro_Helper_Module_Log extends Mage_Core_Helper_Abstract
     protected function addPlaceholdersToMessage($string, $params)
     {
         foreach ($params as $key=>$value) {
-            if (isset($value{0}) && $value{0} == '{') {
+            if (isset($value[0]) && $value[0] == '{') {
                 $tempValueArray = Mage::helper('M2ePro')->jsonDecode($value);
                 is_array($tempValueArray) && $value = $this->decodeDescription($value);
             }
 
-            if ($key{0} == '!') {
+            if ($key[0] == '!') {
                 $key = substr($key, 1);
             } else {
                 $value = Mage::helper('M2ePro')->__($value);

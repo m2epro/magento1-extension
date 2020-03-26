@@ -242,7 +242,9 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationEbayController
         $licenseData = array();
         foreach ($requiredKeys as $key) {
             if ($tempValue = $this->getRequest()->getParam($key)) {
-                $licenseData[$key] = $tempValue;
+                $licenseData[$key] = Mage::helper('M2ePro')->escapeJs(
+                    Mage::helper('M2ePro')->escapeHtml($tempValue)
+                );
                 continue;
             }
 
@@ -291,7 +293,7 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationEbayController
 
             $dispatcherObject = Mage::getModel('M2ePro/Ebay_Connector_Dispatcher');
             $connectorObj = $dispatcherObject->getVirtualConnector(
-                'account', 'get', 'authUrl',
+                'account', 'get', 'grandAccessUrl',
                 array(
                    'back_url' => $backUrl,
                    'mode' => $accountMode

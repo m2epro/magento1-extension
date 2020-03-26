@@ -19,8 +19,8 @@ abstract class Ess_M2ePro_Controller_Adminhtml_MainController
             !$this->getRequest()->isPost() &&
             !$this->getRequest()->isXmlHttpRequest()
         ) {
-            if (!Mage::helper('M2ePro/View')->getComponentHelper()->isEnabled()) {
-                return $this->_redirect(Mage::helper('M2ePro/Module_HelpCenter')->getPageRoute());
+            if (!$this->getCustomViewComponentHelper()->isEnabled()) {
+                return $this->_redirect(Mage::helper('M2ePro/Module_Support')->getPageRoute());
             }
 
             try {

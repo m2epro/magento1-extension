@@ -70,12 +70,10 @@ class Ess_M2ePro_Model_Connector_Connection_Request
                     'name' => Mage::helper('M2ePro/Magento')->getName().
                                 ' ('.Mage::helper('M2ePro/Magento')->getEditionName().')',
                     'version' => Mage::helper('M2ePro/Magento')->getVersion(),
-                    'revision' => Mage::helper('M2ePro/Magento')->getRevision(),
                 ),
                 'module' => array(
                     'name' => Mage::helper('M2ePro/Module')->getName(),
-                    'version' => Mage::helper('M2ePro/Module')->getVersion(),
-                    'revision' => Mage::helper('M2ePro/Module')->getRevision()
+                    'version' => Mage::helper('M2ePro/Module')->getPublicVersion(),
                 ),
                 'location' => array(
                     'domain' => Mage::helper('M2ePro/Client')->getDomain(),

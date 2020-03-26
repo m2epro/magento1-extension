@@ -153,19 +153,18 @@ class Ess_M2ePro_Helper_Component_Amazon_Variation extends Mage_Core_Helper_Abst
             $productToListingProductIds = array_flip($listingProductToProductIds);
 
             foreach ($productsData as $product) {
-                if ($product['type_id'] == Ess_M2ePro_Model_Magento_Product::TYPE_BUNDLE) {
+                if (Mage::helper('M2ePro/Magento_Product')->isBundleType($product['type_id'])) {
                     unset($productToListingProductIds[$product['entity_id']]);
                 }
 
-                if ($product['type_id'] == Ess_M2ePro_Model_Magento_Product::TYPE_DOWNLOADABLE &&
+                if (Mage::helper('M2ePro/Magento_Product')->isDownloadableType($product['type_id']) &&
                     $product['is_links_purchased_separately']) {
                     unset($productToListingProductIds[$product['entity_id']]);
                 }
 
-                if ($product['type_id'] == Ess_M2ePro_Model_Magento_Product::TYPE_SIMPLE &&
+                if (Mage::helper('M2ePro/Magento_Product')->isSimpleType($product['type_id']) &&
                     !empty($product['option_id']) && $product['option_is_require'] == 1 &&
-                    in_array($product['option_type'], array('drop_down', 'radio', 'multiple', 'checkbox')))
-                {
+                    in_array($product['option_type'], array('drop_down', 'radio', 'multiple', 'checkbox'))) {
                     unset($productToListingProductIds[$product['entity_id']]);
                 }
             }

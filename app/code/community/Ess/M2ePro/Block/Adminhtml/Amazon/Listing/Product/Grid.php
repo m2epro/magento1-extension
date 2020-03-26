@@ -174,7 +174,10 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Product_Grid extends Mage_Adminh
 
         $collection->addFieldToFilter(
             array(
-                array('attribute'=>'type_id','neq'=>'virtual'),
+                array(
+                    'attribute' => 'type_id',
+                    'in' => Mage::helper('M2ePro/Magento_Product')->getOriginKnownTypes()
+                ),
             )
         );
 
@@ -217,11 +220,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Product_Grid extends Mage_Adminh
             )
         );
 
-        $tempTypes = Mage::getSingleton('catalog/product_type')->getOptionArray();
-        if (isset($tempTypes['virtual'])) {
-            unset($tempTypes['virtual']);
-        }
-
         $this->addColumn(
             'type', array(
                 'header'       => Mage::helper('M2ePro')->__('Type'),
@@ -231,7 +229,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Product_Grid extends Mage_Adminh
                 'sortable'     => false,
                 'index'        => 'type_id',
                 'filter_index' => 'type_id',
-                'options'      => $tempTypes
+                'options'      => Mage::helper('M2ePro/Magento_Product')->getTypesOptionArray()
             )
         );
 

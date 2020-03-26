@@ -63,10 +63,6 @@ class Ess_M2ePro_Model_Ebay_Template_SellingFormat_Builder
             $prepared['duration_attribute'] = $data['duration_attribute'];
         }
 
-        if (isset($data['out_of_stock_control'])) {
-            $prepared['out_of_stock_control'] = (int)$data['out_of_stock_control'];
-        }
-
         if (isset($data['qty_mode'])) {
             $prepared['qty_mode'] = (int)$data['qty_mode'];
         }
@@ -261,15 +257,27 @@ class Ess_M2ePro_Model_Ebay_Template_SellingFormat_Builder
             $prepared['best_offer_reject_attribute'] = $data['best_offer_reject_attribute'];
         }
 
-        if (isset($data['charity_id'], $data['charity_name'], $data['charity_percentage'])
-            && $prepared['is_custom_template'] == 1) {
-            $src = array(
-                'id'            => $data['charity_id'],
-                'name'          => $data['charity_name'],
-                'percentage'    => (int)$data['charity_percentage'],
-            );
+        $prepared['charity'] = null;
 
-            $prepared['charity'] = Mage::helper('M2ePro')->jsonEncode($src);
+        if (!empty($data['charity']) && !empty($data['charity']['marketplace_id'])) {
+            $charities = array();
+            foreach ($data['charity']['marketplace_id'] as $key => $marketplaceId) {
+                if (empty($data['charity']['organization_id'][$key])) {
+                    continue;
+                }
+
+                $charities[$marketplaceId] = array(
+                    'marketplace_id' => (int)$marketplaceId,
+                    'organization_id' => (int)$data['charity']['organization_id'][$key],
+                    'organization_name' => $data['charity']['organization_name'][$key],
+                    'organization_custom' => (int)$data['charity']['organization_custom'][$key],
+                    'percentage' => (int)$data['charity']['percentage'][$key]
+                );
+            }
+
+            if (!empty($charities)) {
+                $prepared['charity'] = Mage::helper('M2ePro')->jsonEncode($charities);
+            }
         }
 
         if (isset($data['ignore_variations'])) {

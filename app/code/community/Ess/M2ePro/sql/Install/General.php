@@ -11,8 +11,8 @@ class Ess_M2ePro_Sql_Install_General extends Ess_M2ePro_Model_Upgrade_Feature_Ab
         $this->_installer->run(
             <<<SQL
 
-DROP TABLE IF EXISTS `m2epro_account`;
-CREATE TABLE `m2epro_account` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_account')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_account')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `title` VARCHAR(255) NOT NULL,
   `component_mode` VARCHAR(10) DEFAULT NULL,
@@ -27,8 +27,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_cache_config`;
-CREATE TABLE `m2epro_cache_config` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_cache_config')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_cache_config')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `group` VARCHAR(255) DEFAULT NULL,
   `key` VARCHAR(255) NOT NULL,
@@ -44,8 +44,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_config`;
-CREATE TABLE `m2epro_config` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_config')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_config')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `group` VARCHAR(255) DEFAULT NULL,
   `key` VARCHAR(255) NOT NULL,
@@ -61,8 +61,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_listing`;
-CREATE TABLE `m2epro_listing` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_listing')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_listing')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `account_id` INT(11) UNSIGNED NOT NULL,
   `marketplace_id` INT(11) UNSIGNED NOT NULL,
@@ -98,8 +98,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_listing_auto_category`;
-CREATE TABLE `m2epro_listing_auto_category` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_listing_auto_category')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_listing_auto_category')}` (
     `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
     `group_id` int(11) UNSIGNED NOT NULL,
     `category_id` int(11) UNSIGNED NOT NULL,
@@ -113,8 +113,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_listing_auto_category_group`;
-CREATE TABLE `m2epro_listing_auto_category_group` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_listing_auto_category_group')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_listing_auto_category_group')}` (
     `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
     `listing_id` int(11) UNSIGNED NOT NULL,
     `title` varchar(255) NOT NULL,
@@ -133,8 +133,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_listing_log`;
-CREATE TABLE `m2epro_listing_log` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_listing_log')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_listing_log')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `account_id` INT(11) UNSIGNED NOT NULL,
   `marketplace_id` INT(11) UNSIGNED NOT NULL,
@@ -175,8 +175,8 @@ ENGINE = MYISAM
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_listing_other`;
-CREATE TABLE `m2epro_listing_other` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_listing_other')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_listing_other')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `account_id` INT(11) UNSIGNED NOT NULL,
   `marketplace_id` INT(11) UNSIGNED NOT NULL,
@@ -199,8 +199,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_listing_product`;
-CREATE TABLE `m2epro_listing_product` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_listing_product')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_listing_product')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `listing_id` INT(11) UNSIGNED NOT NULL,
   `product_id` INT(11) UNSIGNED NOT NULL,
@@ -221,8 +221,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_listing_product_variation`;
-CREATE TABLE `m2epro_listing_product_variation` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_listing_product_variation')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_listing_product_variation')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `listing_product_id` INT(11) UNSIGNED NOT NULL,
   `component_mode` VARCHAR(10) DEFAULT NULL,
@@ -237,8 +237,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_listing_product_variation_option`;
-CREATE TABLE `m2epro_listing_product_variation_option` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_listing_product_variation_option')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_listing_product_variation_option')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `listing_product_variation_id` INT(11) UNSIGNED NOT NULL,
   `product_id` INT(11) UNSIGNED DEFAULT NULL,
@@ -260,8 +260,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_listing_product_instruction`;
-CREATE TABLE `m2epro_listing_product_instruction` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_listing_product_instruction')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_listing_product_instruction')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `listing_product_id` INT(11) UNSIGNED NOT NULL,
   `component` VARCHAR(10) DEFAULT NULL,
@@ -283,8 +283,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_listing_product_scheduled_action`;
-CREATE TABLE `m2epro_listing_product_scheduled_action` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_listing_product_scheduled_action')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_listing_product_scheduled_action')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `listing_product_id` INT(11) UNSIGNED NOT NULL,
   `component` VARCHAR(10) DEFAULT NULL,
@@ -305,8 +305,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_lock_item`;
-CREATE TABLE `m2epro_lock_item` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_lock_item')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_lock_item')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `nick` VARCHAR(255) NOT NULL,
   `parent_id` INT(11) UNSIGNED DEFAULT NULL,
@@ -321,8 +321,8 @@ ENGINE = MYISAM
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_lock_transactional`;
-CREATE TABLE `m2epro_lock_transactional` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_lock_transactional')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_lock_transactional')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `nick` VARCHAR(255) NOT NULL,
   `create_date` DATETIME DEFAULT NULL,
@@ -333,8 +333,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_magento_product_websites_update`;
-CREATE TABLE `m2epro_magento_product_websites_update` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_magento_product_websites_update')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_magento_product_websites_update')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `product_id` INT(11) NOT NULL,
   `action` TINYINT(2) UNSIGNED NOT NULL,
@@ -349,8 +349,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_marketplace`;
-CREATE TABLE `m2epro_marketplace` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_marketplace')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_marketplace')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `native_id` INT(11) UNSIGNED NOT NULL,
   `title` VARCHAR(255) NOT NULL,
@@ -369,8 +369,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_order`;
-CREATE TABLE `m2epro_order` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_order')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_order')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `account_id` INT(11) UNSIGNED NOT NULL,
   `marketplace_id` INT(11) UNSIGNED DEFAULT NULL,
@@ -399,8 +399,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_order_change`;
-CREATE TABLE `m2epro_order_change` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_order_change')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_order_change')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `component` VARCHAR(10) NOT NULL,
   `order_id` INT(11) UNSIGNED NOT NULL,
@@ -423,8 +423,8 @@ ENGINE = MYISAM
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_order_item`;
-CREATE TABLE `m2epro_order_item` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_order_item')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_order_item')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `order_id` INT(11) UNSIGNED NOT NULL,
   `product_id` INT(11) UNSIGNED DEFAULT NULL,
@@ -442,8 +442,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_order_log`;
-CREATE TABLE `m2epro_order_log` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_order_log')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_order_log')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `account_id` INT(11) UNSIGNED NOT NULL,
   `marketplace_id` INT(11) UNSIGNED NOT NULL,
@@ -468,8 +468,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_order_note`;
-CREATE TABLE `m2epro_order_note` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_order_note')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_order_note')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `order_id` INT(11) UNSIGNED NOT NULL,
   `note` TEXT DEFAULT NULL,
@@ -482,8 +482,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_order_matching`;
-CREATE TABLE `m2epro_order_matching` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_order_matching')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_order_matching')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `product_id` INT(11) UNSIGNED NOT NULL,
   `input_variation_options` TEXT DEFAULT NULL,
@@ -501,8 +501,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_primary_config`;
-CREATE TABLE `m2epro_primary_config` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_primary_config')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_primary_config')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `group` VARCHAR(255) DEFAULT NULL,
   `key` VARCHAR(255) NOT NULL,
@@ -518,8 +518,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_processing`;
-CREATE TABLE `m2epro_processing` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_processing')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_processing')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `model` VARCHAR(255) NOT NULL,
   `params` LONGTEXT DEFAULT NULL,
@@ -540,8 +540,8 @@ ENGINE = MYISAM
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_processing_lock`;
-CREATE TABLE `m2epro_processing_lock` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_processing_lock')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_processing_lock')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `processing_id` INT(11) UNSIGNED NOT NULL,
   `model_name` VARCHAR(255) NOT NULL,
@@ -559,8 +559,8 @@ ENGINE = MYISAM
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_request_pending_single`;
-CREATE TABLE `m2epro_request_pending_single` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_request_pending_single')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_request_pending_single')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `component` VARCHAR(12) NOT NULL,
   `server_hash` VARCHAR(255) NOT NULL,
@@ -579,8 +579,8 @@ ENGINE = MYISAM
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_request_pending_partial`;
-CREATE TABLE `m2epro_request_pending_partial` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_request_pending_partial')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_request_pending_partial')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `component` VARCHAR(12) NOT NULL,
   `server_hash` VARCHAR(255) NOT NULL,
@@ -600,8 +600,8 @@ ENGINE = MYISAM
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_request_pending_partial_data`;
-CREATE TABLE `m2epro_request_pending_partial_data` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_request_pending_partial_data')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_request_pending_partial_data')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `request_pending_partial_id` INT(11) UNSIGNED NOT NULL,
   `part_number` INT(11) UNSIGNED NOT NULL,
@@ -614,8 +614,8 @@ ENGINE = MYISAM
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_connector_command_pending_processing_single`;
-CREATE TABLE `m2epro_connector_command_pending_processing_single` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_connector_command_pending_processing_single')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_connector_command_pending_processing_single')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `processing_id` INT(11) UNSIGNED NOT NULL,
   `request_pending_single_id` INT(11) UNSIGNED NOT NULL NULL,
@@ -629,8 +629,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_connector_command_pending_processing_partial`;
-CREATE TABLE `m2epro_connector_command_pending_processing_partial` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_connector_command_pending_processing_partial')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_connector_command_pending_processing_partial')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `processing_id` INT(11) UNSIGNED NOT NULL,
   `request_pending_partial_id` INT(11) UNSIGNED NOT NULL,
@@ -643,8 +643,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_stop_queue`;
-CREATE TABLE `m2epro_stop_queue` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_stop_queue')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_stop_queue')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `component_mode` VARCHAR(255) NOT NULL,
   `is_processed` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
@@ -659,7 +659,7 @@ ENGINE = MYISAM
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-CREATE TABLE `m2epro_setup` (
+CREATE TABLE `{$this->_installer->getTable('m2epro_setup')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `version_from` VARCHAR(32) DEFAULT NULL,
   `version_to` VARCHAR(32) DEFAULT NULL,
@@ -678,8 +678,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_synchronization_log`;
-CREATE TABLE `m2epro_synchronization_log` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_synchronization_log')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_synchronization_log')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `operation_history_id` INT(11) UNSIGNED DEFAULT NULL,
   `task` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
@@ -704,8 +704,8 @@ ENGINE = MYISAM
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_system_log`;
-CREATE TABLE `m2epro_system_log` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_system_log')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_system_log')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `type` VARCHAR(255) DEFAULT NULL,
   `description` LONGTEXT DEFAULT NULL,
@@ -719,8 +719,8 @@ ENGINE = MYISAM
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_operation_history`;
-CREATE TABLE `m2epro_operation_history` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_operation_history')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_operation_history')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `nick` VARCHAR(255) NOT NULL,
   `parent_id` INT(11) UNSIGNED DEFAULT NULL,
@@ -741,8 +741,8 @@ ENGINE = MYISAM
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_template_selling_format`;
-CREATE TABLE `m2epro_template_selling_format` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_template_selling_format')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_template_selling_format')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `title` VARCHAR(255) NOT NULL,
   `component_mode` VARCHAR(10) DEFAULT NULL,
@@ -756,8 +756,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_template_synchronization`;
-CREATE TABLE `m2epro_template_synchronization` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_template_synchronization')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_template_synchronization')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `title` VARCHAR(255) NOT NULL,
   `component_mode` VARCHAR(10) DEFAULT NULL,
@@ -771,8 +771,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_template_description`;
-CREATE TABLE `m2epro_template_description` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_template_description')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_template_description')}` (
     `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
     `title` varchar(255) NOT NULL,
     `component_mode` varchar(10) DEFAULT NULL,
@@ -786,8 +786,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_wizard`;
-CREATE TABLE `m2epro_wizard` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_wizard')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_wizard')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `nick` VARCHAR(255) NOT NULL,
   `view` VARCHAR(255) NOT NULL,
@@ -802,8 +802,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_migration_v6`;
-CREATE TABLE `m2epro_migration_v6` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_migration_v6')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_migration_v6')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `component` VARCHAR(32) NOT NULL,
   `group` VARCHAR(255) NOT NULL,
@@ -815,8 +815,8 @@ ENGINE = MYISAM
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_registry`;
-CREATE TABLE `m2epro_registry` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_registry')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_registry')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `key` VARCHAR(255) NOT NULL,
   `value` LONGTEXT DEFAULT NULL,
@@ -829,8 +829,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_archived_entity`;
-CREATE TABLE `m2epro_archived_entity` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_archived_entity')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_archived_entity')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `origin_id` INT(11) UNSIGNED NOT NULL,
   `name` VARCHAR(255) NOT NULL,
@@ -851,7 +851,7 @@ SQL
         $this->_installer->run(
             <<<SQL
 
-INSERT INTO `m2epro_primary_config` (`group`,`key`,`value`,`update_date`,`create_date`) VALUES
+INSERT INTO `{$this->_installer->getTable('m2epro_primary_config')}` (`group`,`key`,`value`,`update_date`,`create_date`) VALUES
   ('/license/', 'key', NULL, NOW(), NOW()),
   ('/license/', 'status', 1, NOW(), NOW()),
   ('/license/', 'domain', NULL, NOW(), NOW()),
@@ -859,13 +859,12 @@ INSERT INTO `m2epro_primary_config` (`group`,`key`,`value`,`update_date`,`create
   ('/license/info/', 'email', NULL, NOW(), NOW()),
   ('/license/valid/', 'domain', NULL, NOW(),NOW()),
   ('/license/valid/', 'ip', NULL, NOW(), NOW()),
-  ('/server/', 'messages', '[]', NOW(), NOW()),
   ('/server/', 'application_key', 'b79a495170da3b081c9ebae6c255c7fbe1b139b5', NOW(), NOW()),
   ('/server/', 'installation_key', '{$this->_installer->generateRandomHash()}', NOW(), NOW()),
   ('/server/location/1/', 'baseurl', 'https://s1.m2epro.com/', NOW(), NOW()),
   ('/server/location/', 'default_index', '1', NOW(), NOW());
 
-INSERT INTO `m2epro_config` (`group`,`key`,`value`,`update_date`,`create_date`) VALUES
+INSERT INTO `{$this->_installer->getTable('m2epro_config')}` (`group`,`key`,`value`,`update_date`,`create_date`) VALUES
   ('/', 'is_disabled', '0', NOW(), NOW()),
   ('/', 'environment', 'production', NOW(), NOW()),
   ('/cron/', 'mode', '1', NOW(), NOW()),
@@ -899,8 +898,6 @@ INSERT INTO `m2epro_config` (`group`,`key`,`value`,`update_date`,`create_date`) 
   ('/view/', 'show_block_notices', '1', NOW(), NOW()),
   ('/view/', 'show_products_thumbnails', '1', NOW(), NOW()),
   ('/view/products_grid/', 'use_alternative_mysql_select', '0', NOW(), NOW()),
-  ('/view/synchronization/revise_total/', 'show', '0', NOW(), NOW()),
-  ('/view/ebay/', 'mode', 'simple', NOW(), NOW()),
   ('/view/ebay/notice/', 'disable_collapse', '0', NOW(), NOW()),
   ('/view/ebay/template/selling_format/', 'show_tax_category', '0', NOW(), NOW()),
   ('/view/ebay/feedbacks/notification/', 'mode', '0', NOW(), NOW()),
@@ -916,9 +913,14 @@ INSERT INTO `m2epro_config` (`group`,`key`,`value`,`update_date`,`create_date`) 
   ('/product/force_qty/', 'value', '10', NOW(), NOW()),
   ('/qty/percentage/', 'rounding_greater', '0', NOW(), NOW()),
   ('/magento/attribute/', 'price_type_converting', '0', NOW(), NOW()),
-  ('/order/magento/settings/', 'create_with_first_product_options_when_variation_unavailable', '1', NOW(), NOW());
+  ('/order/magento/settings/', 'create_with_first_product_options_when_variation_unavailable', '1', NOW(), NOW()),
+  ('/magento/product/simple_type/', 'custom_types', '', NOW(), NOW()),
+  ('/magento/product/downloadable_type/', 'custom_types', '', NOW(), NOW()),
+  ('/magento/product/configurable_type/', 'custom_types', '', NOW(), NOW()),
+  ('/magento/product/bundle_type/', 'custom_types', '', NOW(), NOW()),
+  ('/magento/product/grouped_type/', 'custom_types', '', NOW(), NOW());
 
-INSERT INTO `m2epro_wizard` VALUES
+INSERT INTO `{$this->_installer->getTable('m2epro_wizard')}` VALUES
   (1,  'installationEbay',             'ebay',    0, NULL, 1, 1),
   (2,  'installationAmazon',           'amazon',  0, NULL, 1, 2),
   (3,  'migrationNewAmazon',           'amazon',  3, NULL, 1, 3),

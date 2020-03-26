@@ -37,6 +37,7 @@ class Ess_M2ePro_Model_Cron_Task_Magento_Product_DetectDirectlyDeleted extends E
         );
 
         $collection->getSelect()->where('cpe.entity_id IS NULL');
+        $collection->getSelect()->limit(100);
 
         $tempProductsIds = array();
         $rows = $collection->toArray();
@@ -69,6 +70,7 @@ class Ess_M2ePro_Model_Cron_Task_Magento_Product_DetectDirectlyDeleted extends E
         );
 
         $collection->getSelect()->where('cpe.entity_id IS NULL');
+        $collection->getSelect()->limit(100);
 
         $tempProductsIds = array();
         $rows = $collection->toArray();
@@ -109,6 +111,7 @@ class Ess_M2ePro_Model_Cron_Task_Magento_Product_DetectDirectlyDeleted extends E
             );
 
             $collection->getSelect()->where('cpe.entity_id IS NULL');
+            $collection->getSelect()->limit(100);
 
             $tempProductsIds = array();
             $rows = $collection->toArray();

@@ -13,7 +13,7 @@ class Ess_M2ePro_Sql_Upgrade_v5_0_4__v5_0_5_AllFeatures extends Ess_M2ePro_Model
 
         $installer->run(<<<SQL
 
-CREATE TABLE IF NOT EXISTS m2epro_exceptions_filters (
+CREATE TABLE IF NOT EXISTS `{$this->_installer->getTable('m2epro_exceptions_filters')}` (
   id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   title VARCHAR(255) NOT NULL,
   preg_match TEXT NOT NULL,
@@ -28,7 +28,7 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-CREATE TABLE IF NOT EXISTS m2epro_order_repair (
+CREATE TABLE IF NOT EXISTS `{$this->_installer->getTable('m2epro_order_repair')}` (
   id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   product_id INT(11) UNSIGNED NOT NULL,
   input_data TEXT DEFAULT NULL,
@@ -48,17 +48,17 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-UPDATE `m2epro_config`
+UPDATE `{$this->_installer->getTable('m2epro_config')}`
 SET `value` = 'http://docs.m2epro.com/display/eBayAmazonRakutenMagentoV5/'
 WHERE `group` = '/documentation/'
 AND `key` = 'baseurl';
 
-UPDATE `m2epro_config`
+UPDATE `{$this->_installer->getTable('m2epro_config')}`
 SET `value` = '240'
 WHERE `group` = '/cron/task/processing/'
 AND `key` = 'interval';
 
-DELETE FROM `m2epro_config`
+DELETE FROM `{$this->_installer->getTable('m2epro_config')}`
 WHERE `group` = '/support/form/' AND
      (`key` = 'defect_mail' OR
       `key` = 'feature_mail' OR
@@ -209,7 +209,7 @@ SQL
 
             $installer->run(<<<SQL
 
-INSERT INTO m2epro_config (`group`,`key`,`value`,`notice`,`update_date`,`create_date`) VALUES
+INSERT INTO `{$this->_installer->getTable('m2epro_config')}` (`group`,`key`,`value`,`notice`,`update_date`,`create_date`) VALUES
 ('/ebay/synchronization/settings/orders/reserve_cancellation/', 'mode', '1', 'in seconds',
  '2013-02-28 00:00:00', '2013-02-28 00:00:00'),
 ('/ebay/synchronization/settings/orders/reserve_cancellation/', 'interval', '3600', 'in seconds',

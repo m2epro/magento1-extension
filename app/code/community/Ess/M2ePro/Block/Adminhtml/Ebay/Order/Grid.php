@@ -484,8 +484,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_Grid extends Mage_Adminhtml_Block_Wi
 
     public function callbackColumnEbayOrder($value, $row, $column, $isExport)
     {
-        $returnString = str_replace('-', '-<br/>', $value);
-
+        $returnString = $value;
         if ($row['selling_manager_id'] > 0) {
             $returnString .= '<br/> [ <b>SM: </b> # ' . $row['selling_manager_id'] . ' ]';
         }

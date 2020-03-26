@@ -2,16 +2,6 @@ ListingOtherUnmappingHandler = Class.create(ActionHandler, {
 
     // ---------------------------------------
 
-    options: {},
-
-    setOptions: function(options)
-    {
-        this.options = Object.extend(this.options, options);
-        return this;
-    },
-
-    // ---------------------------------------
-
     run: function()
     {
         this.unmappingProducts(
@@ -21,10 +11,10 @@ ListingOtherUnmappingHandler = Class.create(ActionHandler, {
 
     unmappingProducts: function(productsString)
     {
-        new Ajax.Request(this.options.url.unmappingProducts, {
+        new Ajax.Request(M2ePro.url.unmappingProducts, {
             method: 'post',
             parameters: {
-                componentMode: this.options.customData.componentMode,
+                componentMode: M2ePro.customData.componentMode,
                 product_ids: productsString
             },
             onSuccess: (function(transport) {
@@ -32,9 +22,9 @@ ListingOtherUnmappingHandler = Class.create(ActionHandler, {
                 MagentoMessageObj.clearAll();
 
                 if (transport.responseText == '1') {
-                    MagentoMessageObj.addSuccess(this.options.text.successfully_unmapped);
+                    MagentoMessageObj.addSuccess(M2ePro.text.successfully_unmapped);
                 } else {
-                    MagentoMessageObj.addError(this.options.text.not_enough_data);
+                    MagentoMessageObj.addError(M2ePro.text.not_enough_data);
                 }
 
                 this.gridHandler.unselectAllAndReload();

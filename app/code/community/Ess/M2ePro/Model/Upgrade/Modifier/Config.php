@@ -209,18 +209,22 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Config extends Ess_M2ePro_Model_Upgrade_
 
     //########################################
 
-    protected function prepareGroup($group)
+    private function prepareGroup($group)
     {
-        if ($group === null) {
+        if ($group === null || $group === '/') {
             return $group;
         }
 
-        return '/' . trim($group, '/ ') . '/';
+        return '/' . trim($group, '/') . '/';
     }
 
-    protected function prepareKey($key)
+    private function prepareKey($key)
     {
-        return trim($key, '/ ');
+        if ($key === null) {
+            return $key;
+        }
+
+        return strtolower($key);
     }
 
     //########################################

@@ -10,14 +10,18 @@ use Ess_M2ePro_Model_Amazon_Listing_Product as AmazonListingProduct;
 use Ess_M2ePro_Model_Ebay_Listing_Product as EbayListingProduct;
 use Ess_M2ePro_Model_Walmart_Listing_Product as WalmartListingProduct;
 
-use Ess_M2ePro_Model_Amazon_Listing_Product_Action_Configurator as AmazonConfigurator;
-use Ess_M2ePro_Model_Ebay_Listing_Product_Action_Configurator as EbayConfigurator;
-use Ess_M2ePro_Model_Walmart_Listing_Product_Action_Configurator as WalmartConfigurator;
+use Ess_M2ePro_Model_Amazon_Listing_Product_Action_Processing as AmazonActionProcessing;
+use Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processing as EbayActionProcessing;
+use Ess_M2ePro_Model_Walmart_Listing_Product_Action_Processing as WalmartActionProcessing;
 
 /**
  * @method AmazonListingProduct|EbayListingProduct|WalmartListingProduct getChildObject()
- * @method setActionConfigurator($configurator)
- * @method AmazonConfigurator|EbayConfigurator|WalmartConfigurator getActionConfigurator()
+ *
+ * @method setActionConfigurator(Ess_M2ePro_Model_Listing_Product_Action_Configurator $configurator)
+ * @method Ess_M2ePro_Model_Listing_Product_Action_Configurator getActionConfigurator()
+ *
+ * @method AmazonActionProcessing|EbayActionProcessing|WalmartActionProcessing getProcessingAction()
+ * @method setProcessingAction(AmazonActionProcessing|EbayActionProcessing|WalmartActionProcessing $action)
  */
 class Ess_M2ePro_Model_Listing_Product extends Ess_M2ePro_Model_Component_Parent_Abstract
 {
@@ -441,55 +445,6 @@ class Ess_M2ePro_Model_Listing_Product extends Ess_M2ePro_Model_Component_Parent
     {
         return ($this->isListed() || $this->isHidden() || $this->isUnknown()) &&
                 !$this->isBlocked();
-    }
-
-    //########################################
-
-    public function listAction(array $params = array())
-    {
-        return $this->getChildObject()->listAction($params);
-    }
-
-    public function relistAction(array $params = array())
-    {
-        return $this->getChildObject()->relistAction($params);
-    }
-
-    public function reviseAction(array $params = array())
-    {
-        return $this->getChildObject()->reviseAction($params);
-    }
-
-    public function stopAction(array $params = array())
-    {
-        return $this->getChildObject()->stopAction($params);
-    }
-
-    public function deleteAction(array $params = array())
-    {
-        return $this->getChildObject()->deleteAction($params);
-    }
-
-    // ---------------------------------------
-
-    public static function getActionTitle($action)
-    {
-        $title = Mage::helper('M2ePro')->__('Unknown');
-
-        switch ($action) {
-            case self::ACTION_LIST:   $title = Mage::helper('M2ePro')->__('Listing'); 
-                break;
-            case self::ACTION_RELIST: $title = Mage::helper('M2ePro')->__('Relisting'); 
-                break;
-            case self::ACTION_REVISE: $title = Mage::helper('M2ePro')->__('Revising'); 
-                break;
-            case self::ACTION_STOP:   $title = Mage::helper('M2ePro')->__('Stopping'); 
-                break;
-            case self::ACTION_DELETE:   $title = Mage::helper('M2ePro')->__('Deleting'); 
-                break;
-        }
-
-        return $title;
     }
 
     //########################################

@@ -278,26 +278,6 @@ class Ess_M2ePro_Adminhtml_Amazon_Template_ProductTaxCodeController
 
             $this->setProductTaxCodeTemplateForProducts($productsIdsLocked, $templateId);
             $this->runProcessorForParents($productsIdsLocked);
-
-            $template = Mage::getModel('M2ePro/Amazon_Template_ProductTaxCode')->load($templateId);
-
-            $snapshotBuilder = Mage::getModel('M2ePro/Amazon_Template_ProductTaxCode_SnapshotBuilder');
-            $snapshotBuilder->setModel($template);
-            $newData = $snapshotBuilder->getSnapshot();
-
-            $diff = Mage::getModel('M2ePro/Amazon_Template_ProductTaxCode_Diff');
-            $diff->setNewSnapshot($newData);
-            $diff->setOldSnapshot(array());
-
-            $affectedListingsProducts = Mage::getModel(
-                'M2ePro/Amazon_Template_ProductTaxCode_AffectedListingsProducts'
-            );
-            $affectedListingsProducts->setModel($template);
-
-            $changeProcessor = Mage::getModel('M2ePro/Amazon_Template_ProductTaxCode_ChangeProcessor');
-            $changeProcessor->process(
-                $diff, $affectedListingsProducts->getData(array('id', 'status'), array('only_physical_units' => true))
-            );
         }
 
         return $this->getResponse()->setBody(

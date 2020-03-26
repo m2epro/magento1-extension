@@ -42,7 +42,7 @@ AmazonListingSearchAsinGridHandler = Class.create(ListingGridHandler, {
         this.productSearchHandler.clearSearchResultsAndOpenSearchMenu = function() {
             var self = this;
 
-            if (confirm(self.options.text.confirm)) {
+            if (confirm(M2ePro.text.confirm)) {
                 popUp.close();
                 self.unmapFromGeneralId(self.params.productId);
             }

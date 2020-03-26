@@ -35,7 +35,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_Validator
             return false;
         }
 
-        if ($this->getVariationManager()->isRelationParentType() && !$this->validateParentListingProductFlags()) {
+        if ($this->getVariationManager()->isRelationParentType() && !$this->validateParentListingProduct()) {
             return false;
         }
 
@@ -95,6 +95,10 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_Validator
 
         $helper = Mage::helper('M2ePro/Component_Walmart_Configuration');
 
+        if ($helper->isProductIdOverrideModeAll()) {
+            return Ess_M2ePro_Helper_Component_Walmart_Configuration::PRODUCT_ID_OVERRIDE_CUSTOM_CODE;
+        }
+
         if ($helper->isGtinModeNotSet()) {
             return null;
         }
@@ -112,6 +116,10 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_Validator
         }
 
         $helper = Mage::helper('M2ePro/Component_Walmart_Configuration');
+
+        if ($helper->isProductIdOverrideModeAll()) {
+            return Ess_M2ePro_Helper_Component_Walmart_Configuration::PRODUCT_ID_OVERRIDE_CUSTOM_CODE;
+        }
 
         if ($helper->isUpcModeNotSet()) {
             return null;
@@ -131,6 +139,10 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_Validator
 
         $helper = Mage::helper('M2ePro/Component_Walmart_Configuration');
 
+        if ($helper->isProductIdOverrideModeAll()) {
+            return Ess_M2ePro_Helper_Component_Walmart_Configuration::PRODUCT_ID_OVERRIDE_CUSTOM_CODE;
+        }
+
         if ($helper->isEanModeNotSet()) {
             return null;
         }
@@ -148,6 +160,10 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_Validator
         }
 
         $helper = Mage::helper('M2ePro/Component_Walmart_Configuration');
+
+        if ($helper->isProductIdOverrideModeAll()) {
+            return Ess_M2ePro_Helper_Component_Walmart_Configuration::PRODUCT_ID_OVERRIDE_CUSTOM_CODE;
+        }
 
         if ($helper->isIsbnModeNotSet()) {
             return null;

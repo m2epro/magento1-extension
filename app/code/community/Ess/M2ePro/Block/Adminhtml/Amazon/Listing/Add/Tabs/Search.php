@@ -31,8 +31,8 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_Tabs_Search
         $data = $this->getListingData();
 
         $this->setData(
-            'general_attributes',
-            Mage::helper('M2ePro/Magento_Attribute')->getGeneralFromAllAttributeSets()
+            'all_attributes',
+            Mage::helper('M2ePro/Magento_Attribute')->getAll()
         );
 
         foreach ($data as $key=>$value) {

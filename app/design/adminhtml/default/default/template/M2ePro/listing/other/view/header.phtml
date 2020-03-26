@@ -72,11 +72,7 @@
         <li>
             <label>
                 <span class="label">
-                    <?php if($this->getMarketplace()->isComponentModeEbay()): ?>
-                        <?php echo Mage::helper('M2ePro')->escapeHtml(Mage::helper('M2ePro')->__('eBay Site')); ?>:&nbsp;
-                    <?php else: ?>
-                        <?php echo Mage::helper('M2ePro')->escapeHtml(Mage::helper('M2ePro')->__('Marketplace')); ?>:&nbsp;
-                    <?php endif; ?>
+                    <?php echo Mage::helper('M2ePro')->escapeHtml(Mage::helper('M2ePro')->__('Marketplace')); ?>:&nbsp;
                 </span>
                 <span class="value">
                     <?php echo Mage::helper('M2ePro')->escapeHtml($this->getMarketplaceTitle()); ?>

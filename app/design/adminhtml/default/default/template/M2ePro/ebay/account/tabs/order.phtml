@@ -60,7 +60,6 @@
             ),
             'creation' => array(
                 'mode' => Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_CREATE_CHECKOUT_AND_PAID,
-                'reservation_days' => 0
             ),
             'tax' => array(
                 'mode' => Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_TAX_MODE_MIXED
@@ -112,7 +111,6 @@
             <?php endif; ?>
             $('magento_orders_status_mapping_mode').observe('change', EbayAccountHandlerObj.magentoOrdersStatusMappingModeChange);
 
-            $('magento_orders_creation_mode').observe('change', EbayAccountHandlerObj.magentoOrdersCreationModeChange);
         }, 350);
     });
     //-----------------------------
@@ -456,24 +454,6 @@
                 ); ?>
             </div>
 
-            <?php $canShowBlock = $formData['magento_orders_settings']['creation']['mode'] == Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_CREATE_IMMEDIATELY ?>
-            <div id="magento_orders_creation_mode_immediately_warning_container" <?php if (!$canShowBlock): ?> style="display: none;"<?php endif; ?>>
-                <ul class="messages">
-                    <li class="warning-msg">
-                        <ul>
-                            <li>
-                                <span>
-                                    <?php echo Mage::helper('M2ePro')->__(
-                                        'Please note that Immediate Magento order creation sets certain limits to the update of the later order changes.
-                                        If the shipping or tax details are modified after checkout is completed, these changes will not be reflected in Magento order.'
-                                    ); ?>
-                                </span>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-
             <table class="form-list" cellspacing="0" cellpadding="0">
 
                 <tr>
@@ -482,34 +462,16 @@
                     </td>
                     <td class="value" style="width: auto;">
                         <select name="magento_orders_settings[creation][mode]" id="magento_orders_creation_mode">
-                            <option value="<?php echo Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_CREATE_IMMEDIATELY ?>" <?php if ($formData['magento_orders_settings']['creation']['mode'] == Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_CREATE_IMMEDIATELY): ?>selected="selected"<?php endif; ?>><?php echo Mage::helper('M2ePro')->__('Immediately') ?></option>
                             <option value="<?php echo Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_CREATE_CHECKOUT ?>" <?php if ($formData['magento_orders_settings']['creation']['mode'] == Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_CREATE_CHECKOUT): ?>selected="selected"<?php endif; ?>><?php echo Mage::helper('M2ePro')->__('Checkout Is Completed') ?></option>
-                            <option value="<?php echo Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_CREATE_PAID ?>" <?php if ($formData['magento_orders_settings']['creation']['mode'] == Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_CREATE_PAID): ?>selected="selected"<?php endif; ?>><?php echo Mage::helper('M2ePro')->__('Payment Is Received') ?></option>
-                            <option value="<?php echo Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_CREATE_CHECKOUT_AND_PAID ?>" <?php if ($formData['magento_orders_settings']['creation']['mode'] == Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_CREATE_CHECKOUT_AND_PAID): ?>selected="selected"<?php endif; ?>><?php echo Mage::helper('M2ePro')->__('Checkout Is Completed & Payment Received') ?></option>
-                        </select>
-                    </td>
-                </tr>
-
-                <?php $canDisplayRow = $formData['magento_orders_settings']['creation']['mode'] == Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_CREATE_IMMEDIATELY ?>
-                <tr id="magento_orders_creation_reservation_days_container" <?php if (!$canDisplayRow): ?>style="display: none;"<?php endif; ?>>
-                    <td class="label">
-                        <label for="magento_orders_creation_reservation_days"><?php echo Mage::helper('M2ePro')->__('Automatic Cancellation') ?>: </label>
-                    </td>
-                    <td class="value" style="width: auto;">
-                        <select name="magento_orders_settings[creation][reservation_days]" id="magento_orders_creation_reservation_days">
-                            <option value="0" <?php if ($formData['magento_orders_settings']['creation']['reservation_days'] == 0): ?>selected="selected"<?php endif; ?>><?php echo Mage::helper('M2ePro')->__('Never') ?></option>
-                            <?php for ($day = 7; $day <= 10; $day++): ?>
-                                <option value="<?php echo $day ?>" <?php if ($formData['magento_orders_settings']['creation']['reservation_days'] == $day): ?>selected="selected"<?php endif; ?>><?php echo Mage::helper('M2ePro')->__('In %d days', $day) ?></option>
-                            <?php endfor; ?>
+                            <option value="<?php echo Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_CREATE_CHECKOUT_AND_PAID ?>" <?php if ($formData['magento_orders_settings']['creation']['mode'] == Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_CREATE_CHECKOUT_AND_PAID): ?>selected="selected"<?php endif; ?>><?php echo Mage::helper('M2ePro')->__('Payment Is Received') ?></option>
                         </select>
                         <p class="note">
-                            <?php echo Mage::helper('M2ePro')->__('Magento Orders, which were not paid in a definite time interval, will be cancelled. Unpaid Item Process will be launched for such Orders on eBay.') ?>
+                            <?php echo Mage::helper('M2ePro')->__('Choose at which stage of eBay Order processing a Magento Order should be create') ?>
                         </p>
                     </td>
                 </tr>
 
-                <?php $canDisplayRow = $formData['magento_orders_settings']['creation']['mode'] != Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_CREATE_IMMEDIATELY ?>
-                <tr id="magento_orders_qty_reservation_days_container" <?php if (!$canDisplayRow): ?>style="display: none;"<?php endif; ?>>
+                <tr id="magento_orders_qty_reservation_days_container">
                     <td class="label">
                         <label for="magento_orders_qty_reservation_days"><?php echo Mage::helper('M2ePro')->__('Reserve Quantity') ?>:</label>
                     </td>
@@ -526,7 +488,7 @@
                             <?php endfor; ?>
                         </select>
                         <p class="note">
-                            <?php echo Mage::helper('M2ePro')->__('Choose how long to set Stock aside after an eBay Order is made, to allow time for the eBay process to reach the point at which a Magento Order is created.') ?>
+                            <?php echo Mage::helper('M2ePro')->__('Choose for how long M2E Pro should reserve Magento Product quantity per eBay Order until Magento Order is created.') ?>
                         </p>
                     </td>
                 </tr>

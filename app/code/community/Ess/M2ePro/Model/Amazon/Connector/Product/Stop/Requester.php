@@ -143,29 +143,16 @@ class Ess_M2ePro_Model_Amazon_Connector_Product_Stop_Requester
         $listingProductCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Product');
         $listingProductCollection->addFieldToFilter('id', array('in' => $childListingsProductsIds));
 
-        /** @var Ess_M2ePro_Model_Listing_Product[] $processChildListingsProducts */
-        $processChildListingsProducts = $listingProductCollection->getItems();
-        if (empty($processChildListingsProducts)) {
-            return true;
-        }
-
-        /** @var Ess_M2ePro_Model_Amazon_Listing_Product_Action_Processing $processingAction */
-        $processingAction = $this->_listingProduct->getProcessingAction();
-        $groupHash = $processingAction->getGroupHash();
-
-        foreach ($processChildListingsProducts as $childListingProduct) {
+        foreach ($listingProductCollection->getItems() as $childListingProduct) {
             $processingRunner = Mage::getModel('M2ePro/Amazon_Connector_Product_ProcessingRunner');
-
-            $params = array_merge($this->_params, array('is_parent_action' => true));
-
             $processingRunner->setParams(
                 array(
                     'listing_product_id' => $childListingProduct->getId(),
                     'configurator'       => $this->_listingProduct->getActionConfigurator()->getData(),
                     'action_type'        => $this->getActionType(),
                     'lock_identifier'    => $this->getLockIdentifier(),
-                    'requester_params'   => $params,
-                    'group_hash'         => $groupHash,
+                    'requester_params'   => array_merge($this->_params, array('is_parent_action' => true)),
+                    'group_hash'         => $this->_listingProduct->getProcessingAction()->getGroupHash(),
                 )
             );
 

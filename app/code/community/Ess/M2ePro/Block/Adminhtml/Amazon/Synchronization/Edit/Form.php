@@ -47,56 +47,12 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Synchronization_Edit_Form extends Mage_A
         // ---------------------------------------
 
         // ---------------------------------------
-        $format = Mage::app()->getLocale()->getDateTimeFormat(Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM);
-
-        $lastListingProductId = Mage::getModel('M2ePro/Registry')
-            ->load('/listing/product/revise/total/amazon/last_listing_product_id/', 'key')
-            ->getValue();
-
-        $this->reviseAllInProcessingState = !empty($lastListingProductId);
-
-        $this->reviseAllStartDate = Mage::getModel('M2ePro/Registry')
-            ->load('/listing/product/revise/total/amazon/start_date/', 'key')
-            ->getValue();
-        $this->reviseAllStartDate && $this->reviseAllStartDate = Mage::app()->getLocale()
-            ->date(strtotime($this->reviseAllStartDate))
-            ->toString($format);
-
-        $this->reviseAllEndDate = Mage::getModel('M2ePro/Registry')
-            ->load('/listing/product/revise/total/amazon/end_date/', 'key')
-            ->getValue();
-        $this->reviseAllEndDate && $this->reviseAllEndDate = Mage::app()->getLocale()
-            ->date(strtotime($this->reviseAllEndDate))
-            ->toString($format);
-        // ---------------------------------------
-
-        // ---------------------------------------
-        $component = Ess_M2ePro_Helper_Component_Amazon::NICK;
-        $data = array(
-            'class'   => 'ok_button',
-            'label'   => Mage::helper('M2ePro')->__('Confirm'),
-            'onclick' => "Windows.getFocusedWindow().close(); SynchronizationHandlerObj.runReviseAll('{$component}');",
-        );
-        $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
-        $this->setChild('revise_all_confirm_popup_ok_button', $buttonBlock);
-        // ---------------------------------------
-
-        // ---------------------------------------
         $this->inspectorMode = (bool)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
             '/listing/product/inspector/', 'mode'
         );
         // ---------------------------------------
 
         return parent::_beforeToHtml();
-    }
-
-    //########################################
-
-    public function isShowReviseAll()
-    {
-        return Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
-            '/view/synchronization/revise_total/', 'show'
-        );
     }
 
     //########################################

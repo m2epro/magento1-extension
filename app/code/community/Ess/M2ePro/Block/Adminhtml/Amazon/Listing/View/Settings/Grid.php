@@ -115,8 +115,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Settings_Grid
                 'is_general_id_owner'            => 'is_general_id_owner',
                 'is_variation_parent'            => 'is_variation_parent',
                 'defected_messages'              => 'defected_messages',
-                'is_details_data_changed'        => 'is_details_data_changed',
-                'is_images_data_changed'         => 'is_images_data_changed',
                 'variation_parent_afn_state'       => 'variation_parent_afn_state',
                 'variation_parent_repricing_state' => 'variation_parent_repricing_state',
             ),

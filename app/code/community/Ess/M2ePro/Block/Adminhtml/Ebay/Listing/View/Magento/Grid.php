@@ -175,9 +175,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Magento_Grid
             )
         );
 
-        $tempTypes = Mage::getSingleton('catalog/product_type')->getOptionArray();
-        unset($tempTypes['virtual']);
-
         $this->addColumn(
             'type', array(
             'header'    => Mage::helper('M2ePro')->__('Type'),
@@ -187,7 +184,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Magento_Grid
             'sortable'  => false,
             'index'     => 'type_id',
             'filter_index' => 'type_id',
-            'options' => $tempTypes
+            'options' => Mage::helper('M2ePro/Magento_Product')->getTypesOptionArray()
             )
         );
 

@@ -2,32 +2,12 @@ AmazonListingTemplateProductTaxCodeHandler = Class.create(ActionHandler, {
 
     // ---------------------------------------
 
-    initialize: function($super,gridHandler)
-    {
-        var self = this;
-
-        $super(gridHandler);
-
-    },
-
-    // ---------------------------------------
-
-    options: {},
-
-    setOptions: function(options)
-    {
-        this.options = Object.extend(this.options,options);
-        return this;
-    },
-
-    // ---------------------------------------
-
     openPopUp: function(productsIds)
     {
         var self = this;
         self.gridHandler.unselectAll();
 
-        new Ajax.Request(self.options.url.viewProductTaxCodePopup, {
+        new Ajax.Request(M2ePro.url.viewProductTaxCodePopup, {
             method: 'post',
             parameters: {
                 products_ids:  productsIds
@@ -58,7 +38,7 @@ AmazonListingTemplateProductTaxCodeHandler = Class.create(ActionHandler, {
                     closable: true,
                     className: "magento",
                     windowClassName: "popup-window",
-                    title: self.options.text.templateProductTaxCodePopupTitle,
+                    title: M2ePro.text.templateProductTaxCodePopupTitle,
                     top: 70,
                     width: 800,
                     height: 550,
@@ -106,7 +86,7 @@ AmazonListingTemplateProductTaxCodeHandler = Class.create(ActionHandler, {
             return;
         }
 
-        new Ajax.Request(self.options.url.assignProductTaxCode, {
+        new Ajax.Request(M2ePro.url.assignProductTaxCode, {
             method: 'post',
             parameters: {
                 products_ids: templateProductTaxCodePopup.productsIds,
@@ -140,7 +120,7 @@ AmazonListingTemplateProductTaxCodeHandler = Class.create(ActionHandler, {
     {
         var self = this;
 
-        new Ajax.Request(self.options.url.unassignProductTaxCode, {
+        new Ajax.Request(M2ePro.url.unassignProductTaxCode, {
             method: 'post',
             parameters: {
                 products_ids: productsIds
@@ -168,7 +148,7 @@ AmazonListingTemplateProductTaxCodeHandler = Class.create(ActionHandler, {
 
     loadGrid: function() {
 
-        new Ajax.Request(this.options.url.viewProductTaxCodeGrid, {
+        new Ajax.Request(M2ePro.url.viewProductTaxCodeGrid, {
             method: 'post',
             parameters: {
                 products_ids: templateProductTaxCodePopup.productsIds

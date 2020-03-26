@@ -16,7 +16,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Validator_General
      */
     public function validate()
     {
-        if ($this->getVariationManager()->isRelationParentType() && !$this->validateParentListingProductFlags()) {
+        if ($this->getVariationManager()->isRelationParentType() && !$this->validateParentListingProduct()) {
             return false;
         }
 

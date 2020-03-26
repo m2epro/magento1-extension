@@ -43,9 +43,7 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
     const MAGENTO_ORDERS_NUMBER_SOURCE_MAGENTO = 'magento';
     const MAGENTO_ORDERS_NUMBER_SOURCE_CHANNEL = 'channel';
 
-    const MAGENTO_ORDERS_CREATE_IMMEDIATELY = 1;
     const MAGENTO_ORDERS_CREATE_CHECKOUT = 2;
-    const MAGENTO_ORDERS_CREATE_PAID = 3;
     const MAGENTO_ORDERS_CREATE_CHECKOUT_AND_PAID = 4;
 
     const MAGENTO_ORDERS_TAX_MODE_NONE = 0;
@@ -670,14 +668,6 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
     /**
      * @return bool
      */
-    public function shouldCreateMagentoOrderImmediately()
-    {
-        return $this->getMagentoOrdersCreationMode() == self::MAGENTO_ORDERS_CREATE_IMMEDIATELY;
-    }
-
-    /**
-     * @return bool
-     */
     public function shouldCreateMagentoOrderWhenCheckedOut()
     {
         return $this->getMagentoOrdersCreationMode() == self::MAGENTO_ORDERS_CREATE_CHECKOUT;
@@ -686,27 +676,9 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
     /**
      * @return bool
      */
-    public function shouldCreateMagentoOrderWhenPaid()
-    {
-        return $this->getMagentoOrdersCreationMode() == self::MAGENTO_ORDERS_CREATE_PAID;
-    }
-
-    /**
-     * @return bool
-     */
     public function shouldCreateMagentoOrderWhenCheckedOutAndPaid()
     {
         return $this->getMagentoOrdersCreationMode() == self::MAGENTO_ORDERS_CREATE_CHECKOUT_AND_PAID;
-    }
-
-    /**
-     * @return int
-     */
-    public function getMagentoOrdersReservationDays()
-    {
-        $setting = $this->getSetting('magento_orders_settings', array('creation', 'reservation_days'), 0);
-
-        return (int)$setting;
     }
 
     /**
@@ -1022,15 +994,14 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
      * @param bool $returnRealValue
      * @return bool|null
      */
-    public function getOutOfStockControl($returnRealValue = false)
+    public function getOutOfStockControl()
     {
         $userPreferences = $this->getUserPreferences();
-
         if (isset($userPreferences['OutOfStockControlPreference'])) {
             return strtolower($userPreferences['OutOfStockControlPreference']) === 'true';
         }
 
-        return $returnRealValue ? null : false;
+        return false;
     }
 
     //########################################
@@ -1336,7 +1307,6 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
                     ),
                     'creation' => array(
                         'mode' => self::MAGENTO_ORDERS_CREATE_CHECKOUT_AND_PAID,
-                        'reservation_days' => 0
                     ),
                     'tax' => array(
                         'mode' => self::MAGENTO_ORDERS_TAX_MODE_MIXED

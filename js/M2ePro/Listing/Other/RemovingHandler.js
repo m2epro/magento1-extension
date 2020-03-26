@@ -2,16 +2,6 @@ ListingOtherRemovingHandler = Class.create(ActionHandler, {
 
     // ---------------------------------------
 
-    options: {},
-
-    setOptions: function(options)
-    {
-        this.options = Object.extend(this.options, options);
-        return this;
-    },
-
-    // ---------------------------------------
-
     run: function()
     {
         this.removingProducts(
@@ -21,10 +11,10 @@ ListingOtherRemovingHandler = Class.create(ActionHandler, {
 
     removingProducts: function(productsString)
     {
-        new Ajax.Request(this.options.url.removingProducts, {
+        new Ajax.Request(M2ePro.url.removingProducts, {
             method: 'post',
             parameters: {
-                componentMode: this.options.customData.componentMode,
+                componentMode: M2ePro.customData.componentMode,
                 product_ids: productsString
             },
             onSuccess: (function(transport) {
@@ -32,9 +22,9 @@ ListingOtherRemovingHandler = Class.create(ActionHandler, {
                 MagentoMessageObj.clearAll();
 
                 if (transport.responseText == '1') {
-                    MagentoMessageObj.addSuccess(this.options.text.successfully_removed);
+                    MagentoMessageObj.addSuccess(M2ePro.text.successfully_removed);
                 } else {
-                    MagentoMessageObj.addError(this.options.text.not_enough_data);
+                    MagentoMessageObj.addError(M2ePro.text.not_enough_data);
                 }
 
                 this.gridHandler.unselectAllAndReload();

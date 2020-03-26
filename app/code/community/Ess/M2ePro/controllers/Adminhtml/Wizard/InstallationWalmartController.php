@@ -62,7 +62,9 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationWalmartController
         $licenseData = array();
         foreach ($requiredKeys as $key) {
             if ($tempValue = $this->getRequest()->getParam($key)) {
-                $licenseData[$key] = $tempValue;
+                $licenseData[$key] = Mage::helper('M2ePro')->escapeJs(
+                    Mage::helper('M2ePro')->escapeHtml($tempValue)
+                );
                 continue;
             }
 
@@ -117,7 +119,9 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationWalmartController
         $licenseData = array();
         foreach ($requiredKeys as $key) {
             if ($tempValue = $this->getRequest()->getParam($key)) {
-                $licenseData[$key] = $tempValue;
+                $licenseData[$key] = Mage::helper('M2ePro')->escapeJs(
+                    Mage::helper('M2ePro')->escapeHtml($tempValue)
+                );
                 continue;
             }
 

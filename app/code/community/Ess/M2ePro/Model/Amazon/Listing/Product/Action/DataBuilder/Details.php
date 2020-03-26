@@ -123,7 +123,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Details
         $giftMessage = $this->getAmazonListingProduct()->getListingSource()->getGiftMessage();
 
         $isOnlineGiftSettingsDisabled = $this->getListingProduct()->getSetting(
-            'additional_data', 'online_gift_settings_disabled'
+            'additional_data', 'online_gift_settings_disabled', true
         );
 
         if ($isOnlineGiftSettingsDisabled && $giftWrap === false && $giftMessage === false) {

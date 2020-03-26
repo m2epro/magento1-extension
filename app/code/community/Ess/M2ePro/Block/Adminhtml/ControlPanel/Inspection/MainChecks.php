@@ -105,7 +105,7 @@ class Ess_M2ePro_Block_Adminhtml_ControlPanel_Inspection_MainChecks
 
     protected function getTablesStructureValidity()
     {
-        $tablesInfo = Mage::helper('M2ePro/Module_Database_Structure')->getModuleTablesInfo();
+        $tablesInfo = Mage::helper('M2ePro/Module_Database_Structure')->getTablesInfo();
 
         $dispatcherObject = Mage::getModel('M2ePro/M2ePro_Connector_Dispatcher');
         $connectorObj = $dispatcherObject->getVirtualConnector(

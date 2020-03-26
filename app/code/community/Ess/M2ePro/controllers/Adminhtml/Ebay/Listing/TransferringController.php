@@ -374,7 +374,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_TransferringController
         );
 
         if (!$isDifferentMarketplace) {
-            $templatesNicks[] = Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_RETURN;
+            $templatesNicks[] = Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_RETURN_POLICY;
             $templatesNicks[] = Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SHIPPING;
             $templatesNicks[] = Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_PAYMENT;
         }
@@ -455,7 +455,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_TransferringController
         }
 
         $templatesNicks = array(
-            Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_RETURN,
+            Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_RETURN_POLICY,
             Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SHIPPING,
             Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_PAYMENT
         );

@@ -11,36 +11,8 @@
 
 $translations = array();
 
-// ->__('Synchronization Settings have been saved.')
-$text = 'Synchronization Settings have been saved.';
-$translations[$text] = Mage::helper('M2ePro')->__($text);
-
 // ->__('Running All Enabled Tasks')
 $text = 'Running All Enabled Tasks';
-$translations[$text] = Mage::helper('M2ePro')->__($text);
-
-// ->__('Another Synchronization Is Already Running.')
-$text = 'Another Synchronization Is Already Running.';
-$translations[$text] = Mage::helper('M2ePro')->__($text);
-
-// ->__('Getting information. Please wait ...')
-$text = 'Getting information. Please wait ...';
-$translations[$text] = Mage::helper('M2ePro')->__($text);
-
-// ->__('Preparing to start. Please wait ...')
-$text = 'Preparing to start. Please wait ...';
-$translations[$text] = Mage::helper('M2ePro')->__($text);
-
-// ->__('Synchronization has successfully ended.')
-$text = 'Synchronization has successfully ended.';
-$translations[$text] = Mage::helper('M2ePro')->__($text);
-
-// ->__('Synchronization ended with warnings. <a target="_blank" href="%url%">View Log</a> for details.')
-$text = 'Synchronization ended with warnings. <a target="_blank" href="%url%">View Log</a> for details.';
-$translations[$text] = Mage::helper('M2ePro')->__($text);
-
-// ->__('Synchronization ended with errors. <a target="_blank" href="%url%">View Log</a> for details.')
-$text = 'Synchronization ended with errors. <a target="_blank" href="%url%">View Log</a> for details.';
 $translations[$text] = Mage::helper('M2ePro')->__($text);
 
 // ->__('Revise All')
@@ -56,10 +28,6 @@ $translations = json_encode($translations);
         M2ePro.url.add(<?php echo json_encode(array(
             'formSubmit' => $this->getUrl('M2ePro/adminhtml_amazon_synchronization/save'),
             'logViewUrl' => $this->getUrl('M2ePro/adminhtml_amazon_log/synchronization',array('back'=>Mage::helper('M2ePro')->makeBackUrlParam('*/adminhtml_amazon_synchronization/index'))),
-
-            'runReviseAll'        => $this->getUrl('M2ePro/adminhtml_amazon_synchronization/runReviseAll'),
-
-            'synchCheckProcessingNow' => $this->getUrl('M2ePro/adminhtml_amazon_synchronization/synchCheckProcessingNow')
         )); ?>);
 
         M2ePro.translator.add(<?php echo $translations; ?>);
@@ -119,42 +87,6 @@ $translations = json_encode($translations);
 
                         <div style="padding: 12px"></div>
 
-                        <?php if ($this->isShowReviseAll()) { ?>
-                            <div id="block_notice_amazon_synchronization_revise_all" style="<?php if (!$instructions_mode) echo 'display: none'; ?>" class="block_notices_module" title="" subtitle="" collapseable="no" hideblock="no" always_show="yes">
-
-                                <?php echo Mage::helper('M2ePro')->__('If your Amazon Listings for some reason were asynchronized with the Products in Magento, <a href="javascript:" onclick="%script_code%">turn on</a> the Revise All action to catch data up.
-        <br/>Revise is performed by the Inventory Synchronization, 100 Items per a cycle.
-    <br/><br/>',
-                                    'SynchronizationHandlerObj.showReviseAllConfirmPopup(\''.Ess_M2ePro_Helper_Component_Amazon::NICK.'\');'
-                                )?>
-
-                                <span id="amazon_revise_all_start" style="display: none">
-
-                            <span style="color: blue">
-                                <?php echo Mage::helper('M2ePro')->__('In Progress, start date - ') ?>
-                            </span>
-
-                            <span id="amazon_revise_all_start_date" style="color: blue">
-                                <?php echo $this->reviseAllStartDate; ?>
-                            </span>
-
-                        </span>
-
-                                <span id="amazon_revise_all_end" style="display: none">
-
-                            <span style="color: green">
-                                <?php echo Mage::helper('M2ePro')->__('Finished, end date - ') ?>
-                            </span>
-
-                            <span id="amazon_revise_all_end_date" style="color: green">
-                                <?php echo $this->reviseAllEndDate; ?>
-                            </span>
-
-                        </span>
-
-                            </div>
-                        <?php } ?>
-
                     </div>
                 </div>
 
@@ -207,43 +139,5 @@ $translations = json_encode($translations);
             </div>
 
         </div>
-
-        <div id="amazon_revise_all_confirm_popup" style="display: none;">
-            <div style="margin: 17px 0">
-
-                <?php echo Mage::helper('M2ePro')->__(
-                    'Click \'Confirm\' and Revise will be performed by the Inventory Synchronization, 100 Items per a cycle.'
-                ); ?>
-
-            </div>
-
-            <div class="clear"></div>
-
-            <div class="right">
-                <a href="javascript:void(0);" onclick="Windows.getFocusedWindow().close()"><?php echo Mage::helper('M2ePro')->__('Cancel') ?></a>
-                &nbsp;&nbsp;&nbsp;&nbsp;
-                <?php echo $this->getChildHtml('revise_all_confirm_popup_ok_button'); ?>
-            </div>
-
-            <div class="clear"></div>
-
-        </div>
-
-        <?php if ($this->isShowReviseAll()) { ?>
-            <script type="text/javascript">
-
-                Event.observe(window, 'load', function() {
-                    setTimeout(function() {
-                        SynchronizationHandlerObj.initReviseAllInfo(
-                            <?php echo json_encode($this->reviseAllInProcessingState) ?>,
-                            '<?php echo $this->reviseAllStartDate ?>',
-                            '<?php echo $this->reviseAllEndDate ?>',
-                            '<?php echo Ess_M2ePro_Helper_Component_Amazon::NICK ?>'
-                        );
-                    }, 400);
-                });
-
-            </script>
-        <?php } ?>
 
     </form>

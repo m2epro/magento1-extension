@@ -64,8 +64,8 @@ class Ess_M2ePro_Model_Cron_Task_Listing_Product_ProcessReviseTotal extends Ess_
         );
 
         /** @var Ess_M2ePro_Model_Resource_Listing_Product_Instruction_Collection $collection */
-        $currentInstructionsCount = Mage::getResourceModel('M2ePro/Listing_Product_Instruction_Collection')
-            ->applySkipUntilFilter()
+        $collection = Mage::getResourceModel('M2ePro/Listing_Product_Instruction_Collection');
+        $currentInstructionsCount = $collection->applySkipUntilFilter()
             ->addFieldToFilter('component', $component)
             ->addFieldToFilter('initiator', self::INSTRUCTION_INITIATOR)
             ->getSize();

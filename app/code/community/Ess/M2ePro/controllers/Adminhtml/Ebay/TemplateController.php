@@ -119,7 +119,7 @@ class Ess_M2ePro_Adminhtml_Ebay_TemplateController extends Ess_M2ePro_Controller
         $this->_initAction();
 
         switch ($nick) {
-            case Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_RETURN:
+            case Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_RETURN_POLICY:
                 $this->setPageHelpLink(null, null, "x/ZAAJAQ");
                 break;
 
@@ -852,7 +852,7 @@ class Ess_M2ePro_Adminhtml_Ebay_TemplateController extends Ess_M2ePro_Controller
             $newTemplate = Mage::helper('M2ePro')
                 ->getCachedObject(
                     'Ebay_Template_OtherCategory',
-                    $newData['template_category_other_id'],
+                    $newData['template_other_category_id'],
                     null, array('template')
                 );
             $snapshotBuilder->setModel($newTemplate);
@@ -869,7 +869,7 @@ class Ess_M2ePro_Adminhtml_Ebay_TemplateController extends Ess_M2ePro_Controller
             $oldTemplate = Mage::helper('M2ePro')
                 ->getCachedObject(
                     'Ebay_Template_OtherCategory',
-                    $oldData['template_category_other_id'],
+                    $oldData['template_other_category_id'],
                     null, array('template')
                 );
             $snapshotBuilder->setModel($oldTemplate);

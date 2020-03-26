@@ -144,12 +144,12 @@ class Ess_M2ePro_Model_Order_Change extends Ess_M2ePro_Model_Abstract
 
         $change->addData(
             array(
-            'order_id'     => $orderId,
-            'action'       => $action,
-            'params'       => Mage::helper('M2ePro')->jsonEncode($params),
-            'creator_type' => $creatorType,
-            'component'    => $component,
-            'hash'         => $hash
+                'order_id'     => $orderId,
+                'action'       => $action,
+                'params'       => Mage::helper('M2ePro')->jsonEncode($params),
+                'creator_type' => $creatorType,
+                'component'    => $component,
+                'hash'         => $hash
             )
         );
         $change->save();

@@ -16,6 +16,8 @@ AmazonListingProductSearchHandler = Class.create(ActionHandler, {
 
         self.searchBlock = $('productSearch_pop_up_content').outerHTML;
         $('productSearch_pop_up_content').remove();
+
+        this.initValidators();
     },
 
     initMenuEvents: function()
@@ -54,20 +56,11 @@ AmazonListingProductSearchHandler = Class.create(ActionHandler, {
 
     // ---------------------------------------
 
-    options: {},
-
-    setOptions: function(options)
-    {
-        this.options = Object.extend(this.options,options);
-        this.initValidators();
-        return this;
-    },
-
     initValidators: function()
     {
         var self = this;
 
-        Validation.add('M2ePro-amazon-attribute-unique-value', self.options.text.variation_manage_matched_attributes_error_duplicate, function(value, el) {
+        Validation.add('M2ePro-amazon-attribute-unique-value', M2ePro.text.variation_manage_matched_attributes_error_duplicate, function(value, el) {
 
             var existedValues = [],
                 isValid = true,
@@ -133,7 +126,7 @@ AmazonListingProductSearchHandler = Class.create(ActionHandler, {
         popUp.options.destroyOnClose = true;
 
         if (mode == 0) {
-            new Ajax.Request(self.options.url.getSearchAsinMenu, {
+            new Ajax.Request(M2ePro.url.getSearchAsinMenu, {
                 method: 'post',
                 parameters: {
                     product_id: productId
@@ -159,7 +152,7 @@ AmazonListingProductSearchHandler = Class.create(ActionHandler, {
             $('suggested_asin_grid_help_block').show();
 
             $('productSearch_buttons').show();
-            new Ajax.Request(self.options.url.suggestedAsinGrid, {
+            new Ajax.Request(M2ePro.url.suggestedAsinGrid, {
                 method: 'post',
                 parameters: {
                     product_id: productId
@@ -182,7 +175,7 @@ AmazonListingProductSearchHandler = Class.create(ActionHandler, {
     clearSearchResultsAndOpenSearchMenu: function() {
         var self = this;
 
-        if (confirm(self.options.text.confirm)) {
+        if (confirm(M2ePro.text.confirm)) {
             popUp.close();
             self.unmapFromGeneralId(self.params.productId, function() {
                 self.openPopUp(0, self.params.title, self.params.productId);
@@ -268,7 +261,7 @@ AmazonListingProductSearchHandler = Class.create(ActionHandler, {
 
     showSearchGeneralIdAutoPrompt: function()
     {
-        if (confirm(this.options.text.confirm)) {
+        if (confirm(M2ePro.text.confirm)) {
             popUp.close();
             this.searchGeneralIdAuto(this.params.productId);
         }
@@ -279,7 +272,7 @@ AmazonListingProductSearchHandler = Class.create(ActionHandler, {
         MagentoMessageObj.clearAll();
         var self = this;
 
-        if (confirm(self.options.text.confirm)) {
+        if (confirm(M2ePro.text.confirm)) {
             this.unmapFromGeneralId(productId);
         }
     },
@@ -288,13 +281,13 @@ AmazonListingProductSearchHandler = Class.create(ActionHandler, {
     {
         var self = this;
 
-        if (!self.options.customData.isNewAsinAvailable) {
-            return alert(self.options.text.new_asin_not_available.replace('%code%',self.options.customData.marketplace.code));
+        if (!M2ePro.customData.isNewAsinAvailable) {
+            return alert(M2ePro.text.new_asin_not_available.replace('%code%',M2ePro.customData.marketplace.code));
         }
 
         listingProductIds = listingProductIds || self.params.productId;
 
-        new Ajax.Request(self.options.url.mapToNewAsin, {
+        new Ajax.Request(M2ePro.url.mapToNewAsin, {
             method: 'post',
             parameters: {
                 products_ids: listingProductIds
@@ -317,7 +310,7 @@ AmazonListingProductSearchHandler = Class.create(ActionHandler, {
 
                 if(response.products_ids.length > 0) {
                     ListingGridHandlerObj.templateDescriptionHandler.openPopUp(
-                        0, self.options.text.templateDescriptionPopupTitle,
+                        0, M2ePro.text.templateDescriptionPopupTitle,
                         response.products_ids, null, response.data, 1
                     );
                 } else {
@@ -343,12 +336,12 @@ AmazonListingProductSearchHandler = Class.create(ActionHandler, {
 
         if (query == '') {
             $('query').focus();
-            alert(self.options.text.enter_productSearch_query);
+            alert(M2ePro.text.enter_productSearch_query);
             return;
         }
 
         $('productSearch_error_block').hide();
-        new Ajax.Request(self.options.url.searchAsinManual, {
+        new Ajax.Request(M2ePro.url.searchAsinManual, {
             method: 'post',
             parameters: {
                 query: query,
@@ -393,7 +386,7 @@ AmazonListingProductSearchHandler = Class.create(ActionHandler, {
         var selectedProductsParts = result;
 
         ListingProgressBarObj.reset();
-        ListingProgressBarObj.show(self.options.text.automap_asin_progress_title);
+        ListingProgressBarObj.show(M2ePro.text.automap_asin_progress_title);
         GridWrapperObj.lock();
         $('loading-mask').setStyle({visibility: 'hidden'});
 
@@ -408,7 +401,7 @@ AmazonListingProductSearchHandler = Class.create(ActionHandler, {
 
         if (parts.length == 0) {
 
-            ListingProgressBarObj.setStatus(self.options.text.task_completed_message);
+            ListingProgressBarObj.setStatus(M2ePro.text.task_completed_message);
 
             GridWrapperObj.unlock();
             $('loading-mask').setStyle({visibility: 'visible'});
@@ -416,7 +409,7 @@ AmazonListingProductSearchHandler = Class.create(ActionHandler, {
             self.gridHandler.unselectAllAndReload();
 
             if (self.params.autoMapErrorFlag == true) {
-                MagentoMessageObj.addError(self.options.text.automap_error_message);
+                MagentoMessageObj.addError(M2ePro.text.automap_error_message);
             }
 
             setTimeout(function() {
@@ -424,7 +417,7 @@ AmazonListingProductSearchHandler = Class.create(ActionHandler, {
                 ListingProgressBarObj.reset();
             }, 2000);
 
-            new Ajax.Request(self.options.url.getProductsSearchStatus, {
+            new Ajax.Request(M2ePro.url.getProductsSearchStatus, {
                 method: 'post',
                 parameters: {
                     products_ids: selectedProductsString
@@ -456,9 +449,9 @@ AmazonListingProductSearchHandler = Class.create(ActionHandler, {
         var partExecuteString = part.length;
         partExecuteString += '';
 
-        ListingProgressBarObj.setStatus(str_replace('%product_title%', partExecuteString, self.options.text.automap_asin_search_products));
+        ListingProgressBarObj.setStatus(str_replace('%product_title%', partExecuteString, M2ePro.text.automap_asin_search_products));
 
-        new Ajax.Request(self.options.url.searchAsinAuto, {
+        new Ajax.Request(M2ePro.url.searchAsinAuto, {
             method: 'post',
             parameters: {
                 products_ids: partString
@@ -500,7 +493,7 @@ AmazonListingProductSearchHandler = Class.create(ActionHandler, {
             optionsData = '';
         }
 
-        new Ajax.Request(self.options.url.mapToAsin, {
+        new Ajax.Request(M2ePro.url.mapToAsin, {
             method: 'post',
             parameters: {
                 product_id: productId,
@@ -583,7 +576,7 @@ AmazonListingProductSearchHandler = Class.create(ActionHandler, {
             return;
         }
 
-        new Ajax.Request(self.options.url.addAttributesToVocabulary, {
+        new Ajax.Request(M2ePro.url.addAttributesToVocabulary, {
             method: 'post',
             parameters: {
                 attributes : $('vocabulary_attributes_data').value,
@@ -650,7 +643,7 @@ AmazonListingProductSearchHandler = Class.create(ActionHandler, {
             return;
         }
 
-        new Ajax.Request(self.options.url.addOptionsToVocabulary, {
+        new Ajax.Request(M2ePro.url.addOptionsToVocabulary, {
             method: 'post',
             parameters: {
                 options_data : $('vocabulary_options_data').value,
@@ -671,7 +664,7 @@ AmazonListingProductSearchHandler = Class.create(ActionHandler, {
 
         self.flagSuccess = false;
 
-        new Ajax.Request(self.options.url.unmapFromAsin, {
+        new Ajax.Request(M2ePro.url.unmapFromAsin, {
             method: 'post',
             parameters: {
                 products_ids: productIds
@@ -751,7 +744,7 @@ AmazonListingProductSearchHandler = Class.create(ActionHandler, {
             asinLink.innerHTML = $('parent_asin_' + id).innerHTML;
             asinLink.href = asinLink.href.slice(0, asinLink.href.lastIndexOf("/")) + '/' + $('parent_asin_' + id).innerHTML;
             $('parent_asin_text_'+id).show();
-            return $('map_link_' + id).innerHTML = '<span style="color: #808080">' + self.options.text.assign + '</span>';
+            return $('map_link_' + id).innerHTML = '<span style="color: #808080">' + M2ePro.text.assign + '</span>';
         }
 
         asinLink.innerHTML = selectedAsin;
@@ -838,7 +831,7 @@ AmazonListingProductSearchHandler = Class.create(ActionHandler, {
 
         if (optionsData === '') {
             $('map_link_error_icon_'+id).show();
-            return $('map_link_' + id).innerHTML = '<span style="color: #808080">' + self.options.text.assign + '</span>';
+            return $('map_link_' + id).innerHTML = '<span style="color: #808080">' + M2ePro.text.assign + '</span>';
         }
 
         optionsData.variations = JSON.parse(decodeHtmlentities($('variations_' + id).innerHTML));
@@ -973,7 +966,7 @@ AmazonListingProductSearchHandler = Class.create(ActionHandler, {
                 spanVirtualAttribute.down('span').title = '';
 
                 $('map_link_error_icon_'+id).show();
-                $('map_link_' + id).innerHTML = '<span style="color: #808080">' + self.options.text.assign + '</span>';
+                $('map_link_' + id).innerHTML = '<span style="color: #808080">' + M2ePro.text.assign + '</span>';
             });
 
             var option = new Element('option', {
@@ -997,7 +990,7 @@ AmazonListingProductSearchHandler = Class.create(ActionHandler, {
 
             selectAmazonAttr.observe('change', function(event) {
                 $('map_link_error_icon_'+id).show();
-                $('map_link_' + id).innerHTML = '<span style="color: #808080">' + self.options.text.assign + '</span>';
+                $('map_link_' + id).innerHTML = '<span style="color: #808080">' + M2ePro.text.assign + '</span>';
 
                 var result = true;
                 if (selectAmazonAttr.value != '' && inputMagentoAttr.value != selectAmazonAttr.value &&
@@ -1079,7 +1072,7 @@ AmazonListingProductSearchHandler = Class.create(ActionHandler, {
                     $('map_link_' + id).innerHTML = mapLinkTemplate;
                 } else {
                     $('map_link_error_icon_'+id).show();
-                    $('map_link_' + id).innerHTML = '<span style="color: #808080">' + self.options.text.assign + '</span>';
+                    $('map_link_' + id).innerHTML = '<span style="color: #808080">' + M2ePro.text.assign + '</span>';
                 }
             });
 
@@ -1240,7 +1233,7 @@ AmazonListingProductSearchHandler = Class.create(ActionHandler, {
 
             selectAmazonAttr.observe('change', function(event) {
                 $('map_link_error_icon_'+id).show();
-                $('map_link_' + id).innerHTML = '<span style="color: #808080">' + self.options.text.assign + '</span>';
+                $('map_link_' + id).innerHTML = '<span style="color: #808080">' + M2ePro.text.assign + '</span>';
 
                 var result = true;
                 if (selectAmazonAttr.value != '' && inputMagentoAttr.value != selectAmazonAttr.value &&
@@ -1374,7 +1367,7 @@ AmazonListingProductSearchHandler = Class.create(ActionHandler, {
                 spanMagentoAttr.down('span').title = '';
 
                 $('map_link_error_icon_'+id).show();
-                $('map_link_' + id).innerHTML = '<span style="color: #808080">' + self.options.text.assign + '</span>';
+                $('map_link_' + id).innerHTML = '<span style="color: #808080">' + M2ePro.text.assign + '</span>';
             });
 
             var option = new Element('option', {
@@ -1436,7 +1429,7 @@ AmazonListingProductSearchHandler = Class.create(ActionHandler, {
                     $('map_link_' + id).innerHTML = mapLinkTemplate;
                 } else {
                     $('map_link_error_icon_'+id).show();
-                    $('map_link_' + id).innerHTML = '<span style="color: #808080">' + self.options.text.assign + '</span>';
+                    $('map_link_' + id).innerHTML = '<span style="color: #808080">' + M2ePro.text.assign + '</span>';
                 }
             });
 

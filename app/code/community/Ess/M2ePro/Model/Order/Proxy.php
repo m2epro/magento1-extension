@@ -32,6 +32,7 @@ abstract class Ess_M2ePro_Model_Order_Proxy
 
     /**
      * @return Ess_M2ePro_Model_Order_Item_Proxy[]
+     * @throws Ess_M2ePro_Model_Exception_Logic
      */
     public function getItems()
     {
@@ -118,10 +119,23 @@ abstract class Ess_M2ePro_Model_Order_Proxy
 
     //########################################
 
-    abstract public function getCheckoutMethod();
+    /**
+     * @return string
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
+    public function getCheckoutMethod()
+    {
+        if ($this->_order->getParentObject()->getAccount()->getChildObject()->isMagentoOrdersCustomerPredefined() ||
+            $this->_order->getParentObject()->getAccount()->getChildObject()->isMagentoOrdersCustomerNew()) {
+            return self::CHECKOUT_REGISTER;
+        }
+
+        return self::CHECKOUT_GUEST;
+    }
 
     /**
      * @return bool
+     * @throws Ess_M2ePro_Model_Exception_Logic
      */
     public function isCheckoutMethodGuest()
     {
@@ -130,21 +144,88 @@ abstract class Ess_M2ePro_Model_Order_Proxy
 
     //########################################
 
-    abstract public function isOrderNumberPrefixSourceMagento();
+    /**
+     * @return bool
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
+    public function isOrderNumberPrefixSourceMagento()
+    {
+        return $this->_order->getParentObject()->getAccount()->getChildObject()->isMagentoOrdersNumberSourceMagento();
+    }
 
-    abstract public function isOrderNumberPrefixSourceChannel();
+    /**
+     * @return bool
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
+    public function isOrderNumberPrefixSourceChannel()
+    {
+        return $this->_order->getParentObject()->getAccount()->getChildObject()->isMagentoOrdersNumberSourceChannel();
+    }
+
+    /**
+     * @return string
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
+    public function getOrderNumberPrefix()
+    {
+        if (!$this->_order->getParentObject()->getAccount()->getChildObject()->isMagentoOrdersNumberPrefixEnable()) {
+            return '';
+        }
+
+        return $this->_order->getParentObject()->getAccount()->getChildObject()->getMagentoOrdersNumberRegularPrefix();
+    }
 
     abstract public function getChannelOrderNumber();
-
-    abstract public function getOrderNumberPrefix();
 
     //########################################
 
     /**
-     * @return Mage_Customer_Model_Customer
+     * @return false|Mage_Core_Model_Abstract|Mage_Customer_Model_Customer
+     * @throws Ess_M2ePro_Model_Exception
+     * @throws Ess_M2ePro_Model_Exception_Logic
      */
-    abstract public function getCustomer();
+    public function getCustomer()
+    {
+        $customer = Mage::getModel('customer/customer');
+        $accountModel = $this->_order->getParentObject()->getAccount()->getChildObject();
 
+        if ($accountModel->isMagentoOrdersCustomerPredefined()) {
+            $customer->load($accountModel->getMagentoOrdersCustomerId());
+
+            if ($customer->getId() === null) {
+                throw new Ess_M2ePro_Model_Exception(
+                    "Customer with ID specified in {$this->_order->getParentObject()->getComponentTitle()} Account
+                    Settings does not exist."
+                );
+            }
+        }
+
+        if ($accountModel->isMagentoOrdersCustomerNew()) {
+            $customerInfo = $this->getAddressData();
+
+            $customer->setWebsiteId($accountModel->getMagentoOrdersCustomerNewWebsiteId());
+            $customer->loadByEmail($customerInfo['email']);
+
+            if ($customer->getId() !== null) {
+                return $customer;
+            }
+
+            $customerInfo['website_id'] = $accountModel->getMagentoOrdersCustomerNewWebsiteId();
+            $customerInfo['group_id'] = $accountModel->getMagentoOrdersCustomerNewGroupId();
+
+            /** @var $customerBuilder Ess_M2ePro_Model_Magento_Customer */
+            $customerBuilder = Mage::getModel('M2ePro/Magento_Customer')->setData($customerInfo);
+            $customerBuilder->buildCustomer();
+
+            $customer = $customerBuilder->getCustomer();
+        }
+
+        return $customer;
+    }
+
+    /**
+     * @return string
+     */
     public function getCustomerFirstName()
     {
         $addressData = $this->getAddressData();
@@ -152,6 +233,9 @@ abstract class Ess_M2ePro_Model_Order_Proxy
         return $addressData['firstname'];
     }
 
+    /**
+     * @return string
+     */
     public function getCustomerLastName()
     {
         $addressData = $this->getAddressData();
@@ -222,6 +306,10 @@ abstract class Ess_M2ePro_Model_Order_Proxy
 
     //########################################
 
+    /**
+     * @param $fullName
+     * @return array
+     */
     protected function getNameParts($fullName)
     {
         $fullName = trim($fullName);
@@ -252,14 +340,30 @@ abstract class Ess_M2ePro_Model_Order_Proxy
 
     //########################################
 
-    abstract public function getCurrency();
+    /**
+     * @return mixed
+     */
+    public function getCurrency()
+    {
+        return $this->_order->getCurrency();
+    }
 
+    /**
+     * @param $price
+     * @return mixed
+     * @throws Ess_M2ePro_Model_Exception
+     */
     public function convertPrice($price)
     {
         return Mage::getSingleton('M2ePro/Currency')
             ->convertPrice($price, $this->getCurrency(), $this->getStore());
     }
 
+    /**
+     * @param $price
+     * @return mixed
+     * @throws Ess_M2ePro_Model_Exception
+     */
     public function convertPriceToBase($price)
     {
         return Mage::getSingleton('M2ePro/Currency')
@@ -276,6 +380,10 @@ abstract class Ess_M2ePro_Model_Order_Proxy
 
     abstract protected function getShippingPrice();
 
+    /**
+     * @return mixed
+     * @throws Ess_M2ePro_Model_Exception
+     */
     protected function getBaseShippingPrice()
     {
         return $this->convertPriceToBase($this->getShippingPrice());
@@ -285,6 +393,7 @@ abstract class Ess_M2ePro_Model_Order_Proxy
 
     /**
      * @return array
+     * @throws Ess_M2ePro_Model_Exception
      */
     public function getComments()
     {
@@ -358,20 +467,87 @@ COMMENT;
 
     // ---------------------------------------
 
-    abstract public function isProductPriceIncludeTax();
+    /**
+     * @return bool|null
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
+    public function isProductPriceIncludeTax()
+    {
+        return $this->isPriceIncludeTax('product');
+    }
 
-    abstract public function isShippingPriceIncludeTax();
+    /**
+     * @return bool|null
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
+    public function isShippingPriceIncludeTax()
+    {
+        return $this->isPriceIncludeTax('shipping');
+    }
+
+    /**
+     * @param $priceType
+     * @return bool|null
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     *
+     * List of config keys for comfortable search:
+     * /ebay/order/tax/product_price/
+     * /ebay/order/tax/shipping_price/
+     * /amazon/order/tax/product_price/
+     * /amazon/order/tax/shipping_price/
+     * /walmart/order/tax/product_price/
+     * /walmart/order/tax/shipping_price/
+     */
+    protected function isPriceIncludeTax($priceType)
+    {
+        $componentMode = $this->_order->getParentObject()->getComponentMode();
+        $configValue = Mage::helper('M2ePro/Module')
+            ->getConfig()
+            ->getGroupValue("/{$componentMode}/order/tax/{$priceType}_price/", 'is_include_tax');
+
+        if ($configValue !== null) {
+            return (bool)$configValue;
+        }
+
+        if ($this->isTaxModeChannel() || ($this->isTaxModeMixed() && $this->hasTax())) {
+            return $this->isVatTax();
+        }
+
+        return null;
+    }
 
     // ---------------------------------------
 
-    abstract public function isTaxModeNone();
-
-    abstract public function isTaxModeChannel();
-
-    abstract public function isTaxModeMagento();
+    /**
+     * @return bool
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
+    public function isTaxModeNone()
+    {
+        return $this->_order->getParentObject()->getAccount()->getChildObject()->isMagentoOrdersTaxModeNone();
+    }
 
     /**
      * @return bool
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
+    public function isTaxModeChannel()
+    {
+        return $this->_order->getParentObject()->getAccount()->getChildObject()->isMagentoOrdersTaxModeChannel();
+    }
+
+    /**
+     * @return bool
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
+    public function isTaxModeMagento()
+    {
+        return $this->_order->getParentObject()->getAccount()->getChildObject()->isMagentoOrdersTaxModeMagento();
+    }
+
+    /**
+     * @return bool
+     * @throws Ess_M2ePro_Model_Exception_Logic
      */
     public function isTaxModeMixed()
     {

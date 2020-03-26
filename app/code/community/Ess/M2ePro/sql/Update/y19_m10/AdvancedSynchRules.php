@@ -6,15 +6,6 @@ class Ess_M2ePro_Sql_Update_y19_m10_AdvancedSynchRules extends Ess_M2ePro_Model_
 {
     //########################################
 
-    public function getBackupTables()
-    {
-        return array(
-            'ebay_template_synchronization',
-            'amazon_template_synchronization',
-            'walmart_template_synchronization',
-        );
-    }
-
     public function execute()
     {
         $this->_installer->getTableModifier('ebay_template_synchronization')

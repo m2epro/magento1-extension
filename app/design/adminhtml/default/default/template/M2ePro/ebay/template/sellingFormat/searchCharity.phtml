@@ -35,6 +35,7 @@
             <option value="title"><?php echo Mage::helper('M2ePro')->__('Name')?></option>
             <option value="id"><?php echo Mage::helper('M2ePro')->__('ID')?></option>
         </select>&nbsp;&nbsp;
+        <input id="charitySearch_marketplace_id" type="hidden" name="marketplace_id" value="<?php echo $this->getData('marketplace_id') ?>">
         <?php echo $this->getChildHtml('submit_button');?>&nbsp;
         <a href="javascript:void(0)" id="searchCharity_reset"><?php echo Mage::helper('M2ePro')->__('Reset'); ?></a>
    </div>

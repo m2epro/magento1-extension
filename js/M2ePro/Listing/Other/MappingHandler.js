@@ -48,7 +48,7 @@ ListingOtherMappingHandler.prototype = Object.extend(new CommonHandler(), {
         $('mapping_submit_button').stopObserving('click').observe('click',function(event) {
             self.map();
         });
-        $('product_id').stopObserving('keypress').observe('keypress',function(event) {
+        $('mapped_product_id').stopObserving('keypress').observe('keypress',function(event) {
             event.keyCode == Event.KEY_RETURN && self.map();
         });
         $('sku').stopObserving('keypress').observe('keypress',function(event) {
@@ -61,7 +61,7 @@ ListingOtherMappingHandler.prototype = Object.extend(new CommonHandler(), {
     map: function()
     {
         var self = this;
-        var productId = $('product_id').value;
+        var productId = $('mapped_product_id').value;
         var sku = $('sku').value;
         var otherProductId = $('other_product_id').value;
 
@@ -72,14 +72,14 @@ ListingOtherMappingHandler.prototype = Object.extend(new CommonHandler(), {
         }
 
         if ((sku == '' && productId == '')) {
-            $('product_id').focus();
+            $('mapped_product_id').focus();
             alert(M2ePro.translator.translate('Please enter correct Product ID or SKU'));
             return;
         }
         if (((/^\s*(\d)*\s*$/i).test(productId) == false)) {
             alert(M2ePro.translator.translate('Please enter correct Product ID.'));
-            $('product_id').focus();
-            $('product_id').value = '';
+            $('mapped_product_id').focus();
+            $('mapped_product_id').value = '';
             $('sku').value = '';
             return;
         }

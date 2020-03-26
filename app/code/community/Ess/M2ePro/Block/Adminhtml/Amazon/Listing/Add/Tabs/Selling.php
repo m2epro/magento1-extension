@@ -43,11 +43,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_Tabs_Selling
         $data = $this->getListingData();
 
         $this->setData(
-            'general_attributes',
-            Mage::helper('M2ePro/Magento_Attribute')->getGeneralFromAllAttributeSets()
-        );
-
-        $this->setData(
             'all_attributes',
             Mage::helper('M2ePro/Magento_Attribute')->getAll()
         );

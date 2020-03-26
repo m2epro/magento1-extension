@@ -8,8 +8,6 @@ WalmartListingVariationProductManageHandler = Class.create(ActionHandler,{
 
     initialize: function($super,gridHandler)
     {
-        var self = this;
-
         $super(gridHandler);
 
         Validation.add('M2ePro-walmart-required-channel-attribute', M2ePro.translator.translate('At least one Variant Attribute must be selected.'), function(value,el) {
@@ -25,11 +23,12 @@ WalmartListingVariationProductManageHandler = Class.create(ActionHandler,{
 
             return result;
         });
+
+        this.initValidators();
     },
 
     // ---------------------------------------
 
-    options: {},
     matchingType: 1,
     matchedAttributes: [],
     productAttributes: [],
@@ -38,18 +37,11 @@ WalmartListingVariationProductManageHandler = Class.create(ActionHandler,{
     magentoVariationSet: [],
     walmartVariationSet: false,
 
-    setOptions: function(options)
-    {
-        this.options = Object.extend(this.options,options);
-        this.initValidators();
-        return this;
-    },
-
     initValidators: function()
     {
         var self = this;
 
-        Validation.add('M2ePro-walmart-attribute-unique-value', self.options.text.variation_manage_matched_attributes_error_duplicate, function(value, el) {
+        Validation.add('M2ePro-walmart-attribute-unique-value', M2ePro.text.variation_manage_matched_attributes_error_duplicate, function(value, el) {
 
             var existedValues = [],
                 isValid = true,
@@ -104,7 +96,7 @@ WalmartListingVariationProductManageHandler = Class.create(ActionHandler,{
 
         MagentoMessageObj.clearAll();
 
-        new Ajax.Request(self.options.url.variationProductManage, {
+        new Ajax.Request(M2ePro.url.variationProductManage, {
             method: 'post',
             parameters: {
                 product_id : productId,
@@ -295,7 +287,7 @@ WalmartListingVariationProductManageHandler = Class.create(ActionHandler,{
             closable: true,
             className: "magento",
             windowClassName: "popup-window",
-            title: self.options.text.variation_manage_matched_sku_popup_title,
+            title: M2ePro.text.variation_manage_matched_sku_popup_title,
             top: 70,
             width: 470,
             height: 190,
@@ -330,13 +322,13 @@ WalmartListingVariationProductManageHandler = Class.create(ActionHandler,{
 
         if (data.sku == '') {
             errorBlock.show();
-            errorBlock.innerHTML = self.options.text.empty_sku_error;
+            errorBlock.innerHTML = M2ePro.text.empty_sku_error;
             return;
         }
 
         data.product_id = variationProductManagePopup.productId;
 
-        new Ajax.Request(self.options.url.variationProductSetListingProductSku, {
+        new Ajax.Request(M2ePro.url.variationProductSetListingProductSku, {
             method: 'post',
             parameters: data,
             onSuccess: function (transport) {
@@ -375,7 +367,7 @@ WalmartListingVariationProductManageHandler = Class.create(ActionHandler,{
             var data = form.serialize(true);
             data.product_id = variationProductManagePopup.productId;
 
-            new Ajax.Request(this.options.url.variationProductSetChannelAttributes, {
+            new Ajax.Request(M2ePro.url.variationProductSetChannelAttributes, {
                 method: 'post',
                 parameters: data,
                 onSuccess: function (transport) {
@@ -403,7 +395,7 @@ WalmartListingVariationProductManageHandler = Class.create(ActionHandler,{
         var self = this,
             el = $('swatch_images_attributes');
 
-        new Ajax.Request(this.options.url.variationProductSetSwatchImagesAttribute, {
+        new Ajax.Request(M2ePro.url.variationProductSetSwatchImagesAttribute, {
             method: 'post',
             parameters: {
                 product_id: variationProductManagePopup.productId,
@@ -461,7 +453,7 @@ WalmartListingVariationProductManageHandler = Class.create(ActionHandler,{
 
             var errorEl = form.select('.validation-advice')[0];
             errorEl.show();
-            errorEl.update(self.options.text.variation_manage_matched_attributes_error);
+            errorEl.update(M2ePro.text.variation_manage_matched_attributes_error);
 
             return false;
         }
@@ -476,9 +468,9 @@ WalmartListingVariationProductManageHandler = Class.create(ActionHandler,{
                 var errorEl = $('variation_manager_attributes_error_'+i);
                 errorEl.show();
                 if(attrVal == '') {
-                    errorEl.update(self.options.text.variation_manage_matched_attributes_error);
+                    errorEl.update(M2ePro.text.variation_manage_matched_attributes_error);
                 } else {
-                    errorEl.update(self.options.text.variation_manage_matched_attributes_error_duplicate)
+                    errorEl.update(M2ePro.text.variation_manage_matched_attributes_error_duplicate)
                 }
             }
             i++;
@@ -503,7 +495,7 @@ WalmartListingVariationProductManageHandler = Class.create(ActionHandler,{
         data = $('variation_manager_attributes_form').serialize(true);
         data.product_id = variationProductManagePopup.productId;
 
-        new Ajax.Request(this.options.url.variationProductSetMatchedAttributes, {
+        new Ajax.Request(M2ePro.url.variationProductSetMatchedAttributes, {
             method: 'post',
             parameters: data,
             onSuccess: function (transport) {
@@ -563,7 +555,7 @@ WalmartListingVariationProductManageHandler = Class.create(ActionHandler,{
                 });
 
             label.innerHTML = attribute.key;
-            valueSpan.innerHTML = self.options.text.not_set;
+            valueSpan.innerHTML = M2ePro.text.not_set;
 
             tdLabel.insert({ bottom: label });
             tdValue.insert({ bottom: valueSpan });
@@ -582,7 +574,7 @@ WalmartListingVariationProductManageHandler = Class.create(ActionHandler,{
             }),
             setBtn = new Element('button');
 
-        setBtn.update(self.options.text.set_attributes);
+        setBtn.update(M2ePro.text.set_attributes);
         setBtn.observe('click', function(event) {
             if (self.matchingType === self.MATCHING_TYPE_VIRTUAL_WALMART) {
                 self.renderMatchedAttributesVirtualWalmartView();
@@ -846,7 +838,7 @@ WalmartListingVariationProductManageHandler = Class.create(ActionHandler,{
                 var data = form.serialize(true);
                 data.product_id = variationProductManagePopup.productId;
 
-                new Ajax.Request(self.options.url.variationProductSetMatchedAttributes, {
+                new Ajax.Request(M2ePro.url.variationProductSetMatchedAttributes, {
                     method: 'post',
                     parameters: data,
                     onSuccess: function (transport) {
@@ -1071,7 +1063,7 @@ WalmartListingVariationProductManageHandler = Class.create(ActionHandler,{
                 var data = form.serialize(true);
                 data.product_id = variationProductManagePopup.productId;
 
-                new Ajax.Request(self.options.url.variationProductSetMatchedAttributes, {
+                new Ajax.Request(M2ePro.url.variationProductSetMatchedAttributes, {
                     method: 'post',
                     parameters: data,
                     onSuccess: function (transport) {
@@ -1296,7 +1288,7 @@ WalmartListingVariationProductManageHandler = Class.create(ActionHandler,{
     {
         var self = this;
 
-        new Ajax.Request(this.options.url.viewVariationsSettingsAjax, {
+        new Ajax.Request(M2ePro.url.viewVariationsSettingsAjax, {
             method: 'post',
             parameters: {
                 product_id : variationProductManagePopup.productId
@@ -1374,7 +1366,7 @@ WalmartListingVariationProductManageHandler = Class.create(ActionHandler,{
     {
         var self = this;
 
-        new Ajax.Request(this.options.url.viewVocabularyAjax, {
+        new Ajax.Request(M2ePro.url.viewVocabularyAjax, {
             method: 'post',
             parameters: {
                 product_id : variationProductManagePopup.productId
@@ -1393,7 +1385,7 @@ WalmartListingVariationProductManageHandler = Class.create(ActionHandler,{
 
     saveAutoActionSettings: function()
     {
-        new Ajax.Request(this.options.url.saveAutoActionSettings, {
+        new Ajax.Request(M2ePro.url.saveAutoActionSettings, {
             method: 'post',
             parameters: $('auto_action_settings_form').serialize(true)
         });
@@ -1404,11 +1396,11 @@ WalmartListingVariationProductManageHandler = Class.create(ActionHandler,{
         var self = this,
             attrRowEl = el.up('.matched-attributes-pair');
 
-        if(!confirm(self.options.text.confirm)) {
+        if(!confirm(M2ePro.text.confirm)) {
             return;
         }
 
-        new Ajax.Request(this.options.url.removeAttributeFromVocabulary, {
+        new Ajax.Request(M2ePro.url.removeAttributeFromVocabulary, {
             method: 'post',
             parameters: {
                 magento_attr : decodeHtmlentities(el.up().down('.magento-attribute-name').innerHTML),
@@ -1426,11 +1418,11 @@ WalmartListingVariationProductManageHandler = Class.create(ActionHandler,{
             optionGroupRowEl = el.up('.channel-attribute-options-group'),
             attrOptionsRowEl = el.up('.magento-attribute-options');
 
-        if(!confirm(self.options.text.confirm)) {
+        if(!confirm(M2ePro.text.confirm)) {
             return;
         }
 
-        new Ajax.Request(this.options.url.removeOptionFromVocabulary, {
+        new Ajax.Request(M2ePro.url.removeOptionFromVocabulary, {
             method: 'post',
             parameters: {
                 product_option : decodeHtmlentities(optionGroupRowEl.down('.product-option').innerHTML),

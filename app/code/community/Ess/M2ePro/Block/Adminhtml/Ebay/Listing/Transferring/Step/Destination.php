@@ -128,7 +128,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Transferring_Step_Destination exte
         $shippingTemplateColumnName = Mage::getModel('M2ePro/Ebay_Template_Manager')
             ->setTemplate(Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SHIPPING)->getModeColumnName();
         $returnTemplateColumnName = Mage::getModel('M2ePro/Ebay_Template_Manager')
-            ->setTemplate(Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_RETURN)->getModeColumnName();
+            ->setTemplate(Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_RETURN_POLICY)->getModeColumnName();
         // ---------------------------------------
 
         $listingProducts = Mage::helper('M2ePro/Component_Ebay')->getCollection('Listing_Product')

@@ -160,6 +160,16 @@ class Ess_M2ePro_Model_Amazon_Order_Item extends Ess_M2ePro_Model_Component_Chil
     // ---------------------------------------
 
     /**
+     * @return string|null
+     */
+    public function getFulfillmentCenterId()
+    {
+        return $this->getData('fulfillment_center_id');
+    }
+
+    // ---------------------------------------
+
+    /**
      * @return array
      * @throws Ess_M2ePro_Model_Exception_Logic
      */

@@ -13,15 +13,6 @@ class Ess_M2ePro_Sql_Update_y19_m11_LogsImprovements extends Ess_M2ePro_Model_Up
 
     //########################################
 
-    public function getBackupTables()
-    {
-        return array(
-            'config',
-        );
-    }
-
-    //----------------------------------------
-
     public function execute()
     {
         foreach ($this->getProcessSubjects() as $subject) {
@@ -120,7 +111,8 @@ class Ess_M2ePro_Sql_Update_y19_m11_LogsImprovements extends Ess_M2ePro_Model_Up
                                         SELECT * FROM `{$table}` ORDER BY `id` DESC LIMIT {$limit}
                                      )");
         $this->_installer->getConnection()->exec("DROP TABLE `{$table}`");
-        $this->_installer->getConnection()->exec("RENAME TABLE `{$table}_temp` TO `{$table}`");
+
+        $this->_installer->getTablesObject()->renameTable($table . '_temp', $table);
     }
 
     protected function processActionId($tableName, $configName)

@@ -49,21 +49,7 @@ EbayMarketplaceSynchProgressHandler = Class.create(SynchProgressHandler, {
 
                     // ---------------------------------------
                     setTimeout(function() {
-
-                        if (callBackWhenEnd != '') {
-                            eval(callBackWhenEnd);
-                        } else {
-
-                            new Ajax.Request(M2ePro.url.get('adminhtml_general/synchGetLastResult'), {
-                                method: 'get',
-                                asynchronous: true,
-                                onSuccess: function(transport) {
-                                    self.end();
-                                    self.printFinalMessage(transport.responseText);
-                                    self.addProcessingNowWarning();
-                                }
-                            });
-                        }
+                        eval(callBackWhenEnd);
                     },1500);
                     // ---------------------------------------
                 }

@@ -77,7 +77,6 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Other_View extends Mage_Adminht
         $componentMode = Ess_M2ePro_Helper_Component_Walmart::NICK;
 
         $prepareData = $this->getUrl('*/adminhtml_listing_other_moving/prepareMoveToListing');
-        $createDefaultListingUrl = $this->getUrl('*/adminhtml_listing_other_moving/createDefaultListing');
         $getMoveToListingGridHtml = $this->getUrl('*/adminhtml_listing_other_moving/moveToListingGrid');
         $moveToListing = $this->getUrl('*/adminhtml_walmart_listing_other/moveToListing');
 
@@ -154,48 +153,41 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Other_View extends Mage_Adminht
         $javascriptsMain = <<<HTML
 <script type="text/javascript">
 
-    M2eProWalmart = {};
-    M2eProWalmart.url = {};
-    M2eProWalmart.formData = {};
-    M2eProWalmart.customData = {};
-    M2eProWalmart.text = {};
-
     M2ePro.url.add({$urls});
     M2ePro.translator.add({$translations});
 
-    M2eProWalmart.url.prepareData = '{$prepareData}';
-    M2eProWalmart.url.createDefaultListing = '{$createDefaultListingUrl}';
-    M2eProWalmart.url.getGridHtml = '{$getMoveToListingGridHtml}';
-    M2eProWalmart.url.moveToListing = '{$moveToListing}';
+    M2ePro.url.prepareData = '{$prepareData}';
+    M2ePro.url.getGridHtml = '{$getMoveToListingGridHtml}';
+    M2ePro.url.moveToListing = '{$moveToListing}';
 
-    M2eProWalmart.url.mapAutoToProduct = '{$mapAutoToProductUrl}';
+    M2ePro.url.mapAutoToProduct = '{$mapAutoToProductUrl}';
 
-    M2eProWalmart.url.removingProducts = '{$removingProductsUrl}';
-    M2eProWalmart.url.unmappingProducts = '{$unmappingProductsUrl}';
+    M2ePro.url.removingProducts = '{$removingProductsUrl}';
+    M2ePro.url.unmappingProducts = '{$unmappingProductsUrl}';
 
-    M2eProWalmart.text.create_listing = '{$createListing}';
-    M2eProWalmart.text.popup_title = '{$popupTitle}';
-    M2eProWalmart.text.confirm = '{$confirmMessage}';
-    M2eProWalmart.text.not_enough_data = '{$notEnoughDataMessage}';
-    M2eProWalmart.text.successfully_unmapped = '{$successfullyUnmappedMessage}';
-    M2eProWalmart.text.successfully_removed = '{$successfullyRemovedMessage}';
+    M2ePro.text.create_listing = '{$createListing}';
+    M2ePro.text.popup_title = '{$popupTitle}';
+    M2ePro.text.confirm = '{$confirmMessage}';
+    M2ePro.text.not_enough_data = '{$notEnoughDataMessage}';
+    M2ePro.text.successfully_unmapped = '{$successfullyUnmappedMessage}';
+    M2ePro.text.successfully_removed = '{$successfullyRemovedMessage}';
 
-    M2eProWalmart.text.select_items_message = '{$selectItemsMessage}';
-    M2eProWalmart.text.select_action_message = '{$selectActionMessage}';
+    M2ePro.text.select_items_message = '{$selectItemsMessage}';
+    M2ePro.text.select_action_message = '{$selectActionMessage}';
 
-    M2eProWalmart.text.automap_progress_title = '{$autoMapProgressTitle}';
-    M2eProWalmart.text.processing_data_message = '{$processingDataMessage}';
-    M2eProWalmart.text.successfully_mapped = '{$successfullyMappedMessage}';
-    M2eProWalmart.text.failed_mapped = '{$someProductsWereNotMappedMessage}';
+    M2ePro.text.automap_progress_title = '{$autoMapProgressTitle}';
+    M2ePro.text.processing_data_message = '{$processingDataMessage}';
+    M2ePro.text.successfully_mapped = '{$successfullyMappedMessage}';
+    M2ePro.text.failed_mapped = '{$someProductsWereNotMappedMessage}';
 
-    M2eProWalmart.text.success_word = '{$successWord}';
-    M2eProWalmart.text.notice_word = '{$noticeWord}';
-    M2eProWalmart.text.warning_word = '{$warningWord}';
-    M2eProWalmart.text.error_word = '{$errorWord}';
-    M2eProWalmart.text.close_word = '{$closeWord}';
+    M2ePro.text.success_word = '{$successWord}';
+    M2ePro.text.notice_word = '{$noticeWord}';
+    M2ePro.text.warning_word = '{$warningWord}';
+    M2ePro.text.error_word = '{$errorWord}';
+    M2ePro.text.close_word = '{$closeWord}';
 
-    M2eProWalmart.customData.componentMode = '{$componentMode}';
-    M2eProWalmart.customData.gridId = 'walmartListingOtherGrid';
+    M2ePro.customData.componentMode = '{$componentMode}';
+    M2ePro.customData.gridId = 'walmartListingOtherGrid';
 
     Event.observe(window,'load',function() {
         ListingProgressBarObj = new ProgressBar('listing_other_progress_bar');
@@ -206,12 +198,6 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Other_View extends Mage_Adminht
             WalmartListingOtherGridHandlerObj,
             'walmart'
         );
-
-        WalmartListingOtherGridHandlerObj.movingHandler.setOptions(M2eProWalmart);
-        WalmartListingOtherGridHandlerObj.autoMappingHandler.setOptions(M2eProWalmart);
-        WalmartListingOtherGridHandlerObj.removingHandler.setOptions(M2eProWalmart);
-        WalmartListingOtherGridHandlerObj.unmappingHandler.setOptions(M2eProWalmart);
-
     });
 
 </script>

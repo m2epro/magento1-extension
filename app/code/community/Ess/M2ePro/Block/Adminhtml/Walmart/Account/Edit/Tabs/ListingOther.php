@@ -27,10 +27,10 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Account_Edit_Tabs_ListingOther extends 
         /** @var Ess_M2ePro_Helper_Magento_Attribute $magentoAttributeHelper */
         $magentoAttributeHelper = Mage::helper('M2ePro/Magento_Attribute');
 
-        $generalAttributes = $magentoAttributeHelper->getGeneralFromAllAttributeSets();
+        $allAttributes = $magentoAttributeHelper->getAll();
 
         $this->attributes = $magentoAttributeHelper->filterByInputTypes(
-            $generalAttributes, array(
+            $allAttributes, array(
                 'text', 'textarea', 'select'
             )
         );

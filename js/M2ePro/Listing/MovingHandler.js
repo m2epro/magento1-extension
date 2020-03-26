@@ -2,16 +2,8 @@ ListingMovingHandler = Class.create(ActionHandler, {
 
     // ---------------------------------------
 
-    options: {},
-
     accountId: null,
     marketplaceId: null,
-
-    setOptions: function(options)
-    {
-        this.options = Object.extend(this.options,options);
-        return this;
-    },
 
     // ---------------------------------------
 
@@ -103,10 +95,10 @@ ListingMovingHandler = Class.create(ActionHandler, {
         var part = parts.splice(0, 1);
         var currentPart = part[0];
 
-        new Ajax.Request(self.options.url.prepareData, {
+        new Ajax.Request(M2ePro.url.prepareData, {
             method: 'post',
             parameters: {
-                componentMode: self.options.customData.componentMode,
+                componentMode: M2ePro.customData.componentMode,
                 is_first_part: isFirstPart,
                 is_last_part : isLastPart,
                 products_part: implode(',', currentPart)
@@ -154,17 +146,17 @@ ListingMovingHandler = Class.create(ActionHandler, {
     {
         var self = this;
 
-        new Ajax.Request(self.options.url.getGridHtml, {
+        new Ajax.Request(M2ePro.url.getGridHtml, {
             method: 'get',
             parameters: {
-                componentMode : self.options.customData.componentMode,
+                componentMode : M2ePro.customData.componentMode,
                 accountId     : self.accountId,
                 marketplaceId : self.marketplaceId,
-                ignoreListings: self.options.customData.ignoreListings
+                ignoreListings: M2ePro.customData.ignoreListings
             },
             onSuccess: function(transport) {
                 self.completeProgressBar();
-                self.openPopUp(transport.responseText, self.options.text.popup_title);
+                self.openPopUp(transport.responseText, M2ePro.text.popup_title);
             }
         });
     },
@@ -173,10 +165,10 @@ ListingMovingHandler = Class.create(ActionHandler, {
     {
         var self = this;
 
-        new Ajax.Request(self.options.url.moveToListing, {
+        new Ajax.Request(M2ePro.url.moveToListing, {
             method: 'post',
             parameters: {
-                componentMode: self.options.customData.componentMode,
+                componentMode: M2ePro.customData.componentMode,
                 listingId: listingId
             },
             onSuccess: function(transport) {

@@ -125,47 +125,52 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Search_M2ePro_Grid
 
     //########################################
 
+    /**
+     * @param Mage_Catalog_Model_Product $row
+     *
+     * @return string
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     protected function getColumnProductTitleAdditionalHtml($row)
     {
-        $listingWord  = Mage::helper('M2ePro')->__('Listing');
-        $listingUrl   = $this->getUrl('*/adminhtml_ebay_listing/view', array('id' => $row->getData('listing_id')));
+        /** @var Ess_M2ePro_Helper_Data $dataHelper */
+        $dataHelper = Mage::helper('M2ePro');
 
-        $listingTitle = Mage::helper('M2ePro')->escapeHtml($row->getData('listing_title'));
+        /** @var Ess_M2ePro_Helper_Component_Walmart $eBayHelper */
+        $eBayHelper = Mage::helper('M2ePro/Component_Ebay');
+
+        /** @var Ess_M2ePro_Model_Account $account */
+        $account = $eBayHelper->getObject('Account', $row->getData('account_id'));
+
+        /** @var Ess_M2ePro_Model_Marketplace $marketplace */
+        $marketplace = $eBayHelper->getObject('Marketplace', $row->getData('marketplace_id'));
+
+        $listingTitle = $dataHelper->escapeHtml($row->getData('listing_title'));
         strlen($listingTitle) > 50 && $listingTitle = substr($listingTitle, 0, 50) . '...';
+        $listingUrl = $this->getUrl('*/adminhtml_ebay_listing/view', array('id' => $row->getData('listing_id')));
 
-        $html = <<<HTML
-<strong> {$listingWord}:</strong>&nbsp;
-<a href="{$listingUrl}" target="_blank">{$listingTitle}</a><br/>
-HTML;
-
-        $sku = $row->getData('sku');
-        $onlineSku = $row->getData('online_sku');
-
-        !empty($onlineSku) && $sku = $onlineSku;
-        $sku = Mage::helper('M2ePro')->escapeHtml($sku);
-
-        $skuWord = Mage::helper('M2ePro')->__('SKU');
-        $html .= <<<HTML
-<strong>{$skuWord}:</strong>&nbsp;{$sku}
+        $value = <<<HTML
+<strong>{$dataHelper->__('Listing')}:</strong>&nbsp;<a href="{$listingUrl}" target="_blank">{$listingTitle}</a>
+<br/><strong>{$dataHelper->__('Account')}:</strong>&nbsp;{$dataHelper->escapeHtml($account->getTitle())}
+<br/><strong>{$dataHelper->__('Marketplace')}:</strong>&nbsp;{$dataHelper->escapeHtml($marketplace->getTitle())}
+<br/><strong>{$dataHelper->__('SKU')}:</strong>&nbsp;{$dataHelper->escapeHtml($row->getSku())}
 HTML;
 
         /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
-        $listingProductId = $row->getData('listing_product_id');
-        $listingProduct = Mage::helper('M2ePro/Component_Ebay')->getObject('Listing_Product', $listingProductId);
-
+        $listingProduct = $eBayHelper->getObject('Listing_Product', (int)$row->getData('listing_product_id'));
         if ($listingProduct->getChildObject()->isVariationsReady()) {
-            $additionalData    = (array)Mage::helper('M2ePro')->jsonDecode($row->getData('additional_data'));
+            $additionalData    = (array)$dataHelper->jsonDecode($row->getData('additional_data'));
             $productAttributes = array_keys($additionalData['variations_sets']);
             $productAttributes = implode(', ', $productAttributes);
 
-            $html .= <<<HTML
+            $value .= <<<HTML
 <div style="font-size: 11px; font-weight: bold; color: grey; margin: 7px 0 0 7px">
     {$productAttributes}
 </div>
 HTML;
         }
 
-        return $html;
+        return $value;
     }
 
     //----------------------------------------

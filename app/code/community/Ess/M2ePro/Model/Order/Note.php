@@ -79,7 +79,7 @@ class Ess_M2ePro_Model_Order_Note extends Ess_M2ePro_Model_Abstract
 
         $this->updateMagentoOrderComments($comment);
 
-        return parent::_afterDelete();
+        return parent::_afterSave();
     }
 
     //########################################

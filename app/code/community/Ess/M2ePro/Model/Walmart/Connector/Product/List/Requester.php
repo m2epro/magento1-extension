@@ -17,9 +17,9 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_List_Requester
 
         $additionalData = $listingProduct->getAdditionalData();
         unset($additionalData['synch_template_list_rules_note']);
-        $this->listingProduct->setSettings('additional_data', $additionalData);
+        $this->_listingProduct->setSettings('additional_data', $additionalData);
 
-        $this->listingProduct->save();
+        $this->_listingProduct->save();
 
         return $this;
     }

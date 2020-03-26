@@ -150,9 +150,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_NewAsin_Category
             '{$this->getChild('grid')->getId()}',
             {$this->getListing()->getId()}
         );
-
-        ListingGridHandlerObj.actionHandler.setOptions(M2ePro);
-        ListingGridHandlerObj.templateDescriptionHandler.setOptions(M2ePro);
     });
 
 </script>

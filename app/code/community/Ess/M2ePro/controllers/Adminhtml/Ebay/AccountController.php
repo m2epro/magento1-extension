@@ -106,7 +106,7 @@ class Ess_M2ePro_Adminhtml_Ebay_AccountController extends Ess_M2ePro_Controller_
 
             $dispatcherObject = Mage::getModel('M2ePro/Ebay_Connector_Dispatcher');
             $connectorObj = $dispatcherObject->getVirtualConnector(
-                'account', 'get', 'authUrl',
+                'account', 'get', 'grandAccessUrl',
                 array('back_url' => $backUrl, 'mode' => $mode),
                 null, null, null, $mode
             );
@@ -183,7 +183,7 @@ class Ess_M2ePro_Adminhtml_Ebay_AccountController extends Ess_M2ePro_Controller_
 
             $dispatcherObject = Mage::getModel('M2ePro/Ebay_Connector_Dispatcher');
             $connectorObj = $dispatcherObject->getVirtualConnector(
-                'account', 'get', 'authUrl',
+                'account', 'get', 'grandAccessUrl',
                 array('back_url' => $backUrl, 'mode' => $mode, 'auth_type' => 'oauth'),
                 null, null, null, $mode
             );
@@ -421,8 +421,7 @@ class Ess_M2ePro_Adminhtml_Ebay_AccountController extends Ess_M2ePro_Controller_
             ? $post['magento_orders_settings'][$tempKey] : array();
 
         $keys = array(
-            'mode',
-            'reservation_days'
+            'mode'
         );
         foreach ($keys as $key) {
             if (isset($tempSettings[$key])) {

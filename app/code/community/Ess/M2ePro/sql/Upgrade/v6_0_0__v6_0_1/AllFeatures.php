@@ -13,9 +13,9 @@ class Ess_M2ePro_Sql_Upgrade_v6_0_0__v6_0_1_AllFeatures extends Ess_M2ePro_Model
 
         $installer->run(<<<SQL
 
-DROP TABLE IF EXISTS `m2epro_ebay_dictionary_policy`;
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_ebay_dictionary_policy')}`;
 
-CREATE TABLE IF NOT EXISTS `m2epro_ebay_account_policy` (
+CREATE TABLE IF NOT EXISTS `{$this->_installer->getTable('m2epro_ebay_account_policy')}` (
   id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   account_id INT(11) UNSIGNED NOT NULL,
   marketplace_id INT(11) UNSIGNED NOT NULL,
@@ -51,7 +51,7 @@ SQL;
 
             $installer->run(<<<SQL
 
-INSERT INTO `m2epro_synchronization_config` (`group`,`key`,`value`,`notice`,`update_date`,`create_date`) VALUES
+INSERT INTO `{$this->_installer->getTable('m2epro_synchronization_config')}` (`group`,`key`,`value`,`notice`,`update_date`,`create_date`) VALUES
 ('/policies/', 'mode', '0', '0 - disable, \r\n1 - enable',
  '2013-08-05 00:00:00', '2013-08-05 00:00:00'),
 ('/ebay/policies/', 'mode', '0', '0 - disable, \r\n1 - enable',

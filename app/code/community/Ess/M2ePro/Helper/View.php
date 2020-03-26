@@ -316,7 +316,7 @@ class Ess_M2ePro_Helper_View extends Mage_Core_Helper_Abstract
             $resultPath['additional'] = Mage::helper('M2ePro')->__($additionalEnd);
         }
 
-        return join($resultPath, ' > ');
+        return join(' > ', $resultPath);
     }
 
     //########################################

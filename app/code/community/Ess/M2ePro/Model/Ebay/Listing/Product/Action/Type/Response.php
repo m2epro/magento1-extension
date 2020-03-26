@@ -377,20 +377,13 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Response
     {
         $metadata = $this->getRequestMetaData();
 
-        if ($metadata["is_listing_type_fixed"]) {
+        if ($metadata['is_listing_type_fixed']) {
             $data['online_start_price'] = null;
             $data['online_reserve_price'] = null;
             $data['online_buyitnow_price'] = null;
 
             if ($this->getRequestData()->hasVariations()) {
-                // out_of_stock_control_result key is not presented in request data,
-                // if request was performed before code upgrade
-                if (!$this->getRequestData()->hasOutOfStockControlResult()) {
-                    $calculateWithEmptyQty = $this->getEbayListingProduct()->getOutOfStockControl();
-                } else {
-                    $calculateWithEmptyQty = $this->getRequestData()->getOutOfStockControlResult();
-                }
-
+                $calculateWithEmptyQty = $this->getEbayListingProduct()->isOutOfStockControlEnabled();
                 $data['online_current_price'] = $this->getRequestData()->getVariationPrice($calculateWithEmptyQty);
             } else if ($this->getRequestData()->hasPriceFixed()) {
                 $data['online_current_price'] = $this->getRequestData()->getPriceFixed();
@@ -452,19 +445,6 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Response
     }
 
     // ---------------------------------------
-
-    protected function appendOutOfStockValues($data)
-    {
-        if (!isset($data['additional_data'])) {
-            $data['additional_data'] = $this->getListingProduct()->getAdditionalData();
-        }
-
-        if ($this->getRequestData()->hasOutOfStockControl()) {
-            $data['additional_data']['out_of_stock_control'] = $this->getRequestData()->getOutOfStockControl();
-        }
-
-        return $data;
-    }
 
     protected function appendItemFeesValues($data, $response)
     {

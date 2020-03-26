@@ -64,7 +64,7 @@ class Ess_M2ePro_Model_Ebay_Template_Category_Builder
     //########################################
 
     /**
-     * Is needed to reduce amount of the Items Specifics blocks an Categories in use
+     * Is needed to reduce amount of the Items Specifics blocks an Categories
      * @param array $templateData
      * @param array $postSpecifics
      * @return Ess_M2ePro_Model_Ebay_Template_Category|null

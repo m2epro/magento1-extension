@@ -942,60 +942,6 @@ $missingAttributes = $this->getMissingAttributes();
 
 </div>
 
-<?php if ($this->canDisplayNorthAmericaCrossBorderTradeOption() || $this->canDisplayUnitedKingdomCrossBorderTradeOption()): ?>
-
-<div class="entry-edit" id="magento_block_ebay_template_shipping_form_data_cross_border_trade" style="display: none;">
-
-    <div class="entry-edit-head">
-        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Cross Border Trade'); ?></h4>
-    </div>
-
-    <div class="fieldset">
-        <div class="hor-scroll">
-
-            <div id="block_notice_ebay_template_general_general_cross_border_trade" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Cross Border Trade'); ?>">
-                <?php echo Mage::helper('M2ePro')->__('The international Site visibility feature allows qualifying Listings to be posted on international Sites.
-<br/>Buyers on these Sites will see the Listings exactly as you originally post them.
-<br/><br/><b>Note:</b> There may be additional eBay charges for this option.'); ?>
-            </div>
-
-            <table class="form-list" cellspacing="0" cellpadding="0">
-
-                <tr id="cross_border_trade_container">
-                    <td class="label">
-                        <label for="cross_border_trade"><?php echo Mage::helper('M2ePro')->__('eBay Site Visibility'); ?>:</label>
-                    </td>
-                    <td class="value">
-                        <select id="cross_border_trade" name="shipping[cross_border_trade]">
-                            <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Shipping::CROSS_BORDER_TRADE_NONE ?>"
-                                <?php if ($formData['cross_border_trade'] == Ess_M2ePro_Model_Ebay_Template_Shipping::CROSS_BORDER_TRADE_NONE): ?>selected="selected"<?php endif; ?> >
-                                <?php echo Mage::helper('M2ePro')->__('None') ?>
-                            </option>
-                            <?php if ($this->canDisplayNorthAmericaCrossBorderTradeOption()): ?>
-                                <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Shipping::CROSS_BORDER_TRADE_NORTH_AMERICA ?>"
-                                    <?php if ($formData['cross_border_trade'] == Ess_M2ePro_Model_Ebay_Template_Shipping::CROSS_BORDER_TRADE_NORTH_AMERICA): ?>selected="selected"<?php endif; ?> >
-                                    <?php echo Mage::helper('M2ePro')->__('USA / Canada') ?>
-                                </option>
-                            <?php endif; ?>
-                            <?php if ($this->canDisplayUnitedKingdomCrossBorderTradeOption()): ?>
-                                <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Shipping::CROSS_BORDER_TRADE_UNITED_KINGDOM ?>"
-                                    <?php if ($formData['cross_border_trade'] == Ess_M2ePro_Model_Ebay_Template_Shipping::CROSS_BORDER_TRADE_UNITED_KINGDOM): ?>selected="selected"<?php endif; ?> >
-                                    <?php echo Mage::helper('M2ePro')->__('United Kingdom') ?>
-                                </option>
-                            <?php endif; ?>
-                        </select>
-                    </td>
-                </tr>
-
-            </table>
-
-        </div>
-    </div>
-
-</div>
-
-<?php endif; ?>
-
 <div class="entry-edit" id="magento_block_ebay_template_shipping_form_data_international">
 
     <div class="entry-edit-head">
@@ -1006,6 +952,43 @@ $missingAttributes = $this->getMissingAttributes();
         <div class="hor-scroll">
 
             <table class="form-list" cellspacing="0" cellpadding="0">
+
+                <?php if ($this->canDisplayNorthAmericaCrossBorderTradeOption() || $this->canDisplayUnitedKingdomCrossBorderTradeOption()): ?>
+
+                    <tr id="cross_border_trade_container">
+                        <td class="label">
+                            <label for="cross_border_trade"><?php echo Mage::helper('M2ePro')->__('Cross Border Trade'); ?>:</label>
+                        </td>
+                        <td class="value">
+                            <select id="cross_border_trade" name="shipping[cross_border_trade]">
+                                <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Shipping::CROSS_BORDER_TRADE_NONE ?>"
+                                        <?php if ($formData['cross_border_trade'] == Ess_M2ePro_Model_Ebay_Template_Shipping::CROSS_BORDER_TRADE_NONE): ?>selected="selected"<?php endif; ?> >
+                                    <?php echo Mage::helper('M2ePro')->__('None') ?>
+                                </option>
+                                <?php if ($this->canDisplayNorthAmericaCrossBorderTradeOption()): ?>
+                                    <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Shipping::CROSS_BORDER_TRADE_NORTH_AMERICA ?>"
+                                            <?php if ($formData['cross_border_trade'] == Ess_M2ePro_Model_Ebay_Template_Shipping::CROSS_BORDER_TRADE_NORTH_AMERICA): ?>selected="selected"<?php endif; ?> >
+                                        <?php echo Mage::helper('M2ePro')->__('USA / Canada') ?>
+                                    </option>
+                                <?php endif; ?>
+                                <?php if ($this->canDisplayUnitedKingdomCrossBorderTradeOption()): ?>
+                                    <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Shipping::CROSS_BORDER_TRADE_UNITED_KINGDOM ?>"
+                                            <?php if ($formData['cross_border_trade'] == Ess_M2ePro_Model_Ebay_Template_Shipping::CROSS_BORDER_TRADE_UNITED_KINGDOM): ?>selected="selected"<?php endif; ?> >
+                                        <?php echo Mage::helper('M2ePro')->__('United Kingdom') ?>
+                                    </option>
+                                <?php endif; ?>
+                            </select>
+                            <p class="note">
+                                <span><?php echo Mage::helper('M2ePro')->__(
+                                        'The international Site visibility feature allows qualifying Listings to be posted on international Marketplaces.
+                                        <br/>Buyers on these Marketplaces will see the Listings exactly as you originally post them.
+                                        <br/><br/><b>Note:</b> There may be additional eBay charges for this option.'
+                                ); ?></span>
+                            </p>
+                        </td>
+                    </tr>
+
+                <?php endif; ?>
 
                 <?php if ($this->canDisplayGlobalShippingProgram()): ?>
 

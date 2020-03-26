@@ -71,7 +71,7 @@ class Ess_M2ePro_Helper_Module_Support extends Mage_Core_Helper_Abstract
 
     public function getKnowledgeBaseUrl($articleUrl = null)
     {
-        $urlParts[] = $this->getSupportUrl();
+        $urlParts[] = $this->getSupportUrl()  . '/knowledgebase';
 
         if ($articleUrl) {
             $urlParts[] = trim($articleUrl, '/');
@@ -82,7 +82,7 @@ class Ess_M2ePro_Helper_Module_Support extends Mage_Core_Helper_Abstract
 
     public function getIdeasUrl()
     {
-        return $this->getSupportUrl() . 'ideas/';
+        return $this->getSupportUrl() . '/ideas';
     }
 
     public function getSupportUrl($urlPart = null)

@@ -307,6 +307,15 @@ AmazonTemplateDescriptionCategorySpecificBlockRenderer = Class.create(AmazonTemp
         var deleteResult = $super(event);
         this.throwEventsToParent();
 
+        // Product data injection to Specifics. Empty block should be removed
+        var parentXpath = this.getParentIndexedXpath();
+        if (parentXpath &&
+            parentXpath === this.getRootIndexedXpath() + '/Product-1' &&
+            this.getRenderedSpecificsInBlock(parentXpath).length === 0
+        ) {
+            $(parentXpath + '_remove_button').click();
+        }
+
         return deleteResult;
     },
 

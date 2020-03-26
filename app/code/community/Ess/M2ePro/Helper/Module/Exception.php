@@ -129,6 +129,7 @@ class Ess_M2ePro_Helper_Module_Exception extends Mage_Core_Helper_Abstract
         $log->setType($type);
         $log->setDescription($message);
 
+        // @codingStandardsIgnoreLine
         $trace = debug_backtrace();
         $file = isset($trace[1]['file']) ? $trace[1]['file'] : 'not set';;
         $line = isset($trace[1]['line']) ? $trace[1]['line'] : 'not set';

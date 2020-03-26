@@ -266,7 +266,8 @@ class Ess_M2ePro_Model_Upgrade_MySqlSetup extends Mage_Core_Model_Resource_Setup
             apc_clear_cache('system');
         }
 
-        if (function_exists('opcache_get_status')) {
+        if (function_exists('opcache_reset')) {
+            // @codingStandardsIgnoreLine
             opcache_reset();
         }
 

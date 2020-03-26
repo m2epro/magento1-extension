@@ -220,7 +220,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Edit extends Mage_Adminhtml_Block
             case Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SHIPPING:
                 $title = Mage::helper('M2ePro')->__('Shipping');
                 break;
-            case Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_RETURN:
+            case Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_RETURN_POLICY:
                 $title = Mage::helper('M2ePro')->__('Return');
                 break;
             case Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SELLING_FORMAT:

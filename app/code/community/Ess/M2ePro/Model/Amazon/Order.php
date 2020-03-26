@@ -34,6 +34,9 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
 
     //########################################
 
+    /**
+     * @return Ess_M2ePro_Model_Amazon_Order_Proxy
+     */
     public function getProxy()
     {
         return Mage::getModel('M2ePro/Amazon_Order_Proxy', $this);
@@ -731,8 +734,6 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
 
         $orderId     = $this->getParentObject()->getId();
         $action      = Ess_M2ePro_Model_Order_Change::ACTION_UPDATE_SHIPPING;
-        $creatorType = $this->getParentObject()->getLog()->getInitiator();
-        $component   = Ess_M2ePro_Helper_Component_Amazon::NICK;
 
         /** @var Ess_M2ePro_Model_Order_Change $change */
         $change = Mage::getModel('M2ePro/Order_Change')->getCollection()
@@ -742,7 +743,13 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
            ->getFirstItem();
 
         if (!$change->getId() || !empty($trackingDetails['tracking_number'])) {
-            $change::create($orderId, $action, $creatorType, $component, $params);
+            $change::create(
+                $orderId,
+                $action,
+                $this->getParentObject()->getLog()->getInitiator(),
+                Ess_M2ePro_Helper_Component_Amazon::NICK,
+                $params
+            );
             return true;
         }
 
@@ -811,10 +818,7 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
         );
 
         $totalItemsCount = $this->getParentObject()->getItemsCollection()->getSize();
-
         $orderId     = $this->getParentObject()->getId();
-        $creatorType = $this->getParentObject()->getLog()->getInitiator();
-        $component   = Ess_M2ePro_Helper_Component_Amazon::NICK;
 
         /** @var Ess_M2ePro_Model_Resource_Order_Change_Collection $changeCollection */
         $changeCollection = Mage::getModel('M2ePro/Order_Change')->getCollection();
@@ -839,7 +843,13 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
             $action = Ess_M2ePro_Model_Order_Change::ACTION_REFUND;
         }
 
-        Mage::getModel('M2ePro/Order_Change')->create($orderId, $action, $creatorType, $component, $params);
+        Mage::getModel('M2ePro/Order_Change')->create(
+            $orderId,
+            $action,
+            $this->getParentObject()->getLog()->getInitiator(),
+            Ess_M2ePro_Helper_Component_Amazon::NICK,
+            $params
+        );
 
         return true;
     }

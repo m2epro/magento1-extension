@@ -323,7 +323,7 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Table extends Ess_M2ePro_Model_Upgrade_M
         }
 
         $default = '';
-        if ($columnInfo['DEFAULT']) {
+        if ($columnInfo['DEFAULT'] !== null) {
             $default = $this->getConnection()->quoteInto('DEFAULT ?', $columnInfo['DEFAULT']);
         }
 

@@ -10,8 +10,8 @@ AmazonListingActionHandler = Class.create(ListingActionHandler, {
         }
 
         this.startActions(
-            this.options.text.deleting_and_removing_selected_items_message,
-            this.options.url.runDeleteAndRemoveProducts,selectedProductsParts
+            M2ePro.text.deleting_and_removing_selected_items_message,
+            M2ePro.url.runDeleteAndRemoveProducts,selectedProductsParts
         );
     }
 

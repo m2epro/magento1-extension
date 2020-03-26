@@ -46,7 +46,7 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_Stop_Requester
     protected function validateListingProduct()
     {
         /** @var Ess_M2ePro_Model_Walmart_Listing_Product $walmartListingProduct */
-        $walmartListingProduct = $this->listingProduct->getChildObject();
+        $walmartListingProduct = $this->_listingProduct->getChildObject();
         $variationManager = $walmartListingProduct->getVariationManager();
 
         $parentListingProduct = null;
@@ -59,7 +59,7 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_Stop_Requester
 
         $validationResult = $validator->validate();
 
-        if (!$validationResult && $this->listingProduct->isDeleted()) {
+        if (!$validationResult && $this->_listingProduct->isDeleted()) {
             if ($parentListingProduct !== null) {
                 $parentListingProduct->loadInstance($parentListingProduct->getId());
 
@@ -86,7 +86,7 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_Stop_Requester
     protected function validateAndProcessParentListingProduct()
     {
         /** @var Ess_M2ePro_Model_Walmart_Listing_Product $walmartListingProduct */
-        $walmartListingProduct = $this->listingProduct->getChildObject();
+        $walmartListingProduct = $this->_listingProduct->getChildObject();
 
         if (!$walmartListingProduct->getVariationManager()->isRelationParentType()) {
             return false;
@@ -103,26 +103,26 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_Stop_Requester
         );
 
         if (empty($this->_params['remove']) && empty($filteredByStatusNotLockedChildListingProducts)) {
-            $this->listingProduct->setData('no_child_for_processing', true);
+            $this->_listingProduct->setData('no_child_for_processing', true);
             return false;
         }
 
         $notLockedChildListingProducts = $this->filterLockedChildListingProducts($childListingsProducts);
 
         if (count($childListingsProducts) != count($notLockedChildListingProducts)) {
-            $this->listingProduct->setData('child_locked', true);
+            $this->_listingProduct->setData('child_locked', true);
             return false;
         }
 
         if (!empty($this->_params['remove'])) {
             $walmartListingProduct->getVariationManager()->switchModeToAnother();
 
-            $this->listingProduct->addData(
+            $this->_listingProduct->addData(
                 array(
                 'status' => Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED,
                 )
             );
-            $this->listingProduct->save();
+            $this->_listingProduct->save();
 
             $this->getProcessingRunner()->stop();
 
@@ -135,7 +135,7 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_Stop_Requester
                 }
             }
 
-            $this->listingProduct->deleteInstance();
+            $this->_listingProduct->deleteInstance();
         }
 
         if (empty($filteredByStatusNotLockedChildListingProducts)) {
@@ -157,23 +157,16 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_Stop_Requester
             return true;
         }
 
-        /** @var Ess_M2ePro_Model_Walmart_Listing_Product_Action_Processing $processingAction */
-        $processingAction = $this->listingProduct->getProcessingAction();
-        $groupHash = $processingAction->getGroupHash();
-
         foreach ($processChildListingsProducts as $childListingProduct) {
             $processingRunner = Mage::getModel('M2ePro/Walmart_Connector_Product_ProcessingRunner');
-
-            $params = array_merge($this->_params, array('is_parent_action' => true));
-
             $processingRunner->setParams(
                 array(
                 'listing_product_id' => $childListingProduct->getId(),
-                'configurator'       => $this->listingProduct->getActionConfigurator()->getData(),
+                'configurator'       => $this->_listingProduct->getActionConfigurator()->getData(),
                 'action_type'        => $this->getActionType(),
                 'lock_identifier'    => $this->getLockIdentifier(),
-                'requester_params'   => $params,
-                'group_hash'         => $groupHash,
+                'requester_params'   => array_merge($this->_params, array('is_parent_action' => true)),
+                'group_hash'         => $this->_listingProduct->getProcessingAction()->getGroupHash(),
                 )
             );
 

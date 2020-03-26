@@ -77,7 +77,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template extends Mage_Adminhtml_Block_Widg
                     'url'   => $this->getUrl(
                         '*/adminhtml_ebay_template/new',
                         array(
-                            'nick' => Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_RETURN,
+                            'nick' => Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_RETURN_POLICY,
                             'back' => true
                         )
                     ),

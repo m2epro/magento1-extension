@@ -279,9 +279,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_SearchAsin
             {$this->getListing()->getId()}
         );
 
-        ListingGridHandlerObj.actionHandler.setOptions(M2ePro);
-        ListingGridHandlerObj.productSearchHandler.setOptions(M2ePro);
-
         ListingProgressBarObj = new ProgressBar('search_asin_progress_bar');
         GridWrapperObj = new AreaWrapper('search_asin_products_container');
 

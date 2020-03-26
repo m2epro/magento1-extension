@@ -16,6 +16,8 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Sellercentral_Grid
 
     protected $_parentAsins;
 
+    protected $_parentAndChildReviseScheduledCache = array();
+
     //########################################
 
     public function __construct()
@@ -126,8 +128,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Sellercentral_Grid
                 'variation_child_statuses'      => 'variation_child_statuses',
                 'variation_parent_id'           => 'variation_parent_id',
                 'defected_messages'              => 'defected_messages',
-                'is_details_data_changed'        => 'is_details_data_changed',
-                'is_images_data_changed'         => 'is_images_data_changed',
                 'variation_parent_afn_state'       => 'variation_parent_afn_state',
                 'variation_parent_repricing_state' => 'variation_parent_repricing_state',
             ),
@@ -175,6 +175,38 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Sellercentral_Grid
         $this->setCollection($collection);
 
         return parent::_prepareCollection();
+    }
+
+    protected function _afterLoadCollection()
+    {
+        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $collection */
+        $collection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Product');
+        $collection->getSelect()->join(
+            array('lps' => Mage::getResourceModel('M2ePro/Listing_Product_ScheduledAction')->getMainTable()),
+            'lps.listing_product_id=main_table.id',
+            array()
+        );
+
+        $collection->addFieldToFilter('is_variation_parent', 0);
+        $collection->addFieldToFilter(
+            'variation_parent_id', array('in' => $this->getCollection()->getColumnValues('id'))
+        );
+        $collection->addFieldToFilter('lps.action_type', Ess_M2ePro_Model_Listing_Product::ACTION_REVISE);
+
+        $collection->getSelect()->reset(Zend_Db_Select::COLUMNS);
+        $collection->getSelect()->columns(
+            array(
+                'variation_parent_id' => 'second_table.variation_parent_id',
+                'count'               => new Zend_Db_Expr('COUNT(lps.id)')
+            )
+        );
+        $collection->getSelect()->group('variation_parent_id');
+
+        foreach ($collection->getItems() as $item) {
+            $this->_parentAndChildReviseScheduledCache[$item->getData('variation_parent_id')] = true;
+        }
+
+        return parent::_afterLoadCollection();
     }
 
     protected function _prepareColumns()
@@ -911,7 +943,8 @@ HTML;
                 $reviseParts = array();
 
                 $additionalData = $scheduledAction->getAdditionalData();
-                if (!empty($additionalData['configurator'])) {
+                if (!empty($additionalData['configurator']) &&
+                    !isset($this->_parentAndChildReviseScheduledCache[$row->getData('id')])) {
                     $configurator = Mage::getModel('M2ePro/Amazon_Listing_Product_Action_Configurator');
                     $configurator->setData($additionalData['configurator']);
 

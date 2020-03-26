@@ -10,18 +10,12 @@ class Ess_M2ePro_Model_Walmart_Order_CreditMemo_Handler extends Ess_M2ePro_Model
 {
     //########################################
 
-    public function handle(Ess_M2ePro_Model_Order $order, Mage_Sales_Model_Order_Creditmemo $creditmemo)
+    /**
+     * @return string
+     */
+    public function getComponentMode()
     {
-        if (!$order->isComponentModeWalmart()) {
-            throw new InvalidArgumentException('Invalid component mode.');
-        }
-
-        if (!$order->getChildObject()->canRefund()) {
-            return self::HANDLE_RESULT_SKIPPED;
-        }
-
-        $items = $this->getItemsToRefund($order, $creditmemo);
-        return $order->getChildObject()->refund($items) ? self::HANDLE_RESULT_SUCCEEDED : self::HANDLE_RESULT_FAILED;
+        return Ess_M2ePro_Helper_Component_Amazon::NICK;
     }
 
     //########################################

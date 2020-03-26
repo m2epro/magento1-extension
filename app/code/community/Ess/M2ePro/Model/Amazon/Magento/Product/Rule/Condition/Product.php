@@ -22,9 +22,7 @@ class Ess_M2ePro_Model_Amazon_Magento_Product_Rule_Condition_Product
             'amazon_is_afn_chanel'        => 'AmazonIsAfnChanel',
             'amazon_is_repricing'         => 'AmazonIsRepricing',
             'amazon_status'               => 'AmazonStatus',
-            'amazon_general_id_state'     => 'AmazonGeneralIdState',
-            'amazon_details_data_changed' => 'AmazonDetailsDataChanged',
-            'amazon_images_data_changed'  => 'AmazonImagesDataChanged',
+            'amazon_general_id_state'     => 'AmazonGeneralIdState'
         );
 
         return array_merge_recursive(

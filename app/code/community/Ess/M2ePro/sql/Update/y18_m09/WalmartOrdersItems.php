@@ -6,13 +6,6 @@ class Ess_M2ePro_Sql_Update_y18_m09_WalmartOrdersItems extends Ess_M2ePro_Model_
 {
     //########################################
 
-    public function getBackupTables()
-    {
-        return array(
-            'walmart_order_item'
-        );
-    }
-
     public function execute()
     {
         $this->_installer->getTableModifier('walmart_order_item')

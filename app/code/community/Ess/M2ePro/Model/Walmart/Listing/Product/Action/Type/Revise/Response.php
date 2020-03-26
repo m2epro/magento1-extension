@@ -28,10 +28,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Revise_Response
             $data['is_online_price_invalid'] = 0;
         }
 
-        if ($this->getConfigurator()->isDetailsAllowed()) {
-            $data['is_details_data_changed'] = 0;
-        }
-
         $data = $this->appendStatusChangerValue($data);
         $data = $this->appendQtyValues($data);
         $data = $this->appendLagTimeValues($data);

@@ -28,7 +28,7 @@ class Ess_M2ePro_Model_Magento_Product_Builder extends Mage_Core_Model_Abstract
     protected function createProduct()
     {
         $this->_product = Mage::getModel('catalog/product');
-        $this->_product->setTypeId(Ess_M2ePro_Model_Magento_Product::TYPE_SIMPLE);
+        $this->_product->setTypeId(Ess_M2ePro_Model_Magento_Product::TYPE_SIMPLE_ORIGIN);
         $this->_product->setAttributeSetId(Mage::getModel('catalog/product')->getDefaultAttributeSetId());
 
         // ---------------------------------------

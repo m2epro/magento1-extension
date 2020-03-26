@@ -115,6 +115,7 @@ JS
                 'Creation of New Magento Attribute',
                 'Unauthorized! Please login again.',
 
+                'Settings have been saved.',
                 'Preparing to start. Please wait ...',
                 'Synchronization has successfully ended.',
                 'Synchronization ended with warnings. <a target="_blank" href="%url%">View Log</a> for details.',

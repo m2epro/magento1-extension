@@ -24,13 +24,15 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Request
             'type_mode' => $this->_cachedData['list_type'],
         );
 
-        if ($this->_cachedData['list_type'] == self::LIST_TYPE_NEW &&
-            $this->getVariationManager()->isRelationMode()) {
+        if ($this->_cachedData['list_type'] == self::LIST_TYPE_NEW && $this->getVariationManager()->isRelationMode()) {
             $data = array_merge($data, $this->getRelationData());
         }
 
         $data = array_merge(
             $data,
+            $this->getQtyData(),
+            $this->getRegularPriceData(),
+            $this->getBusinessPriceData(),
             $this->getDetailsData(),
             $this->getImagesData()
         );
@@ -44,13 +46,6 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Request
         } else {
             $data = array_merge($data, $this->getExistProductIdentifierData());
         }
-
-        $data = array_merge(
-            $data,
-            $this->getQtyData(),
-            $this->getRegularPriceData(),
-            $this->getBusinessPriceData()
-        );
 
         return $data;
     }

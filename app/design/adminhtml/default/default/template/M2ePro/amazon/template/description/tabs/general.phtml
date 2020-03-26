@@ -67,9 +67,9 @@
     /** @var Ess_M2ePro_Helper_Magento_Attribute $magentoAttributeHelper */
     $magentoAttributeHelper = Mage::helper('M2ePro/Magento_Attribute');
 
-    $generalAttributesByInputTypes = array(
-        'text' => $magentoAttributeHelper->filterByInputTypes($this->getData('general_attributes'), array('text')),
-        'text_select' => $magentoAttributeHelper->filterByInputTypes($this->getData('general_attributes'), array('text', 'select')),
+    $attributesByInputTypes = array(
+        'text' => $magentoAttributeHelper->filterByInputTypes($this->getData('all_attributes'), array('text')),
+        'text_select' => $magentoAttributeHelper->filterByInputTypes($this->getData('all_attributes'), array('text', 'select')),
     );
 ?>
 
@@ -283,11 +283,11 @@
                     <td class="value" style="min-width: 80px;">
                         <span id="category_warning_messages" style="display: none; float: left;">
                             <img src="<?php echo $this->getSkinUrl('M2ePro/images/warning.png'); ?>" class="tool-tip-image">
-                            <span class="tool-tip-message tip-left" style="font-size: 12px; display: none; border-color: #ffd967; background-color: #fffbf0;">
+                            <span class="tool-tip-message" style="font-size: 12px; display: none; border-color: #ffd967; background-color: #fffbf0;">
                                 <img src="<?php echo $this->getSkinUrl('M2ePro/images/i_notice.gif'); ?>" style="margin-top: -21px;">
 
                                 <span id="category_locked_warning_message" class="category-warning-item" style="display: none;"><?php echo Mage::helper('M2ePro')->__(
-                                    'You cannot edit existing Category because currently the new ASIN/ISBN is being created based on this Policy or there is possibility of
+                                    'You cannot edit existing Category because currently the new ASIN/ISBN is being created based on this Policy or there is possibility of <br/>
                                      creating new Child Products based for the Parent Product with this Description Policy. <br/><br/>
                                      It is done to make sure that Parent and Child Products will be Listed to the same Category.'
                                 ); ?></span>
@@ -421,12 +421,12 @@
                             <option value="<?php echo Ess_M2ePro_Model_Amazon_Template_Description::WORLDWIDE_ID_MODE_NONE ?>" <?php if ($formData['general']['worldwide_id_mode'] == Ess_M2ePro_Model_Amazon_Template_Description::WORLDWIDE_ID_MODE_NONE) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('None') ?></option>
 
                             <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
-                                <?php if ($formData['general']['worldwide_id_custom_attribute'] != '' && !$magentoAttributeHelper->isExistInAttributesArray($formData['general']['worldwide_id_custom_attribute'], $generalAttributesByInputTypes['text'])) : ?>
+                                <?php if ($formData['general']['worldwide_id_custom_attribute'] != '' && !$magentoAttributeHelper->isExistInAttributesArray($formData['general']['worldwide_id_custom_attribute'], $attributesByInputTypes['text'])) : ?>
                                     <option attribute_code="<?php echo $formData['general']['worldwide_id_custom_attribute']; ?>" value="<?php echo Ess_M2ePro_Model_Amazon_Template_Description::WORLDWIDE_ID_MODE_CUSTOM_ATTRIBUTE ?>" selected="selected">
                                         <?php echo Mage::helper('M2ePro')->escapeHtml($magentoAttributeHelper->getAttributeLabel($formData['general']['worldwide_id_custom_attribute'])); ?>
                                     </option>
                                 <?php endif; ?>
-                                <?php foreach($generalAttributesByInputTypes['text'] as $attribute) : ?>
+                                <?php foreach($attributesByInputTypes['text'] as $attribute) : ?>
                                     <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Amazon_Template_Description::WORLDWIDE_ID_MODE_CUSTOM_ATTRIBUTE ?>" <?php if (!empty($formData['general']['worldwide_id_custom_attribute']) && $attribute['code'] == $formData['general']['worldwide_id_custom_attribute']): ?>selected="selected"<?php endif; ?>>
                                         <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
                                     </option>

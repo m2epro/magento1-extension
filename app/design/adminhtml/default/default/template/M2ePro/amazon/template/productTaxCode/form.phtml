@@ -42,7 +42,7 @@ if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
 /** @var Ess_M2ePro_Helper_Magento_Attribute $magentoAttributeHelper */
 $magentoAttributeHelper = Mage::helper('M2ePro/Magento_Attribute');
 
-$attributes = $magentoAttributeHelper->getGeneralFromAllAttributeSets();
+$attributes = $magentoAttributeHelper->getAll();
 
 $attributesByInputTypes = array(
     'text_select' => $magentoAttributeHelper->filterByInputTypes($attributes, array('text', 'select'))

@@ -89,31 +89,12 @@ WalmartTemplateCategoryCategoriesSpecificBlockGridAddSpecificRenderer = Class.cr
 
     isAnyOfChildSpecificsRendered: function()
     {
-        return this.getRenderedSpecificsInThisBlock().length > 0;
+        return this.getRenderedSpecificsInBlock().length > 0;
     },
 
     isAllOfSpecificsRendered: function()
     {
-        return this.getRenderedSpecificsInThisBlock().length >= this.childAllSpecifics.length;
-    },
-
-    // ---------------------------------------
-
-    getRenderedSpecificsInThisBlock: function()
-    {
-        var self = this,
-            addedSpecificXpathes = [],
-            renderedSpecifics = [];
-
-        self.specificHandler.renderedSpecifics.each(function(sp) {
-            var xPath = sp.replace(self.indexedXPath + '/', '').replace(/-\d+/, '');
-            if (xPath.split('/').length === 1 && addedSpecificXpathes.indexOf(xPath) === -1) {
-                renderedSpecifics.push(sp);
-                addedSpecificXpathes.push(xPath);
-            }
-        });
-
-        return renderedSpecifics;
+        return this.getRenderedSpecificsInBlock().length >= this.childAllSpecifics.length;
     },
 
     //########################################
@@ -152,7 +133,7 @@ WalmartTemplateCategoryCategoriesSpecificBlockGridAddSpecificRenderer = Class.cr
                 product_data_nick       : $('product_data_nick').value,
                 current_indexed_xpath   : self.indexedXPath,
                 all_rendered_specifics  : Object.toJSON(self.specificHandler.renderedSpecifics),
-                block_rendered_specifics: Object.toJSON(self.getRenderedSpecificsInThisBlock())
+                block_rendered_specifics: Object.toJSON(self.getRenderedSpecificsInBlock())
             },
             onSuccess: function(transport) {
 
@@ -337,7 +318,7 @@ WalmartTemplateCategoryCategoriesSpecificBlockGridAddSpecificRenderer = Class.cr
                 product_data_nick       : $('product_data_nick').value,
                 current_indexed_xpath   : self.indexedXPath,
                 all_rendered_specifics  : Object.toJSON(self.specificHandler.renderedSpecifics),
-                block_rendered_specifics: Object.toJSON(self.getRenderedSpecificsInThisBlock()),
+                block_rendered_specifics: Object.toJSON(self.getRenderedSpecificsInBlock()),
                 selected_specifics      : Object.toJSON(self.selectedSpecifics),
                 only_desired            : onlyDesired,
                 query                   : query

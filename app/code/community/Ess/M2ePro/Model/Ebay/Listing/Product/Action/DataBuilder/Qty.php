@@ -13,11 +13,8 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Qty
 
     public function getData()
     {
-        $data = array_merge(
-            array(
-                'qty' => $this->getEbayListingProduct()->getQty()
-            ),
-            $this->getLotSizeData()
+        $data = array(
+            'qty' => $this->getEbayListingProduct()->getQty()
         );
 
         $this->checkQtyWarnings();
@@ -26,28 +23,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Qty
     }
 
     //########################################
-
-    /**
-     * @return array
-     */
-    public function getLotSizeData()
-    {
-        $data = array();
-
-        $categoryId = $this->getEbayListingProduct()->getCategoryTemplateSource()->getMainCategory();
-        $marketplaceId = $this->getMarketplace()->getId();
-        $categoryFeatures = Mage::helper('M2ePro/Component_Ebay_Category_Ebay')
-            ->getFeatures($categoryId, $marketplaceId);
-
-        /**
-         * lsd - "Lot Size Disabled". If lsd = 1, then this feature does not work for this category.
-         */
-        if (isset($categoryFeatures['lsd']) && $categoryFeatures['lsd'] == 0) {
-            $data['lot_size'] = $this->getEbayListingProduct()->getSellingFormatTemplateSource()->getLotSize();
-        }
-
-        return $data;
-    }
 
     protected function checkQtyWarnings()
     {

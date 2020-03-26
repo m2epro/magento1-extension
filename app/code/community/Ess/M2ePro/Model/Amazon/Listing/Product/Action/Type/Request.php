@@ -99,6 +99,11 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Request
             return array();
         }
 
+        if ($this->getVariationManager()->isRelationParentType()) {
+            return array();
+        }
+
+
         $dataBuilder = $this->getDataBuilder('qty');
         return $dataBuilder->getData();
     }
@@ -112,6 +117,10 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Request
             return array();
         }
 
+        if ($this->getVariationManager()->isRelationParentType()) {
+            return array();
+        }
+
         $dataBuilder = $this->getDataBuilder('price_regular');
         return $dataBuilder->getData();
     }
@@ -122,6 +131,10 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Request
     public function getBusinessPriceData()
     {
         if (!$this->getConfigurator()->isBusinessPriceAllowed()) {
+            return array();
+        }
+
+        if ($this->getVariationManager()->isRelationParentType()) {
             return array();
         }
 

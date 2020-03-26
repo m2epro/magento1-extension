@@ -31,11 +31,6 @@ class Ess_M2ePro_Block_Adminhtml_ControlPanel_Tabs_About extends Mage_Adminhtml_
         // Left Column
         // ---------------------------------------
         $this->setChild(
-            'module', $this->getLayout()->createBlock(
-                'M2ePro/adminhtml_controlPanel_info_module'
-            )
-        );
-        $this->setChild(
             'license_information', $this->getLayout()->createBlock(
                 'M2ePro/adminhtml_controlPanel_info_license_information'
             )

@@ -503,35 +503,10 @@ HTML;
             $value = Mage::helper('M2ePro')->__('N/A');
         }
 
-        if ($row->getData('defected_messages') ||
-            $row->getData('is_details_data_changed') ||
-            $row->getData('is_images_data_changed')
-        ) {
+        if ($row->getData('defected_messages')) {
             $defectedMessages = Mage::helper('M2ePro')->jsonDecode($row->getData('defected_messages'));
-            if (empty($defectedMessages)) {
-                $defectedMessages = array();
-            }
 
             $msg = '';
-
-            if ($row->getData('is_details_data_changed')) {
-                $message = <<<HTML
-Item Details, e.g. Condition Note, Gift Message, Gift Wrap, Item Description, Shipping or Product Tax Code settings,
-need to be updated on Amazon.<br>
-To submit new Item Details, apply the Revise action. Use the Advanced Filter to select all Items with the Details
-changes and update them in bulk.
-HTML;
-                $msg .= '<p>'.Mage::helper('M2ePro')->__($message).'</p>';
-            }
-
-            if ($row->getData('is_images_data_changed')) {
-                $message = <<<HTML
-Item Images need to be updated on Amazon. To submit new Item Images, apply the Revise action.<br>
-Use the Advanced Filter to select all Items with the Images changes and update them in bulk.
-HTML;
-                $msg .= '<p>'.Mage::helper('M2ePro')->__($message).'</p>';
-            }
-
             foreach ($defectedMessages as $message) {
                 if (empty($message['message'])) {
                     continue;
@@ -1757,9 +1732,6 @@ HTML;
             'amazonVariationProductManageGrid',
             {$listingId}
         );
-
-        ListingGridHandlerObj.actionHandler.setOptions(M2ePro);
-        ListingGridHandlerObj.templateDescriptionHandler.setOptions(M2ePro);
 
         ListingProgressBarObj = new ProgressBar('listing_view_progress_bar');
         GridWrapperObj = new AreaWrapper('listing_view_content_container');

@@ -54,7 +54,6 @@ class Ess_M2ePro_Model_Walmart_Magento_Product_Rule_Condition_Combine
             'walmart_start_date'           => Mage::helper('M2ePro')->__('Start Date'),
             'walmart_end_date'             => Mage::helper('M2ePro')->__('End Date'),
             'walmart_status'               => Mage::helper('M2ePro')->__('Status'),
-            'walmart_details_data_changed' => Mage::helper('M2ePro')->__('Item Details need to be updated'),
             'walmart_online_price_invalid' => Mage::helper('M2ePro')->__('Pricing Rules violated'),
         );
     }

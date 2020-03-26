@@ -38,8 +38,9 @@ class Ess_M2ePro_Model_Servicing_Task_Messages extends Ess_M2ePro_Model_Servicin
 
     protected function updateMagentoMessages(array $messages)
     {
-        $messages = array_filter($messages, array($this, 'updateMagentoMessagesFilterMagentoMessages'));
-        !is_array($messages) && $messages = array();
+        $messages = array_filter($messages, function ($message) {
+            return isset($message['is_global']) && (bool)$message['is_global'];
+        });
 
         /** @var Ess_M2ePro_Model_Issue_Notification_Channel_Magento_GlobalMessage $notificationChannel */
         $notificationChannel = Mage::getModel('M2ePro/Issue_Notification_Channel_Magento_GlobalMessage');
@@ -52,42 +53,17 @@ class Ess_M2ePro_Model_Servicing_Task_Messages extends Ess_M2ePro_Model_Servicin
         }
     }
 
-    public function updateMagentoMessagesFilterMagentoMessages($message)
-    {
-        if (!isset($message['title']) || !isset($message['text']) || !isset($message['type'])) {
-            return false;
-        }
-
-        if (!isset($message['is_global']) || !(bool)$message['is_global']) {
-            return false;
-        }
-
-        return true;
-    }
-
-    //########################################
-
     protected function updateModuleMessages(array $messages)
     {
-        $messages = array_filter($messages, array($this, 'updateModuleMessagesFilterModuleMessages'));
-        !is_array($messages) && $messages = array();
+        $messages = array_filter($messages, function ($message) {
+            return !isset($message['is_global']) || !(bool)$message['is_global'];
+        });
 
-        Mage::helper('M2ePro/Primary')->getConfig()->setGroupValue(
-            '/server/', 'messages', Mage::helper('M2ePro')->jsonEncode($messages)
-        );
-    }
+        /** @var Ess_M2ePro_Model_Registry $registry */
+        $registry = Mage::getModel('M2ePro/Registry')->loadByKey('/server/messages/');
 
-    public function updateModuleMessagesFilterModuleMessages($message)
-    {
-        if (!isset($message['text']) || !isset($message['type'])) {
-            return false;
-        }
-
-        if (isset($message['is_global']) && (bool)$message['is_global']) {
-            return false;
-        }
-
-        return true;
+        $registry->setValue($messages);
+        $registry->save();
     }
 
     //########################################

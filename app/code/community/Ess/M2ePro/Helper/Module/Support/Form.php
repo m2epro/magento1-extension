@@ -52,12 +52,10 @@ class Ess_M2ePro_Helper_Module_Support_Form extends Mage_Core_Helper_Abstract
         $platformInfo['name'] = Mage::helper('M2ePro/Magento')->getName();
         $platformInfo['edition'] = Mage::helper('M2ePro/Magento')->getEditionName();
         $platformInfo['version'] = Mage::helper('M2ePro/Magento')->getVersion();
-        $platformInfo['revision'] = Mage::helper('M2ePro/Magento')->getRevision();
 
         $moduleInfo = array();
         $moduleInfo['name'] = Mage::helper('M2ePro/Module')->getName();
-        $moduleInfo['version'] = Mage::helper('M2ePro/Module')->getVersion();
-        $moduleInfo['revision'] = Mage::helper('M2ePro/Module')->getRevision();
+        $moduleInfo['version'] = Mage::helper('M2ePro/Module')->getPublicVersion();
 
         $phpInfo = Mage::helper('M2ePro/Client')->getPhpSettings();
         $phpInfo['api'] = Mage::helper('M2ePro/Client')->getPhpApiName();
@@ -85,12 +83,10 @@ class Ess_M2ePro_Helper_Module_Support_Form extends Mage_Core_Helper_Abstract
 Name: {$platformInfo['name']}
 Edition: {$platformInfo['edition']}
 Version: {$platformInfo['version']}
-Revision: {$platformInfo['revision']}
 
 -------------------------------- MODULE INFO -------------------------------------
 Name: {$moduleInfo['name']}
 Version: {$moduleInfo['version']}
-Revision: {$moduleInfo['revision']}
 
 -------------------------------- LOCATION INFO -----------------------------------
 Domain: {$locationInfo['domain']}

@@ -87,9 +87,9 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Settings_Grid
 
                 'template_category_id'  => 'template_category_id',
 
-                'template_payment_mode'  => 'template_payment_mode',
-                'template_shipping_mode' => 'template_shipping_mode',
-                'template_return_mode'   => 'template_return_mode',
+                'template_payment_mode'       => 'template_payment_mode',
+                'template_shipping_mode'      => 'template_shipping_mode',
+                'template_return_policy_mode' => 'template_return_policy_mode',
 
                 'template_description_mode'     => 'template_description_mode',
                 'template_selling_format_mode'  => 'template_selling_format_mode',

@@ -11,6 +11,13 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Synchronization_Log_Grid
 {
     //########################################
 
+    public function getComponentMode()
+    {
+        return Ess_M2ePro_Helper_Component_Amazon::NICK;
+    }
+
+    //########################################
+
     protected function getActionTitles()
     {
         return Mage::helper('M2ePro/Module_Log')->getActionsTitlesByClass('Synchronization_Log');

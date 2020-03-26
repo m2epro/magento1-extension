@@ -83,7 +83,6 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View_Magento_Grid
                 'walmart_sku'             => 'sku',
                 'online_qty'              => 'online_qty',
                 'online_price'            => 'online_price',
-                'is_details_data_changed' => 'is_details_data_changed',
                 'is_online_price_invalid' => 'is_online_price_invalid',
             ),
             null,
@@ -155,9 +154,6 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View_Magento_Grid
             )
         );
 
-        $tempTypes = Mage::getSingleton('catalog/product_type')->getOptionArray();
-        unset($tempTypes['virtual']);
-
         $this->addColumn(
             'type', array(
             'header'    => Mage::helper('M2ePro')->__('Type'),
@@ -167,7 +163,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View_Magento_Grid
             'sortable'  => false,
             'index'     => 'type_id',
             'filter_index' => 'type_id',
-            'options' => $tempTypes
+            'options' => Mage::helper('M2ePro/Magento_Product')->getTypesOptionArray()
             )
         );
 

@@ -56,7 +56,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product extends Ess_M2ePro_Model_Component_C
     protected $_paymentTemplateModel = null;
 
     /**
-     * @var Ess_M2ePro_Model_Ebay_Template_Return
+     * @var Ess_M2ePro_Model_Ebay_Template_ReturnPolicy
      */
     protected $_returnTemplateModel = null;
 
@@ -375,12 +375,12 @@ class Ess_M2ePro_Model_Ebay_Listing_Product extends Ess_M2ePro_Model_Component_C
     // ---------------------------------------
 
     /**
-     * @return Ess_M2ePro_Model_Ebay_Template_Return
+     * @return Ess_M2ePro_Model_Ebay_Template_ReturnPolicy
      */
     public function getReturnTemplate()
     {
         if ($this->_returnTemplateModel === null) {
-            $template                   = Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_RETURN;
+            $template                   = Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_RETURN_POLICY;
             $this->_returnTemplateModel = $this->getTemplateManager($template)->getResultObject();
         }
 
@@ -388,9 +388,9 @@ class Ess_M2ePro_Model_Ebay_Listing_Product extends Ess_M2ePro_Model_Component_C
     }
 
     /**
-     * @param Ess_M2ePro_Model_Ebay_Template_Return $instance
+     * @param Ess_M2ePro_Model_Ebay_Template_ReturnPolicy $instance
      */
-    public function setReturnTemplate(Ess_M2ePro_Model_Ebay_Template_Return $instance)
+    public function setReturnTemplate(Ess_M2ePro_Model_Ebay_Template_ReturnPolicy $instance)
     {
          $this->_returnTemplateModel = $instance;
     }
@@ -1032,25 +1032,10 @@ class Ess_M2ePro_Model_Ebay_Listing_Product extends Ess_M2ePro_Model_Component_C
 
     //########################################
 
-    public function getOutOfStockControl($returnRealValue = false)
-    {
-        $additionalData = $this->getParentObject()->getAdditionalData();
-
-        if (isset($additionalData['out_of_stock_control'])) {
-            return (bool)$additionalData['out_of_stock_control'];
-        }
-
-        return $returnRealValue ? null : false;
-    }
-
     public function isOutOfStockControlEnabled()
     {
         if ($this->getOnlineDuration() && !$this->isOnlineDurationGtc()) {
             return false;
-        }
-
-        if ($this->getOutOfStockControl()) {
-            return true;
         }
 
         if ($this->getEbayAccount()->getOutOfStockControl()) {
@@ -1145,36 +1130,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product extends Ess_M2ePro_Model_Component_C
         }
 
         return round($price, 2);
-    }
-
-    //########################################
-
-    public function listAction(array $params = array())
-    {
-        return $this->processDispatcher(Ess_M2ePro_Model_Listing_Product::ACTION_LIST, $params);
-    }
-
-    public function relistAction(array $params = array())
-    {
-        return $this->processDispatcher(Ess_M2ePro_Model_Listing_Product::ACTION_RELIST, $params);
-    }
-
-    public function reviseAction(array $params = array())
-    {
-        return $this->processDispatcher(Ess_M2ePro_Model_Listing_Product::ACTION_REVISE, $params);
-    }
-
-    public function stopAction(array $params = array())
-    {
-        return $this->processDispatcher(Ess_M2ePro_Model_Listing_Product::ACTION_STOP, $params);
-    }
-
-    // ---------------------------------------
-
-    protected function processDispatcher($action, array $params = array())
-    {
-        return Mage::getModel('M2ePro/Ebay_Connector_Item_Dispatcher')
-            ->process($action, $this->getId(), $params);
     }
 
     //########################################

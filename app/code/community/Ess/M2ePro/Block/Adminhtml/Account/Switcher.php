@@ -14,10 +14,6 @@ class Ess_M2ePro_Block_Adminhtml_Account_Switcher extends Ess_M2ePro_Block_Admin
 
     public function getLabel()
     {
-        if ($this->getData('component_mode') == Ess_M2ePro_Helper_Component_Ebay::NICK) {
-            return Mage::helper('M2ePro')->__('Account');
-        }
-
         return Mage::helper('M2ePro')->__($this->getComponentLabel('%component% Account'));
     }
 

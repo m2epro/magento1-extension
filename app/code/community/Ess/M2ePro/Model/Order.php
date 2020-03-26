@@ -51,6 +51,10 @@ class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
             return false;
         }
 
+        Mage::getResourceModel('M2ePro/Order_Note_Collection')
+            ->addFieldToFilter('order_id', $this->getId())
+            ->walk('deleteInstance');
+
         foreach ($this->getItemsCollection()->getItems() as $item) {
             /** @var $item Ess_M2ePro_Model_Order_Item */
             $item->deleteInstance();
@@ -61,10 +65,6 @@ class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
         Mage::getResourceModel('M2ePro/Order_Change_Collection')
             ->addFieldToFilter('order_id', $this->getId())
             ->walk('deleteInstance');
-
-         Mage::getResourceModel('M2ePro/Order_Note_Collection')
-             ->addFieldToFilter('order_id', $this->getId())
-             ->walk('deleteInstance');
 
         $this->_account         = null;
         $this->_magentoOrder    = null;

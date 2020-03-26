@@ -196,7 +196,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation extends Ess_M2ePro_Model_C
     }
 
     /**
-     * @return Ess_M2ePro_Model_Ebay_Template_Return
+     * @return Ess_M2ePro_Model_Ebay_Template_ReturnPolicy
      */
     public function getReturnTemplate()
     {

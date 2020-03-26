@@ -193,7 +193,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Template_DescriptionController
 
         $changeProcessor = Mage::getModel('M2ePro/Walmart_Template_Description_ChangeProcessor');
         $changeProcessor->process(
-            $diff, $affectedListingsProducts->getData(array('id', 'status'), array('only_physical_units' => true))
+            $diff, $affectedListingsProducts->getData(array('id', 'status'))
         );
         // ---------------------------------------
 

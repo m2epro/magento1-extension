@@ -21,11 +21,6 @@ class Ess_M2ePro_Helper_Magento extends Mage_Core_Helper_Abstract
         return $asArray ? explode('.', $versionString) : $versionString;
     }
 
-    public function getRevision()
-    {
-        return 'undefined';
-    }
-
     //########################################
 
     public function getEditionName()
@@ -289,7 +284,7 @@ class Ess_M2ePro_Helper_Magento extends Mage_Core_Helper_Abstract
                     $classNameParts = explode('_', $rewrite->getName());
                     foreach ($classNameParts as &$part) {
                         $part = strtolower($part);
-                        $part{0} = strtoupper($part{0});
+                        $part[0] = strtoupper($part[0]);
                     }
 
                     $classNameParts = array_merge(array($node->class), $classNameParts);

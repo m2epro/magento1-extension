@@ -15,11 +15,6 @@ abstract class Ess_M2ePro_Model_Amazon_Connector_Product_Requester
     protected $_listingProduct = null;
 
     /**
-     * @var Ess_M2ePro_Model_Listing_Product_LockManager
-     */
-    protected $_lockManager = null;
-
-    /**
      * @var Ess_M2ePro_Model_Amazon_Listing_Product_Action_Logger
      */
     protected $_logger = null;
@@ -113,12 +108,7 @@ abstract class Ess_M2ePro_Model_Amazon_Connector_Product_Requester
     {
         $this->getLogger()->setStatus(Ess_M2ePro_Helper_Data::STATUS_SUCCESS);
 
-        /** @var Ess_M2ePro_Model_Amazon_Listing_Product $amazonListingProduct */
-        $amazonListingProduct = $this->_listingProduct->getChildObject();
-
-        if ($amazonListingProduct->getVariationManager()->isRelationParentType() &&
-            $this->validateAndProcessParentListingProduct()
-        ) {
+        if ($this->validateAndProcessParentListingProduct()) {
             $this->writeStoredLogMessages();
             $this->getProcessingRunner()->stop();
             return;
@@ -205,30 +195,16 @@ abstract class Ess_M2ePro_Model_Amazon_Connector_Product_Requester
             return false;
         }
 
-        $childListingsProducts = $amazonListingProduct->getVariationManager()
-            ->getTypeModel()
-            ->getChildListingsProducts();
+        $childProducts = $amazonListingProduct->getVariationManager()->getTypeModel()->getChildListingsProducts();
+        $childProducts = $this->filterChildListingProductsByStatus($childProducts);
+        $childProducts = $this->filterLockedChildListingProducts($childProducts);
 
-        $childListingsProducts = $this->filterChildListingProductsByStatus($childListingsProducts);
-        $childListingsProducts = $this->filterLockedChildListingProducts($childListingsProducts);
-
-        if (empty($childListingsProducts)) {
+        if (empty($childProducts)) {
             $this->_listingProduct->setData('no_child_for_processing', true);
             return false;
         }
 
-        $dispatcherParams = array_merge($this->_params, array('is_parent_action' => true));
-
-        $dispatcherObject = Mage::getModel('M2ePro/Amazon_Connector_Product_Dispatcher');
-        $processStatus = $dispatcherObject->process(
-            $this->getActionType(), $childListingsProducts, $dispatcherParams
-        );
-
-        if ($processStatus == Ess_M2ePro_Helper_Data::STATUS_ERROR) {
-            $this->getLogger()->setStatus(Ess_M2ePro_Helper_Data::STATUS_ERROR);
-        }
-
-        return true;
+        return false;
     }
 
     /**

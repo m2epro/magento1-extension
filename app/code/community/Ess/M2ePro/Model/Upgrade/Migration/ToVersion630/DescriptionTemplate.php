@@ -340,7 +340,7 @@ SQL
         $this->_installer->run(
             <<<SQL
 
-CREATE TABLE IF NOT EXISTS `m2epro_template_description` (
+CREATE TABLE IF NOT EXISTS `{$this->_installer->getTable('m2epro_template_description')}` (
     id int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
     title varchar(255) NOT NULL,
     component_mode varchar(10) DEFAULT NULL,
@@ -363,7 +363,7 @@ SQL
         $this->_installer->run(
             <<<SQL
 
-CREATE TABLE IF NOT EXISTS `m2epro_ebay_template_description` (
+CREATE TABLE IF NOT EXISTS `{$this->_installer->getTable('m2epro_ebay_template_description')}` (
   template_description_id INT(11) UNSIGNED NOT NULL,
   is_custom_template TINYINT(2) UNSIGNED NOT NULL DEFAULT 1,
   title_mode TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
@@ -478,7 +478,7 @@ SQL
         $this->_installer->run(
             <<<SQL
 
-CREATE TABLE IF NOT EXISTS `m2epro_amazon_template_description` (
+CREATE TABLE IF NOT EXISTS `{$this->_installer->getTable('m2epro_amazon_template_description')}` (
   template_description_id INT(11) UNSIGNED NOT NULL,
   marketplace_id INT(11) UNSIGNED NOT NULL,
   is_new_asin_accepted TINYINT(2) UNSIGNED DEFAULT 0,
@@ -504,7 +504,7 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-CREATE TABLE IF NOT EXISTS `m2epro_amazon_template_description_definition` (
+CREATE TABLE IF NOT EXISTS `{$this->_installer->getTable('m2epro_amazon_template_description_definition')}` (
   template_description_id INT(11) UNSIGNED NOT NULL,
   title_mode TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   title_template VARCHAR(255) NOT NULL,
@@ -576,7 +576,7 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-CREATE TABLE IF NOT EXISTS `m2epro_amazon_template_description_specific` (
+CREATE TABLE IF NOT EXISTS `{$this->_installer->getTable('m2epro_amazon_template_description_specific')}` (
   id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   template_description_id INT(11) UNSIGNED NOT NULL,
   xpath VARCHAR(255) NOT NULL,

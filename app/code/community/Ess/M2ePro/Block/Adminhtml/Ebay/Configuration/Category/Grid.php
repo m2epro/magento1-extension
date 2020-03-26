@@ -241,7 +241,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_Grid extends Mage_A
 
         $this->addColumn(
             'marketplace', array(
-            'header'        => $helper->__('eBay Site'),
+            'header'        => $helper->__('Marketplace'),
             'align'         => 'left',
             'type'          => 'options',
             'width'         => '100px',

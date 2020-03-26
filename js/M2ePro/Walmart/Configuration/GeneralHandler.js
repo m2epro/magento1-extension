@@ -3,11 +3,17 @@ WalmartGeneralSettings.prototype = Object.extend(new CommonHandler(), {
 
     // ---------------------------------------
 
-    initialize: function(synchProgressObj, storedStatuses)
+    initialize: function()
     {
+        var self = this;
+
         Validation.add('M2ePro-walmart-required-identifier-setting', M2ePro.translator.translate('Required at least one identifier'), function(value,el) {
 
             var result = false;
+
+            if ($('product_id_override_mode').value == self.PRODUCT_ID_OVERRIDE_MODE_ALL) {
+                return true;
+            }
 
             $$('.M2ePro-walmart-required-identifier-setting').each(function(obj) {
                 if (obj.value > 0) {

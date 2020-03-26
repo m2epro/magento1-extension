@@ -9,6 +9,8 @@
 class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Search_M2ePro_Grid
     extends Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Search_Grid
 {
+    protected $_parentAndChildReviseScheduledCache = array();
+
     //########################################
 
     public function __construct()
@@ -135,44 +137,82 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Search_M2ePro_Grid
         return parent::_prepareCollection();
     }
 
-    //########################################
-
-    public function callbackColumnProductTitle($value, $row, $column, $isExport)
+    protected function _afterLoadCollection()
     {
-        $title = $row->getData('name');
-        $title = Mage::helper('M2ePro')->escapeHtml($title);
-
-        $listingWord  = Mage::helper('M2ePro')->__('Listing');
-        $listingTitle = Mage::helper('M2ePro')->escapeHtml($row->getData('listing_title'));
-        strlen($listingTitle) > 50 && $listingTitle = substr($listingTitle, 0, 50) . '...';
-
-        $listingUrl = $this->getUrl(
-            '*/adminhtml_amazon_listing/view',
-            array('id' => $row->getData('listing_id'))
+        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $collection */
+        $collection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Product');
+        $collection->getSelect()->join(
+            array('lps' => Mage::getResourceModel('M2ePro/Listing_Product_ScheduledAction')->getMainTable()),
+            'lps.listing_product_id=main_table.id',
+            array()
         );
 
+        $collection->addFieldToFilter('is_variation_parent', 0);
+        $collection->addFieldToFilter(
+            'variation_parent_id', array('in' => $this->getCollection()->getColumnValues('id'))
+        );
+        $collection->addFieldToFilter('lps.action_type', Ess_M2ePro_Model_Listing_Product::ACTION_REVISE);
+
+        $collection->getSelect()->reset(Zend_Db_Select::COLUMNS);
+        $collection->getSelect()->columns(
+            array(
+                'variation_parent_id' => 'second_table.variation_parent_id',
+                'count'               => new Zend_Db_Expr('COUNT(lps.id)')
+            )
+        );
+        $collection->getSelect()->group('variation_parent_id');
+
+        foreach ($collection->getItems() as $item) {
+            $this->_parentAndChildReviseScheduledCache[$item->getData('variation_parent_id')] = true;
+        }
+
+        return parent::_afterLoadCollection();
+    }
+
+    //########################################
+
+    /**
+     * @param string $value
+     * @param Mage_Catalog_Model_Product $row
+     * @param string $column
+     * @param bool $isExport
+     *
+     * @return string
+     * @throws Ess_M2ePro_Model_Exception
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
+    public function callbackColumnProductTitle($value, $row, $column, $isExport)
+    {
+        /** @var Ess_M2ePro_Helper_Data $dataHelper */
+        $dataHelper = Mage::helper('M2ePro');
+
+        /** @var Ess_M2ePro_Helper_Component_Amazon $amazonHelper */
+        $amazonHelper = Mage::helper('M2ePro/Component_Amazon');
+
+        /** @var Ess_M2ePro_Model_Account $account */
+        $account = $amazonHelper->getObject('Account', $row->getData('account_id'));
+
+        /** @var Ess_M2ePro_Model_Marketplace $marketplace */
+        $marketplace = $amazonHelper->getObject('Marketplace', $row->getData('marketplace_id'));
+
+        $listingTitle = $dataHelper->escapeHtml($row->getData('listing_title'));
+        strlen($listingTitle) > 50 && $listingTitle = substr($listingTitle, 0, 50) . '...';
+        $listingUrl = $this->getUrl('*/adminhtml_amazon_listing/view', array('id' => $row->getData('listing_id')));
+
         $value = <<<HTML
-<span>{$title}</span>
+<span>{$dataHelper->escapeHtml($row->getName())}</span>
 <br/><hr style="border:none; border-top:1px solid silver; margin: 2px 0px;"/>
-<strong>{$listingWord}:</strong>&nbsp;
-<a href="{$listingUrl}" target="_blank">{$listingTitle}</a>
-HTML;
-
-        $sku     = Mage::helper('M2ePro')->escapeHtml($row->getData('sku'));
-        $skuWord = Mage::helper('M2ePro')->__('SKU');
-
-        $value .= <<<HTML
-<br/><strong>{$skuWord}:</strong>&nbsp;
-{$sku}
+<strong>{$dataHelper->__('Listing')}:</strong>&nbsp;<a href="{$listingUrl}" target="_blank">{$listingTitle}</a>
+<br/><strong>{$dataHelper->__('Account')}:</strong>&nbsp;{$dataHelper->escapeHtml($account->getTitle())}
+<br/><strong>{$dataHelper->__('Marketplace')}:</strong>&nbsp;{$dataHelper->escapeHtml($marketplace->getTitle())}
+<br/><strong>{$dataHelper->__('SKU')}:</strong>&nbsp;{$dataHelper->escapeHtml($row->getSku())}
 HTML;
 
         /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
-        $listingProductId = (int)$row->getData('listing_product_id');
-        $listingProduct = Mage::helper('M2ePro/Component_Amazon')->getObject('Listing_Product', $listingProductId);
+        $listingProduct = $amazonHelper->getObject('Listing_Product', (int)$row->getData('listing_product_id'));
 
         /** @var Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager $variationManager */
         $variationManager = $listingProduct->getChildObject()->getVariationManager();
-
         if ($variationManager->isVariationParent()) {
             $productAttributes = $variationManager->getTypeModel()->getProductAttributes();
 
@@ -213,9 +253,9 @@ HTML;
             $productOptions = $variationManager->getTypeModel()->getProductOptions();
 
             foreach ($productOptions as $attribute => $option) {
-                $attribute = Mage::helper('M2ePro')->escapeHtml($attribute);
+                $attribute = $dataHelper->escapeHtml($attribute);
                 !$option && $option = '--';
-                $option = Mage::helper('M2ePro')->escapeHtml($option);
+                $option = $dataHelper->escapeHtml($option);
 
                 $optionsStr .= <<<HTML
 <strong>{$attribute}</strong>:&nbsp;{$option}<br/>
@@ -396,11 +436,11 @@ HTML;
                 break;
 
             case Ess_M2ePro_Model_Listing_Product::ACTION_REVISE:
-
                 $reviseParts = array();
 
                 $additionalData = $scheduledAction->getAdditionalData();
-                if (!empty($additionalData['configurator'])) {
+                if (!empty($additionalData['configurator']) &&
+                    !isset($this->_parentAndChildReviseScheduledCache[$row->getData('id')])) {
                     $configurator = Mage::getModel('M2ePro/Amazon_Listing_Product_Action_Configurator');
                     $configurator->setData($additionalData['configurator']);
 

@@ -1162,17 +1162,6 @@ HTML;
 
         $showAutoAction   = Mage::helper('M2ePro')->jsonEncode((bool)$this->getRequest()->getParam('auto_actions'));
 
-        $showMotorNotification= Mage::helper('M2ePro')->jsonEncode((bool)$this->isShowMotorNotification());
-
-        $motorNotification = $helper->escapeJs(
-            $helper->__(
-                'Please check eBay Motors compatibility attribute.'.
-                'You can find it in %menu_label% > Configuration > <a target="_blank" href="%url%">General</a>.',
-                Mage::helper('M2ePro/View_Ebay')->getMenuRootNodeLabel(),
-                $this->getUrl('*/adminhtml_ebay_configuration')
-            )
-        );
-
         $javascriptsMain = <<<HTML
 
 <script type="text/javascript">
@@ -1235,10 +1224,6 @@ HTML;
         );
         EbayListingEbayGridHandlerObj.afterInitPage();
 
-        EbayListingEbayGridHandlerObj.actionHandler.setOptions(M2ePro);
-        EbayListingEbayGridHandlerObj.variationProductManageHandler.setOptions(M2ePro);
-        EbayListingEbayGridHandlerObj.listingProductBidsHandler.setOptions(M2ePro);
-
         ListingProgressBarObj = new ProgressBar('listing_view_progress_bar');
         GridWrapperObj = new AreaWrapper('listing_view_content_container');
 
@@ -1249,10 +1234,6 @@ HTML;
 
         if ({$showAutoAction}) {
             ListingAutoActionHandlerObj.loadAutoActionHtml();
-        }
-
-        if ({$showMotorNotification}) {
-            ListingEbayGridHandlerObj.showMotorsNotificationPopUp('{$motorNotification}');
         }
 
     });
@@ -1402,31 +1383,6 @@ HTML;
         }
 
         return $html;
-    }
-
-    //########################################
-
-    protected function isShowMotorNotification()
-    {
-        $listing = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
-
-        if ($listing->getMarketplaceId() != Ess_M2ePro_Helper_Component_Ebay::MARKETPLACE_MOTORS) {
-            return false;
-        }
-
-        $configValue = Mage::helper('M2ePro/Module')->getCacheConfig()->getGroupValue(
-            '/view/ebay/listing/motors_epids_attribute/', 'notification_shown'
-        );
-
-        if ($configValue) {
-            return false;
-        }
-
-        Mage::helper('M2ePro/Module')->getCacheConfig()->setGroupValue(
-            '/view/ebay/listing/motors_epids_attribute/', 'notification_shown', 1
-        );
-
-        return true;
     }
 
     //########################################

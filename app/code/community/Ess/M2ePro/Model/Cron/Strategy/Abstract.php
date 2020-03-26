@@ -10,10 +10,6 @@ abstract class Ess_M2ePro_Model_Cron_Strategy_Abstract
 {
     const INITIALIZATION_TRANSACTIONAL_LOCK_NICK = 'cron_strategy_initialization';
 
-    const KEEP_ALIVE_OBSERVER_NAME_PREFIX = 'm2epro_cron_keep_alive_';
-
-    const PROGRESS_OBSERVER_NAME_PREFIX = 'm2epro_cron_progress_';
-
     const PROGRESS_START_EVENT_NAME           = 'm2epro_cron_progress_start';
     const PROGRESS_SET_PERCENTAGE_EVENT_NAME  = 'm2epro_cron_progress_set_percentage';
     const PROGRESS_SET_DETAILS_EVENT_NAME     = 'm2epro_cron_progress_set_details';
@@ -81,7 +77,6 @@ abstract class Ess_M2ePro_Model_Cron_Strategy_Abstract
             Ess_M2ePro_Model_Cron_Task_Magento_Product_DetectDirectlyDeleted::NICK,
             Ess_M2ePro_Model_Cron_Task_Magento_GlobalNotifications::NICK,
             Ess_M2ePro_Model_Cron_Task_Listing_Product_InspectDirectChanges::NICK,
-            Ess_M2ePro_Model_Cron_Task_Listing_Product_ProcessReviseTotal::NICK,
             Ess_M2ePro_Model_Cron_Task_Listing_Product_AutoActions_ProcessMagentoProductWebsitesUpdates::NICK,
             Ess_M2ePro_Model_Cron_Task_Listing_Product_StopQueue_Process::NICK,
             Ess_M2ePro_Model_Cron_Task_Listing_Product_StopQueue_RemoveOld::NICK,
@@ -98,7 +93,6 @@ abstract class Ess_M2ePro_Model_Cron_Strategy_Abstract
             Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_RemovePotentialDuplicates::NICK,
             Ess_M2ePro_Model_Cron_Task_Ebay_Order_CreateFailed::NICK,
             Ess_M2ePro_Model_Cron_Task_Ebay_Order_Update::NICK,
-            Ess_M2ePro_Model_Cron_Task_Ebay_Order_Cancel::NICK,
             Ess_M2ePro_Model_Cron_Task_Ebay_Order_ReserveCancel::NICK,
             Ess_M2ePro_Model_Cron_Task_Ebay_PickupStore_ScheduleForUpdate::NICK,
             Ess_M2ePro_Model_Cron_Task_Ebay_PickupStore_UpdateOnChannel::NICK,
@@ -113,6 +107,7 @@ abstract class Ess_M2ePro_Model_Cron_Strategy_Abstract
             Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_ProcessActions::NICK,
             Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_ProcessActionsResults::NICK,
             Ess_M2ePro_Model_Cron_Task_Amazon_Order_Receive::NICK,
+            Ess_M2ePro_Model_Cron_Task_Amazon_Order_Receive_Details::NICK,
             Ess_M2ePro_Model_Cron_Task_Amazon_Order_CreateFailed::NICK,
             Ess_M2ePro_Model_Cron_Task_Amazon_Order_Update::NICK,
             Ess_M2ePro_Model_Cron_Task_Amazon_Order_Update_SellerOrderId::NICK,

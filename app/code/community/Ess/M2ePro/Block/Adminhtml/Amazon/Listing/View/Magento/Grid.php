@@ -85,9 +85,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Magento_Grid
                 'online_qty'                => 'online_qty',
                 'online_regular_price'      => 'online_regular_price',
                 'online_regular_sale_price' => 'online_regular_sale_price',
-                'is_afn_channel'            => 'is_afn_channel',
-                'is_details_data_changed'   => 'is_details_data_changed',
-                'is_images_data_changed'    => 'is_images_data_changed',
+                'is_afn_channel'            => 'is_afn_channel'
             ),
             null,
             'left'
@@ -158,9 +156,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Magento_Grid
             )
         );
 
-        $tempTypes = Mage::getSingleton('catalog/product_type')->getOptionArray();
-        unset($tempTypes['virtual']);
-
         $this->addColumn(
             'type', array(
             'header'    => Mage::helper('M2ePro')->__('Type'),
@@ -170,7 +165,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Magento_Grid
             'sortable'  => false,
             'index'     => 'type_id',
             'filter_index' => 'type_id',
-            'options' => $tempTypes
+            'options' => Mage::helper('M2ePro/Magento_Product')->getTypesOptionArray()
             )
         );
 

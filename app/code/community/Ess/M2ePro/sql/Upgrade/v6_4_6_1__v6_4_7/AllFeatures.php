@@ -14,8 +14,8 @@ class Ess_M2ePro_Sql_Upgrade_v6_4_6_1__v6_4_7_AllFeatures extends Ess_M2ePro_Mod
         if (!$installer->getTablesObject()->isExists('amazon_account_repricing')) {
             $installer->run(<<<SQL
 
-    DROP TABLE IF EXISTS `m2epro_amazon_account_repricing`;
-    CREATE TABLE `m2epro_amazon_account_repricing` (
+    DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_amazon_account_repricing')}`;
+    CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_account_repricing')}` (
         `account_id` INT(11) UNSIGNED NOT NULL,
         `email` VARCHAR(255) DEFAULT NULL,
         `token` VARCHAR(255) DEFAULT NULL,
@@ -54,8 +54,8 @@ SQL
         if (!$installer->getTablesObject()->isExists('amazon_listing_product_repricing')) {
             $installer->run(<<<SQL
 
-    DROP TABLE IF EXISTS `m2epro_amazon_listing_product_repricing`;
-    CREATE TABLE `m2epro_amazon_listing_product_repricing` (
+    DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_amazon_listing_product_repricing')}`;
+    CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_listing_product_repricing')}` (
         `listing_product_id` INT(11) UNSIGNED NOT NULL,
         `is_online_disabled` TINYINT(2) UNSIGNED NOT NULL,
         `online_regular_price` DECIMAL(12, 4) UNSIGNED DEFAULT NULL,

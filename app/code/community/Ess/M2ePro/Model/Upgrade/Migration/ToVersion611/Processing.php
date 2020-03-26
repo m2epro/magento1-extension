@@ -122,72 +122,72 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion611_Processing
     {
         $connection = $this->_installer->getConnection();
 
-        $oldTable = $this->_installer->getTable('m2epro_synchronization_run');
-        $newTable = $this->_installer->getTable('m2epro_operation_history');
+        $this->_installer->getTablesObject()->renameTable(
+            'm2epro_synchronization_run',
+            'm2epro_operation_history'
+        );
 
-        if ($this->_installer->tableExists($oldTable) && !$this->_installer->tableExists($newTable)) {
-            $connection->query("RENAME TABLE `{$oldTable}` TO `{$newTable}`");
-        }
+        $operationHistoryTable = $this->_installer->getTable('m2epro_operation_history');
 
-        if ($connection->tableColumnExists($newTable, 'nick') === false) {
+        if ($connection->tableColumnExists($operationHistoryTable, 'nick') === false) {
             $connection->addColumn(
-                $newTable, 'nick',
+                $operationHistoryTable, 'nick',
                 'VARCHAR(255) NOT NULL AFTER `id`'
             );
         }
 
-        if ($connection->tableColumnExists($newTable, 'parent_id') === false) {
+        if ($connection->tableColumnExists($operationHistoryTable, 'parent_id') === false) {
             $connection->addColumn(
-                $newTable, 'parent_id',
+                $operationHistoryTable, 'parent_id',
                 'INT(11) UNSIGNED DEFAULT NULL AFTER `nick`'
             );
         }
 
-        if ($connection->tableColumnExists($newTable, 'data') === false) {
+        if ($connection->tableColumnExists($operationHistoryTable, 'data') === false) {
             $connection->addColumn(
-                $newTable, 'data',
+                $operationHistoryTable, 'data',
                 'TEXT DEFAULT NULL AFTER `end_date`'
             );
         }
 
-        if ($connection->tableColumnExists($newTable, 'kill_now') !== false) {
-            $connection->dropColumn($newTable, 'kill_now');
+        if ($connection->tableColumnExists($operationHistoryTable, 'kill_now') !== false) {
+            $connection->dropColumn($operationHistoryTable, 'kill_now');
         }
 
-        if ($connection->tableColumnExists($newTable, 'initiator') !== false) {
+        if ($connection->tableColumnExists($operationHistoryTable, 'initiator') !== false) {
             $connection->changeColumn(
-                $newTable, 'initiator', 'initiator',
+                $operationHistoryTable, 'initiator', 'initiator',
                 'TINYINT(2) UNSIGNED NOT NULL DEFAULT 0'
             );
         }
 
-        $indexList = $connection->getIndexList($newTable);
+        $indexList = $connection->getIndexList($operationHistoryTable);
 
         if (!isset($indexList[strtoupper('start_date')])) {
-            $connection->addKey($newTable, 'start_date', 'start_date');
+            $connection->addKey($operationHistoryTable, 'start_date', 'start_date');
         }
 
         if (!isset($indexList[strtoupper('end_date')])) {
-            $connection->addKey($newTable, 'end_date', 'end_date');
+            $connection->addKey($operationHistoryTable, 'end_date', 'end_date');
         }
 
         if (!isset($indexList[strtoupper('nick')])) {
-            $connection->addKey($newTable, 'nick', 'nick');
+            $connection->addKey($operationHistoryTable, 'nick', 'nick');
         }
 
         if (!isset($indexList[strtoupper('parent_id')])) {
-            $connection->addKey($newTable, 'parent_id', 'parent_id');
+            $connection->addKey($operationHistoryTable, 'parent_id', 'parent_id');
         }
 
         $offset = 5;
 
-        $connection->update($newTable, array('nick' => 'synchronization'));
+        $connection->update($operationHistoryTable, array('nick' => 'synchronization'));
         $connection->update(
-            $newTable, array('initiator' => new Zend_Db_Expr('`initiator` + '.$offset)), '`initiator` IN (1,2)'
+            $operationHistoryTable, array('initiator' => new Zend_Db_Expr('`initiator` + '.$offset)), '`initiator` IN (1,2)'
         );
 
-        $connection->update($newTable, array('initiator' => 1), '`initiator` = '.(2 + $offset));
-        $connection->update($newTable, array('initiator' => 2), '`initiator` = '.(1 + $offset));
+        $connection->update($operationHistoryTable, array('initiator' => 1), '`initiator` = '.(2 + $offset));
+        $connection->update($operationHistoryTable, array('initiator' => 2), '`initiator` = '.(1 + $offset));
     }
 
     protected function processProcessingRequestTable()

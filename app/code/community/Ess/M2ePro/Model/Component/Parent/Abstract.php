@@ -131,6 +131,10 @@ abstract class Ess_M2ePro_Model_Component_Parent_Abstract extends Ess_M2ePro_Mod
             return Mage::helper('M2ePro/Component_Amazon')->getTitle();
         }
 
+        if ($this->isComponentModeWalmart()) {
+            return Mage::helper('M2ePro/Component_Walmart')->getTitle();
+        }
+
         return '';
     }
 

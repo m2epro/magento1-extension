@@ -367,19 +367,7 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Validator
 
     // ---------------------------------------
 
-    protected function validateLogicalUnit()
-    {
-        if (!$this->getVariationManager()->isLogicalUnit()) {
-            $this->addMessage('Only logical Products can be processed.');
-            return false;
-        }
-
-        return true;
-    }
-
-    // ---------------------------------------
-
-    protected function validateParentListingProductFlags()
+    protected function validateParentListingProduct()
     {
         if ($this->getListingProduct()->getData('no_child_for_processing')) {
             $this->addMessage('This Parent has no Child Products on which the chosen Action can be performed.');

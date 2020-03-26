@@ -2,26 +2,6 @@ AmazonListingTemplateDescriptionHandler = Class.create(ActionHandler, {
 
     // ---------------------------------------
 
-    initialize: function($super,gridHandler)
-    {
-        var self = this;
-
-        $super(gridHandler);
-
-    },
-
-    // ---------------------------------------
-
-    options: {},
-
-    setOptions: function(options)
-    {
-        this.options = Object.extend(this.options,options);
-        return this;
-    },
-
-    // ---------------------------------------
-
     mapToTemplateDescription: function(el, templateId, mapToGeneralId)
     {
         var self = this;
@@ -30,7 +10,7 @@ AmazonListingTemplateDescriptionHandler = Class.create(ActionHandler, {
             return;
         }
 
-        new Ajax.Request(self.options.url.mapToTemplateDescription, {
+        new Ajax.Request(M2ePro.url.mapToTemplateDescription, {
             method: 'post',
             parameters: {
                 products_ids: templateDescriptionPopup.productsIds,
@@ -68,7 +48,7 @@ AmazonListingTemplateDescriptionHandler = Class.create(ActionHandler, {
     {
         var self = this;
 
-        new Ajax.Request(self.options.url.unmapFromTemplateDescription, {
+        new Ajax.Request(M2ePro.url.unmapFromTemplateDescription, {
             method: 'post',
             parameters: {
                 products_ids: productsIds
@@ -101,7 +81,7 @@ AmazonListingTemplateDescriptionHandler = Class.create(ActionHandler, {
 
         productsIds = productsIds || ListingGridHandlerObj.productSearchHandler.params.productId;
 
-        new Ajax.Request(self.options.url.validateProductsForTemplateDescriptionAssign, {
+        new Ajax.Request(M2ePro.url.validateProductsForTemplateDescriptionAssign, {
             method: 'post',
             parameters: {
                 products_ids: productsIds
@@ -130,7 +110,7 @@ AmazonListingTemplateDescriptionHandler = Class.create(ActionHandler, {
                     popUp.close();
                 }
 
-                self.openPopUp(0,self.options.text.templateDescriptionPopupTitle, response.products_ids, null, response.data);
+                self.openPopUp(0,M2ePro.text.templateDescriptionPopupTitle, response.products_ids, null, response.data);
             }
         });
     },
@@ -176,7 +156,7 @@ AmazonListingTemplateDescriptionHandler = Class.create(ActionHandler, {
 
     loadTemplateDescriptionGrid: function() {
 
-        new Ajax.Request(this.options.url.viewTemplateDescriptionsGrid, {
+        new Ajax.Request(M2ePro.url.viewTemplateDescriptionsGrid, {
             method: 'post',
             parameters: {
                 products_ids: templateDescriptionPopup.productsIds,
@@ -194,7 +174,6 @@ AmazonListingTemplateDescriptionHandler = Class.create(ActionHandler, {
 
     createTemplateDescriptionInNewTab: function(stepWindowUrl)
     {
-        var self = this;
         var win = window.open(stepWindowUrl);
 
         var intervalId = setInterval(function() {

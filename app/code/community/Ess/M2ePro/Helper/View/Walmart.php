@@ -75,27 +75,29 @@ class Ess_M2ePro_Helper_View_Walmart extends Mage_Core_Helper_Abstract
 
     //########################################
 
-    public function isResetFilterShouldBeShown($listingId, $isVariation = false)
+    /**
+     * @param string $key
+     * @param int $id
+     * @param bool $isVariation
+     *
+     * @return bool
+     */
+    public function isResetFilterShouldBeShown($key, $id)
     {
-        $sessionKey = 'is_reset_filter_should_be_shown_' . (int)$listingId . '_' . (int)$isVariation;
+        $sessionKey = "is_reset_filter_should_be_shown_{$key}_" . (int)$id;
+
         $sessionCache = Mage::helper('M2ePro/Data_Cache_Runtime');
-
-        if ($sessionCache->getValue($sessionKey) === null) {
-
-            /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $collection */
-            $collection = Mage::helper('M2ePro/Component_Walmart')->getCollection('Listing_Product');
-            $collection->addFieldToFilter('is_online_price_invalid', 0)
-                       ->addFieldToFilter('status', Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED)
-                       ->addFieldToFilter('listing_id', $listingId);
-
-            if ($isVariation) {
-                $collection->addFieldToFilter('is_variation_product', 1);
-            }
-
-            $sessionCache->setValue($sessionKey, (bool)$collection->getSize());
+        if ($sessionCache->getValue($sessionKey) !== null) {
+            return $sessionCache->getValue($sessionKey);
         }
 
-        return $sessionCache->getValue($sessionKey);
+        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $collection */
+        $collection = Mage::helper('M2ePro/Component_Walmart')->getCollection('Listing_Product');
+        $collection->addFieldToFilter($key, $id)
+            ->addFieldToFilter('status', Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED)
+            ->addFieldToFilter('is_online_price_invalid', 0);
+
+        return $sessionCache->setValue($sessionKey, (bool)$collection->getSize());
     }
 
     //########################################

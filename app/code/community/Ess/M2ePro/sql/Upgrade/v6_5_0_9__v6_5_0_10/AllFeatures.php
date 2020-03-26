@@ -15,7 +15,7 @@ class Ess_M2ePro_Sql_Upgrade_v6_5_0_9__v6_5_0_10_AllFeatures extends Ess_M2ePro_
         //########################################
 
         $installer->run(<<<SQL
-CREATE TABLE IF NOT EXISTS `m2epro_lock_transactional` (
+CREATE TABLE IF NOT EXISTS `{$this->_installer->getTable('m2epro_lock_transactional')}` (
    `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
    `nick` VARCHAR(255) NOT NULL,
    `create_date` DATETIME DEFAULT NULL,
@@ -32,7 +32,7 @@ SQL
         //########################################
 
         $installer->run(<<<SQL
-CREATE TABLE IF NOT EXISTS `m2epro_archived_entity` (
+CREATE TABLE IF NOT EXISTS `{$this->_installer->getTable('m2epro_archived_entity')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `origin_id` INT(11) UNSIGNED NOT NULL,
   `name` VARCHAR(255) NOT NULL,
@@ -191,7 +191,7 @@ SQL
 
         $installer->run(<<<SQL
 
-CREATE TABLE IF NOT EXISTS `m2epro_amazon_template_product_tax_code` (
+CREATE TABLE IF NOT EXISTS `{$this->_installer->getTable('m2epro_amazon_template_product_tax_code')}` (
     `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
     `title` VARCHAR(255) NOT NULL,
     `product_tax_code_mode` TINYINT(2) NOT NULL,
@@ -206,7 +206,7 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-CREATE TABLE IF NOT EXISTS `m2epro_amazon_template_selling_format_business_discount` (
+CREATE TABLE IF NOT EXISTS `{$this->_installer->getTable('m2epro_amazon_template_selling_format_business_discount')}` (
     `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
     `template_selling_format_id` INT(11) UNSIGNED NOT NULL,
     `qty` INT(11) UNSIGNED NOT NULL,
@@ -220,9 +220,9 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_indexer_listing_product_parent`;
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_indexer_listing_product_parent')}`;
 
-CREATE TABLE IF NOT EXISTS `m2epro_ebay_indexer_listing_product_parent` (
+CREATE TABLE IF NOT EXISTS `{$this->_installer->getTable('m2epro_ebay_indexer_listing_product_parent')}` (
     `listing_product_id` INT(11) UNSIGNED NOT NULL,
     `listing_id` INT(11) UNSIGNED NOT NULL,
     `component_mode` VARCHAR(10) DEFAULT NULL,
@@ -237,7 +237,7 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-CREATE TABLE IF NOT EXISTS `m2epro_amazon_indexer_listing_product_parent` (
+CREATE TABLE IF NOT EXISTS `{$this->_installer->getTable('m2epro_amazon_indexer_listing_product_parent')}` (
     `listing_product_id` INT(11) UNSIGNED NOT NULL,
     `listing_id` INT(11) UNSIGNED NOT NULL,
     `component_mode` VARCHAR(10) DEFAULT NULL,

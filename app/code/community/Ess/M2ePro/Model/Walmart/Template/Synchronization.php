@@ -45,19 +45,6 @@ class Ess_M2ePro_Model_Walmart_Template_Synchronization extends Ess_M2ePro_Model
     //########################################
 
     /**
-     * @param bool $asObjects
-     * @param array $filters
-     * @return array
-     * @throws Ess_M2ePro_Model_Exception_Logic
-     */
-    public function getListings($asObjects = false, array $filters = array())
-    {
-        return $this->getRelatedComponentItems('Listing', 'template_synchronization_id', $asObjects, $filters);
-    }
-
-    //########################################
-
-    /**
      * @return bool
      */
     public function isListMode()
@@ -228,6 +215,14 @@ class Ess_M2ePro_Model_Walmart_Template_Synchronization extends Ess_M2ePro_Model
     public function isReviseUpdatePromotions()
     {
         return $this->getData('revise_update_promotions') != 0;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isReviseUpdateDetails()
+    {
+        return $this->getData('revise_update_details') != 0;
     }
 
     // ---------------------------------------

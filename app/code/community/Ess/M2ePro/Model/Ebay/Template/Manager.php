@@ -17,7 +17,7 @@ class Ess_M2ePro_Model_Ebay_Template_Manager
     const OWNER_LISTING = 'listing';
     const OWNER_LISTING_PRODUCT = 'listing_product';
 
-    const TEMPLATE_RETURN          = 'return';
+    const TEMPLATE_RETURN_POLICY   = 'return_policy';
     const TEMPLATE_PAYMENT         = 'payment';
     const TEMPLATE_SHIPPING        = 'shipping';
     const TEMPLATE_DESCRIPTION     = 'description';
@@ -105,7 +105,7 @@ class Ess_M2ePro_Model_Ebay_Template_Manager
     public function getAllTemplates()
     {
         return array(
-            self::TEMPLATE_RETURN,
+            self::TEMPLATE_RETURN_POLICY,
             self::TEMPLATE_SHIPPING,
             self::TEMPLATE_PAYMENT,
             self::TEMPLATE_DESCRIPTION,
@@ -130,7 +130,7 @@ class Ess_M2ePro_Model_Ebay_Template_Manager
     public function getFlatTemplates()
     {
         return array(
-            self::TEMPLATE_RETURN,
+            self::TEMPLATE_RETURN_POLICY,
             self::TEMPLATE_SHIPPING,
             self::TEMPLATE_PAYMENT,
         );
@@ -176,7 +176,7 @@ class Ess_M2ePro_Model_Ebay_Template_Manager
         return array(
             self::TEMPLATE_PAYMENT,
             self::TEMPLATE_SHIPPING,
-            self::TEMPLATE_RETURN,
+            self::TEMPLATE_RETURN_POLICY,
         );
     }
 
@@ -298,16 +298,13 @@ class Ess_M2ePro_Model_Ebay_Template_Manager
 
     protected function makeResultObject($id)
     {
-        $modelName = 'Template_';
-        $modelName .= $this->getTemplate() == self::TEMPLATE_SELLING_FORMAT ?
-                    'SellingFormat' : ucfirst($this->getTemplate());
+        $modelName = $this->getTemplateModelName();
 
         if ($this->isHorizontalTemplate()) {
             $object = Mage::helper('M2ePro/Component_Ebay')->getCachedObject(
                 $modelName, $id, null, array('template')
             );
         } else {
-            $modelName = 'Ebay_'.$modelName;
             $object = Mage::helper('M2ePro')->getCachedObject(
                 $modelName, $id, null, array('template')
             );
@@ -386,8 +383,8 @@ class Ess_M2ePro_Model_Ebay_Template_Manager
             case self::TEMPLATE_SHIPPING:
                 $name = 'Ebay_Template_Shipping';
                 break;
-            case self::TEMPLATE_RETURN:
-                $name = 'Ebay_Template_Return';
+            case self::TEMPLATE_RETURN_POLICY:
+                $name = 'Ebay_Template_ReturnPolicy';
                 break;
             case self::TEMPLATE_SELLING_FORMAT:
                 $name = 'Template_SellingFormat';
@@ -414,7 +411,7 @@ class Ess_M2ePro_Model_Ebay_Template_Manager
         switch ($this->getTemplate()) {
             case self::TEMPLATE_PAYMENT:
             case self::TEMPLATE_SHIPPING:
-            case self::TEMPLATE_RETURN:
+            case self::TEMPLATE_RETURN_POLICY:
                 $model = Mage::getModel('M2ePro/'.$this->getTemplateModelName());
                 break;
 
@@ -447,7 +444,7 @@ class Ess_M2ePro_Model_Ebay_Template_Manager
         switch ($this->getTemplate()) {
             case self::TEMPLATE_PAYMENT:
             case self::TEMPLATE_SHIPPING:
-            case self::TEMPLATE_RETURN:
+            case self::TEMPLATE_RETURN_POLICY:
                 $collection = $this->getTemplateModel()->getCollection();
                 break;
 
@@ -479,8 +476,8 @@ class Ess_M2ePro_Model_Ebay_Template_Manager
             case self::TEMPLATE_SHIPPING:
                 $model = Mage::getModel('M2ePro/Ebay_Template_Shipping_Builder');
                 break;
-            case self::TEMPLATE_RETURN:
-                $model = Mage::getModel('M2ePro/Ebay_Template_Return_Builder');
+            case self::TEMPLATE_RETURN_POLICY:
+                $model = Mage::getModel('M2ePro/Ebay_Template_ReturnPolicy_Builder');
                 break;
             case self::TEMPLATE_SELLING_FORMAT:
                 $model = Mage::getModel('M2ePro/Ebay_Template_SellingFormat_Builder');

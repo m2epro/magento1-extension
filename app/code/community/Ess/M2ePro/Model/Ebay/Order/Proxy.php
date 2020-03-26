@@ -15,49 +15,9 @@ class Ess_M2ePro_Model_Ebay_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
 
     //########################################
 
-    /**
-     * @return string
-     */
-    public function getCheckoutMethod()
-    {
-        if ($this->_order->getEbayAccount()->isMagentoOrdersCustomerNew() ||
-            $this->_order->getEbayAccount()->isMagentoOrdersCustomerPredefined()) {
-            return self::CHECKOUT_REGISTER;
-        }
-
-        return self::CHECKOUT_GUEST;
-    }
-
-    //########################################
-
-    /**
-     * @return bool
-     */
-    public function isOrderNumberPrefixSourceChannel()
-    {
-        return $this->_order->getEbayAccount()->isMagentoOrdersNumberSourceChannel();
-    }
-
-    /**
-     * @return bool
-     */
-    public function isOrderNumberPrefixSourceMagento()
-    {
-        return $this->_order->getEbayAccount()->isMagentoOrdersNumberSourceMagento();
-    }
-
     public function getChannelOrderNumber()
     {
         return $this->_order->getEbayOrderId();
-    }
-
-    public function getOrderNumberPrefix()
-    {
-        if (!$this->_order->getEbayAccount()->isMagentoOrdersNumberPrefixEnable()) {
-            return '';
-        }
-
-        return $this->_order->getEbayAccount()->getMagentoOrdersNumberRegularPrefix();
     }
 
     //########################################
@@ -213,15 +173,9 @@ class Ess_M2ePro_Model_Ebay_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
 
     //########################################
 
-    public function getCurrency()
-    {
-        return $this->_order->getCurrency();
-    }
-
-    //########################################
-
     /**
      * @return array
+     * @throws Ess_M2ePro_Model_Exception
      */
     public function getPaymentData()
     {
@@ -267,6 +221,7 @@ class Ess_M2ePro_Model_Ebay_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
 
     /**
      * @return array
+     * @throws Ess_M2ePro_Model_Exception
      */
     public function getShippingData()
     {
@@ -312,6 +267,7 @@ class Ess_M2ePro_Model_Ebay_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
 
     /**
      * @return float
+     * @throws Ess_M2ePro_Model_Exception_Logic
      */
     protected function getShippingPrice()
     {
@@ -388,6 +344,7 @@ class Ess_M2ePro_Model_Ebay_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
 
     /**
      * @return float|int
+     * @throws Ess_M2ePro_Model_Exception_Logic
      */
     public function getProductPriceTaxRate()
     {
@@ -404,6 +361,7 @@ class Ess_M2ePro_Model_Ebay_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
 
     /**
      * @return float|int
+     * @throws Ess_M2ePro_Model_Exception_Logic
      */
     public function getShippingPriceTaxRate()
     {
@@ -425,49 +383,8 @@ class Ess_M2ePro_Model_Ebay_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
     // ---------------------------------------
 
     /**
-     * @return bool|null
-     */
-    public function isProductPriceIncludeTax()
-    {
-        $configValue = Mage::helper('M2ePro/Module')
-            ->getConfig()
-            ->getGroupValue('/ebay/order/tax/product_price/', 'is_include_tax');
-
-        if ($configValue !== null) {
-            return (bool)$configValue;
-        }
-
-        if ($this->isTaxModeChannel() || ($this->isTaxModeMixed() && $this->hasTax())) {
-            return $this->isVatTax();
-        }
-
-        return null;
-    }
-
-    /**
-     * @return bool|null
-     */
-    public function isShippingPriceIncludeTax()
-    {
-        $configValue = Mage::helper('M2ePro/Module')
-            ->getConfig()
-            ->getGroupValue('/ebay/order/tax/shipping_price/', 'is_include_tax');
-
-        if ($configValue !== null) {
-            return (bool)$configValue;
-        }
-
-        if ($this->isTaxModeChannel() || ($this->isTaxModeMixed() && $this->hasTax())) {
-            return $this->isVatTax();
-        }
-
-        return null;
-    }
-
-    // ---------------------------------------
-
-    /**
      * @return bool
+     * @throws Ess_M2ePro_Model_Exception_Logic
      */
     public function isTaxModeNone()
     {
@@ -475,23 +392,7 @@ class Ess_M2ePro_Model_Ebay_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
             return true;
         }
 
-        return $this->_order->getEbayAccount()->isMagentoOrdersTaxModeNone();
-    }
-
-    /**
-     * @return bool
-     */
-    public function isTaxModeChannel()
-    {
-        return $this->_order->getEbayAccount()->isMagentoOrdersTaxModeChannel();
-    }
-
-    /**
-     * @return bool
-     */
-    public function isTaxModeMagento()
-    {
-        return $this->_order->getEbayAccount()->isMagentoOrdersTaxModeMagento();
+        return parent::isTaxModeNone();
     }
 
     //########################################

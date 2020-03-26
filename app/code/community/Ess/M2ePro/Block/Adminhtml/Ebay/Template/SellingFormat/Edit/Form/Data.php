@@ -9,6 +9,7 @@
 class Ess_M2ePro_Block_Adminhtml_Ebay_Template_SellingFormat_Edit_Form_Data extends Mage_Adminhtml_Block_Widget
 {
     public $attributes = array();
+    public $enabledMarketplaces = null;
 
     //########################################
 
@@ -16,10 +17,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_SellingFormat_Edit_Form_Data exte
     {
         parent::__construct();
 
-        // Initialization block
-        // ---------------------------------------
         $this->setId('ebayTemplateSellingFormatEditFormData');
-        // ---------------------------------------
 
         $this->setTemplate('M2ePro/ebay/template/sellingFormat/form/data.phtml');
 
@@ -31,7 +29,21 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_SellingFormat_Edit_Form_Data exte
         parent::_beforeToHtml();
 
         if ($this->isCharity()) {
-            $this->getCharityDictionary();
+            $data = array(
+                'label'   => Mage::helper('M2ePro')->__('Add Charity'),
+                'onclick' => 'EbayTemplateSellingFormatHandlerObj.addCharityRow();',
+                'class'   => 'action primary add_charity_button'
+            );
+            $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
+            $this->setChild('add_charity_button', $buttonBlock);
+
+            $data = array(
+                'label'   => Mage::helper('M2ePro')->__('Remove'),
+                'onclick' => 'EbayTemplateSellingFormatHandlerObj.removeCharityRow(this);',
+                'class'   => 'delete icon-btn remove_charity_button'
+            );
+            $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
+            $this->setChild('remove_charity_button', $buttonBlock);
         }
     }
 
@@ -72,6 +84,17 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_SellingFormat_Edit_Form_Data exte
         }
 
         $data = $template->getData();
+
+        $charity = Mage::helper('M2ePro')->jsonDecode($data['charity']);
+        $availableCharity = array();
+
+        foreach ($this->getEnabledMarketplaces() as $marketplace) {
+            if (isset($charity[$marketplace->getId()])) {
+                $availableCharity[$marketplace->getId()] = $charity[$marketplace->getId()];
+            }
+        }
+
+        $data['charity'] = $availableCharity;
 
         return $data;
     }
@@ -135,13 +158,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_SellingFormat_Edit_Form_Data exte
     **/
     public function getMarketplace()
     {
-        $marketplace = Mage::helper('M2ePro/Data_Global')->getValue('ebay_marketplace');
-
-        if ($marketplace === null) {
-            return null;
-        }
-
-        return $marketplace;
+        return Mage::helper('M2ePro/Data_Global')->getValue('ebay_marketplace');
     }
 
     public function getMarketplaceId()
@@ -155,41 +172,27 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_SellingFormat_Edit_Form_Data exte
         return $marketplace->getId();
     }
 
-    protected function getCharityDictionary()
+    public function getCharityDictionary()
     {
-        $marketplaceId = $this->getMarketplaceId();
+        return Mage::getModel('M2ePro/Ebay_Template_SellingFormat')->getResource()->getCharityDictionary();
+    }
 
-        if ($marketplaceId === null) {
-            return false;
-        }
+    public function getEnabledMarketplaces()
+    {
+        if ($this->enabledMarketplaces === null) {
+            if ($this->getMarketplace() !== null) {
+                $this->enabledMarketplaces = array($this->getMarketplace());
+            } else {
+                $collection = Mage::getModel('M2ePro/Marketplace')->getCollection();
+                $collection->addFieldToFilter('component_mode', Ess_M2ePro_Helper_Component_Ebay::NICK);
+                $collection->addFieldToFilter('status', Ess_M2ePro_Model_Marketplace::STATUS_ENABLE);
+                $collection->setOrder('sorder', 'ASC');
 
-        /** @var Varien_Db_Adapter_Pdo_Mysql $connRead*/
-        $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
-        $tableDictMarketplace = Mage::helper('M2ePro/Module_Database_Structure')
-            ->getTableNameWithPrefix('m2epro_ebay_dictionary_marketplace');
-
-        $dbSelect = $connRead->select()
-            ->from($tableDictMarketplace, 'charities')
-            ->where('`marketplace_id` = ?', (int)$marketplaceId);
-
-        $src = Mage::helper('M2ePro')->jsonDecode($connRead->fetchOne($dbSelect));
-
-        if ($src !== null) {
-            $charities = array();
-
-            foreach ($src as $charity) {
-                $charities[$charity['id']] = array(
-                    'id' => $charity['id'],
-                    'name' => $charity['name'],
-                );
+                $this->enabledMarketplaces = $collection->getItems();
             }
-
-            $this->setData('charities', $charities);
-
-            return true;
         }
 
-        return false;
+        return $this->enabledMarketplaces;
     }
 
     //########################################
@@ -198,7 +201,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_SellingFormat_Edit_Form_Data exte
     {
         $marketplace = $this->getMarketplace();
 
-        if ($marketplace !== null && $marketplace->getChildObject()->isCharityEnabled()) {
+        if ($marketplace === null) {
+            return true;
+        }
+
+        if ($marketplace->getChildObject()->isCharityEnabled()) {
            return true;
         }
 

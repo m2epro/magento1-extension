@@ -45,22 +45,29 @@ class Ess_M2ePro_Helper_Module extends Mage_Core_Helper_Abstract
         return 'm2epro';
     }
 
+    // ---------------------------------------
+
+    /**
+     * Backward compatibility with M2eProUpdater
+     * @deprecated use getPublicVersion()
+     */
     public function getVersion()
+    {
+        return $this->getPublicVersion();
+    }
+
+    public function getPublicVersion()
+    {
+        $composerFile = Mage::getConfig()->getModuleDir(null, self::IDENTIFIER) .DS. 'composer.json';
+        $composerData = Mage::helper('M2ePro/Data')->jsonDecode(file_get_contents($composerFile));
+
+        return isset($composerData['version']) ? $composerData['version'] : '1.0.0';
+    }
+
+    public function getSetupVersion()
     {
         $version = (string)Mage::getConfig()->getNode('modules/Ess_M2ePro/version');
         return strtolower($version);
-    }
-
-    public function getRevision()
-    {
-        return '14620';
-    }
-
-    // ---------------------------------------
-
-    public function getVersionWithRevision()
-    {
-        return $this->getVersion().'r'.$this->getRevision();
     }
 
     //########################################
@@ -74,11 +81,9 @@ class Ess_M2ePro_Helper_Module extends Mage_Core_Helper_Abstract
 
     public function getServerMessages()
     {
-        $messages = Mage::helper('M2ePro/Primary')->getConfig()->getGroupValue('/server/', 'messages');
-
-        $messages = ($messages !== null && $messages != '') ?
-                    (array)Mage::helper('M2ePro')->jsonDecode((string)$messages) :
-                    array();
+        /** @var Ess_M2ePro_Model_Registry $registry */
+        $registry = Mage::getModel('M2ePro/Registry')->loadByKey('/server/messages/');
+        $messages = $registry->getValueFromJson();
 
         $messages = array_filter($messages, array($this,'getServerMessagesFilterModuleMessages'));
         !is_array($messages) && $messages = array();

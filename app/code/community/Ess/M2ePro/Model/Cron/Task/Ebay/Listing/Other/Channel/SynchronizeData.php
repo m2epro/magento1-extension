@@ -189,7 +189,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Other_Channel_SynchronizeData exte
     {
         $dispatcherObj = Mage::getModel('M2ePro/Ebay_Connector_Dispatcher');
         $connectorObj = $dispatcherObj->getVirtualConnector(
-            'item', 'get', 'changes',
+            'inventory', 'get', 'events',
             $paramsConnector, null,
             null, $account->getId()
         );

@@ -30,7 +30,7 @@ WizardInstallationAmazon = Class.create(CommonHandler, {
             windowClassName: "popup-window",
             title: M2ePro.translator.translate('Register Your M2E Pro Extension'),
             width: 640,
-            height: 350,
+            height: 360,
             zIndex: 100,
             hideEffect: Element.hide,
             showEffect: Element.show
@@ -98,8 +98,8 @@ WizardInstallationAmazon = Class.create(CommonHandler, {
     {
         Form.getElements($(this.popupLicenseForm.formId)).each(function(element) {
             var td = $(element.readAttribute('name'));
-            td.down('span').update(element.value);
-            td.down('input').value = element.value;
+            td.down('span').update(element.value.escapeHTML());
+            td.down('input').value = element.value.escapeHTML();
         });
     },
 

@@ -157,8 +157,8 @@ SQL;
             );
         }
 
-        /** @var Ess_M2ePro_Model_Indexer_Listing_Product_Parent_Manager $manager */
-        $manager = Mage::getModel('M2ePro/Indexer_Listing_Product_Parent_Manager', array($this->_listing));
+        /** @var Ess_M2ePro_Model_Listing_Product_Indexer_VariationParent_Manager $manager */
+        $manager = Mage::getModel('M2ePro/Listing_Product_Indexer_VariationParent_Manager', array($this->_listing));
         $manager->prepare();
 
         if ($this->_listing->isComponentModeAmazon()) {
@@ -174,8 +174,8 @@ SQL;
 
     protected function joinAmazonIndexerParent()
     {
-        /** @var Ess_M2ePro_Model_Resource_Amazon_Indexer_Listing_Product_Parent $resource */
-        $resource = Mage::getResourceModel('M2ePro/Amazon_Indexer_Listing_Product_Parent');
+        /** @var Ess_M2ePro_Model_Resource_Amazon_Listing_Product_Indexer_VariationParent $resource */
+        $resource = Mage::getResourceModel('M2ePro/Amazon_Listing_Product_Indexer_VariationParent');
 
         $this->getSelect()->joinLeft(
             array('indexer' => $resource->getMainTable()),
@@ -186,8 +186,8 @@ SQL;
 
     protected function joinWalmartIndexerParent()
     {
-        /** @var Ess_M2ePro_Model_Resource_Walmart_Indexer_Listing_Product_Parent $resource */
-        $resource = Mage::getResourceModel('M2ePro/Walmart_Indexer_Listing_Product_Parent');
+        /** @var Ess_M2ePro_Model_Resource_Walmart_Listing_Product_Indexer_VariationParent $resource */
+        $resource = Mage::getResourceModel('M2ePro/Walmart_Listing_Product_Indexer_VariationParent');
 
         $this->getSelect()->joinLeft(
             array('indexer' => $resource->getMainTable()),
@@ -198,8 +198,8 @@ SQL;
 
     protected function joinEbayIndexerParent()
     {
-        /** @var Ess_M2ePro_Model_Resource_Ebay_Indexer_Listing_Product_Parent $resource */
-        $resource = Mage::getResourceModel('M2ePro/Ebay_Indexer_Listing_Product_Parent');
+        /** @var Ess_M2ePro_Model_Resource_Ebay_Listing_Product_Indexer_VariationParent $resource */
+        $resource = Mage::getResourceModel('M2ePro/Ebay_Listing_Product_Indexer_VariationParent');
 
         $this->getSelect()->joinLeft(
             array('indexer' => $resource->getMainTable()),
@@ -431,8 +431,8 @@ SQL;
             return;
         }
 
-        /** @var Ess_M2ePro_Model_Resource_Amazon_Indexer_Listing_Product_Parent $resource */
-        $resource = Mage::getResourceModel('M2ePro/Amazon_Indexer_Listing_Product_Parent');
+        /** @var Ess_M2ePro_Model_Resource_Amazon_Listing_Product_Indexer_VariationParent $resource */
+        $resource = Mage::getResourceModel('M2ePro/Amazon_Listing_Product_Indexer_VariationParent');
 
         $selectStmt = $resource->getBuildIndexSelect($this->_listing);
         $selectStmt->where('malp.variation_parent_id IN (?)', array_keys($listingProductsData));
@@ -472,8 +472,8 @@ SQL;
             return;
         }
 
-        /** @var Ess_M2ePro_Model_Resource_Ebay_Indexer_Listing_Product_Parent $resource */
-        $resource = Mage::getResourceModel('M2ePro/Ebay_Indexer_Listing_Product_Parent');
+        /** @var Ess_M2ePro_Model_Resource_Ebay_Listing_Product_Indexer_VariationParent $resource */
+        $resource = Mage::getResourceModel('M2ePro/Ebay_Listing_Product_Indexer_VariationParent');
 
         $selectStmt = $resource->getBuildIndexSelect($this->_listing);
         $selectStmt->where('mlpv.listing_product_id IN (?)', array_keys($listingProductsData));
@@ -509,8 +509,8 @@ SQL;
             return;
         }
 
-        /** @var Ess_M2ePro_Model_Resource_Walmart_Indexer_Listing_Product_Parent $resource */
-        $resource = Mage::getResourceModel('M2ePro/Walmart_Indexer_Listing_Product_Parent');
+        /** @var Ess_M2ePro_Model_Resource_Walmart_Listing_Product_Indexer_VariationParent $resource */
+        $resource = Mage::getResourceModel('M2ePro/Walmart_Listing_Product_Indexer_VariationParent');
 
         $selectStmt = $resource->getBuildIndexSelect($this->_listing);
         $selectStmt->where('malp.variation_parent_id IN (?)', array_keys($listingProductsData));

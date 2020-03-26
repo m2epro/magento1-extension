@@ -13,7 +13,7 @@ class Ess_M2ePro_Adminhtml_Ebay_MarketplaceController extends Ess_M2ePro_Control
     protected function _initAction()
     {
         $this->loadLayout()
-            ->_title(Mage::helper('M2ePro')->__('Sites'));
+            ->_title(Mage::helper('M2ePro')->__('Marketplaces'));
 
         $this->getLayout()->getBlock('head')
             ->addJs('M2ePro/Plugin/ProgressBar.js')
@@ -95,7 +95,7 @@ class Ess_M2ePro_Adminhtml_Ebay_MarketplaceController extends Ess_M2ePro_Control
         $progressManager = Mage::getModel(
             'M2ePro/Lock_Item_Progress', array(
             'lock_item_manager' => $lockItemManager,
-            'progress_nick'     => $marketplace->getTitle() . ' eBay Site',
+            'progress_nick'     => $marketplace->getTitle() . ' Marketplace',
             )
         );
 
@@ -127,7 +127,7 @@ class Ess_M2ePro_Adminhtml_Ebay_MarketplaceController extends Ess_M2ePro_Control
             $progressData = $contentData[Ess_M2ePro_Model_Lock_Item_Progress::CONTENT_DATA_KEY];
 
             if (!empty($progressData)) {
-                $response['title'] = 'eBay Sites Synchronization';
+                $response['title'] = 'Marketplaces Synchronization';
                 $response['percents'] = $progressData[key($progressData)]['percentage'];
                 $response['status'] = key($progressData);
             }

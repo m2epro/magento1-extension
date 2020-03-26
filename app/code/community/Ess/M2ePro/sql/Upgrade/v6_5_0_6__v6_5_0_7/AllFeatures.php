@@ -35,8 +35,8 @@ class Ess_M2ePro_Sql_Upgrade_v6_5_0_6__v6_5_0_7_AllFeatures extends Ess_M2ePro_M
 
             $installer->run(<<<SQL
 
-DROP TABLE IF EXISTS `m2epro_indexer_listing_product_parent`;
-CREATE TABLE `m2epro_indexer_listing_product_parent` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_indexer_listing_product_parent')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_indexer_listing_product_parent')}` (
     `listing_product_id` INT(11) UNSIGNED NOT NULL,
     `listing_id` INT(11) UNSIGNED NOT NULL,
     `component_mode` VARCHAR(10) DEFAULT NULL,
@@ -82,8 +82,8 @@ SQL
 
             $installer->run(<<<SQL
 
-DROP TABLE IF EXISTS `m2epro_amazon_template_shipping_template`;
-CREATE TABLE `m2epro_amazon_template_shipping_template` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_amazon_template_shipping_template')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_template_shipping_template')}` (
     `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
     `title` varchar(255) NOT NULL,
     `template_name` varchar(255) NOT NULL,

@@ -2,26 +2,6 @@ EbayListingVariationProductManageHandler = Class.create(ActionHandler,{
 
     // ---------------------------------------
 
-    initialize: function($super,gridHandler)
-    {
-        var self = this;
-
-        $super(gridHandler);
-
-    },
-
-    // ---------------------------------------
-
-    options: {},
-
-    setOptions: function(options)
-    {
-        this.options = Object.extend(this.options,options);
-        return this;
-    },
-
-    // ---------------------------------------
-
     parseResponse: function(response)
     {
         if (!response.responseText.isJSON()) {
@@ -35,8 +15,6 @@ EbayListingVariationProductManageHandler = Class.create(ActionHandler,{
 
     openPopUp: function(productId, title, filter)
     {
-        var self = this;
-
         MagentoMessageObj.clearAll();
 
         new Ajax.Request(M2ePro.url.get('variationProductManage'), {
@@ -79,7 +57,6 @@ EbayListingVariationProductManageHandler = Class.create(ActionHandler,{
 
     loadVariationsGrid: function(showMask)
     {
-        var self = this;
         showMask && $('loading-mask').show();
 
         var gridIframe = $('ebayVariationsProductManageVariationsGridIframe');

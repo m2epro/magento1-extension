@@ -168,7 +168,7 @@ class Ess_M2ePro_Model_Ebay_Order_Item_Importer
         $baseTmpImageName = Mage::helper('M2ePro')->convertStringToSku($itemTitle);
 
         $destinationFolder = Mage::getSingleton('catalog/product_media_config')->getBaseTmpMediaPath();
-        $destinationFolder .= DS . $baseTmpImageName{0} . DS . $baseTmpImageName{1};
+        $destinationFolder .= DS . $baseTmpImageName[0] . DS . $baseTmpImageName[1];
 
         if (!(@is_dir($destinationFolder) || @mkdir($destinationFolder, 0777, true))) {
             throw new Ess_M2ePro_Model_Exception("Unable to create directory '{$destinationFolder}'.");

@@ -11,7 +11,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Order_View_Item extends Mage_Adminhtml_
     /** @var $_order Ess_M2ePro_Model_Order */
     protected $_order = null;
 
-    protected $_itemSkuToWalmartItemCache;
+    protected $_itemSkuToWalmartIds;
 
     //########################################
 
@@ -158,12 +158,12 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Order_View_Item extends Mage_Adminhtml_
 
         foreach ($collection->getItems() as $item) {
             /**@var Ess_M2ePro_Model_Listing_Product $item */
-            $sku = (string)$item->getChildObject()->getSku();
+            $sku    = (string)$item->getChildObject()->getSku();
             $itemId = (string)$item->getChildObject()->getItemId();
+            $wpid   = (string)$item->getChildObject()->getWpid();
 
-            if ($itemId) {
-                $cache[$sku] = $itemId;
-            }
+            $itemId && $cache[$sku]['item_id'] = $itemId;
+            $wpid && $cache[$sku]['wpid']      = $wpid;
         }
 
         // ---------------------------------------
@@ -178,17 +178,19 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Order_View_Item extends Mage_Adminhtml_
 
         foreach ($collection->getItems() as $item) {
             /**@var Ess_M2ePro_Model_Listing_Other $item */
-            $sku = (string)$item->getChildObject()->getSku();
+            $sku    = (string)$item->getChildObject()->getSku();
             $itemId = (string)$item->getChildObject()->getItemId();
+            $wpid   = (string)$item->getChildObject()->getWpid();
 
-            if ($itemId && empty($cache[$sku])) {
-                $cache[$sku] = $itemId;
+            if (empty($cache[$sku])) {
+                $itemId && $cache[$sku]['item_id'] = $itemId;
+                $wpid && $cache[$sku]['wpid']      = $wpid;
             }
         }
 
         // ---------------------------------------
 
-        $this->_itemSkuToWalmartItemCache = $cache;
+        $this->_itemSkuToWalmartIds = $cache;
 
         return parent::_afterLoadCollection();
     }
@@ -216,9 +218,14 @@ HTML;
         }
 
         $itemLink = '';
-        if (!empty($this->_itemSkuToWalmartItemCache[$row->getSku()])) {
-            $itemUrl = Mage::helper('M2ePro/Component_Walmart')->getItemUrl(
-                $this->_itemSkuToWalmartItemCache[$row->getSku()], $this->_order->getMarketplaceId()
+        $marketplaceId = $this->_order->getMarketplaceId();
+        $walmartHelper = Mage::helper('M2ePro/Component_Walmart');
+        $idForLink = $walmartHelper->getIdentifierForItemUrl($marketplaceId);
+
+        if (!empty($this->_itemSkuToWalmartIds[$row->getSku()][$idForLink])) {
+            $itemUrl = $walmartHelper->getItemUrl(
+                $this->_itemSkuToWalmartIds[$row->getSku()][$idForLink],
+                $this->_order->getMarketplaceId()
             );
 
             $itemLink .= '<a href="'.$itemUrl.'" target="_blank">'.Mage::helper('M2ePro')->__('View on Walmart').'</a>';

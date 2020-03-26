@@ -18,7 +18,8 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Other
             $this->getConditionNoteData(),
             $this->getVatTaxData(),
             $this->getBestOfferData(),
-            $this->getCharityData()
+            $this->getCharityData(),
+            $this->getLotSizeData()
         );
 
         return $data;
@@ -103,13 +104,35 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Other
     {
         $charity = $this->getEbayListingProduct()->getEbaySellingFormatTemplate()->getCharity();
 
-        if ($charity === null) {
+        if (empty($charity[$this->getMarketplace()->getId()])) {
             return array();
         }
 
         return array(
-            'charity_id'      => $charity['id'],
-            'charity_percent' => $charity['percentage']
+            'charity_id' => $charity[$this->getMarketplace()->getId()]['organization_id'],
+            'charity_percent' => $charity[$this->getMarketplace()->getId()]['percentage']
+        );
+    }
+
+    /**
+     * @return array
+     */
+    public function getLotSizeData()
+    {
+        $categoryFeatures = Mage::helper('M2ePro/Component_Ebay_Category_Ebay')->getFeatures(
+            $this->getEbayListingProduct()->getCategoryTemplateSource()->getMainCategory(),
+            $this->getMarketplace()->getId()
+        );
+
+        /**
+         * lsd - "Lot Size Disabled". If lsd = 1, then this feature does not work for this category.
+         */
+        if (!isset($categoryFeatures['lsd']) || $categoryFeatures['lsd'] == 1) {
+            return array();
+        }
+
+        return array(
+            'lot_size' => $this->getEbayListingProduct()->getSellingFormatTemplateSource()->getLotSize()
         );
     }
 

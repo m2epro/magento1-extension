@@ -2,26 +2,6 @@ EbayListingProductBidsHandler = Class.create(ActionHandler,{
 
     // ---------------------------------------
 
-    initialize: function($super,gridHandler)
-    {
-        var self = this;
-
-        $super(gridHandler);
-
-    },
-
-    // ---------------------------------------
-
-    options: {},
-
-    setOptions: function(options)
-    {
-        this.options = Object.extend(this.options,options);
-        return this;
-    },
-
-    // ---------------------------------------
-
     parseResponse: function(response)
     {
         if (!response.responseText.isJSON()) {
@@ -35,8 +15,6 @@ EbayListingProductBidsHandler = Class.create(ActionHandler,{
 
     openPopUp: function(productId, title)
     {
-        var self = this;
-
         MagentoMessageObj.clearAll();
 
         new Ajax.Request(M2ePro.url.get('getListingProductBids'), {

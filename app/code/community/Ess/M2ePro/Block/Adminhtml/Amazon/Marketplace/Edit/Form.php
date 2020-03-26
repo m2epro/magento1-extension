@@ -56,10 +56,9 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Marketplace_Edit_Form extends Mage_Admin
         $idGroup = 1;
 
         $groupsOrder = array(
-            'america'       => 'America',
-            'europe'        => 'Europe',
-            'australia'     => 'Australia Region',
-            'asia_pacific'  => 'Asia / Pacific'
+            'america'   => 'America',
+            'europe'    => 'Europe',
+            'australia' => 'Australia Region'
         );
 
         foreach ($groupsOrder as $key => $groupOrderTitle) {

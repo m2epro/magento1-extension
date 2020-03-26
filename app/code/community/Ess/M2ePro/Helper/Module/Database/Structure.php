@@ -224,12 +224,13 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
 
     // ---------------------------------------
 
-    public function getModuleTablesInfo()
+    public function getTablesInfo()
     {
         $tablesInfo = array();
-        foreach ($this->getModuleTables() as $currentTable) {
+        foreach ($this->getMysqlTables() as $currentTable) {
             $currentTableInfo = $this->getTableInfo($currentTable);
-            $currentTableInfo && $tablesInfo[$currentTable] = $currentTableInfo;
+            $currentTableWithoutPrefix = $this->getTableNameWithoutPrefix($currentTable);
+            $currentTableInfo && $tablesInfo[$currentTableWithoutPrefix] = $currentTableInfo;
         }
 
         return $tablesInfo;
@@ -358,7 +359,7 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
         $simpleColumns = array('store_id', 'related_store_id');
         $jsonColumns   = array('magento_orders_settings', 'marketplaces_data');
 
-        foreach ($this->getModuleTablesInfo() as $tableName => $tableInfo) {
+        foreach ($this->getTablesInfo() as $tableName => $tableInfo) {
             foreach ($tableInfo as $columnName => $columnInfo) {
                 if (in_array($columnName, $simpleColumns)) {
                     $result[$tableName][] = array('name' => $columnName, 'type' => 'int');

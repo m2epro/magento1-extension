@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Ess_M2ePro>
-            <version>6.5.7</version>
+            <version>6.5.8</version>
         </Ess_M2ePro>
     </modules>
     <default>
@@ -465,15 +465,15 @@
                 </observers>
             </sales_order_invoice_pay>
 
-            <sales_order_shipment_save_after>
+            <sales_shipment_item_save_after>
                 <observers>
                     <M2ePro_observer>
                         <type>model</type>
                         <class>Ess_M2ePro_Observer_Dispatcher</class>
-                        <method>salesOrderShipmentSaveAfter</method>
+                        <method>salesShipmentItemSaveAfter</method>
                     </M2ePro_observer>
                 </observers>
-            </sales_order_shipment_save_after>
+            </sales_shipment_item_save_after>
 
             <sales_order_shipment_track_save_after>
                 <observers>
@@ -659,7 +659,7 @@
                 </observers>
             </m2epro_listing_product_delete_before>
 
-            <!-- cron -->
+            <!-- cron keep alive -->
 
             <m2epro_cron_keep_alive_activate>
                 <observers>
@@ -681,16 +681,6 @@
                 </observers>
             </model_save_before>
 
-            <model_save_after>
-                <observers>
-                    <M2ePro_observer>
-                        <type>singleton</type>
-                        <class>M2ePro/Cron_Strategy_Observer_KeepAlive</class>
-                        <method>process</method>
-                    </M2ePro_observer>
-                </observers>
-            </model_save_after>
-
             <model_load_before>
                 <observers>
                     <M2ePro_observer>
@@ -700,16 +690,6 @@
                     </M2ePro_observer>
                 </observers>
             </model_load_before>
-
-            <model_load_after>
-                <observers>
-                    <M2ePro_observer>
-                        <type>singleton</type>
-                        <class>M2ePro/Cron_Strategy_Observer_KeepAlive</class>
-                        <method>process</method>
-                    </M2ePro_observer>
-                </observers>
-            </model_load_after>
 
             <core_collection_abstract_load_before>
                 <observers>
@@ -721,15 +701,7 @@
                 </observers>
             </core_collection_abstract_load_before>
 
-            <core_collection_abstract_load_after>
-                <observers>
-                    <M2ePro_observer>
-                        <type>singleton</type>
-                        <class>M2ePro/Cron_Strategy_Observer_KeepAlive</class>
-                        <method>process</method>
-                    </M2ePro_observer>
-                </observers>
-            </core_collection_abstract_load_after>
+            <!-- cron progress -->
 
             <m2epro_cron_progress_start>
                 <observers>
@@ -856,6 +828,9 @@
                     <Setup>
                         <table>m2epro_setup</table>
                     </Setup>
+                    <Migration_V6>
+                        <table>m2epro_migration_v6</table>
+                    </Migration_V6>
 
                     <!-- PROCESSING -->
 
@@ -874,6 +849,9 @@
                     <Request_Pending_Partial>
                         <table>m2epro_request_pending_partial</table>
                     </Request_Pending_Partial>
+                    <Request_Pending_Partial_Data>
+                        <table>m2epro_request_pending_partial_data</table>
+                    </Request_Pending_Partial_Data>
 
                     <!-- CONNECTOR -->
 
@@ -901,6 +879,9 @@
                     <Ebay_Account_PickupStore_Log>
                         <table>m2epro_ebay_account_pickup_store_log</table>
                     </Ebay_Account_PickupStore_Log>
+                    <Ebay_Account_Store_Category>
+                        <table>m2epro_ebay_account_store_category</table>
+                    </Ebay_Account_Store_Category>
 
                     <Amazon_Account>
                         <table>m2epro_amazon_account</table>
@@ -1161,9 +1142,9 @@
                     <Ebay_Template_Shipping_Calculated>
                         <table>m2epro_ebay_template_shipping_calculated</table>
                     </Ebay_Template_Shipping_Calculated>
-                    <Ebay_Template_Return>
-                        <table>m2epro_ebay_template_return</table>
-                    </Ebay_Template_Return>
+                    <Ebay_Template_ReturnPolicy>
+                        <table>m2epro_ebay_template_return_policy</table>
+                    </Ebay_Template_ReturnPolicy>
                     <Ebay_Template_Category>
                         <table>m2epro_ebay_template_category</table>
                     </Ebay_Template_Category>
@@ -1180,6 +1161,9 @@
                     <Ebay_Motor_Group>
                         <table>m2epro_ebay_motor_group</table>
                     </Ebay_Motor_Group>
+                    <Ebay_Motor_Filter_To_Group>
+                        <table>m2epro_ebay_motor_filter_to_group</table>
+                    </Ebay_Motor_Filter_To_Group>
 
                     <!-- AMAZON -->
 
@@ -1227,15 +1211,54 @@
 
                     <!-- INDEXERS -->
 
-                    <Ebay_Indexer_Listing_Product_Parent>
-                        <table>m2epro_ebay_indexer_listing_product_parent</table>
-                    </Ebay_Indexer_Listing_Product_Parent>
-                    <Amazon_Indexer_Listing_Product_Parent>
-                        <table>m2epro_amazon_indexer_listing_product_parent</table>
-                    </Amazon_Indexer_Listing_Product_Parent>
-                    <Walmart_Indexer_Listing_Product_Parent>
-                        <table>m2epro_walmart_indexer_listing_product_parent</table>
-                    </Walmart_Indexer_Listing_Product_Parent>
+                    <Ebay_Listing_Product_Indexer_VariationParent>
+                        <table>m2epro_ebay_listing_product_indexer_variation_parent</table>
+                    </Ebay_Listing_Product_Indexer_VariationParent>
+                    <Amazon_Listing_Product_Indexer_VariationParent>
+                        <table>m2epro_amazon_listing_product_indexer_variation_parent</table>
+                    </Amazon_Listing_Product_Indexer_VariationParent>
+                    <Walmart_Listing_Product_Indexer_VariationParent>
+                        <table>m2epro_walmart_listing_product_indexer_variation_parent</table>
+                    </Walmart_Listing_Product_Indexer_VariationParent>
+
+                    <!-- DICTIONARIES -->
+
+                    <Amazon_Dictionary_Category>
+                        <table>m2epro_amazon_dictionary_category</table>
+                    </Amazon_Dictionary_Category>
+                    <Amazon_Dictionary_Category_Product_Data>
+                        <table>m2epro_amazon_dictionary_category_product_data</table>
+                    </Amazon_Dictionary_Category_Product_Data>
+                    <Amazon_Dictionary_Marketplace>
+                        <table>m2epro_amazon_dictionary_marketplace</table>
+                    </Amazon_Dictionary_Marketplace>
+                    <Amazon_Dictionary_Specific>
+                        <table>m2epro_amazon_dictionary_specific</table>
+                    </Amazon_Dictionary_Specific>
+                    <Ebay_Dictionary_Category>
+                        <table>m2epro_ebay_dictionary_category</table>
+                    </Ebay_Dictionary_Category>
+                    <Ebay_Dictionary_Marketplace>
+                        <table>m2epro_ebay_dictionary_marketplace</table>
+                    </Ebay_Dictionary_Marketplace>
+                    <Ebay_Dictionary_Motor_Epid>
+                        <table>m2epro_ebay_dictionary_motor_epid</table>
+                    </Ebay_Dictionary_Motor_Epid>
+                    <Ebay_Dictionary_Motor_Ktype>
+                        <table>m2epro_ebay_dictionary_motor_ktype</table>
+                    </Ebay_Dictionary_Motor_Ktype>
+                    <Ebay_Dictionary_Shipping>
+                        <table>m2epro_ebay_dictionary_shipping</table>
+                    </Ebay_Dictionary_Shipping>
+                    <Walmart_Dictionary_Category>
+                        <table>m2epro_walmart_dictionary_category</table>
+                    </Walmart_Dictionary_Category>
+                    <Walmart_Dictionary_Marketplace>
+                        <table>m2epro_walmart_dictionary_marketplace</table>
+                    </Walmart_Dictionary_Marketplace>
+                    <Walmart_Dictionary_Specific>
+                        <table>m2epro_walmart_dictionary_specific</table>
+                    </Walmart_Dictionary_Specific>
 
                 </entities>
             </M2ePro_resource>

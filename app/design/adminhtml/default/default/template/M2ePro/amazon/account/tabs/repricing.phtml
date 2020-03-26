@@ -12,11 +12,11 @@
 /** @var Ess_M2ePro_Helper_Magento_Attribute $magentoAttributeHelper */
 $magentoAttributeHelper = Mage::helper('M2ePro/Magento_Attribute');
 
-$generalAttributes = Mage::helper('M2ePro/Magento_Attribute')->getGeneralFromAllAttributeSets();
+$allAttributes = Mage::helper('M2ePro/Magento_Attribute')->getAll();
 
 $attributesByInputTypes = array(
-    'text_price' => $magentoAttributeHelper->filterByInputTypes($generalAttributes, array('text', 'price')),
-    'boolean' => $magentoAttributeHelper->filterByInputTypes($generalAttributes, array('boolean')),
+    'text_price' => $magentoAttributeHelper->filterByInputTypes($allAttributes, array('text', 'price')),
+    'boolean' => $magentoAttributeHelper->filterByInputTypes($allAttributes, array('boolean')),
 );
 
 ?>

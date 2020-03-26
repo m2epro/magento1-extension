@@ -67,6 +67,7 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
         $this->setData('account_id', $this->_account->getId());
 
         $this->setData('ebay_order_id', $data['identifiers']['ebay_order_id']);
+        $this->setData('extended_order_id', $data['identifiers']['extended_order_id']);
         $this->setData('selling_manager_id', $data['identifiers']['selling_manager_id']);
 
         $this->setData('order_status', $this->_helper->getOrderStatus($data['statuses']['order']));
@@ -157,17 +158,11 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
     {
         $this->_status = self::STATUS_NOT_MODIFIED;
 
-        $existOrders = Mage::helper('M2ePro/Component_Ebay')
-            ->getCollection('Order')
-            ->addFieldToFilter('account_id', $this->_account->getId())
-            ->addFieldToFilter('ebay_order_id', $this->getData('ebay_order_id'))
-            ->setOrder('id', Varien_Data_Collection_Db::SORT_ORDER_DESC)
-            ->getItems();
-        $existOrdersNumber = count($existOrders);
+        $existOrders = $this->getExistedOrders();
 
         // New order
         // ---------------------------------------
-        if ($existOrdersNumber == 0) {
+        if (count($existOrders) == 0) {
             $this->_status = self::STATUS_NEW;
             $this->_order  = Mage::helper('M2ePro/Component_Ebay')->getModel('Order');
             $this->_order->setStatusUpdateRequired(true);
@@ -185,7 +180,7 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
 
         // duplicated M2ePro orders. remove M2E Pro order without magento order id or newest order
         // ---------------------------------------
-        if ($existOrdersNumber > 1) {
+        if (count($existOrders) > 1) {
             $isDeleted = false;
 
             foreach ($existOrders as $key => $order) {
@@ -220,6 +215,36 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
         }
 
         // ---------------------------------------
+    }
+
+    protected function getExistedOrders()
+    {
+        $transactionIds = array();
+        foreach ($this->_items as $item) {
+            $transactionIds[] = $item['transaction_id'];
+        }
+
+        $collection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Order_Item');
+        $collection->getSelect()->joinInner(
+            array('e_order' => Mage::getResourceModel('M2ePro/Ebay_Order')->getMainTable()),
+            'e_order.order_id = main_table.order_id',
+            array('ebay_order_id' => 'ebay_order_id')
+        );
+        $collection->addFieldToFilter('ebay_order_id', array('neq' => $this->getData('ebay_order_id')));
+        $collection->addFieldToFilter('transaction_id', array('in' => $transactionIds));
+        $possibleOldFormatIds = array_unique($collection->getColumnValues('ebay_order_id'));
+        //--
+
+        $orderIds = array($this->getData('ebay_order_id'));
+        count($possibleOldFormatIds) === 1 && $orderIds[] = reset($possibleOldFormatIds);
+
+        /** @var Ess_M2ePro_Model_Resource_Collection_Abstract $existed */
+        $existed = Mage::helper('M2ePro/Component_Ebay')->getCollection('Order')
+            ->addFieldToFilter('account_id', $this->_account->getId())
+            ->addFieldToFilter('ebay_order_id', array('in' => $orderIds))
+            ->setOrder('id', Varien_Data_Collection_Db::SORT_ORDER_DESC);
+
+        return $existed->getItems();
     }
 
     //########################################

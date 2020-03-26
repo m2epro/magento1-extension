@@ -26,12 +26,8 @@ class Ess_M2ePro_Observer_Listing_Product_Save_After extends Ess_M2ePro_Observer
 
     protected function processIndexer(Ess_M2ePro_Model_Listing_Product $listingProduct)
     {
-        if (!$listingProduct->isComponentModeEbay() && !$listingProduct->isComponentModeAmazon()) {
-            return;
-        }
-
         $resource = Mage::getResourceModel(
-            'M2ePro/'.ucfirst($listingProduct->getComponentMode()).'_Indexer_Listing_Product_Parent'
+            'M2ePro/'.ucfirst($listingProduct->getComponentMode()).'_Listing_Product_Indexer_VariationParent'
         );
 
         $isChanged = false;
@@ -50,9 +46,9 @@ class Ess_M2ePro_Observer_Listing_Product_Save_After extends Ess_M2ePro_Observer
             return;
         }
 
-        /** @var Ess_M2ePro_Model_Indexer_Listing_Product_Parent_Manager $manager */
+        /** @var Ess_M2ePro_Model_Listing_Product_Indexer_VariationParent_Manager $manager */
         $manager = Mage::getModel(
-            'M2ePro/Indexer_Listing_Product_Parent_Manager',
+            'M2ePro/Listing_Product_Indexer_VariationParent_Manager',
             array($listingProduct->getListing())
         );
         $manager->markInvalidated();
@@ -86,8 +82,8 @@ class Ess_M2ePro_Observer_Listing_Product_Save_After extends Ess_M2ePro_Observer
         $childObject = Mage::getModel('M2ePro/Ebay_Listing_Product');
         $childObject->addData(
             array(
-            'listing_product_id' => $ebayListingProduct->getId(),
-            'item_uuid'          => $ebayListingProduct->generateItemUUID()
+                'listing_product_id' => $ebayListingProduct->getId(),
+                'item_uuid'          => $ebayListingProduct->generateItemUUID()
             )
         );
 

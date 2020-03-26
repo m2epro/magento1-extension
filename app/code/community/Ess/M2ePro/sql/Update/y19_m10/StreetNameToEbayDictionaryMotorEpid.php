@@ -7,13 +7,6 @@ class Ess_M2ePro_Sql_Update_y19_m10_StreetNameToEbayDictionaryMotorEpid
 {
     //########################################
 
-    public function getBackupTables()
-    {
-        return array(
-            'ebay_dictionary_motor_epid'
-        );
-    }
-
     public function execute()
     {
         $this->_installer->getTableModifier('ebay_dictionary_motor_epid')

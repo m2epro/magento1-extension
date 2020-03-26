@@ -11,6 +11,13 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Synchronization_Log_Grid
 {
     //########################################
 
+    public function getComponentMode()
+    {
+        return Ess_M2ePro_Helper_Component_Walmart::NICK;
+    }
+
+    //########################################
+
     protected function getActionTitles()
     {
         $allTitles = Mage::helper('M2ePro/Module_Log')->getActionsTitlesByClass('Synchronization_Log');

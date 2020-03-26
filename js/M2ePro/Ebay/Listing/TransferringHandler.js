@@ -23,7 +23,7 @@ EbayListingTransferringHandler = Class.create(CommonHandler, {
             onSuccess: function(transport) {
 
                 var content = transport.responseText;
-                var title = M2ePro.translator.translate('Sell on Another eBay Site');
+                var title = M2ePro.translator.translate('Sell on Another Marketplace');
 
                 if (productName) {
                     title += '&nbsp;' + M2ePro.translator.translate('Product') + '&nbsp;"' + productName + '"';

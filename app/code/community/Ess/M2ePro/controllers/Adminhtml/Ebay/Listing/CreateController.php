@@ -161,7 +161,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CreateController
         $templateNicks = array(
             Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_PAYMENT,
             Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SHIPPING,
-            Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_RETURN,
+            Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_RETURN_POLICY,
         );
 
         // ---------------------------------------

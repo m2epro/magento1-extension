@@ -171,7 +171,8 @@ class Ess_M2ePro_Model_Walmart_Listing_Other_Mapping
             $productObj = Mage::getModel('catalog/product')->setStoreId($storeId);
             $productObj = $productObj->loadByAttribute($attributeCode, $attributeValue);
 
-            if ($productObj && $productObj->getId()) {
+            if ($productObj && $productObj->getId() &&
+                $this->isMagentoProductTypeAllowed($productObj->getTypeId())) {
                 return $productObj->getId();
             }
         }
@@ -195,7 +196,8 @@ class Ess_M2ePro_Model_Walmart_Listing_Other_Mapping
             $productObj = Mage::getModel('catalog/product')->setStoreId($storeId);
             $productObj = $productObj->loadByAttribute($attributeCode, $attributeValue);
 
-            if ($productObj && $productObj->getId()) {
+            if ($productObj && $productObj->getId() &&
+                $this->isMagentoProductTypeAllowed($productObj->getTypeId())) {
                 return $productObj->getId();
             }
         }
@@ -219,7 +221,8 @@ class Ess_M2ePro_Model_Walmart_Listing_Other_Mapping
             $productObj = Mage::getModel('catalog/product')->setStoreId($storeId);
             $productObj = $productObj->loadByAttribute($attributeCode, $attributeValue);
 
-            if ($productObj && $productObj->getId()) {
+            if ($productObj && $productObj->getId() &&
+                $this->isMagentoProductTypeAllowed($productObj->getTypeId())) {
                 return $productObj->getId();
             }
         }
@@ -249,7 +252,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Other_Mapping
 
             $product = Mage::getModel('catalog/product')->load($productId);
 
-            if ($product->getId()) {
+            if ($product->getId() && $this->isMagentoProductTypeAllowed($product->getTypeId())) {
                 return $product->getId();
             }
 
@@ -276,7 +279,8 @@ class Ess_M2ePro_Model_Walmart_Listing_Other_Mapping
         $productObj = Mage::getModel('catalog/product')->setStoreId($storeId);
         $productObj = $productObj->loadByAttribute($attributeCode, $attributeValue);
 
-        if ($productObj && $productObj->getId()) {
+        if ($productObj && $productObj->getId() &&
+            $this->isMagentoProductTypeAllowed($productObj->getTypeId())) {
             return $productObj->getId();
         }
 
@@ -316,7 +320,8 @@ class Ess_M2ePro_Model_Walmart_Listing_Other_Mapping
         $productObj = Mage::getModel('catalog/product')->setStoreId($storeId);
         $productObj = $productObj->loadByAttribute($attributeCode, $attributeValue);
 
-        if ($productObj && $productObj->getId()) {
+        if ($productObj && $productObj->getId() &&
+            $this->isMagentoProductTypeAllowed($productObj->getTypeId())) {
             return $productObj->getId();
         }
 
@@ -325,7 +330,8 @@ class Ess_M2ePro_Model_Walmart_Listing_Other_Mapping
             $attributeValue = trim(str_replace($tempMatches[1], '', $attributeValue));
             $productObj = Mage::getModel('catalog/product')->setStoreId($storeId);
             $productObj = $productObj->loadByAttribute($attributeCode, $attributeValue);
-            if ($productObj && $productObj->getId()) {
+            if ($productObj && $productObj->getId() &&
+                $this->isMagentoProductTypeAllowed($productObj->getTypeId())) {
                 return $productObj->getId();
             }
         }
@@ -334,6 +340,15 @@ class Ess_M2ePro_Model_Walmart_Listing_Other_Mapping
     }
 
     //########################################
+
+    protected function isMagentoProductTypeAllowed($type)
+    {
+        $knownTypes = Mage::helper('M2ePro/Magento_Product')->getOriginKnownTypes();
+        return in_array($type, $knownTypes);
+    }
+
+    //########################################
+
 
     /**
      * @return Ess_M2ePro_Model_Account

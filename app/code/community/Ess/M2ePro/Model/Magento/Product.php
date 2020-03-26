@@ -8,12 +8,12 @@
 
 class Ess_M2ePro_Model_Magento_Product
 {
-    const TYPE_SIMPLE       = 'simple';
-    const TYPE_CONFIGURABLE = 'configurable';
-    const TYPE_BUNDLE       = 'bundle';
-    const TYPE_GROUPED      = 'grouped';
-    const TYPE_DOWNLOADABLE = 'downloadable';
-    const TYPE_VIRTUAL      = 'virtual';
+    const TYPE_SIMPLE_ORIGIN       = 'simple';
+    const TYPE_CONFIGURABLE_ORIGIN = 'configurable';
+    const TYPE_BUNDLE_ORIGIN       = 'bundle';
+    const TYPE_GROUPED_ORIGIN      = 'grouped';
+    const TYPE_DOWNLOADABLE_ORIGIN = 'downloadable';
+    const TYPE_VIRTUAL_ORIGIN      = 'virtual';
 
     const BUNDLE_PRICE_TYPE_DYNAMIC = 0;
     const BUNDLE_PRICE_TYPE_FIXED   = 1;
@@ -494,7 +494,7 @@ class Ess_M2ePro_Model_Magento_Product
      */
     public function isSimpleType()
     {
-        return $this->getTypeId() == self::TYPE_SIMPLE;
+        return Mage::helper('M2ePro/Magento_Product')->isSimpleType($this->getTypeId());
     }
 
     /**
@@ -536,7 +536,7 @@ class Ess_M2ePro_Model_Magento_Product
      */
     public function isConfigurableType()
     {
-        return $this->getTypeId() == self::TYPE_CONFIGURABLE;
+        return Mage::helper('M2ePro/Magento_Product')->isConfigurableType($this->getTypeId());
     }
 
     /**
@@ -544,7 +544,7 @@ class Ess_M2ePro_Model_Magento_Product
      */
     public function isBundleType()
     {
-        return $this->getTypeId() == self::TYPE_BUNDLE;
+        return Mage::helper('M2ePro/Magento_Product')->isBundleType($this->getTypeId());
     }
 
     /**
@@ -552,7 +552,7 @@ class Ess_M2ePro_Model_Magento_Product
      */
     public function isGroupedType()
     {
-        return $this->getTypeId() == self::TYPE_GROUPED;
+        return Mage::helper('M2ePro/Magento_Product')->isGroupedType($this->getTypeId());
     }
 
     // ---------------------------------------
@@ -562,7 +562,7 @@ class Ess_M2ePro_Model_Magento_Product
      */
     public function isDownloadableType()
     {
-        return $this->getTypeId() == self::TYPE_DOWNLOADABLE;
+        return Mage::helper('M2ePro/Magento_Product')->isDownloadableType($this->getTypeId());
     }
 
     /**
@@ -596,9 +596,9 @@ class Ess_M2ePro_Model_Magento_Product
     /**
      * @return bool
      */
-    public function isVirtualType()
+    public function isVirtualTypeOrigin()
     {
-        return $this->getTypeId() == self::TYPE_VIRTUAL;
+        return $this->getTypeId() == self::TYPE_VIRTUAL_ORIGIN;
     }
 
     //########################################

@@ -24,7 +24,7 @@ class Ess_M2ePro_Adminhtml_MaintenanceController extends Mage_Adminhtml_Controll
         }
 
         $isPreparedForMigration = (bool)Mage::helper('M2ePro/Primary')->getConfig()->getGroupValue(
-            '/migrationtomagento2/source/', 'is_prepared_for_migration'
+            Ess_M2ePro_Model_Upgrade_MigrationToMagento2_Runner::CONFIG_PREFIX, 'is_prepared_for_migration'
         );
 
         /** @var Mage_Adminhtml_Block_Template $block */

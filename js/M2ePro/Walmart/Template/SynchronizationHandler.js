@@ -52,6 +52,10 @@ WalmartTemplateSynchronizationHandler.prototype = Object.extend(new WalmartTempl
                 return true;
             }
 
+            if (WalmartTemplateSynchronizationHandlerObj.isStopModeDisabled()) {
+                return true;
+            }
+
             if ($('stop_status_disabled').value == 1 && $('relist_status_enabled').value == 0) {
                 return false;
             }
@@ -65,6 +69,10 @@ WalmartTemplateSynchronizationHandler.prototype = Object.extend(new WalmartTempl
                 return true;
             }
 
+            if (WalmartTemplateSynchronizationHandlerObj.isStopModeDisabled()) {
+                return true;
+            }
+
             if ($('stop_out_off_stock').value == 1 && $('relist_is_in_stock').value == 0) {
                 return false;
             }
@@ -75,6 +83,10 @@ WalmartTemplateSynchronizationHandler.prototype = Object.extend(new WalmartTempl
         Validation.add('M2ePro-validate-stop-relist-conditions-item-qty', M2ePro.translator.translate('Inconsistent Settings in Relist and Stop Rules.'), function(value, el) {
 
             if (WalmartTemplateSynchronizationHandlerObj.isRelistModeDisabled()) {
+                return true;
+            }
+
+            if (WalmartTemplateSynchronizationHandlerObj.isStopModeDisabled()) {
                 return true;
             }
 
@@ -124,6 +136,11 @@ WalmartTemplateSynchronizationHandler.prototype = Object.extend(new WalmartTempl
     isRelistModeDisabled: function()
     {
         return $('relist_mode').value == 0;
+    },
+
+    isStopModeDisabled: function()
+    {
+        return $('stop_mode').value == 0;
     },
 
     // ---------------------------------------

@@ -15,6 +15,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Amazon_Grid
     protected $_lockedDataCache = array();
 
     protected $_childProductsWarningsData;
+    protected $_parentAndChildReviseScheduledCache = array();
 
     protected $_hideSwitchToIndividualConfirm;
     protected $_hideSwitchToParentConfirm;
@@ -134,8 +135,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Amazon_Grid
                 'is_general_id_owner'            => 'is_general_id_owner',
                 'is_variation_parent'            => 'is_variation_parent',
                 'defected_messages'              => 'defected_messages',
-                'is_details_data_changed'        => 'is_details_data_changed',
-                'is_images_data_changed'         => 'is_images_data_changed',
                 'variation_parent_afn_state'       => 'variation_parent_afn_state',
                 'variation_parent_repricing_state' => 'variation_parent_repricing_state',
             ),
@@ -160,6 +159,38 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Amazon_Grid
         $this->setCollection($collection);
 
         return parent::_prepareCollection();
+    }
+
+    protected function _afterLoadCollection()
+    {
+        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $collection */
+        $collection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Product');
+        $collection->getSelect()->join(
+            array('lps' => Mage::getResourceModel('M2ePro/Listing_Product_ScheduledAction')->getMainTable()),
+            'lps.listing_product_id=main_table.id',
+            array()
+        );
+
+        $collection->addFieldToFilter('is_variation_parent', 0);
+        $collection->addFieldToFilter(
+            'variation_parent_id', array('in' => $this->getCollection()->getColumnValues('id'))
+        );
+        $collection->addFieldToFilter('lps.action_type', Ess_M2ePro_Model_Listing_Product::ACTION_REVISE);
+
+        $collection->getSelect()->reset(Zend_Db_Select::COLUMNS);
+        $collection->getSelect()->columns(
+            array(
+                'variation_parent_id' => 'second_table.variation_parent_id',
+                'count'               => new Zend_Db_Expr('COUNT(lps.id)')
+            )
+        );
+        $collection->getSelect()->group('variation_parent_id');
+
+        foreach ($collection->getItems() as $item) {
+            $this->_parentAndChildReviseScheduledCache[$item->getData('variation_parent_id')] = true;
+        }
+
+        return parent::_afterLoadCollection();
     }
 
     protected function _prepareColumns()
@@ -622,35 +653,9 @@ HTML;
             $value = Mage::helper('M2ePro')->__('N/A');
         }
 
-        if (!$row->getData('is_variation_parent') &&
-            ($row->getData('defected_messages') ||
-             $row->getData('is_details_data_changed') ||
-             $row->getData('is_images_data_changed'))
-        ) {
+        if (!$row->getData('is_variation_parent') && $row->getData('defected_messages')) {
             $defectedMessages = Mage::helper('M2ePro')->jsonDecode($row->getData('defected_messages'));
-            if (empty($defectedMessages)) {
-                $defectedMessages = array();
-            }
-
             $msg = '';
-
-            if ($row->getData('is_details_data_changed')) {
-                $message = <<<HTML
-Item Details, e.g. Condition Note, Gift Message, Gift Wrap, Item Description, Shipping or Product Tax Code settings,
-need to be updated on Amazon.<br>
-To submit new Item Details, apply the Revise action. Use the Advanced Filter to select all Items with the Details
-changes and update them in bulk.
-HTML;
-                $msg .= '<p>'.Mage::helper('M2ePro')->__($message).'</p>';
-            }
-
-            if ($row->getData('is_images_data_changed')) {
-                $message = <<<HTML
-Item Images need to be updated on Amazon. To submit new Item Images, apply the Revise action.<br>
-Use the Advanced Filter to select all Items with the Images changes and update them in bulk.
-HTML;
-                $msg .= '<p>'.Mage::helper('M2ePro')->__($message).'</p>';
-            }
 
             foreach ($defectedMessages as $message) {
                 if (empty($message['message'])) {
@@ -1336,7 +1341,8 @@ HTML;
                 $reviseParts = array();
 
                 $additionalData = $scheduledAction->getAdditionalData();
-                if (!empty($additionalData['configurator'])) {
+                if (!empty($additionalData['configurator']) &&
+                    !isset($this->_parentAndChildReviseScheduledCache[$row->getData('id')])) {
                     $configurator = Mage::getModel('M2ePro/Amazon_Listing_Product_Action_Configurator');
                     $configurator->setData($additionalData['configurator']);
 

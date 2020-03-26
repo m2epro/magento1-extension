@@ -344,13 +344,7 @@ class Ess_M2ePro_Model_Order_Item_OptionsFinder
 
     protected function getAllowedProductTypes()
     {
-        return array(
-            Ess_M2ePro_Model_Magento_Product::TYPE_SIMPLE,
-            Ess_M2ePro_Model_Magento_Product::TYPE_CONFIGURABLE,
-            Ess_M2ePro_Model_Magento_Product::TYPE_BUNDLE,
-            Ess_M2ePro_Model_Magento_Product::TYPE_GROUPED,
-            Ess_M2ePro_Model_Magento_Product::TYPE_DOWNLOADABLE,
-        );
+        return Mage::helper('M2ePro/Magento_Product')->getOriginKnownTypes();
     }
 
     //########################################

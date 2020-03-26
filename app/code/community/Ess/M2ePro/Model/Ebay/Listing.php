@@ -62,7 +62,7 @@ class Ess_M2ePro_Model_Ebay_Listing extends Ess_M2ePro_Model_Component_Child_Eba
     protected $_paymentTemplateModel = null;
 
     /**
-     * @var Ess_M2ePro_Model_Ebay_Template_Return
+     * @var Ess_M2ePro_Model_Ebay_Template_ReturnPolicy
      */
     protected $_returnTemplateModel = null;
 
@@ -367,12 +367,12 @@ class Ess_M2ePro_Model_Ebay_Listing extends Ess_M2ePro_Model_Component_Child_Eba
     // ---------------------------------------
 
     /**
-     * @return Ess_M2ePro_Model_Ebay_Template_Return
+     * @return Ess_M2ePro_Model_Ebay_Template_ReturnPolicy
      */
     public function getReturnTemplate()
     {
         if ($this->_returnTemplateModel === null) {
-            $template                   = Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_RETURN;
+            $template                   = Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_RETURN_POLICY;
             $this->_returnTemplateModel = $this->getTemplateManager($template)->getResultObject();
         }
 
@@ -380,9 +380,9 @@ class Ess_M2ePro_Model_Ebay_Listing extends Ess_M2ePro_Model_Component_Child_Eba
     }
 
     /**
-     * @param Ess_M2ePro_Model_Ebay_Template_Return $instance
+     * @param Ess_M2ePro_Model_Ebay_Template_ReturnPolicy $instance
      */
-    public function setReturnTemplate(Ess_M2ePro_Model_Ebay_Template_Return $instance)
+    public function setReturnTemplate(Ess_M2ePro_Model_Ebay_Template_ReturnPolicy $instance)
     {
          $this->_returnTemplateModel = $instance;
     }
@@ -582,16 +582,6 @@ class Ess_M2ePro_Model_Ebay_Listing extends Ess_M2ePro_Model_Component_Child_Eba
             'status'               => $listingOtherProduct->getStatus(),
             'status_changer'       => $listingOtherProduct->getStatusChanger()
         );
-
-        $listingOtherAdditionalData = $listingOtherProduct->getAdditionalData();
-
-        if (!empty($listingOtherAdditionalData['out_of_stock_control'])) {
-            $listingProductAdditionalData = $listingProduct->getAdditionalData();
-            $additionalDataForUpdate = array_merge(
-                $listingProductAdditionalData, array('out_of_stock_control' => true)
-            );
-            $dataForUpdate['additional_data'] = Mage::helper('M2ePro')->jsonEncode($additionalDataForUpdate);
-        }
 
         $listingProduct->addData($dataForUpdate);
         $listingProduct->setSetting(

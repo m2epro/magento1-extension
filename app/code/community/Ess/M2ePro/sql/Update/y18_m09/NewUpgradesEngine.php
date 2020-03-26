@@ -12,7 +12,7 @@ class Ess_M2ePro_Sql_Update_y18_m09_NewUpgradesEngine extends Ess_M2ePro_Model_U
             $this->_installer->run(
                 <<<SQL
 
-CREATE TABLE `m2epro_setup` (
+CREATE TABLE `{$this->_installer->getTable('m2epro_setup')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `version_from` VARCHAR(32) DEFAULT NULL,
   `version_to` VARCHAR(32) DEFAULT NULL,

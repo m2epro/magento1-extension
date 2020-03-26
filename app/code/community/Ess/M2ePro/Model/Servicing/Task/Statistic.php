@@ -352,7 +352,7 @@ class Ess_M2ePro_Model_Servicing_Task_Statistic extends Ess_M2ePro_Model_Servici
 
     protected function appendExtensionSystemInfo(&$data)
     {
-        $data['info']['version'] = Mage::helper('M2ePro/Module')->getVersion();
+        $data['info']['version'] = Mage::helper('M2ePro/Module')->getPublicVersion();
     }
 
     protected function appendExtensionM2eProUpdaterModuleInfo(&$data)
@@ -655,12 +655,12 @@ class Ess_M2ePro_Model_Servicing_Task_Statistic extends Ess_M2ePro_Model_Servici
             ->query();
 
         $productTypes = array(
-            Ess_M2ePro_Model_Magento_Product::TYPE_SIMPLE,
-            Ess_M2ePro_Model_Magento_Product::TYPE_CONFIGURABLE,
-            Ess_M2ePro_Model_Magento_Product::TYPE_BUNDLE,
-            Ess_M2ePro_Model_Magento_Product::TYPE_GROUPED,
-            Ess_M2ePro_Model_Magento_Product::TYPE_DOWNLOADABLE,
-            Ess_M2ePro_Model_Magento_Product::TYPE_VIRTUAL
+            Ess_M2ePro_Model_Magento_Product::TYPE_SIMPLE_ORIGIN,
+            Ess_M2ePro_Model_Magento_Product::TYPE_CONFIGURABLE_ORIGIN,
+            Ess_M2ePro_Model_Magento_Product::TYPE_BUNDLE_ORIGIN,
+            Ess_M2ePro_Model_Magento_Product::TYPE_GROUPED_ORIGIN,
+            Ess_M2ePro_Model_Magento_Product::TYPE_DOWNLOADABLE_ORIGIN,
+            Ess_M2ePro_Model_Magento_Product::TYPE_VIRTUAL_ORIGIN
         );
 
         $data['listings_products']['total'] = 0;
@@ -812,7 +812,7 @@ class Ess_M2ePro_Model_Servicing_Task_Statistic extends Ess_M2ePro_Model_Servici
         $this->_appendComponentPolicyInfo('description', 'ebay', $data);
         $this->_appendComponentPolicyInfo('payment', 'ebay', $data);
         $this->_appendComponentPolicyInfo('shipping', 'ebay', $data);
-        $this->_appendComponentPolicyInfo('return', 'ebay', $data);
+        $this->_appendComponentPolicyInfo('return_policy', 'ebay', $data);
         $this->_appendComponentPolicyInfo('category', 'ebay', $data);
         $this->_appendComponentPolicyInfo('other_category', 'ebay', $data);
 

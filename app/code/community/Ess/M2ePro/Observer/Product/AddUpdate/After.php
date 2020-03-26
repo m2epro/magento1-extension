@@ -591,7 +591,7 @@ class Ess_M2ePro_Observer_Product_AddUpdate_After extends Ess_M2ePro_Observer_Pr
             }
 
             if (!empty($additionalData['variation_options']) &&
-                $collection->getFirstItem()->getProductType() == Ess_M2ePro_Model_Magento_Product::TYPE_BUNDLE) {
+                Mage::helper('M2ePro/Magento_Product')->isBundleType($collection->getFirstItem()->getProductType())) {
                 foreach ($additionalData['variation_options'] as $attribute => $option) {
                     $log->addProductMessage(
                         $listingProduct->getListingId(),

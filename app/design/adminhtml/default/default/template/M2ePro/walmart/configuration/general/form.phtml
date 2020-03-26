@@ -14,20 +14,16 @@ $showWarning = false;
 $magentoAttributeHelper = Mage::helper('M2ePro/Magento_Attribute');
 
 $attributesByInputTypes = array(
-    'text' => $magentoAttributeHelper->filterByInputTypes($this->getData('general_attributes'), array('text')),
-);
-
-$generalAttributesByInputTypes = array(
     'boolean' => $magentoAttributeHelper->filterByInputTypes($this->getData('all_attributes'), array('boolean')),
-    'text' => $magentoAttributeHelper->filterByInputTypes($this->getData('general_attributes'), array('text')),
+    'text' => $magentoAttributeHelper->filterByInputTypes($this->getData('all_attributes'), array('text')),
     'text_date' => $magentoAttributeHelper->filterByInputTypes(
-        $this->getData('general_attributes'), array('text', 'date', 'datetime')
+        $this->getData('all_attributes'), array('text', 'date', 'datetime')
     ),
     'text_select' => $magentoAttributeHelper->filterByInputTypes(
-        $this->getData('general_attributes'), array('text', 'select')
+        $this->getData('all_attributes'), array('text', 'select')
     ),
     'text_images' => $magentoAttributeHelper->filterByInputTypes(
-        $this->getData('general_attributes'),
+        $this->getData('all_attributes'),
         array('text', 'image', 'media_image', 'gallery', 'multiline', 'textarea', 'select', 'multiselect')
     )
 );
@@ -40,7 +36,6 @@ $generalAttributesByInputTypes = array(
     )); ?>);
 
     M2ePro.translator.add(<?php echo json_encode(array(
-        'Settings have been saved.' => Mage::helper('M2ePro')->__('Settings have been saved.'),
         'Required at least one identifier' => Mage::helper('M2ePro')->__('Required at least one identifier')
     )); ?>);
 
@@ -93,7 +88,7 @@ $generalAttributesByInputTypes = array(
                                 <option value="<?php echo Ess_M2ePro_Helper_Component_Walmart_Configuration::SKU_MODE_PRODUCT_ID ?>" <?php if ($this->getData('sku_mode') == Ess_M2ePro_Helper_Component_Walmart_Configuration::SKU_MODE_PRODUCT_ID) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('Product ID') ?></option>
 
                                 <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
-                                    <?php foreach ($generalAttributesByInputTypes['text'] as $attribute): ?>
+                                    <?php foreach ($attributesByInputTypes['text'] as $attribute): ?>
                                         <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Helper_Component_Walmart_Configuration::SKU_MODE_CUSTOM_ATTRIBUTE ?>" <?php if ($this->getData('sku_custom_attribute') == $attribute['code']) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?></option>
                                     <?php endforeach ?>
                                 </optgroup>
@@ -374,6 +369,32 @@ $generalAttributesByInputTypes = array(
                             <?php endif; ?>
                         </td>
                     </tr>
+
+                    <tr>
+                        <td class="label">
+                            <label for="product_id_override_mode"><?php echo Mage::helper('M2ePro')->__('Product ID Override') ?>:</label>
+                        </td>
+                        <td class="value">
+
+                            <select name="product_id_override_mode" id="product_id_override_mode">
+                                <option value="<?php echo Ess_M2ePro_Helper_Component_Walmart_Configuration::PRODUCT_ID_OVERRIDE_MODE_NONE ?>" <?php if ($this->getData('product_id_override_mode') == Ess_M2ePro_Helper_Component_Walmart_Configuration::PRODUCT_ID_OVERRIDE_MODE_NONE) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('None') ?></option>
+                                <option value="<?php echo Ess_M2ePro_Helper_Component_Walmart_Configuration::PRODUCT_ID_OVERRIDE_MODE_ALL ?>" <?php if ($this->getData('product_id_override_mode') == Ess_M2ePro_Helper_Component_Walmart_Configuration::PRODUCT_ID_OVERRIDE_MODE_ALL) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('All products') ?></option>
+                                <option value="<?php echo Ess_M2ePro_Helper_Component_Walmart_Configuration::PRODUCT_ID_OVERRIDE_MODE_SPECIFIC_PRODUCTS ?>" <?php if ($this->getData('product_id_override_mode') == Ess_M2ePro_Helper_Component_Walmart_Configuration::PRODUCT_ID_OVERRIDE_MODE_SPECIFIC_PRODUCTS) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('Specific products') ?></option>
+                            </select>
+                            <p class="note">
+                                <span>
+                                    <?php echo Mage::helper('M2ePro')->__(
+                                        '<b>None</b> - all products will be listed with the standard Product IDs.<br/>
+                                         <b>All products</b> - Product ID exemption will be applied to all products.<br/>
+                                         <b>Specific products</b> - Product ID exemption will be applied to products that have a value “CUSTOM” in Product ID attribute.<br/><br/>
+                                         
+                                        <b>Note:</b> You must apply for Product ID exemption on Walmart first.'
+                                    ); ?>
+                                </span>
+                            </p>
+                        </td>
+                    </tr>
+
                 </table>
 
             </div>

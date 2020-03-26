@@ -33,7 +33,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_PriceCalculator
     public function getVariationValue(Ess_M2ePro_Model_Listing_Product_Variation $variation)
     {
         if ($variation->getChildObject()->isDelete()) {
-            return 0;
+            return $variation->getChildObject()->getOnlinePrice();
         }
 
         return parent::getVariationValue($variation);

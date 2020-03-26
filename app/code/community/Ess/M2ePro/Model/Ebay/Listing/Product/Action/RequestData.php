@@ -119,21 +119,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_RequestData
     /**
      * @return bool
      */
-    public function hasOutOfStockControl()
-    {
-        return isset($this->_data['out_of_stock_control']);
-    }
-
-    public function hasOutOfStockControlResult()
-    {
-        return isset($this->_data['out_of_stock_control_result']);
-    }
-
-    // ---------------------------------------
-
-    /**
-     * @return bool
-     */
     public function hasSku()
     {
         return isset($this->_data['sku']);
@@ -248,18 +233,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_RequestData
     public function getPriceBuyItNow()
     {
         return $this->hasPriceBuyItNow() ? $this->_data['price_buyitnow'] : null;
-    }
-
-    // ---------------------------------------
-
-    public function getOutOfStockControl()
-    {
-        return $this->hasOutOfStockControl() ? $this->_data['out_of_stock_control'] : null;
-    }
-
-    public function getOutOfStockControlResult()
-    {
-        return $this->hasOutOfStockControlResult() ? $this->_data['out_of_stock_control_result'] : null;
     }
 
     // ---------------------------------------

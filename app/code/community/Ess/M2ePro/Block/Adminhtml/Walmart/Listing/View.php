@@ -550,11 +550,6 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View extends Mage_Adminhtml_Blo
             {$listingData['id']}
         );
 
-        ListingGridHandlerObj.actionHandler.setOptions(M2ePro);
-        ListingGridHandlerObj.movingHandler.setOptions(M2ePro);
-        ListingGridHandlerObj.templateCategoryHandler.setOptions(M2ePro);
-        ListingGridHandlerObj.variationProductManageHandler.setOptions(M2ePro);
-
         ListingProgressBarObj = new ProgressBar('listing_view_progress_bar');
         GridWrapperObj = new AreaWrapper('listing_view_content_container');
 

@@ -107,11 +107,15 @@ class Ess_M2ePro_Model_Ebay_Template_SellingFormat_Source
     {
         $src = $this->getEbaySellingFormatTemplate()->getLotSizeSource();
 
+        if ($src['mode'] == Ess_M2ePro_Model_Ebay_Template_SellingFormat::LOT_SIZE_MODE_CUSTOM_VALUE) {
+            return $src['value'];
+        }
+
         if ($src['mode'] == Ess_M2ePro_Model_Ebay_Template_SellingFormat::LOT_SIZE_MODE_ATTRIBUTE) {
             return $this->getMagentoProduct()->getAttributeValue($src['attribute']);
         }
 
-        return $src['value'];
+        return '';
     }
 
     /**

@@ -17,28 +17,21 @@ abstract class Ess_M2ePro_Model_Order_CreditMemo_Handler
 
     //########################################
 
-    abstract public function handle(Ess_M2ePro_Model_Order $order, Mage_Sales_Model_Order_Creditmemo $creditmemo);
+    abstract protected function getComponentMode();
+    abstract protected function getItemsToRefund(Ess_M2ePro_Model_Order $order, Mage_Sales_Model_Order_Creditmemo $cm);
 
-    //########################################
-
-    public static function factory($component)
+    public function handle(Ess_M2ePro_Model_Order $order, Mage_Sales_Model_Order_Creditmemo $creditmemo)
     {
-        $handler = null;
-
-        switch ($component) {
-            case Ess_M2ePro_Helper_Component_Amazon::NICK:
-                $handler = Mage::getModel('M2ePro/Amazon_Order_CreditMemo_Handler');
-                break;
-            case Ess_M2ePro_Helper_Component_Walmart::NICK:
-                $handler = Mage::getModel('M2ePro/Walmart_Order_CreditMemo_Handler');
-                break;
+        if ($order->getComponentMode() !== $this->getComponentMode()) {
+            throw new InvalidArgumentException('Invalid component mode.');
         }
 
-        if (!$handler) {
-            throw new Ess_M2ePro_Model_Exception_Logic('Credit Memo handler not found.');
+        if (!$order->getChildObject()->canRefund()) {
+            return self::HANDLE_RESULT_SKIPPED;
         }
 
-        return $handler;
+        $items = $this->getItemsToRefund($order, $creditmemo);
+        return $order->getChildObject()->refund($items) ? self::HANDLE_RESULT_SUCCEEDED : self::HANDLE_RESULT_FAILED;
     }
 
     //########################################

@@ -23,10 +23,10 @@ class Ess_M2ePro_Observer_Shipment_Track extends Ess_M2ePro_Observer_Abstract
         $magentoOrderId = $shipment->getOrderId();
 
         /**
-         * We can catch two the same events: save of Mage_Sales_Model_Order_Shipment and
+         * We can catch two the same events: save of Mage_Sales_Model_Order_Shipment_Item and
          * Mage_Sales_Model_Order_Shipment_Track. So we must skip a duplicated one.
          */
-        $eventKey = 'skip_' . $shipment->getId() .'##'. $track->getId();
+        $eventKey = 'skip_' . $shipment->getId() .'##'. spl_object_hash($track);
         if (Mage::helper('M2ePro/Data_Global')->getValue($eventKey)) {
             Mage::helper('M2ePro/Data_Global')->unsetValue($eventKey);
             return;
@@ -54,7 +54,8 @@ class Ess_M2ePro_Observer_Shipment_Track extends Ess_M2ePro_Observer_Abstract
         $order->getLog()->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION);
 
         /** @var Ess_M2ePro_Model_Order_Shipment_Handler $handler */
-        $handler = Ess_M2ePro_Model_Order_Shipment_Handler::factory($order->getComponentMode());
+        $componentMode = ucfirst($order->getComponentMode());
+        $handler = Mage::getModel("M2ePro/{$componentMode}_Order_Shipment_Handler");
         $handler->handle($order, $shipment);
     }
 

@@ -28,22 +28,6 @@ class Ess_M2ePro_Block_Adminhtml_Magento_Payment_Info extends Mage_Payment_Block
             return $additionalData;
         }
 
-        // backward compatibility with M2E Pro 3.1.5 or lower
-        // ---------------------------------------
-        $backwardCompatibleKeys = array(
-            'payment_method'    => 'ebay_payment_method',
-            'channel_order_id'  => 'ebay_order_id',
-            'channel_final_fee' => 'ebay_final_value_fee',
-            'transactions'      => 'external_transactions'
-        );
-        $backwardCompatibleKey = isset($backwardCompatibleKeys[$key]) ? $backwardCompatibleKeys[$key] : null;
-
-        if (isset($additionalData[$backwardCompatibleKey])) {
-            return $additionalData[$backwardCompatibleKey];
-        }
-
-        // ---------------------------------------
-
         return isset($additionalData[$key]) ? $additionalData[$key] : null;
     }
 

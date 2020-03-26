@@ -33,8 +33,9 @@ class Ess_M2ePro_Model_Upgrade_Tables
 
     public function init()
     {
+        $magentoTablesPrefix = Mage::helper('M2ePro/Magento')->getDatabaseTablesPrefix();
         foreach (Mage::helper('M2ePro/Module_Database_Structure')->getMysqlTables() as $tableName) {
-            $this->_entities[str_replace(self::PREFIX, '', $tableName)] = $tableName;
+            $this->_entities[str_replace($magentoTablesPrefix . self::PREFIX, '', $tableName)] = $tableName;
         }
     }
 
@@ -98,6 +99,24 @@ class Ess_M2ePro_Model_Upgrade_Tables
         }
 
         return $this->getInstaller()->getTable($tableName);
+    }
+
+    //########################################
+
+    public function renameTable($oldTable, $newTable)
+    {
+        $oldTable = $this->getFullName($oldTable);
+        $newTable = $this->getFullName($newTable);
+
+        if ($this->_installer->tableExists($oldTable) && !$this->_installer->tableExists($newTable)) {
+            $this->getConnection()->query(<<<SQL
+    RENAME TABLE `{$oldTable}` TO `{$newTable}`
+SQL
+            );
+            return true;
+        }
+
+        return false;
     }
 
     //########################################

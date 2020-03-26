@@ -117,11 +117,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Grid extends Mage_Adminhtml_Block
 
         // Prepare return collection
         // ---------------------------------------
-        $collectionReturn = Mage::getModel('M2ePro/Ebay_Template_Return')->getCollection();
+        $collectionReturn = Mage::getModel('M2ePro/Ebay_Template_ReturnPolicy')->getCollection();
         $collectionReturn->getSelect()->reset(Varien_Db_Select::COLUMNS);
         $collectionReturn->getSelect()->columns(
             array('id as template_id', 'title', 'marketplace_id as marketplace',
-                new Zend_Db_Expr('\''.Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_RETURN.'\' as `nick`'),
+                new Zend_Db_Expr('\''.Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_RETURN_POLICY . '\' as `nick`'),
                 'create_date', 'update_date')
         );
         $collectionReturn->addFieldToFilter('is_custom_template', 0);
@@ -174,15 +174,15 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Grid extends Mage_Adminhtml_Block
         );
 
         $options = array(
-            Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_PAYMENT => Mage::helper('M2ePro')->__('Payment'),
-            Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SHIPPING => Mage::helper('M2ePro')->__('Shipping'),
-            Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_RETURN => Mage::helper('M2ePro')->__('Return'),
+            Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_PAYMENT       => Mage::helper('M2ePro')->__('Payment'),
+            Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SHIPPING      => Mage::helper('M2ePro')->__('Shipping'),
+            Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_RETURN_POLICY => Mage::helper('M2ePro')->__('Return'),
             Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SELLING_FORMAT
-                => Mage::helper('M2ePro')->__('Selling'),
+                                                                           => Mage::helper('M2ePro')->__('Selling'),
             Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_DESCRIPTION
-                => Mage::helper('M2ePro')->__('Description'),
+                                                                           => Mage::helper('M2ePro')->__('Description'),
             Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SYNCHRONIZATION
-                => Mage::helper('M2ePro')->__('Synchronization')
+                                                                           => Mage::helper('M2ePro')->__('Synchronization')
         );
         $this->addColumn(
             'nick', array(
@@ -199,7 +199,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Grid extends Mage_Adminhtml_Block
 
         $this->addColumn(
             'marketplace', array(
-            'header'        => Mage::helper('M2ePro')->__('eBay Site'),
+            'header'        => Mage::helper('M2ePro')->__('Marketplace'),
             'align'         => 'left',
             'type'          => 'options',
             'width'         => '100px',

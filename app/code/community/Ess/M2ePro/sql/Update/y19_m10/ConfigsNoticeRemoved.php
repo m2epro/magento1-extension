@@ -6,15 +6,6 @@ class Ess_M2ePro_Sql_Update_y19_m10_ConfigsNoticeRemoved extends Ess_M2ePro_Mode
 {
     //########################################
 
-    public function getBackupTables()
-    {
-        return array(
-            'config',
-            'primary_config',
-            'cache_config'
-        );
-    }
-
     public function execute()
     {
         $this->_installer->getTableModifier('config')->dropColumn('notice');

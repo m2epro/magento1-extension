@@ -122,19 +122,15 @@
     /** @var Ess_M2ePro_Helper_Magento_Attribute $magentoAttributeHelper */
     $magentoAttributeHelper = Mage::helper('M2ePro/Magento_Attribute');
     
-    $generalAttributesByInputTypes = array(
-        'text' => $magentoAttributeHelper->filterByInputTypes($this->getData('general_attributes'), array('text')),
-        'text_select' => $magentoAttributeHelper->filterByInputTypes($this->getData('general_attributes'), array('text', 'select')),
-        'text_weight' => $magentoAttributeHelper->filterByInputTypes($this->getData('general_attributes'), array('text', 'weight')),
+    $attributesByInputTypes = array(
+        'text' => $magentoAttributeHelper->filterByInputTypes($this->getData('all_attributes'), array('text')),
+        'text_select' => $magentoAttributeHelper->filterByInputTypes($this->getData('all_attributes'), array('text', 'select')),
+        'text_weight' => $magentoAttributeHelper->filterByInputTypes($this->getData('all_attributes'), array('text', 'weight')),
         'text_images' => $magentoAttributeHelper->filterByInputTypes(
-            $this->getData('general_attributes'),
+            $this->getData('all_attributes'),
             array('text', 'image', 'media_image', 'gallery', 'multiline', 'textarea', 'select', 'multiselect')
         ),
-        'text_price' => $magentoAttributeHelper->filterByInputTypes($this->getData('general_attributes'), array('text', 'price')),
-    );
-    
-    $allAttributesByInputTypes = array(
-        'text_select' => $magentoAttributeHelper->filterByInputTypes($this->getData('all_attributes'), array('text', 'select')),
+        'text_price' => $magentoAttributeHelper->filterByInputTypes($this->getData('all_attributes'), array('text', 'price')),
     );
 ?>
 
@@ -371,7 +367,7 @@
                     <td class="value">
                         <span id="select_attributes_for_title_span" class="select-wrapper">
                              <select id="select_attributes_for_title" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,select" apply_to_all_attribute_sets="0" style="width: 150px;">
-                                 <?php foreach($allAttributesByInputTypes['text_select'] as $attribute) : ?>
+                                 <?php foreach($attributesByInputTypes['text_select'] as $attribute) : ?>
                                      <option value="<?php echo $attribute['code']; ?>">
                                          <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
                                      </option>
@@ -399,8 +395,8 @@
                             <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::BRAND_MODE_CUSTOM_VALUE; ?>" <?php if ($formData['brand_mode'] == Ess_M2ePro_Model_Walmart_Template_Description::BRAND_MODE_CUSTOM_VALUE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Custom Value'); ?></option>
 
                             <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
-                                <?php echo $this->getForceAddedAttributeOptionHtml($formData['brand_custom_attribute'], $generalAttributesByInputTypes['text_select'], Ess_M2ePro_Model_Walmart_Template_Description::BRAND_MODE_CUSTOM_ATTRIBUTE); ?>
-                                <?php foreach($generalAttributesByInputTypes['text_select'] as $attribute) : ?>
+                                <?php echo $this->getForceAddedAttributeOptionHtml($formData['brand_custom_attribute'], $attributesByInputTypes['text_select'], Ess_M2ePro_Model_Walmart_Template_Description::BRAND_MODE_CUSTOM_ATTRIBUTE); ?>
+                                <?php foreach($attributesByInputTypes['text_select'] as $attribute) : ?>
                                     <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::BRAND_MODE_CUSTOM_ATTRIBUTE; ?>" <?php if ($attribute['code'] == $formData['brand_custom_attribute']): ?>selected="selected"<?php endif; ?>>
                                         <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
                                     </option>
@@ -434,8 +430,8 @@
                             <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::MANUFACTURER_MODE_CUSTOM_VALUE; ?>" <?php if ($formData['manufacturer_mode'] == Ess_M2ePro_Model_Walmart_Template_Description::MANUFACTURER_MODE_CUSTOM_VALUE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Custom Value'); ?></option>
 
                             <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
-                                <?php echo $this->getForceAddedAttributeOptionHtml($formData['manufacturer_custom_attribute'], $generalAttributesByInputTypes['text_select'], Ess_M2ePro_Model_Walmart_Template_Description::MANUFACTURER_MODE_CUSTOM_ATTRIBUTE); ?>
-                                <?php foreach($generalAttributesByInputTypes['text_select'] as $attribute) : ?>
+                                <?php echo $this->getForceAddedAttributeOptionHtml($formData['manufacturer_custom_attribute'], $attributesByInputTypes['text_select'], Ess_M2ePro_Model_Walmart_Template_Description::MANUFACTURER_MODE_CUSTOM_ATTRIBUTE); ?>
+                                <?php foreach($attributesByInputTypes['text_select'] as $attribute) : ?>
                                     <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::MANUFACTURER_MODE_CUSTOM_ATTRIBUTE; ?>" <?php if ($attribute['code'] == $formData['manufacturer_custom_attribute']): ?>selected="selected"<?php endif; ?>>
                                         <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
                                     </option>
@@ -469,8 +465,8 @@
                             <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::MANUFACTURER_PART_NUMBER_MODE_CUSTOM_VALUE; ?>" <?php if ($formData['manufacturer_part_number_mode'] == Ess_M2ePro_Model_Walmart_Template_Description::MANUFACTURER_PART_NUMBER_MODE_CUSTOM_VALUE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Custom Value'); ?></option>
 
                             <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
-                                <?php echo $this->getForceAddedAttributeOptionHtml($formData['manufacturer_part_number_custom_attribute'], $generalAttributesByInputTypes['text'], Ess_M2ePro_Model_Walmart_Template_Description::MANUFACTURER_PART_NUMBER_MODE_CUSTOM_ATTRIBUTE); ?>
-                                <?php foreach($generalAttributesByInputTypes['text'] as $attribute) : ?>
+                                <?php echo $this->getForceAddedAttributeOptionHtml($formData['manufacturer_part_number_custom_attribute'], $attributesByInputTypes['text'], Ess_M2ePro_Model_Walmart_Template_Description::MANUFACTURER_PART_NUMBER_MODE_CUSTOM_ATTRIBUTE); ?>
+                                <?php foreach($attributesByInputTypes['text'] as $attribute) : ?>
                                     <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::MANUFACTURER_PART_NUMBER_MODE_CUSTOM_ATTRIBUTE; ?>" <?php if ($attribute['code'] == $formData['manufacturer_part_number_custom_attribute']): ?>selected="selected"<?php endif; ?>>
                                         <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
                                     </option>
@@ -504,8 +500,8 @@
                             <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::MODEL_NUMBER_MODE_CUSTOM_VALUE; ?>" <?php if ($formData['model_number_mode'] == Ess_M2ePro_Model_Walmart_Template_Description::MODEL_NUMBER_MODE_CUSTOM_VALUE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Custom Value'); ?></option>
 
                             <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
-                                <?php echo $this->getForceAddedAttributeOptionHtml($formData['model_number_custom_attribute'], $generalAttributesByInputTypes['text_select'], Ess_M2ePro_Model_Walmart_Template_Description::MODEL_NUMBER_MODE_CUSTOM_ATTRIBUTE); ?>
-                                <?php foreach($generalAttributesByInputTypes['text_select'] as $attribute) : ?>
+                                <?php echo $this->getForceAddedAttributeOptionHtml($formData['model_number_custom_attribute'], $attributesByInputTypes['text_select'], Ess_M2ePro_Model_Walmart_Template_Description::MODEL_NUMBER_MODE_CUSTOM_ATTRIBUTE); ?>
+                                <?php foreach($attributesByInputTypes['text_select'] as $attribute) : ?>
                                     <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::MODEL_NUMBER_MODE_CUSTOM_ATTRIBUTE; ?>" <?php if ($attribute['code'] == $formData['model_number_custom_attribute']): ?>selected="selected"<?php endif; ?>>
                                         <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
                                     </option>
@@ -555,8 +551,8 @@
                             <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::MSRP_RRP_MODE_NONE; ?>" <?php if ($formData['msrp_rrp_mode'] == Ess_M2ePro_Model_Walmart_Template_Description::MSRP_RRP_MODE_NONE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('None'); ?></option>
 
                             <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
-                                <?php echo $this->getForceAddedAttributeOptionHtml($formData['msrp_rrp_custom_attribute'], $generalAttributesByInputTypes['text_price'], Ess_M2ePro_Model_Walmart_Template_Description::MSRP_RRP_MODE_ATTRIBUTE); ?>
-                                <?php foreach($generalAttributesByInputTypes['text_price'] as $attribute) : ?>
+                                <?php echo $this->getForceAddedAttributeOptionHtml($formData['msrp_rrp_custom_attribute'], $attributesByInputTypes['text_price'], Ess_M2ePro_Model_Walmart_Template_Description::MSRP_RRP_MODE_ATTRIBUTE); ?>
+                                <?php foreach($attributesByInputTypes['text_price'] as $attribute) : ?>
                                     <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::MSRP_RRP_MODE_ATTRIBUTE; ?>" <?php if ($attribute['code'] == $formData['msrp_rrp_custom_attribute']): ?>selected="selected"<?php endif; ?>>
                                         <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
                                     </option>
@@ -603,8 +599,8 @@
                             <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::IMAGE_MAIN_MODE_PRODUCT; ?>" <?php if ($formData['image_main_mode'] == Ess_M2ePro_Model_Walmart_Template_Description::IMAGE_MAIN_MODE_PRODUCT): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Product Base Image'); ?></option>
 
                             <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
-                                <?php echo $this->getForceAddedAttributeOptionHtml($formData['image_main_attribute'], $generalAttributesByInputTypes['text_images'], Ess_M2ePro_Model_Walmart_Template_Description::IMAGE_MAIN_MODE_ATTRIBUTE); ?>
-                                <?php foreach($generalAttributesByInputTypes['text_images'] as $attribute) : ?>
+                                <?php echo $this->getForceAddedAttributeOptionHtml($formData['image_main_attribute'], $attributesByInputTypes['text_images'], Ess_M2ePro_Model_Walmart_Template_Description::IMAGE_MAIN_MODE_ATTRIBUTE); ?>
+                                <?php foreach($attributesByInputTypes['text_images'] as $attribute) : ?>
                                     <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::IMAGE_MAIN_MODE_ATTRIBUTE; ?>" <?php if ($attribute['code'] == $formData['image_main_attribute']): ?>selected="selected"<?php endif; ?>>
                                         <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
                                     </option>
@@ -642,8 +638,8 @@
                             </optgroup>
 
                             <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
-                                <?php echo $this->getForceAddedAttributeOptionHtml($formData['gallery_images_attribute'], $generalAttributesByInputTypes['text_images'], Ess_M2ePro_Model_Walmart_Template_Description::GALLERY_IMAGES_MODE_ATTRIBUTE); ?>
-                                <?php foreach($generalAttributesByInputTypes['text_images'] as $attribute) : ?>
+                                <?php echo $this->getForceAddedAttributeOptionHtml($formData['gallery_images_attribute'], $attributesByInputTypes['text_images'], Ess_M2ePro_Model_Walmart_Template_Description::GALLERY_IMAGES_MODE_ATTRIBUTE); ?>
+                                <?php foreach($attributesByInputTypes['text_images'] as $attribute) : ?>
                                     <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::GALLERY_IMAGES_MODE_ATTRIBUTE; ?>" <?php if ($attribute['code'] == $formData['gallery_images_attribute']): ?>selected="selected"<?php endif; ?>>
                                         <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
                                     </option>
@@ -673,8 +669,8 @@
                             <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::IMAGE_VARIATION_DIFFERENCE_MODE_PRODUCT; ?>" <?php if ($formData['image_variation_difference_mode'] == Ess_M2ePro_Model_Walmart_Template_Description::IMAGE_VARIATION_DIFFERENCE_MODE_PRODUCT): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Product Base Image'); ?></option>
 
                             <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
-                                <?php echo $this->getForceAddedAttributeOptionHtml($formData['image_variation_difference_attribute'], $generalAttributesByInputTypes['text_images'], Ess_M2ePro_Model_Walmart_Template_Description::IMAGE_VARIATION_DIFFERENCE_MODE_ATTRIBUTE); ?>
-                                <?php foreach($generalAttributesByInputTypes['text_images'] as $attribute) : ?>
+                                <?php echo $this->getForceAddedAttributeOptionHtml($formData['image_variation_difference_attribute'], $attributesByInputTypes['text_images'], Ess_M2ePro_Model_Walmart_Template_Description::IMAGE_VARIATION_DIFFERENCE_MODE_ATTRIBUTE); ?>
+                                <?php foreach($attributesByInputTypes['text_images'] as $attribute) : ?>
                                     <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::IMAGE_VARIATION_DIFFERENCE_MODE_ATTRIBUTE; ?>" <?php if ($attribute['code'] == $formData['image_variation_difference_attribute']): ?>selected="selected"<?php endif; ?>>
                                         <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
                                     </option>
@@ -819,12 +815,12 @@
                             <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::MULTIPACK_QUANTITY_MODE_CUSTOM_VALUE; ?>" <?php if ($formData['multipack_quantity_mode'] == Ess_M2ePro_Model_Walmart_Template_Description::MULTIPACK_QUANTITY_MODE_CUSTOM_VALUE) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('Custom Value') ?></option>
 
                             <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
-                                <?php if ($formData['multipack_quantity_custom_attribute'] != '' && !$magentoAttributeHelper->isExistInAttributesArray($formData['multipack_quantity_custom_attribute'], $generalAttributesByInputTypes['text_select'])) : ?>
+                                <?php if ($formData['multipack_quantity_custom_attribute'] != '' && !$magentoAttributeHelper->isExistInAttributesArray($formData['multipack_quantity_custom_attribute'], $attributesByInputTypes['text_select'])) : ?>
                                     <option attribute_code="<?php echo $formData['multipack_quantity_custom_attribute']; ?>" value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::MULTIPACK_QUANTITY_MODE_CUSTOM_ATTRIBUTE ?>" selected="selected" >
                                         <?php echo Mage::helper('M2ePro')->escapeHtml($magentoAttributeHelper->getAttributeLabel($formData['multipack_quantity_custom_attribute'])); ?>
                                     </option>
                                 <?php endif; ?>
-                                <?php foreach($generalAttributesByInputTypes['text_select'] as $attribute) : ?>
+                                <?php foreach($attributesByInputTypes['text_select'] as $attribute) : ?>
                                     <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::MULTIPACK_QUANTITY_MODE_CUSTOM_ATTRIBUTE ?>" <?php if ($attribute['code'] == $formData['multipack_quantity_custom_attribute']): ?>selected="selected"<?php endif; ?>>
                                         <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
                                     </option>
@@ -861,12 +857,12 @@
                             <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::COUNT_PER_PACK_MODE_CUSTOM_VALUE; ?>" <?php if ($formData['count_per_pack_mode'] == Ess_M2ePro_Model_Walmart_Template_Description::COUNT_PER_PACK_MODE_CUSTOM_VALUE) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('Custom Value') ?></option>
 
                             <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
-                                <?php if ($formData['count_per_pack_custom_attribute'] != '' && !$magentoAttributeHelper->isExistInAttributesArray($formData['count_per_pack_custom_attribute'], $generalAttributesByInputTypes['text_select'])) : ?>
+                                <?php if ($formData['count_per_pack_custom_attribute'] != '' && !$magentoAttributeHelper->isExistInAttributesArray($formData['count_per_pack_custom_attribute'], $attributesByInputTypes['text_select'])) : ?>
                                     <option attribute_code="<?php echo $formData['count_per_pack_custom_attribute']; ?>" value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::COUNT_PER_PACK_MODE_CUSTOM_ATTRIBUTE ?>" selected="selected" >
                                         <?php echo Mage::helper('M2ePro')->escapeHtml($magentoAttributeHelper->getAttributeLabel($formData['count_per_pack_custom_attribute'])); ?>
                                     </option>
                                 <?php endif; ?>
-                                <?php foreach($generalAttributesByInputTypes['text_select'] as $attribute) : ?>
+                                <?php foreach($attributesByInputTypes['text_select'] as $attribute) : ?>
                                     <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::COUNT_PER_PACK_MODE_CUSTOM_ATTRIBUTE ?>" <?php if ($attribute['code'] == $formData['count_per_pack_custom_attribute']): ?>selected="selected"<?php endif; ?>>
                                         <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
                                     </option>
@@ -903,8 +899,8 @@
                             <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::TOTAL_COUNT_MODE_CUSTOM_VALUE; ?>" <?php if ($formData['total_count_mode'] == Ess_M2ePro_Model_Walmart_Template_Description::TOTAL_COUNT_MODE_CUSTOM_VALUE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Custom Value'); ?></option>
 
                             <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
-                                <?php echo $this->getForceAddedAttributeOptionHtml($formData['total_count_custom_attribute'], $generalAttributesByInputTypes['text_select'], Ess_M2ePro_Model_Walmart_Template_Description::TOTAL_COUNT_MODE_CUSTOM_ATTRIBUTE); ?>
-                                <?php foreach($generalAttributesByInputTypes['text_select'] as $attribute) : ?>
+                                <?php echo $this->getForceAddedAttributeOptionHtml($formData['total_count_custom_attribute'], $attributesByInputTypes['text_select'], Ess_M2ePro_Model_Walmart_Template_Description::TOTAL_COUNT_MODE_CUSTOM_ATTRIBUTE); ?>
+                                <?php foreach($attributesByInputTypes['text_select'] as $attribute) : ?>
                                     <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::TOTAL_COUNT_MODE_CUSTOM_ATTRIBUTE; ?>" <?php if ($attribute['code'] == $formData['total_count_custom_attribute']): ?>selected="selected"<?php endif; ?>>
                                         <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
                                     </option>
@@ -978,7 +974,7 @@
                         <td class="value attributes-container-td">
                                 <span id="select_attributes_for_key_features_<?php echo $i; ?>_span" class="select-wrapper">
                                     <select id="select_attributes_for_key_features_<?php echo $i; ?>" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,select" apply_to_all_attribute_sets="0" style="width: 150px;">
-                                        <?php foreach($allAttributesByInputTypes['text_select'] as $attribute) : ?>
+                                        <?php foreach($attributesByInputTypes['text_select'] as $attribute) : ?>
                                             <option value="<?php echo $attribute['code']; ?>">
                                                 <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
                                             </option>
@@ -1040,7 +1036,7 @@
                         <td class="value">
                             <span id="select_attributes_for_other_features_<?php echo $i; ?>_span" class="select-wrapper">
                                 <select id="select_attributes_for_other_features_<?php echo $i; ?>" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,select" apply_to_all_attribute_sets="0" style="width: 150px;">
-                                    <?php foreach($allAttributesByInputTypes['text_select'] as $attribute) : ?>
+                                    <?php foreach($attributesByInputTypes['text_select'] as $attribute) : ?>
                                         <option value="<?php echo $attribute['code']; ?>">
                                             <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
                                         </option>
@@ -1083,8 +1079,8 @@
                             <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::KEYWORDS_MODE_CUSTOM_VALUE; ?>" <?php if ($formData['keywords_mode'] == Ess_M2ePro_Model_Walmart_Template_Description::KEYWORDS_MODE_CUSTOM_VALUE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Custom Value'); ?></option>
 
                             <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
-                                <?php echo $this->getForceAddedAttributeOptionHtml($formData['keywords_custom_attribute'], $generalAttributesByInputTypes['text_select'], Ess_M2ePro_Model_Walmart_Template_Description::KEYWORDS_MODE_CUSTOM_ATTRIBUTE); ?>
-                                <?php foreach($generalAttributesByInputTypes['text_select'] as $attribute) : ?>
+                                <?php echo $this->getForceAddedAttributeOptionHtml($formData['keywords_custom_attribute'], $attributesByInputTypes['text_select'], Ess_M2ePro_Model_Walmart_Template_Description::KEYWORDS_MODE_CUSTOM_ATTRIBUTE); ?>
+                                <?php foreach($attributesByInputTypes['text_select'] as $attribute) : ?>
                                     <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::KEYWORDS_MODE_CUSTOM_ATTRIBUTE; ?>" <?php if ($attribute['code'] == $formData['keywords_custom_attribute']): ?>selected="selected"<?php endif; ?>>
                                         <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
                                     </option>
@@ -1155,7 +1151,7 @@
                         <td class="value">
                             <span id="select_attributes_for_attributes_<?php echo $i; ?>_span" class="select-wrapper">
                                  <select id="select_attributes_for_attributes_<?php echo $i; ?>" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,select" apply_to_all_attribute_sets="0" style="width: 150px;">
-                                     <?php foreach($allAttributesByInputTypes['text_select'] as $attribute) : ?>
+                                     <?php foreach($attributesByInputTypes['text_select'] as $attribute) : ?>
                                          <option value="<?php echo $attribute['code']; ?>">
                                              <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
                                          </option>

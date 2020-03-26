@@ -103,7 +103,8 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Updating
 
             if (($receivedItem['listingStatus'] == self::EBAY_STATUS_COMPLETED ||
                  $receivedItem['listingStatus'] == self::EBAY_STATUS_ENDED) &&
-                 $newData['online_qty'] == $newData['online_qty_sold']) {
+                 $newData['online_qty'] == $newData['online_qty_sold']
+            ) {
                 $newData['status'] = Ess_M2ePro_Model_Listing_Product::STATUS_SOLD;
             } else if ($receivedItem['listingStatus'] == self::EBAY_STATUS_COMPLETED) {
                 $newData['status'] = Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED;
@@ -116,26 +117,11 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Updating
                 $newData['status'] = Ess_M2ePro_Model_Listing_Product::STATUS_LISTED;
             }
 
-            $accountOutOfStockControl = $this->getAccount()->getChildObject()->getOutOfStockControl(true);
-
-            if (isset($receivedItem['out_of_stock'])) {
-                $newData['additional_data'] = array('out_of_stock_control' => (bool)$receivedItem['out_of_stock']);
-                $newData['additional_data'] = Mage::helper('M2ePro')->jsonEncode($newData['additional_data']);
-            } elseif ($newData['status'] == Ess_M2ePro_Model_Listing_Product::STATUS_HIDDEN &&
-                      $accountOutOfStockControl !== null && !$accountOutOfStockControl) {
+            if ($newData['status'] == Ess_M2ePro_Model_Listing_Product::STATUS_HIDDEN) {
                 // Listed Hidden Status can be only for GTC items
                 if (!$existsId || $existObject->getChildObject()->getOnlineDuration() === null) {
                     $newData['online_duration'] = Ess_M2ePro_Helper_Component_Ebay::LISTING_DURATION_GTC;
                 }
-
-                if ($existsId) {
-                    $additionalData = $existObject->getAdditionalData();
-                    empty($additionalData['out_of_stock_control']) && $additionalData['out_of_stock_control'] = true;
-                } else {
-                    $additionalData = array('out_of_stock_control' => true);
-                }
-
-                $newData['additional_data'] = Mage::helper('M2ePro')->jsonEncode($additionalData);
             }
 
             if ($existsId) {

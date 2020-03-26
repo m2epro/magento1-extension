@@ -106,7 +106,7 @@ class ProductActionsUpgrader
         if (!$this->_installer->getTablesObject()->isExists('processing')) {
             $this->_installer->run(<<<SQL
 
-CREATE TABLE `m2epro_processing` (
+CREATE TABLE `{$this->_installer->getTable('m2epro_processing')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `model` VARCHAR(255) NOT NULL,
   `params` LONGTEXT DEFAULT NULL,
@@ -132,7 +132,7 @@ SQL
         if (!$this->_installer->getTablesObject()->isExists('ebay_processing_action')) {
             $this->_installer->run(<<<SQL
 
-CREATE TABLE `m2epro_ebay_processing_action` (
+CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_processing_action')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `account_id` INT(11) UNSIGNED NOT NULL,
   `marketplace_id` INT(11) UNSIGNED NOT NULL,
@@ -165,7 +165,7 @@ SQL
         if (!$this->_installer->getTablesObject()->isExists('amazon_processing_action')) {
             $this->_installer->run(<<<SQL
 
-CREATE TABLE `m2epro_amazon_processing_action` (
+CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_processing_action')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `account_id` INT(11) UNSIGNED NOT NULL,
   `processing_id` INT(11) UNSIGNED NOT NULL,

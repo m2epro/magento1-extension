@@ -107,7 +107,6 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Other_Channel_SynchronizeData_R
                 'title'                 => (string)$receivedItem['title'],
                 'online_price'          => (float)$receivedItem['price'],
                 'online_qty'            => (int)$receivedItem['qty'],
-                'channel_url'           => (string)$receivedItem['item_page_url'],
                 'publish_status'        => (string)$receivedItem['publish_status'],
                 'lifecycle_status'      => (string)$receivedItem['lifecycle_status'],
                 'status_change_reasons' => Mage::helper('M2ePro')->jsonEncode($receivedItem['status_change_reason']),
@@ -127,7 +126,6 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Other_Channel_SynchronizeData_R
                 'title'                 => (string)$existingItem['title'],
                 'online_price'          => (float)$existingItem['online_price'],
                 'online_qty'            => (int)$existingItem['online_qty'],
-                'channel_url'           => (string)$existingItem['channel_url'],
                 'publish_status'        => (string)$existingItem['publish_status'],
                 'lifecycle_status'      => (string)$existingItem['lifecycle_status'],
                 'status_change_reasons' => (string)$existingItem['status_change_reasons'],
@@ -192,7 +190,6 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Other_Channel_SynchronizeData_R
                 'online_price' => (float)$receivedItem['price'],
                 'online_qty'   => (int)$receivedItem['qty'],
 
-                'channel_url'           => (string)$receivedItem['item_page_url'],
                 'publish_status'        => (string)$receivedItem['publish_status'],
                 'lifecycle_status'      => (string)$receivedItem['lifecycle_status'],
                 'status_change_reasons' => Mage::helper('M2ePro')->jsonEncode($receivedItem['status_change_reason']),
@@ -268,7 +265,7 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Other_Channel_SynchronizeData_R
                                  'second_table.sku','second_table.title',
                                  'second_table.online_price','second_table.online_qty',
                                  'second_table.publish_status', 'second_table.lifecycle_status',
-                                 'second_table.status_change_reasons', 'second_table.channel_url',
+                                 'second_table.status_change_reasons',
                                  'second_table.upc', 'second_table.gtin', 'second_table.ean', 'second_table.wpid',
                                  'second_table.item_id', 'second_table.listing_other_id',
                                  'second_table.is_online_price_invalid');

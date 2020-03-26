@@ -84,9 +84,9 @@ class Ess_M2ePro_Observer_Dispatcher
         $this->process('Invoice', $eventObserver);
     }
 
-    public function salesOrderShipmentSaveAfter(Varien_Event_Observer $eventObserver)
+    public function salesShipmentItemSaveAfter(Varien_Event_Observer $eventObserver)
     {
-        $this->process('Shipment', $eventObserver);
+        $this->process('Shipment_Item', $eventObserver);
     }
 
     public function salesOrderShipmentTrackSaveAfter(Varien_Event_Observer $eventObserver)

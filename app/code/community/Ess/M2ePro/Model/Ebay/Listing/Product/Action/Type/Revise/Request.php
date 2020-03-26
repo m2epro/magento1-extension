@@ -62,30 +62,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Revise_Request
 
     //########################################
 
-    protected function insertOutOfStockControl(array $data)
-    {
-        $params = $this->getParams();
-
-        $outOfStockControlCurrentState = $this->getEbayListingProduct()->getOutOfStockControl();
-        $outOfStockControlTemplateState = $this->getEbayListingProduct()
-                                               ->getEbaySellingFormatTemplate()
-                                               ->getOutOfStockControl();
-
-        if ($outOfStockControlCurrentState && !$outOfStockControlTemplateState) {
-            $this->addWarningMessage(
-                'Although the Out of Stock Control option is disabled in Selling Policy settings,
-                for this eBay Item it is remain enabled. Disabling of the Out of Stock Control during the Revise action
-                is not supported by eBay. That is why the Out of Stock Control option will still be enabled for
-                this Item on eBay.'
-            );
-        }
-
-        $data['out_of_stock_control'] = $params['out_of_stock_control_current_state'];
-        $data['out_of_stock_control_result'] = $params['out_of_stock_control_result'];
-
-        return $data;
-    }
-
     protected function processingReplacedAction($data)
     {
         $params = $this->getConfigurator()->getParams();

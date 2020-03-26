@@ -85,7 +85,7 @@ class Ess_M2ePro_Adminhtml_Wizard_EbayProductDetailsController
         $progressManager = Mage::getModel(
             'M2ePro/Lock_Item_Progress', array(
             'lock_item_manager' => $lockItemManager,
-            'progress_nick'     => $marketplace->getTitle() . ' eBay Site',
+            'progress_nick'     => $marketplace->getTitle() . ' Marketplace',
             )
         );
 

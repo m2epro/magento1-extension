@@ -11,8 +11,8 @@ class Ess_M2ePro_Sql_Install_Amazon extends Ess_M2ePro_Model_Upgrade_Feature_Abs
         $this->_installer->run(
             <<<SQL
 
-DROP TABLE IF EXISTS `m2epro_amazon_account`;
-CREATE TABLE `m2epro_amazon_account` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_amazon_account')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_account')}` (
   `account_id` INT(11) UNSIGNED NOT NULL,
   `server_hash` VARCHAR(255) NOT NULL,
   `marketplace_id` INT(11) UNSIGNED NOT NULL,
@@ -32,8 +32,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_amazon_account_repricing`;
-CREATE TABLE `m2epro_amazon_account_repricing` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_amazon_account_repricing')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_account_repricing')}` (
   `account_id` INT(11) UNSIGNED NOT NULL,
   `email` VARCHAR(255) DEFAULT NULL,
   `token` VARCHAR(255) DEFAULT NULL,
@@ -65,16 +65,16 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_amazon_dictionary_category`;
-CREATE TABLE `m2epro_amazon_dictionary_category` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_amazon_dictionary_category')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_dictionary_category')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `marketplace_id` INT(11) UNSIGNED NOT NULL,
   `category_id` INT(11) UNSIGNED NOT NULL,
   `parent_category_id` INT(11) UNSIGNED DEFAULT NULL,
   `browsenode_id` DECIMAL(20, 0) UNSIGNED NOT NULL,
-  `product_data_nicks` VARCHAR(500) DEFAULT NULL,
+  `product_data_nicks` TEXT DEFAULT NULL,
   `title` VARCHAR(255) NOT NULL,
-  `path` VARCHAR(500) DEFAULT NULL,
+  `path` TEXT DEFAULT NULL,
   `keywords` TEXT DEFAULT NULL,
   `is_leaf` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
@@ -82,17 +82,17 @@ CREATE TABLE `m2epro_amazon_dictionary_category` (
   INDEX `category_id` (`category_id`),
   INDEX `is_leaf` (`is_leaf`),
   INDEX `marketplace_id` (`marketplace_id`),
-  INDEX `path` (`path`),
+  INDEX `path` (`path`(500)),
   INDEX `parent_category_id` (`parent_category_id`),
   INDEX `title` (`title`),
-  INDEX `product_data_nicks` (`product_data_nicks`)
+  INDEX `product_data_nicks` (`product_data_nicks`(500))
 )
 ENGINE = MYISAM
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_amazon_dictionary_category_product_data`;
-CREATE TABLE `m2epro_amazon_dictionary_category_product_data` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_amazon_dictionary_category_product_data')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_dictionary_category_product_data')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `marketplace_id` INT(11) UNSIGNED NOT NULL,
   `browsenode_id` INT(11) UNSIGNED NOT NULL,
@@ -109,8 +109,8 @@ ENGINE = MYISAM
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_amazon_dictionary_marketplace`;
-CREATE TABLE `m2epro_amazon_dictionary_marketplace` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_amazon_dictionary_marketplace')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_dictionary_marketplace')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `marketplace_id` INT(11) UNSIGNED NOT NULL,
   `client_details_last_update_date` DATETIME DEFAULT NULL,
@@ -123,8 +123,8 @@ ENGINE = MYISAM
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_amazon_dictionary_specific`;
-CREATE TABLE `m2epro_amazon_dictionary_specific` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_amazon_dictionary_specific')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_dictionary_specific')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `marketplace_id` INT(11) UNSIGNED NOT NULL,
   `specific_id` INT(11) UNSIGNED NOT NULL,
@@ -156,8 +156,8 @@ ENGINE = MYISAM
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_amazon_item`;
-CREATE TABLE `m2epro_amazon_item` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_amazon_item')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_item')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `account_id` INT(11) UNSIGNED NOT NULL,
   `marketplace_id` INT(11) UNSIGNED NOT NULL,
@@ -179,8 +179,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_amazon_listing`;
-CREATE TABLE `m2epro_amazon_listing` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_amazon_listing')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_listing')}` (
   `listing_id` INT(11) UNSIGNED NOT NULL,
   `auto_global_adding_description_template_id` int(11) UNSIGNED DEFAULT NULL,
   `auto_website_adding_description_template_id` int(11) UNSIGNED DEFAULT NULL,
@@ -200,7 +200,7 @@ CREATE TABLE `m2epro_amazon_listing` (
   `condition_value` VARCHAR(255) NOT NULL,
   `condition_custom_attribute` VARCHAR(255) NOT NULL,
   `condition_note_mode` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
-  `condition_note_value` VARCHAR(2000) NOT NULL,
+  `condition_note_value` TEXT NOT NULL,
   `image_main_mode` tinyint(2) UNSIGNED NOT NULL DEFAULT 0,
   `image_main_attribute` varchar(255) NOT NULL,
   `gallery_images_mode` tinyint(2) UNSIGNED NOT NULL,
@@ -227,8 +227,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_amazon_listing_auto_category_group`;
-CREATE TABLE `m2epro_amazon_listing_auto_category_group` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_amazon_listing_auto_category_group')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_listing_auto_category_group')}` (
     `listing_auto_category_group_id` int(11) UNSIGNED NOT NULL,
     `adding_description_template_id` int(11) UNSIGNED DEFAULT NULL,
     PRIMARY KEY (`listing_auto_category_group_id`),
@@ -238,8 +238,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_amazon_listing_other`;
-CREATE TABLE `m2epro_amazon_listing_other` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_amazon_listing_other')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_listing_other')}` (
   `listing_other_id` INT(11) UNSIGNED NOT NULL,
   `general_id` VARCHAR(255) NOT NULL,
   `sku` VARCHAR(255) NOT NULL,
@@ -267,8 +267,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_amazon_listing_product`;
-CREATE TABLE `m2epro_amazon_listing_product` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_amazon_listing_product')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_listing_product')}` (
   `listing_product_id` INT(11) UNSIGNED NOT NULL,
   `template_description_id` INT(11) UNSIGNED DEFAULT NULL,
   `template_shipping_id` INT(11) UNSIGNED DEFAULT NULL,
@@ -296,8 +296,6 @@ CREATE TABLE `m2epro_amazon_listing_product` (
   `online_restock_date` DATETIME DEFAULT NULL,
   `online_details_data` LONGTEXT DEFAULT NULL,
   `online_images_data` LONGTEXT DEFAULT NULL,
-  `is_details_data_changed` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
-  `is_images_data_changed` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `is_repricing` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `is_afn_channel` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `is_isbn_general_id` TINYINT(2) UNSIGNED DEFAULT NULL,
@@ -333,8 +331,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_amazon_listing_product_repricing`;
-CREATE TABLE `m2epro_amazon_listing_product_repricing` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_amazon_listing_product_repricing')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_listing_product_repricing')}` (
   `listing_product_id` INT(11) UNSIGNED NOT NULL,
   `is_online_disabled` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `is_online_inactive` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
@@ -358,8 +356,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_amazon_listing_product_variation`;
-CREATE TABLE `m2epro_amazon_listing_product_variation` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_amazon_listing_product_variation')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_listing_product_variation')}` (
   `listing_product_variation_id` INT(11) UNSIGNED NOT NULL,
   PRIMARY KEY (`listing_product_variation_id`)
 )
@@ -367,8 +365,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_amazon_listing_product_variation_option`;
-CREATE TABLE `m2epro_amazon_listing_product_variation_option` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_amazon_listing_product_variation_option')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_listing_product_variation_option')}` (
   `listing_product_variation_option_id` INT(11) UNSIGNED NOT NULL,
   PRIMARY KEY (`listing_product_variation_option_id`)
 )
@@ -376,8 +374,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_amazon_listing_product_action_processing`;
-CREATE TABLE `m2epro_amazon_listing_product_action_processing` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_amazon_listing_product_action_processing')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_listing_product_action_processing')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `processing_id` INT(11) UNSIGNED NOT NULL,
   `request_pending_single_id` INT(11) UNSIGNED DEFAULT NULL,
@@ -400,8 +398,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_amazon_listing_product_action_processing_list_sku`;
-CREATE TABLE `m2epro_amazon_listing_product_action_processing_list_sku` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_amazon_listing_product_action_processing_list_sku')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_listing_product_action_processing_list_sku')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `account_id` INT(11) UNSIGNED NOT NULL,
   `sku` VARCHAR(255) NOT NULL,
@@ -413,8 +411,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_amazon_indexer_listing_product_parent`;
-CREATE TABLE `m2epro_amazon_indexer_listing_product_parent` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_amazon_listing_product_indexer_variation_parent')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_listing_product_indexer_variation_parent')}` (
     `listing_product_id` INT(11) UNSIGNED NOT NULL,
     `listing_id` INT(11) UNSIGNED NOT NULL,
     `min_regular_price` DECIMAL(12, 4) UNSIGNED DEFAULT NULL,
@@ -429,8 +427,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_amazon_marketplace`;
-CREATE TABLE `m2epro_amazon_marketplace` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_amazon_marketplace')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_marketplace')}` (
   `marketplace_id` INT(11) UNSIGNED NOT NULL,
   `developer_key` VARCHAR(255) DEFAULT NULL,
   `default_currency` VARCHAR(255) NOT NULL,
@@ -445,14 +443,15 @@ CREATE TABLE `m2epro_amazon_marketplace` (
   INDEX `is_merchant_fulfillment_available` (`is_merchant_fulfillment_available`),
   INDEX `is_business_available` (`is_business_available`),
   INDEX `is_vat_calculation_service_available` (`is_vat_calculation_service_available`),
-  INDEX `is_product_tax_code_policy_available` (`is_product_tax_code_policy_available`)
+  INDEX `is_product_tax_code_policy_available` (`is_product_tax_code_policy_available`),
+  INDEX `is_automatic_token_retrieving_available` (`is_automatic_token_retrieving_available`)
 )
 ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_amazon_order`;
-CREATE TABLE `m2epro_amazon_order` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_amazon_order')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_order')}` (
   `order_id` INT(11) UNSIGNED NOT NULL,
   `amazon_order_id` VARCHAR(255) NOT NULL,
   `seller_order_id` varchar(255) DEFAULT NULL,
@@ -490,8 +489,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_amazon_order_item`;
-CREATE TABLE `m2epro_amazon_order_item` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_amazon_order_item')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_order_item')}` (
   `order_item_id` INT(11) UNSIGNED NOT NULL,
   `amazon_order_item_id` VARCHAR(255) NOT NULL,
   `title` VARCHAR(255) NOT NULL,
@@ -500,12 +499,13 @@ CREATE TABLE `m2epro_amazon_order_item` (
   `is_isbn_general_id` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `price` DECIMAL(12, 4) UNSIGNED NOT NULL,
   `gift_price` DECIMAL(12, 4) UNSIGNED NOT NULL DEFAULT 0.0000,
-  `gift_message` VARCHAR(500) DEFAULT NULL,
+  `gift_message` TEXT DEFAULT NULL,
   `gift_type` VARCHAR(255) DEFAULT NULL,
   `tax_details` TEXT DEFAULT NULL,
   `discount_details` TEXT DEFAULT NULL,
   `currency` VARCHAR(10) NOT NULL,
   `qty_purchased` INT(11) UNSIGNED NOT NULL DEFAULT 0,
+  `fulfillment_center_id` VARCHAR(10) DEFAULT NULL,
   PRIMARY KEY (`order_item_id`),
   INDEX `general_id` (`general_id`),
   INDEX `sku` (`sku`),
@@ -515,8 +515,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_amazon_order_action_processing`;
-CREATE TABLE `m2epro_amazon_order_action_processing` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_amazon_order_action_processing')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_order_action_processing')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `order_id` INT(11) UNSIGNED DEFAULT NULL,
   `processing_id` INT(11) UNSIGNED NOT NULL,
@@ -535,8 +535,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_amazon_template_shipping`;
-CREATE TABLE `m2epro_amazon_template_shipping` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_amazon_template_shipping')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_template_shipping')}` (
     `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
     `title` varchar(255) NOT NULL,
     `template_name_mode` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
@@ -551,8 +551,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_amazon_template_product_tax_code`;
-CREATE TABLE `m2epro_amazon_template_product_tax_code` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_amazon_template_product_tax_code')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_template_product_tax_code')}` (
     `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
     `title` VARCHAR(255) NOT NULL,
     `product_tax_code_mode` TINYINT(2) NOT NULL,
@@ -567,8 +567,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_amazon_template_description`;
-CREATE TABLE `m2epro_amazon_template_description` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_amazon_template_description')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_template_description')}` (
   `template_description_id` INT(11) UNSIGNED NOT NULL,
   `marketplace_id` INT(11) UNSIGNED NOT NULL,
   `is_new_asin_accepted` TINYINT(2) UNSIGNED DEFAULT 0,
@@ -588,8 +588,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_amazon_template_description_definition`;
-CREATE TABLE `m2epro_amazon_template_description_definition` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_amazon_template_description_definition')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_template_description_definition')}` (
   `template_description_id` INT(11) UNSIGNED NOT NULL,
   `title_mode` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `title_template` VARCHAR(255) NOT NULL,
@@ -671,8 +671,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_amazon_template_description_specific`;
-CREATE TABLE `m2epro_amazon_template_description_specific` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_amazon_template_description_specific')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_template_description_specific')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `template_description_id` INT(11) UNSIGNED NOT NULL,
   `xpath` VARCHAR(255) NOT NULL,
@@ -692,8 +692,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_amazon_template_selling_format`;
-CREATE TABLE `m2epro_amazon_template_selling_format` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_amazon_template_selling_format')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_template_selling_format')}` (
   `template_selling_format_id` INT(11) UNSIGNED NOT NULL,
   `qty_mode` TINYINT(2) UNSIGNED NOT NULL,
   `qty_custom_value` INT(11) UNSIGNED NOT NULL,
@@ -734,8 +734,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_amazon_template_selling_format_business_discount`;
-CREATE TABLE `m2epro_amazon_template_selling_format_business_discount` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_amazon_template_selling_format_business_discount')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_template_selling_format_business_discount')}` (
     `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
     `template_selling_format_id` INT(11) UNSIGNED NOT NULL,
     `qty` INT(11) UNSIGNED NOT NULL,
@@ -749,8 +749,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_amazon_template_synchronization`;
-CREATE TABLE `m2epro_amazon_template_synchronization` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_amazon_template_synchronization')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_template_synchronization')}` (
   `template_synchronization_id` INT(11) UNSIGNED NOT NULL,
   `list_mode` TINYINT(2) UNSIGNED NOT NULL,
   `list_status_enabled` TINYINT(2) UNSIGNED NOT NULL,
@@ -769,6 +769,8 @@ CREATE TABLE `m2epro_amazon_template_synchronization` (
   `revise_update_price` TINYINT(2) UNSIGNED NOT NULL,
   `revise_update_price_max_allowed_deviation_mode` TINYINT(2) UNSIGNED NOT NULL,
   `revise_update_price_max_allowed_deviation` INT(11) UNSIGNED DEFAULT NULL,
+  `revise_update_details` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
+  `revise_update_images` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `relist_mode` TINYINT(2) UNSIGNED NOT NULL,
   `relist_filter_user_lock` TINYINT(2) UNSIGNED NOT NULL,
   `relist_status_enabled` TINYINT(2) UNSIGNED NOT NULL,
@@ -804,71 +806,48 @@ SQL
         $this->_installer->run(
             <<<SQL
 
-INSERT INTO `m2epro_config` (`group`,`key`,`value`,`update_date`,`create_date`) VALUES
+INSERT INTO `{$this->_installer->getTable('m2epro_config')}` (`group`,`key`,`value`,`update_date`,`create_date`) VALUES
   ('/amazon/', 'application_name', 'M2ePro - Amazon Magento Integration', NOW(), NOW()),
   ('/component/amazon/', 'mode', '1', NOW(), NOW()),
+  ('/cron/task/amazon/listing/product/process_instructions/', 'mode', '1', NOW(), NOW()),
   ('/listing/product/inspector/amazon/', 'max_allowed_instructions_count', '2000', NOW(), NOW()),
-  ('/listing/product/revise/total/amazon/', 'mode', '0', NOW(), NOW()),
-  ('/listing/product/revise/total/amazon/', 'max_allowed_instructions_count', '2000', NOW(), NOW()),
   ('/amazon/listing/product/instructions/cron/', 'listings_products_per_one_time', '1000', NOW(), NOW()),
   ('/amazon/listing/product/action/scheduled_data/', 'limit', '20000', NOW(), NOW()),
   ('/amazon/listing/product/action/processing/prepare/', 'max_listings_products_count', '2000', NOW(), NOW()),
-  ('/amazon/listing/product/action/list/', 'priority_coefficient', '25', NOW(), NOW()),
-  ('/amazon/listing/product/action/list/', 'wait_increase_coefficient', '100', NOW(), NOW()),
   ('/amazon/listing/product/action/list/', 'min_allowed_wait_interval', '3600', NOW(), NOW()),
-  ('/amazon/listing/product/action/relist/', 'priority_coefficient', '125', NOW(), NOW()),
-  ('/amazon/listing/product/action/relist/', 'wait_increase_coefficient', '100', NOW(), NOW()),
   ('/amazon/listing/product/action/relist/', 'min_allowed_wait_interval', '1800', NOW(), NOW()),
-  ('/amazon/listing/product/action/revise_qty/', 'priority_coefficient', '500', NOW(), NOW()),
-  ('/amazon/listing/product/action/revise_qty/', 'wait_increase_coefficient', '100', NOW(), NOW()),
   ('/amazon/listing/product/action/revise_qty/', 'min_allowed_wait_interval', '900', NOW(), NOW()),
-  ('/amazon/listing/product/action/revise_price/', 'priority_coefficient', '250', NOW(), NOW()),
-  ('/amazon/listing/product/action/revise_price/', 'wait_increase_coefficient', '100', NOW(), NOW()),
   ('/amazon/listing/product/action/revise_price/', 'min_allowed_wait_interval', '1800', NOW(), NOW()),
-  ('/amazon/listing/product/action/revise_details/', 'priority_coefficient', '50', NOW(), NOW()),
-  ('/amazon/listing/product/action/revise_details/', 'wait_increase_coefficient', '100', NOW(), NOW()),
   ('/amazon/listing/product/action/revise_details/', 'min_allowed_wait_interval', '7200', NOW(), NOW()),
-  ('/amazon/listing/product/action/revise_images/', 'priority_coefficient', '50', NOW(), NOW()),
-  ('/amazon/listing/product/action/revise_images/', 'wait_increase_coefficient', '100', NOW(), NOW()),
   ('/amazon/listing/product/action/revise_images/', 'min_allowed_wait_interval', '7200', NOW(), NOW()),
-  ('/amazon/listing/product/action/stop/', 'priority_coefficient', '1000', NOW(), NOW()),
-  ('/amazon/listing/product/action/stop/', 'wait_increase_coefficient', '100', NOW(), NOW()),
   ('/amazon/listing/product/action/stop/', 'min_allowed_wait_interval', '600', NOW(), NOW()),
-  ('/amazon/listing/product/action/delete/', 'priority_coefficient', '1000', NOW(), NOW()),
-  ('/amazon/listing/product/action/delete/', 'wait_increase_coefficient', '100', NOW(), NOW()),
   ('/amazon/listing/product/action/delete/', 'min_allowed_wait_interval', '600', NOW(), NOW()),
   ('/amazon/order/settings/marketplace_25/', 'use_first_street_line_as_company', '1', NOW(), NOW()),
   ('/amazon/repricing/', 'mode', '1', NOW(), NOW()),
   ('/amazon/repricing/', 'base_url', 'https://repricer.m2epro.com/connector/m2epro/', NOW(), NOW()),
   ('/amazon/business/', 'mode', '0', NOW(), NOW());
 
-INSERT INTO `m2epro_marketplace` VALUES
+INSERT INTO `{$this->_installer->getTable('m2epro_marketplace')}` VALUES
   (24, 4, 'Canada', 'CA', 'amazon.ca', 0, 4, 'America', 'amazon', NOW(), NOW()),
   (25, 3, 'Germany', 'DE', 'amazon.de', 0, 3, 'Europe', 'amazon', NOW(), NOW()),
   (26, 5, 'France', 'FR', 'amazon.fr', 0, 7, 'Europe', 'amazon', NOW(), NOW()),
-  (27, 6, 'Japan', 'JP', 'amazon.co.jp', 0, 6, 'Asia / Pacific', 'amazon', NOW(), NOW()),
   (28, 2, 'United Kingdom', 'UK', 'amazon.co.uk', 0, 2, 'Europe', 'amazon', NOW(), NOW()),
   (29, 1, 'United States', 'US', 'amazon.com', 0, 1, 'America', 'amazon', NOW(), NOW()),
   (30, 7, 'Spain', 'ES', 'amazon.es', 0, 8, 'Europe', 'amazon', NOW(), NOW()),
   (31, 8, 'Italy', 'IT', 'amazon.it', 0, 5, 'Europe', 'amazon', NOW(), NOW()),
-  (32, 9, 'China', 'CN', 'amazon.cn', 0, 9, 'Asia / Pacific', 'amazon', NOW(), NOW()),
   (34, 9, 'Mexico', 'MX', 'amazon.com.mx', 0, 10, 'America', 'amazon', NOW(), NOW()),
-  (35, 10, 'Australia', 'AU', 'amazon.com.au', 0, 11, 'Australia Region', 'amazon', NOW(), NOW()),
-  (36, 0, 'India', 'IN', 'amazon.in', 0, 12, 'Asia / Pacific', 'amazon', NOW(), NOW());
+  (35, 10, 'Australia', 'AU', 'amazon.com.au', 0, 11, 'Australia Region', 'amazon', NOW(), NOW());
 
-INSERT INTO `m2epro_amazon_marketplace` VALUES
+INSERT INTO `{$this->_installer->getTable('m2epro_amazon_marketplace')}` VALUES
   (24, '8636-1433-4377', 'CAD',1,0,0,0,0,1),
   (25, '7078-7205-1944', 'EUR',1,1,1,1,1,1),
   (26, '7078-7205-1944', 'EUR',1,0,1,1,1,1),
-  (27, NULL, '',0,0,0,0,0,0),
   (28, '7078-7205-1944', 'GBP',1,1,1,1,1,1),
   (29, '8636-1433-4377', 'USD',1,1,1,0,0,1),
   (30, '7078-7205-1944', 'EUR',1,0,1,1,1,1),
   (31, '7078-7205-1944', 'EUR',1,0,1,1,1,1),
-  (32, NULL, '',0,0,0,0,0,0),
   (34, '8636-1433-4377', 'MXN',1,0,0,0,0,1),
-  (35, '2770-5005-3793', 'AUD',1,0,0,0,0,1),
-  (36, NULL, '',0,0,0,0,0,0);
+  (35, '2770-5005-3793', 'AUD',1,0,0,0,0,1);
 
 SQL
         );

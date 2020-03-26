@@ -11,13 +11,14 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Receive_Details
 {
     const NICK = 'amazon/order/receive/details';
 
-    /**
-     * @var int (in seconds)
-     */
+    /** @var int $_interval (in seconds) */
     protected $_interval = 7200;
 
     //####################################
 
+    /**
+     * {@inheritDoc}
+     */
     public function isPossibleToRun()
     {
         if (Mage::helper('M2ePro/Server_Maintenance')->isNow()) {
@@ -44,6 +45,10 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Receive_Details
 
     //########################################
 
+    /**
+     * {@inheritDoc}
+     * @throws Ess_M2ePro_Model_Exception
+     */
     protected function performActions()
     {
         $permittedAccounts = $this->getPermittedAccounts();
@@ -52,8 +57,6 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Receive_Details
         }
 
         foreach ($permittedAccounts as $account) {
-
-            /** @var Ess_M2ePro_Model_Account $account */
 
             // ---------------------------------------
             $this->getOperationHistory()->addText('Starting account "'.$account->getTitle().'"');
@@ -90,33 +93,45 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Receive_Details
 
     //########################################
 
+    /**
+     * @return Ess_M2ePro_Model_Account[]
+     */
     protected function getPermittedAccounts()
     {
-        /** @var $accountsCollection Mage_Core_Model_Resource_Db_Collection_Abstract */
+        /** @var Mage_Core_Model_Resource_Db_Collection_Abstract $accountsCollection */
         $accountsCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Account');
         return $accountsCollection->getItems();
     }
 
     // ---------------------------------------
 
+    /**
+     * @param Ess_M2ePro_Model_Account $account
+     *
+     * @throws Exception
+     */
     protected function processAccount(Ess_M2ePro_Model_Account $account)
     {
-        $from = new \DateTime('now', new \DateTimeZone('UTC'));;
-        $from->modify('- 5 days');
+        $from = new \DateTime('now', new \DateTimeZone('UTC'));
+        $from->modify('-5 days');
 
         /** @var Ess_M2ePro_Model_Resource_Order_Collection $orderCollection */
         $orderCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Order');
+        $orderCollection->getSelect()->joinLeft(
+            array('oi' => Mage::getResourceModel('M2ePro/Order_Item')->getMainTable()),
+            'main_table.id = oi.order_id'
+        );
+        $orderCollection->getSelect()->joinLeft(
+            array('aoi' => Mage::getResourceModel('M2ePro/Amazon_Order_Item')->getMainTable()),
+            'oi.id = aoi.order_item_id'
+        );
+        $orderCollection->addFieldToFilter('aoi.fulfillment_center_id', array('null' => true));
         $orderCollection->addFieldToFilter('account_id', $account->getId());
         $orderCollection->addFieldToFilter('is_afn_channel', 1);
         $orderCollection->addFieldToFilter('status', array('neq' => Ess_M2ePro_Model_Amazon_Order::STATUS_PENDING));
-        $orderCollection->addFieldToFilter('create_date', array('gt' => $from->format('Y-m-d H:i:s')));
-        $orderCollection->addFieldToFilter(
-            array('additional_data', 'additional_data'),
-            array(
-                array('additional_data', 'null' => true),
-                array('additional_data', 'nlike' => '%fulfillment_details%')
-            )
-        );
+        $orderCollection->addFieldToFilter('main_table.create_date', array('gt' => $from->format('Y-m-d H:i:s')));
+        $orderCollection->getSelect()->reset(Zend_Db_Select::COLUMNS);
+        $orderCollection->getSelect()->columns('second_table.amazon_order_id');
 
         $amazonOrdersIds = $orderCollection->getColumnValues('amazon_order_id');
         if (empty($amazonOrdersIds)) {
@@ -125,7 +140,9 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Receive_Details
 
         $dispatcherObject = Mage::getModel('M2ePro/Amazon_Connector_Dispatcher');
         $connectorObj = $dispatcherObject->getCustomConnector(
-            'Cron_Task_Amazon_Order_Receive_Details_Requester', array('items' => $amazonOrdersIds), $account
+            'Cron_Task_Amazon_Order_Receive_Details_Requester',
+            array('items' => $amazonOrdersIds),
+            $account
         );
         $dispatcherObject->process($connectorObj);
     }

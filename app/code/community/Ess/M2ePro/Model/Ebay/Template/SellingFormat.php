@@ -261,16 +261,6 @@ class Ess_M2ePro_Model_Ebay_Template_SellingFormat extends Ess_M2ePro_Model_Comp
     /**
      * @return bool
      */
-    public function getOutOfStockControl()
-    {
-        return (bool)$this->getData('out_of_stock_control');
-    }
-
-    // ---------------------------------------
-
-    /**
-     * @return bool
-     */
     public function isPrivateListing()
     {
         return (bool)$this->getData('listing_is_private');
@@ -1356,7 +1346,8 @@ class Ess_M2ePro_Model_Ebay_Template_SellingFormat extends Ess_M2ePro_Model_Comp
 
     public function getCharity()
     {
-        if ($this->getData('charity') === null) {
+        $charity = $this->getData('charity');
+        if (empty($charity)) {
             return null;
         }
 
@@ -1389,8 +1380,6 @@ class Ess_M2ePro_Model_Ebay_Template_SellingFormat extends Ess_M2ePro_Model_Comp
 
             'duration_mode' => 3,
             'duration_attribute' => '',
-
-            'out_of_stock_control' => 1,
 
             'qty_mode' => Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_PRODUCT,
             'qty_custom_value' => 1,

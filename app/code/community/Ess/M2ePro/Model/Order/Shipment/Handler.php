@@ -19,35 +19,86 @@ abstract class Ess_M2ePro_Model_Order_Shipment_Handler
 
     //########################################
 
-    abstract public function handle(Ess_M2ePro_Model_Order $order, Mage_Sales_Model_Order_Shipment $shipment);
-
-    //########################################
-
-    public static function factory($component)
+    /**
+     * @param Ess_M2ePro_Model_Order $order
+     * @param Mage_Sales_Model_Order_Shipment $shipment
+     * @return int
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
+    public function handle(Ess_M2ePro_Model_Order $order, Mage_Sales_Model_Order_Shipment $shipment)
     {
-        $handler = null;
-
-        switch ($component) {
-            case Ess_M2ePro_Helper_Component_Amazon::NICK:
-                $handler = Mage::getModel('M2ePro/Amazon_Order_Shipment_Handler');
-                break;
-            case Ess_M2ePro_Helper_Component_Ebay::NICK:
-                $handler = Mage::getModel('M2ePro/Ebay_Order_Shipment_Handler');
-                break;
-            case Ess_M2ePro_Helper_Component_Walmart::NICK:
-                $handler = Mage::getModel('M2ePro/Walmart_Order_Shipment_Handler');
-                break;
+        $trackingDetails = $this->getTrackingDetails($order, $shipment);
+        if (!$this->isNeedToHandle($order, $trackingDetails)) {
+            return self::HANDLE_RESULT_SKIPPED;
         }
 
-        if (!$handler) {
-            throw new Ess_M2ePro_Model_Exception_Logic('Shipment handler not found.');
-        }
-
-        return $handler;
+        return $this->processStatusUpdates($order, $trackingDetails, $this->getItemsToShip($order, $shipment))
+            ? self::HANDLE_RESULT_SUCCEEDED
+            : self::HANDLE_RESULT_FAILED;
     }
 
+    /**
+     * @param Ess_M2ePro_Model_Order $order
+     * @param Mage_Sales_Model_Order_Shipment_Item $shipmentItem
+     * @return int
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
+    public function handleItem(Ess_M2ePro_Model_Order $order, Mage_Sales_Model_Order_Shipment_Item $shipmentItem)
+    {
+        $trackingDetails = $this->getTrackingDetails($order, $shipmentItem->getShipment());
+        if (!$this->isNeedToHandle($order, $trackingDetails)) {
+            return self::HANDLE_RESULT_SKIPPED;
+        }
+
+        $items = $this->getItemsToShipForShipmentItem($order, $shipmentItem);
+        return $this->processStatusUpdates($order, $trackingDetails, $items)
+            ? self::HANDLE_RESULT_SUCCEEDED
+            : self::HANDLE_RESULT_FAILED;
+    }
+
+    /**
+     * @param Ess_M2ePro_Model_Order $order
+     * @param Mage_Sales_Model_Order_Shipment $shipment
+     * @return array
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
+    protected function getItemsToShip(Ess_M2ePro_Model_Order $order, Mage_Sales_Model_Order_Shipment $shipment)
+    {
+        $itemsToShip = array();
+
+        foreach ($shipment->getAllItems() as $shipmentItem) {
+            /** @var Mage_Sales_Model_Order_Shipment_Item $shipmentItem */
+            $itemsToShip = array_merge($itemsToShip, $this->getItemsToShipForShipmentItem($order, $shipmentItem));
+        }
+
+        return $itemsToShip;
+    }
+
+    /**
+     * @param Ess_M2ePro_Model_Order $order
+     * @param array $trackingDetails
+     * @param array $items
+     * @return bool
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
+    protected function processStatusUpdates(Ess_M2ePro_Model_Order $order, array $trackingDetails, array $items)
+    {
+        return $order->getChildObject()->updateShippingStatus($trackingDetails, $items);
+    }
+
+    abstract protected function getComponentMode();
+    abstract protected function getItemsToShipForShipmentItem(
+        Ess_M2ePro_Model_Order $order,
+        Mage_Sales_Model_Order_Shipment_Item $shipmentItem
+    );
+
     //########################################
 
+    /**
+     * @param Ess_M2ePro_Model_Order $order
+     * @param Mage_Sales_Model_Order_Shipment $shipment
+     * @return array
+     */
     protected function getTrackingDetails(Ess_M2ePro_Model_Order $order, Mage_Sales_Model_Order_Shipment $shipment)
     {
         $track = $shipment->getTracksCollection()->getLastItem();
@@ -70,6 +121,21 @@ abstract class Ess_M2ePro_Model_Order_Shipment_Handler
         }
 
         return $trackingDetails;
+    }
+
+    /**
+     * @param Ess_M2ePro_Model_Order $order
+     * @param array $trackingDetails
+     * @return bool
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
+    protected function isNeedToHandle(Ess_M2ePro_Model_Order $order, array $trackingDetails)
+    {
+        if ($order->getComponentMode() !== $this->getComponentMode()) {
+            throw new InvalidArgumentException('Invalid component mode.');
+        }
+
+        return $order->getChildObject()->canUpdateShippingStatus($trackingDetails);
     }
 
     //########################################

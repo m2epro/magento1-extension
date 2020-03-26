@@ -6,6 +6,8 @@
  * @license    Commercial use is forbidden
  */
 
+use Ess_M2ePro_Helper_Component_Walmart_Configuration as ConfigurationHelper;
+
 abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Validator
 {
     /**
@@ -403,7 +405,7 @@ HTML;
 
     // ---------------------------------------
 
-    protected function validateParentListingProductFlags()
+    protected function validateParentListingProduct()
     {
         if ($this->getListingProduct()->getData('no_child_for_processing')) {
             $this->addMessage('This Parent has no Child Products on which the chosen Action can be performed.');
@@ -620,7 +622,9 @@ HTML;
         $isAtLeastOneSpecified = false;
 
         if ($gtin = $this->getGtin()) {
-            if (!Mage::helper('M2ePro')->isGTIN($gtin)) {
+            if (strtoupper($gtin) !== ConfigurationHelper::PRODUCT_ID_OVERRIDE_CUSTOM_CODE &&
+                !Mage::helper('M2ePro')->isGTIN($gtin)
+            ) {
                 $this->addMessage(
                     Mage::helper('M2ePro/Module_Log')->encodeDescription(
                         'The action cannot be completed because the product GTIN has incorrect format: "%id%".
@@ -636,7 +640,9 @@ HTML;
         }
 
         if ($upc = $this->getUpc()) {
-            if (!Mage::helper('M2ePro')->isUPC($upc)) {
+            if (strtoupper($upc) !== ConfigurationHelper::PRODUCT_ID_OVERRIDE_CUSTOM_CODE &&
+                !Mage::helper('M2ePro')->isUPC($upc)
+            ) {
                 $this->addMessage(
                     Mage::helper('M2ePro/Module_Log')->encodeDescription(
                         'The action cannot be completed because the product UPC has incorrect format: "%id%".
@@ -652,7 +658,9 @@ HTML;
         }
 
         if ($ean = $this->getEan()) {
-            if (!Mage::helper('M2ePro')->isEAN($ean)) {
+            if (strtoupper($ean) !== ConfigurationHelper::PRODUCT_ID_OVERRIDE_CUSTOM_CODE &&
+                !Mage::helper('M2ePro')->isEAN($ean)
+            ) {
                 $this->addMessage(
                     Mage::helper('M2ePro/Module_Log')->encodeDescription(
                         'The action cannot be completed because the product EAN has incorrect format: "%id%".
@@ -668,7 +676,9 @@ HTML;
         }
 
         if ($isbn = $this->getIsbn()) {
-            if (!Mage::helper('M2ePro')->isISBN($isbn)) {
+            if (strtoupper($isbn) !== ConfigurationHelper::PRODUCT_ID_OVERRIDE_CUSTOM_CODE &&
+                !Mage::helper('M2ePro')->isISBN($isbn)
+            ) {
                 $this->addMessage(
                     Mage::helper('M2ePro/Module_Log')->encodeDescription(
                         'The action cannot be completed because the product ISBN has incorrect format: "%id%".

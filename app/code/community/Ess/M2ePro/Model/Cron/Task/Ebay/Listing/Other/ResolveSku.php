@@ -170,12 +170,13 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Other_ResolveSku extends Ess_M2ePr
 
         $inputData = array(
             'since_time'    => $sinceTime,
-            'only_one_page' => true
+            'only_one_page' => true,
+            'realtime'      => true
         );
 
         $dispatcherObj = Mage::getModel('M2ePro/Ebay_Connector_Dispatcher');
         $connectorObj = $dispatcherObj->getVirtualConnector(
-            'item', 'get', 'all',
+            'inventory', 'get', 'items',
             $inputData, null,
             null, $account->getId()
         );

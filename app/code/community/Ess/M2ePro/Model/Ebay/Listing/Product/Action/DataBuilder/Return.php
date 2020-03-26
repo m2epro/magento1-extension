@@ -10,7 +10,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Return
     extends Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Abstract
 {
     /**
-     * @var Ess_M2ePro_Model_Ebay_Template_Return
+     * @var Ess_M2ePro_Model_Ebay_Template_ReturnPolicy
      */
     protected $_returnTemplate = null;
 
@@ -38,7 +38,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Return
     //########################################
 
     /**
-     * @return Ess_M2ePro_Model_Ebay_Template_Return
+     * @return Ess_M2ePro_Model_Ebay_Template_ReturnPolicy
      */
     protected function getReturnTemplate()
     {

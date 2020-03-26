@@ -21,9 +21,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_PickupStore_Edit_Tabs_StockSetting
 
         $this->setTemplate('M2ePro/ebay/account/pickupStore/tabs/stockSettings.phtml');
 
-        $this->attributes = Mage::helper('M2ePro/Magento_Attribute')->getGeneralFromAttributeSets(
-            Mage::helper('M2ePro/Magento_AttributeSet')->getAll(Ess_M2ePro_Helper_Magento_Abstract::RETURN_TYPE_IDS)
-        );
+        $this->attributes = Mage::helper('M2ePro/Magento_Attribute')->getAll();
     }
 
     //########################################

@@ -52,7 +52,6 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_Synchronization
             Ess_M2ePro_PublicServices_Product_SqlChange::INSTRUCTION_TYPE_QTY_CHANGED,
             Ess_M2ePro_Model_Magento_Product_ChangeProcessor_Abstract::INSTRUCTION_TYPE_MAGMI_PLUGIN_PRODUCT_CHANGED,
             Ess_M2ePro_Model_Cron_Task_Listing_Product_InspectDirectChanges::INSTRUCTION_TYPE,
-            Ess_M2ePro_Model_Cron_Task_Listing_Product_ProcessReviseTotal::INSTRUCTION_TYPE,
         );
     }
 
@@ -72,7 +71,6 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_Synchronization
             Ess_M2ePro_PublicServices_Product_SqlChange::INSTRUCTION_TYPE_PRICE_CHANGED,
             Ess_M2ePro_Model_Magento_Product_ChangeProcessor_Abstract::INSTRUCTION_TYPE_MAGMI_PLUGIN_PRODUCT_CHANGED,
             Ess_M2ePro_Model_Cron_Task_Listing_Product_InspectDirectChanges::INSTRUCTION_TYPE,
-            Ess_M2ePro_Model_Cron_Task_Listing_Product_ProcessReviseTotal::INSTRUCTION_TYPE,
         );
     }
 
@@ -89,7 +87,6 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_Synchronization
             Ess_M2ePro_PublicServices_Product_SqlChange::INSTRUCTION_TYPE_PRODUCT_CHANGED,
             Ess_M2ePro_Model_Magento_Product_ChangeProcessor_Abstract::INSTRUCTION_TYPE_MAGMI_PLUGIN_PRODUCT_CHANGED,
             Ess_M2ePro_Model_Cron_Task_Listing_Product_InspectDirectChanges::INSTRUCTION_TYPE,
-            Ess_M2ePro_Model_Cron_Task_Listing_Product_ProcessReviseTotal::INSTRUCTION_TYPE,
         );
     }
 
@@ -106,7 +103,6 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_Synchronization
             Ess_M2ePro_PublicServices_Product_SqlChange::INSTRUCTION_TYPE_PRODUCT_CHANGED,
             Ess_M2ePro_Model_Magento_Product_ChangeProcessor_Abstract::INSTRUCTION_TYPE_MAGMI_PLUGIN_PRODUCT_CHANGED,
             Ess_M2ePro_Model_Cron_Task_Listing_Product_InspectDirectChanges::INSTRUCTION_TYPE,
-            Ess_M2ePro_Model_Cron_Task_Listing_Product_ProcessReviseTotal::INSTRUCTION_TYPE,
         );
     }
 
@@ -123,7 +119,6 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_Synchronization
             Ess_M2ePro_PublicServices_Product_SqlChange::INSTRUCTION_TYPE_PRODUCT_CHANGED,
             Ess_M2ePro_Model_Magento_Product_ChangeProcessor_Abstract::INSTRUCTION_TYPE_MAGMI_PLUGIN_PRODUCT_CHANGED,
             Ess_M2ePro_Model_Cron_Task_Listing_Product_InspectDirectChanges::INSTRUCTION_TYPE,
-            Ess_M2ePro_Model_Cron_Task_Listing_Product_ProcessReviseTotal::INSTRUCTION_TYPE,
             Ess_M2ePro_Model_Ebay_Template_Description::INSTRUCTION_TYPE_MAGENTO_STATIC_BLOCK_IN_DESCRIPTION_CHANGED
         );
     }
@@ -141,7 +136,6 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_Synchronization
             Ess_M2ePro_PublicServices_Product_SqlChange::INSTRUCTION_TYPE_PRODUCT_CHANGED,
             Ess_M2ePro_Model_Magento_Product_ChangeProcessor_Abstract::INSTRUCTION_TYPE_MAGMI_PLUGIN_PRODUCT_CHANGED,
             Ess_M2ePro_Model_Cron_Task_Listing_Product_InspectDirectChanges::INSTRUCTION_TYPE,
-            Ess_M2ePro_Model_Cron_Task_Listing_Product_ProcessReviseTotal::INSTRUCTION_TYPE,
             Ess_M2ePro_Model_Ebay_Template_ChangeProcessor_Abstract::INSTRUCTION_TYPE_VARIATION_IMAGES_DATA_CHANGED,
         );
     }
@@ -157,7 +151,6 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_Synchronization
             Ess_M2ePro_PublicServices_Product_SqlChange::INSTRUCTION_TYPE_PRODUCT_CHANGED,
             Ess_M2ePro_Model_Magento_Product_ChangeProcessor_Abstract::INSTRUCTION_TYPE_MAGMI_PLUGIN_PRODUCT_CHANGED,
             Ess_M2ePro_Model_Cron_Task_Listing_Product_InspectDirectChanges::INSTRUCTION_TYPE,
-            Ess_M2ePro_Model_Cron_Task_Listing_Product_ProcessReviseTotal::INSTRUCTION_TYPE,
             Ess_M2ePro_Model_Ebay_Template_ChangeProcessor_Abstract::INSTRUCTION_TYPE_VARIATION_IMAGES_DATA_CHANGED,
         );
     }
@@ -175,7 +168,6 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_Synchronization
             Ess_M2ePro_PublicServices_Product_SqlChange::INSTRUCTION_TYPE_PRODUCT_CHANGED,
             Ess_M2ePro_Model_Magento_Product_ChangeProcessor_Abstract::INSTRUCTION_TYPE_MAGMI_PLUGIN_PRODUCT_CHANGED,
             Ess_M2ePro_Model_Cron_Task_Listing_Product_InspectDirectChanges::INSTRUCTION_TYPE,
-            Ess_M2ePro_Model_Cron_Task_Listing_Product_ProcessReviseTotal::INSTRUCTION_TYPE,
         );
     }
 
@@ -192,7 +184,6 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_Synchronization
             Ess_M2ePro_PublicServices_Product_SqlChange::INSTRUCTION_TYPE_PRODUCT_CHANGED,
             Ess_M2ePro_Model_Magento_Product_ChangeProcessor_Abstract::INSTRUCTION_TYPE_MAGMI_PLUGIN_PRODUCT_CHANGED,
             Ess_M2ePro_Model_Cron_Task_Listing_Product_InspectDirectChanges::INSTRUCTION_TYPE,
-            Ess_M2ePro_Model_Cron_Task_Listing_Product_ProcessReviseTotal::INSTRUCTION_TYPE,
         );
     }
 
@@ -208,7 +199,6 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_Synchronization
             Ess_M2ePro_PublicServices_Product_SqlChange::INSTRUCTION_TYPE_PRODUCT_CHANGED,
             Ess_M2ePro_Model_Magento_Product_ChangeProcessor_Abstract::INSTRUCTION_TYPE_MAGMI_PLUGIN_PRODUCT_CHANGED,
             Ess_M2ePro_Model_Cron_Task_Listing_Product_InspectDirectChanges::INSTRUCTION_TYPE,
-            Ess_M2ePro_Model_Cron_Task_Listing_Product_ProcessReviseTotal::INSTRUCTION_TYPE,
         );
     }
 
@@ -224,7 +214,6 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_Synchronization
             Ess_M2ePro_PublicServices_Product_SqlChange::INSTRUCTION_TYPE_PRODUCT_CHANGED,
             Ess_M2ePro_Model_Magento_Product_ChangeProcessor_Abstract::INSTRUCTION_TYPE_MAGMI_PLUGIN_PRODUCT_CHANGED,
             Ess_M2ePro_Model_Cron_Task_Listing_Product_InspectDirectChanges::INSTRUCTION_TYPE,
-            Ess_M2ePro_Model_Cron_Task_Listing_Product_ProcessReviseTotal::INSTRUCTION_TYPE,
         );
     }
 
@@ -241,7 +230,6 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_Synchronization
             Ess_M2ePro_PublicServices_Product_SqlChange::INSTRUCTION_TYPE_PRODUCT_CHANGED,
             Ess_M2ePro_Model_Magento_Product_ChangeProcessor_Abstract::INSTRUCTION_TYPE_MAGMI_PLUGIN_PRODUCT_CHANGED,
             Ess_M2ePro_Model_Cron_Task_Listing_Product_InspectDirectChanges::INSTRUCTION_TYPE,
-            Ess_M2ePro_Model_Cron_Task_Listing_Product_ProcessReviseTotal::INSTRUCTION_TYPE,
         );
     }
 

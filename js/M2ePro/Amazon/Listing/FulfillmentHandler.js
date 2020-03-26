@@ -2,32 +2,12 @@ AmazonFulfillmentHandler = Class.create(ActionHandler, {
 
     // ---------------------------------------
 
-    initialize: function($super,gridHandler)
-    {
-        var self = this;
-
-        $super(gridHandler);
-
-    },
-
-    // ---------------------------------------
-
-    options: {},
-
-    setOptions: function(options)
-    {
-        this.options = Object.extend(this.options,options);
-        return this;
-    },
-
-    // ---------------------------------------
-
     switchToAFN: function(productsIds)
     {
         var self = this;
         self.gridHandler.unselectAll();
 
-        new Ajax.Request(self.options.url.switchToAFN, {
+        new Ajax.Request(M2ePro.url.switchToAFN, {
             method: 'post',
             parameters: {
                 selected_products: productsIds
@@ -58,7 +38,7 @@ AmazonFulfillmentHandler = Class.create(ActionHandler, {
         var self = this;
         self.gridHandler.unselectAll();
 
-        new Ajax.Request(self.options.url.switchToMFN, {
+        new Ajax.Request(M2ePro.url.switchToMFN, {
             method: 'post',
             parameters: {
                 selected_products: productsIds

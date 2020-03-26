@@ -36,8 +36,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Tabs extends Ess_M2ePro_Bloc
         $this->addTab(self::TAB_ID_GENERAL, $this->prepareTabGeneral());
         $this->addTab(self::TAB_ID_ACCOUNT, $this->prepareTabAccount());
         $this->addTab(self::TAB_ID_MARKETPLACE, $this->prepareTabMarketplace());
-        $this->addTab(self::TAB_ID_TEMPLATE, $this->prepareTabTemplate());
         $this->addTab(self::TAB_ID_CATEGORY, $this->prepareTabCategory());
+        $this->addTab(self::TAB_ID_TEMPLATE, $this->prepareTabTemplate());
         $isUsePickupStoreMode && $this->addTab(
             self::TAB_ID_ACCOUNT_PICKUP_STORE, $this->prepareTabAccountPickupStore()
         );
@@ -54,8 +54,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Tabs extends Ess_M2ePro_Bloc
     protected function prepareTabMarketplace()
     {
         $tab = array(
-            'label' => Mage::helper('M2ePro')->__('eBay Sites'),
-            'title' => Mage::helper('M2ePro')->__('eBay Sites')
+            'label' => Mage::helper('M2ePro')->__('Marketplaces'),
+            'title' => Mage::helper('M2ePro')->__('Marketplaces')
         );
 
         if ($this->getData('active_tab') == self::TAB_ID_MARKETPLACE) {
@@ -123,8 +123,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Tabs extends Ess_M2ePro_Bloc
     protected function prepareTabCategory()
     {
         $tab = array(
-            'label' => Mage::helper('M2ePro')->__('Categories In Use'),
-            'title' => Mage::helper('M2ePro')->__('Categories In Use')
+            'label' => Mage::helper('M2ePro')->__('Categories'),
+            'title' => Mage::helper('M2ePro')->__('Categories')
         );
 
         if ($this->getData('active_tab') == self::TAB_ID_CATEGORY) {

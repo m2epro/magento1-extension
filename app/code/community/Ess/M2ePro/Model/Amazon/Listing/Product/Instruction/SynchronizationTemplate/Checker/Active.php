@@ -50,16 +50,6 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Instruction_SynchronizationTemplat
             return false;
         }
 
-        /** @var Ess_M2ePro_Model_Amazon_Listing_Product $amazonListingProduct */
-        $amazonListingProduct = $listingProduct->getChildObject();
-        $variationManager = $amazonListingProduct->getVariationManager();
-
-        if ($variationManager->isVariationProduct()) {
-            if ($variationManager->isRelationParentType()) {
-                return false;
-            }
-        }
-
         if ($scheduledAction = $this->_input->getScheduledAction()) {
             if ($scheduledAction->isActionTypeDelete() && $scheduledAction->isForce()) {
                 return false;
@@ -77,6 +67,8 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Instruction_SynchronizationTemplat
         if ($scheduledAction === null) {
             $scheduledAction = Mage::getModel('M2ePro/Listing_Product_ScheduledAction');
         }
+
+        $variationManager = $this->_input->getListingProduct()->getChildObject()->getVariationManager();
 
         if ($this->_input->hasInstructionWithTypes($this->getStopInstructionTypes())) {
             if (!$this->isMeetStopRequirements()) {
@@ -118,9 +110,6 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Instruction_SynchronizationTemplat
             return;
         }
 
-        /** @var Ess_M2ePro_Model_Amazon_Listing_Product $amazonListingProduct */
-        $amazonListingProduct = $this->_input->getListingProduct()->getChildObject();
-
         $configurator = Mage::getModel('M2ePro/Amazon_Listing_Product_Action_Configurator');
         $configurator->disableAll();
 
@@ -143,6 +132,12 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Instruction_SynchronizationTemplat
         }
 
         $tags = array_flip($tags);
+
+        if ($variationManager->isRelationParentType() &&
+            $this->_input->getListingProduct()->getChildObject()->getSku() === null
+        ) {
+            return false;
+        }
 
         if ($this->_input->hasInstructionWithTypes($this->getReviseQtyInstructionTypes())) {
             if ($this->isMeetReviseQtyRequirements()) {
@@ -176,21 +171,21 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Instruction_SynchronizationTemplat
 
         if ($this->_input->hasInstructionWithTypes($this->getReviseDetailsInstructionTypes())) {
             if ($this->isMeetReviseDetailsRequirements()) {
-                !$amazonListingProduct->isDetailsDataChanged() &&
-                $amazonListingProduct->setData('is_details_data_changed', true)->save();
+                $configurator->allowDetails();
+                $tags['details'] = true;
             } else {
-                $amazonListingProduct->isDetailsDataChanged() &&
-                $amazonListingProduct->setData('is_details_data_changed', false)->save();
+                $configurator->disallowDetails();
+                unset($tags['details']);
             }
         }
 
         if ($this->_input->hasInstructionWithTypes($this->getReviseImagesInstructionTypes())) {
             if ($this->isMeetReviseImagesRequirements()) {
-                !$amazonListingProduct->isImagesDataChanged() &&
-                $amazonListingProduct->setData('is_images_data_changed', true)->save();
+                $configurator->allowImages();
+                $tags['images'] = true;
             } else {
-                $amazonListingProduct->isImagesDataChanged() &&
-                $amazonListingProduct->setData('is_images_data_changed', false)->save();
+                $configurator->disallowImages();
+                unset($tags['images']);
             }
         }
 
@@ -236,6 +231,10 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Instruction_SynchronizationTemplat
         /** @var Ess_M2ePro_Model_Amazon_Listing_Product $amazonListingProduct */
         $amazonListingProduct = $listingProduct->getChildObject();
         $variationManager = $amazonListingProduct->getVariationManager();
+
+        if ($variationManager->isRelationParentType()) {
+            return false;
+        }
 
         $amazonSynchronizationTemplate = $amazonListingProduct->getAmazonSynchronizationTemplate();
         $variationResource = Mage::getResourceModel('M2ePro/Listing_Product_Variation');
@@ -349,9 +348,12 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Instruction_SynchronizationTemplat
 
         /** @var Ess_M2ePro_Model_Amazon_Listing_Product $amazonListingProduct */
         $amazonListingProduct = $listingProduct->getChildObject();
+        $variationManager = $amazonListingProduct->getVariationManager();
+        if ($variationManager->isRelationParentType()) {
+            return false;
+        }
 
         $amazonSynchronizationTemplate = $amazonListingProduct->getAmazonSynchronizationTemplate();
-
         if (!$amazonSynchronizationTemplate->isReviseUpdateQty() || $amazonListingProduct->isAfnChannel()) {
             return false;
         }
@@ -395,6 +397,10 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Instruction_SynchronizationTemplat
 
         /** @var Ess_M2ePro_Model_Amazon_Listing_Product $amazonListingProduct */
         $amazonListingProduct = $listingProduct->getChildObject();
+        $variationManager = $amazonListingProduct->getVariationManager();
+        if ($variationManager->isRelationParentType()) {
+            return false;
+        }
 
         if (!$amazonListingProduct->isAllowedForRegularCustomers()) {
             return false;
@@ -468,6 +474,10 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Instruction_SynchronizationTemplat
 
         /** @var Ess_M2ePro_Model_Amazon_Listing_Product $amazonListingProduct */
         $amazonListingProduct = $listingProduct->getChildObject();
+        $variationManager = $amazonListingProduct->getVariationManager();
+        if ($variationManager->isRelationParentType()) {
+            return false;
+        }
 
         if (!$amazonListingProduct->isAllowedForBusinessCustomers()) {
             return false;
@@ -526,6 +536,11 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Instruction_SynchronizationTemplat
         /** @var Ess_M2ePro_Model_Amazon_Listing_Product $amazonListingProduct */
         $amazonListingProduct = $listingProduct->getChildObject();
 
+        $amazonSynchronizationTemplate = $amazonListingProduct->getAmazonSynchronizationTemplate();
+        if (!$amazonSynchronizationTemplate->isReviseWhenChangeDetails()) {
+            return false;
+        }
+
         $detailsActionDataBuilder = Mage::getModel('M2ePro/Amazon_Listing_Product_Action_DataBuilder_Details');
         $detailsActionDataBuilder->setListingProduct($listingProduct);
 
@@ -544,6 +559,11 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Instruction_SynchronizationTemplat
 
         /** @var Ess_M2ePro_Model_Amazon_Listing_Product $amazonListingProduct */
         $amazonListingProduct = $listingProduct->getChildObject();
+
+        $amazonSynchronizationTemplate = $amazonListingProduct->getAmazonSynchronizationTemplate();
+        if (!$amazonSynchronizationTemplate->isReviseWhenChangeImages()) {
+            return false;
+        }
 
         $actionDataBuilder = Mage::getModel('M2ePro/Amazon_Listing_Product_Action_DataBuilder_Images');
         $actionDataBuilder->setListingProduct($listingProduct);

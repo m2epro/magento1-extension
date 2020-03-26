@@ -263,6 +263,8 @@ class Ess_M2ePro_Adminhtml_Walmart_OrderController
         /** @var Ess_M2ePro_Model_Resource_Order_Collection $ordersCollection */
         $ordersCollection = Mage::helper('M2ePro/Component_Walmart')->getCollection('Order')
             ->addFieldToFilter('id', array('in' => $ids));
+        /** @var Ess_M2ePro_Model_Order_Shipment_Handler $handler */
+        $handler = Mage::getModel("M2ePro/Walmart_Order_Shipment_Handler");
 
         $hasFailed = false;
         $hasSucceeded = false;
@@ -287,8 +289,6 @@ class Ess_M2ePro_Adminhtml_Walmart_OrderController
                     continue;
                 }
 
-                /** @var Ess_M2ePro_Model_Order_Shipment_Handler $handler */
-                $handler = Ess_M2ePro_Model_Order_Shipment_Handler::factory($order->getComponentMode());
                 $result  = $handler->handle($order, $shipment);
 
                 $result == Ess_M2ePro_Model_Order_Shipment_Handler::HANDLE_RESULT_SUCCEEDED ? $hasSucceeded = true

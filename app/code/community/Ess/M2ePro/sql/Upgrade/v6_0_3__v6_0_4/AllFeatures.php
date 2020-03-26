@@ -288,7 +288,7 @@ SQL
 
             $installer->run(<<<SQL
 
-    CREATE TABLE IF NOT EXISTS `m2epro_ebay_template_other_category` (
+    CREATE TABLE IF NOT EXISTS `{$this->_installer->getTable('m2epro_ebay_template_other_category')}` (
       id int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
       marketplace_id int(11) UNSIGNED NOT NULL,
       account_id int(11) UNSIGNED NOT NULL,
@@ -314,7 +314,7 @@ SQL
     CHARACTER SET utf8
     COLLATE utf8_general_ci;
 
-    INSERT INTO `m2epro_ebay_template_other_category`
+    INSERT INTO `{$this->_installer->getTable('m2epro_ebay_template_other_category')}`
     SELECT `id`,
            `marketplace_id`,
            NULL,
@@ -336,7 +336,7 @@ SQL
 
            update_date,
            create_date
-    FROM `m2epro_ebay_template_category`;
+    FROM `{$this->_installer->getTable('m2epro_ebay_template_category')}`;
 
 SQL
             );

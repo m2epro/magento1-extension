@@ -8,11 +8,14 @@
 
 class Ess_M2ePro_Block_Adminhtml_Amazon_Order_View_Item extends Mage_Adminhtml_Block_Widget_Grid
 {
-    /** @var $_order Ess_M2ePro_Model_Order */
+    /** @var Ess_M2ePro_Model_Order $_order */
     protected $_order = null;
 
     //########################################
 
+    /**
+     * {@inheritDoc}
+     */
     public function __construct()
     {
         parent::__construct();
@@ -35,6 +38,9 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Order_View_Item extends Mage_Adminhtml_B
         $this->_order = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
     }
 
+    /**
+     * {@inheritDoc}
+     */
     protected function _prepareCollection()
     {
         $collection = Mage::helper('M2ePro/Component_Amazon')
@@ -57,6 +63,10 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Order_View_Item extends Mage_Adminhtml_B
         return parent::_prepareCollection();
     }
 
+    /**
+     * {@inheritDoc}
+     * @throws Exception
+     */
     protected function _prepareColumns()
     {
         $this->addColumn(
@@ -175,55 +185,62 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Order_View_Item extends Mage_Adminhtml_B
     //########################################
 
     /**
-     * @param $value
-     * @param $row Ess_M2ePro_Model_Order_Item
-     * @param $column
-     * @param $isExport
+     * @param string                                  $value
+     * @param Ess_M2ePro_Model_Order_Item             $row
+     * @param Mage_Adminhtml_Block_Widget_Grid_Column $column
+     * @param bool                                    $isExport
      *
      * @return string
+     * @throws Ess_M2ePro_Model_Exception_Logic
      */
     public function callbackColumnProduct($value, $row, $column, $isExport)
     {
-        $skuHtml = '';
-        if ($row->getSku()) {
-            $skuLabel = Mage::helper('M2ePro')->__('SKU');
-            $sku = Mage::helper('M2ePro')->escapeHtml($row->getSku());
+        $dataHelper = Mage::helper('M2ePro');
 
+        $skuHtml = '';
+        if ($row->getChildObject()->getSku()) {
             $skuHtml = <<<HTML
-<b>{$skuLabel}:</b> {$sku}<br/>
+<b>{$dataHelper->__('SKU')}:</b> {$dataHelper->escapeHtml($row->getChildObject()->getSku())}&nbsp;
 HTML;
         }
 
-        $generalIdLabel = Mage::helper('M2ePro')->__($row->getIsIsbnGeneralId() ? 'ISBN' : 'ASIN');
-        $generalId = Mage::helper('M2ePro')->escapeHtml($row->getGeneralId());
-
+        $generalIdLabel = $dataHelper->__($row->getChildObject()->getIsIsbnGeneralId() ? 'ISBN' : 'ASIN');
         $generalIdHtml = <<<HTML
-<b>{$generalIdLabel}:</b> {$generalId}<br/>
+<b>{$generalIdLabel}:</b> {$dataHelper->escapeHtml($row->getChildObject()->getGeneralId())}<br/>
 HTML;
 
-        if ($row->getIsIsbnGeneralId() && !Mage::helper('M2ePro')->isISBN($row->getGeneralId())) {
+        $afnWarehouseHtml = '';
+        if ($row->getOrder()->getChildObject()->isFulfilledByAmazon()) {
+            $fulfillmentCenterId = $row->getChildObject()->getFulfillmentCenterId();
+            $fulfillmentCenterId = empty($fulfillmentCenterId) ? 'Pending' : $fulfillmentCenterId;
+            $afnWarehouseHtml = <<<HTML
+<b>{$dataHelper->__('AFN Warehouse')}:</b> {$dataHelper->escapeHtml($fulfillmentCenterId)}<br/>
+HTML;
+        }
+
+        if ($row->getChildObject()->getIsIsbnGeneralId() &&
+            !$dataHelper->isISBN($row->getChildObject()->getGeneralId())) {
             $amazonLink = '';
         } else {
-            $itemLinkText = Mage::helper('M2ePro')->__('View on Amazon');
             $itemUrl = Mage::helper('M2ePro/Component_Amazon')->getItemUrl(
-                $row->getGeneralId(), $this->_order->getData('marketplace_id')
+                $row->getChildObject()->getGeneralId(),
+                $this->_order->getData('marketplace_id')
             );
 
             $amazonLink = <<<HTML
-<a href="{$itemUrl}" target="_blank">{$itemLinkText}</a>
+<a href="{$itemUrl}" target="_blank">{$dataHelper->__('View on Amazon')}</a>&nbsp;|&nbsp;
 HTML;
         }
 
         $productLink = '';
         if ($productId = $row->getData('product_id')) {
-            $productUrl = $this->getUrl(
-                'adminhtml/catalog_product/edit',
-                array(
-                    'id'    => $productId,
-                    'store' => $row->getOrder()->getStoreId()
-                )
-            );
-            $productLink = ' | <a href="'.$productUrl.'" target="_blank">'.Mage::helper('M2ePro')->__('View').'</a>';
+            $productUrl = $this->getUrl('adminhtml/catalog_product/edit', array(
+                'id'    => $productId,
+                'store' => $row->getOrder()->getStoreId()
+            ));
+            $productLink = <<<HTML
+<a href="{$productUrl}" target="_blank">{$dataHelper->__('View')}</a>
+HTML;
         }
 
         $orderItemId = (int)$row->getId();
@@ -232,9 +249,9 @@ HTML;
         $editLink = '';
         if (!$row->getProductId() || $row->getMagentoProduct()->isProductWithVariations()) {
             if (!$row->getProductId()) {
-                $action = Mage::helper('M2ePro')->__('Map to Magento Product');
+                $action = $dataHelper->__('Map to Magento Product');
             } else {
-                $action = Mage::helper('M2ePro')->__('Set Options');
+                $action = $dataHelper->__('Set Options');
             }
 
             $class = 'class="gray"';
@@ -245,7 +262,7 @@ HTML;
 
         $discardLink = '';
         if ($row->getProductId()) {
-            $action = Mage::helper('M2ePro')->__('Unmap');
+            $action = $dataHelper->__('Unmap');
 
             $js = "{OrderEditItemHandlerObj.unassignProduct('{$gridId}', {$orderItemId});}";
             $discardLink = '<a href="javascript:void(0);" onclick="'.$js.'" class="gray">'.$action.'</a>';
@@ -255,19 +272,26 @@ HTML;
             }
         }
 
-        $itemTitle = Mage::helper('M2ePro')->escapeHtml($row->getTitle());
-
         return <<<HTML
-<b>{$itemTitle}</b><br/>
+<b>{$dataHelper->escapeHtml($row->getChildObject()->getTitle())}</b><br/>
 <div style="padding-left: 10px;">
     {$skuHtml}
     {$generalIdHtml}
+    {$afnWarehouseHtml}
 </div>
 <div style="float: left;">{$amazonLink}{$productLink}</div>
 <div style="float: right;">{$editLink}{$discardLink}</div>
 HTML;
     }
 
+    /**
+     * @param string                                  $value
+     * @param Ess_M2ePro_Model_Order_Item             $row
+     * @param Mage_Adminhtml_Block_Widget_Grid_Column $column
+     * @param bool                                    $isExport
+     *
+     * @return string
+     */
     public function callbackColumnStockAvailability($value, $row, $column, $isExport)
     {
         if ($row->getData('is_in_stock') === null) {
@@ -281,6 +305,14 @@ HTML;
         return $value;
     }
 
+    /**
+     * @param string                                  $value
+     * @param Ess_M2ePro_Model_Order_Item             $row
+     * @param Mage_Adminhtml_Block_Widget_Grid_Column $column
+     * @param bool                                    $isExport
+     *
+     * @return string
+     */
     public function callbackColumnOriginalPrice($value, $row, $column, $isExport)
     {
         $productId = $row->getData('product_id');
@@ -293,6 +325,15 @@ HTML;
         return $formattedPrice;
     }
 
+    /**
+     * @param string                                  $value
+     * @param Ess_M2ePro_Model_Order_Item             $row
+     * @param Mage_Adminhtml_Block_Widget_Grid_Column $column
+     * @param bool                                    $isExport
+     *
+     * @return string
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function callbackColumnPrice($value, $row, $column, $isExport)
     {
         $currency = $row->getData('currency');
@@ -303,6 +344,15 @@ HTML;
         return Mage::getSingleton('M2ePro/Currency')->formatPrice($currency, $row->getData('price'));
     }
 
+    /**
+     * @param string                                  $value
+     * @param Ess_M2ePro_Model_Order_Item             $row
+     * @param Mage_Adminhtml_Block_Widget_Grid_Column $column
+     * @param bool                                    $isExport
+     *
+     * @return string
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function callbackColumnGiftPrice($value, $row, $column, $isExport)
     {
         $currency = $row->getData('currency');
@@ -313,10 +363,17 @@ HTML;
         return Mage::getSingleton('M2ePro/Currency')->formatPrice($currency, $row->getData('gift_price'));
     }
 
+    /**
+     * @param string                                  $value
+     * @param Ess_M2ePro_Model_Order_Item             $row
+     * @param Mage_Adminhtml_Block_Widget_Grid_Column $column
+     * @param bool                                    $isExport
+     *
+     * @return string
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function callbackColumnDiscountAmount($value, $row, $column, $isExport)
     {
-        /** @var Ess_M2ePro_Model_Order_Item $row */
-
         $currency = $row->getData('currency');
         if (empty($currency)) {
             $currency = $this->_order->getMarketplace()->getChildObject()->getDefaultCurrency();
@@ -337,6 +394,14 @@ HTML;
         );
     }
 
+    /**
+     * @param string                                  $value
+     * @param Ess_M2ePro_Model_Order_Item             $row
+     * @param Mage_Adminhtml_Block_Widget_Grid_Column $column
+     * @param bool                                    $isExport
+     *
+     * @return string
+     */
     public function callbackColumnGiftOptions($value, $row, $column, $isExport)
     {
         if ($row->getData('gift_type') == '' && $row->getData('gift_message') == '') {
@@ -359,6 +424,15 @@ HTML;
         return $resultHtml;
     }
 
+    /**
+     * @param string                                  $value
+     * @param Ess_M2ePro_Model_Order_Item             $row
+     * @param Mage_Adminhtml_Block_Widget_Grid_Column $column
+     * @param bool                                    $isExport
+     *
+     * @return string
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function callbackColumnTaxPercent($value, $row, $column, $isExport)
     {
         $rate = $this->_order->getChildObject()->getProductPriceTaxRate();
@@ -369,10 +443,17 @@ HTML;
         return sprintf('%s%%', $rate);
     }
 
+    /**
+     * @param string                                  $value
+     * @param Ess_M2ePro_Model_Order_Item             $row
+     * @param Mage_Adminhtml_Block_Widget_Grid_Column $column
+     * @param bool                                    $isExport
+     *
+     * @return string
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function callbackColumnRowTotal($value, $row, $column, $isExport)
     {
-        /** @var Ess_M2ePro_Model_Order_Item $row */
-        /** @var Ess_M2ePro_Model_Amazon_Order_Item $aOrderItem */
         $aOrderItem = $row->getChildObject();
 
         $currency = $row->getData('currency');
@@ -388,11 +469,17 @@ HTML;
         );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function getRowUrl($row)
     {
         return '';
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function getGridUrl()
     {
         return $this->getUrl('*/*/orderItemGrid', array('_current' => true));

@@ -283,7 +283,7 @@ HTML;
         }
 
         $account = Mage::helper('M2ePro')->__('Account');
-        $marketplace = Mage::helper('M2ePro')->__('eBay Site');
+        $marketplace = Mage::helper('M2ePro')->__('Marketplace');
         $store = Mage::helper('M2ePro')->__('Magento Store View');
 
         $value .= <<<HTML

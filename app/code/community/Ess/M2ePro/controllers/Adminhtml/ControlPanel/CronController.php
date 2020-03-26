@@ -13,7 +13,7 @@ class Ess_M2ePro_Adminhtml_ControlPanel_CronController
 
     public function runAction()
     {
-        $taskCode  = $this->getRequest()->getParam('task_code');
+        $taskCode = $this->getRequest()->getParam('task_code');
 
         $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Developer');
         $taskCode && $cronRunner->setAllowedTasks(array($taskCode));

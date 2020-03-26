@@ -11,8 +11,8 @@ class Ess_M2ePro_Sql_Install_Ebay extends Ess_M2ePro_Model_Upgrade_Feature_Abstr
         $this->_installer->run(
             <<<SQL
 
-DROP TABLE IF EXISTS `m2epro_ebay_account`;
-CREATE TABLE `m2epro_ebay_account` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_ebay_account')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_account')}` (
   `account_id` INT(11) UNSIGNED NOT NULL,
   `mode` TINYINT(2) UNSIGNED NOT NULL,
   `server_hash` VARCHAR(255) NOT NULL,
@@ -49,8 +49,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_ebay_account_store_category`;
-CREATE TABLE `m2epro_ebay_account_store_category` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_ebay_account_store_category')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_account_store_category')}` (
   `account_id` INT(11) UNSIGNED NOT NULL,
   `category_id` DECIMAL(20, 0) UNSIGNED NOT NULL,
   `parent_id` DECIMAL(20, 0) UNSIGNED NOT NULL,
@@ -66,8 +66,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_ebay_account_pickup_store`;
-CREATE TABLE `m2epro_ebay_account_pickup_store` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_ebay_account_pickup_store')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_account_pickup_store')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(255) NOT NULL,
   `location_id` VARCHAR(255) DEFAULT NULL,
@@ -106,8 +106,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_ebay_account_pickup_store_state`;
-CREATE TABLE `m2epro_ebay_account_pickup_store_state` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_ebay_account_pickup_store_state')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_account_pickup_store_state')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `account_pickup_store_id` INT(11) UNSIGNED NOT NULL,
   `is_in_processing` TINYINT(2) UNSIGNED DEFAULT 0,
@@ -127,8 +127,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_ebay_account_pickup_store_log`;
-CREATE TABLE `m2epro_ebay_account_pickup_store_log` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_ebay_account_pickup_store_log')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_account_pickup_store_log')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `account_pickup_store_state_id` INT(11) UNSIGNED DEFAULT NULL,
   `location_id` VARCHAR(255) NOT NULL,
@@ -154,14 +154,14 @@ ENGINE = MYISAM
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_ebay_dictionary_category`;
-CREATE TABLE `m2epro_ebay_dictionary_category` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_ebay_dictionary_category')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_dictionary_category')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `marketplace_id` INT(11) UNSIGNED NOT NULL,
   `category_id` INT(11) UNSIGNED NOT NULL,
   `parent_category_id` INT(11) UNSIGNED DEFAULT NULL,
   `title` VARCHAR(255) NOT NULL,
-  `path` VARCHAR(500) DEFAULT NULL,
+  `path` TEXT DEFAULT NULL,
   `features` LONGTEXT DEFAULT NULL,
   `item_specifics` LONGTEXT DEFAULT NULL,
   `is_leaf` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
@@ -171,14 +171,14 @@ CREATE TABLE `m2epro_ebay_dictionary_category` (
   INDEX `is_leaf` (`is_leaf`),
   INDEX `parent_category_id` (`parent_category_id`),
   INDEX `title` (`title`),
-  INDEX `path` (`path`)
+  INDEX `path` (`path`(500))
 )
 ENGINE = MYISAM
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_ebay_dictionary_marketplace`;
-CREATE TABLE `m2epro_ebay_dictionary_marketplace` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_ebay_dictionary_marketplace')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_dictionary_marketplace')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `marketplace_id` INT(11) UNSIGNED NOT NULL,
   `client_details_last_update_date` DATETIME DEFAULT NULL,
@@ -200,8 +200,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_ebay_dictionary_shipping`;
-CREATE TABLE `m2epro_ebay_dictionary_shipping` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_ebay_dictionary_shipping')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_dictionary_shipping')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `marketplace_id` INT(11) UNSIGNED NOT NULL,
   `ebay_id` VARCHAR(255) NOT NULL,
@@ -224,8 +224,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_ebay_feedback`;
-CREATE TABLE `m2epro_ebay_feedback` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_ebay_feedback')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_feedback')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `account_id` INT(11) UNSIGNED NOT NULL,
   `ebay_item_id` DECIMAL(20, 0) UNSIGNED NOT NULL,
@@ -254,8 +254,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_ebay_feedback_template`;
-CREATE TABLE `m2epro_ebay_feedback_template` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_ebay_feedback_template')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_feedback_template')}` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `account_id` INT(11) UNSIGNED NOT NULL,
   `body` TEXT NOT NULL,
@@ -268,8 +268,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_ebay_item`;
-CREATE TABLE `m2epro_ebay_item` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_ebay_item')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_item')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `item_id` DECIMAL(20, 0) UNSIGNED NOT NULL,
   `account_id` INT(11) UNSIGNED NOT NULL,
@@ -290,8 +290,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_ebay_listing`;
-CREATE TABLE `m2epro_ebay_listing` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_ebay_listing')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_listing')}` (
   `listing_id` INT(11) UNSIGNED NOT NULL,
   `products_sold_count` INT(11) UNSIGNED NOT NULL DEFAULT 0,
   `items_sold_count` INT(11) UNSIGNED NOT NULL DEFAULT 0,
@@ -305,9 +305,9 @@ CREATE TABLE `m2epro_ebay_listing` (
   `template_shipping_mode` TINYINT(2) UNSIGNED NOT NULL DEFAULT 1,
   `template_shipping_id` INT(11) UNSIGNED DEFAULT NULL,
   `template_shipping_custom_id` INT(11) UNSIGNED DEFAULT NULL,
-  `template_return_mode` TINYINT(2) UNSIGNED NOT NULL DEFAULT 1,
-  `template_return_id` INT(11) UNSIGNED DEFAULT NULL,
-  `template_return_custom_id` INT(11) UNSIGNED DEFAULT NULL,
+  `template_return_policy_mode` TINYINT(2) UNSIGNED NOT NULL DEFAULT 1,
+  `template_return_policy_id` INT(11) UNSIGNED DEFAULT NULL,
+  `template_return_policy_custom_id` INT(11) UNSIGNED DEFAULT NULL,
   `template_description_mode` TINYINT(2) UNSIGNED NOT NULL DEFAULT 1,
   `template_description_id` INT(11) UNSIGNED DEFAULT NULL,
   `template_description_custom_id` INT(11) UNSIGNED DEFAULT NULL,
@@ -332,9 +332,9 @@ CREATE TABLE `m2epro_ebay_listing` (
   INDEX `template_payment_custom_id` (`template_payment_custom_id`),
   INDEX `template_payment_id` (`template_payment_id`),
   INDEX `template_payment_mode` (`template_payment_mode`),
-  INDEX `template_return_custom_id` (`template_return_custom_id`),
-  INDEX `template_return_id` (`template_return_id`),
-  INDEX `template_return_mode` (`template_return_mode`),
+  INDEX `template_return_policy_custom_id` (`template_return_policy_custom_id`),
+  INDEX `template_return_policy_id` (`template_return_policy_id`),
+  INDEX `template_return_policy_mode` (`template_return_policy_mode`),
   INDEX `template_selling_format_custom_id` (`template_selling_format_custom_id`),
   INDEX `template_selling_format_id` (`template_selling_format_id`),
   INDEX `template_selling_format_mode` (`template_selling_format_mode`),
@@ -349,8 +349,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_ebay_listing_auto_category_group`;
-CREATE TABLE `m2epro_ebay_listing_auto_category_group` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_ebay_listing_auto_category_group')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_listing_auto_category_group')}` (
     `listing_auto_category_group_id` int(11) UNSIGNED NOT NULL,
     `adding_template_category_id` int(11) UNSIGNED DEFAULT NULL,
     `adding_template_other_category_id` int(11) UNSIGNED DEFAULT NULL,
@@ -362,8 +362,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_ebay_listing_other`;
-CREATE TABLE `m2epro_ebay_listing_other` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_ebay_listing_other')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_listing_other')}` (
   `listing_other_id` INT(11) UNSIGNED NOT NULL,
   `item_id` DECIMAL(20, 0) UNSIGNED NOT NULL,
   `sku` VARCHAR(255) DEFAULT NULL,
@@ -392,8 +392,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_ebay_listing_product`;
-CREATE TABLE `m2epro_ebay_listing_product` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_ebay_listing_product')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_listing_product')}` (
   `listing_product_id` INT(11) UNSIGNED NOT NULL,
   `template_category_id` INT(11) UNSIGNED DEFAULT NULL,
   `template_other_category_id` INT(11) UNSIGNED DEFAULT NULL,
@@ -429,9 +429,9 @@ CREATE TABLE `m2epro_ebay_listing_product` (
   `template_shipping_mode` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `template_shipping_id` INT(11) UNSIGNED DEFAULT NULL,
   `template_shipping_custom_id` INT(11) UNSIGNED DEFAULT NULL,
-  `template_return_mode` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
-  `template_return_id` INT(11) UNSIGNED DEFAULT NULL,
-  `template_return_custom_id` INT(11) UNSIGNED DEFAULT NULL,
+  `template_return_policy_mode` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
+  `template_return_policy_id` INT(11) UNSIGNED DEFAULT NULL,
+  `template_return_policy_custom_id` INT(11) UNSIGNED DEFAULT NULL,
   `template_description_mode` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `template_description_id` INT(11) UNSIGNED DEFAULT NULL,
   `template_description_custom_id` INT(11) UNSIGNED DEFAULT NULL,
@@ -467,9 +467,9 @@ CREATE TABLE `m2epro_ebay_listing_product` (
   INDEX `template_payment_custom_id` (`template_payment_custom_id`),
   INDEX `template_payment_id` (`template_payment_id`),
   INDEX `template_payment_mode` (`template_payment_mode`),
-  INDEX `template_return_custom_id` (`template_return_custom_id`),
-  INDEX `template_return_id` (`template_return_id`),
-  INDEX `template_return_mode` (`template_return_mode`),
+  INDEX `template_return_policy_custom_id` (`template_return_policy_custom_id`),
+  INDEX `template_return_policy_id` (`template_return_policy_id`),
+  INDEX `template_return_policy_mode` (`template_return_policy_mode`),
   INDEX `template_selling_format_custom_id` (`template_selling_format_custom_id`),
   INDEX `template_selling_format_id` (`template_selling_format_id`),
   INDEX `template_selling_format_mode` (`template_selling_format_mode`),
@@ -484,8 +484,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_ebay_listing_product_pickup_store`;
-CREATE TABLE `m2epro_ebay_listing_product_pickup_store` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_ebay_listing_product_pickup_store')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_listing_product_pickup_store')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `listing_product_id` INT(11) UNSIGNED,
   `account_pickup_store_id` INT(11) UNSIGNED,
@@ -499,8 +499,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_ebay_listing_product_variation`;
-CREATE TABLE `m2epro_ebay_listing_product_variation` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_ebay_listing_product_variation')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_listing_product_variation')}` (
   `listing_product_variation_id` INT(11) UNSIGNED NOT NULL,
   `add` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `delete` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
@@ -522,8 +522,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_ebay_listing_product_variation_option`;
-CREATE TABLE `m2epro_ebay_listing_product_variation_option` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_ebay_listing_product_variation_option')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_listing_product_variation_option')}` (
   `listing_product_variation_option_id` INT(11) UNSIGNED NOT NULL,
   PRIMARY KEY (`listing_product_variation_option_id`)
 )
@@ -531,8 +531,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_ebay_listing_product_action_processing`;
-CREATE TABLE `m2epro_ebay_listing_product_action_processing` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_ebay_listing_product_action_processing')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_listing_product_action_processing')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `processing_id` INT(11) UNSIGNED NOT NULL,
   `listing_product_id` INT(11) UNSIGNED DEFAULT NULL,
@@ -550,8 +550,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_ebay_indexer_listing_product_parent`;
-CREATE TABLE `m2epro_ebay_indexer_listing_product_parent` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_ebay_listing_product_indexer_variation_parent')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_listing_product_indexer_variation_parent')}` (
     `listing_product_id` INT(11) UNSIGNED NOT NULL,
     `listing_id` INT(11) UNSIGNED NOT NULL,
     `min_price` DECIMAL(12, 4) UNSIGNED NOT NULL DEFAULT 0.0000,
@@ -564,8 +564,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_ebay_marketplace`;
-CREATE TABLE `m2epro_ebay_marketplace` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_ebay_marketplace')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_marketplace')}` (
   `marketplace_id` INT(11) UNSIGNED NOT NULL,
   `currency` VARCHAR(70) NOT NULL DEFAULT 'USD',
   `origin_country` VARCHAR(255) DEFAULT NULL,
@@ -614,8 +614,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_ebay_dictionary_motor_epid`;
-CREATE TABLE `m2epro_ebay_dictionary_motor_epid` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_ebay_dictionary_motor_epid')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_dictionary_motor_epid')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `epid` VARCHAR(255) NOT NULL,
   `product_type` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
@@ -645,8 +645,8 @@ ENGINE = MYISAM
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_ebay_dictionary_motor_ktype`;
-CREATE TABLE `m2epro_ebay_dictionary_motor_ktype` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_ebay_dictionary_motor_ktype')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_dictionary_motor_ktype')}` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `ktype` int(11) UNSIGNED NOT NULL,
   `make` varchar(255) DEFAULT NULL,
@@ -674,8 +674,8 @@ ENGINE = MYISAM
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_ebay_motor_filter`;
-CREATE TABLE `m2epro_ebay_motor_filter` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_ebay_motor_filter')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_motor_filter')}` (
     `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
     `title` varchar(255) NOT NULL,
     `type` TINYINT(2) UNSIGNED NOT NULL,
@@ -690,8 +690,8 @@ ENGINE = MYISAM
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_ebay_motor_group`;
-CREATE TABLE `m2epro_ebay_motor_group` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_ebay_motor_group')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_motor_group')}` (
     `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
     `title` varchar(255) NOT NULL,
     `mode` TINYINT(2) UNSIGNED NOT NULL,
@@ -707,8 +707,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_ebay_motor_filter_to_group`;
-CREATE TABLE `m2epro_ebay_motor_filter_to_group` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_ebay_motor_filter_to_group')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_motor_filter_to_group')}` (
     `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
     `filter_id` INT(11) UNSIGNED NOT NULL,
     `group_id` INT(11) UNSIGNED NOT NULL,
@@ -720,15 +720,15 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_ebay_order`;
-CREATE TABLE `m2epro_ebay_order` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_ebay_order')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_order')}` (
   `order_id` INT(11) UNSIGNED NOT NULL,
   `ebay_order_id` VARCHAR(255) NOT NULL,
   `selling_manager_id` INT(11) UNSIGNED DEFAULT NULL,
   `buyer_name` VARCHAR(255) NOT NULL,
   `buyer_email` VARCHAR(255) NOT NULL,
   `buyer_user_id` VARCHAR(255) NOT NULL,
-  `buyer_message` VARCHAR(500) DEFAULT NULL,
+  `buyer_message` TEXT DEFAULT NULL,
   `buyer_tax_id` VARCHAR(64) DEFAULT NULL,
   `paid_amount` DECIMAL(12, 4) NOT NULL DEFAULT 0.0000,
   `saved_amount` DECIMAL(12, 4) UNSIGNED NOT NULL DEFAULT 0.0000,
@@ -757,8 +757,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_ebay_order_external_transaction`;
-CREATE TABLE `m2epro_ebay_order_external_transaction` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_ebay_order_external_transaction')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_order_external_transaction')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `order_id` INT(11) UNSIGNED NOT NULL,
   `transaction_id` VARCHAR(255) NOT NULL,
@@ -776,8 +776,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_ebay_order_item`;
-CREATE TABLE `m2epro_ebay_order_item` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_ebay_order_item')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_order_item')}` (
   `order_item_id` INT(11) UNSIGNED NOT NULL,
   `transaction_id` VARCHAR(20) NOT NULL,
   `selling_manager_id` INT(11) UNSIGNED DEFAULT NULL,
@@ -804,8 +804,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_ebay_template_category`;
-CREATE TABLE `m2epro_ebay_template_category` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_ebay_template_category')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_template_category')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `marketplace_id` INT(11) UNSIGNED NOT NULL,
   `category_main_id` INT(11) UNSIGNED NOT NULL,
@@ -821,8 +821,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_ebay_template_category_specific`;
-CREATE TABLE `m2epro_ebay_template_category_specific` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_ebay_template_category_specific')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_template_category_specific')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `template_category_id` INT(11) UNSIGNED NOT NULL,
   `mode` TINYINT(2) UNSIGNED NOT NULL DEFAULT 1,
@@ -838,8 +838,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_ebay_template_description`;
-CREATE TABLE `m2epro_ebay_template_description` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_ebay_template_description')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_template_description')}` (
   `template_description_id` INT(11) UNSIGNED NOT NULL,
   `is_custom_template` TINYINT(2) UNSIGNED NOT NULL DEFAULT 1,
   `title_mode` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
@@ -880,8 +880,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_ebay_template_other_category`;
-CREATE TABLE `m2epro_ebay_template_other_category` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_ebay_template_other_category')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_template_other_category')}` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `marketplace_id` int(11) UNSIGNED NOT NULL,
   `account_id` int(11) UNSIGNED NOT NULL,
@@ -907,8 +907,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_ebay_template_payment`;
-CREATE TABLE `m2epro_ebay_template_payment` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_ebay_template_payment')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_template_payment')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `marketplace_id` INT(11) UNSIGNED NOT NULL,
   `title` VARCHAR(255) NOT NULL,
@@ -927,8 +927,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_ebay_template_payment_service`;
-CREATE TABLE `m2epro_ebay_template_payment_service` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_ebay_template_payment_service')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_template_payment_service')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `template_payment_id` INT(11) UNSIGNED NOT NULL,
   `code_name` VARCHAR(255) NOT NULL,
@@ -939,8 +939,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_ebay_template_return`;
-CREATE TABLE `m2epro_ebay_template_return` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_ebay_template_return_policy')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_template_return_policy')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `marketplace_id` INT(11) UNSIGNED NOT NULL,
   `title` VARCHAR(255) NOT NULL,
@@ -965,8 +965,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_ebay_template_selling_format`;
-CREATE TABLE `m2epro_ebay_template_selling_format` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_ebay_template_selling_format')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_template_selling_format')}` (
   `template_selling_format_id` INT(11) UNSIGNED NOT NULL,
   `is_custom_template` TINYINT(2) UNSIGNED NOT NULL DEFAULT 1,
   `listing_type` TINYINT(2) UNSIGNED NOT NULL,
@@ -975,7 +975,6 @@ CREATE TABLE `m2epro_ebay_template_selling_format` (
   `restricted_to_business` TINYINT(2) UNSIGNED DEFAULT 0,
   `duration_mode` TINYINT(4) UNSIGNED NOT NULL,
   `duration_attribute` VARCHAR(255) NOT NULL,
-  `out_of_stock_control` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `qty_mode` TINYINT(2) UNSIGNED NOT NULL,
   `qty_custom_value` INT(11) UNSIGNED NOT NULL,
   `qty_custom_attribute` VARCHAR(255) NOT NULL,
@@ -1018,7 +1017,7 @@ CREATE TABLE `m2epro_ebay_template_selling_format` (
   `best_offer_reject_mode` TINYINT(2) UNSIGNED NOT NULL,
   `best_offer_reject_value` VARCHAR(255) NOT NULL,
   `best_offer_reject_attribute` VARCHAR(255) NOT NULL,
-  `charity` VARCHAR(255) DEFAULT NULL,
+  `charity` TEXT DEFAULT NULL,
   `ignore_variations` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   PRIMARY KEY (`template_selling_format_id`),
   INDEX `is_custom_template` (`is_custom_template`)
@@ -1027,8 +1026,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_ebay_template_shipping`;
-CREATE TABLE `m2epro_ebay_template_shipping` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_ebay_template_shipping')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_template_shipping')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `marketplace_id` INT(11) UNSIGNED NOT NULL,
   `title` VARCHAR(255) NOT NULL,
@@ -1069,23 +1068,23 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_ebay_template_shipping_calculated`;
-CREATE TABLE `m2epro_ebay_template_shipping_calculated` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_ebay_template_shipping_calculated')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_template_shipping_calculated')}` (
   `template_shipping_id` INT(11) UNSIGNED NOT NULL,
   `measurement_system` TINYINT(2) UNSIGNED NOT NULL DEFAULT 1,
   `package_size_mode` TINYINT(2) UNSIGNED NOT NULL DEFAULT 1,
-  `package_size_value` VARCHAR(500) NOT NULL,
+  `package_size_value` TEXT NOT NULL,
   `package_size_attribute` VARCHAR(255) NOT NULL,
   `dimension_mode` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
-  `dimension_width_value` VARCHAR(500) NOT NULL,
+  `dimension_width_value` TEXT NOT NULL,
   `dimension_width_attribute` VARCHAR(255) NOT NULL,
-  `dimension_length_value` VARCHAR(500) NOT NULL,
+  `dimension_length_value` TEXT NOT NULL,
   `dimension_length_attribute` VARCHAR(255) NOT NULL,
-  `dimension_depth_value` VARCHAR(500) NOT NULL,
+  `dimension_depth_value` TEXT NOT NULL,
   `dimension_depth_attribute` VARCHAR(255) NOT NULL,
   `weight_mode` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
-  `weight_minor` VARCHAR(500) NOT NULL,
-  `weight_major` VARCHAR(500) NOT NULL,
+  `weight_minor` TEXT NOT NULL,
+  `weight_major` TEXT NOT NULL,
   `weight_attribute` VARCHAR(255) NOT NULL,
   `local_handling_cost` VARCHAR(255) DEFAULT NULL,
   `international_handling_cost` VARCHAR(255) DEFAULT NULL,
@@ -1095,8 +1094,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_ebay_template_shipping_service`;
-CREATE TABLE `m2epro_ebay_template_shipping_service` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_ebay_template_shipping_service')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_template_shipping_service')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `template_shipping_id` INT(11) UNSIGNED NOT NULL,
   `shipping_type` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
@@ -1115,8 +1114,8 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `m2epro_ebay_template_synchronization`;
-CREATE TABLE `m2epro_ebay_template_synchronization` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_ebay_template_synchronization')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_template_synchronization')}` (
   `template_synchronization_id` INT(11) UNSIGNED NOT NULL,
   `is_custom_template` TINYINT(2) UNSIGNED NOT NULL DEFAULT 1,
   `list_mode` TINYINT(2) UNSIGNED NOT NULL,
@@ -1181,40 +1180,11 @@ SQL
         $this->_installer->run(
             <<<SQL
 
-INSERT INTO `m2epro_config` (`group`,`key`,`value`,`update_date`,`create_date`) VALUES
+INSERT INTO `{$this->_installer->getTable('m2epro_config')}` (`group`,`key`,`value`,`update_date`,`create_date`) VALUES
   ('/component/ebay/', 'mode', '1', NOW(), NOW()),
+  ('/cron/task/ebay/listing/product/process_instructions/', 'mode', '1', NOW(), NOW()),
   ('/listing/product/inspector/ebay/', 'max_allowed_instructions_count', '2000', NOW(), NOW()),
-  ('/listing/product/revise/total/ebay/', 'mode', '0', NOW(), NOW()),
-  ('/listing/product/revise/total/ebay/', 'max_allowed_instructions_count', '2000', NOW(), NOW()),
   ('/ebay/listing/product/instructions/cron/', 'listings_products_per_one_time', '1000', NOW(), NOW()),
-  ('/ebay/listing/product/action/list/', 'priority_coefficient', '25', NOW(), NOW()),
-  ('/ebay/listing/product/action/list/', 'wait_increase_coefficient', '100', NOW(), NOW()),
-  ('/ebay/listing/product/action/relist/', 'priority_coefficient', '125', NOW(), NOW()),
-  ('/ebay/listing/product/action/relist/', 'wait_increase_coefficient',  '100', NOW(), NOW()),
-  ('/ebay/listing/product/action/revise_qty/', 'priority_coefficient', '500', NOW(), NOW()),
-  ('/ebay/listing/product/action/revise_qty/', 'wait_increase_coefficient', '100', NOW(), NOW()),
-  ('/ebay/listing/product/action/revise_price/', 'priority_coefficient', '250', NOW(), NOW()),
-  ('/ebay/listing/product/action/revise_price/', 'wait_increase_coefficient', '100', NOW(), NOW()),
-  ('/ebay/listing/product/action/revise_title/', 'priority_coefficient', '50', NOW(), NOW()),
-  ('/ebay/listing/product/action/revise_title/', 'wait_increase_coefficient', '100', NOW(), NOW()),
-  ('/ebay/listing/product/action/revise_subtitle/', 'priority_coefficient', '50', NOW(), NOW()),
-  ('/ebay/listing/product/action/revise_subtitle/', 'wait_increase_coefficient', '100', NOW(), NOW()),
-  ('/ebay/listing/product/action/revise_description/', 'priority_coefficient', '50', NOW(), NOW()),
-  ('/ebay/listing/product/action/revise_description/', 'wait_increase_coefficient', '100', NOW(), NOW()),
-  ('/ebay/listing/product/action/revise_images/', 'priority_coefficient', '50', NOW(), NOW()),
-  ('/ebay/listing/product/action/revise_images/', 'wait_increase_coefficient', '100', NOW(), NOW()),
-  ('/ebay/listing/product/action/revise_categories/', 'priority_coefficient', '50', NOW(), NOW()),
-  ('/ebay/listing/product/action/revise_categories/', 'wait_increase_coefficient', '100', NOW(), NOW()),
-  ('/ebay/listing/product/action/revise_payment/', 'priority_coefficient', '50', NOW(), NOW()),
-  ('/ebay/listing/product/action/revise_payment/', 'wait_increase_coefficient', '100', NOW(), NOW()),
-  ('/ebay/listing/product/action/revise_shipping/', 'priority_coefficient', '50', NOW(), NOW()),
-  ('/ebay/listing/product/action/revise_shipping/', 'wait_increase_coefficient', '100', NOW(), NOW()),
-  ('/ebay/listing/product/action/revise_return/', 'priority_coefficient', '50', NOW(), NOW()),
-  ('/ebay/listing/product/action/revise_return/', 'wait_increase_coefficient', '100', NOW(), NOW()),
-  ('/ebay/listing/product/action/revise_other/', 'priority_coefficient', '50', NOW(), NOW()),
-  ('/ebay/listing/product/action/revise_other/', 'wait_increase_coefficient', '100', NOW(), NOW()),
-  ('/ebay/listing/product/action/stop/', 'priority_coefficient', '1000', NOW(), NOW()),
-  ('/ebay/listing/product/action/stop/', 'wait_increase_coefficient', '100', NOW(), NOW()),
   ('/ebay/listing/product/scheduled_actions/', 'max_prepared_actions_count', '3000', NOW(), NOW()),
   ('/ebay/order/settings/marketplace_8/', 'use_first_street_line_as_company', '1', NOW(), NOW()),
   ('/ebay/connector/listing/', 'check_the_same_product_already_listed', '1', NOW(), NOW()),
@@ -1229,7 +1199,7 @@ INSERT INTO `m2epro_config` (`group`,`key`,`value`,`update_date`,`create_date`) 
   ('/ebay/description/', 'upload_images_mode', 2, NOW(),NOW()),
   ('/ebay/description/', 'should_be_ulrs_secure', 0, NOW(),NOW());
 
-INSERT INTO `m2epro_marketplace` VALUES
+INSERT INTO `{$this->_installer->getTable('m2epro_marketplace')}` VALUES
   (1, 0, 'United States', 'US', 'ebay.com', 0, 1, 'America', 'ebay', NOW(), NOW()),
   (2, 2, 'Canada', 'Canada', 'ebay.ca', 0, 8, 'America', 'ebay', NOW(), NOW()),
   (3, 3, 'United Kingdom', 'UK', 'ebay.co.uk', 0, 2, 'Europe', 'ebay', NOW(), NOW()),
@@ -1253,7 +1223,7 @@ INSERT INTO `m2epro_marketplace` VALUES
   (21, 212, 'Poland', 'Poland', 'ebay.pl', 0, 18, 'Europe', 'ebay', NOW(), NOW()),
   (22, 216, 'Singapore', 'Singapore', 'ebay.com.sg', 0, 20, 'Asia / Pacific', 'ebay', NOW(), NOW());
 
-INSERT INTO `m2epro_ebay_marketplace` VALUES
+INSERT INTO `{$this->_installer->getTable('m2epro_ebay_marketplace')}` VALUES
     (1, 'USD', 'us', 'en_US', 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 0),
     (2, 'CAD', 'ca', 'en_CA', 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0),
     (3, 'GBP', 'gb', 'en_GB', 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 1),

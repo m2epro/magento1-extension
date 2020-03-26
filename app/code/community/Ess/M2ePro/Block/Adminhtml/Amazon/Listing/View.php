@@ -609,16 +609,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View extends Mage_Adminhtml_Bloc
             {$listingData['id']}
         );
 
-        ListingGridHandlerObj.actionHandler.setOptions(M2ePro);
-        ListingGridHandlerObj.movingHandler.setOptions(M2ePro);
-        ListingGridHandlerObj.productSearchHandler.setOptions(M2ePro);
-        ListingGridHandlerObj.templateDescriptionHandler.setOptions(M2ePro);
-        ListingGridHandlerObj.templateShippingHandler.setOptions(M2ePro);
-        ListingGridHandlerObj.templateProductTaxCodeHandler.setOptions(M2ePro);
-        ListingGridHandlerObj.variationProductManageHandler.setOptions(M2ePro);
-        ListingGridHandlerObj.fulfillmentHandler.setOptions(M2ePro);
-        ListingGridHandlerObj.repricingHandler.setOptions(M2ePro);
-
         ListingProgressBarObj = new ProgressBar('listing_view_progress_bar');
         GridWrapperObj = new AreaWrapper('listing_view_content_container');
 

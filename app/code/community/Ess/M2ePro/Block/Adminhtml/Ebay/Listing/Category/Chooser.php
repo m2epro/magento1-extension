@@ -86,7 +86,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Chooser extends Mage_Admi
             return $this->_attributes;
         }
 
-        $attributes = Mage::helper('M2ePro/Magento_Attribute')->getGeneralFromAllAttributeSets();
+        $attributes = Mage::helper('M2ePro/Magento_Attribute')->getAll();
         if (empty($attributes)) {
             return array();
         }

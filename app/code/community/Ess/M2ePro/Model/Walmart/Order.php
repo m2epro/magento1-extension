@@ -550,8 +550,6 @@ class Ess_M2ePro_Model_Walmart_Order extends Ess_M2ePro_Model_Component_Child_Wa
 
         $orderId     = $this->getParentObject()->getId();
         $action      = Ess_M2ePro_Model_Order_Change::ACTION_UPDATE_SHIPPING;
-        $creatorType = $this->getParentObject()->getLog()->getInitiator();
-        $component   = Ess_M2ePro_Helper_Component_Walmart::NICK;
 
         /** @var Ess_M2ePro_Model_Order_Change $change */
         $change = Mage::getModel('M2ePro/Order_Change')->getCollection()
@@ -561,7 +559,13 @@ class Ess_M2ePro_Model_Walmart_Order extends Ess_M2ePro_Model_Component_Child_Wa
             ->getFirstItem();
 
         if (!$change->getId()) {
-            $change::create($orderId, $action, $creatorType, $component, $params);
+            $change::create(
+                $orderId,
+                $action,
+                $this->getParentObject()->getLog()->getInitiator(),
+                Ess_M2ePro_Helper_Component_Walmart::NICK,
+                $params
+            );
             return true;
         }
 
@@ -626,10 +630,8 @@ class Ess_M2ePro_Model_Walmart_Order extends Ess_M2ePro_Model_Component_Child_Wa
         );
 
         $orderId     = $this->getParentObject()->getId();
-        $creatorType = $this->getParentObject()->getLog()->getInitiator();
-        $component   = Ess_M2ePro_Helper_Component_Walmart::NICK;
-
         $action = Ess_M2ePro_Model_Order_Change::ACTION_CANCEL;
+
         if ($this->isShipped() || $this->isPartiallyShipped() || $this->isSetProcessingLock('update_shipping_status')) {
             if (empty($items)) {
                 $this->getParentObject()->addErrorLog(
@@ -645,7 +647,13 @@ class Ess_M2ePro_Model_Walmart_Order extends Ess_M2ePro_Model_Component_Child_Wa
             $action = Ess_M2ePro_Model_Order_Change::ACTION_REFUND;
         }
 
-        Mage::getModel('M2ePro/Order_Change')->create($orderId, $action, $creatorType, $component, $params);
+        Mage::getModel('M2ePro/Order_Change')->create(
+            $orderId,
+            $action,
+            $this->getParentObject()->getLog()->getInitiator(),
+            Ess_M2ePro_Helper_Component_Walmart::NICK,
+            $params
+        );
 
         return true;
     }

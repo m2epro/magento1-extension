@@ -6,6 +6,8 @@
  * @license    Commercial use is forbidden
  */
 
+use Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Qty as QtyBuilder;
+
 class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Revise_Validator
     extends Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Validator
 {
@@ -20,11 +22,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Revise_Validator
             return false;
         }
 
-        if ($this->getVariationManager()->isRelationParentType() && !$this->validateParentListingProductFlags()) {
-            return false;
-        }
-
-        if (!$this->validatePhysicalUnitAndSimple()) {
+        if ($this->getVariationManager()->isRelationParentType() && !$this->validateParentListingProduct()) {
             return false;
         }
 
@@ -48,17 +46,13 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Revise_Validator
                         Ess_M2ePro_Model_Connector_Connection_Response_Message::TYPE_WARNING
                     );
                 } else {
-                    $afn = Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Qty::FULFILLMENT_MODE_AFN;
-
-                    if ($params['switch_to'] === $afn) {
+                    if ($params['switch_to'] === QtyBuilder::FULFILLMENT_MODE_AFN) {
                         $this->addMessage('You cannot switch Fulfillment because it is applied now.');
                         return false;
                     }
                 }
             } else {
-                $mfn = Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Qty::FULFILLMENT_MODE_MFN;
-
-                if (!empty($params['switch_to']) && $params['switch_to'] === $mfn) {
+                if (!empty($params['switch_to']) && $params['switch_to'] === QtyBuilder::FULFILLMENT_MODE_MFN) {
                     $this->addMessage('You cannot switch Fulfillment because it is applied now.');
                     return false;
                 }
@@ -86,7 +80,6 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Revise_Validator
             (!$this->getListingProduct()->isListed() || !$this->getListingProduct()->isRevisable())
         ) {
             $this->addMessage('Item is not Listed or not available');
-
             return false;
         }
 
@@ -95,6 +88,20 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Revise_Validator
         }
 
         if (!$this->validateRegularPrice() || !$this->validateBusinessPrice()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    //########################################
+
+    protected function validateParentListingProduct()
+    {
+        if ((!$this->getConfigurator()->isDetailsAllowed() && !$this->getConfigurator()->isImagesAllowed()) ||
+            !$this->getAmazonListingProduct()->isExistDescriptionTemplate()
+        ) {
+            $this->addMessage('There was no need for this action. It was skipped.');
             return false;
         }
 

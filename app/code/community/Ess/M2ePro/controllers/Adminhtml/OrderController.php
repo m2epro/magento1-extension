@@ -553,7 +553,8 @@ class Ess_M2ePro_Adminhtml_OrderController
                 $order->getLog()->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_USER);
 
                 /** @var Ess_M2ePro_Model_Order_Shipment_Handler $handler */
-                $handler = Ess_M2ePro_Model_Order_Shipment_Handler::factory($order->getComponentMode());
+                $componentMode = ucfirst($order->getComponentMode());
+                $handler = Mage::getModel("M2ePro/{$componentMode}_Order_Shipment_Handler");
                 $result  = $handler->handle($order, $shipment);
 
                 if ($result == Ess_M2ePro_Model_Order_Shipment_Handler::HANDLE_RESULT_FAILED) {

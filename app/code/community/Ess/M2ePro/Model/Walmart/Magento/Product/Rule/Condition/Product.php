@@ -26,7 +26,6 @@ class Ess_M2ePro_Model_Walmart_Magento_Product_Rule_Condition_Product
             'walmart_start_date'           => 'WalmartStartDate',
             'walmart_end_date'             => 'WalmartEndDate',
             'walmart_status'               => 'WalmartStatus',
-            'walmart_details_data_changed' => 'WalmartDetailsDataChanged',
             'walmart_online_price_invalid' => 'WalmartOnlinePriceInvalid',
         );
 

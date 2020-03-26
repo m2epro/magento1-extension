@@ -18,21 +18,11 @@
         'logViewUrl' => $this->getUrl('M2ePro/adminhtml_walmart_log/synchronization',array('back'=>Mage::helper('M2ePro')->makeBackUrlParam('*/adminhtml_walmart_synchronization/index'))),
 
         'runSynchNow' => $this->getUrl('M2ePro/adminhtml_walmart_marketplace/runSynchNow'),
-        'synchCheckProcessingNow' => $this->getUrl('M2ePro/adminhtml_walmart_marketplace/synchCheckProcessingNow'),
         'adminhtml_walmart_marketplace/synchGetExecutingInfo' => $this->getUrl('M2ePro/adminhtml_walmart_marketplace/synchGetExecutingInfo'),
     )); ?>);
 
     M2ePro.translator.add(<?php echo json_encode(array(
-        'Settings have been saved.' => Mage::helper('M2ePro')->__('Settings have been saved.'),
         'You must select at least one Marketplace you will work with.' => Mage::helper('M2ePro')->__('You must select at least one Marketplace you will work with.'),
-
-        'Another Synchronization Is Already Running.' => Mage::helper('M2ePro')->__('Another Synchronization Is Already Running.'),
-        'Getting information. Please wait ...' => Mage::helper('M2ePro')->__('Getting information. Please wait ...'),
-        'Preparing to start. Please wait ...' => Mage::helper('M2ePro')->__('Preparing to start. Please wait ...'),
-
-        'Synchronization has successfully ended.' => Mage::helper('M2ePro')->__('Synchronization has successfully ended.'),
-        'Synchronization ended with warnings. <a target="_blank" href="%url%">View Log</a> for details.' => Mage::helper('M2ePro')->__('Synchronization ended with warnings. <a target="_blank" href="%url%">View Log</a> for details.'),
-        'Synchronization ended with errors. <a target="_blank" href="%url%">View Log</a> for details.' => Mage::helper('M2ePro')->__('Synchronization ended with errors. <a target="_blank" href="%url%">View Log</a> for details.')
     )); ?>);
 
     Event.observe(window, 'load', function() {

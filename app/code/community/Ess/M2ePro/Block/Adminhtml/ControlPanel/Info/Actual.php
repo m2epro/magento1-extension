@@ -30,7 +30,8 @@ class Ess_M2ePro_Block_Adminhtml_ControlPanel_Info_Actual extends Mage_Adminhtml
             ' (' . Mage::helper('M2ePro/Magento')->getVersion() . ')';
 
         // ---------------------------------------
-        $this->moduleVersion = Mage::helper('M2ePro/Module')->getVersion();
+        $this->publicVersion = Mage::helper('M2ePro/Module')->getPublicVersion();
+        $this->setupVersion  = Mage::helper('M2ePro/Module')->getSetupVersion();
         $this->moduleEnvironment = Mage::helper('M2ePro/Module')->getEnvironment();
         // ---------------------------------------
 

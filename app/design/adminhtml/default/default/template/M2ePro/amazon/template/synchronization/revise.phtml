@@ -31,6 +31,8 @@
         'revise_update_price'                            => 1,
         'revise_update_price_max_allowed_deviation_mode' => 1,
         'revise_update_price_max_allowed_deviation'      => 3,
+        'revise_update_details'                          => 0,
+        'revise_update_images'                           => 0,
     );
 
     $formData = array_merge($defaults, $formData);
@@ -60,6 +62,12 @@
         $('revise_update_qty_max_applied_value_mode')
                 .observe('change', AmazonTemplateSynchronizationHandlerObj.reviseQtyMaxAppliedValueMode_change)
                 .simulate('change');
+
+        $('revise_update_details')
+            .observe('change', AmazonTemplateSynchronizationHandlerObj.reviseDetailsOrImagesMode_change);
+
+        $('revise_update_images')
+            .observe('change', AmazonTemplateSynchronizationHandlerObj.reviseDetailsOrImagesMode_change);
 
         $('revise_update_price').observe('change', AmazonTemplateSynchronizationHandlerObj.revisePrice_change)
             .simulate('change');
@@ -191,6 +199,48 @@
                     </td>
                 </tr>
 
+                <tr id="revise_update_qty_max_applied_value_line_tr">
+                    <td class="value" colspan="2" style="width: auto;">
+                        <hr style="border: 1px solid silver; border-bottom: none;">
+                    </td>
+                <tr>
+
+                <tr>
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Details'); ?>: </label>
+                    </td>
+                    <td class="value" style="width: auto;">
+                        <select id="revise_update_details" name="revise_update_details" class="required-entry">
+                            <option value="0" <?php if ($formData['revise_update_details'] == 0): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
+                            <option value="1" <?php if ($formData['revise_update_details'] == 1): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
+                        </select>
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__('
+                                Automatically revises Condition Note, Gift Message, Gift Wrap settings, data from Description Policy, Shipping Template Policy and Product Tax Code Policy
+                                in Amazon Listing when there are changes made to Magento Attribute of at least one mentioned parameter.
+                            '); ?></span>
+                        </p>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Images'); ?>: </label>
+                    </td>
+                    <td class="value" style="width: auto;">
+                        <select id="revise_update_images" name="revise_update_images" class="required-entry">
+                            <option value="0" <?php if ($formData['revise_update_images'] == 0): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
+                            <option value="1" <?php if ($formData['revise_update_images'] == 1): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
+                        </select>
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__('
+                                Automatically revises Item Image in Amazon Listing if Product Image or Magento
+                                Attribute value used for Product Image is changed in Magento.
+                            '); ?></span>
+                        </p>
+                    </td>
+                </tr>
+
             </table>
 
         </div>
@@ -200,17 +250,11 @@
 
 <div id="revise_qty_max_applied_value_confirmation_popup_template" style="display: none;">
     <div style="padding: 5px">
-        <?php echo Mage::helper('M2ePro')->__('
-            <br/>It is necessary to understand that Disabling this Option can <strong>negatively</strong> influence on <strong>M2E Pro Performance</strong>.<br/><br/>
-            In case this Option is <strong>Disabled</strong>, M2E Pro will Revise the smallest changes for High Quantity Values (e.g. from 515 to 514), that most likely has no practical effect.
-            It can be time-consuming and more important changes (e.g. from 1 to 0) for another Product can be <strong>stayed in queue</strong> instead of immediate update.
-            Also it can cause increase of Order Import passivity up to 12 hours.<br/>
-            If you <strong>Enable</strong> "Conditional Revise" Option and "Revise When Less or Equal to" Option is set to 5, M2E Pro will Revise your Products in realtime format only when Magento Quantity will be less or equal 5.
-            Revise will not be run until the Quantity Value is more than 5.<br/><br/>
-            So M2E Pro <strong>does not recommend</strong> to Disable this Option and suggests to specify for "Revise When Less or Equal to" Option Value 5 (The less Value = less Unuseful Calls + more Performance of M2E Pro).<br/>
-            You can always change this Option Value according to your needs.<br/><br/>
-            <strong>Note:</strong> For Sellers who synchronize Magento Inventory with Suppliers Inventory by any Automatic Software this Option is <strong>critically required</strong>, as usually Supplier\'s Quantity has Big Values and it is changed very often.
-            '); ?>
+        <?php echo Mage::helper('M2ePro')->__(
+            '<br/>Disabling this option might affect synchronization performance. Please read
+ <a href="%url%" target="_blank">this article</a> before using the option.',
+            Mage::helper('M2ePro/Module_Support')->getSupportUrl('knowledgebase/1579746/')
+        ); ?>
     </div>
 
     <div style="float: right; padding: 10px;">
@@ -219,20 +263,45 @@
     </div>
 </div>
 
-<div id="revise_price_max_max_allowed_deviation_confirmation_popup_template" style="display: none;">
+<div id="revise_update_details_confirmation_popup_template" style="display: none;">
     <div style="padding: 5px">
-        <?php echo Mage::helper('M2ePro')->__('
-            <br/>It is necessary to understand that Disabling this Option can <strong>negatively</strong> influence on <strong>M2E Pro Performance</strong>.<br/><br/>
-            In case this Option is <strong>Disabled</strong>, M2E Pro will Revise the smallest changes for Price Values (e.g. from 25.25$ to 25.26$), that most likely has no practical effect.
-            It can be time-consuming and more important changes (e.g. from 1$ to 50$) for another Product can be <strong>stayed in queue</strong> instead of immediate update. Also it can cause increase of Order Import passivity up to 12 hours.<br/>
-            If you <strong>Enable</strong> "Conditional Revise" Option and "Revise When Deviation More or Equal than" set to 3%, M2E Pro will Revise your Products in realtime format only when Price change will be more than 3% from Starting Price.<br/><br/>
-            So M2E Pro <strong>does not recommend</strong> to Disable this Option (The more value = less Unusefull Calls + more Performance of M2E Pro).<br/>
-            You can always change this Option Value according to your needs.<br/><br/>
-            <strong>Note:</strong> For Sellers who synchronize Magento Inventory with Suppliers Inventory by any Automatic Software this Option is <strong>critically required</strong>, as Supplier\s Price Values are changed very often.
-        '); ?>
+        <?php echo Mage::helper('M2ePro')->__(
+            '<br/>Enabling this option might affect synchronization performance. Please read
+             <a href="%url%" target="_blank">this article</a> before using the option.',
+            Mage::helper('M2ePro/Module_Support')->getSupportUrl('knowledgebase/1580145/')
+        ); ?>
     </div>
 
     <div style="float: right; padding: 10px;">
+        <a href="javascript:void(0)" onclick="Windows.getFocusedWindow().close()"><?php echo Mage::helper('M2ePro')->__('Cancel') ?></a>&nbsp;&nbsp;
+        <button onclick="AmazonTemplateSynchronizationHandlerObj.reviseDetailsEnableConfirm()"><?php echo Mage::helper('M2ePro')->__('Confirm') ?></button>
+    </div>
+</div>
+
+<div id="revise_update_images_confirmation_popup_template" style="display: none;">
+    <div style="padding: 5px">
+        <?php echo Mage::helper('M2ePro')->__(
+            '<br/>Enabling this option might affect synchronization performance. Please read
+             <a href="%url%" target="_blank">this article</a> before using the option.',
+            Mage::helper('M2ePro/Module_Support')->getSupportUrl('knowledgebase/1580145/')
+        ); ?>
+    </div>
+
+    <div style="float: right; padding: 10px;">
+        <a href="javascript:void(0)" onclick="Windows.getFocusedWindow().close()"><?php echo Mage::helper('M2ePro')->__('Cancel') ?></a>&nbsp;&nbsp;
+        <button onclick="AmazonTemplateSynchronizationHandlerObj.reviseImagesEnableConfirm()"><?php echo Mage::helper('M2ePro')->__('Confirm') ?></button>
+    </div>
+</div>
+
+<div id="revise_price_max_max_allowed_deviation_confirmation_popup_template" style="display: none;">
+    <div style="padding: 10px 15px;">
+        <?php echo Mage::helper('M2ePro')->__(
+            'Disabling this option might affect synchronization performance. Please read this <a href="%url%" target="_blank">article</a> before using the option.',
+            Mage::helper('M2ePro/Module_Support')->getKnowledgeBaseUrl('1587081')
+        ); ?>
+    </div>
+
+    <div style="float: right; padding-bottom: 20px;">
         <a href="javascript:void(0)" onclick="Windows.getFocusedWindow().close()"><?php echo Mage::helper('M2ePro')->__('Cancel') ?></a>&nbsp;&nbsp;
         <button onclick="AmazonTemplateSynchronizationHandlerObj.revisePriceMaxAllowedDeviationDisableConfirm()"><?php echo Mage::helper('M2ePro')->__('Confirm') ?></button>
     </div>

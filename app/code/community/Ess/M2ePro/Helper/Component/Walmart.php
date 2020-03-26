@@ -135,6 +135,18 @@ class Ess_M2ePro_Helper_Component_Walmart extends Mage_Core_Helper_Abstract
         return 'https://'.$domain.'/ip/'.$productItemId;
     }
 
+    public function getIdentifierForItemUrl($marketplaceId)
+    {
+        switch ($marketplaceId) {
+            case Ess_M2ePro_Helper_Component_Walmart::MARKETPLACE_US:
+                return 'item_id';
+            case Ess_M2ePro_Helper_Component_Walmart::MARKETPLACE_CA:
+                return 'wpid';
+            default:
+                throw new Ess_M2ePro_Model_Exception_Logic('Unknown Marketplace ID.');
+        }
+    }
+
     //########################################
 
     public function isASIN($string)

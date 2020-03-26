@@ -287,7 +287,6 @@ class Ess_M2ePro_Model_Walmart_Listing extends Ess_M2ePro_Model_Component_Child_
             'wpid'                    => $walmartListingOther->getWpid(),
 
             'item_id'                 => $walmartListingOther->getItemId(),
-            'channel_url'             => $walmartListingOther->getChannelUrl(),
 
             'online_price'            => $walmartListingOther->getOnlinePrice(),
             'online_qty'              => $walmartListingOther->getOnlineQty(),

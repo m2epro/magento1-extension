@@ -29,7 +29,7 @@ class Ess_M2ePro_Block_Adminhtml_Support extends Mage_Adminhtml_Block_Widget_For
         // Set header text
         // ---------------------------------------
         $version = '<span style="color: #777; font-size: small; font-weight: normal">' .
-                            '(M2E Pro ver. '.Mage::helper('M2ePro/Module')->getVersion().')' .
+                            '(M2E Pro ver. '.Mage::helper('M2ePro/Module')->getPublicVersion().')' .
                          '</span>';
         $this->_headerText = Mage::helper('M2ePro')->__('Support') . " {$version}";
         // ---------------------------------------

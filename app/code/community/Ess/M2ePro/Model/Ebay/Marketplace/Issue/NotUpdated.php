@@ -65,7 +65,7 @@ class Ess_M2ePro_Model_Ebay_Marketplace_Issue_NotUpdated extends Ess_M2ePro_Mode
         $textToTranslate = <<<TEXT
 %marketplace_title% data was changed on eBay. You need to resynchronize the marketplace(s) to correctly
 associate your products with eBay catalog.<br>
-Please go to %menu_path% > <a href="%url%" target="_blank">eBay Sites</a> and press <b>Update All Now</b>.
+Please go to %menu_path% > <a href="%url%" target="_blank">Marketplaces</a> and press <b>Update All Now</b>.
 TEXT;
 
         $tempMessage = Mage::helper('M2ePro')->__(

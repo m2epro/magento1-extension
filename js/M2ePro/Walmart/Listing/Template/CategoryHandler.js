@@ -2,26 +2,6 @@ WalmartListingTemplateCategoryHandler = Class.create(ActionHandler, {
 
     // ---------------------------------------
 
-    initialize: function($super,gridHandler)
-    {
-        var self = this;
-
-        $super(gridHandler);
-
-    },
-
-    // ---------------------------------------
-
-    options: {},
-
-    setOptions: function(options)
-    {
-        this.options = Object.extend(this.options,options);
-        return this;
-    },
-
-    // ---------------------------------------
-
     mapToTemplateCategory: function(el, templateId)
     {
         var self = this;
@@ -30,7 +10,7 @@ WalmartListingTemplateCategoryHandler = Class.create(ActionHandler, {
             return;
         }
 
-        new Ajax.Request(self.options.url.mapToTemplateCategory, {
+        new Ajax.Request(M2ePro.url.mapToTemplateCategory, {
             method: 'post',
             parameters: {
                 products_ids: templateCategoryPopup.productsIds,
@@ -66,7 +46,7 @@ WalmartListingTemplateCategoryHandler = Class.create(ActionHandler, {
         var self = this;
         self.flagSuccess = false;
 
-        new Ajax.Request(self.options.url.validateProductsForTemplateCategoryAssign, {
+        new Ajax.Request(M2ePro.url.validateProductsForTemplateCategoryAssign, {
             method: 'post',
             parameters: {
                 products_ids: productsIds
@@ -95,7 +75,7 @@ WalmartListingTemplateCategoryHandler = Class.create(ActionHandler, {
                     popUp.close();
                 }
 
-                self.openPopUp(0,self.options.text.templateCategoryPopupTitle, response.products_ids, magentoCategoriesIds, response.data);
+                self.openPopUp(0,M2ePro.text.templateCategoryPopupTitle, response.products_ids, magentoCategoriesIds, response.data);
             }
         });
     },
@@ -140,7 +120,7 @@ WalmartListingTemplateCategoryHandler = Class.create(ActionHandler, {
 
     loadTemplateCategoryGrid: function() {
 
-        new Ajax.Request(this.options.url.viewTemplateCategoriesGrid, {
+        new Ajax.Request(M2ePro.url.viewTemplateCategoriesGrid, {
             method: 'post',
             parameters: {
                 products_ids: templateCategoryPopup.productsIds,

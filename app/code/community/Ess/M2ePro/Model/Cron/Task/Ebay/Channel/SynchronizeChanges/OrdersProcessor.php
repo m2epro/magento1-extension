@@ -29,17 +29,6 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_OrdersProcessor
 
     //########################################
 
-    public function isPossibleToRun()
-    {
-        if (Mage::helper('M2ePro/Server_Maintenance')->isNow()) {
-            return false;
-        }
-
-        return parent::isPossibleToRun();
-    }
-
-    //########################################
-
     public function process()
     {
         $permittedAccounts = $this->getPermittedAccounts();

@@ -80,8 +80,10 @@ class Ess_M2ePro_Adminhtml_Amazon_AccountController
 
         $marketplaces = Mage::helper('M2ePro/Component_Amazon')->getMarketplacesAvailableForApiCreation();
         if ($marketplaces->getSize() <= 0) {
-            $message = 'You should select and update at least one Amazon marketplace.';
-            $this->_getSession()->addError(Mage::helper('M2ePro')->__($message));
+            $this->_getSession()->addError(
+                Mage::helper('M2ePro')->__('You should select and update at least one Amazon marketplace.')
+            );
+
             return $this->indexAction();
         }
 
@@ -123,10 +125,13 @@ class Ess_M2ePro_Adminhtml_Amazon_AccountController
             $response = $connectorObj->getResponseData();
         } catch (Exception $exception) {
             Mage::helper('M2ePro/Module_Exception')->process($exception);
-            $error = 'The Amazon token obtaining is currently unavailable.<br/>Reason: %error_message%';
-            $error = Mage::helper('M2ePro')->__($error, $exception->getMessage());
 
-            $this->_getSession()->addError($error);
+            $this->_getSession()->addError(
+                Mage::helper('M2ePro')->__(
+                    'The Amazon token obtaining is currently unavailable.<br/>Reason: %error_message%',
+                    $exception->getMessage()
+                )
+            );
 
             return $this->indexAction();
         }
@@ -136,7 +141,6 @@ class Ess_M2ePro_Adminhtml_Amazon_AccountController
         Mage::helper('M2ePro/Data_Session')->setValue('marketplace', $marketplace);
 
         $this->_redirectUrl($response['url']);
-        // ---------------------------------------
     }
 
     public function afterGetTokenAction()
@@ -171,15 +175,35 @@ class Ess_M2ePro_Adminhtml_Amazon_AccountController
         Mage::helper('M2ePro/Data_Session')->setValue('merchant_id', $params['Merchant']);
         Mage::helper('M2ePro/Data_Session')->setValue('mws_token', $params['MWSAuthToken']);
 
-        $params = array('wizard' => (bool)$this->getRequest()->getParam('wizard', false));
+        $urlParams = array('wizard' => (bool)$this->getRequest()->getParam('wizard', false));
         if ($accountId == 0) {
-            $this->_redirect('*/*/new', $params);
-        } else {
-            $params['id'] = $accountId;
-            $this->_redirect('*/*/edit', $params);
+            return $this->_redirect('*/*/new', $urlParams);
         }
 
-        // ---------------------------------------
+        try {
+            $data = array(
+                'merchant_id' => $params['Merchant'],
+                'token'       => $params['MWSAuthToken']
+            );
+
+            $model = $this->updateAccount($accountId, $data);
+            $this->sendDataToServer($model);
+        } catch (Exception $exception) {
+            Mage::helper('M2ePro/Module_Exception')->process($exception);
+
+            $this->_getSession()->addError(
+                Mage::helper('M2ePro')->__(
+                    'The Amazon access obtaining is currently unavailable.<br/>Reason: %error_message%',
+                    $exception->getMessage()
+                )
+            );
+
+            return $this->indexAction();
+        }
+
+        $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Token was successfully saved'));
+        $urlParams['id'] = $accountId;
+        $this->_redirect('*/*/edit', $urlParams);
     }
 
     //########################################
@@ -189,8 +213,6 @@ class Ess_M2ePro_Adminhtml_Amazon_AccountController
         if (!$post = $this->getRequest()->getPost()) {
             $this->_redirect('*/*/index');
         }
-
-        $id = $this->getRequest()->getParam('id');
 
         // Base prepare
         // ---------------------------------------
@@ -499,8 +521,6 @@ class Ess_M2ePro_Adminhtml_Amazon_AccountController
         $data['magento_orders_settings'] = Mage::helper('M2ePro')->jsonEncode($data['magento_orders_settings']);
         // ---------------------------------------
 
-        $isEdit = $id !== null;
-
         // tab: vat calculation service
         // ---------------------------------------
         $keys = array(
@@ -521,14 +541,7 @@ class Ess_M2ePro_Adminhtml_Amazon_AccountController
 
         // Add or update model
         // ---------------------------------------
-        $model = Mage::helper('M2ePro/Component_Amazon')->getModel('Account');
-        $id === null && $model->setData($data);
-        $id !== null && $model->loadInstance($id)->addData($data);
-        $oldData = $model->getOrigData();
-        $id = $model->save()->getId();
-        // ---------------------------------------
-
-        $model->getChildObject()->save();
+        $model = $this->updateAccount($this->getRequest()->getParam('id'), $data);
 
         // Repricing
         // ---------------------------------------
@@ -566,60 +579,18 @@ class Ess_M2ePro_Adminhtml_Amazon_AccountController
         try {
             // Add or update server
             // ---------------------------------------
-
-            /** @var $accountObj Ess_M2ePro_Model_Account */
-            $accountObj = $model;
-
-            if (!$accountObj->isSetProcessingLock('server_synchronize')) {
-
-                /** @var $dispatcherObject Ess_M2ePro_Model_Amazon_Connector_Dispatcher */
-                $dispatcherObject = Mage::getModel('M2ePro/Amazon_Connector_Dispatcher');
-
-                if (!$isEdit) {
-                    $params = array(
-                        'title'            => $post['title'],
-                        'marketplace_id'   => (int)$post['marketplace_id'],
-                        'merchant_id'      => $post['merchant_id'],
-                        'token'            => $post['token'],
-                        'related_store_id' => (int)$post['related_store_id']
-                    );
-
-                    $connectorObj = $dispatcherObject->getConnector(
-                        'account', 'add', 'entityRequester',
-                        $params, $id
-                    );
-                    $dispatcherObject->process($connectorObj);
-                } else {
-                    $newData = array(
-                        'title'            => $post['title'],
-                        'marketplace_id'   => (int)$post['marketplace_id'],
-                        'merchant_id'      => $post['merchant_id'],
-                        'token'            => $post['token'],
-                        'related_store_id' => (int)$post['related_store_id']
-                    );
-
-                    $params = array_diff_assoc($newData, $oldData);
-
-                    if (!empty($params)) {
-                        $connectorObj = $dispatcherObject->getConnector(
-                            'account', 'update', 'entityRequester',
-                            $params, $id
-                        );
-                        $dispatcherObject->process($connectorObj);
-                    }
-                }
-            }
-
-            // ---------------------------------------
+            $this->sendDataToServer($model);
         } catch (Exception $exception) {
             Mage::helper('M2ePro/Module_Exception')->process($exception);
 
-            $error = 'The Amazon access obtaining is currently unavailable.<br/>Reason: %error_message%';
-            $error = Mage::helper('M2ePro')->__($error, $exception->getMessage());
+            $this->_getSession()->addError(
+                Mage::helper('M2ePro')->__(
+                    'The Amazon access obtaining is currently unavailable.<br/>Reason: %error_message%',
+                    $exception->getMessage()
+                )
+            );
 
-            $this->_getSession()->addError($error);
-
-            if (!$isEdit) {
+            if (!$model->getData('isEdit')) {
                 $model->deleteInstance();
             }
 
@@ -631,7 +602,7 @@ class Ess_M2ePro_Adminhtml_Amazon_AccountController
         /** @var $wizardHelper Ess_M2ePro_Helper_Module_Wizard */
         $wizardHelper = Mage::helper('M2ePro/Module_Wizard');
 
-        $routerParams = array('id'=>$id);
+        $routerParams = array('id' => $model->getId());
         if ($wizardHelper->isActive('installationAmazon') &&
             $wizardHelper->getStep('installationAmazon') == 'account') {
             $routerParams['wizard'] = true;
@@ -696,12 +667,14 @@ class Ess_M2ePro_Adminhtml_Amazon_AccountController
             $deleted++;
         }
 
-        $tempString = Mage::helper('M2ePro')->__('%amount% record(s) were successfully deleted.', $deleted);
-        $deleted && $this->_getSession()->addSuccess($tempString);
-
-        $tempString  = Mage::helper('M2ePro')->__('%amount% record(s) are used in M2E Pro Listing(s).', $locked) . ' ';
-        $tempString .= Mage::helper('M2ePro')->__('Account must not be in use to be deleted.');
-        $locked && $this->_getSession()->addError($tempString);
+        $deleted && $this->_getSession()->addSuccess(
+            Mage::helper('M2ePro')->__('%amount% record(s) were successfully deleted.', $deleted)
+        );
+        $locked && $this->_getSession()->addError(
+            Mage::helper('M2ePro')->__(
+                '%amount% record(s) are used in M2E Pro Listing(s). Account must not be in use to be deleted.', $locked
+            )
+        );
 
         $this->_redirect('*/*/index');
     }
@@ -737,8 +710,7 @@ class Ess_M2ePro_Adminhtml_Amazon_AccountController
 
                 $response = $connectorObj->getResponseData();
 
-                $result['result'] = isset($response['status']) ? $response['status']
-                                                               : null;
+                $result['result'] = isset($response['status']) ? $response['status'] : null;
                 if (isset($response['reason'])) {
                     $result['reason'] = Mage::helper('M2ePro')->escapeJs($response['reason']);
                 }
@@ -759,7 +731,7 @@ class Ess_M2ePro_Adminhtml_Amazon_AccountController
             $dispatcherObject = Mage::getModel('M2ePro/M2ePro_Connector_Dispatcher');
             $connectorObj = $dispatcherObject->getVirtualConnector(
                 'account', 'get', 'info', array(
-                'account' => $account->getChildObject()->getServerHash()
+                    'account' => $account->getChildObject()->getServerHash()
                 )
             );
 
@@ -786,6 +758,66 @@ class Ess_M2ePro_Adminhtml_Amazon_AccountController
         );
 
         return 'MagentoMessageObj.addError(\''.$errorMessage.'\');';
+    }
+
+    //########################################
+
+    protected function updateAccount($id, $data)
+    {
+        $model = Mage::helper('M2ePro/Component_Amazon')->getModel('Account');
+
+        if (isset($id)) {
+            $model->loadInstance($id);
+            $model->addData($data);
+            $model->setData('isEdit', true);
+        } else {
+            $model->setData($data);
+            $model->setData('isEdit', false);
+        }
+
+        $model->save();
+        $model->getChildObject()->save();
+
+        return $model;
+    }
+
+    protected function sendDataToServer($model)
+    {
+        /** @var $accountObj Ess_M2ePro_Model_Account */
+        $accountObj = $model;
+
+        if (!$accountObj->isSetProcessingLock('server_synchronize')) {
+            /** @var $dispatcherObject Ess_M2ePro_Model_Amazon_Connector_Dispatcher */
+            $dispatcherObject = Mage::getModel('M2ePro/Amazon_Connector_Dispatcher');
+
+            $data = array(
+                'title'            => $model->getTitle(),
+                'marketplace_id'   => $model->getMarketplaceId(),
+                'merchant_id'      => $model->getMerchantId(),
+                'token'            => $model->getToken(),
+                'related_store_id' => $model->getRelatedStoreId()
+            );
+
+            if (!$model->getData('isEdit')) {
+                $connectorObj = $dispatcherObject->getConnector(
+                    'account', 'add', 'entityRequester',
+                    $data,
+                    $model->getId()
+                );
+                $dispatcherObject->process($connectorObj);
+            } else {
+                $params = array_diff_assoc($data, $model->getOrigData());
+
+                if (!empty($params)) {
+                    $connectorObj = $dispatcherObject->getConnector(
+                        'account', 'update', 'entityRequester',
+                        $params,
+                        $model->getId()
+                    );
+                    $dispatcherObject->process($connectorObj);
+                }
+            }
+        }
     }
 
     //########################################

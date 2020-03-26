@@ -18,7 +18,7 @@ class Ess_M2ePro_Sql_Upgrade_v6_3_4__v6_3_5_AllFeatures extends Ess_M2ePro_Model
 
             $installer->run(<<<SQL
 
-    CREATE TABLE m2epro_amazon_dictionary_category_product_data (
+    CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_dictionary_category_product_data')}` (
         id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
         marketplace_id INT(11) UNSIGNED NOT NULL,
         browsenode_id INT(11) UNSIGNED NOT NULL,
@@ -164,19 +164,10 @@ SQL
 
         // ---------------------------------------
 
-        $orderRepairTable = $installer->getTable('m2epro_order_repair');
-        $orderMatchingTable = $installer->getTable('m2epro_order_matching');
-
-        if ($installer->tableExists($orderMatchingTable) === false &&
-            $installer->tableExists($orderRepairTable) !== false) {
-
-            $installer->run(<<<SQL
-
-RENAME TABLE m2epro_order_repair TO m2epro_order_matching;
-
-SQL
-            );
-        }
+        $this->_installer->getTablesObject()->renameTable(
+            'm2epro_order_repair',
+            'm2epro_order_matching'
+        );
 
         // ---------------------------------------
 

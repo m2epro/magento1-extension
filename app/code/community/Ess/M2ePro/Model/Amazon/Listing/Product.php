@@ -636,22 +636,6 @@ class Ess_M2ePro_Model_Amazon_Listing_Product extends Ess_M2ePro_Model_Component
         return $this->getSettings('online_images_data');
     }
 
-    /**
-     * @return bool
-     */
-    public function isDetailsDataChanged()
-    {
-        return (bool)$this->getData('is_details_data_changed');
-    }
-
-    /**
-     * @return bool
-     */
-    public function isImagesDataChanged()
-    {
-        return (bool)$this->getData('is_images_data_changed');
-    }
-
     // ---------------------------------------
 
     /**
@@ -1189,41 +1173,6 @@ class Ess_M2ePro_Model_Amazon_Listing_Product extends Ess_M2ePro_Model_Component
         }
 
         return $resultValue;
-    }
-
-    //########################################
-
-    public function listAction(array $params = array())
-    {
-        return $this->processDispatcher(Ess_M2ePro_Model_Listing_Product::ACTION_LIST, $params);
-    }
-
-    public function relistAction(array $params = array())
-    {
-        return $this->processDispatcher(Ess_M2ePro_Model_Listing_Product::ACTION_RELIST, $params);
-    }
-
-    public function reviseAction(array $params = array())
-    {
-        return $this->processDispatcher(Ess_M2ePro_Model_Listing_Product::ACTION_REVISE, $params);
-    }
-
-    public function stopAction(array $params = array())
-    {
-        return $this->processDispatcher(Ess_M2ePro_Model_Listing_Product::ACTION_STOP, $params);
-    }
-
-    public function deleteAction(array $params = array())
-    {
-        return $this->processDispatcher(Ess_M2ePro_Model_Listing_Product::ACTION_DELETE, $params);
-    }
-
-    // ---------------------------------------
-
-    protected function processDispatcher($action, array $params = array())
-    {
-        $dispatcherObject = Mage::getModel('M2ePro/Amazon_Connector_Product_Dispatcher');
-        return $dispatcherObject->process($action, $this->getId(), $params);
     }
 
     //########################################

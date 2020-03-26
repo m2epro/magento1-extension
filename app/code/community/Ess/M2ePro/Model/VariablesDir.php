@@ -27,11 +27,11 @@ class Ess_M2ePro_Model_VariablesDir
         $this->_pathVariablesDirBase = Mage::getBaseDir('var').DS.self::BASE_NAME;
 
         if ($params['child_folder'] !== null) {
-            if ($params['child_folder']{0} != DS) {
+            if ($params['child_folder'][0] != DS) {
                 $params['child_folder'] = DS.$params['child_folder'];
             }
 
-            if ($params['child_folder']{strlen($params['child_folder'])-1} != DS) {
+            if ($params['child_folder'][strlen($params['child_folder'])-1] != DS) {
                 $params['child_folder'] .= DS;
             }
 

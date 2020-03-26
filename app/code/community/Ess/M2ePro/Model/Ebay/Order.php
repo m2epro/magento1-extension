@@ -650,17 +650,14 @@ class Ess_M2ePro_Model_Ebay_Order extends Ess_M2ePro_Model_Component_Child_Ebay_
     {
         $ebayAccount = $this->getEbayAccount();
 
-        if (!$this->isCheckoutCompleted()
-            && ($ebayAccount->shouldCreateMagentoOrderWhenCheckedOut()
-                || $ebayAccount->shouldCreateMagentoOrderWhenCheckedOutAndPaid())
+        if (!$this->isCheckoutCompleted() &&
+            ($ebayAccount->shouldCreateMagentoOrderWhenCheckedOut() ||
+             $ebayAccount->shouldCreateMagentoOrderWhenCheckedOutAndPaid())
         ) {
             return false;
         }
 
-        if (!$this->isPaymentCompleted()
-            && ($ebayAccount->shouldCreateMagentoOrderWhenPaid()
-                || $ebayAccount->shouldCreateMagentoOrderWhenCheckedOutAndPaid())
-        ) {
+        if (!$this->isPaymentCompleted() && $ebayAccount->shouldCreateMagentoOrderWhenCheckedOutAndPaid()) {
             return false;
         }
 
@@ -929,6 +926,7 @@ class Ess_M2ePro_Model_Ebay_Order extends Ess_M2ePro_Model_Component_Child_Ebay_
     /**
      * @param array $params
      * @return bool
+     * @throws Ess_M2ePro_Model_Exception_Logic
      */
     public function updatePaymentStatus(array $params = array())
     {
@@ -936,11 +934,13 @@ class Ess_M2ePro_Model_Ebay_Order extends Ess_M2ePro_Model_Component_Child_Ebay_
             return false;
         }
 
-        $action    = Ess_M2ePro_Model_Order_Change::ACTION_UPDATE_PAYMENT;
-        $creator   = $this->getParentObject()->getLog()->getInitiator();
-        $component = Ess_M2ePro_Helper_Component_Ebay::NICK;
-
-        Mage::getModel('M2ePro/Order_Change')->create($this->getId(), $action, $creator, $component, $params);
+        Mage::getModel('M2ePro/Order_Change')->create(
+            $this->getId(),
+            Ess_M2ePro_Model_Order_Change::ACTION_UPDATE_PAYMENT,
+            $this->getParentObject()->getLog()->getInitiator(),
+            Ess_M2ePro_Helper_Component_Ebay::NICK,
+            $params
+        );
 
         return true;
     }
@@ -972,6 +972,7 @@ class Ess_M2ePro_Model_Ebay_Order extends Ess_M2ePro_Model_Component_Child_Ebay_
     /**
      * @param array $trackingDetails
      * @return bool
+     * @throws Ess_M2ePro_Model_Exception_Logic
      */
     public function updateShippingStatus(array $trackingDetails = array())
     {
@@ -1003,11 +1004,13 @@ class Ess_M2ePro_Model_Ebay_Order extends Ess_M2ePro_Model_Component_Child_Ebay_
 
         $params = array_merge($params, $trackingDetails);
 
-        $action    = Ess_M2ePro_Model_Order_Change::ACTION_UPDATE_SHIPPING;
-        $creator   = $this->getParentObject()->getLog()->getInitiator();
-        $component = Ess_M2ePro_Helper_Component_Ebay::NICK;
-
-        Mage::getModel('M2ePro/Order_Change')->create($this->getId(), $action, $creator, $component, $params);
+        Mage::getModel('M2ePro/Order_Change')->create(
+            $this->getId(),
+            Ess_M2ePro_Model_Order_Change::ACTION_UPDATE_SHIPPING,
+            $this->getParentObject()->getLog()->getInitiator(),
+            Ess_M2ePro_Helper_Component_Ebay::NICK,
+            $params
+        );
 
         return true;
     }

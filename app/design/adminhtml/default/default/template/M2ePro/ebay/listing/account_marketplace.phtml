@@ -128,7 +128,7 @@
                     <table class="form-list" cellspacing="0" cellpadding="0">
                         <tr>
                             <td class="label">
-                                <label><?php echo Mage::helper('M2ePro')->__('eBay Site'); ?>: <span class="required">*</span></label>
+                                <label><?php echo Mage::helper('M2ePro')->__('Marketplace'); ?>: <span class="required">*</span></label>
                             </td>
 
                             <td class="value">
@@ -150,8 +150,8 @@
                                 </select>
                                 <p class="note">
                                     <span><?php echo Mage::helper('M2ePro')->__(
-                                        'Choose the eBay Site you want to list on using this M2E Pro Listing. <br/>
-                                         Currency will be set automatically based on the eBay Site you choose.'
+                                        'Choose the Marketplace you want to list on using this M2E Pro Listing. <br/>
+                                         Currency will be set automatically based on the Marketplace you choose.'
                                     ); ?></span>
                                 </p>
 
@@ -297,12 +297,6 @@
         M2ePro.url.set(
             'adminhtml_ebay_listing_create/index','<?php echo $this->getUrl('*/adminhtml_ebay_listing_create/index', array('_current' => true, 'step' => 1)); ?>'
         );
-
-        M2ePro.translator.add(<?php echo json_encode(array(
-            'Another Synchronization Is Already Running.' => Mage::helper('M2ePro')->__('Another Synchronization Is Already Running.'),
-            'Getting information. Please wait ...' => Mage::helper('M2ePro')->__('Getting information. Please wait ...'),
-            'Preparing to start. Please wait ...' => Mage::helper('M2ePro')->__('Preparing to start. Please wait ...'),
-        )); ?>);
 
         var marketplaceSynchProgressHandlerObj = new EbayListingMarketplaceSynchProgressHandler(
             new ProgressBar('progress_bar'),

@@ -41,7 +41,7 @@ JS;
 
         $result = '';
         foreach ($this->_js as $orderIndex => $jsS) {
-            $result .= implode(array_values($jsS), PHP_EOL) . PHP_EOL;
+            $result .= implode(PHP_EOL, array_values($jsS)) . PHP_EOL;
         }
 
         $this->_js = array();

@@ -13,11 +13,15 @@ class Ess_M2ePro_Adminhtml_Ebay_Template_SellingFormatController
 
     public function getSearchCharityPopUpHtmlAction()
     {
+        $marketplaceId = $this->getRequest()->getParam('marketplace_id');
+
         $this->loadLayout();
 
         try {
             $searchBlock = $this->getLayout()->createBlock(
-                'M2ePro/adminhtml_ebay_template_sellingFormat_searchCharity'
+                'M2ePro/adminhtml_ebay_template_sellingFormat_searchCharity', '', array(
+                    'marketplace_id' => $marketplaceId
+                )
             );
             $this->getResponse()->setBody($searchBlock->toHtml());
         } catch (Exception $e) {

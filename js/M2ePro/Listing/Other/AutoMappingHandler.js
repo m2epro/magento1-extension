@@ -2,16 +2,6 @@ ListingOtherAutoMappingHandler = Class.create(ActionHandler, {
 
     // ---------------------------------------
 
-    options: {},
-
-    setOptions: function(options)
-    {
-        this.options = Object.extend(this.options,options);
-        return this;
-    },
-
-    // ---------------------------------------
-
     run: function()
     {
         this.mapProductsAuto(
@@ -45,7 +35,7 @@ ListingOtherAutoMappingHandler = Class.create(ActionHandler, {
         var selectedProductsParts = result;
 
         ListingProgressBarObj.reset();
-        ListingProgressBarObj.show(self.options.text.automap_progress_title);
+        ListingProgressBarObj.show(M2ePro.text.automap_progress_title);
         GridWrapperObj.lock();
         $('loading-mask').setStyle({visibility: 'hidden'});
 
@@ -60,12 +50,12 @@ ListingOtherAutoMappingHandler = Class.create(ActionHandler, {
             MagentoMessageObj.clearAll();
 
             if (isFailed == 1) {
-                MagentoMessageObj.addError(self.options.text.failed_mapped);
+                MagentoMessageObj.addError(M2ePro.text.failed_mapped);
             } else {
-                MagentoMessageObj.addSuccess(self.options.text.successfully_mapped);
+                MagentoMessageObj.addSuccess(M2ePro.text.successfully_mapped);
             }
 
-            ListingProgressBarObj.setStatus(self.options.text.task_completed_message);
+            ListingProgressBarObj.setStatus(M2ePro.text.task_completed_message);
             ListingProgressBarObj.hide();
             ListingProgressBarObj.reset();
             GridWrapperObj.unlock();
@@ -83,12 +73,12 @@ ListingOtherAutoMappingHandler = Class.create(ActionHandler, {
         var partExecuteString = part.length;
         partExecuteString += '';
 
-        ListingProgressBarObj.setStatus(str_replace('%product_title%', partExecuteString, self.options.text.processing_data_message));
+        ListingProgressBarObj.setStatus(str_replace('%product_title%', partExecuteString, M2ePro.text.processing_data_message));
 
-        new Ajax.Request(self.options.url.mapAutoToProduct, {
+        new Ajax.Request(M2ePro.url.mapAutoToProduct, {
             method: 'post',
             parameters: {
-                componentMode: self.options.customData.componentMode,
+                componentMode: M2ePro.customData.componentMode,
                 product_ids: partString
             },
             onSuccess: function(transport) {

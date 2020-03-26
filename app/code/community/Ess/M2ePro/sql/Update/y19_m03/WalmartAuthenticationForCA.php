@@ -6,13 +6,6 @@ class Ess_M2ePro_Sql_Update_y19_m03_WalmartAuthenticationForCA extends Ess_M2ePr
 {
     //########################################
 
-    public function getBackupTables()
-    {
-        return array(
-            'walmart_account'
-        );
-    }
-
     public function execute()
     {
         $this->_installer->getTableModifier('walmart_account')

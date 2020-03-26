@@ -267,7 +267,7 @@ AmazonListingVariationProductManageVariationsGridHandler = Class.create(ListingG
                 return;
             }
 
-            new Ajax.Request(self.actionHandler.options.url.setChildListingProductOptions, {
+            new Ajax.Request(M2ePro.url.setChildListingProductOptions, {
                 method: 'post',
                 parameters: data,
                 onSuccess: function(transport) {

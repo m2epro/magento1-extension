@@ -6,14 +6,6 @@ class Ess_M2ePro_Sql_Update_y19_m10_Configs extends Ess_M2ePro_Model_Upgrade_Fea
 {
     //########################################
 
-    public function getBackupTables()
-    {
-        return array(
-            'config',
-            'primary_config',
-        );
-    }
-
     public function execute()
     {
         $primaryConfig = $this->_installer->getPrimaryConfigModifier();

@@ -12,43 +12,38 @@ abstract class Ess_M2ePro_Model_Walmart_Connector_Product_Requester
     /**
      * @var Ess_M2ePro_Model_Listing_Product $listingProduct
      */
-    protected $listingProduct = null;
+    protected $_listingProduct = null;
 
     // ---------------------------------------
 
     /**
-     * @var Ess_M2ePro_Model_Listing_Product_LockManager
-     */
-    protected $lockManager = null;
-
-    /**
      * @var Ess_M2ePro_Model_Walmart_Listing_Product_Action_Logger
      */
-    protected $logger = null;
+    protected $_logger = null;
 
     // ---------------------------------------
 
     /**
      * @var Ess_M2ePro_Model_Connector_Connection_Response_Message[]
      */
-    protected $storedLogMessages = array();
+    protected $_storedLogMessages = array();
 
     // ---------------------------------------
 
     /**
      * @var Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Validator $validatorObject
      */
-    protected $validatorObject = null;
+    protected $_validatorObject = null;
 
     /**
      * @var Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Request $requestObject
      */
-    protected $requestObject = null;
+    protected $_requestObject = null;
 
     /**
      * @var Ess_M2ePro_Model_Walmart_Listing_Product_Action_RequestData $requestDataObject
      */
-    protected $requestDataObject = null;
+    protected $_requestDataObject = null;
 
     //########################################
 
@@ -65,19 +60,19 @@ abstract class Ess_M2ePro_Model_Walmart_Connector_Product_Requester
 
     public function setListingProduct(Ess_M2ePro_Model_Listing_Product $listingProduct)
     {
-        $this->listingProduct = $listingProduct;
+        $this->_listingProduct = $listingProduct;
 
-        if ($this->listingProduct->getActionConfigurator() === null) {
-            $this->listingProduct->setActionConfigurator(
+        if ($this->_listingProduct->getActionConfigurator() === null) {
+            $this->_listingProduct->setActionConfigurator(
                 Mage::getModel('M2ePro/Walmart_Listing_Product_Action_Configurator')
             );
         }
 
-        if ($this->listingProduct->getProcessingAction() === null) {
+        if ($this->_listingProduct->getProcessingAction() === null) {
             throw new Ess_M2ePro_Model_Exception_Logic('Processing Action was not set.');
         }
 
-        $this->_account = $this->listingProduct->getAccount();
+        $this->_account = $this->_listingProduct->getAccount();
     }
 
     //########################################
@@ -93,8 +88,8 @@ abstract class Ess_M2ePro_Model_Walmart_Connector_Product_Requester
             parent::getProcessingParams(),
             array(
                 'request_data'       => $this->getRequestData(),
-                'configurator'       => $this->listingProduct->getActionConfigurator()->getData(),
-                'listing_product_id' => $this->listingProduct->getId(),
+                'configurator'       => $this->_listingProduct->getActionConfigurator()->getData(),
+                'listing_product_id' => $this->_listingProduct->getId(),
                 'lock_identifier'    => $this->getLockIdentifier(),
                 'action_type'        => $this->getActionType(),
                 'requester_params'   => $this->_params,
@@ -119,11 +114,7 @@ abstract class Ess_M2ePro_Model_Walmart_Connector_Product_Requester
     {
         $this->getLogger()->setStatus(Ess_M2ePro_Helper_Data::STATUS_SUCCESS);
 
-        /** @var Ess_M2ePro_Model_Walmart_Listing_Product $walmartListingProduct */
-        $walmartListingProduct = $this->listingProduct->getChildObject();
-
-        if ($walmartListingProduct->getVariationManager()->isRelationParentType() &&
-            $this->validateAndProcessParentListingProduct()
+        if ($this->validateAndProcessParentListingProduct()
         ) {
             $this->writeStoredLogMessages();
             $this->getProcessingRunner()->stop();
@@ -178,7 +169,7 @@ abstract class Ess_M2ePro_Model_Walmart_Connector_Product_Requester
     protected function validateConfigurator()
     {
         /** @var Ess_M2ePro_Model_Listing_Product_Action_Configurator $configurator */
-        $configurator = $this->listingProduct->getActionConfigurator();
+        $configurator = $this->_listingProduct->getActionConfigurator();
         $types = $configurator->getAllowedDataTypes();
 
         if (empty($types)) {
@@ -201,36 +192,22 @@ abstract class Ess_M2ePro_Model_Walmart_Connector_Product_Requester
     protected function validateAndProcessParentListingProduct()
     {
         /** @var Ess_M2ePro_Model_Walmart_Listing_Product $walmartListingProduct */
-        $walmartListingProduct = $this->listingProduct->getChildObject();
+        $walmartListingProduct = $this->_listingProduct->getChildObject();
 
         if (!$walmartListingProduct->getVariationManager()->isRelationParentType()) {
             return false;
         }
 
-        $childListingsProducts = $walmartListingProduct->getVariationManager()
-            ->getTypeModel()
-            ->getChildListingsProducts();
+        $childProducts = $walmartListingProduct->getVariationManager()->getTypeModel()->getChildListingsProducts();
+        $childProducts = $this->filterChildListingProductsByStatus($childProducts);
+        $childProducts = $this->filterLockedChildListingProducts($childProducts);
 
-        $childListingsProducts = $this->filterChildListingProductsByStatus($childListingsProducts);
-        $childListingsProducts = $this->filterLockedChildListingProducts($childListingsProducts);
-
-        if (empty($childListingsProducts)) {
-            $this->listingProduct->setData('no_child_for_processing', true);
+        if (empty($childProducts)) {
+            $this->_listingProduct->setData('no_child_for_processing', true);
             return false;
         }
 
-        $dispatcherParams = array_merge($this->_params, array('is_parent_action' => true));
-
-        $dispatcherObject = Mage::getModel('M2ePro/Walmart_Connector_Product_Dispatcher');
-        $processStatus = $dispatcherObject->process(
-            $this->getActionType(), $childListingsProducts, $dispatcherParams
-        );
-
-        if ($processStatus == Ess_M2ePro_Helper_Data::STATUS_ERROR) {
-            $this->getLogger()->setStatus(Ess_M2ePro_Helper_Data::STATUS_ERROR);
-        }
-
-        return true;
+        return false;
     }
 
     /**
@@ -266,8 +243,8 @@ abstract class Ess_M2ePro_Model_Walmart_Connector_Product_Requester
 
     public function getRequestData()
     {
-        if ($this->requestDataObject !== null) {
-            return $this->requestDataObject->getData();
+        if ($this->_requestDataObject !== null) {
+            return $this->_requestDataObject->getData();
         }
 
         $requestObject  = $this->getRequestObject();
@@ -283,7 +260,7 @@ abstract class Ess_M2ePro_Model_Walmart_Connector_Product_Requester
             $this->storeLogMessage($message);
         }
 
-        $requestDataRaw = array_merge($requestDataRaw, array('id' => $this->listingProduct->getId()));
+        $requestDataRaw = array_merge($requestDataRaw, array('id' => $this->_listingProduct->getId()));
 
         $this->buildRequestDataObject($requestDataRaw);
 
@@ -303,8 +280,8 @@ abstract class Ess_M2ePro_Model_Walmart_Connector_Product_Requester
         $product = array(
             'request'          => $this->getRequestData(),
             'request_metadata' => $metaData,
-            'configurator'     => $this->listingProduct->getActionConfigurator()->getData(),
-            'id'               => $this->listingProduct->getId(),
+            'configurator'     => $this->_listingProduct->getActionConfigurator()->getData(),
+            'id'               => $this->_listingProduct->getId(),
         );
 
         return array(
@@ -326,7 +303,7 @@ abstract class Ess_M2ePro_Model_Walmart_Connector_Product_Requester
      */
     protected function getLogger()
     {
-        if ($this->logger === null) {
+        if ($this->_logger === null) {
 
             /** @var Ess_M2ePro_Model_Walmart_Listing_Product_Action_Logger $logger */
 
@@ -349,10 +326,10 @@ abstract class Ess_M2ePro_Model_Walmart_Connector_Product_Requester
 
             $logger->setInitiator($initiator);
 
-            $this->logger = $logger;
+            $this->_logger = $logger;
         }
 
-        return $this->logger;
+        return $this->_logger;
     }
 
     //########################################
@@ -362,7 +339,7 @@ abstract class Ess_M2ePro_Model_Walmart_Connector_Product_Requester
      */
     protected function getValidatorObject()
     {
-        if ($this->validatorObject === null) {
+        if ($this->_validatorObject === null) {
 
             /** @var $validator Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Validator */
             $validator = Mage::getModel(
@@ -370,13 +347,13 @@ abstract class Ess_M2ePro_Model_Walmart_Connector_Product_Requester
             );
 
             $validator->setParams($this->_params);
-            $validator->setListingProduct($this->listingProduct);
-            $validator->setConfigurator($this->listingProduct->getActionConfigurator());
+            $validator->setListingProduct($this->_listingProduct);
+            $validator->setConfigurator($this->_listingProduct->getActionConfigurator());
 
-            $this->validatorObject = $validator;
+            $this->_validatorObject = $validator;
         }
 
-        return $this->validatorObject;
+        return $this->_validatorObject;
     }
 
     /**
@@ -384,21 +361,21 @@ abstract class Ess_M2ePro_Model_Walmart_Connector_Product_Requester
      */
     protected function getRequestObject()
     {
-        if ($this->requestObject === null) {
+        if ($this->_requestObject === null) {
             /** @var $request Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Request */
             $request = Mage::getModel(
                 'M2ePro/Walmart_Listing_Product_Action_Type_'.$this->getOrmActionType().'_Request'
             );
 
             $request->setParams($this->_params);
-            $request->setListingProduct($this->listingProduct);
-            $request->setConfigurator($this->listingProduct->getActionConfigurator());
+            $request->setListingProduct($this->_listingProduct);
+            $request->setConfigurator($this->_listingProduct->getActionConfigurator());
             $request->setCachedData($this->getValidatorObject()->getData());
 
-            $this->requestObject = $request;
+            $this->_requestObject = $request;
         }
 
-        return $this->requestObject;
+        return $this->_requestObject;
     }
 
     // ----------------------------------------
@@ -408,7 +385,7 @@ abstract class Ess_M2ePro_Model_Walmart_Connector_Product_Requester
      */
     protected function getRequestDataObject()
     {
-        return $this->requestDataObject;
+        return $this->_requestDataObject;
     }
 
     /**
@@ -417,18 +394,18 @@ abstract class Ess_M2ePro_Model_Walmart_Connector_Product_Requester
      */
     protected function buildRequestDataObject(array $data)
     {
-        if ($this->requestDataObject === null) {
+        if ($this->_requestDataObject === null) {
 
             /** @var Ess_M2ePro_Model_Walmart_Listing_Product_Action_RequestData $requestData */
             $requestData = Mage::getModel('M2ePro/Walmart_Listing_Product_Action_RequestData');
 
             $requestData->setData($data);
-            $requestData->setListingProduct($this->listingProduct);
+            $requestData->setListingProduct($this->_listingProduct);
 
-            $this->requestDataObject = $requestData;
+            $this->_requestDataObject = $requestData;
         }
 
-        return $this->requestDataObject;
+        return $this->_requestDataObject;
     }
 
     //########################################
@@ -447,7 +424,7 @@ abstract class Ess_M2ePro_Model_Walmart_Connector_Product_Requester
         $this->_processingRunner = Mage::getModel('M2ePro/' . $this->getProcessingRunnerModelName());
 
         /** @var Ess_M2ePro_Model_Walmart_Listing_Product_Action_Processing $processingAction */
-        $processingAction = $this->listingProduct->getProcessingAction();
+        $processingAction = $this->_listingProduct->getProcessingAction();
 
         $this->_processingRunner->setProcessingObject($processingAction->getProcessing());
         $this->_processingRunner->setProcessingAction($processingAction);
@@ -484,19 +461,19 @@ abstract class Ess_M2ePro_Model_Walmart_Connector_Product_Requester
      */
     protected function getStoredLogMessages()
     {
-        return $this->storedLogMessages;
+        return $this->_storedLogMessages;
     }
 
     protected function storeLogMessage(Ess_M2ePro_Model_Connector_Connection_Response_Message $message)
     {
-        $this->storedLogMessages[] = $message;
+        $this->_storedLogMessages[] = $message;
     }
 
     protected function writeStoredLogMessages()
     {
         foreach ($this->getStoredLogMessages() as $message) {
             $this->getLogger()->logListingProductMessage(
-                $this->listingProduct, $message, Ess_M2ePro_Model_Log_Abstract::PRIORITY_MEDIUM
+                $this->_listingProduct, $message, Ess_M2ePro_Model_Log_Abstract::PRIORITY_MEDIUM
             );
         }
     }

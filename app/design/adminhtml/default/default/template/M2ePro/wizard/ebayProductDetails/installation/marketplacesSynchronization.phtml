@@ -53,14 +53,14 @@ $marketplacesData = $this->getData('enabledMarketplaces');
     }
 </style>
 
-<div id="block_notice_wizard_installation_step_marketplaces_synchronization" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('eBay Site Data Synchronization'); ?>" subtitle="" collapseable="no" hideblock="no" always_show="yes" style="display:none;">
+<div id="block_notice_wizard_installation_step_marketplaces_synchronization" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Marketplace Data Synchronization'); ?>" subtitle="" collapseable="no" hideblock="no" always_show="yes" style="display:none;">
     <div>
         <div class="step_container_description">
             <?php echo Mage::helper('M2ePro')->__('
                 As eBay implemented new rules, usage of eBay Catalog Identifiers, such as UPC, EAN, MPN etc.,
-                <strong>becomes required</strong>. So eBay Sites data should be updated for proper work of M2E Pro.<br/><br/>
+                <strong>becomes required</strong>. So Marketplaces data should be updated for proper work of M2E Pro.<br/><br/>
 
-                To Start Resynchronization, press <strong>Proceed</strong> Button. All enabled eBay Sites will be Synchronized.
+                To Start Resynchronization, press <strong>Proceed</strong> Button. All enabled Marketplaces will be Synchronized.
             '); ?>
             <br/><br/>
             <?php foreach ($marketplacesData as $marketplace) : ?>

@@ -144,7 +144,7 @@ class Ess_M2ePro_Model_Magento_Quote_Item
         $request->setQty($this->_proxyItem->getQty());
 
         // grouped product doesn't have options
-        if ($this->_proxyItem->getProduct()->getTypeId() == Mage_Catalog_Model_Product_Type::TYPE_GROUPED) {
+        if ($this->_proxyItem->getMagentoProduct()->isGroupedType()) {
             return $request;
         }
 

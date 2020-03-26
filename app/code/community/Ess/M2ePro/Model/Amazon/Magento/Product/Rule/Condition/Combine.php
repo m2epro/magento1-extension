@@ -49,10 +49,8 @@ class Ess_M2ePro_Model_Amazon_Magento_Product_Rule_Condition_Combine
             'amazon_online_price' => Mage::helper('M2ePro')->__('Price'),
             'amazon_online_sale_price' => Mage::helper('M2ePro')->__('Sale Price'),
             'amazon_is_afn_chanel' => Mage::helper('M2ePro')->__('Fulfillment'),
-            'amazon_is_repricing' =>  Mage::helper('M2ePro')->__('On Repricing'),
-            'amazon_status' => Mage::helper('M2ePro')->__('Status'),
-            'amazon_details_data_changed' => Mage::helper('M2ePro')->__('Item Details need to be updated'),
-            'amazon_images_data_changed' => Mage::helper('M2ePro')->__('Item Images need to be updated')
+            'amazon_is_repricing' => Mage::helper('M2ePro')->__('On Repricing'),
+            'amazon_status' => Mage::helper('M2ePro')->__('Status')
         );
     }
 

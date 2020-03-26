@@ -151,51 +151,45 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_View extends Mage_Adminhtm
         $javascriptsMain = <<<HTML
 <script type="text/javascript">
 
-    M2eProAmazon = {};
-    M2eProAmazon.url = {};
-    M2eProAmazon.formData = {};
-    M2eProAmazon.customData = {};
-    M2eProAmazon.text = {};
-
     M2ePro.url.add({$urls});
     M2ePro.translator.add({$translations});
 
-    M2eProAmazon.url.prepareData = '{$prepareData}';
-    M2eProAmazon.url.getGridHtml = '{$getMoveToListingGridHtml}';
-    M2eProAmazon.url.moveToListing = '{$moveToListing}';
+    M2ePro.url.prepareData = '{$prepareData}';
+    M2ePro.url.getGridHtml = '{$getMoveToListingGridHtml}';
+    M2ePro.url.moveToListing = '{$moveToListing}';
 
-    M2eProAmazon.url.mapAutoToProduct = '{$mapAutoToProductUrl}';
+    M2ePro.url.mapAutoToProduct = '{$mapAutoToProductUrl}';
 
-    M2eProAmazon.url.removingProducts = '{$removingProductsUrl}';
-    M2eProAmazon.url.unmappingProducts = '{$unmappingProductsUrl}';
+    M2ePro.url.removingProducts = '{$removingProductsUrl}';
+    M2ePro.url.unmappingProducts = '{$unmappingProductsUrl}';
 
     M2ePro.url.getAFNQtyBySku = '{$getAFNQtyBySku}';
     M2ePro.url.getUpdatedRepricingPriceBySkus = '{$getUpdatedRepricingPriceBySkus}';
 
-    M2eProAmazon.text.create_listing = '{$createListing}';
-    M2eProAmazon.text.popup_title = '{$popupTitle}';
-    M2eProAmazon.text.confirm = '{$confirmMessage}';
+    M2ePro.text.create_listing = '{$createListing}';
+    M2ePro.text.popup_title = '{$popupTitle}';
+    M2ePro.text.confirm = '{$confirmMessage}';
 
-    M2eProAmazon.text.not_enough_data = '{$notEnoughDataMessage}';
-    M2eProAmazon.text.successfully_unmapped = '{$successfullyUnmappedMessage}';
-    M2eProAmazon.text.successfully_removed = '{$successfullyRemovedMessage}';
+    M2ePro.text.not_enough_data = '{$notEnoughDataMessage}';
+    M2ePro.text.successfully_unmapped = '{$successfullyUnmappedMessage}';
+    M2ePro.text.successfully_removed = '{$successfullyRemovedMessage}';
 
-    M2eProAmazon.text.select_items_message = '{$selectItemsMessage}';
-    M2eProAmazon.text.select_action_message = '{$selectActionMessage}';
+    M2ePro.text.select_items_message = '{$selectItemsMessage}';
+    M2ePro.text.select_action_message = '{$selectActionMessage}';
 
-    M2eProAmazon.text.automap_progress_title = '{$autoMapProgressTitle}';
-    M2eProAmazon.text.processing_data_message = '{$processingDataMessage}';
-    M2eProAmazon.text.successfully_mapped = '{$successfullyMappedMessage}';
-    M2eProAmazon.text.failed_mapped = '{$someProductsWereNotMappedMessage}';
+    M2ePro.text.automap_progress_title = '{$autoMapProgressTitle}';
+    M2ePro.text.processing_data_message = '{$processingDataMessage}';
+    M2ePro.text.successfully_mapped = '{$successfullyMappedMessage}';
+    M2ePro.text.failed_mapped = '{$someProductsWereNotMappedMessage}';
 
-    M2eProAmazon.text.success_word = '{$successWord}';
-    M2eProAmazon.text.notice_word = '{$noticeWord}';
-    M2eProAmazon.text.warning_word = '{$warningWord}';
-    M2eProAmazon.text.error_word = '{$errorWord}';
-    M2eProAmazon.text.close_word = '{$closeWord}';
+    M2ePro.text.success_word = '{$successWord}';
+    M2ePro.text.notice_word = '{$noticeWord}';
+    M2ePro.text.warning_word = '{$warningWord}';
+    M2ePro.text.error_word = '{$errorWord}';
+    M2ePro.text.close_word = '{$closeWord}';
 
-    M2eProAmazon.customData.componentMode = '{$componentMode}';
-    M2eProAmazon.customData.gridId = 'amazonListingOtherGrid';
+    M2ePro.customData.componentMode = '{$componentMode}';
+    M2ePro.customData.gridId = 'amazonListingOtherGrid';
 
     Event.observe(window,'load',function() {
         ListingProgressBarObj = new ProgressBar('listing_other_progress_bar');
@@ -206,11 +200,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_View extends Mage_Adminhtm
             AmazonListingOtherGridHandlerObj,
             'amazon'
         );
-
-        AmazonListingOtherGridHandlerObj.movingHandler.setOptions(M2eProAmazon);
-        AmazonListingOtherGridHandlerObj.autoMappingHandler.setOptions(M2eProAmazon);
-        AmazonListingOtherGridHandlerObj.removingHandler.setOptions(M2eProAmazon);
-        AmazonListingOtherGridHandlerObj.unmappingHandler.setOptions(M2eProAmazon);
 
         AmazonListingAfnQtyHandlerObj = new AmazonListingAfnQtyHandler();
         AmazonListingRepricingPriceHandlerObj = new AmazonListingRepricingPriceHandler();

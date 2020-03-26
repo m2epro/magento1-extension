@@ -18,14 +18,10 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Revise_Response
     {
         $data = array();
 
-        if ($this->getConfigurator()->isDetailsAllowed()) {
+        if ($this->getConfigurator()->isDetailsAllowed() ||
+            $this->getConfigurator()->isImagesAllowed()
+        ) {
             $data['defected_messages'] = null;
-            $data['is_details_data_changed'] = 0;
-        }
-
-        if ($this->getConfigurator()->isImagesAllowed()) {
-            $data['defected_messages'] = null;
-            $data['is_images_data_changed'] = 0;
         }
 
         $data = $this->appendStatusChangerValue($data);

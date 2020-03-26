@@ -22,7 +22,6 @@ class Ess_M2ePro_Model_Ebay_Template_SellingFormat_Diff extends Ess_M2ePro_Model
     public function isQtyDifferent()
     {
         $keys = array(
-            'out_of_stock_control',
             'qty_mode',
             'qty_custom_value',
             'qty_custom_attribute',
@@ -79,6 +78,9 @@ class Ess_M2ePro_Model_Ebay_Template_SellingFormat_Diff extends Ess_M2ePro_Model
             'tax_category_mode',
             'tax_category_value',
             'tax_category_attribute',
+            'lot_size_mode',
+            'lot_size_custom_value',
+            'lot_size_attribute'
         );
 
         return $this->isSettingsDifferent($keys);

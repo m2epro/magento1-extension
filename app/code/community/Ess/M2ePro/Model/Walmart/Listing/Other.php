@@ -102,16 +102,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Other extends Ess_M2ePro_Model_Component_
     /**
      * @return string
      */
-    public function getChannelUrl()
-    {
-        return $this->getData('channel_url');
-    }
-
-    // ---------------------------------------
-
-    /**
-     * @return string
-     */
     public function getPublishStatus()
     {
         return $this->getData('publish_status');

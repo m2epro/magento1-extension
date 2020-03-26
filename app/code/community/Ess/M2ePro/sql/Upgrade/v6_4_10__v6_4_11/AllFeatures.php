@@ -17,7 +17,7 @@ class Ess_M2ePro_Sql_Upgrade_v6_4_10__v6_4_11_AllFeatures extends Ess_M2ePro_Mod
         //########################################
 
         $this->_installer->run(<<<SQL
-CREATE TABLE IF NOT EXISTS `m2epro_lock_transactional` (
+CREATE TABLE IF NOT EXISTS `{$this->_installer->getTable('m2epro_lock_transactional')}` (
    `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
    `nick` VARCHAR(255) NOT NULL,
    `create_date` DATETIME DEFAULT NULL,

@@ -604,7 +604,7 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
         $route = explode('_', $route);
 
         foreach ($route as &$part) {
-            $part{0} = strtolower($part{0});
+            $part[0] = strtolower($part[0]);
         }
 
         unset($part);

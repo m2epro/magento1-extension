@@ -63,21 +63,18 @@ $magentoAttributeHelper = Mage::helper('M2ePro/Magento_Attribute');
 
 $attributesByInputTypes = array(
     'text_textarea' => $magentoAttributeHelper->filterByInputTypes(
-            $this->getData('all_attributes'), array('text', 'textarea')
-        ),
-);
-
-$generalAttributesByInputTypes = array(
+        $this->getData('all_attributes'), array('text', 'textarea')
+    ),
     'boolean' => $magentoAttributeHelper->filterByInputTypes($this->getData('all_attributes'), array('boolean')),
-    'text' => $magentoAttributeHelper->filterByInputTypes($this->getData('general_attributes'), array('text')),
+    'text' => $magentoAttributeHelper->filterByInputTypes($this->getData('all_attributes'), array('text')),
     'text_date' => $magentoAttributeHelper->filterByInputTypes(
-            $this->getData('general_attributes'), array('text', 'date', 'datetime')
+            $this->getData('all_attributes'), array('text', 'date', 'datetime')
         ),
     'text_select' => $magentoAttributeHelper->filterByInputTypes(
-            $this->getData('general_attributes'), array('text', 'select')
+            $this->getData('all_attributes'), array('text', 'select')
         ),
     'text_images' => $magentoAttributeHelper->filterByInputTypes(
-            $this->getData('general_attributes'),
+            $this->getData('all_attributes'),
             array('text', 'image', 'media_image', 'gallery', 'multiline', 'textarea', 'select', 'multiselect')
         )
 );
@@ -227,7 +224,7 @@ $generalAttributesByInputTypes = array(
                             <option value="<?php echo Ess_M2ePro_Model_Amazon_Listing::SKU_MODE_DEFAULT ?>" <?php if ($this->getData('sku_mode') == Ess_M2ePro_Model_Amazon_Listing::SKU_MODE_DEFAULT) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('Product SKU') ?></option>
 
                             <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
-                                <?php foreach ($generalAttributesByInputTypes['text'] as $attribute): ?>
+                                <?php foreach ($attributesByInputTypes['text'] as $attribute): ?>
                                     <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Amazon_Listing::SKU_MODE_CUSTOM_ATTRIBUTE ?>" <?php if ($this->getData('sku_custom_attribute') == $attribute['code']) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?></option>
                                 <?php endforeach ?>
                             </optgroup>
@@ -393,7 +390,7 @@ $generalAttributesByInputTypes = array(
                             </optgroup>
 
                             <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
-                                <?php foreach ($generalAttributesByInputTypes['text_select'] as $attribute): ?>
+                                <?php foreach ($attributesByInputTypes['text_select'] as $attribute): ?>
                                     <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Amazon_Listing::CONDITION_MODE_CUSTOM_ATTRIBUTE ?>" <?php if ($this->getData('condition_custom_attribute') == $attribute['code']) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?></option>
                                 <?php endforeach ?>
                             </optgroup>
@@ -467,7 +464,7 @@ $generalAttributesByInputTypes = array(
                             <option value="<?php echo Ess_M2ePro_Model_Amazon_Listing::IMAGE_MAIN_MODE_PRODUCT; ?>" <?php if ($this->getData('image_main_mode') == Ess_M2ePro_Model_Amazon_Listing::IMAGE_MAIN_MODE_PRODUCT): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Product Base Image'); ?></option>
 
                             <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
-                                <?php foreach($generalAttributesByInputTypes['text_images'] as $attribute) : ?>
+                                <?php foreach($attributesByInputTypes['text_images'] as $attribute) : ?>
                                     <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Amazon_Listing::IMAGE_MAIN_MODE_ATTRIBUTE; ?>" <?php if ($attribute['code'] == $this->getData('image_main_attribute')): ?>selected="selected"<?php endif; ?>>
                                         <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
                                     </option>
@@ -501,7 +498,7 @@ $generalAttributesByInputTypes = array(
                             </optgroup>
 
                             <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
-                                <?php foreach($generalAttributesByInputTypes['text_images'] as $attribute) : ?>
+                                <?php foreach($attributesByInputTypes['text_images'] as $attribute) : ?>
                                     <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Amazon_Listing::GALLERY_IMAGES_MODE_ATTRIBUTE; ?>" <?php if ($attribute['code'] == $this->getData('gallery_images_attribute')): ?>selected="selected"<?php endif; ?>>
                                         <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
                                     </option>
@@ -541,7 +538,7 @@ $generalAttributesByInputTypes = array(
                             <option value="<?php echo Ess_M2ePro_Model_Amazon_Listing::GIFT_WRAP_MODE_YES; ?>" <?php echo Ess_M2ePro_Model_Amazon_Listing::GIFT_WRAP_MODE_YES == $this->getData('gift_wrap_mode') ? 'selected="selected"' : ''?> >Yes</option>
 
                             <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute" new_option_value="<?php echo Ess_M2ePro_Model_Amazon_Listing::GIFT_WRAP_MODE_ATTRIBUTE; ?>">
-                                <?php foreach($generalAttributesByInputTypes['boolean'] as $attribute) : ?>
+                                <?php foreach($attributesByInputTypes['boolean'] as $attribute) : ?>
                                     <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Amazon_Listing::GIFT_WRAP_MODE_ATTRIBUTE; ?>" <?php if ($attribute['code'] == $this->getData('gift_wrap_attribute')): ?>selected="selected"<?php endif; ?>>
                                         <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
                                     </option>
@@ -566,7 +563,7 @@ $generalAttributesByInputTypes = array(
                             <option value="<?php echo Ess_M2ePro_Model_Amazon_Listing::GIFT_MESSAGE_MODE_YES; ?>" <?php echo Ess_M2ePro_Model_Amazon_Listing::GIFT_MESSAGE_MODE_YES == $this->getData('gift_message_mode') ? 'selected="selected"' : ''?> >Yes</option>
 
                             <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute" new_option_value="<?php echo Ess_M2ePro_Model_Amazon_Listing::GIFT_MESSAGE_MODE_ATTRIBUTE; ?>">
-                                <?php foreach($generalAttributesByInputTypes['boolean'] as $attribute) : ?>
+                                <?php foreach($attributesByInputTypes['boolean'] as $attribute) : ?>
                                     <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Amazon_Listing::GIFT_MESSAGE_MODE_ATTRIBUTE; ?>" <?php if ($attribute['code'] == $this->getData('gift_message_attribute')): ?>selected="selected"<?php endif; ?>>
                                         <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
                                     </option>
@@ -615,7 +612,7 @@ $generalAttributesByInputTypes = array(
                             </optgroup>
 
                             <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
-                                <?php foreach ($generalAttributesByInputTypes['text_select'] as $attribute): ?>
+                                <?php foreach ($attributesByInputTypes['text_select'] as $attribute): ?>
                                     <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Amazon_Listing::HANDLING_TIME_MODE_CUSTOM_ATTRIBUTE ?>" <?php if ($this->getData('handling_time_custom_attribute') == $attribute['code']) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?></option>
                                 <?php endforeach ?>
                             </optgroup>
@@ -638,7 +635,7 @@ $generalAttributesByInputTypes = array(
                             <option value="<?php echo Ess_M2ePro_Model_Amazon_Listing::RESTOCK_DATE_MODE_CUSTOM_VALUE ?>" <?php if ($this->getData('restock_date_mode') == Ess_M2ePro_Model_Amazon_Listing::RESTOCK_DATE_MODE_CUSTOM_VALUE) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('Custom Value') ?></option>
 
                             <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
-                                <?php foreach ($generalAttributesByInputTypes['text_date'] as $attribute): ?>
+                                <?php foreach ($attributesByInputTypes['text_date'] as $attribute): ?>
                                     <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Amazon_Listing::RESTOCK_DATE_MODE_CUSTOM_ATTRIBUTE ?>" <?php if ($this->getData('restock_date_custom_attribute') == $attribute['code']) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?></option>
                                 <?php endforeach ?>
                             </optgroup>

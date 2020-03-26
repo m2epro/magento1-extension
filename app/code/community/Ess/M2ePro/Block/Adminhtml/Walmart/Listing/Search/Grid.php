@@ -201,7 +201,13 @@ abstract class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Search_Grid extends Ma
         }
 
         $gtinHtml = Mage::helper('M2ePro')->escapeHtml($gtin);
-        $channelUrl = $row->getData('channel_url');
+
+        $walmartHelper = Mage::helper('M2ePro/Component_Walmart');
+        $marketplaceId = $row->getData('marketplace_id');
+        $channelUrl = $walmartHelper->getItemUrl(
+            $row->getData($walmartHelper->getIdentifierForItemUrl($marketplaceId)),
+            $marketplaceId
+        );
 
         if (!empty($channelUrl)) {
             $gtinHtml = <<<HTML

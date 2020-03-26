@@ -10,7 +10,7 @@ EbayTemplateReturnHandler = Class.create(CommonHandler, {
     {
         var descriptionTr = $('magento_block_ebay_template_return_form_data_policy_general');
 
-        if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Template_Return::RETURNS_ACCEPTED')) {
+        if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Template_ReturnPolicy::RETURNS_ACCEPTED')) {
             $('return_option_tr')[$$('#return_option option').length ? 'show' : 'hide']();
             $('return_within_tr')[$$('#return_within option').length ? 'show' : 'hide']();
             $('return_shipping_cost_tr')[$$('#return_shipping_cost option').length ? 'show' : 'hide']();
@@ -26,7 +26,7 @@ EbayTemplateReturnHandler = Class.create(CommonHandler, {
 
     internationalAcceptedChange: function()
     {
-        if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Template_Return::RETURNS_ACCEPTED')) {
+        if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Template_ReturnPolicy::RETURNS_ACCEPTED')) {
             $('return_international_option_tr')[$$('#return_international_option option').length ? 'show' : 'hide']();
             $('return_international_within_tr')[$$('#return_international_within option').length ? 'show' : 'hide']();
             $('return_international_shipping_cost_tr')[$$('#return_international_shipping_cost option').length ? 'show' : 'hide']();

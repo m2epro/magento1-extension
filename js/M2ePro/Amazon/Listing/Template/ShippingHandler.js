@@ -2,30 +2,12 @@ AmazonListingTemplateShippingHandler = Class.create(ActionHandler, {
 
     // ---------------------------------------
 
-    initialize: function($super,gridHandler)
-    {
-        var self = this;
-        $super(gridHandler);
-    },
-
-    // ---------------------------------------
-
-    options: {},
-
-    setOptions: function(options)
-    {
-        this.options = Object.extend(this.options,options);
-        return this;
-    },
-
-    // ---------------------------------------
-
     openPopUp: function(productsIds)
     {
         var self = this;
         self.gridHandler.unselectAll();
 
-        new Ajax.Request(self.options.url.viewTemplateShippingPopup, {
+        new Ajax.Request(M2ePro.url.viewTemplateShippingPopup, {
             method: 'post',
             parameters: {
                 products_ids:  productsIds
@@ -50,7 +32,7 @@ AmazonListingTemplateShippingHandler = Class.create(ActionHandler, {
                     return;
                 }
 
-                var title = self.options.text.templateShippingPopupTitle;
+                var title = M2ePro.text.templateShippingPopupTitle;
 
                 templateShippingPopup = Dialog.info(null, {
                     draggable: true,
@@ -98,7 +80,7 @@ AmazonListingTemplateShippingHandler = Class.create(ActionHandler, {
 
         var self = this;
 
-        new Ajax.Request(self.options.url.viewTemplateShippingGrid, {
+        new Ajax.Request(M2ePro.url.viewTemplateShippingGrid, {
             method: 'post',
             parameters: {
                 products_ids:  templateShippingPopup.productsIds
@@ -120,7 +102,7 @@ AmazonListingTemplateShippingHandler = Class.create(ActionHandler, {
             return;
         }
 
-        new Ajax.Request(self.options.url.assignShippingTemplate, {
+        new Ajax.Request(M2ePro.url.assignShippingTemplate, {
             method: 'post',
             parameters: {
                 products_ids:  templateShippingPopup.productsIds,
@@ -153,7 +135,7 @@ AmazonListingTemplateShippingHandler = Class.create(ActionHandler, {
     {
         var self = this;
 
-        new Ajax.Request(self.options.url.unassignShippingTemplate, {
+        new Ajax.Request(M2ePro.url.unassignShippingTemplate, {
             method: 'post',
             parameters: {
                 products_ids:  productsIds

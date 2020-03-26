@@ -55,7 +55,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Switcher_DataLoader
         $storeId = (int)$data['store_id'];
 
         $attributeSets = $data['attribute_sets'];
-        $attributes = Mage::helper('M2ePro/Magento_Attribute')->getGeneralFromAttributeSets($attributeSets);
+        $attributes = Mage::helper('M2ePro/Magento_Attribute')->getAll();
 
         $displayUseDefaultOption = $data['display_use_default_option'];
         // ---------------------------------------
@@ -267,7 +267,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Switcher_DataLoader
     {
         if ($source instanceof Ess_M2ePro_Model_Ebay_Template_Payment
             || $source instanceof Ess_M2ePro_Model_Ebay_Template_Shipping
-            || $source instanceof Ess_M2ePro_Model_Ebay_Template_Return
+            || $source instanceof Ess_M2ePro_Model_Ebay_Template_ReturnPolicy
             || $source instanceof Ess_M2ePro_Model_Template_SellingFormat
             || $source instanceof Ess_M2ePro_Model_Template_Description
             || $source instanceof Ess_M2ePro_Model_Template_Synchronization

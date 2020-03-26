@@ -11,17 +11,6 @@
 
 ?>
 
-<div id="block_notice_walmart_accounts_general-" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('General'); ?>">
-
-    <div>
-        <?php echo Mage::helper('M2ePro')->__(
-            'Under this section, you can link your Walmart account to M2E Pro. Read how to <a href="%url%" target="_blank">get the API credentials</a>.',
-            Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'x/io1aAQ')
-        ); ?>
-    </div>
-
-</div>
-
 <?php
     $formData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data') ? Mage::helper('M2ePro/Data_Global')->getValue('temp_data')->toArray() : array();
 
@@ -48,6 +37,27 @@
         $licenseMessage = (string)Mage::helper('M2ePro/Data_Global')->getValue('license_message');
     }
 ?>
+
+<div id="block_notice_walmart_accounts_general-" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('General'); ?>">
+
+    <div>
+        <?php if($isEdit): ?>
+            <?php echo Mage::helper('M2ePro')->__(
+                'Under this section, you can link your Walmart account to M2E Pro. Read how to <a href="%url%" target="_blank">get the API credentials</a>.',
+                Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'x/io1aAQ')
+            ); ?>
+        <?php else: ?>
+            <?php echo Mage::helper('M2ePro')->__(
+                'Under this section, you can link your Walmart account to M2E Pro. 
+                Read how to <a href="%url%" target="_blank">get the API credentials</a> or register on 
+                <a href="https://marketplace-apply.walmart.com/apply?id=00161000012XSxe" target="_blank">Walmart US</a> / 
+                <a href="https://marketplace.walmart.ca/apply?q=ca" target="_blank">Walmart CA</a>.',
+                Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'x/io1aAQ')
+            ); ?>
+        <?php endif; ?>
+    </div>
+
+</div>
 
 <script type="text/javascript">
 

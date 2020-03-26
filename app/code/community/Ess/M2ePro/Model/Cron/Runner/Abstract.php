@@ -26,18 +26,14 @@ abstract class Ess_M2ePro_Model_Cron_Runner_Abstract
 
     public function process()
     {
-        if (Mage::helper('M2ePro/Module_Maintenance')->isEnabled()) {
-            return false;
-        }
-
-        if ($this->isDisabled()) {
+        if (!$this->canProcess()) {
             return false;
         }
 
         $runnerSwitcher = Mage::getModel('M2ePro/Cron_Runner_Switcher');
         $runnerSwitcher->check($this);
 
-        $this->selfCheck();
+        Mage::getModel('M2ePro/Cron_Checker_Dispatcher')->process();
 
         /** @var Ess_M2ePro_Model_Lock_Transactional_Manager $transactionalManager */
         $transactionalManager = Mage::getModel(
@@ -47,6 +43,10 @@ abstract class Ess_M2ePro_Model_Cron_Runner_Abstract
         );
 
         $transactionalManager->lock();
+
+        if (!$this->canProcessRunner()) {
+            return false;
+        }
 
         $this->initialize();
         $this->updateLastAccess();
@@ -77,10 +77,10 @@ abstract class Ess_M2ePro_Model_Cron_Runner_Abstract
 
             $this->getOperationHistory()->addContentData(
                 'exceptions', array(
-                'message' => $exception->getMessage(),
-                'file'    => $exception->getFile(),
-                'line'    => $exception->getLine(),
-                'trace'   => $exception->getTraceAsString(),
+                    'message' => $exception->getMessage(),
+                    'file'    => $exception->getFile(),
+                    'line'    => $exception->getLine(),
+                    'trace'   => $exception->getTraceAsString(),
                 )
             );
 
@@ -100,21 +100,29 @@ abstract class Ess_M2ePro_Model_Cron_Runner_Abstract
 
     //########################################
 
-    protected function selfCheck()
+    protected function canProcess()
     {
-        Mage::getModel('M2ePro/Cron_Checker_Dispatcher')->process();
+        if (Mage::helper('M2ePro/Module_Maintenance')->isEnabled()) {
+            return false;
+        }
+
+        if (Mage::helper('M2ePro/Module')->isDisabled()) {
+            return false;
+        }
+
+        if (Mage::helper('M2ePro/Module')->getConfig()->getGroupValue('/cron/'.$this->getNick().'/', 'disabled')) {
+            return false;
+        }
+
+        return true;
+    }
+
+    protected function canProcessRunner()
+    {
+        return $this->getNick() === Mage::helper('M2ePro/Module_Cron')->getRunner();
     }
 
     //########################################
-
-    protected function isDisabled()
-    {
-        if (Mage::helper('M2ePro/Module')->getConfig()->getGroupValue('/cron/'.$this->getNick().'/', 'disabled')) {
-            return true;
-        }
-
-        return false;
-    }
 
     protected function initialize()
     {
@@ -143,15 +151,7 @@ abstract class Ess_M2ePro_Model_Cron_Runner_Abstract
 
     protected function isPossibleToRun()
     {
-        if (Mage::helper('M2ePro/Module')->isDisabled()) {
-            return false;
-        }
-
         if (!Mage::helper('M2ePro/Module')->isReadyToWork()) {
-            return false;
-        }
-
-        if ($this->getNick() != Mage::helper('M2ePro/Module_Cron')->getRunner()) {
             return false;
         }
 

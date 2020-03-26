@@ -60,7 +60,33 @@ class Ess_M2ePro_Sql_Update_Config extends Ess_M2ePro_Model_Upgrade_Feature_Abst
             ),
             'y19_m11' => array(
                 'ProductsStatisticsImprovements',
-                'LogsImprovements'
+                'LogsImprovements',
+                'WalmartProductIdOverride'
+            ),
+            'y19_m12' => array(
+                'AmazonReviseDescription',
+                'SynchDataFromM2',
+                'RenameTableIndexerParent',
+                'WalmartReviseDescription',
+                'ServerMessages'
+            ),
+            'y20_m01' => array(
+                'RemoveOutOfStockControl',
+                'FulfillmentCenter',
+                'WalmartRemoveChannelUrl',
+                'EbayOrderUpdates'
+            ),
+            'y20_m02' => array(
+                'ReviewPriorityCoefficients',
+                'RemoveUnsupportedMarketplaces',
+                'EbayCharity',
+                'TemplateReturn',
+                'Configs',
+                'RemoveReviseTotal',
+                'ProductCustomTypes'
+            ),
+            'y20_m03' => array(
+                'SynchronizationConfigsModeRemovedFix'
             ),
         );
     }

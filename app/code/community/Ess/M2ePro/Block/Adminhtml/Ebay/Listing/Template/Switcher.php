@@ -40,7 +40,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Switcher extends Mage_Adm
             case Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SHIPPING:
                 $title = Mage::helper('M2ePro')->__('Shipping');
                 break;
-            case Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_RETURN:
+            case Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_RETURN_POLICY:
                 $title = Mage::helper('M2ePro')->__('Return');
                 break;
             case Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SELLING_FORMAT:
@@ -62,7 +62,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Switcher extends Mage_Adm
     public function getHeaderWidth()
     {
         switch ($this->getTemplateNick()) {
-            case Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_RETURN:
+            case Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_RETURN_POLICY:
             case Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SHIPPING:
             case Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_PAYMENT:
                 $width = 70;
@@ -215,8 +215,8 @@ HTML;
             case Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_PAYMENT:
                 $blockName = 'M2ePro/adminhtml_ebay_template_payment_edit_form_data';
                 break;
-            case Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_RETURN:
-                $blockName = 'M2ePro/adminhtml_ebay_template_return_edit_form_data';
+            case Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_RETURN_POLICY:
+                $blockName = 'M2ePro/adminhtml_ebay_template_returnPolicy_edit_form_data';
                 break;
             case Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SHIPPING:
                 $blockName = 'M2ePro/adminhtml_ebay_template_shipping_edit_form_data';

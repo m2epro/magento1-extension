@@ -39,6 +39,10 @@ EbayTemplateSynchronizationHandler.prototype = Object.extend(new CommonHandler()
                 return true;
             }
 
+            if (EbayTemplateSynchronizationHandlerObj.isStopModeDisabled()) {
+                return true;
+            }
+
             if ($('stop_status_disabled').value == 1 && $('relist_status_enabled').value == 0) {
                 return false;
             }
@@ -49,6 +53,10 @@ EbayTemplateSynchronizationHandler.prototype = Object.extend(new CommonHandler()
         Validation.add('M2ePro-validate-stop-relist-conditions-stock-availability', M2ePro.translator.translate('Inconsistent Settings in Relist and Stop Rules.'), function(value, el) {
 
             if (EbayTemplateSynchronizationHandlerObj.isRelistModeDisabled()) {
+                return true;
+            }
+
+            if (EbayTemplateSynchronizationHandlerObj.isStopModeDisabled()) {
                 return true;
             }
 

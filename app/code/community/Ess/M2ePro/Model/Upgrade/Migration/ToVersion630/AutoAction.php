@@ -191,8 +191,8 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630_AutoAction
         $this->_installer->run(
             <<<SQL
 
-    DROP TABLE IF EXISTS `m2epro_listing_auto_category`;
-    CREATE TABLE `m2epro_listing_auto_category` (
+    DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_listing_auto_category')}`;
+    CREATE TABLE `{$this->_installer->getTable('m2epro_listing_auto_category')}` (
     id int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
     group_id int(11) UNSIGNED NOT NULL,
     category_id int(11) UNSIGNED NOT NULL,
@@ -206,8 +206,8 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630_AutoAction
     CHARACTER SET utf8
     COLLATE utf8_general_ci;
 
-    DROP TABLE IF EXISTS `m2epro_listing_auto_category_group`;
-    CREATE TABLE `m2epro_listing_auto_category_group` (
+    DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_listing_auto_category_group')}`;
+    CREATE TABLE `{$this->_installer->getTable('m2epro_listing_auto_category_group')}` (
         id int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
         listing_id int(11) UNSIGNED NOT NULL,
         title varchar(255) NOT NULL,
@@ -238,8 +238,8 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630_AutoAction
     CHARACTER SET utf8
     COLLATE utf8_general_ci;
 
-    DROP TABLE IF EXISTS `m2epro_amazon_listing_auto_category_group`;
-    CREATE TABLE `m2epro_amazon_listing_auto_category_group` (
+    DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_amazon_listing_auto_category_group')}`;
+    CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_listing_auto_category_group')}` (
         listing_auto_category_group_id int(11) UNSIGNED NOT NULL,
         adding_description_template_id int(11) UNSIGNED DEFAULT NULL,
         PRIMARY KEY (listing_auto_category_group_id),
@@ -249,8 +249,8 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630_AutoAction
     CHARACTER SET utf8
     COLLATE utf8_general_ci;
 
-    DROP TABLE IF EXISTS `m2epro_buy_listing_auto_category_group`;
-    CREATE TABLE `m2epro_buy_listing_auto_category_group` (
+    DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_buy_listing_auto_category_group')}`;
+    CREATE TABLE `{$this->_installer->getTable('m2epro_buy_listing_auto_category_group')}` (
         listing_auto_category_group_id int(11) UNSIGNED NOT NULL,
         PRIMARY KEY (listing_auto_category_group_id)
     )
@@ -258,8 +258,8 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630_AutoAction
     CHARACTER SET utf8
     COLLATE utf8_general_ci;
 
-    DROP TABLE IF EXISTS `m2epro_play_listing_auto_category_group`;
-    CREATE TABLE `m2epro_play_listing_auto_category_group` (
+    DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_play_listing_auto_category_group')}`;
+    CREATE TABLE `{$this->_installer->getTable('m2epro_play_listing_auto_category_group')}` (
         listing_auto_category_group_id int(11) UNSIGNED NOT NULL,
         PRIMARY KEY (listing_auto_category_group_id)
     )
@@ -449,12 +449,10 @@ SQL
 SQL
         );
 
-        $oldTable = $this->_installer->getTable('m2epro_temp_ebay_listing_auto_category_group');
-        $newTable = $this->_installer->getTable('m2epro_ebay_listing_auto_category_group');
-
-        if ($this->_installer->tableExists($oldTable) && !$this->_installer->tableExists($newTable)) {
-            $connection->query("RENAME TABLE `{$oldTable}` TO `{$newTable}`");
-        }
+        $this->_installer->getTablesObject()->renameTable(
+            'm2epro_temp_ebay_listing_auto_category_group',
+            'm2epro_ebay_listing_auto_category_group'
+        );
 
         $tempTable = $this->_installer->getTable('m2epro_ebay_listing');
         $tempTableIndexList = $connection->getIndexList($tempTable);

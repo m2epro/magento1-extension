@@ -84,7 +84,7 @@ SQL
 
         $installer->run(<<<SQL
 
-CREATE TABLE IF NOT EXISTS m2epro_play_account (
+CREATE TABLE IF NOT EXISTS `{$this->_installer->getTable('m2epro_play_account')}` (
   account_id INT(11) UNSIGNED NOT NULL,
   server_hash VARCHAR(255) NOT NULL,
   login VARCHAR(255) NOT NULL,
@@ -112,7 +112,7 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-CREATE TABLE IF NOT EXISTS m2epro_play_item (
+CREATE TABLE IF NOT EXISTS `{$this->_installer->getTable('m2epro_play_item')}` (
   id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   account_id INT(11) UNSIGNED NOT NULL,
   marketplace_id INT(11) UNSIGNED NOT NULL,
@@ -132,7 +132,7 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-CREATE TABLE IF NOT EXISTS m2epro_play_listing (
+CREATE TABLE IF NOT EXISTS `{$this->_installer->getTable('m2epro_play_listing')}` (
   listing_id INT(11) UNSIGNED NOT NULL,
   PRIMARY KEY (listing_id)
 )
@@ -140,7 +140,7 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-CREATE TABLE IF NOT EXISTS m2epro_play_listing_other (
+CREATE TABLE IF NOT EXISTS `{$this->_installer->getTable('m2epro_play_listing_other')}` (
   listing_other_id INT(11) UNSIGNED NOT NULL,
   general_id VARCHAR(20) NOT NULL,
   general_id_type VARCHAR(255) NOT NULL,
@@ -176,7 +176,7 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-CREATE TABLE IF NOT EXISTS m2epro_play_listing_product (
+CREATE TABLE IF NOT EXISTS `{$this->_installer->getTable('m2epro_play_listing_product')}` (
   listing_product_id INT(11) UNSIGNED NOT NULL,
   general_id VARCHAR(20) DEFAULT NULL,
   general_id_type VARCHAR(255) DEFAULT NULL,
@@ -221,7 +221,7 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-CREATE TABLE IF NOT EXISTS m2epro_play_listing_product_variation (
+CREATE TABLE IF NOT EXISTS `{$this->_installer->getTable('m2epro_play_listing_product_variation')}` (
   listing_product_variation_id INT(11) UNSIGNED NOT NULL,
   PRIMARY KEY (listing_product_variation_id)
 )
@@ -229,7 +229,7 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-CREATE TABLE IF NOT EXISTS m2epro_play_listing_product_variation_option (
+CREATE TABLE IF NOT EXISTS `{$this->_installer->getTable('m2epro_play_listing_product_variation_option')}` (
   listing_product_variation_option_id INT(11) UNSIGNED NOT NULL,
   PRIMARY KEY (listing_product_variation_option_id)
 )
@@ -237,7 +237,7 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-CREATE TABLE IF NOT EXISTS m2epro_play_marketplace (
+CREATE TABLE IF NOT EXISTS `{$this->_installer->getTable('m2epro_play_marketplace')}` (
   marketplace_id INT(11) UNSIGNED NOT NULL,
   PRIMARY KEY (marketplace_id)
 )
@@ -245,7 +245,7 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-CREATE TABLE IF NOT EXISTS m2epro_play_order (
+CREATE TABLE IF NOT EXISTS `{$this->_installer->getTable('m2epro_play_order')}` (
   order_id INT(11) UNSIGNED NOT NULL,
   play_order_id INT(11) UNSIGNED NOT NULL,
   buyer_name VARCHAR(255) NOT NULL,
@@ -269,7 +269,7 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-CREATE TABLE IF NOT EXISTS m2epro_play_order_item (
+CREATE TABLE IF NOT EXISTS `{$this->_installer->getTable('m2epro_play_order_item')}` (
   order_item_id INT(11) UNSIGNED NOT NULL,
   play_order_item_id INT(11) UNSIGNED NOT NULL,
   listing_id INT(11) UNSIGNED NOT NULL,
@@ -290,7 +290,7 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-CREATE TABLE IF NOT EXISTS m2epro_play_processed_inventory (
+CREATE TABLE IF NOT EXISTS `{$this->_installer->getTable('m2epro_play_processed_inventory')}` (
   hash VARCHAR(100) NOT NULL,
   sku VARCHAR(100) NOT NULL,
   INDEX hash (hash),
@@ -300,7 +300,7 @@ ENGINE = MYISAM
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-CREATE TABLE IF NOT EXISTS m2epro_play_template_description (
+CREATE TABLE IF NOT EXISTS `{$this->_installer->getTable('m2epro_play_template_description')}` (
   template_description_id INT(11) UNSIGNED NOT NULL,
   PRIMARY KEY (template_description_id)
 )
@@ -308,7 +308,7 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-CREATE TABLE IF NOT EXISTS m2epro_play_template_general (
+CREATE TABLE IF NOT EXISTS `{$this->_installer->getTable('m2epro_play_template_general')}` (
   template_general_id INT(11) UNSIGNED NOT NULL,
   sku_mode TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   sku_custom_attribute VARCHAR(255) NOT NULL,
@@ -346,7 +346,7 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-CREATE TABLE IF NOT EXISTS m2epro_play_template_selling_format (
+CREATE TABLE IF NOT EXISTS `{$this->_installer->getTable('m2epro_play_template_selling_format')}` (
   template_selling_format_id INT(11) UNSIGNED NOT NULL,
   qty_mode TINYINT(2) UNSIGNED NOT NULL,
   qty_custom_value INT(11) UNSIGNED NOT NULL,
@@ -376,7 +376,7 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-CREATE TABLE IF NOT EXISTS m2epro_play_template_synchronization (
+CREATE TABLE IF NOT EXISTS `{$this->_installer->getTable('m2epro_play_template_synchronization')}` (
   template_synchronization_id INT(11) UNSIGNED NOT NULL,
   list_mode TINYINT(2) UNSIGNED NOT NULL,
   list_status_enabled TINYINT(2) UNSIGNED NOT NULL,
@@ -461,7 +461,7 @@ SQL
 
             $installer->run(<<<SQL
 
-INSERT INTO ess_config (`group`,`key`,`value`,`notice`,`update_date`,`create_date`) VALUES
+INSERT INTO `{$this->_installer->getTable('ess_config')}` (`group`,`key`,`value`,`notice`,`update_date`,`create_date`) VALUES
 ('/M2ePro/license/play/', 'mode', '0', '0 - None\r\n1 - Trial\r\n2 - Live',
 '2013-05-01 01:00:00', '2013-05-01 01:00:00'),
 ('/M2ePro/license/play/', 'expiration_date', NULL, NULL, '2013-05-01 01:00:00', '2013-05-01 01:00:00'),
@@ -485,7 +485,7 @@ SQL
 
             $installer->run(<<<SQL
 
-INSERT INTO `m2epro_config` (`group`,`key`,`value`,`notice`,`update_date`,`create_date`) VALUES
+INSERT INTO `{$this->_installer->getTable('m2epro_config')}` (`group`,`key`,`value`,`notice`,`update_date`,`create_date`) VALUES
 ('/play/connector/', 'mode', 'server', 'server', '2013-05-01 01:00:00', '2013-05-01 01:00:00'),
 ('/component/play/', 'mode', '1', '0 - disable, \r\n1 - enable', '2013-05-01 01:00:00', '2013-05-01 01:00:00'),
 ('/component/play/', 'allowed', '1', '0 - disable, \r\n1 - enable', '2013-05-01 01:00:00', '2013-05-01 01:00:00'),
@@ -551,7 +551,7 @@ SQL
 
             $installer->run(<<<SQL
 
-INSERT INTO m2epro_marketplace VALUES
+INSERT INTO `{$this->_installer->getTable('m2epro_marketplace')}` VALUES
 (34, 0, 'United Kingdom', 'UK', 'play.com', 1, 1, 'Europe', 'play', '2013-05-01 01:00:00', '2013-05-01 01:00:00');
 
 SQL
@@ -567,7 +567,7 @@ SQL
 
             $installer->run(<<<SQL
 
-INSERT INTO m2epro_play_marketplace VALUES
+INSERT INTO `{$this->_installer->getTable('m2epro_play_marketplace')}` VALUES
 (34);
 
 SQL
@@ -578,7 +578,7 @@ SQL
 
         $installer->run(<<<SQL
 
-DELETE FROM `m2epro_config`
+DELETE FROM `{$this->_installer->getTable('m2epro_config')}`
 WHERE `group` = '/cache/servicing/';
 
 SQL

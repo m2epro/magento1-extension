@@ -947,98 +947,59 @@ class Ess_M2ePro_Adminhtml_Ebay_ListingController extends Ess_M2ePro_Controller_
         }
 
         if (!$listingsProductsIds = $this->getRequest()->getParam('selected_products')) {
-            return 'You should select Products';
+            return Mage::helper('M2ePro')->__('You should select Products');
         }
 
-        $logsActionId = Mage::getModel('M2ePro/Listing_Log')->getResource()->getNextActionId();
-
-        $params['logs_action_id'] = $logsActionId;
-        $params['status_changer'] = Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_USER;
-        $params['is_realtime']    = true;
-
-        $listingsProductsIds = explode(',', $listingsProductsIds);
-
-        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $listingsProductsCollection */
-        $listingsProductsCollection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Listing_Product');
-        $listingsProductsCollection->addFieldToFilter('id', $listingsProductsIds);
+        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $productsCollection */
+        $productsCollection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Listing_Product');
+        $productsCollection->addFieldToFilter('id', explode(',', $listingsProductsIds));
 
         /** @var Ess_M2ePro_Model_Listing_Product[] $listingsProducts */
-        $listingsProducts = $listingsProductsCollection->getItems();
+        $listingsProducts = $productsCollection->getItems();
+        $logsActionId = Mage::getModel('M2ePro/Listing_Log')->getResource()->getNextActionId();
 
-        foreach ($listingsProducts as $index => $listingProduct) {
-            $lockManager = Mage::getModel(
-                'M2ePro/Listing_Product_LockManager', array('listing_product' => $listingProduct)
-            );
-            $lockManager->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_USER);
-            $lockManager->setLogsActionId($logsActionId);
-            $lockManager->setLogsAction($this->getLogsAction($action));
-
-            if ($lockManager->checkLocking()) {
-                unset($listingsProducts[$index]);
-            }
-        }
-
+        $this->checkLocking($listingsProducts, $logsActionId, $action);
         if (empty($listingsProducts)) {
-            return Mage::helper('M2ePro')->jsonEncode(array('result'=>'error','action_id'=>$logsActionId));
+            return Mage::helper('M2ePro')->jsonEncode(array('result' => 'error','action_id' => $logsActionId));
         }
 
-        if ($action == Ess_M2ePro_Model_Listing_Product::ACTION_STOP && !empty($params['remove'])) {
-            foreach ($listingsProducts as $index => $listingProduct) {
-                if ($listingProduct->isStoppable()) {
-                    continue;
-                }
-
-                $removeHandler = Mage::getModel(
-                    'M2ePro/Listing_Product_RemoveHandler', array('listing_product' => $listingProduct)
-                );
-                $removeHandler->process();
-
-                unset($listingsProducts[$index]);
-            }
-        }
-
-        if (empty($listingsProducts)) {
-            return Mage::helper('M2ePro')->jsonEncode(array('result'=>'success','action_id'=>$logsActionId));
-        }
-
-        $dispatcherObject = Mage::getModel('M2ePro/Ebay_Connector_Item_Dispatcher');
-        $result = (int)$dispatcherObject->process($action, $listingsProducts, $params);
-
-        if ($result == Ess_M2ePro_Helper_Data::STATUS_ERROR) {
-            return Mage::helper('M2ePro')->jsonEncode(array('result'=>'error','action_id'=>$logsActionId));
-        }
-
-        if ($result == Ess_M2ePro_Helper_Data::STATUS_WARNING) {
-            return Mage::helper('M2ePro')->jsonEncode(array('result'=>'warning','action_id'=>$logsActionId));
-        }
-
-        if ($result == Ess_M2ePro_Helper_Data::STATUS_SUCCESS) {
-            return Mage::helper('M2ePro')->jsonEncode(array('result'=>'success','action_id'=>$logsActionId));
-        }
-
-        return Mage::helper('M2ePro')->jsonEncode(array('result'=>'error','action_id'=>$logsActionId));
+        return $this->runConnector($listingsProducts, $action, $params, $logsActionId);
     }
 
     protected function scheduleAction($action, array $params = array())
     {
         if (!$listingsProductsIds = $this->getRequest()->getParam('selected_products')) {
-            return 'You should select Products';
+            return Mage::helper('M2ePro')->__('You should select Products');
         }
 
-        $params['status_changer'] = Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_USER;
-
-        $listingsProductsIds = explode(',', $listingsProductsIds);
-
-        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $listingsProductsCollection */
-        $listingsProductsCollection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Listing_Product');
-        $listingsProductsCollection->addFieldToFilter('id', $listingsProductsIds);
+        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $productsCollection */
+        $productsCollection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Listing_Product');
+        $productsCollection->addFieldToFilter('id', explode(',', $listingsProductsIds));
 
         /** @var Ess_M2ePro_Model_Listing_Product[] $listingsProducts */
-        $listingsProducts = $listingsProductsCollection->getItems();
-
+        $listingsProducts = $productsCollection->getItems();
         $logsActionId = Mage::getModel('M2ePro/Listing_Log')->getResource()->getNextActionId();
 
+        $this->checkLocking($listingsProducts, $logsActionId, $action);
+        if (empty($listingsProducts)) {
+            return Mage::helper('M2ePro')->jsonEncode(array('result' => 'error','action_id' => $logsActionId));
+        }
+
+        $this->createUpdateScheduledActions(
+            $listingsProducts,
+            $action,
+            $params
+        );
+
+        return Mage::helper('M2ePro')->jsonEncode(array('result' => 'success', 'action_id' => $logsActionId));
+    }
+
+    //########################################
+
+    protected function checkLocking(&$listingsProducts, $logsActionId, $action)
+    {
         foreach ($listingsProducts as $index => $listingProduct) {
+            /** @var Ess_M2ePro_Model_Listing_Product_LockManager $lockManager */
             $lockManager = Mage::getModel(
                 'M2ePro/Listing_Product_LockManager', array('listing_product' => $listingProduct)
             );
@@ -1050,74 +1011,88 @@ class Ess_M2ePro_Adminhtml_Ebay_ListingController extends Ess_M2ePro_Controller_
                 unset($listingsProducts[$index]);
             }
         }
+    }
 
-        if (empty($listingsProducts)) {
-            return Mage::helper('M2ePro')->jsonEncode(array('result'=>'error', 'action_id' => $logsActionId));
+    protected function createUpdateScheduledActions(&$listingsProducts, $action, array $params)
+    {
+        $listingsProductsIds = array();
+        foreach ($listingsProducts as $listingProduct) {
+            $listingsProductsIds[] = $listingProduct->getId();
         }
 
-        if ($action == Ess_M2ePro_Model_Listing_Product::ACTION_STOP && !empty($params['remove'])) {
-            foreach ($listingsProducts as $index => $listingProduct) {
-                if ($listingProduct->isStoppable()) {
-                    continue;
-                }
-
-                $removeHandler = Mage::getModel(
-                    'M2ePro/Listing_Product_RemoveHandler', array('listing_product' => $listingProduct)
-                );
-                $removeHandler->process();
-
-                unset($listingsProducts[$index]);
-            }
-        }
-
-        if (empty($listingsProducts)) {
-            return Mage::helper('M2ePro')->jsonEncode(array('result'=>'success', 'action_id' => $logsActionId));
-        }
-
-        $existedScheduledActionsCollection = Mage::getResourceModel(
-            'M2ePro/Listing_Product_ScheduledAction_Collection'
-        );
-        $existedScheduledActionsCollection->addFieldToFilter('listing_product_id', $listingsProductsIds);
-
-        $additionalData = array(
-            'params' => $params,
-        );
-        $tag = null;
-
-        if ($action == Ess_M2ePro_Model_Listing_Product::ACTION_REVISE) {
-            $configurator = Mage::getModel('M2ePro/Ebay_Listing_Product_Action_Configurator');
-            $configurator->enableAll();
-
-            $additionalData['configurator'] = $configurator->getData();
-
-            $tag = '/qty/price/title/subtitle/description/images/categories/payment/shipping/return/other/';
-        }
+        $existedScheduled = Mage::getResourceModel('M2ePro/Listing_Product_ScheduledAction_Collection');
+        $existedScheduled->addFieldToFilter('listing_product_id', $listingsProductsIds);
 
         $scheduledActionManager = Mage::getModel('M2ePro/Listing_Product_ScheduledAction_Manager');
 
         foreach ($listingsProducts as $listingProduct) {
             $scheduledAction = Mage::getModel('M2ePro/Listing_Product_ScheduledAction');
             $scheduledAction->setData(
-                array(
-                'listing_product_id' => $listingProduct->getId(),
-                'component'          => Ess_M2ePro_Helper_Component_Ebay::NICK,
-                'action_type'        => $action,
-                'is_force'           => true,
-                'tag'                => $tag,
-                'additional_data'    => Mage::helper('M2ePro')->jsonEncode($additionalData),
-                )
+                $this->createUpdateScheduledActionsDataCallback($listingProduct, $action, $params)
             );
 
-            if ($existedScheduledActionsCollection->getItemByColumnValue(
-                'listing_product_id', $listingProduct->getId()
-            )) {
+            if ($existedScheduled->getItemByColumnValue('listing_product_id', $listingProduct->getId())) {
                 $scheduledActionManager->updateAction($scheduledAction);
             } else {
                 $scheduledActionManager->addAction($scheduledAction);
             }
         }
+    }
 
-        return Mage::helper('M2ePro')->jsonEncode(array('result'=>'success', 'action_id' => $logsActionId));
+    protected function createUpdateScheduledActionsDataCallback($listingProduct, $action, array $params)
+    {
+        $tag = null;
+        $params['status_changer'] = Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_USER;
+        $additionalData = array('params' => $params,);
+
+        if ($action == Ess_M2ePro_Model_Listing_Product::ACTION_REVISE) {
+            /** @var Ess_M2ePro_Model_Ebay_Listing_Product_Action_Configurator $configurator */
+            $configurator = Mage::getModel('M2ePro/Ebay_Listing_Product_Action_Configurator');
+            $configurator->enableAll();
+            $tag = '/qty/price/title/subtitle/description/images/categories/payment/shipping/return/other/';
+
+            $additionalData['configurator'] = $configurator->getData();
+        }
+
+        return array(
+            'listing_product_id' => $listingProduct->getId(),
+            'component'          => Ess_M2ePro_Helper_Component_Ebay::NICK,
+            'action_type'        => $action,
+            'is_force'           => true,
+            'tag'                => $tag,
+            'additional_data'    => Mage::helper('M2ePro')->jsonEncode($additionalData)
+        );
+    }
+
+    // ---------------------------------------
+
+    protected function runConnector($listingsProducts, $action, array $params, $logsActionId)
+    {
+        $listingsProductsIds = array();
+        foreach ($listingsProducts as $listingProduct) {
+            $listingsProductsIds[] = $listingProduct->getId();
+        }
+
+        $params['logs_action_id'] = $logsActionId;
+        $params['status_changer'] = Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_USER;
+        $params['is_realtime'] = true;
+
+        $dispatcherObject = Mage::getModel('M2ePro/Ebay_Connector_Item_Dispatcher');
+        $result = (int)$dispatcherObject->process($action, $listingsProductsIds, $params);
+
+        if ($result == Ess_M2ePro_Helper_Data::STATUS_ERROR) {
+            return Mage::helper('M2ePro')->jsonEncode(array('result' => 'error','action_id' => $logsActionId));
+        }
+
+        if ($result == Ess_M2ePro_Helper_Data::STATUS_WARNING) {
+            return Mage::helper('M2ePro')->jsonEncode(array('result' => 'warning','action_id' => $logsActionId));
+        }
+
+        if ($result == Ess_M2ePro_Helper_Data::STATUS_SUCCESS) {
+            return Mage::helper('M2ePro')->jsonEncode(array('result' => 'success','action_id' => $logsActionId));
+        }
+
+        return Mage::helper('M2ePro')->jsonEncode(array('result' => 'error','action_id' => $logsActionId));
     }
 
     // ---------------------------------------
@@ -1168,15 +1143,55 @@ class Ess_M2ePro_Adminhtml_Ebay_ListingController extends Ess_M2ePro_Controller_
 
     public function runStopAndRemoveProductsAction()
     {
+        if (!$listingsProductsIds = $this->getRequest()->getParam('selected_products')) {
+            return Mage::helper('M2ePro')->__('You should select Products');
+        }
+
+        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $productsCollection */
+        $productsCollection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Listing_Product');
+        $productsCollection->addFieldToFilter('id', explode(',', $listingsProductsIds));
+
+        /** @var Ess_M2ePro_Model_Listing_Product[] $listingsProducts */
+        $listingsProducts = $productsCollection->getItems();
+        $logsActionId = Mage::getModel('M2ePro/Listing_Log')->getResource()->getNextActionId();
+
+        $this->checkLocking($listingsProducts, $logsActionId, Ess_M2ePro_Model_Listing_Product::ACTION_STOP);
+        if (empty($listingsProducts)) {
+            return Mage::helper('M2ePro')->jsonEncode(array('result' => 'error', 'action_id' => $logsActionId));
+        }
+
+        foreach ($listingsProducts as $index => $listingProduct) {
+            if (!$listingProduct->isStoppable()) {
+                /** @var Ess_M2ePro_Model_Listing_Product_RemoveHandler $removeHandler */
+                $removeHandler = Mage::getModel(
+                    'M2ePro/Listing_Product_RemoveHandler', array('listing_product' => $listingProduct)
+                );
+                $removeHandler->process();
+
+                unset($listingsProducts[$index]);
+            }
+        }
+
+        if (empty($listingsProducts)) {
+            return Mage::helper('M2ePro')->jsonEncode(array('result' => 'success', 'action_id' => $logsActionId));
+        }
+
         if (Mage::helper('M2ePro')->jsonDecode($this->getRequest()->getParam('is_realtime'))) {
-            return $this->getResponse()->setBody(
-                $this->processConnector(Ess_M2ePro_Model_Listing_Product::ACTION_STOP, array('remove' => true))
+            return $this->runConnector(
+                $listingsProducts,
+                Ess_M2ePro_Model_Listing_Product::ACTION_STOP,
+                array('remove' => true),
+                $logsActionId
             );
         }
 
-        return $this->getResponse()->setBody(
-            $this->scheduleAction(Ess_M2ePro_Model_Listing_Product::ACTION_STOP, array('remove' => true))
+        $this->createUpdateScheduledActions(
+            $listingsProducts,
+            Ess_M2ePro_Model_Listing_Product::ACTION_STOP,
+            array('remove' => true)
         );
+
+        return Mage::helper('M2ePro')->jsonEncode(array('result' => 'success', 'action_id' => $logsActionId));
     }
 
     //########################################
@@ -1424,7 +1439,7 @@ class Ess_M2ePro_Adminhtml_Ebay_ListingController extends Ess_M2ePro_Controller_
             $newTemplate = Mage::helper('M2ePro')
                 ->getCachedObject(
                     'Ebay_Template_OtherCategory',
-                    $newData['template_category_other_id'],
+                    $newData['template_other_category_id'],
                     null, array('template')
                 );
             $snapshotBuilder->setModel($newTemplate);
@@ -1441,7 +1456,7 @@ class Ess_M2ePro_Adminhtml_Ebay_ListingController extends Ess_M2ePro_Controller_
             $oldTemplate = Mage::helper('M2ePro')
                 ->getCachedObject(
                     'Ebay_Template_OtherCategory',
-                    $oldData['template_category_other_id'],
+                    $oldData['template_other_category_id'],
                     null, array('template')
                 );
             $snapshotBuilder->setModel($oldTemplate);

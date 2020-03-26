@@ -222,7 +222,8 @@ class Ess_M2ePro_Model_Ebay_Magento_Product_ChangeProcessor
             $trackingAttributes,
             $ebaySellingFormatTemplate->getBestOfferAcceptAttributes(),
             $ebaySellingFormatTemplate->getBestOfferRejectAttributes(),
-            $ebaySellingFormatTemplate->getTaxCategoryAttributes()
+            $ebaySellingFormatTemplate->getTaxCategoryAttributes(),
+            $ebaySellingFormatTemplate->getLotSizeAttributes()
         );
 
         $ebayDescriptionTemplate = $this->getEbayListingProduct()->getEbayDescriptionTemplate();

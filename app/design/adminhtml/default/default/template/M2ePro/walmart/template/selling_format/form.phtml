@@ -167,14 +167,14 @@
     /** @var Ess_M2ePro_Helper_Magento_Attribute $magentoAttributeHelper */
     $magentoAttributeHelper = Mage::helper('M2ePro/Magento_Attribute');
 
-    $generalFromAllAttributeSets = Mage::helper('M2ePro/Magento_Attribute')->getGeneralFromAllAttributeSets();
+    $allAttributeSets = Mage::helper('M2ePro/Magento_Attribute')->getAll();
     $attributesByInputTypes = array(
-        'text' => $magentoAttributeHelper->filterByInputTypes($generalFromAllAttributeSets, array('text')),
-        'text_select' => $magentoAttributeHelper->filterByInputTypes($generalFromAllAttributeSets, array('text', 'select')),
-        'text_price' => $magentoAttributeHelper->filterByInputTypes($generalFromAllAttributeSets, array('text', 'price')),
-        'text_date' => $magentoAttributeHelper->filterByInputTypes($generalFromAllAttributeSets, array('text', 'date')),
-        'text_weight' => $magentoAttributeHelper->filterByInputTypes($generalFromAllAttributeSets, array('text', 'weight')),
-        'boolean' => $magentoAttributeHelper->filterByInputTypes($generalFromAllAttributeSets, array('boolean')),
+        'text' => $magentoAttributeHelper->filterByInputTypes($allAttributeSets, array('text')),
+        'text_select' => $magentoAttributeHelper->filterByInputTypes($allAttributeSets, array('text', 'select')),
+        'text_price' => $magentoAttributeHelper->filterByInputTypes($allAttributeSets, array('text', 'price')),
+        'text_date' => $magentoAttributeHelper->filterByInputTypes($allAttributeSets, array('text', 'date')),
+        'text_weight' => $magentoAttributeHelper->filterByInputTypes($allAttributeSets, array('text', 'weight')),
+        'boolean' => $magentoAttributeHelper->filterByInputTypes($allAttributeSets, array('boolean')),
     );
 
     $groups = Mage::getModel('customer/group')->getCollection()->toArray();
@@ -267,7 +267,7 @@
     Event.observe(window, 'load', function() {
 
         AttributeHandlerObj = new AttributeHandler();
-        AttributeHandlerObj.setAvailableAttributes(<?php echo json_encode($generalFromAllAttributeSets); ?>);
+        AttributeHandlerObj.setAvailableAttributes(<?php echo json_encode($allAttributeSets); ?>);
         WalmartTemplateSellingFormatHandlerObj = new WalmartTemplateSellingFormatHandler();
 
         $('marketplace_id')
@@ -532,7 +532,7 @@
 
                             <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute" new_option_value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_ATTRIBUTE; ?>">
                                 <option value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_PRODUCT_FIXED; ?>" <?php if (Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_PRODUCT_FIXED == $formData['qty_mode']): echo ' selected="selected"'; endif; ?>>QTY</option>
-                                <?php if ($formData['qty_mode'] == Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_ATTRIBUTE && !$magentoAttributeHelper->isExistInAttributesArray($formData['qty_custom_attribute'], $generalFromAllAttributeSets) && $formData['qty_custom_attribute'] != ''): ?>
+                                <?php if ($formData['qty_mode'] == Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_ATTRIBUTE && !$magentoAttributeHelper->isExistInAttributesArray($formData['qty_custom_attribute'], $allAttributeSets) && $formData['qty_custom_attribute'] != ''): ?>
                                     <option attribute_code="<?php echo Mage::helper('M2ePro')->escapeHtml($formData['qty_custom_attribute']) ?>" selected="selected" value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_ATTRIBUTE; ?>">
                                         <?php echo Mage::helper('M2ePro')->escapeHtml($magentoAttributeHelper->getAttributeLabel($formData['qty_custom_attribute'])) ?>
                                     </option>
@@ -1532,7 +1532,7 @@
             <input id="shipping_override_rule_cost_value_%i%" name="shipping_override_rule[%i%][cost_value]" type="text" class="required-entry input-text M2ePro-validation-float shipping-override-cost-custom-value" disabled="disabled" style="width: 155px; display: none; text-align: right"/>
             <select id="shipping_override_rule_cost_attribute_%i%" name="shipping_override_rule[%i%][cost_attribute]" class="required-entry shipping-override-cost-custom-attribute" disabled="disabled" style="width: 155px; display: none;">
                 <option value="" class="empty"></option>
-                <?php foreach ($generalFromAllAttributeSets as $attribute) { ?>
+                <?php foreach ($allAttributeSets as $attribute) { ?>
                     <option value="<?php echo $attribute['code'] ?>"><?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?></option>
                 <?php } ?>
             </select>

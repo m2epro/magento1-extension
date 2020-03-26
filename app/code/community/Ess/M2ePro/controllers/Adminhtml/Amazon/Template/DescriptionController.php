@@ -328,7 +328,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Template_DescriptionController
 
         $changeProcessor = Mage::getModel('M2ePro/Amazon_Template_Description_ChangeProcessor');
         $changeProcessor->process(
-            $diff, $affectedListingsProducts->getData(array('id', 'status'), array('only_physical_units' => true))
+            $diff, $affectedListingsProducts->getData(array('id', 'status'))
         );
         // ---------------------------------------
 

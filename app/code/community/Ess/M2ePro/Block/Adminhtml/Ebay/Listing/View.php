@@ -269,8 +269,6 @@ HTML;
                 )),
                 array('runSynchNow' =>
                 $this->getUrl('M2ePro/adminhtml_ebay_marketplace/runSynchNow')),
-                array('synchCheckProcessingNow' =>
-                $this->getUrl('M2ePro/adminhtml_ebay_synchronization/synchCheckProcessingNow')),
                 array('variationProductManage' =>
                 $this->getUrl('*/adminhtml_ebay_listing_variation_product_manage/index')),
                 array('getListingProductBids' =>
@@ -287,7 +285,7 @@ HTML;
             'You must select at least 1 Category.' => $helper->__('You must select at least 1 Category.'),
             'Rule with the same Title already exists.' => $helper->__('Rule with the same Title already exists.'),
             'Compatibility Attribute' => $helper->__('Compatibility Attribute'),
-            'Sell on Another eBay Site' => $helper->__('Sell on Another eBay Site'),
+            'Sell on Another Marketplace' => $helper->__('Sell on Another Marketplace'),
             'Product' => $helper->__('Product'),
             'You must select at least 1 Listing.' => $helper->__('You must select at least 1 Listing.'),
             'Data migration.' => $helper->__('Data migration...'),
@@ -308,18 +306,6 @@ HTML;
                     'Some Products Categories Settings are not set'
                     .' or Attributes for Title or Description are empty.'
                 ),
-            'Another Synchronization Is Already Running.' => $helper->__('Another Synchronization Is Already Running.'),
-            'Getting information. Please wait ...' => $helper->__('Getting information. Please wait ...'),
-            'Preparing to start. Please wait ...' => $helper->__('Preparing to start. Please wait ...'),
-            'Synchronization has successfully ended.' => $helper->__('Synchronization has successfully ended.'),
-            'Synchronization ended with warnings. <a target="_blank" href="%url%">View Log</a> for details.' =>
-                $helper->__(
-                    'Synchronization ended with warnings. <a target="_blank" href="%url%">View Log</a> for details.'
-                ),
-            'Synchronization ended with errors. <a target="_blank" href="%url%">View Log</a> for details.' =>
-                $helper->__(
-                    'Synchronization ended with errors. <a target="_blank" href="%url%">View Log</a> for details.'
-                )
             )
         );
         // ---------------------------------------

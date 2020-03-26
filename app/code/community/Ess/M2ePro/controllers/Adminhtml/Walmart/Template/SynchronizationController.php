@@ -124,6 +124,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Template_SynchronizationController
             'revise_update_price_max_allowed_deviation_mode',
             'revise_update_price_max_allowed_deviation',
             'revise_update_promotions',
+            'revise_update_details',
         );
         foreach ($keys as $key) {
             if (isset($post[$key])) {
@@ -213,7 +214,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Template_SynchronizationController
 
         $changeProcessor = Mage::getModel('M2ePro/Walmart_Template_Synchronization_ChangeProcessor');
         $changeProcessor->process(
-            $diff, $affectedListingsProducts->getData(array('id', 'status'), array('only_physical_units' => true))
+            $diff, $affectedListingsProducts->getData(array('id', 'status'))
         );
 
         $id = $model->getId();
