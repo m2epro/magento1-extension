@@ -802,19 +802,6 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_migration_v6')}`;
-CREATE TABLE `{$this->_installer->getTable('m2epro_migration_v6')}` (
-  `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `component` VARCHAR(32) NOT NULL,
-  `group` VARCHAR(255) NOT NULL,
-  `data` TEXT DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  INDEX `group` (`group`)
-)
-ENGINE = MYISAM
-CHARACTER SET utf8
-COLLATE utf8_general_ci;
-
 DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_registry')}`;
 CREATE TABLE `{$this->_installer->getTable('m2epro_registry')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,

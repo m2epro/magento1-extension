@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Ess_M2ePro>
-            <version>6.5.8</version>
+            <version>6.5.9</version>
         </Ess_M2ePro>
     </modules>
     <default>
@@ -828,9 +828,6 @@
                     <Setup>
                         <table>m2epro_setup</table>
                     </Setup>
-                    <Migration_V6>
-                        <table>m2epro_migration_v6</table>
-                    </Migration_V6>
 
                     <!-- PROCESSING -->
 

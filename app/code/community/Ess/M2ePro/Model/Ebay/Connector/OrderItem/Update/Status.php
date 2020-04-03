@@ -60,7 +60,6 @@ class Ess_M2ePro_Model_Ebay_Connector_OrderItem_Update_Status
         $carrierCode = !empty($this->_params['carrier_code']) ? $this->_params['carrier_code'] : null;
 
         return array(
-            'account'         => $this->_orderItem->getOrder()->getAccount()->getServerHash(),
             'action'          => $action,
             'item_id'         => $this->_orderItem->getChildObject()->getItemId(),
             'transaction_id'  => $this->_orderItem->getChildObject()->getTransactionId(),

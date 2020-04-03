@@ -33,8 +33,6 @@ class Ess_M2ePro_Sql_Upgrade_v6_5_7__v6_5_8_Config extends Ess_M2ePro_Model_Upgr
             '@y20_m02/RemoveReviseTotal',
             '@y20_m02/ProductCustomTypes',
 
-            '@y20_m02/ProductCustomTypes',
-
             '@y20_m03/SynchronizationConfigsModeRemovedFix',
         );
     }

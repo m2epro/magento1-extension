@@ -1,3 +1,9 @@
+* 6.5.9 (r14955) (03/04/2020)
+
+Common: [Removed] Support of direct upgrade from versions lower 6.0.8
+Common: [Fixed] $_installer->getFullName() works incorrectly, may cause problems in database upgrades
+eBay: [Fixed] "Invalid ItemID or TransactionID" during shipping status updating
+
 * 6.5.8 (r14908) (22/03/2020)
 
 Common: [Fixed] "Base table or view %s not found" when prefixes are presented in a database on upgrade (rename and create tables fix)

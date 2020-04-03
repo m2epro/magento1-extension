@@ -86,7 +86,8 @@ class Ess_M2ePro_Sql_Update_Config extends Ess_M2ePro_Model_Upgrade_Feature_Abst
                 'ProductCustomTypes'
             ),
             'y20_m03' => array(
-                'SynchronizationConfigsModeRemovedFix'
+                'SynchronizationConfigsModeRemovedFix',
+                'ChangeMinSupportedVersion'
             ),
         );
     }

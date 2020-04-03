@@ -5,16 +5,15 @@
  * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
-
-class Ess_M2ePro_Model_Resource_Migration_V6_Collection
-    extends Ess_M2ePro_Model_Resource_Collection_Abstract
+class Ess_M2ePro_Sql_Upgrade_v6_5_8__v6_5_9_Config extends Ess_M2ePro_Model_Upgrade_Feature_AbstractConfig
 {
     //########################################
 
-    public function _construct()
+    public function getFeaturesList()
     {
-        parent::_construct();
-        $this->_init('M2ePro/Migration_V6');
+        return array(
+            '@y20_m03/ChangeMinSupportedVersion',
+        );
     }
 
     //########################################

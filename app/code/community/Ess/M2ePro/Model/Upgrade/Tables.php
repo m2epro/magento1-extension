@@ -94,7 +94,7 @@ class Ess_M2ePro_Model_Upgrade_Tables
 
     public function getFullName($tableName)
     {
-        if (strpos(self::PREFIX, $tableName) === false) {
+        if (strpos($tableName, self::PREFIX) === false) {
             $tableName = self::PREFIX . $tableName;
         }
 

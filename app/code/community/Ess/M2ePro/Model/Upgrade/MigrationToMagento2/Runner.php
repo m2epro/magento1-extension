@@ -60,7 +60,6 @@ class Ess_M2ePro_Model_Upgrade_MigrationToMagento2_Runner
         $connection = $resource->getConnection('core_setup');
 
         $tablesForRemove = array(
-            Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('m2epro_migration_v6'),
             Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('m2epro_setup'),
         );
 

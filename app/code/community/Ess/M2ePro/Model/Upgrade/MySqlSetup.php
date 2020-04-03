@@ -17,7 +17,7 @@ class Ess_M2ePro_Model_Upgrade_MySqlSetup extends Mage_Core_Model_Resource_Setup
     /**
      * Means that version, upgrade files are included to the build
      */
-    const MIN_SUPPORTED_VERSION_FOR_UPGRADE = '5.0.3';
+    const MIN_SUPPORTED_VERSION_FOR_UPGRADE = '6.0.8';
 
     /** @var string */
     public $versionFrom;

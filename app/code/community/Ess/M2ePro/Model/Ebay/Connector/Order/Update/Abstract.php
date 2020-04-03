@@ -121,20 +121,10 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Order_Update_Abstract
 
     public function getRequestData()
     {
-        $requestData = array('action' => $this->_action);
-
-        $ebayOrderId = $this->_order->getData('ebay_order_id');
-
-        if (strpos($ebayOrderId, '-') === false) {
-            $requestData['order_id'] = $ebayOrderId;
-        } else {
-            $orderIdParts = explode('-', $ebayOrderId);
-
-            $requestData['item_id'] = $orderIdParts[0];
-            $requestData['transaction_id'] = $orderIdParts[1];
-        }
-
-        return $requestData;
+        return array(
+            'action' => $this->_action,
+            'order_id' => $this->_order->getChildObject()->getEbayOrderId()
+        );
     }
 
     //########################################
