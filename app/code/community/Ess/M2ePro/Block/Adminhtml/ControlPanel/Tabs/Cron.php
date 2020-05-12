@@ -22,19 +22,14 @@ class Ess_M2ePro_Block_Adminhtml_ControlPanel_Tabs_Cron extends Mage_Adminhtml_B
 
     protected function _beforeToHtml()
     {
+        /** @var Ess_M2ePro_Model_Cron_Task_Repository $taskRepo */
+        $taskRepo = Mage::getSingleton('M2ePro/Cron_Task_Repository');
+
         $tasks = array();
-
-        foreach (Mage::getModel('M2ePro/Cron_Strategy_Serial')->getAllowedTasks() as $taskCode) {
-            $optGroup = 'system';
-            $titleParts = explode('/', $taskCode);
-            if (in_array(reset($titleParts), Mage::helper('M2ePro/Component')->getComponents())) {
-                $optGroup = array_shift($titleParts);
-            }
-
-            $index = array_search('cron', $titleParts, true);
-            if ($index !== false) {
-                unset($titleParts[$index]);
-            }
+        foreach ($taskRepo->getRegisteredTasks() as $taskNick) {
+            $group = $taskRepo->getTaskGroup($taskNick);
+            $titleParts = explode('/', $taskNick);
+            reset($titleParts) === $group && array_shift($titleParts);
 
             $taskTitle = preg_replace_callback(
                 '/_([a-z])/i',
@@ -44,7 +39,7 @@ class Ess_M2ePro_Block_Adminhtml_ControlPanel_Tabs_Cron extends Mage_Adminhtml_B
                 implode(' > ', array_map('ucfirst', $titleParts))
             );
 
-            $tasks[ucfirst($optGroup)][$taskCode] = $taskTitle;
+            $tasks[ucfirst($group)][$taskNick] = $taskTitle;
         }
 
         foreach ($tasks as $group => &$tasksByGroup) {

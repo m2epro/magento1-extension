@@ -6,6 +6,10 @@
  * @license    Commercial use is forbidden
  */
 
+use Ess_M2ePro_Model_Lock_Item_Manager as LockManager;
+use Ess_M2ePro_Model_Cron_Strategy_Serial as Serial;
+use Ess_M2ePro_Model_Cron_Strategy_Parallel as Parallel;
+
 abstract class Ess_M2ePro_Model_Cron_Strategy_Abstract
 {
     const INITIALIZATION_TRANSACTIONAL_LOCK_NICK = 'cron_strategy_initialization';
@@ -17,7 +21,10 @@ abstract class Ess_M2ePro_Model_Cron_Strategy_Abstract
 
     protected $_initiator = null;
 
-    protected $_allowedTasks = null;
+    /**
+     * @var Ess_M2ePro_Model_Lock_Transactional_Manager
+     */
+    protected $_initializationLockManager;
 
     /**
      * @var Ess_M2ePro_Model_Cron_OperationHistory
@@ -40,100 +47,6 @@ abstract class Ess_M2ePro_Model_Cron_Strategy_Abstract
     public function getInitiator()
     {
         return $this->_initiator;
-    }
-
-    // ---------------------------------------
-
-    /**
-     * @param array $tasks
-     * @return $this
-     */
-    public function setAllowedTasks(array $tasks)
-    {
-        $this->_allowedTasks = $tasks;
-        return $this;
-    }
-
-    /**
-     * @return array|null
-     */
-    public function getAllowedTasks()
-    {
-        if ($this->_allowedTasks !== null) {
-            return $this->_allowedTasks;
-        }
-
-        return $this->_allowedTasks = array(
-            Ess_M2ePro_Model_Cron_Task_System_ArchiveOldOrders::NICK,
-            Ess_M2ePro_Model_Cron_Task_System_ClearOldLogs::NICK,
-            Ess_M2ePro_Model_Cron_Task_System_ConnectorCommandPending_ProcessPartial::NICK,
-            Ess_M2ePro_Model_Cron_Task_System_ConnectorCommandPending_ProcessSingle::NICK,
-            Ess_M2ePro_Model_Cron_Task_System_IssuesResolver_RemoveMissedProcessingLocks::NICK,
-            Ess_M2ePro_Model_Cron_Task_System_Processing_ProcessResult::NICK,
-            Ess_M2ePro_Model_Cron_Task_System_RequestPending_ProcessPartial::NICK,
-            Ess_M2ePro_Model_Cron_Task_System_RequestPending_ProcessSingle::NICK,
-            Ess_M2ePro_Model_Cron_Task_System_Servicing_Synchronize::NICK,
-            Ess_M2ePro_Model_Cron_Task_Magento_Product_DetectDirectlyAdded::NICK,
-            Ess_M2ePro_Model_Cron_Task_Magento_Product_DetectDirectlyDeleted::NICK,
-            Ess_M2ePro_Model_Cron_Task_Magento_GlobalNotifications::NICK,
-            Ess_M2ePro_Model_Cron_Task_Listing_Product_InspectDirectChanges::NICK,
-            Ess_M2ePro_Model_Cron_Task_Listing_Product_AutoActions_ProcessMagentoProductWebsitesUpdates::NICK,
-            Ess_M2ePro_Model_Cron_Task_Listing_Product_StopQueue_Process::NICK,
-            Ess_M2ePro_Model_Cron_Task_Listing_Product_StopQueue_RemoveOld::NICK,
-            Ess_M2ePro_Model_Cron_Task_Ebay_UpdateAccountsPreferences::NICK,
-            Ess_M2ePro_Model_Cron_Task_Ebay_Template_RemoveUnused::NICK,
-            Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges::NICK,
-            Ess_M2ePro_Model_Cron_Task_Ebay_Feedbacks_DownloadNew::NICK,
-            Ess_M2ePro_Model_Cron_Task_Ebay_Feedbacks_SendResponse::NICK,
-            Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Other_ResolveSku::NICK,
-            Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Other_Channel_SynchronizeData::NICK,
-            Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_ProcessInstructions::NICK,
-            Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_ProcessScheduledActions::NICK,
-            Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_ProcessActions::NICK,
-            Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_RemovePotentialDuplicates::NICK,
-            Ess_M2ePro_Model_Cron_Task_Ebay_Order_CreateFailed::NICK,
-            Ess_M2ePro_Model_Cron_Task_Ebay_Order_Update::NICK,
-            Ess_M2ePro_Model_Cron_Task_Ebay_Order_ReserveCancel::NICK,
-            Ess_M2ePro_Model_Cron_Task_Ebay_PickupStore_ScheduleForUpdate::NICK,
-            Ess_M2ePro_Model_Cron_Task_Ebay_PickupStore_UpdateOnChannel::NICK,
-            Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_ResolveTitle::NICK,
-            Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_Channel_SynchronizeData::NICK,
-            Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_Channel_SynchronizeData_Blocked::NICK,
-            Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData::NICK,
-            Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_Blocked::NICK,
-            Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_Defected::NICK,
-            Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_RunVariationParentProcessors::NICK,
-            Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_ProcessInstructions::NICK,
-            Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_ProcessActions::NICK,
-            Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_ProcessActionsResults::NICK,
-            Ess_M2ePro_Model_Cron_Task_Amazon_Order_Receive::NICK,
-            Ess_M2ePro_Model_Cron_Task_Amazon_Order_Receive_Details::NICK,
-            Ess_M2ePro_Model_Cron_Task_Amazon_Order_CreateFailed::NICK,
-            Ess_M2ePro_Model_Cron_Task_Amazon_Order_Update::NICK,
-            Ess_M2ePro_Model_Cron_Task_Amazon_Order_Update_SellerOrderId::NICK,
-            Ess_M2ePro_Model_Cron_Task_Amazon_Order_Refund::NICK,
-            Ess_M2ePro_Model_Cron_Task_Amazon_Order_Cancel::NICK,
-            Ess_M2ePro_Model_Cron_Task_Amazon_Order_ReserveCancel::NICK,
-            Ess_M2ePro_Model_Cron_Task_Amazon_Order_Action_ProcessUpdate::NICK,
-            Ess_M2ePro_Model_Cron_Task_Amazon_Order_Action_ProcessRefund::NICK,
-            Ess_M2ePro_Model_Cron_Task_Amazon_Order_Action_ProcessCancel::NICK,
-            Ess_M2ePro_Model_Cron_Task_Amazon_Order_Action_ProcessResults::NICK,
-            Ess_M2ePro_Model_Cron_Task_Amazon_Repricing_InspectProducts::NICK,
-            Ess_M2ePro_Model_Cron_Task_Amazon_Repricing_UpdateSettings::NICK,
-            Ess_M2ePro_Model_Cron_Task_Amazon_Repricing_Synchronize::NICK,
-            Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Product_Channel_SynchronizeData::NICK,
-            Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Product_Channel_SynchronizeData_Blocked::NICK,
-            Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Other_Channel_SynchronizeData::NICK,
-            Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Product_ProcessInstructions::NICK,
-            Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Product_ProcessActions::NICK,
-            Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Product_ProcessActionsResults::NICK,
-            Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Product_ProcessListActions::NICK,
-            Ess_M2ePro_Model_Cron_Task_Walmart_Order_Receive::NICK,
-            Ess_M2ePro_Model_Cron_Task_Walmart_Order_Acknowledge::NICK,
-            Ess_M2ePro_Model_Cron_Task_Walmart_Order_Shipping::NICK,
-            Ess_M2ePro_Model_Cron_Task_Walmart_Order_Cancel::NICK,
-            Ess_M2ePro_Model_Cron_Task_Walmart_Order_Refund::NICK,
-        );
     }
 
     // ---------------------------------------
@@ -167,25 +80,12 @@ abstract class Ess_M2ePro_Model_Cron_Strategy_Abstract
         $this->beforeStart();
 
         try {
-            $result = $this->processTasks();
+            $this->processTasks();
         } catch (Exception $exception) {
-            $result = false;
-
-            $this->getOperationHistory()->addContentData(
-                'exceptions', array(
-                'message' => $exception->getMessage(),
-                'file'    => $exception->getFile(),
-                'line'    => $exception->getLine(),
-                'trace'   => $exception->getTraceAsString(),
-                )
-            );
-
-            Mage::helper('M2ePro/Module_Exception')->process($exception);
+            $this->processException($exception);
         }
 
         $this->afterEnd();
-
-        return $result;
     }
 
     // ---------------------------------------
@@ -217,6 +117,19 @@ abstract class Ess_M2ePro_Model_Cron_Strategy_Abstract
         $task->setParentOperationHistory($this->getOperationHistory());
 
         return $task;
+    }
+
+    protected function getNextTaskGroup()
+    {
+        $lastExecuted = Mage::helper('M2ePro/Module_Cron')->getLastExecutedTaskGroup();
+        $allowed = Mage::getSingleton('M2ePro/Cron_Task_Repository')->getRegisteredGroups();
+        $lastExecutedIndex = array_search($lastExecuted, $allowed, true);
+
+        if (empty($lastExecuted) || $lastExecutedIndex === false || end($allowed) === $lastExecuted) {
+            return reset($allowed);
+        }
+
+        return $allowed[$lastExecutedIndex + 1];
     }
 
     abstract protected function processTasks();
@@ -288,17 +201,96 @@ abstract class Ess_M2ePro_Model_Cron_Strategy_Abstract
         register_shutdown_function(
             function() use ($id)
             {
-            $error = error_get_last();
-            if ($error === null || !in_array((int)$error['type'], array(E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR))) {
-                return;
-            }
+                $error = error_get_last();
+                if ($error === null || !in_array((int)$error['type'], array(E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR))) {
+                    return;
+                }
 
-            $lockItem = Mage::getModel('M2ePro/Lock_Item')->load($id);
-            if ($lockItem->getId()) {
-                $lockItem->delete();
-            }
+                $lockItem = Mage::getModel('M2ePro/Lock_Item')->load($id);
+                if ($lockItem->getId()) {
+                    $lockItem->delete();
+                }
             }
         );
+    }
+
+    //########################################
+
+    /**
+     * @return Ess_M2ePro_Model_Lock_Transactional_Manager
+     */
+    protected function getInitializationLockManager()
+    {
+        if ($this->_initializationLockManager !== null) {
+            return $this->_initializationLockManager;
+        }
+
+        /** @var Ess_M2ePro_Model_Lock_Transactional_Manager $transactionalManager */
+        $this->_initializationLockManager = Mage::getModel(
+            'M2ePro/Lock_Transactional_Manager', array(
+                'nick' => self::INITIALIZATION_TRANSACTIONAL_LOCK_NICK
+            )
+        );
+
+        return $this->_initializationLockManager;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function isParallelStrategyInProgress()
+    {
+        for ($i = 1; $i <= Parallel::MAX_PARALLEL_EXECUTED_CRONS_COUNT; $i++) {
+            $lockManager = Mage::getModel(
+                'M2ePro/Lock_Item_Manager',
+                array('nick' => Parallel::GENERAL_LOCK_ITEM_PREFIX.$i)
+            );
+
+            if ($lockManager->isExist()) {
+                if ($lockManager->isInactiveMoreThanSeconds(LockManager::DEFAULT_MAX_INACTIVE_TIME)) {
+                    $lockManager->remove();
+                    continue;
+                }
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function isSerialStrategyInProgress()
+    {
+        $lockManager = Mage::getModel('M2ePro/Lock_Item_Manager', array('nick' => Serial::LOCK_ITEM_NICK));
+        if (!$lockManager->isExist()) {
+            return false;
+        }
+
+        if ($lockManager->isInactiveMoreThanSeconds(LockManager::DEFAULT_MAX_INACTIVE_TIME)) {
+            $lockManager->remove();
+            return false;
+        }
+
+        return true;
+    }
+
+    //########################################
+
+    protected function processException(Exception $exception)
+    {
+        $this->getOperationHistory()->addContentData(
+            'exceptions', array(
+                'message' => $exception->getMessage(),
+                'file'    => $exception->getFile(),
+                'line'    => $exception->getLine(),
+                'trace'   => $exception->getTraceAsString(),
+            )
+        );
+
+        Mage::helper('M2ePro/Module_Exception')->process($exception);
     }
 
     //########################################

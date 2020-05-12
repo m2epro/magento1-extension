@@ -253,10 +253,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore_Grid
                 'align'                     => 'left',
                 'width'                     => '110px',
                 'type'                      => 'number',
-                'sortable'                  => (bool)version_compare(
-                    Mage::helper('M2ePro/Magento')->getVersion(),
-                    '1.4.2', '>='
-                ),
+                'sortable'                  => true,
                 'index'                     => 'pickup_store_product_qty',
                 'frame_callback'            => array($this, 'callbackColumnOnlineQty'),
                 'filter_condition_callback' => array($this, 'callbackFilterOnlineQty')

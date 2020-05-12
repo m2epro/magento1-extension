@@ -32,8 +32,6 @@ class Ess_M2ePro_Observer_Shipment_Track extends Ess_M2ePro_Observer_Abstract
             return;
         }
 
-        Mage::helper('M2ePro/Data_Global')->setValue($eventKey, true);
-
         try {
             /** @var $order Ess_M2ePro_Model_Order */
             $order = Mage::helper('M2ePro/Component')->getUnknownObject(

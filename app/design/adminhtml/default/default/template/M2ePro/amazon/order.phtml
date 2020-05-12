@@ -300,7 +300,7 @@ if (empty($currency)) {
     <div class="entry-edit" id="magento_block_amazon_orders_payment" collapseable="no">
 
         <div class="entry-edit-head">
-            <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Payment Information');?></h4>
+            <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Payment & Invoicing Information');?></h4>
             <div class="form-buttons"></div>
         </div>
 
@@ -318,21 +318,35 @@ if (empty($currency)) {
                                     </strong>
 
                                     <?php
-                                        if (!$this->isCurrencyAllowed()) {
-                                            echo '<br/><b>' . Mage::helper('M2ePro')->__('Attention!') . '</b> ' . Mage::helper('M2ePro')->__('Order Currency is not enabled in Magento. Please, enable it in System > Configuration > Currency Setup.');
-                                        } elseif (!$this->hasCurrencyConversionRate()) {
-                                            echo '<br/><b>' . Mage::helper('M2ePro')->__('Attention!') . '</b> ' . Mage::helper('M2ePro')->__('There\'s no rate for Order Currency in Magento. Please, add Currency convert rate in System > Manage Currency > Rates.');
-                                        }
+                                    if (!$this->isCurrencyAllowed()) {
+                                        echo '<br/><b>' . Mage::helper('M2ePro')->__('Attention!') . '</b> ' . Mage::helper('M2ePro')->__('Order Currency is not enabled in Magento. Please, enable it in System > Configuration > Currency Setup.');
+                                    } elseif (!$this->hasCurrencyConversionRate()) {
+                                        echo '<br/><b>' . Mage::helper('M2ePro')->__('Attention!') . '</b> ' . Mage::helper('M2ePro')->__('There\'s no rate for Order Currency in Magento. Please, add Currency convert rate in System > Manage Currency > Rates.');
+                                    }
                                     ?>
                                 <?php else: ?>
-                                    <strong><?php echo Mage::helper('M2ePro')->__('N/A'); ?><strong>
-                                <?php endif; ?>
+                                <strong><?php echo Mage::helper('M2ePro')->__('N/A'); ?><strong>
+                                        <?php endif; ?>
 
                             </td>
                         </tr>
+                        <?php if ($this->order->getChildObject()->canSendCreditmemo()): ?>
+                            <tr>
+                                <td class="label"></td>
+                                <td class="value">
+                                    <?php echo $this->getChildHtml('resend_creditmemo') ?>
+                                </td>
+                            </tr>
+                        <?php elseif ($this->order->getChildObject()->canSendInvoice()): ?>
+                            <tr>
+                                <td class="label"></td>
+                                <td class="value">
+                                    <?php echo $this->getChildHtml('resend_invoice') ?>
+                                </td>
+                            </tr>
+                        <?php endif; ?>
                     </tbody>
                 </table>
-
             </div>
         </div>
 

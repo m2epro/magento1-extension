@@ -18,10 +18,10 @@ class Ess_M2ePro_Helper_Server_Request extends Mage_Core_Helper_Abstract
         $tryToSwitchEndpointOnError = true
     ) {
         if (Mage::helper('M2ePro/Server_Maintenance')->isInRealRange()) {
-            $message = 'The action is temporarily unavailable. M2E Pro server is currently';
-            $message .= ' under the planned maintenance. Please try again later.';
-
-            throw new Ess_M2ePro_Model_Exception_Connection($message, array('request_package'  => $package));
+            throw new Ess_M2ePro_Model_Exception_Connection(
+                'The action is temporarily unavailable. M2E Pro server is currently under the planned maintenance.
+                Please try again later.'
+            );
         }
 
         !$serverBaseUrl  && $serverBaseUrl  = $this->getServerHelper()->getEndpoint();
@@ -96,10 +96,10 @@ class Ess_M2ePro_Helper_Server_Request extends Mage_Core_Helper_Abstract
         $asynchronous = false
     ) {
         if (Mage::helper('M2ePro/Server_Maintenance')->isInRealRange()) {
-            $message = 'The action is temporarily unavailable. M2E Pro server is currently';
-            $message .= ' under the planned maintenance. Please try again later.';
-
-            throw new Ess_M2ePro_Model_Exception_Connection($message, array('request_package'  => $packages));
+            throw new Ess_M2ePro_Model_Exception_Connection(
+                'The action is temporarily unavailable. M2E Pro server is currently under the planned maintenance.
+                Please try again later.'
+            );
         }
 
         if (empty($packages)) {

@@ -14,17 +14,18 @@ class Ess_M2ePro_Adminhtml_Amazon_OrderController
     protected function _initAction()
     {
         $this->loadLayout()
-             ->_title(Mage::helper('M2ePro')->__('Orders'));
+            ->_title(Mage::helper('M2ePro')->__('Orders'));
 
         $this->getLayout()->getBlock('head')
-             ->addJs('M2ePro/Plugin/ActionColumn.js')
-             ->addJs('M2ePro/Order/Debug.js')
-             ->addJs('M2ePro/Order/Handler.js')
-             ->addJs('M2ePro/Amazon/Order/MerchantFulfillmentHandler.js')
-             ->addJs('M2ePro/Order/Edit/ItemHandler.js')
-             ->addJs('M2ePro/Order/Edit/ShippingAddressHandler.js')
-             ->addJs('M2ePro/GridHandler.js')
-             ->addJs('M2ePro/Order/NoteHandler.js');
+            ->addJs('M2ePro/Plugin/ActionColumn.js')
+            ->addJs('M2ePro/Order/Debug.js')
+            ->addJs('M2ePro/Order/Handler.js')
+            ->addJs('M2ePro/Amazon/Order/MerchantFulfillmentHandler.js')
+            ->addJs('M2ePro/Amazon/Order.js')
+            ->addJs('M2ePro/Order/Edit/ItemHandler.js')
+            ->addJs('M2ePro/Order/Edit/ShippingAddressHandler.js')
+            ->addJs('M2ePro/GridHandler.js')
+            ->addJs('M2ePro/Order/NoteHandler.js');
 
         $this->_initPopUp();
 
@@ -187,8 +188,8 @@ class Ess_M2ePro_Adminhtml_Amazon_OrderController
         Mage::helper('M2ePro/Data_Global')->setValue('temp_data', $order);
 
         $this->_initAction()
-             ->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_amazon_order_edit_shippingAddress'))
-             ->renderLayout();
+            ->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_amazon_order_edit_shippingAddress'))
+            ->renderLayout();
     }
 
     public function saveShippingAddressAction()
@@ -287,7 +288,7 @@ class Ess_M2ePro_Adminhtml_Amazon_OrderController
 
             if ($shipmentsCollection->getSize() === 0) {
                 $order->getChildObject()->updateShippingStatus(array()) ? $hasSucceeded = true
-                                                                        : $hasFailed = true;
+                    : $hasFailed = true;
                 continue;
             }
 
@@ -297,10 +298,10 @@ class Ess_M2ePro_Adminhtml_Amazon_OrderController
                     continue;
                 }
 
-                $result  = $handler->handle($order, $shipment);
+                $result = $handler->handle($order, $shipment);
 
                 $result == Ess_M2ePro_Model_Order_Shipment_Handler::HANDLE_RESULT_SUCCEEDED ? $hasSucceeded = true
-                                                                                            : $hasFailed = true;
+                    : $hasFailed = true;
             }
         }
 
@@ -340,6 +341,92 @@ class Ess_M2ePro_Adminhtml_Amazon_OrderController
         );
 
         return $this->_redirectUrl($url);
+    }
+
+    //########################################
+
+    public function resendInvoiceCreditmemoAction()
+    {
+        $ids = $this->getRequestIds();
+
+        $hasFailed = false;
+        $hasSucceeded = false;
+
+        foreach ($ids as $id) {
+
+            /** @var $order Ess_M2ePro_Model_Order */
+            $order = Mage::helper('M2ePro/Component_Amazon')->getObject('Order', (int)$id);
+            $order->getLog()->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_USER);
+
+            if ($order->getChildObject()->sendCreditmemo()) {
+                $hasSucceeded = true;
+                continue;
+            }
+
+            if ($order->getChildObject()->sendInvoice()) {
+                $hasSucceeded = true;
+                continue;
+            }
+
+            $hasFailed = true;
+        }
+
+        if (!$hasFailed && $hasSucceeded) {
+            $this->_getSession()->addSuccess(
+                Mage::helper('M2ePro')->__('Selected Invoices or/and Credit Memos will be sent to Amazon.')
+            );
+        } elseif ($hasFailed && !$hasSucceeded) {
+            $this->_getSession()->addError(
+                Mage::helper('M2ePro')->__('Invoices or/and Credit Memos cannot be sent.')
+            );
+        } elseif ($hasFailed && $hasSucceeded) {
+            $this->_getSession()->addError(
+                Mage::helper('M2ePro')->__(
+                    'Invoices or/and Credit Memos cannot be sent for some orders.'
+                )
+            );
+        }
+
+        $this->_redirectUrl($this->_getRefererUrl());
+    }
+
+    public function resendInvoiceAction()
+    {
+        $orderId = $this->getRequest()->getParam('order_id');
+        $documentType = $this->getRequest()->getParam('document_type');
+
+        if (empty($orderId) || empty($documentType)) {
+            $this->getResponse()->setBody('You should provide correct parameters.');
+            return;
+        }
+
+        /** @var Ess_M2ePro_Model_Order $order */
+        $order = Mage::helper('M2ePro/Component_Amazon')->getObject('Order', (int)$orderId);
+        $order->getLog()->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_USER);
+
+        if ($documentType == Ess_M2ePro_Model_Amazon_Order::DOCUMENT_TYPE_INVOICE) {
+            $order->getChildObject()->sendInvoice();
+            $this->_addJsonContent(
+                array(
+                    'msg' => array(
+                        'type' => 'success',
+                        'text' => Mage::helper('M2ePro')->__('Order Invoice will be sent to Amazon.')
+                    )
+                )
+            );
+        }
+
+        if ($documentType == Ess_M2ePro_Model_Amazon_Order::DOCUMENT_TYPE_CREDIT_NOTE) {
+            $order->getChildObject()->sendCreditmemo();
+            $this->_addJsonContent(
+                array(
+                    'msg' => array(
+                        'type' => 'success',
+                        'text' => Mage::helper('M2ePro')->__('Order Credit Memo will be sent to Amazon.')
+                    )
+                )
+            );
+        }
     }
 
     //########################################

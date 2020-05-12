@@ -26,7 +26,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit_Tabs extends Ess_M2ePro_Blo
     protected function _beforeToHtml()
     {
         /** @var Ess_M2ePro_Model_Account $account */
-        $account = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
+        $account = Mage::helper('M2ePro/Data_Global')->getValue('model_account');
 
         $this->addTab(
             'general',
@@ -65,12 +65,12 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit_Tabs extends Ess_M2ePro_Blo
             $account->getChildObject()->getMarketplace()->getChildObject()->isVatCalculationServiceAvailable()
         ) {
             $this->addTab(
-                'vat_calculation_service',
+                'vcs_upload_invoices',
                 array(
-                    'label'   => Mage::helper('M2ePro')->__('VAT Calculation Service'),
-                    'title'   => Mage::helper('M2ePro')->__('VAT Calculation Service'),
+                    'label'   => Mage::helper('M2ePro')->__('VCS / Upload Invoices'),
+                    'title'   => Mage::helper('M2ePro')->__('VCS / Upload Invoices'),
                     'content' => $this->getLayout()
-                                      ->createBlock('M2ePro/adminhtml_amazon_account_edit_tabs_vatCalculationService')
+                                      ->createBlock('M2ePro/adminhtml_amazon_account_edit_tabs_VCSUploadInvoices')
                                       ->toHtml(),
                 )
             );

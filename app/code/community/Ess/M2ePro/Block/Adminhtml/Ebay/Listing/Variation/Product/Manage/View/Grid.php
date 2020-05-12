@@ -171,7 +171,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Variation_Product_Manage_View_Grid
             'width'     => '40px',
             'type'      => 'number',
             'index'     => 'available_qty',
-            'sortable'  => (bool)version_compare(Mage::helper('M2ePro/Magento')->getVersion(), '1.4.2', '>='),
+            'sortable'  => true,
             'filter'    => false,
             'frame_callback' => array($this, 'callbackColumnAvailableQty')
             )

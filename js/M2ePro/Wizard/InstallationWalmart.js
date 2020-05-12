@@ -74,7 +74,7 @@ WizardInstallationWalmart = Class.create(CommonHandler, {
 
                     var response = transport.responseText.evalJSON();
 
-                    if (response && response['message']) {
+                    if (!response['result'] && response['message']) {
                         MagentoMessageObj.addError(response['message']);
                         return CommonHandlerObj.scroll_page_to_top();
                     }
@@ -142,7 +142,7 @@ WizardInstallationWalmart = Class.create(CommonHandler, {
 
                 var response = transport.responseText.evalJSON();
 
-                if (response && response['message']) {
+                if (!response['result'] && response['message']) {
                     MagentoMessageObj.addError(response['message']);
                     return CommonHandlerObj.scroll_page_to_top();
                 }

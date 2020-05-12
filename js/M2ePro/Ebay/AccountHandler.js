@@ -366,20 +366,6 @@ EbayAccountHandler.prototype = Object.extend(new CommonHandler(), {
         self.renderOrderNumberExample();
     },
 
-    magentoOrdersNumberPrefixModeChange: function()
-    {
-        var self = EbayAccountHandlerObj;
-
-        if ($('magento_orders_number_prefix_mode').value == 1) {
-            $('magento_orders_number_prefix_container').show();
-        } else {
-            $('magento_orders_number_prefix_container').hide();
-            $('magento_orders_number_prefix_prefix').value = '';
-        }
-
-        self.renderOrderNumberExample();
-    },
-
     magentoOrdersNumberPrefixPrefixChange: function()
     {
         var self = EbayAccountHandlerObj;
@@ -393,9 +379,7 @@ EbayAccountHandler.prototype = Object.extend(new CommonHandler(), {
             orderNumber = $('sample_ebay_order_id').value;
         }
 
-        if ($('magento_orders_number_prefix_mode').value == 1) {
-            orderNumber = $('magento_orders_number_prefix_prefix').value + orderNumber;
-        }
+        orderNumber = $('magento_orders_number_prefix_prefix').value + orderNumber;
 
         $('order_number_example_container').update(orderNumber);
     },
@@ -462,8 +446,6 @@ EbayAccountHandler.prototype = Object.extend(new CommonHandler(), {
 
             $('magento_block_ebay_accounts_magento_orders_number').hide();
             $('magento_orders_number_source').value = M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_NUMBER_SOURCE_MAGENTO');
-            $('magento_orders_number_prefix_mode').value = 0;
-            self.magentoOrdersNumberPrefixModeChange();
 
             $('magento_block_ebay_accounts_magento_orders_customer').hide();
             $('magento_orders_customer_mode').value = M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_CUSTOMER_MODE_GUEST');

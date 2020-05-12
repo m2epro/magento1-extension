@@ -9,7 +9,6 @@
 class Ess_M2ePro_Block_Adminhtml_ControlPanel_Inspection_Installation
     extends Ess_M2ePro_Block_Adminhtml_ControlPanel_Inspection_Abstract
 {
-    public $lastVersion;
     public $installationVersionHistory = array();
 
     //########################################
@@ -18,11 +17,7 @@ class Ess_M2ePro_Block_Adminhtml_ControlPanel_Inspection_Installation
     {
         parent::__construct();
 
-        // Initialization block
-        // ---------------------------------------
         $this->setId('controlPanelInspectionInstallation');
-        // ---------------------------------------
-
         $this->setTemplate('M2ePro/controlPanel/inspection/installation.phtml');
 
         $this->prepareInfo();
@@ -36,13 +31,16 @@ class Ess_M2ePro_Block_Adminhtml_ControlPanel_Inspection_Installation
         $this->latestVersion = $cacheConfig->getGroupValue('/installation/', 'public_last_version');
         $this->buildLatestVersion = $cacheConfig->getGroupValue('/installation/', 'build_last_version');
 
-        $registryModel = Mage::getModel('M2ePro/Registry');
+        $setupModel = Mage::getModel('M2ePro/Setup');
         $structureHelper = Mage::helper('M2ePro/Module_Database_Structure');
 
-        if ($structureHelper->isTableExists($registryModel->getResource()->getMainTable())) {
-            $this->installationVersionHistory = $registryModel
-                    ->load('/installation/versions_history/', 'key')
-                    ->getValueFromJson();
+        if ($structureHelper->isTableExists($setupModel->getResource()->getMainTable())) {
+
+            $collection = $setupModel->getCollection();
+            $collection->setOrder('create_date', $collection::SORT_ORDER_DESC);
+
+            $this->installationVersionHistory = $collection->toArray();
+            $this->installationVersionHistory = $this->installationVersionHistory['items'];
         }
 
         $this->latestUpgradeDate        = false;
@@ -51,32 +49,10 @@ class Ess_M2ePro_Block_Adminhtml_ControlPanel_Inspection_Installation
 
         $lastVersion = array_pop($this->installationVersionHistory);
         if (!empty($lastVersion)) {
-            $this->latestUpgradeDate        = $lastVersion['date'];
-            $this->latestUpgradeFromVersion = $lastVersion['from'];
-            $this->latestUpgradeToVersion   = $lastVersion['to'];
+            $this->latestUpgradeDate        = $lastVersion['create_date'];
+            $this->latestUpgradeFromVersion = $lastVersion['version_from'];
+            $this->latestUpgradeToVersion   = $lastVersion['version_to'];
         }
-    }
-
-    protected function isShown()
-    {
-        if ($this->latestVersion === null) {
-            return false;
-        }
-
-        $compareResult = version_compare(Mage::helper('M2ePro/Module')->getPublicVersion(), $this->latestVersion);
-        if ($compareResult >= 0 && !$this->latestUpgradeDate) {
-            return false;
-        }
-
-        $daysLeftFromLastUpgrade = Mage::helper('M2ePro')->getCurrentGmtDate(true) -
-                                   Mage::helper('M2ePro')->getDate($this->latestUpgradeDate, true);
-        $daysLeftFromLastUpgrade = $daysLeftFromLastUpgrade / 60 / 60 / 24;
-
-        if ($compareResult >= 0 && $daysLeftFromLastUpgrade >= 7) {
-            return false;
-        }
-
-        return true;
     }
 
     //########################################

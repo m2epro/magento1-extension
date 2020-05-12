@@ -52,8 +52,8 @@ class Ess_M2ePro_Model_Resource_Setup extends Ess_M2ePro_Model_Resource_Abstract
 
     protected function initTable()
     {
-        $setupTableName = Mage::helper('M2ePro/Module_Database_Structure')
-            ->getTableNameWithPrefix('m2epro_setup');
+        $setupTableName = Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('m2epro_setup');
+
         $this->_getWriteAdapter()->query(
             <<<SQL
 CREATE TABLE IF NOT EXISTS `{$setupTableName}` (
@@ -79,6 +79,24 @@ SQL
     }
 
     //########################################
+
+    /**
+     * @return Ess_M2ePro_Model_Setup[]
+     */
+    public function getNotCompletedUpgrades()
+    {
+        if (!Mage::helper('M2ePro/Module_Database_Structure')->isTableExists('m2epro_setup')) {
+            return array();
+        }
+
+        $collection = Mage::getModel('M2ePro/Setup')->getCollection();
+        $collection->addFieldToFilter('version_from', array('notnull' => true));
+        $collection->addFieldToFilter('version_to', array('notnull' => true));
+        $collection->addFieldToFilter('is_backuped', 1);
+        $collection->addFieldToFilter('is_completed', 0);
+
+        return $collection->getItems();
+    }
 
     public function getMaxCompletedItem()
     {

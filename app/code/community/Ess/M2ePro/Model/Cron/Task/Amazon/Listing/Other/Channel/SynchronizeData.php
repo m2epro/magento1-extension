@@ -99,8 +99,6 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_Channel_SynchronizeData
 
                 $this->getOperationHistory()->saveTimePoint(__METHOD__.'process'.$account->getId());
             }
-
-            $this->getLockItemManager()->activate();
         }
     }
 

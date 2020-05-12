@@ -25,7 +25,10 @@
 </div>
 
 <?php
-    $formData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data') ? Mage::helper('M2ePro/Data_Global')->getValue('temp_data')->toArray() : array();
+    /** @var Ess_M2ePro_Model_Account $account */
+    $account = Mage::helper('M2ePro/Data_Global')->getValue('model_account');
+
+    $formData = $account ? $account->toArray() : array();
     $formData['magento_orders_settings'] = !empty($formData['magento_orders_settings']) ? json_decode($formData['magento_orders_settings'], true) : array();
 
     $defaults = array(
@@ -114,14 +117,11 @@
 
         $('magento_orders_number_source').observe('change', AmazonAccountHandlerObj.magentoOrdersNumberSourceChange);
 
-        $('magento_orders_number_prefix_mode')
-            .observe('change', AmazonAccountHandlerObj.magentoOrdersNumberPrefixModeChange)
-            .simulate('change');
-
         $('magento_orders_number_prefix_prefix').observe('keyup', AmazonAccountHandlerObj.magentoOrdersNumberPrefixPrefixChange);
         $('magento_orders_number_prefix_afn').observe('keyup', AmazonAccountHandlerObj.magentoOrdersNumberPrefixPrefixChange);
         $('magento_orders_number_prefix_prime').observe('keyup', AmazonAccountHandlerObj.magentoOrdersNumberPrefixPrefixChange);
         $('magento_orders_number_prefix_b2b').observe('keyup', AmazonAccountHandlerObj.magentoOrdersNumberPrefixPrefixChange);
+        AmazonAccountHandlerObj.renderOrderNumberExample();
 
         $('magento_orders_fba_mode').observe('change', AmazonAccountHandlerObj.magentoOrdersFbaModeChange);
 
@@ -316,16 +316,7 @@
 
                 <tr>
                     <td class="label">
-                        <label for="magento_orders_number_prefix_mode"><?php echo Mage::helper('M2ePro')->__('Use Prefix'); ?>: </label>
-                    </td>
-                    <td class="value" style="width: auto;">
-                        <select id="magento_orders_number_prefix_mode" name="magento_orders_settings[number][prefix][mode]" class="M2ePro-required-when-visible">
-                            <option value="0" <?php if ($formData['magento_orders_settings']['number']['prefix']['mode'] == 0) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
-                            <option value="1" <?php if ($formData['magento_orders_settings']['number']['prefix']['mode'] == 1) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
-                        </select>
-                        <p class="note">
-                            <span><?php echo Mage::helper('M2ePro')->__('Choose to set the prefix before Magento Order number.'); ?></span>
-                        </p>
+                        <label><?php echo Mage::helper('M2ePro')->__('Prefix for magento order number'); ?>: </label>
                     </td>
                 </tr>
 

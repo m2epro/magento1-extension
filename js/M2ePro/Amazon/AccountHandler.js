@@ -340,19 +340,6 @@ AmazonAccountHandler.prototype = Object.extend(new CommonHandler(), {
         self.renderOrderNumberExample();
     },
 
-    magentoOrdersNumberPrefixModeChange: function()
-    {
-        var self = AmazonAccountHandlerObj;
-
-        if ($('magento_orders_number_prefix_mode').value == 1) {
-            $('magento_orders_number_prefix_container').show();
-        } else {
-            $('magento_orders_number_prefix_container').hide();
-        }
-
-        self.renderOrderNumberExample();
-    },
-
     magentoOrdersNumberPrefixPrefixChange: function()
     {
         var self = AmazonAccountHandlerObj;
@@ -371,13 +358,11 @@ AmazonAccountHandler.prototype = Object.extend(new CommonHandler(), {
             prime = orderNumber,
             b2b = orderNumber;
 
-        if ($('magento_orders_number_prefix_mode').value == 1) {
-            var regularPrefix = $('magento_orders_number_prefix_prefix').value;
-            regular = regularPrefix + regular;
-            afn = regularPrefix + $('magento_orders_number_prefix_afn').value + afn;
-            prime = regularPrefix + $('magento_orders_number_prefix_prime').value + prime;
-            b2b = regularPrefix + $('magento_orders_number_prefix_b2b').value + b2b;
-        }
+        var regularPrefix = $('magento_orders_number_prefix_prefix').value;
+        regular = regularPrefix + regular;
+        afn = regularPrefix + $('magento_orders_number_prefix_afn').value + afn;
+        prime = regularPrefix + $('magento_orders_number_prefix_prime').value + prime;
+        b2b = regularPrefix + $('magento_orders_number_prefix_b2b').value + b2b;
 
         $('order_number_example_container_regular').update(regular);
         $('order_number_example_container_afn').update(afn);
@@ -444,8 +429,6 @@ AmazonAccountHandler.prototype = Object.extend(new CommonHandler(), {
 
             $('magento_block_amazon_accounts_magento_orders_number').hide();
             $('magento_orders_number_source').value = M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_NUMBER_SOURCE_MAGENTO');
-            $('magento_orders_number_prefix_mode').value = 0;
-            self.magentoOrdersNumberPrefixModeChange();
             $('magento_orders_number_apply_to_amazon').value = 0;
 
             $('magento_block_amazon_accounts_magento_orders_fba').hide();
@@ -481,11 +464,11 @@ AmazonAccountHandler.prototype = Object.extend(new CommonHandler(), {
         }
     },
 
-    vatCalculationModeChange: function()
+    autoInvoicingModeChange: function()
     {
         $('is_magento_invoice_creation_disabled_tr').hide();
 
-        if ($('is_vat_calculation_service_enabled').value == 1) {
+        if ($('auto_invoicing').value == M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_AUTO_INVOICING_VAT_CALCULATION_SERVICE')) {
             $('is_magento_invoice_creation_disabled_tr').show();
         }
     },

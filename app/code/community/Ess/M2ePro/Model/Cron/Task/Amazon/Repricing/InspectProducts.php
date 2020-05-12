@@ -30,7 +30,6 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Repricing_InspectProducts extends Ess_M2
                 $permittedAccount
             );
             $repricingSynchronization->run($skus);
-            $this->getLockItemManager()->activate();
 
             $this->setLastUpdateDate($permittedAccount, $operationDate);
         }

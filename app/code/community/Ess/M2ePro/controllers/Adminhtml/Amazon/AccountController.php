@@ -91,7 +91,7 @@ class Ess_M2ePro_Adminhtml_Amazon_AccountController
             Mage::helper('M2ePro/Data_Global')->setValue('license_message', $this->getLicenseMessage($account));
         }
 
-        Mage::helper('M2ePro/Data_Global')->setValue('temp_data', $account);
+        Mage::helper('M2ePro/Data_Global')->setValue('model_account', $account);
 
         $this->_initAction()
              ->_addLeft($this->getLayout()->createBlock('M2ePro/adminhtml_amazon_account_edit_tabs'))
@@ -361,7 +361,6 @@ class Ess_M2ePro_Adminhtml_Amazon_AccountController
         $data['magento_orders_settings'][$tempKey]['apply_to_amazon'] = $tempSettings['apply_to_amazon'];
 
         $prefixKeys = array(
-            'mode',
             'prefix',
             'afn-prefix',
             'prime-prefix',
@@ -524,7 +523,7 @@ class Ess_M2ePro_Adminhtml_Amazon_AccountController
         // tab: vat calculation service
         // ---------------------------------------
         $keys = array(
-            'is_vat_calculation_service_enabled',
+            'auto_invoicing',
             'is_magento_invoice_creation_disabled',
         );
         foreach ($keys as $key) {
@@ -533,7 +532,7 @@ class Ess_M2ePro_Adminhtml_Amazon_AccountController
             }
         }
 
-        if (empty($data['is_vat_calculation_service_enabled'])) {
+        if (empty($data['auto_invoicing'])) {
             $data['is_magento_invoice_creation_disabled'] = false;
         }
 

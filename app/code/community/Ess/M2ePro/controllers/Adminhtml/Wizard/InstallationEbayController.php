@@ -28,15 +28,6 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationEbayController
 
     //########################################
 
-    public function indexAction()
-    {
-        $this->getWizardHelper()->setStatus(
-            'ebayProductDetails', Ess_M2ePro_Helper_Module_Wizard::STATUS_SKIPPED
-        );
-
-        parent::indexAction();
-    }
-
     public function installationAction()
     {
         if ($this->isFinished() || $this->isNotStarted()) {
@@ -248,34 +239,52 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationEbayController
                 continue;
             }
 
-            $response = array(
-                'url'     => null,
-                'message' => Mage::helper('M2ePro')->__('You should fill all required fields.')
+            return $this->getResponse()->setBody(
+                Mage::helper('M2ePro')->jsonEncode(
+                    array(
+                        'url'     => null,
+                        'message' => Mage::helper('M2ePro')->__('You should fill all required fields.')
+                    )
+                )
             );
-            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode($response));
         }
 
-        if (!Mage::helper('M2ePro/Module_License')->getKey()) {
-            $licenseResult = Mage::helper('M2ePro/Module_License')->obtainRecord(
-                $licenseData['email'],
-                $licenseData['firstname'], $licenseData['lastname'],
-                $licenseData['country'], $licenseData['city'],
-                $licenseData['postal_code'], $licenseData['phone']
-            );
+        $message = null;
+
+        if (Mage::helper('M2ePro/Module_License')->getKey()) {
+            try {
+                $licenseResult = Mage::helper('M2ePro/Module_License')->updateLicenseUserInfo(
+                    $licenseData['email'],
+                    $licenseData['firstname'], $licenseData['lastname'],
+                    $licenseData['country'], $licenseData['city'],
+                    $licenseData['postal_code'], $licenseData['phone']
+                );
+            } catch (Exception $e) {
+                Mage::helper('M2ePro/Module_Exception')->process($e);
+                $licenseResult = false;
+                $message = Mage::helper('M2ePro')->__($e->getMessage());
+            }
         } else {
-            $licenseResult = Mage::helper('M2ePro/Module_License')->updateLicenseUserInfo(
-                $licenseData['email'],
-                $licenseData['firstname'], $licenseData['lastname'],
-                $licenseData['country'], $licenseData['city'],
-                $licenseData['postal_code'], $licenseData['phone']
-            );
+            try {
+                $licenseResult = Mage::helper('M2ePro/Module_License')->obtainRecord(
+                    $licenseData['email'],
+                    $licenseData['firstname'], $licenseData['lastname'],
+                    $licenseData['country'], $licenseData['city'],
+                    $licenseData['postal_code'], $licenseData['phone']
+                );
+            } catch (Exception $e) {
+                Mage::helper('M2ePro/Module_Exception')->process($e);
+                $licenseResult = false;
+                $message = Mage::helper('M2ePro')->__($e->getMessage());
+            }
         }
 
         if (!$licenseResult) {
             return $this->getResponse()->setBody(
                 Mage::helper('M2ePro')->jsonEncode(
                     array(
-                    'url' => null
+                        'url'     => null,
+                        'message' => $message
                     )
                 )
             );

@@ -19,11 +19,27 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Stop_Request
                 'wpid' => $this->getWalmartListingProduct()->getWpid(),
                 'qty'  => 0
             ),
-            // Need only for CA marketplace
             $this->getLagTimeData()
         );
 
         return $data;
+    }
+
+    //########################################
+
+    /**
+     * LagTime and Qty always should be send together for Canada(ONLY) Marketplace
+     * @return array
+     */
+    public function getLagTimeData()
+    {
+        if ($this->getMarketplace()->getCode() !== 'CA') {
+            return array();
+        }
+
+        $this->getConfigurator()->allowLagTime();
+
+        return parent::getLagTimeData();
     }
 
     //########################################

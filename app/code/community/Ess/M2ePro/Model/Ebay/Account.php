@@ -640,14 +640,8 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
     // ---------------------------------------
 
     /**
-     * @return bool
+     * @return string
      */
-    public function isMagentoOrdersNumberPrefixEnable()
-    {
-        $setting = $this->getSetting('magento_orders_settings', array('number', 'prefix', 'mode'), 0);
-        return $setting === 1;
-    }
-
     public function getMagentoOrdersNumberRegularPrefix()
     {
         $settings = $this->getSetting('magento_orders_settings', array('number', 'prefix'));

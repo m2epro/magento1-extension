@@ -98,18 +98,13 @@ class Ess_M2ePro_Helper_Module_License extends Mage_Core_Helper_Abstract
             $requestParams[$key] = $value;
         }
 
-        try {
-            $dispatcherObject = Mage::getModel('M2ePro/M2ePro_Connector_Dispatcher');
-            $connectorObj = $dispatcherObject->getVirtualConnector(
-                'license', 'add', 'record',
-                $requestParams
-            );
-            $dispatcherObject->process($connectorObj);
-            $response = $connectorObj->getResponseData();
-        } catch (Exception $e) {
-            Mage::helper('M2ePro/Module_Exception')->process($e);
-            return false;
-        }
+        $dispatcherObject = Mage::getModel('M2ePro/M2ePro_Connector_Dispatcher');
+        $connectorObj = $dispatcherObject->getVirtualConnector(
+            'license', 'add', 'record',
+            $requestParams
+        );
+        $dispatcherObject->process($connectorObj);
+        $response = $connectorObj->getResponseData();
 
         if (!isset($response['key'])) {
             return false;
@@ -159,15 +154,10 @@ class Ess_M2ePro_Helper_Module_License extends Mage_Core_Helper_Abstract
             $requestParams[$key] = $value;
         }
 
-        try {
-            /** @var Ess_M2ePro_Model_M2ePro_Connector_Dispatcher $dispatcherObject */
-            $dispatcherObject = Mage::getModel('M2ePro/M2ePro_Connector_Dispatcher');
-            $connectorObj = $dispatcherObject->getVirtualConnector('license', 'update', 'record', $requestParams);
-            $dispatcherObject->process($connectorObj);
-        } catch (Exception $e) {
-            Mage::helper('M2ePro/Module_Exception')->process($e);
-            return false;
-        }
+        /** @var Ess_M2ePro_Model_M2ePro_Connector_Dispatcher $dispatcherObject */
+        $dispatcherObject = Mage::getModel('M2ePro/M2ePro_Connector_Dispatcher');
+        $connectorObj = $dispatcherObject->getVirtualConnector('license', 'update', 'record', $requestParams);
+        $dispatcherObject->process($connectorObj);
 
         return true;
     }

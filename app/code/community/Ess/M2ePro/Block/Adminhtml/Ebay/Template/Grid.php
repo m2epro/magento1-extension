@@ -6,6 +6,8 @@
  * @license    Commercial use is forbidden
  */
 
+use Ess_M2ePro_Model_Ebay_Template_Manager as TemplateManager;
+
 class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
     protected $_enabledMarketplacesCollection = null;
@@ -46,7 +48,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Grid extends Mage_Adminhtml_Block
         $collectionSellingFormat->getSelect()->reset(Varien_Db_Select::COLUMNS);
         $collectionSellingFormat->getSelect()->columns(
             array('id as template_id', 'title', new Zend_Db_Expr('\'0\' as `marketplace`'),
-                  new Zend_Db_Expr('\''.Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SELLING_FORMAT.'\' as `nick`'),
+                  new Zend_Db_Expr('\''.TemplateManager::TEMPLATE_SELLING_FORMAT.'\' as `nick`'),
                   'create_date', 'update_date')
         );
         $collectionSellingFormat->addFieldToFilter('component_mode', Ess_M2ePro_Helper_Component_Ebay::NICK);
@@ -64,7 +66,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Grid extends Mage_Adminhtml_Block
         $collectionSynchronization->getSelect()->reset(Varien_Db_Select::COLUMNS);
         $collectionSynchronization->getSelect()->columns(
             array('id as template_id', 'title', new Zend_Db_Expr('\'0\' as `marketplace`'),
-                new Zend_Db_Expr('\''.Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SYNCHRONIZATION.'\' as `nick`'),
+                new Zend_Db_Expr('\''.TemplateManager::TEMPLATE_SYNCHRONIZATION.'\' as `nick`'),
                 'create_date', 'update_date')
         );
         $collectionSynchronization->addFieldToFilter('component_mode', Ess_M2ePro_Helper_Component_Ebay::NICK);
@@ -82,7 +84,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Grid extends Mage_Adminhtml_Block
         $collectionDescription->getSelect()->reset(Varien_Db_Select::COLUMNS);
         $collectionDescription->getSelect()->columns(
             array('id as template_id', 'title', new Zend_Db_Expr('\'0\' as `marketplace`'),
-                new Zend_Db_Expr('\''.Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_DESCRIPTION.'\' as `nick`'),
+                new Zend_Db_Expr('\''.TemplateManager::TEMPLATE_DESCRIPTION.'\' as `nick`'),
                 'create_date', 'update_date')
         );
         $collectionDescription->addFieldToFilter('component_mode', Ess_M2ePro_Helper_Component_Ebay::NICK);
@@ -95,7 +97,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Grid extends Mage_Adminhtml_Block
         $collectionPayment->getSelect()->reset(Varien_Db_Select::COLUMNS);
         $collectionPayment->getSelect()->columns(
             array('id as template_id', 'title', 'marketplace_id as marketplace',
-                new Zend_Db_Expr('\''.Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_PAYMENT.'\' as `nick`'),
+                new Zend_Db_Expr('\''.TemplateManager::TEMPLATE_PAYMENT.'\' as `nick`'),
                 'create_date', 'update_date')
         );
         $collectionPayment->addFieldToFilter('is_custom_template', 0);
@@ -108,7 +110,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Grid extends Mage_Adminhtml_Block
         $collectionShipping->getSelect()->reset(Varien_Db_Select::COLUMNS);
         $collectionShipping->getSelect()->columns(
             array('id as template_id', 'title', 'marketplace_id as marketplace',
-                new Zend_Db_Expr('\''.Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SHIPPING.'\' as `nick`'),
+                new Zend_Db_Expr('\''.TemplateManager::TEMPLATE_SHIPPING.'\' as `nick`'),
                 'create_date', 'update_date')
         );
         $collectionShipping->addFieldToFilter('is_custom_template', 0);
@@ -121,7 +123,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Grid extends Mage_Adminhtml_Block
         $collectionReturn->getSelect()->reset(Varien_Db_Select::COLUMNS);
         $collectionReturn->getSelect()->columns(
             array('id as template_id', 'title', 'marketplace_id as marketplace',
-                new Zend_Db_Expr('\''.Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_RETURN_POLICY . '\' as `nick`'),
+                new Zend_Db_Expr('\''.TemplateManager::TEMPLATE_RETURN_POLICY . '\' as `nick`'),
                 'create_date', 'update_date')
         );
         $collectionReturn->addFieldToFilter('is_custom_template', 0);
@@ -173,17 +175,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Grid extends Mage_Adminhtml_Block
             )
         );
 
-        $options = array(
-            Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_PAYMENT       => Mage::helper('M2ePro')->__('Payment'),
-            Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SHIPPING      => Mage::helper('M2ePro')->__('Shipping'),
-            Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_RETURN_POLICY => Mage::helper('M2ePro')->__('Return'),
-            Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SELLING_FORMAT
-                                                                           => Mage::helper('M2ePro')->__('Selling'),
-            Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_DESCRIPTION
-                                                                           => Mage::helper('M2ePro')->__('Description'),
-            Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SYNCHRONIZATION
-                                                                           => Mage::helper('M2ePro')->__('Synchronization')
-        );
         $this->addColumn(
             'nick', array(
             'header'        => Mage::helper('M2ePro')->__('Type'),
@@ -193,7 +184,14 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Grid extends Mage_Adminhtml_Block
             'sortable'      => false,
             'index'         => 'nick',
             'filter_index'  => 'main_table.nick',
-            'options'       => $options
+            'options'       => array(
+                TemplateManager::TEMPLATE_PAYMENT         => Mage::helper('M2ePro')->__('Payment'),
+                TemplateManager::TEMPLATE_SHIPPING        => Mage::helper('M2ePro')->__('Shipping'),
+                TemplateManager::TEMPLATE_RETURN_POLICY   => Mage::helper('M2ePro')->__('Return'),
+                TemplateManager::TEMPLATE_SELLING_FORMAT  => Mage::helper('M2ePro')->__('Selling'),
+                TemplateManager::TEMPLATE_DESCRIPTION     => Mage::helper('M2ePro')->__('Description'),
+                TemplateManager::TEMPLATE_SYNCHRONIZATION => Mage::helper('M2ePro')->__('Synchronization')
+            )
             )
         );
 

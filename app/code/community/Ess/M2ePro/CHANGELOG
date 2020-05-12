@@ -1,3 +1,26 @@
+* 6.6.0 (r15094) (12/05/2020) 
+
+Common: [Improved] Improve Cron tasks runner
+Common: [Improved] Always throw an exception on duplicate key while using Magento registry
+Common: [Improved] Improve ModuleInstaller and remove VersionHistory
+Common: [Fixed] Incorrect error message at the stage of License creation
+Common: [Fixed] Synchronization lock item is not deleted if Synchronization failed
+Common: [Fixed] Options finder does not work on options with numeric labels
+Common: [Fixed] Incorrect initiator on manual order actions
+Common: [Fixed] Can't apply 'stop and remove' action for > 100 products
+Common: [Removed] Deprecated Wizards
+eBay: [Improved] Generate external transaction ID if it is empty
+Amazon: [Added] Upload Invoices/Credit Memos on Amazon
+Amazon: [Added] Add Amazon Netherlands Marketplace
+Amazon: [Fixed] No Delete button inside the Amazon account
+Amazon: [Fixed] OrdersSendInvoice processing was not added if an Invoice/Credit Memo was created from Magento Order
+Amazon: [Fixed] Error is shown instead of Success message when trying to Resend Credit Memo
+Amazon: [Fixed] Error in Logs when Manual Mark Order as Shipped
+Amazon: [Fixed] Incorrect Specific's value is applied in Amazon -> Description Policy
+Walmart: [Fixed] Cron task Ess_M2ePro_Model_Cron_Task_Walmart_Order_CreateFailed doesn't exist
+Walmart: [Fixed] Stop queue does not work with Walmart component
+Walmart: [Fixed] Error log: "Internal Server Error (s) [Items was not updated.]" in some cases on stop action
+
 * 6.5.9 (r14955) (03/04/2020)
 
 Common: [Removed] Support of direct upgrade from versions lower 6.0.8

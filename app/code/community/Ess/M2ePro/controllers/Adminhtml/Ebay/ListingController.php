@@ -1144,7 +1144,7 @@ class Ess_M2ePro_Adminhtml_Ebay_ListingController extends Ess_M2ePro_Controller_
     public function runStopAndRemoveProductsAction()
     {
         if (!$listingsProductsIds = $this->getRequest()->getParam('selected_products')) {
-            return Mage::helper('M2ePro')->__('You should select Products');
+            return $this->getResponse()->setBody(Mage::helper('M2ePro')->__('You should select Products'));
         }
 
         /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $productsCollection */
@@ -1157,7 +1157,9 @@ class Ess_M2ePro_Adminhtml_Ebay_ListingController extends Ess_M2ePro_Controller_
 
         $this->checkLocking($listingsProducts, $logsActionId, Ess_M2ePro_Model_Listing_Product::ACTION_STOP);
         if (empty($listingsProducts)) {
-            return Mage::helper('M2ePro')->jsonEncode(array('result' => 'error', 'action_id' => $logsActionId));
+            return $this->getResponse()->setBody(
+                Mage::helper('M2ePro')->jsonEncode(array('result' => 'error', 'action_id' => $logsActionId))
+            );
         }
 
         foreach ($listingsProducts as $index => $listingProduct) {
@@ -1173,15 +1175,19 @@ class Ess_M2ePro_Adminhtml_Ebay_ListingController extends Ess_M2ePro_Controller_
         }
 
         if (empty($listingsProducts)) {
-            return Mage::helper('M2ePro')->jsonEncode(array('result' => 'success', 'action_id' => $logsActionId));
+            return $this->getResponse()->setBody(
+                Mage::helper('M2ePro')->jsonEncode(array('result' => 'success', 'action_id' => $logsActionId))
+            );
         }
 
         if (Mage::helper('M2ePro')->jsonDecode($this->getRequest()->getParam('is_realtime'))) {
-            return $this->runConnector(
-                $listingsProducts,
-                Ess_M2ePro_Model_Listing_Product::ACTION_STOP,
-                array('remove' => true),
-                $logsActionId
+            return $this->getResponse()->setBody(
+                $this->runConnector(
+                    $listingsProducts,
+                    Ess_M2ePro_Model_Listing_Product::ACTION_STOP,
+                    array('remove' => true),
+                    $logsActionId
+                )
             );
         }
 
@@ -1191,7 +1197,9 @@ class Ess_M2ePro_Adminhtml_Ebay_ListingController extends Ess_M2ePro_Controller_
             array('remove' => true)
         );
 
-        return Mage::helper('M2ePro')->jsonEncode(array('result' => 'success', 'action_id' => $logsActionId));
+        return $this->getResponse()->setBody(
+            Mage::helper('M2ePro')->jsonEncode(array('result' => 'success', 'action_id' => $logsActionId))
+        );
     }
 
     //########################################

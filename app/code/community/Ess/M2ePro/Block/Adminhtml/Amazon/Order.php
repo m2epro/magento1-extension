@@ -80,6 +80,14 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Order extends Mage_Adminhtml_Block_Widge
             )
         );
 
+        $invoiceCreditmemoFilterBlock = $this->getLayout()->createBlock(
+            'M2ePro/adminhtml_amazon_order_grid_invoiceCreditmemoFilter',
+            '',
+            array(
+                'controller' => 'adminhtml_amazon_order'
+            )
+        );
+
         $tempGridIds = array();
         Mage::helper('M2ePro/Component_Amazon')->isEnabled() && $tempGridIds[] = $this->getChild('grid')->getId();
 
@@ -99,6 +107,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Order extends Mage_Adminhtml_Block_Widge
             . $accountFilterBlock->toHtml()
             . $marketplaceFilterBlock->toHtml()
             . $orderStateSwitcherBlock->toHtml()
+            . $invoiceCreditmemoFilterBlock->toHtml()
             . '</div>'
             . parent::getGridHtml();
     }

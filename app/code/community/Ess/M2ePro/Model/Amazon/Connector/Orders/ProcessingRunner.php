@@ -66,7 +66,7 @@ class Ess_M2ePro_Model_Amazon_Connector_Orders_ProcessingRunner
 
     //########################################
 
-    protected function getProcessingAction()
+    public function getProcessingAction()
     {
         if ($this->_processingAction !== null) {
             return $this->_processingAction;

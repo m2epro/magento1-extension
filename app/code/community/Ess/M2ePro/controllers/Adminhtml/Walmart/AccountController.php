@@ -292,7 +292,6 @@ class Ess_M2ePro_Adminhtml_Walmart_AccountController
         $data['magento_orders_settings'][$tempKey]['source'] = $tempSettings['source'];
 
         $prefixKeys = array(
-            'mode',
             'prefix',
         );
         $tempSettings = !empty($tempSettings['prefix']) ? $tempSettings['prefix'] : array();
@@ -414,24 +413,6 @@ class Ess_M2ePro_Adminhtml_Walmart_AccountController
         // ---------------------------------------
 
         $isEdit = $id !== null;
-
-        // tab: vat calculation service
-        // ---------------------------------------
-        $keys = array(
-            'is_vat_calculation_service_enabled',
-            'is_magento_invoice_creation_disabled',
-        );
-        foreach ($keys as $key) {
-            if (isset($post[$key])) {
-                $data[$key] = $post[$key];
-            }
-        }
-
-        if (empty($data['is_vat_calculation_service_enabled'])) {
-            $data['is_magento_invoice_creation_disabled'] = false;
-        }
-
-        // ---------------------------------------
 
         // Add or update model
         // ---------------------------------------

@@ -353,20 +353,6 @@ WalmartAccountHandler.prototype = Object.extend(new CommonHandler(), {
         self.renderOrderNumberExample();
     },
 
-    magentoOrdersNumberPrefixModeChange: function()
-    {
-        var self = WalmartAccountHandlerObj;
-
-        if ($('magento_orders_number_prefix_mode').value == 1) {
-            $('magento_orders_number_prefix_container').show();
-        } else {
-            $('magento_orders_number_prefix_container').hide();
-            $('magento_orders_number_prefix_prefix').value = '';
-        }
-
-        self.renderOrderNumberExample();
-    },
-
     magentoOrdersNumberPrefixPrefixChange: function()
     {
         var self = WalmartAccountHandlerObj;
@@ -380,9 +366,7 @@ WalmartAccountHandler.prototype = Object.extend(new CommonHandler(), {
             orderNumber = $('sample_walmart_order_id').value;
         }
 
-        if ($('magento_orders_number_prefix_mode').value == 1) {
-            orderNumber = $('magento_orders_number_prefix_prefix').value + orderNumber;
-        }
+        orderNumber = $('magento_orders_number_prefix_prefix').value + orderNumber;
 
         $('order_number_example_container').update(orderNumber);
     },
@@ -436,8 +420,6 @@ WalmartAccountHandler.prototype = Object.extend(new CommonHandler(), {
 
             $('magento_block_walmart_accounts_magento_orders_number').hide();
             $('magento_orders_number_source').value = M2ePro.php.constant('Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_NUMBER_SOURCE_MAGENTO');
-            $('magento_orders_number_prefix_mode').value = 0;
-            self.magentoOrdersNumberPrefixModeChange();
 
             $('magento_block_walmart_accounts_magento_orders_customer').hide();
             $('magento_orders_customer_mode').value = M2ePro.php.constant('Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_CUSTOMER_MODE_GUEST');
@@ -454,15 +436,6 @@ WalmartAccountHandler.prototype = Object.extend(new CommonHandler(), {
             $('magento_block_walmart_accounts_magento_orders_customer').show();
             $('magento_block_walmart_accounts_magento_orders_status_mapping').show();
             $('magento_block_walmart_accounts_magento_orders_tax').show();
-        }
-    },
-
-    vatCalculationModeChange: function()
-    {
-        $('is_magento_invoice_creation_disabled_tr').hide();
-
-        if ($('is_vat_calculation_service_enabled').value == 1) {
-            $('is_magento_invoice_creation_disabled_tr').show();
         }
     },
 

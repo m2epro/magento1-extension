@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Ess_M2ePro>
-            <version>6.5.9</version>
+            <version>6.6.0</version>
         </Ess_M2ePro>
     </modules>
     <default>
@@ -465,6 +465,16 @@
                 </observers>
             </sales_order_invoice_pay>
 
+            <sales_order_invoice_save_after>
+                <observers>
+                    <M2ePro_observer>
+                        <type>model</type>
+                        <class>Ess_M2ePro_Observer_Dispatcher</class>
+                        <method>salesOrderInvoiceSaveAfter</method>
+                    </M2ePro_observer>
+                </observers>
+            </sales_order_invoice_save_after>
+
             <sales_shipment_item_save_after>
                 <observers>
                     <M2ePro_observer>
@@ -494,6 +504,16 @@
                     </M2ePro_observer>
                 </observers>
             </sales_order_creditmemo_refund>
+
+            <sales_order_creditmemo_save_after>
+                <observers>
+                    <M2ePro_observer>
+                        <type>model</type>
+                        <class>Ess_M2ePro_Observer_Dispatcher</class>
+                        <method>salesOrderCreditmemoSaveAfter</method>
+                    </M2ePro_observer>
+                </observers>
+            </sales_order_creditmemo_save_after>
 
             <sales_order_save_after>
                 <observers>
@@ -560,7 +580,7 @@
                     <M2ePro_observer_creditmemo_view>
                         <type>model</type>
                         <class>Ess_M2ePro_Observer_Dispatcher</class>
-                        <method>creditMemoView</method>
+                        <method>creditmemoView</method>
                     </M2ePro_observer_creditmemo_view>
                 </observers>
             </controller_action_layout_render_before_adminhtml_sales_order_creditmemo_view>

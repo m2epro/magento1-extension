@@ -51,11 +51,36 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Order_View_Form extends Ess_M2ePro_Block
                 'label'   => Mage::helper('M2ePro')->__('Resend Shipping Information'),
                 'onclick' => 'setLocation(\''.$url.'\');',
             );
-            $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
+            $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button');
+            $buttonBlock->setData($data);
             $this->setChild('resubmit_shipping_info', $buttonBlock);
         }
 
         // ---------------------------------------
+
+        if ($this->order->getChildObject()->canSendCreditmemo()) {
+            $orderId = $this->order->getId();
+            $documentType = Ess_M2ePro_Model_Amazon_Order::DOCUMENT_TYPE_CREDIT_NOTE;
+            $data = array(
+                'class'   => '',
+                'label'   => Mage::helper('M2ePro')->__('Resend Credit Memo'),
+                'onclick' => "AmazonOrderObj.resendInvoice({$orderId}, '{$documentType}');",
+            );
+            $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button');
+            $buttonBlock->setData($data);
+            $this->setChild('resend_creditmemo', $buttonBlock);
+        } elseif ($this->order->getChildObject()->canSendInvoice()) {
+            $orderId = $this->order->getId();
+            $documentType = Ess_M2ePro_Model_Amazon_Order::DOCUMENT_TYPE_INVOICE;
+            $data = array(
+                'class'   => '',
+                'label'   => Mage::helper('M2ePro')->__('Resend Invoice'),
+                'onclick' => "AmazonOrderObj.resendInvoice({$orderId}, '{$documentType}');",
+            );
+            $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button');
+            $buttonBlock->setData($data);
+            $this->setChild('resend_invoice', $buttonBlock);
+        }
 
         // Shipping data
         // ---------------------------------------

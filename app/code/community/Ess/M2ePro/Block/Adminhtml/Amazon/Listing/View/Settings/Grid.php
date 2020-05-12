@@ -174,6 +174,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Settings_Grid
     {
         $listingData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
 
+        /** @var Ess_M2ePro_Model_Account $account */
         $account = Mage::helper('M2ePro/Component_Amazon')->getCachedObject('Account', (int)$listingData['account_id']);
         $marketplace = $account->getChildObject()->getMarketplace();
 

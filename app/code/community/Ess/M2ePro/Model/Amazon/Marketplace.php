@@ -110,6 +110,14 @@ class Ess_M2ePro_Model_Amazon_Marketplace extends Ess_M2ePro_Model_Component_Chi
         return (bool)$this->getData('is_automatic_token_retrieving_available');
     }
 
+    /**
+     * @return bool
+     */
+    public function isUploadInvoicesAvailable()
+    {
+        return (bool)$this->getData('is_upload_invoices_available');
+    }
+
     //########################################
 
     public function save()

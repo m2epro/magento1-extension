@@ -1,5 +1,4 @@
-SynchProgressHandler = Class.create();
-SynchProgressHandler.prototype = Object.extend(new CommonHandler(), {
+SynchProgressHandler = Class.create(CommonHandler, {
 
     // ---------------------------------------
 
@@ -11,6 +10,7 @@ SynchProgressHandler.prototype = Object.extend(new CommonHandler(), {
         this.resultTypeError = 'error';
         this.resultTypeWarning = 'warning';
         this.resultTypeSuccess = 'success';
+        this.result = null;
 
         this.progressBarObj = progressBarObj;
         this.wrapperObj = wrapperObj;
@@ -72,7 +72,15 @@ SynchProgressHandler.prototype = Object.extend(new CommonHandler(), {
         new Ajax.Request(url, {
             parameters: {components: components},
             method: 'get',
-            asynchronous: true
+            asynchronous: true,
+            onSuccess: function(transport) {
+
+                var response = transport.responseText.evalJSON();
+
+                if (response && response['result']) {
+                    self.result = response['result'];
+                }
+            }
         });
 
         setTimeout(function() {
@@ -85,20 +93,22 @@ SynchProgressHandler.prototype = Object.extend(new CommonHandler(), {
     printFinalMessage: function(resultType)
     {
         var self = this;
-        if (resultType == self.resultTypeError) {
+        var finalResult = self.result !== null ? self.result : resultType;
+
+        if (finalResult == self.resultTypeError) {
             MagentoMessageObj.addError(str_replace(
                 '%url%',
                 M2ePro.url.get('logViewUrl'),
-                M2ePro.translator.translate('Synchronization ended with errors. <a target="_blank" href="%url%">View Log</a> for details.')
+                M2ePro.translator.translate('Marketplace synchronization was completed with errors. <a target="_blank" href="%url%">View Log</a> for the details.')
             ));
-        } else if (resultType == self.resultTypeWarning) {
+        } else if (finalResult == self.resultTypeWarning) {
             MagentoMessageObj.addWarning(str_replace(
                 '%url%',
                 M2ePro.url.get('logViewUrl'),
-                M2ePro.translator.translate('Synchronization ended with warnings. <a target="_blank" href="%url%">View Log</a> for details.')
+                M2ePro.translator.translate('Marketplace synchronization was completed with warnings. <a target="_blank" href="%url%">View Log</a> for the details.')
             ));
         } else {
-            MagentoMessageObj.addSuccess(M2ePro.translator.translate('Synchronization has successfully ended.'));
+            MagentoMessageObj.addSuccess(M2ePro.translator.translate('Marketplace synchronization was completed successfully.'));
         }
     },
 

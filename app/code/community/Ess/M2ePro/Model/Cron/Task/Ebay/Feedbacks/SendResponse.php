@@ -30,7 +30,6 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Feedbacks_SendResponse extends Ess_M2ePro_
 
         foreach ($feedbacks as $feedback) {
             $this->processFeedback($feedback);
-            $this->getLockItemManager()->activate();
         }
     }
 

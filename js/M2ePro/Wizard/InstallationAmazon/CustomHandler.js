@@ -9,6 +9,7 @@ WizardInstallationAmazonCustomHandler.prototype = {
         this.index = 0;
         this.marketplacesLastIndex = 0;
         this.percent = 0;
+        this.hasErrors = false;
     },
 
     // ---------------------------------------
@@ -56,24 +57,29 @@ WizardInstallationAmazonCustomHandler.prototype = {
 
     synchronizeMarketplaces: function()
     {
-        if (this.index > this.marketplacesLastIndex) {
+        var self = this;
+
+        if (self.index > self.marketplacesLastIndex) {
             $('custom-progressbar').hide();
 
-            this.completeStep('marketplacesSynchronization');
+            if (self.hasErrors) {
+                MagentoMessageObj.addError(M2ePro.translator.translate('Synchronization ended with errors.'));
+            }
+
+            self.completeStep('marketplacesSynchronization');
             return;
         }
 
-        var self = this,
-            marketplaces = this.getMarketplacesData(),
+        var marketplaces = self.getMarketplacesData(),
             marketplaceId = marketplaces[self.index] != undefined ?
                 marketplaces[self.index].id : 0,
             current = $$('.code-'+ marketplaces[self.index].code)[0];
 
         if (marketplaceId <= 0) {
-            this.completeStep('marketplacesSynchronization');
+            self.completeStep('marketplacesSynchronization');
         }
 
-        ++this.index;
+        ++self.index;
 
         var startPercent = self.percent;
         self.percent += Math.round(100 / marketplaces.length);
@@ -87,17 +93,19 @@ WizardInstallationAmazonCustomHandler.prototype = {
             asynchronous: true,
             onSuccess: (function(transport) {
 
-                if (transport.responseText == 'success') {
-                    self.progressBarStartLoad(
-                        startPercent + 1, self.percent,
-                        function() {
-                            self.marketplaceSynchComplete(current);
-                            self.synchronizeMarketplaces();
-                        }
-                    );
+                var response = transport.responseText.evalJSON();
+
+                if (response && response['result'] == 'error') {
+                    self.hasErrors = true;
                 }
 
-                return false;
+                self.progressBarStartLoad(
+                    startPercent + 1, self.percent,
+                    function() {
+                        self.marketplaceSynchComplete(current);
+                        self.synchronizeMarketplaces();
+                    }
+                );
             }).bind(this)
         })
     },
@@ -106,8 +114,7 @@ WizardInstallationAmazonCustomHandler.prototype = {
 
     progressBarStartLoad: function(from, to, callback)
     {
-        var self = this,
-            progressBar = $('custom-progressbar'),
+        var progressBar = $('custom-progressbar'),
             progressBarLoad = $('custom-progressbar-load'),
             progressBarPercent = $('custom-progressbar-percentage'),
             step = 2,

@@ -37,10 +37,6 @@ class Ess_M2ePro_Model_Magento_Order_PaymentTransaction extends Mage_Core_Model_
 
     public function buildPaymentTransaction()
     {
-        if (version_compare(Mage::helper('M2ePro/Magento')->getVersion(false), '1.4.1', '<')) {
-            return;
-        }
-
         $payment = $this->_magentoOrder->getPayment();
 
         if ($payment === false) {

@@ -42,7 +42,6 @@
             'number' => array(
                 'source' => Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_NUMBER_SOURCE_MAGENTO,
                 'prefix' => array(
-                    'mode'   => 0,
                     'prefix' => '',
                 ),
             ),
@@ -101,7 +100,6 @@
             $('magento_orders_listings_other_product_mode').observe('change', EbayAccountHandlerObj.magentoOrdersListingsOtherProductModeChange);
 
             $('magento_orders_number_source').observe('change', EbayAccountHandlerObj.magentoOrdersNumberSourceChange);
-            $('magento_orders_number_prefix_mode').observe('change', EbayAccountHandlerObj.magentoOrdersNumberPrefixModeChange);
             $('magento_orders_number_prefix_prefix').observe('keyup', EbayAccountHandlerObj.magentoOrdersNumberPrefixPrefixChange);
             EbayAccountHandlerObj.renderOrderNumberExample();
 
@@ -291,28 +289,12 @@
                         </p>
                     </td>
                 </tr>
-
-                <tr>
+                <tr id="magento_orders_number_prefix_container">
                     <td class="label">
-                        <label for="magento_orders_number_prefix_mode"><?php echo Mage::helper('M2ePro')->__('Use Prefix'); ?>: </label>
+                        <label for="magento_orders_customer_id"><?php echo Mage::helper('M2ePro')->__('Prefix'); ?>:</label>
                     </td>
                     <td class="value" style="width: auto;">
-                        <select id="magento_orders_number_prefix_mode" name="magento_orders_settings[number][prefix][mode]" class="M2ePro-required-when-visible">
-                            <option value="0" <?php if ($formData['magento_orders_settings']['number']['prefix']['mode'] == 0) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
-                            <option value="1" <?php if ($formData['magento_orders_settings']['number']['prefix']['mode'] == 1) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
-                        </select>
-                        <p class="note">
-                            <span><?php echo Mage::helper('M2ePro')->__('Choose to set prefix before Magento Order number.'); ?></span>
-                        </p>
-                    </td>
-                </tr>
-
-                <tr id="magento_orders_number_prefix_container" <?php if($formData['magento_orders_settings']['number']['prefix']['mode'] == 0) echo 'style="display: none;"'; ?>>
-                    <td class="label">
-                        <label for="magento_orders_customer_id"><?php echo Mage::helper('M2ePro')->__('Prefix'); ?>: <span class="required">*</span></label>
-                    </td>
-                    <td class="value" style="width: auto;">
-                        <input id="magento_orders_number_prefix_prefix" maxlength="5" name="magento_orders_settings[number][prefix][prefix]" value="<?php echo $this->escapeHtml($formData['magento_orders_settings']['number']['prefix']['prefix']); ?>" type="text" class="M2ePro-required-when-visible M2ePro-account-order-number-prefix input-text" />
+                        <input id="magento_orders_number_prefix_prefix" maxlength="5" name="magento_orders_settings[number][prefix][prefix]" value="<?php echo $this->escapeHtml($formData['magento_orders_settings']['number']['prefix']['prefix']); ?>" type="text" class="M2ePro-account-order-number-prefix input-text" />
                         <p class="note">
                             <span><?php echo Mage::helper('M2ePro')->__('Enter the prefix to be set before Magento Order number.'); ?></span>
                         </p>

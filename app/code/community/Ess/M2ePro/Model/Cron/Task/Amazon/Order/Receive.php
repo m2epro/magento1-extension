@@ -67,11 +67,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Receive
                 $this->processTaskException($exception);
             }
 
-            // ---------------------------------------
             $this->getOperationHistory()->saveTimePoint(__METHOD__.'process'.$merchantId);
-
-            $this->getLockItemManager()->activate();
-            // ---------------------------------------
         }
     }
 
@@ -276,19 +272,11 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Receive
 
     protected function createMagentoOrders($amazonOrders)
     {
-        $iteration = 0;
-
         foreach ($amazonOrders as $order) {
             /** @var $order Ess_M2ePro_Model_Order */
 
             if ($this->isOrderChangedInParallelProcess($order)) {
                 continue;
-            }
-
-            $iteration++;
-
-            if ($iteration % 5 == 0) {
-                $this->getLockItemManager()->activate();
             }
 
             $order->getLog()->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION);

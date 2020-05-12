@@ -281,15 +281,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Processor
                                 break;
                         }
 
-                        /** @var Ess_M2ePro_Model_Account $account */
-                        $account = $accounts[$accountId];
-                        if ($account->getChildObject()->getMarketplace()->getCode() === 'CA' &&
-                            ($configurator->isQtyAllowed() || $configurator->isLagTimeAllowed())
-                        ) {
-                            $configurator->allowQty()
-                                         ->allowLagTime();
-                        }
-
                         $listingProductData['configurator'] = $configurator;
                         $result[$accountId][$actionType][$listingProductId] = $listingProductData;
                     }

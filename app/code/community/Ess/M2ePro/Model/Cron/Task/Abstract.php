@@ -39,13 +39,11 @@ abstract class Ess_M2ePro_Model_Cron_Task_Abstract
         $this->updateLastAccess();
 
         if (!$this->isPossibleToRun()) {
-            return true;
+            return;
         }
 
         $this->updateLastRun();
         $this->beforeStart();
-
-        $result = true;
 
         try {
             Mage::dispatchEvent(
@@ -53,21 +51,13 @@ abstract class Ess_M2ePro_Model_Cron_Task_Abstract
                 array('progress_nick' => $this->getNick())
             );
 
-            $tempResult = $this->performActions();
-
-            if ($tempResult !== null && !$tempResult) {
-                $result = false;
-            }
+            $this->performActions();
 
             Mage::dispatchEvent(
                 Ess_M2ePro_Model_Cron_Strategy_Abstract::PROGRESS_STOP_EVENT_NAME,
                 array('progress_nick' => $this->getNick())
             );
-
-            $this->getLockItemManager()->activate();
         } catch (Exception $exception) {
-            $result = false;
-
             $this->getOperationHistory()->addContentData(
                 'exceptions', array(
                     'message' => $exception->getMessage(),
@@ -81,8 +71,6 @@ abstract class Ess_M2ePro_Model_Cron_Task_Abstract
         }
 
         $this->afterEnd();
-
-        return $result;
     }
 
     // ---------------------------------------
@@ -174,12 +162,16 @@ abstract class Ess_M2ePro_Model_Cron_Task_Abstract
      */
     public function isPossibleToRun()
     {
+        if ($this->getInitiator() === Ess_M2ePro_Helper_Data::INITIATOR_DEVELOPER) {
+            return true;
+        }
+
         if (!$this->isModeEnabled()) {
             return false;
         }
 
-        if ($this->getInitiator() === Ess_M2ePro_Helper_Data::INITIATOR_DEVELOPER) {
-            return true;
+        if ($this->isComponentDisabled()) {
+            return false;
         }
 
         $currentTimeStamp = Mage::helper('M2ePro')->getCurrentGmtDate(true);
@@ -270,6 +262,21 @@ abstract class Ess_M2ePro_Model_Cron_Task_Abstract
     {
         $interval = $this->getConfigValue('interval');
         return $interval === null ? $this->_interval : (int)$interval;
+    }
+
+    public function isComponentDisabled()
+    {
+        if (count(Mage::helper('M2ePro/Component')->getEnabledComponents()) === 0) {
+            return true;
+        }
+
+        /** @var Ess_M2ePro_Model_Cron_Task_Repository $taskRepo */
+        $taskRepo = Mage::getSingleton('M2ePro/Cron_Task_Repository');
+        return in_array(
+            $taskRepo->getTaskComponent($this->getNick()),
+            Mage::helper('M2ePro/Component')->getDisabledComponents(),
+            true
+        );
     }
 
     //########################################

@@ -22,6 +22,10 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Update_Responser
 
     //########################################
 
+    /**
+     * @param $messageText
+     * @return void|null
+     */
     public function failDetected($messageText)
     {
         parent::failDetected($messageText);
@@ -32,9 +36,15 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Update_Responser
 
     //########################################
 
+    /**
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     protected function processResponseData()
     {
-        Mage::getResourceModel('M2ePro/Order_Change')->deleteByIds(array($this->_params['order']['change_id']));
+        /** @var Ess_M2ePro_Model_Order_Change $orderChange */
+        $orderChange = Mage::getModel('M2ePro/Order_Change')->load($this->_params['order']['change_id']);
+        $this->_order->getLog()->setInitiator($orderChange->getCreatorType());
+        $orderChange->deleteInstance();
 
         $responseData = $this->getResponse()->getData();
 
@@ -47,7 +57,6 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Update_Responser
         $messagesSet->init($responseData['messages']);
 
         foreach ($messagesSet->getEntities() as $message) {
-            $this->_order->getLog()->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION);
             if ($message->isError()) {
                 $isFailed = true;
 
@@ -67,7 +76,6 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Update_Responser
         }
 
         //----------------------
-        $this->_order->getLog()->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION);
         $this->_order->addSuccessLog('Amazon Order status was updated to Shipped.');
 
         if (empty($this->_params['order']['tracking_number']) || empty($this->_params['order']['carrier_name'])) {

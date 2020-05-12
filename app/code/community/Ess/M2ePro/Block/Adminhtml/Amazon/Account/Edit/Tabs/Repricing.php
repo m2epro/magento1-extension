@@ -34,11 +34,11 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit_Tabs_Repricing extends Mage
     {
         $this->isRepricingLinked = false;
 
-        if (Mage::helper('M2ePro/Data_Global')->getValue('temp_data') &&
-            Mage::helper('M2ePro/Data_Global')->getValue('temp_data')->getId()) {
+        if (Mage::helper('M2ePro/Data_Global')->getValue('model_account') &&
+            Mage::helper('M2ePro/Data_Global')->getValue('model_account')->getId()) {
 
             /** @var $accountObj Ess_M2ePro_Model_Account */
-            $accountObj = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
+            $accountObj = Mage::helper('M2ePro/Data_Global')->getValue('model_account');
 
             $this->isRepricingLinked = $accountObj->getChildObject()->isRepricing();
 

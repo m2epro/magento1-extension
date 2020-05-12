@@ -31,6 +31,7 @@ class Ess_M2ePro_Model_Ebay_Order_Shipment_Handler extends Ess_M2ePro_Model_Orde
         $initianor = $order->getLog()->getInitiator();
 
         foreach ($itemsToShip as $item) {
+            /**@var Ess_M2ePro_Model_Order_Item $item */
             $item->getChildObject()->getEbayOrder()->getParentObject()->getLog()->setInitiator($initianor);
             if ($item->getChildObject()->updateShippingStatus($trackingDetails)) {
                 continue;

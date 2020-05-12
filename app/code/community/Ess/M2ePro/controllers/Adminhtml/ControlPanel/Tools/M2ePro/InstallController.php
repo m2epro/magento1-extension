@@ -12,68 +12,6 @@ class Ess_M2ePro_Adminhtml_ControlPanel_Tools_M2ePro_InstallController
     //########################################
 
     /**
-     * @title "Show Installation History"
-     * @description "Show History of Install/Upgrade Module"
-     * @new_line
-     */
-    public function showInstallationVersionHistoryAction()
-    {
-        $history = Mage::getModel('M2ePro/Registry')->load('/installation/versions_history/', 'key')
-                                                    ->getValueFromJson();
-        if (empty($history)) {
-            return $this->getResponse()->setBody($this->getEmptyResultsHtml('Installation History is not available.'));
-        }
-
-        $history = array_reverse($history);
-        $html = $this->getStyleHtml();
-
-        $html .= <<<HTML
-<style>
-    .grid td.color-first  { background-color: rgba(136, 227, 53, 0); }
-    .grid td.color-second { background-color: rgba(255, 217, 97, 0.27); }
-    .grid td  { text-align: center; }
-</style>
-
-<h2 style="margin: 20px 0 0 10px">Installation History
-    <span style="color: #808080; font-size: 15px;">(%count% entries)</span>
-</h2>
-<br/>
-
-<table class="grid" cellpadding="0" cellspacing="0">
-    <tr>
-        <th style="width: 100px">Version From</th>
-        <th style="width: 100px">Version To</th>
-        <th style="width: 200px">Date</th>
-    </tr>
-HTML;
-        $tdClass = 'color-first';
-        $previousItemDate = $history[0]['date'];
-
-        foreach ($history as $item) {
-            !$item['from'] && $item['from'] = '--';
-
-            if ((strtotime($previousItemDate) - strtotime($item['from'])) > 360) {
-                $tdClass = $tdClass != 'color-second' ? 'color-second' : 'color-first';
-            }
-
-            $previousItemDate = $item['date'];
-
-            $html .= <<<HTML
-<tr>
-    <td class="{$tdClass}">{$item['from']}</td>
-    <td class="{$tdClass}">{$item['to']}</td>
-    <td class="{$tdClass}">{$item['date']}</td>
-</tr>
-HTML;
-        }
-
-        $html .= '</table>';
-        return $this->getResponse()->setBody(str_replace('%count%', count($history), $html));
-    }
-
-    //########################################
-
-    /**
      * @title "Repeat Upgrade > 4.1.0"
      * @description "Repeat Upgrade From Certain Version"
      * @new_line

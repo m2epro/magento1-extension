@@ -14,6 +14,11 @@ class Ess_M2ePro_Model_Ebay_Connector_OrderItem_Update_Status
 
     //########################################
 
+    /**
+     * @param Ess_M2ePro_Model_Order_Item $orderItem
+     * @return $this
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function setOrderItem(Ess_M2ePro_Model_Order_Item $orderItem)
     {
         $this->_orderItem = $orderItem;
@@ -39,16 +44,26 @@ class Ess_M2ePro_Model_Ebay_Connector_OrderItem_Update_Status
 
     //########################################
 
+    /**
+     * @return array
+     */
     protected function getCommand()
     {
         return array('orders', 'update', 'status');
     }
 
+    /**
+     * @return bool
+     */
     protected function isNeedSendRequest()
     {
         return true;
     }
 
+    /**
+     * @return array
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function getRequestData()
     {
         $action = Ess_M2ePro_Model_Ebay_Connector_Order_Dispatcher::ACTION_SHIP;
@@ -70,10 +85,14 @@ class Ess_M2ePro_Model_Ebay_Connector_OrderItem_Update_Status
 
     //########################################
 
+    /**
+     * @throws Ess_M2ePro_Model_Exception
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function process()
     {
         if (!$this->isNeedSendRequest()) {
-            return false;
+            return;
         }
 
         parent::process();
@@ -96,16 +115,26 @@ class Ess_M2ePro_Model_Ebay_Connector_OrderItem_Update_Status
 
     //########################################
 
+    /**
+     * @return bool
+     */
     protected function validateResponseData()
     {
         return true;
     }
 
+    /**
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     protected function prepareResponseData()
     {
         if ($this->getResponse()->isResultError()) {
             return;
         }
+
+        /** @var Ess_M2ePro_Model_Order_Change $orderChange */
+        $orderChange = Mage::getModel('M2ePro/Order_Change')->load($this->getOrderChangeId());
+        $this->_orderItem->getOrder()->getLog()->setInitiator($orderChange->getCreatorType());
 
         $responseData = $this->getResponse()->getData();
 
@@ -143,7 +172,7 @@ class Ess_M2ePro_Model_Ebay_Connector_OrderItem_Update_Status
             );
         }
 
-        Mage::getResourceModel('M2ePro/Order_Change')->deleteByIds(array($this->getOrderChangeId()));
+        $orderChange->deleteInstance();
     }
 
     //########################################

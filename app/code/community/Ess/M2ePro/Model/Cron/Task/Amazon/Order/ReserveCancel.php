@@ -57,10 +57,6 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_ReserveCancel
                 $this->processTaskAccountException($message, __FILE__, __LINE__);
                 $this->processTaskException($exception);
             }
-
-            // ---------------------------------------
-            $this->getLockItemManager()->activate();
-            // ---------------------------------------
         }
     }
 

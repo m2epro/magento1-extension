@@ -10,7 +10,6 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Repricing_Synchronize
     extends Ess_M2ePro_Model_Cron_Task_Abstract
 {
     const NICK = 'amazon/repricing/synchronize';
-    const MAX_MEMORY_LIMIT = 512;
 
     const REGISTRY_GENERAL_START_DATE = '/amazon/repricing/synchronize/general/start_date/';
 
@@ -24,8 +23,8 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Repricing_Synchronize
     const REGISTRY_ACTUAL_PRICE_LAST_LISTING_OTHER_ID =
         '/amazon/repricing/synchronize/actual_price/last_other_product_id/';
 
-    const SYNCHRONIZE_GENERAL_INTERVAL = 60;//86400; // 1 day
-    const SYNCHRONIZE_ACTUAL_PRICE_INTERVAL = 60;//3600; // 1 hour
+    const SYNCHRONIZE_GENERAL_INTERVAL = 60;
+    const SYNCHRONIZE_ACTUAL_PRICE_INTERVAL = 60;
 
     const PRODUCTS_COUNT_BY_ACCOUNT_AND_PRODUCT_TYPE = 5000;
 
@@ -34,11 +33,6 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Repricing_Synchronize
     protected function getNick()
     {
         return self::NICK;
-    }
-
-    protected function getMaxMemoryLimit()
-    {
-        return self::MAX_MEMORY_LIMIT;
     }
 
     //####################################

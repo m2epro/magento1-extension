@@ -95,6 +95,18 @@ class Ess_M2ePro_Model_StopQueue extends Ess_M2ePro_Model_Abstract
             );
         }
 
+        if ($listingProduct->isComponentModeWalmart()) {
+            /** @var Ess_M2ePro_Model_Walmart_Listing_Product $walmartListingProduct */
+            $walmartListingProduct = $listingProduct->getChildObject();
+            $walmartAccount        = $walmartListingProduct->getWalmartAccount();
+
+            $data = array(
+                'account' => $walmartAccount->getServerHash(),
+                'sku'     => $walmartListingProduct->getSku(),
+                'wpid'    => $walmartListingProduct->getWpid()
+            );
+        }
+
         return $data;
     }
 

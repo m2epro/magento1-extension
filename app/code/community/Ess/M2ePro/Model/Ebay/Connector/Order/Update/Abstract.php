@@ -19,6 +19,10 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Order_Update_Abstract
 
     //########################################
 
+    /**
+     * @param Ess_M2ePro_Model_Order $order
+     * @return $this
+     */
     public function setOrder(Ess_M2ePro_Model_Order $order)
     {
         $this->_order   = $order;
@@ -27,6 +31,10 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Order_Update_Abstract
         return $this;
     }
 
+    /**
+     * @param $action
+     * @return $this
+     */
     public function setAction($action)
     {
         $this->_action = $action;
@@ -35,6 +43,9 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Order_Update_Abstract
 
     //----------------------------------------
 
+    /**
+     * @return int
+     */
     public function getStatus()
     {
         return $this->_status;
@@ -43,7 +54,8 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Order_Update_Abstract
     //----------------------------------------
 
     /**
-     * @return int|null
+     * @return int
+     * @throws Ess_M2ePro_Model_Exception_Logic
      */
     public function getOrderChangeId()
     {
@@ -51,11 +63,14 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Order_Update_Abstract
             return (int)$this->_params['change_id'];
         }
 
-        return null;
+        throw new Ess_M2ePro_Model_Exception_Logic('Order change id has not been set.');
     }
 
     //########################################
 
+    /**
+     * @return array
+     */
     protected function getCommand()
     {
         return array('orders', 'update', 'status');
@@ -63,11 +78,18 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Order_Update_Abstract
 
     //########################################
 
+    /**
+     * @return bool
+     */
     protected function validateResponse()
     {
         return true;
     }
 
+    /**
+     * @throws Ess_M2ePro_Model_Exception
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function process()
     {
         if (!$this->isNeedSendRequest()) {
@@ -92,6 +114,10 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Order_Update_Abstract
 
     //----------------------------------------
 
+    /**
+     * @return bool
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     protected function isNeedSendRequest()
     {
         if ($this->_order->getMarketplace()->getCode() == 'India'
@@ -119,6 +145,10 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Order_Update_Abstract
         return true;
     }
 
+    /**
+     * @return array
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function getRequestData()
     {
         return array(

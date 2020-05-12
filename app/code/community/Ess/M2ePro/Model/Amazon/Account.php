@@ -55,6 +55,10 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
     const MAGENTO_ORDERS_STATUS_MAPPING_PROCESSING = 'processing';
     const MAGENTO_ORDERS_STATUS_MAPPING_SHIPPED    = 'complete';
 
+    const MAGENTO_ORDERS_AUTO_INVOICING_DISABLED = 0;
+    const MAGENTO_ORDERS_AUTO_INVOICING_VAT_CALCULATION_SERVICE = 1;
+    const MAGENTO_ORDERS_AUTO_INVOICING_UPLOAD_MAGENTO_INVOICES = 2;
+
     /**
      * @var Ess_M2ePro_Model_Marketplace
      */
@@ -557,32 +561,35 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
     // ---------------------------------------
 
     /**
-     * @return bool
+     * @return string
      */
-    public function isMagentoOrdersNumberPrefixEnable()
-    {
-        $setting = $this->getSetting('magento_orders_settings', array('number', 'prefix', 'mode'), 0);
-        return $setting == 1;
-    }
-
     public function getMagentoOrdersNumberRegularPrefix()
     {
         $settings = $this->getSetting('magento_orders_settings', array('number', 'prefix'));
         return isset($settings['prefix']) ? $settings['prefix'] : '';
     }
 
+    /**
+     * @return string
+     */
     public function getMagentoOrdersNumberAfnPrefix()
     {
         $settings = $this->getSetting('magento_orders_settings', array('number', 'prefix'));
         return isset($settings['afn-prefix']) ? $settings['afn-prefix'] : '';
     }
 
+    /**
+     * @return string
+     */
     public function getMagentoOrdersNumberPrimePrefix()
     {
         $settings = $this->getSetting('magento_orders_settings', array('number', 'prefix'));
         return isset($settings['prime-prefix']) ? $settings['prime-prefix'] : '';
     }
 
+    /**
+     * @return string
+     */
     public function getMagentoOrdersNumberB2bPrefix()
     {
         $settings = $this->getSetting('magento_orders_settings', array('number', 'prefix'));
@@ -845,11 +852,27 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
     //########################################
 
     /**
+     * @return int
+     */
+    public function getAutoInvoicing()
+    {
+        return (int)$this->getData('auto_invoicing');
+    }
+
+    /**
      * @return bool
      */
     public function isVatCalculationServiceEnabled()
     {
-        return (bool)$this->getData('is_vat_calculation_service_enabled');
+        return $this->getAutoInvoicing() == self::MAGENTO_ORDERS_AUTO_INVOICING_VAT_CALCULATION_SERVICE;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isUploadInvoicesEnabled()
+    {
+        return $this->getAutoInvoicing() == self::MAGENTO_ORDERS_AUTO_INVOICING_UPLOAD_MAGENTO_INVOICES;
     }
 
     /**

@@ -23,16 +23,10 @@ class Ess_M2ePro_Model_Cron_Task_Magento_Product_DetectDirectlyAdded extends Ess
             return;
         }
 
-        $tempIndex = 0;
-
         foreach ($products as $product) {
             $this->processCategoriesActions($product);
             $this->processGlobalActions($product);
             $this->processWebsiteActions($product);
-
-            if ((++$tempIndex)%20 == 0) {
-                $this->getLockItemManager()->activate();
-            }
         }
 
         $lastMagentoProduct = array_pop($products);

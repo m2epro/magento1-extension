@@ -243,6 +243,8 @@ class Ess_M2ePro_Adminhtml_Ebay_OrderController extends Ess_M2ePro_Controller_Ad
         foreach ($ordersCollection->getItems() as $order) {
             /** @var Ess_M2ePro_Model_Order $order */
 
+            $order->getLog()->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_USER);
+
             $order->getChildObject()->updatePaymentStatus() ? $hasSucceeded = true
                                                             : $hasFailed = true;
         }

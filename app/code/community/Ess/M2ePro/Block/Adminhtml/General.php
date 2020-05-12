@@ -76,6 +76,11 @@ JS
         $this->_jsUrls->add($this->getSkinUrl('M2ePro'), 'm2epro_skin_url');
         $this->_jsUrls->add($this->getUrl('M2ePro/adminhtml_controlPanel/index'), 'm2epro_control_panel');
 
+        $synchWarningMessage = 'Marketplace synchronization was completed with warnings. '
+            . '<a target="_blank" href="%url%">View Log</a> for the details.';
+        $synchErrorMessage = 'Marketplace synchronization was completed with errors. '
+            . '<a target="_blank" href="%url%">View Log</a> for the details.';
+
         $this->_jsTranslator->addTranslations(
             array(
                 'Are you sure?',
@@ -117,9 +122,10 @@ JS
 
                 'Settings have been saved.',
                 'Preparing to start. Please wait ...',
-                'Synchronization has successfully ended.',
-                'Synchronization ended with warnings. <a target="_blank" href="%url%">View Log</a> for details.',
-                'Synchronization ended with errors. <a target="_blank" href="%url%">View Log</a> for details.',
+                'Marketplace synchronization was completed successfully.',
+                'Synchronization ended with errors.',
+                $synchWarningMessage,
+                $synchErrorMessage,
             )
         );
     }

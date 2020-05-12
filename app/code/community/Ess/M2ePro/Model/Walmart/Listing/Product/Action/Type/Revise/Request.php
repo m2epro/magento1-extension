@@ -71,4 +71,32 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Revise_Request
     }
 
     //########################################
+
+    /**
+     * LagTime and Qty always should be send together for Canada(ONLY) Marketplace
+     * @return array
+     */
+    public function getLagTimeData()
+    {
+        if ($this->getMarketplace()->getCode() === 'CA' && $this->getConfigurator()->isQtyAllowed()) {
+            $this->getConfigurator()->allowLagTime();
+        }
+
+        return parent::getLagTimeData();
+    }
+
+    /**
+     * LagTime and Qty always should be send together for Canada(ONLY) Marketplace
+     * @return array
+     */
+    public function getQtyData()
+    {
+        if ($this->getMarketplace()->getCode() === 'CA' && $this->getConfigurator()->isLagTimeAllowed()) {
+            $this->getConfigurator()->allowQty();
+        }
+
+        return parent::getQtyData();
+    }
+
+    //########################################
 }

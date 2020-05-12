@@ -99,18 +99,10 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Order_Receive
 
                 foreach ($processedWalmartOrders as $walmartOrder) {
                     try {
-                        $iteration = 0;
-
                         /** @var $walmartOrder Ess_M2ePro_Model_Order */
 
                         if ($this->isOrderChangedInParallelProcess($walmartOrder)) {
                             continue;
-                        }
-
-                        $iteration++;
-
-                        if ($iteration % 5 == 0) {
-                            $this->getLockItemManager()->activate();
                         }
 
                         $walmartOrder->getLog()->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION);
@@ -167,11 +159,7 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Order_Receive
                 $this->processTaskException($exception);
             }
 
-            // ---------------------------------------
             $this->getOperationHistory()->saveTimePoint(__METHOD__.'process'.$account->getTitle());
-
-            $this->getLockItemManager()->activate();
-            // ---------------------------------------
         }
     }
 

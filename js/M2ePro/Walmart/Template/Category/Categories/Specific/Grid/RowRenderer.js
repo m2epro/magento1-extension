@@ -8,10 +8,6 @@ WalmartTemplateCategoryCategoriesSpecificGridRowRenderer = Class.create(WalmartT
 
     process: function()
     {
-        if (this.specificHandler.isSpecificRendered(this.indexedXPath) && !this.isValueForceSet()) {
-            return '';
-        }
-
         if (!this.load()) {
             return '';
         }
@@ -22,7 +18,13 @@ WalmartTemplateCategoryCategoriesSpecificGridRowRenderer = Class.create(WalmartT
 
             if (this.isValueForceSet()) {
 
-                this.forceSelectAndDisable(this.getForceSetValue());
+                if (!this.specificHandler.isMarkedAsSelected(this.indexedXPath) &&
+                    !this.specificHandler.isInFormData(this.indexedXPath)
+                ) {
+                    this.forceSelect(this.getForceSetValue());
+                } else {
+                    this.checkSelection();
+                }
 
                 this.hideButton($(this.indexedXPath + '_remove_button'));
 
@@ -36,7 +38,7 @@ WalmartTemplateCategoryCategoriesSpecificGridRowRenderer = Class.create(WalmartT
         this.renderSelf();
 
         if (this.isValueForceSet()) {
-            this.forceSelectAndDisable(this.getForceSetValue());
+            this.forceSelect(this.getForceSetValue());
         }
 
         this.observeToolTips(this.indexedXPath);
@@ -467,15 +469,25 @@ WalmartTemplateCategoryCategoriesSpecificGridRowRenderer = Class.create(WalmartT
             return;
         }
 
+        this.forceSelect(value);
+
+        $(this.indexedXPath + '_mode').setAttribute('disabled','disabled');
+        $(this.indexedXPath +'_'+ this.MODE_CUSTOM_VALUE).setAttribute('disabled', 'disabled');
+    },
+
+    forceSelect: function(value)
+    {
+        if (!value) {
+            return;
+        }
+
         var modeSelect = $(this.indexedXPath + '_mode');
         modeSelect.value = this.MODE_CUSTOM_VALUE;
         this.simulateAction(modeSelect, 'change');
-        modeSelect.setAttribute('disabled','disabled');
 
         var valueObj = $(this.indexedXPath +'_'+ this.MODE_CUSTOM_VALUE);
         valueObj.value = value;
         this.simulateAction(valueObj, 'change');
-        valueObj.setAttribute('disabled', 'disabled');
     },
 
     //########################################

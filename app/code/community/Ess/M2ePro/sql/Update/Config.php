@@ -86,8 +86,19 @@ class Ess_M2ePro_Sql_Update_Config extends Ess_M2ePro_Model_Upgrade_Feature_Abst
                 'ProductCustomTypes'
             ),
             'y20_m03' => array(
+                'AmazonSendInvoice',
                 'SynchronizationConfigsModeRemovedFix',
-                'ChangeMinSupportedVersion'
+                'CronStrategy',
+                'AmazonNL',
+                'ChangeMinSupportedVersion',
+                'RemoveOldWizards'
+            ),
+            'y20_m04' => array(
+                'RemoveModePrefixFromChannelAccounts',
+                'BrowsenodeIdFix'
+            ),
+            'y20_m05' => array(
+                'DisableUploadInvoicesAvailableNl'
             ),
         );
     }

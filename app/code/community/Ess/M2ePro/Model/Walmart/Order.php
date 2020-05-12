@@ -361,10 +361,6 @@ class Ess_M2ePro_Model_Walmart_Order extends Ess_M2ePro_Model_Component_Child_Wa
      */
     public function canCreateInvoice()
     {
-        if ($this->getWalmartAccount()->isMagentoInvoiceCreationDisabled()) {
-            return false;
-        }
-
         if (!$this->getWalmartAccount()->isMagentoOrdersInvoiceEnabled()) {
             return false;
         }

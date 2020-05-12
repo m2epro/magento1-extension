@@ -75,8 +75,6 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Product_Channel_SynchronizeData
             }
 
             $this->getOperationHistory()->saveTimePoint(__METHOD__.'process'.$account->getId());
-
-            $this->getLockItemManager()->activate();
         }
     }
 

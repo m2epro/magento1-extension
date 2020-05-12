@@ -859,6 +859,7 @@ INSERT INTO `{$this->_installer->getTable('m2epro_config')}` (`group`,`key`,`val
   ('/cron/', 'last_access', NULL, NOW(), NOW()),
   ('/cron/', 'last_runner_change', NULL, NOW(), NOW()),
   ('/cron/', 'last_executed_slow_task', NULL, NOW(), NOW()),
+  ('/cron/', 'last_executed_task_group', NULL, NOW(), NOW()),
   ('/cron/service/', 'auth_key', NULL, NOW(), NOW()),
   ('/cron/service/', 'disabled', '0', NOW(), NOW()),
   ('/cron/magento/', 'disabled', '0', NOW(), NOW()),
@@ -910,12 +911,6 @@ INSERT INTO `{$this->_installer->getTable('m2epro_config')}` (`group`,`key`,`val
 INSERT INTO `{$this->_installer->getTable('m2epro_wizard')}` VALUES
   (1,  'installationEbay',             'ebay',    0, NULL, 1, 1),
   (2,  'installationAmazon',           'amazon',  0, NULL, 1, 2),
-  (3,  'migrationNewAmazon',           'amazon',  3, NULL, 1, 3),
-  (4,  'removedPlay',                  '*',       3, NULL, 0, 4),
-  (5,  'ebayProductDetails',           'ebay',    3, NULL, 1, 5),
-  (6,  'fullAmazonCategories',         'amazon',  3, NULL, 1, 6),
-  (8,  'removedEbay3rdParty',          'ebay',    3, NULL, 0, 8),
-  (9,  'removedBuy',                   '*',       3, NULL, 0, 9),
   (10, 'installationWalmart',          'walmart', 0, NULL, 1, 10);
 
 SQL

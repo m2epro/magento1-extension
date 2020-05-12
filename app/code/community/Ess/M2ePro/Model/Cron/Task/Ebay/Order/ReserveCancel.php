@@ -55,10 +55,6 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Order_ReserveCancel extends Ess_M2ePro_Mod
                 $this->processTaskAccountException($message, __FILE__, __LINE__);
                 $this->processTaskException($exception);
             }
-
-            // ---------------------------------------
-            $this->getLockItemManager()->activate();
-            // ---------------------------------------
         }
     }
 

@@ -402,7 +402,6 @@ class Ess_M2ePro_Adminhtml_Ebay_AccountController extends Ess_M2ePro_Controller_
         }
 
         $prefixKeys = array(
-            'mode',
             'prefix',
         );
         $tempSettings = !empty($tempSettings['prefix']) ? $tempSettings['prefix'] : array();

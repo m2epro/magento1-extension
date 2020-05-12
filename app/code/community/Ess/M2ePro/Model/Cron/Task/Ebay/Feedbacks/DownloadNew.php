@@ -75,8 +75,6 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Feedbacks_DownloadNew extends Ess_M2ePro_M
             }
 
             $this->getOperationHistory()->saveTimePoint(__METHOD__.'get'.$account->getId());
-
-            $this->getLockItemManager()->activate();
         }
     }
 

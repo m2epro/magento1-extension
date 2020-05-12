@@ -57,10 +57,6 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Order_CreateFailed extends Ess_M2ePro_Mode
                 $this->processTaskAccountException($message, __FILE__, __LINE__);
                 $this->processTaskException($exception);
             }
-
-            // ---------------------------------------
-            $this->getLockItemManager()->activate();
-            // ---------------------------------------
         }
     }
 
@@ -77,8 +73,6 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Order_CreateFailed extends Ess_M2ePro_Mode
 
     protected function createMagentoOrders($ebayOrders)
     {
-        $iteration = 1;
-
         foreach ($ebayOrders as $order) {
             /** @var $order Ess_M2ePro_Model_Order */
 
@@ -131,12 +125,6 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Order_CreateFailed extends Ess_M2ePro_Mode
             if ($order->getStatusUpdateRequired()) {
                 $order->updateMagentoOrderStatus();
             }
-
-            if ($iteration % 5 == 0) {
-                $this->getLockItemManager()->activate();
-            }
-
-            $iteration++;
         }
     }
 

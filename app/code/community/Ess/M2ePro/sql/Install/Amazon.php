@@ -23,7 +23,7 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_account')}` (
   `other_listings_mapping_mode` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `other_listings_mapping_settings` VARCHAR(255) DEFAULT NULL,
   `magento_orders_settings` TEXT NOT NULL,
-  `is_vat_calculation_service_enabled` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
+  `auto_invoicing` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `is_magento_invoice_creation_disabled` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `info` TEXT DEFAULT NULL,
   PRIMARY KEY (`account_id`)
@@ -95,7 +95,7 @@ DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_amazon_dictionary_cat
 CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_dictionary_category_product_data')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `marketplace_id` INT(11) UNSIGNED NOT NULL,
-  `browsenode_id` INT(11) UNSIGNED NOT NULL,
+  `browsenode_id` DECIMAL(20, 0) UNSIGNED NOT NULL,
   `product_data_nick` VARCHAR(255) NOT NULL,
   `is_applicable` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `required_attributes` TEXT DEFAULT NULL,
@@ -438,13 +438,15 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_marketplace')}` (
   `is_vat_calculation_service_available` tinyint(2) UNSIGNED NOT NULL DEFAULT 0,
   `is_product_tax_code_policy_available` tinyint(2) UNSIGNED NOT NULL DEFAULT 0,
   `is_automatic_token_retrieving_available` tinyint(2) UNSIGNED NOT NULL DEFAULT 0,
+  `is_upload_invoices_available` tinyint(2) UNSIGNED NOT NULL DEFAULT 0,
   PRIMARY KEY (`marketplace_id`),
   INDEX `is_new_asin_available` (`is_new_asin_available`),
   INDEX `is_merchant_fulfillment_available` (`is_merchant_fulfillment_available`),
   INDEX `is_business_available` (`is_business_available`),
   INDEX `is_vat_calculation_service_available` (`is_vat_calculation_service_available`),
   INDEX `is_product_tax_code_policy_available` (`is_product_tax_code_policy_available`),
-  INDEX `is_automatic_token_retrieving_available` (`is_automatic_token_retrieving_available`)
+  INDEX `is_automatic_token_retrieving_available` (`is_automatic_token_retrieving_available`),
+  INDEX `is_upload_invoices_available` (`is_upload_invoices_available`)
 )
 ENGINE = INNODB
 CHARACTER SET utf8
@@ -459,6 +461,8 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_order')}` (
   `is_prime` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `is_business` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `status` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
+  `is_invoice_sent` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
+  `is_credit_memo_sent` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `buyer_name` VARCHAR(255) NOT NULL,
   `buyer_email` VARCHAR(255) DEFAULT NULL,
   `shipping_service` VARCHAR(255) DEFAULT NULL,
@@ -480,6 +484,8 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_order')}` (
   INDEX `seller_order_id` (`seller_order_id`),
   INDEX `is_prime` (`is_prime`),
   INDEX `is_business` (`is_business`),
+  INDEX `is_invoice_sent` (`is_invoice_sent`),
+  INDEX `is_credit_memo_sent` (`is_credit_memo_sent`),
   INDEX `buyer_email` (`buyer_email`),
   INDEX `buyer_name` (`buyer_name`),
   INDEX `paid_amount` (`paid_amount`),
@@ -836,18 +842,20 @@ INSERT INTO `{$this->_installer->getTable('m2epro_marketplace')}` VALUES
   (30, 7, 'Spain', 'ES', 'amazon.es', 0, 8, 'Europe', 'amazon', NOW(), NOW()),
   (31, 8, 'Italy', 'IT', 'amazon.it', 0, 5, 'Europe', 'amazon', NOW(), NOW()),
   (34, 9, 'Mexico', 'MX', 'amazon.com.mx', 0, 10, 'America', 'amazon', NOW(), NOW()),
-  (35, 10, 'Australia', 'AU', 'amazon.com.au', 0, 11, 'Australia Region', 'amazon', NOW(), NOW());
+  (35, 10, 'Australia', 'AU', 'amazon.com.au', 0, 11, 'Australia Region', 'amazon', NOW(), NOW()),
+  (39, 11, 'Netherlands', 'NL', 'amazon.nl', 0, 12, 'Europe', 'amazon', NOW(), NOW());
 
 INSERT INTO `{$this->_installer->getTable('m2epro_amazon_marketplace')}` VALUES
-  (24, '8636-1433-4377', 'CAD',1,0,0,0,0,1),
-  (25, '7078-7205-1944', 'EUR',1,1,1,1,1,1),
-  (26, '7078-7205-1944', 'EUR',1,0,1,1,1,1),
-  (28, '7078-7205-1944', 'GBP',1,1,1,1,1,1),
-  (29, '8636-1433-4377', 'USD',1,1,1,0,0,1),
-  (30, '7078-7205-1944', 'EUR',1,0,1,1,1,1),
-  (31, '7078-7205-1944', 'EUR',1,0,1,1,1,1),
-  (34, '8636-1433-4377', 'MXN',1,0,0,0,0,1),
-  (35, '2770-5005-3793', 'AUD',1,0,0,0,0,1);
+  (24, '8636-1433-4377', 'CAD',1,0,0,0,0,1,0),
+  (25, '7078-7205-1944', 'EUR',1,1,1,1,1,1,1),
+  (26, '7078-7205-1944', 'EUR',1,0,1,1,1,1,1),
+  (28, '7078-7205-1944', 'GBP',1,1,1,1,1,1,1),
+  (29, '8636-1433-4377', 'USD',1,1,1,0,0,1,0),
+  (30, '7078-7205-1944', 'EUR',1,0,1,1,1,1,1),
+  (31, '7078-7205-1944', 'EUR',1,0,1,1,1,1,1),
+  (34, '8636-1433-4377', 'MXN',1,0,0,0,0,1,0),
+  (35, '2770-5005-3793', 'AUD',1,0,0,0,0,1,0),
+  (39, '7078-7205-1944', 'EUR',1,1,1,1,1,1,0);
 
 SQL
         );

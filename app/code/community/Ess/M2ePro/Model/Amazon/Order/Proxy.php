@@ -56,9 +56,6 @@ class Ess_M2ePro_Model_Amazon_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
     public function getOrderNumberPrefix()
     {
         $amazonAccount = $this->_order->getAmazonAccount();
-        if (!$amazonAccount->isMagentoOrdersNumberPrefixEnable()) {
-            return '';
-        }
 
         $prefix = $amazonAccount->getMagentoOrdersNumberRegularPrefix();
 

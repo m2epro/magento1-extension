@@ -27,7 +27,7 @@ abstract class Ess_M2ePro_Model_Cron_Runner_Abstract
     public function process()
     {
         if (!$this->canProcess()) {
-            return false;
+            return;
         }
 
         $runnerSwitcher = Mage::getModel('M2ePro/Cron_Runner_Switcher');
@@ -45,7 +45,7 @@ abstract class Ess_M2ePro_Model_Cron_Runner_Abstract
         $transactionalManager->lock();
 
         if (!$this->canProcessRunner()) {
-            return false;
+            return;
         }
 
         $this->initialize();
@@ -55,7 +55,7 @@ abstract class Ess_M2ePro_Model_Cron_Runner_Abstract
             $this->deInitialize();
             $transactionalManager->unlock();
 
-            return true;
+            return;
         }
 
         $this->updateLastRun();
@@ -64,17 +64,12 @@ abstract class Ess_M2ePro_Model_Cron_Runner_Abstract
         $transactionalManager->unlock();
 
         try {
-
             /** @var Ess_M2ePro_Model_Cron_Strategy_Abstract $strategyObject */
             $strategyObject = $this->getStrategyObject();
-
             $strategyObject->setInitiator($this->getInitiator());
             $strategyObject->setParentOperationHistory($this->getOperationHistory());
-
-            $result = $strategyObject->process();
+            $strategyObject->process();
         } catch (Exception $exception) {
-            $result = false;
-
             $this->getOperationHistory()->addContentData(
                 'exceptions', array(
                     'message' => $exception->getMessage(),
@@ -89,8 +84,6 @@ abstract class Ess_M2ePro_Model_Cron_Runner_Abstract
 
         $this->afterEnd();
         $this->deInitialize();
-
-        return $result;
     }
 
     /**

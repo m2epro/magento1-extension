@@ -143,6 +143,18 @@ class Ess_M2ePro_Helper_Module_Cron extends Mage_Core_Helper_Abstract
         $this->setConfigValue('last_executed_slow_task', $taskNick);
     }
 
+    //----------------------------------------
+
+    public function getLastExecutedTaskGroup()
+    {
+        return $this->getConfigValue('last_executed_task_group');
+    }
+
+    public function setLastExecutedTaskGroup($groupNick)
+    {
+        $this->setConfigValue('last_executed_task_group', $groupNick);
+    }
+
     //########################################
 
     protected function getConfig()

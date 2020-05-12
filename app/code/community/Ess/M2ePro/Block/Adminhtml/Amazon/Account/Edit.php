@@ -22,6 +22,9 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit extends Mage_Adminhtml_Bloc
         $this->_mode = 'edit';
         // ---------------------------------------
 
+        /** @var Ess_M2ePro_Model_Account $account */
+        $account = Mage::helper('M2ePro/Data_Global')->getValue('model_account');
+
         // Set header text
         // ---------------------------------------
         if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
@@ -33,14 +36,9 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit extends Mage_Adminhtml_Bloc
             $headerTextAdd = Mage::helper('M2ePro')->__("Add Account");
         }
 
-        if (Mage::helper('M2ePro/Data_Global')->getValue('temp_data') &&
-            Mage::helper('M2ePro/Data_Global')->getValue('temp_data')->getId()
-        ) {
+        if ($account && $account->getId()) {
             $this->_headerText = $headerTextEdit;
-            $this->_headerText .= ' "'.$this->escapeHtml(
-                Mage::helper('M2ePro/Data_Global')->getValue('temp_data')
-                ->getTitle()
-            ).'"';
+            $this->_headerText .= ' "'.$this->escapeHtml($account->getTitle()).'"';
         } else {
             $this->_headerText = $headerTextAdd;
         }
@@ -135,11 +133,9 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit extends Mage_Adminhtml_Bloc
             // ---------------------------------------
 
             // ---------------------------------------
-            if (Mage::helper('M2ePro/Data_Global')->getValue('temp_data') &&
-                Mage::helper('M2ePro/Data_Global')->getValue('temp_data')->getId()
-            ) {
+            if ($account && $account->getId()) {
                 // ---------------------------------------
-                $accountId = Mage::helper('M2ePro/Data_Global')->getValue('temp_data')->getId();
+                $accountId = $account->getId();
                 $this->_addButton(
                     'delete',
                     array(

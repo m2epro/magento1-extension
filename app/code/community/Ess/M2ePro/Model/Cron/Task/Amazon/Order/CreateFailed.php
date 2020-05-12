@@ -59,10 +59,6 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_CreateFailed
                 $this->processTaskAccountException($message, __FILE__, __LINE__);
                 $this->processTaskException($exception);
             }
-
-            // ---------------------------------------
-            $this->getLockItemManager()->activate();
-            // ---------------------------------------
         }
     }
 
@@ -79,8 +75,6 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_CreateFailed
 
     protected function createMagentoOrders($amazonOrders)
     {
-        $iteration = 1;
-
         foreach ($amazonOrders as $order) {
             /** @var $order Ess_M2ePro_Model_Order */
 
@@ -125,12 +119,6 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_CreateFailed
             if ($order->getStatusUpdateRequired()) {
                 $order->updateMagentoOrderStatus();
             }
-
-            if ($iteration % 5 == 0) {
-                $this->getLockItemManager()->activate();
-            }
-
-            $iteration++;
         }
     }
 

@@ -641,14 +641,8 @@ class Ess_M2ePro_Model_Walmart_Account extends Ess_M2ePro_Model_Component_Child_
     // ---------------------------------------
 
     /**
-     * @return bool
+     * @return string
      */
-    public function isMagentoOrdersNumberPrefixEnable()
-    {
-        $setting = $this->getSetting('magento_orders_settings', array('number', 'prefix', 'mode'), 0);
-        return $setting === 1;
-    }
-
     public function getMagentoOrdersNumberRegularPrefix()
     {
         $settings = $this->getSetting('magento_orders_settings', array('number', 'prefix'));
@@ -870,24 +864,6 @@ class Ess_M2ePro_Model_Walmart_Account extends Ess_M2ePro_Model_Component_Child_
         }
 
         return $this->getSetting('magento_orders_settings', 'shipment_mode') == 1;
-    }
-
-    //########################################
-
-    /**
-     * @return bool
-     */
-    public function isVatCalculationServiceEnabled()
-    {
-        return (bool)$this->getData('is_vat_calculation_service_enabled');
-    }
-
-    /**
-     * @return bool
-     */
-    public function isMagentoInvoiceCreationDisabled()
-    {
-        return (bool)$this->getData('is_magento_invoice_creation_disabled');
     }
 
     //########################################

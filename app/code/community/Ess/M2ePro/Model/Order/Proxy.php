@@ -168,10 +168,6 @@ abstract class Ess_M2ePro_Model_Order_Proxy
      */
     public function getOrderNumberPrefix()
     {
-        if (!$this->_order->getParentObject()->getAccount()->getChildObject()->isMagentoOrdersNumberPrefixEnable()) {
-            return '';
-        }
-
         return $this->_order->getParentObject()->getAccount()->getChildObject()->getMagentoOrdersNumberRegularPrefix();
     }
 

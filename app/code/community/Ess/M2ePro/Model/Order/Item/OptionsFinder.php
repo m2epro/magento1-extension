@@ -42,7 +42,7 @@ class Ess_M2ePro_Model_Order_Item_OptionsFinder
      */
     public function setChannelOptions(array $options = array())
     {
-        $this->_channelOptions = $options;
+        $this->_channelOptions = Mage::helper('M2ePro')->toLowerCaseRecursive($options);
         return $this;
     }
 
@@ -52,7 +52,8 @@ class Ess_M2ePro_Model_Order_Item_OptionsFinder
      */
     public function addChannelOptions(array $options = array())
     {
-        $this->_channelOptions = array_merge_recursive($this->_channelOptions, $options);
+        // $options keys may contain numeric values of option labels, so we need use "+" instead of array_merge
+        $this->_channelOptions = $this->_channelOptions + Mage::helper('M2ePro')->toLowerCaseRecursive($options);
         return $this;
     }
 
@@ -90,8 +91,6 @@ class Ess_M2ePro_Model_Order_Item_OptionsFinder
             $this->_optionsData['associated_products'] = array($associatedProduct->getId());
             return;
         }
-
-        $this->_channelOptions = Mage::helper('M2ePro')->toLowerCaseRecursive($this->_channelOptions);
 
         if (empty($this->_channelOptions)) {
             $this->isNeedToReturnFirstOptionValues() && $this->matchFirstOptions();

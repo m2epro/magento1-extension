@@ -148,7 +148,8 @@ class Ess_M2ePro_Model_Connector_Connection_Single extends Ess_M2ePro_Model_Conn
         return array(
             'api_version' => self::API_VERSION,
             'request'     => Mage::helper('M2ePro')->jsonEncode($this->getRequest()->getInfo()),
-            'data'        => Mage::helper('M2ePro')->jsonEncode($this->getRequest()->getData())
+            'data'        => Mage::helper('M2ePro')->jsonEncode($this->getRequest()->getData()),
+            'raw_data'    => $this->getRequest()->getRawData()
         );
     }
 

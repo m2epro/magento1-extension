@@ -76,61 +76,60 @@ class Ess_M2ePro_Adminhtml_Amazon_MarketplaceController
     {
         session_write_close();
 
-        $marketplaceId = (int)$this->getRequest()->getParam('marketplace_id');
         /** @var Ess_M2ePro_Model_Marketplace $marketplace */
-        $marketplace = Mage::helper('M2ePro/Component')->getUnknownObject('Marketplace', $marketplaceId);
-
-        $lockItemManager = Mage::getModel(
-            'M2ePro/Lock_Item_Manager', array(
-            'nick' => Ess_M2ePro_Helper_Component_Amazon::MARKETPLACE_SYNCHRONIZATION_LOCK_ITEM_NICK,
-            )
-        );
-
-        if ($lockItemManager->isExist()) {
-            return;
-        }
-
-        $lockItemManager->create();
-
-        $progressManager = Mage::getModel(
-            'M2ePro/Lock_Item_Progress', array(
-            'lock_item_manager' => $lockItemManager,
-            'progress_nick'     => $marketplace->getTitle() . ' Marketplace',
-            )
+        $marketplace = Mage::helper('M2ePro/Component')->getUnknownObject(
+            'Marketplace',
+            (int)$this->getRequest()->getParam('marketplace_id')
         );
 
         $synchronization = Mage::getModel('M2ePro/Amazon_Marketplace_Synchronization');
         $synchronization->setMarketplace($marketplace);
-        $synchronization->setProgressManager($progressManager);
 
-        $synchronization->process();
+        if ($synchronization->isLocked()) {
+            $synchronization->getlog()->addMessage(
+                Mage::helper('M2ePro')->__(
+                    'Marketplaces cannot be updated now. '
+                    . 'Please wait until another marketplace synchronization is completed, then try again.'
+                ),
+                Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
+                Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH
+            );
 
-        $lockItemManager->remove();
+            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('result' => 'error')));
+        }
+
+        try {
+            $synchronization->process();
+        } catch (Exception $e) {
+            $synchronization->getlog()->addMessage(
+                Mage::helper('M2ePro')->__($e->getMessage()),
+                Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
+                Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH
+            );
+
+            $synchronization->getLockItemManager()->remove();
+
+            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('result' => 'error')));
+        }
+
+        return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('result' => 'success')));
     }
 
     public function synchGetExecutingInfoAction()
     {
-        $response = array();
+        $synchronization = Mage::getModel('M2ePro/Amazon_Marketplace_Synchronization');
+        if (!$synchronization->isLocked()) {
+            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('mode' => 'inactive')));
+        }
 
-        $lockItemManager = Mage::getModel(
-            'M2ePro/Lock_Item_Manager', array(
-            'nick' => Ess_M2ePro_Helper_Component_Amazon::MARKETPLACE_SYNCHRONIZATION_LOCK_ITEM_NICK,
-            )
-        );
+        $contentData = $synchronization->getLockItemManager()->getContentData();
+        $progressData = $contentData[Ess_M2ePro_Model_Lock_Item_Progress::CONTENT_DATA_KEY];
 
-        if (!$lockItemManager->isExist()) {
-            $response['mode'] = 'inactive';
-        } else {
-            $response['mode'] = 'executing';
-
-            $contentData = $lockItemManager->getContentData();
-            $progressData = $contentData[Ess_M2ePro_Model_Lock_Item_Progress::CONTENT_DATA_KEY];
-
-            if (!empty($progressData)) {
-                $response['title'] = 'Marketplace Synchronization';
-                $response['percents'] = $progressData[key($progressData)]['percentage'];
-                $response['status'] = key($progressData);
-            }
+        $response = array('mode' => 'executing');
+        if (!empty($progressData)) {
+            $response['title'] = 'Marketplace Synchronization';
+            $response['percents'] = $progressData[key($progressData)]['percentage'];
+            $response['status'] = key($progressData);
         }
 
         return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode($response));

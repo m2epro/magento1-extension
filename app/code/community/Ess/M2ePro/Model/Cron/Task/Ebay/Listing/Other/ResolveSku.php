@@ -72,7 +72,6 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Other_ResolveSku extends Ess_M2ePr
             }
 
             $this->getOperationHistory()->saveTimePoint(__METHOD__.'process'.$account->getId());
-            $this->getLockItemManager()->activate();
         }
     }
 

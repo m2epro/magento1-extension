@@ -14,6 +14,7 @@ class Ess_M2ePro_Model_Connector_Connection_Request
 
     protected $_infoRewrites = array();
     protected $_data         = array();
+    protected $_rawData      = null;
 
     //########################################
 
@@ -126,6 +127,19 @@ class Ess_M2ePro_Model_Connector_Connection_Request
     public function getData()
     {
         return $this->_data;
+    }
+
+    // ---------------------------------------
+
+    public function setRawData($value)
+    {
+        $this->_rawData = $value;
+        return $this;
+    }
+
+    public function getRawData()
+    {
+        return $this->_rawData;
     }
 
     //########################################

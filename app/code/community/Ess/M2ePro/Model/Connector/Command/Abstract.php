@@ -53,6 +53,7 @@ abstract class Ess_M2ePro_Model_Connector_Command_Abstract
 
     protected function buildConnectionInstance()
     {
+        /** @var Ess_M2ePro_Model_Connector_Connection_Single $connection */
         $connection = Mage::getModel('M2ePro/Connector_Connection_Single');
         $connection->setRequest($this->buildRequestInstance());
 
@@ -63,6 +64,7 @@ abstract class Ess_M2ePro_Model_Connector_Command_Abstract
 
     protected function buildRequestInstance()
     {
+        /** @var Ess_M2ePro_Model_Connector_Connection_Request $request */
         $request = Mage::getModel('M2ePro/Connector_Connection_Request');
         $request->setCommand($this->getCommand());
 

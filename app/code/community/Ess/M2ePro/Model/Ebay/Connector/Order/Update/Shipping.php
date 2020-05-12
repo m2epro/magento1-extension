@@ -14,6 +14,10 @@ class Ess_M2ePro_Model_Ebay_Connector_Order_Update_Shipping
 
     //########################################
 
+    /**
+     * @param $action
+     * @return $this|Ess_M2ePro_Model_Ebay_Connector_Order_Update_Abstract
+     */
     public function setAction($action)
     {
         parent::setAction($action);
@@ -22,10 +26,16 @@ class Ess_M2ePro_Model_Ebay_Connector_Order_Update_Shipping
             $this->_carrierCode    = $this->_params['carrier_code'];
             $this->_trackingNumber = $this->_params['tracking_number'];
         }
+
+        return $this;
     }
 
     //########################################
 
+    /**
+     * @return bool
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     protected function isNeedSendRequest()
     {
         if (!$this->_order->getChildObject()->canUpdateShippingStatus($this->_params)) {
@@ -37,6 +47,10 @@ class Ess_M2ePro_Model_Ebay_Connector_Order_Update_Shipping
 
     //########################################
 
+    /**
+     * @return array
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function getRequestData()
     {
         $requestData = parent::getRequestData();
@@ -51,11 +65,18 @@ class Ess_M2ePro_Model_Ebay_Connector_Order_Update_Shipping
 
     //########################################
 
+    /**
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     protected function prepareResponseData()
     {
         if ($this->getResponse()->isResultError()) {
             return;
         }
+
+        /** @var Ess_M2ePro_Model_Order_Change $orderChange */
+        $orderChange = Mage::getModel('M2ePro/Order_Change')->load($this->getOrderChangeId());
+        $this->_order->getLog()->setInitiator($orderChange->getCreatorType());
 
         $responseData = $this->getResponse()->getData();
 
@@ -82,9 +103,7 @@ class Ess_M2ePro_Model_Ebay_Connector_Order_Update_Shipping
             );
         }
 
-        if ($this->getOrderChangeId() !== null) {
-            Mage::getResourceModel('M2ePro/Order_Change')->deleteByIds(array($this->getOrderChangeId()));
-        }
+        $orderChange->deleteInstance();
     }
 
     //########################################

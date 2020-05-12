@@ -8,10 +8,11 @@
 
 class Ess_M2ePro_Model_Order_Change extends Ess_M2ePro_Model_Abstract
 {
-    const ACTION_UPDATE_PAYMENT  = 'update_payment';
+    const ACTION_UPDATE_PAYMENT = 'update_payment';
     const ACTION_UPDATE_SHIPPING = 'update_shipping';
-    const ACTION_CANCEL          = 'cancel';
-    const ACTION_REFUND          = 'refund';
+    const ACTION_CANCEL = 'cancel';
+    const ACTION_REFUND = 'refund';
+    const ACTION_SEND_INVOICE = 'send_invoice';
 
     const MAX_ALLOWED_PROCESSING_ATTEMPTS = 3;
 
@@ -78,6 +79,7 @@ class Ess_M2ePro_Model_Order_Change extends Ess_M2ePro_Model_Abstract
             self::ACTION_UPDATE_SHIPPING,
             self::ACTION_CANCEL,
             self::ACTION_REFUND,
+            self::ACTION_SEND_INVOICE
         );
     }
 
@@ -132,11 +134,11 @@ class Ess_M2ePro_Model_Order_Change extends Ess_M2ePro_Model_Abstract
         /** @var Ess_M2ePro_Model_Order_Change $change */
         $change = Mage::getModel('M2ePro/Order_Change')
             ->getCollection()
-                ->addFieldToFilter('order_id', $orderId)
-                ->addFieldToFilter('action', $action)
-                ->addFieldToFilter('component', $component)
-                ->addFieldToFilter('hash', $hash)
-                ->getFirstItem();
+            ->addFieldToFilter('order_id', $orderId)
+            ->addFieldToFilter('action', $action)
+            ->addFieldToFilter('component', $component)
+            ->addFieldToFilter('hash', $hash)
+            ->getFirstItem();
 
         if ($change->getId()) {
             return;
@@ -159,7 +161,7 @@ class Ess_M2ePro_Model_Order_Change extends Ess_M2ePro_Model_Abstract
 
     public static function generateHash($orderId, $action, array $params)
     {
-        return sha1($orderId .'-'. $action .'-'. Mage::helper('M2ePro')->serialize($params));
+        return sha1($orderId . '-' . $action . '-' . Mage::helper('M2ePro')->serialize($params));
     }
 
     //########################################

@@ -268,11 +268,6 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
             return $encoded;
         }
 
-        Mage::helper('M2ePro/Module_Logger')->process(
-            array('source' => $this->serialize($data)),
-            'json_encode() failed completely', false
-        );
-
         if (!$throwError) {
             return null;
         }
@@ -315,11 +310,6 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
         if ($decoded !== null) {
             return $decoded;
         }
-
-        Mage::helper('M2ePro/Module_Logger')->process(
-            array('source' => $this->serialize($data)),
-            'json_decode() failed completely', false
-        );
 
         if (!$throwError) {
             return null;

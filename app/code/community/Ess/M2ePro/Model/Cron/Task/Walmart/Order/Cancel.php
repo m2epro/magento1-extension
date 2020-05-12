@@ -14,6 +14,9 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Order_Cancel extends Ess_M2ePro_Model_C
 
     //####################################
 
+    /**
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     protected function performActions()
     {
         $ordersChangesForProcess = $this->getOrdersChangesForProcess();
@@ -24,7 +27,9 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Order_Cancel extends Ess_M2ePro_Model_C
         foreach ($ordersChangesForProcess as $orderChange) {
             /** @var Ess_M2ePro_Model_Order $order */
             $order = Mage::helper('M2ePro/Component_Walmart')->getObject('Order', $orderChange->getOrderId());
+            $order->getLog()->setInitiator($orderChange->getCreatorType());
 
+            /** @var Ess_M2ePro_Model_Walmart_Order_Action_Handler_Cancel $actionHandler */
             $actionHandler = Mage::getModel('M2ePro/Walmart_Order_Action_Handler_Cancel');
             $actionHandler->setOrder($order);
             $actionHandler->setParams($orderChange->getParams());

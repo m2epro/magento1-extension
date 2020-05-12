@@ -201,7 +201,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore_Step_Products_Grid
             'width'     => '50px',
             'type'      => 'number',
             'index'     => 'available_qty',
-            'sortable'  => (bool)version_compare(Mage::helper('M2ePro/Magento')->getVersion(), '1.4.2', '>='),
+            'sortable'  => true,
             'filter'    => false,
             'frame_callback' => array($this, 'callbackColumnOnlineAvailableQty')
             )

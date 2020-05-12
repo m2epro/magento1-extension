@@ -528,7 +528,7 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
     public function runStopAndRemoveProductsAction()
     {
         if (!$listingsProductsIds = $this->getRequest()->getParam('selected_products')) {
-            return Mage::helper('M2ePro')->__('You should select Products');
+            return $this->getResponse()->setBody(Mage::helper('M2ePro')->__('You should select Products'));
         }
 
         /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $productsCollection */
@@ -541,7 +541,9 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
 
         $this->checkLocking($listingsProducts, $logsActionId, Ess_M2ePro_Model_Listing_Product::ACTION_STOP);
         if (empty($listingsProducts)) {
-            return Mage::helper('M2ePro')->jsonEncode(array('result' => 'error', 'action_id' => $logsActionId));
+            return $this->getResponse()->setBody(
+                Mage::helper('M2ePro')->jsonEncode(array('result' => 'error', 'action_id' => $logsActionId))
+            );
         }
 
         foreach ($listingsProducts as $index => $listingProduct) {
@@ -557,7 +559,9 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
         }
 
         if (empty($listingsProducts)) {
-            return Mage::helper('M2ePro')->jsonEncode(array('result' => 'success', 'action_id' => $logsActionId));
+            return $this->getResponse()->setBody(
+                Mage::helper('M2ePro')->jsonEncode(array('result' => 'success', 'action_id' => $logsActionId))
+            );
         }
 
         $this->createUpdateScheduledActions(
@@ -566,7 +570,9 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
             array('remove' => true)
         );
 
-        return Mage::helper('M2ePro')->jsonEncode(array('result' => 'success', 'action_id' => $logsActionId));
+        return $this->getResponse()->setBody(
+            Mage::helper('M2ePro')->jsonEncode(array('result' => 'success', 'action_id' => $logsActionId))
+        );
     }
 
     public function runDeleteAndRemoveProductsAction()

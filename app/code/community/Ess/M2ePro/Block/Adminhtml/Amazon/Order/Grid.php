@@ -74,6 +74,15 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Order_Grid extends Mage_Adminhtml_Block_
 
         // ---------------------------------------
 
+        // Add Not sent Invoice or Credit Memo Filter
+        // ---------------------------------------
+        if ($this->getRequest()->getParam('invoice_or_creditmemo_not_sent')) {
+            $collection->addFieldToFilter('is_invoice_sent', 0);
+            $collection->addFieldToFilter('is_credit_memo_sent', 0);
+        }
+
+        // ---------------------------------------
+
         $this->setCollection($collection);
         return parent::_prepareCollection();
     }
@@ -301,6 +310,14 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Order_Grid extends Mage_Adminhtml_Block_
              'label'    => Mage::helper('M2ePro')->__('Resend Shipping Information'),
              'url'      => $this->getUrl('*/adminhtml_order/resubmitShippingInfo'),
              'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
+            )
+        );
+
+        $this->getMassactionBlock()->addItem(
+            'resend_invoice_creditmemo', array(
+                'label'    => Mage::helper('M2ePro')->__('Resend Invoice / Credit Memo'),
+                'url'      => $this->getUrl('*/adminhtml_amazon_order/resendInvoiceCreditmemo'),
+                'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
             )
         );
 

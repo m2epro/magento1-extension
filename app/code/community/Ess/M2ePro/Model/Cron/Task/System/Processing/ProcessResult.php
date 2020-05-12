@@ -17,14 +17,47 @@ class Ess_M2ePro_Model_Cron_Task_System_Processing_ProcessResult extends Ess_M2e
 
     protected function performActions()
     {
-        $this->processExpired();
+        $this->removeMissedProcessingLocks();
+        $this->removeExpired();
+
         $this->processCompletedSingle();
         $this->processCompletedPartial();
     }
 
     //########################################
 
-    protected function processExpired()
+    protected function removeMissedProcessingLocks()
+    {
+        /** @var Ess_M2ePro_Model_Resource_Processing_Lock_Collection $collection */
+        $collection = Mage::getResourceModel('M2ePro/Processing_Lock_Collection');
+        $collection->getSelect()->joinLeft(
+            array('p' => Mage::getResourceModel('M2ePro/Processing')->getMainTable()),
+            'p.id = main_table.processing_id',
+            array()
+        );
+        $collection->addFieldToFilter('p.id', array('null' => true));
+
+        $logData = array();
+        foreach ($collection->getItems() as $item) {
+            /**@var Ess_M2ePro_Model_Processing_Lock $item */
+
+            if (!isset($logData[$item->getModelName()][$item->getObjectId()]) ||
+                !in_array($item->getTag(), $logData[$item->getModelName()][$item->getObjectId()]))
+            {
+                $logData[$item->getModelName()][$item->getObjectId()][] = $item->getTag();
+            }
+
+            $item->deleteInstance();
+        }
+
+        if (!empty($logData)) {
+            Mage::helper('M2ePro/Module_Logger')->process(
+                $logData, 'Processing Locks Records were broken and removed', false
+            );
+        }
+    }
+
+    protected function removeExpired()
     {
         $processingCollection = Mage::getResourceModel('M2ePro/Processing_Collection');
         $processingCollection->setOnlyExpiredItemsFilter();
@@ -34,7 +67,6 @@ class Ess_M2ePro_Model_Cron_Task_System_Processing_ProcessResult extends Ess_M2e
         $processingObjects = $processingCollection->getItems();
 
         foreach ($processingObjects as $processingObject) {
-            $this->getLockItemManager()->activate();
 
             try {
                 if (!class_exists(Mage::getConfig()->getModelClassName($processingObject->getModel()))) {
@@ -56,6 +88,8 @@ class Ess_M2ePro_Model_Cron_Task_System_Processing_ProcessResult extends Ess_M2e
         }
     }
 
+    //----------------------------------------
+
     protected function processCompletedSingle()
     {
         /** @var Ess_M2ePro_Model_Resource_Processing_Collection $processingCollection */
@@ -75,7 +109,6 @@ class Ess_M2ePro_Model_Cron_Task_System_Processing_ProcessResult extends Ess_M2e
         $percentsForOneAction = 50 / count($processingObjects);
 
         foreach ($processingObjects as $processingObject) {
-            $this->getLockItemManager()->activate();
             if ($iteration % 10 == 0) {
                 Mage::dispatchEvent(
                     Ess_M2ePro_Model_Cron_Strategy_Abstract::PROGRESS_SET_DETAILS_EVENT_NAME,
@@ -126,7 +159,6 @@ class Ess_M2ePro_Model_Cron_Task_System_Processing_ProcessResult extends Ess_M2e
         $percentsForOneAction = 50 / count($processingObjects);
 
         foreach ($processingObjects as $processingObject) {
-            $this->getLockItemManager()->activate();
             if ($iteration % 10 == 0) {
                 Mage::dispatchEvent(
                     Ess_M2ePro_Model_Cron_Strategy_Abstract::PROGRESS_SET_DETAILS_EVENT_NAME,

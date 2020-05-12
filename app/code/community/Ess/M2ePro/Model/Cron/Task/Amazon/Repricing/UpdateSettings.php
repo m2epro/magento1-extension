@@ -61,7 +61,6 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Repricing_UpdateSettings extends Ess_M2e
             $iteration++;
 
             $updatedSkus = $repricingUpdating->process($products);
-            $this->getLockItemManager()->activate();
 
             Mage::getResourceModel('M2ePro/Amazon_Listing_Product_Repricing')->resetProcessRequired(
                 array_unique(array_keys($products))

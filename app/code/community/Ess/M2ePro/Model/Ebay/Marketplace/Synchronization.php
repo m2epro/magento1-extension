@@ -8,11 +8,19 @@
 
 class Ess_M2ePro_Model_Ebay_Marketplace_Synchronization
 {
+    const LOCK_ITEM_MAX_ALLOWED_INACTIVE_TIME = 1800; // 30 min
+
     /** @var Ess_M2ePro_Model_Marketplace */
     protected $_marketplace = null;
 
+    /** @var Ess_M2ePro_Model_Lock_Item_Manager */
+    protected $_lockItemManager = null;
+
     /** @var Ess_M2ePro_Model_Lock_Item_Progress */
     protected $_progressManager = null;
+
+    /** @var Ess_M2ePro_Model_Synchronization_Log  */
+    protected $_synchronizationLog = null;
 
     //########################################
 
@@ -22,31 +30,43 @@ class Ess_M2ePro_Model_Ebay_Marketplace_Synchronization
         return $this;
     }
 
-    public function setProgressManager(Ess_M2ePro_Model_Lock_Item_Progress $progressManager)
+    //########################################
+
+    public function isLocked()
     {
-        $this->_progressManager = $progressManager;
-        return $this;
+        if (!$this->getLockItemManager()->isExist()) {
+            return false;
+        }
+
+        if ($this->getLockItemManager()->isInactiveMoreThanSeconds(self::LOCK_ITEM_MAX_ALLOWED_INACTIVE_TIME)) {
+            $this->getLockItemManager()->remove();
+            return false;
+        }
+
+        return true;
     }
 
     //########################################
 
     public function process()
     {
-        $this->_progressManager->setPercentage(0);
+        $this->getLockItemManager()->create();
+
+        $this->getProgressManager()->setPercentage(0);
 
         $this->processDetails();
 
-        $this->_progressManager->setPercentage(10);
+        $this->getProgressManager()->setPercentage(10);
 
         $this->processCategories();
 
-        $this->_progressManager->setPercentage(30);
+        $this->getProgressManager()->setPercentage(30);
 
         if ($this->getEbayMarketplace()->isEpidEnabled()) {
             $this->processEpids();
         }
 
-        $this->_progressManager->setPercentage(70);
+        $this->getProgressManager()->setPercentage(70);
 
         if ($this->getEbayMarketplace()->isKtypeEnabled()) {
             $this->processKtypes();
@@ -54,7 +74,9 @@ class Ess_M2ePro_Model_Ebay_Marketplace_Synchronization
 
         Mage::helper('M2ePro/Data_Cache_Permanent')->removeTagValues('marketplace');
 
-        $this->_progressManager->setPercentage(100);
+        $this->getProgressManager()->setPercentage(100);
+
+        $this->getLockItemManager()->remove();
     }
 
     //########################################
@@ -379,6 +401,49 @@ class Ess_M2ePro_Model_Ebay_Marketplace_Synchronization
     protected function getEbayMarketplace()
     {
         return $this->_marketplace->getChildObject();
+    }
+
+    //########################################
+
+    public function getLockItemManager()
+    {
+        if ($this->_lockItemManager !== null) {
+            return $this->_lockItemManager;
+        }
+
+        return $this->_lockItemManager = Mage::getModel(
+            'M2ePro/Lock_Item_Manager',
+            array(
+                'nick' => Ess_M2ePro_Helper_Component_Ebay::MARKETPLACE_SYNCHRONIZATION_LOCK_ITEM_NICK
+            )
+        );
+    }
+
+    public function getProgressManager()
+    {
+        if ($this->_progressManager !== null) {
+            return $this->_progressManager;
+        }
+
+        return $this->_progressManager = Mage::getModel(
+            'M2ePro/Lock_Item_Progress', array(
+                'lock_item_manager' => $this->getLockItemManager(),
+                'progress_nick'     => $this->_marketplace->getTitle() . ' Marketplace',
+            )
+        );
+    }
+
+    public function getLog()
+    {
+        if ($this->_synchronizationLog !== null) {
+            return $this->_synchronizationLog;
+        }
+
+        $this->_synchronizationLog = Mage::getModel('M2ePro/Synchronization_Log');
+        $this->_synchronizationLog->setComponentMode(Ess_M2ePro_Helper_Component_Ebay::NICK);
+        $this->_synchronizationLog->setSynchronizationTask(Ess_M2ePro_Model_Synchronization_Log::TASK_MARKETPLACES);
+
+        return $this->_synchronizationLog;
     }
 
     //########################################

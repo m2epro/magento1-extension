@@ -11,11 +11,18 @@ class Ess_M2ePro_Model_Ebay_Connector_Order_Update_Payment
 {
     //########################################
 
+    /**
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     protected function prepareResponseData()
     {
         if ($this->getResponse()->isResultError()) {
             return;
         }
+
+        /** @var Ess_M2ePro_Model_Order_Change $orderChange */
+        $orderChange = Mage::getModel('M2ePro/Order_Change')->load($this->getOrderChangeId());
+        $this->_order->getLog()->setInitiator($orderChange->getCreatorType());
 
         $responseData = $this->getResponse()->getData();
 
@@ -33,9 +40,7 @@ class Ess_M2ePro_Model_Ebay_Connector_Order_Update_Payment
             $this->_order->updateMagentoOrderStatus();
         }
 
-        if ($this->getOrderChangeId() !== null) {
-            Mage::getResourceModel('M2ePro/Order_Change')->deleteByIds(array($this->getOrderChangeId()));
-        }
+        $orderChange->deleteInstance();
     }
 
     //########################################

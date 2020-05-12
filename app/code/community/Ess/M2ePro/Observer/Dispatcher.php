@@ -84,6 +84,11 @@ class Ess_M2ePro_Observer_Dispatcher
         $this->process('Invoice', $eventObserver);
     }
 
+    public function salesOrderInvoiceSaveAfter(Varien_Event_Observer $eventObserver)
+    {
+        $this->process('Invoice_Save_After', $eventObserver);
+    }
+
     public function salesShipmentItemSaveAfter(Varien_Event_Observer $eventObserver)
     {
         $this->process('Shipment_Item', $eventObserver);
@@ -130,7 +135,12 @@ class Ess_M2ePro_Observer_Dispatcher
 
     public function salesOrderCreditmemoRefund(Varien_Event_Observer $eventObserver)
     {
-        $this->process('CreditMemo', $eventObserver);
+        $this->process('Creditmemo', $eventObserver);
+    }
+
+    public function salesOrderCreditmemoSaveAfter(Varien_Event_Observer $eventObserver)
+    {
+        $this->process('Creditmemo_Save_After', $eventObserver);
     }
 
     public function magentoOrderCreate(Varien_Event_Observer $eventObserver)
@@ -163,9 +173,9 @@ class Ess_M2ePro_Observer_Dispatcher
         $this->process('Invoice_View', $eventObserver);
     }
 
-    public function creditMemoView(Varien_Event_Observer $eventObserver)
+    public function creditmemoView(Varien_Event_Observer $eventObserver)
     {
-        $this->process('CreditMemo_View', $eventObserver);
+        $this->process('Creditmemo_View', $eventObserver);
     }
 
     //########################################

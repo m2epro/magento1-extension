@@ -40,13 +40,6 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationWalmartController
 
     //########################################
 
-    public function indexAction()
-    {
-        parent::indexAction();
-    }
-
-    //########################################
-
     public function createLicenseAction()
     {
         $requiredKeys = array(
@@ -68,11 +61,14 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationWalmartController
                 continue;
             }
 
-            $response = array(
-                'result'  => false,
-                'message' => Mage::helper('M2ePro')->__('You should fill all required fields.')
+            return $this->getResponse()->setBody(
+                Mage::helper('M2ePro')->jsonEncode(
+                    array(
+                        'result'  => false,
+                        'message' => Mage::helper('M2ePro')->__('You should fill all required fields.')
+                    )
+                )
             );
-            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode($response));
         }
 
         $registry = Mage::getModel('M2ePro/Registry')->load('/wizard/license_form_data/', 'key');
@@ -80,25 +76,53 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationWalmartController
         $registry->setData('value', Mage::helper('M2ePro')->jsonEncode($licenseData));
         $registry->save();
 
+        $message = null;
+
         if (Mage::helper('M2ePro/Module_License')->getKey()) {
-            Mage::helper('M2ePro/Module_License')->updateLicenseUserInfo(
+            try {
+                $result = Mage::helper('M2ePro/Module_License')->updateLicenseUserInfo(
+                    $licenseData['email'],
+                    $licenseData['firstname'], $licenseData['lastname'],
+                    $licenseData['country'], $licenseData['city'],
+                    $licenseData['postal_code'], $licenseData['phone']
+                );
+            } catch (Exception $e) {
+                Mage::helper('M2ePro/Module_Exception')->process($e);
+                $result = false;
+                $message = Mage::helper('M2ePro')->__($e->getMessage());
+            }
+
+            return $this->getResponse()->setBody(
+                Mage::helper('M2ePro')->jsonEncode(
+                    array(
+                        'result'  => $result,
+                        'message' => $message
+                    )
+                )
+            );
+        }
+
+        try {
+            $result = Mage::helper('M2ePro/Module_License')->obtainRecord(
                 $licenseData['email'],
                 $licenseData['firstname'], $licenseData['lastname'],
                 $licenseData['country'], $licenseData['city'],
                 $licenseData['postal_code'], $licenseData['phone']
             );
-
-            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('result' => true)));
+        } catch (Exception $e) {
+            Mage::helper('M2ePro/Module_Exception')->process($e);
+            $result = false;
+            $message = Mage::helper('M2ePro')->__($e->getMessage());
         }
 
-        $licenseResult = Mage::helper('M2ePro/Module_License')->obtainRecord(
-            $licenseData['email'],
-            $licenseData['firstname'], $licenseData['lastname'],
-            $licenseData['country'], $licenseData['city'],
-            $licenseData['postal_code'], $licenseData['phone']
+        return $this->getResponse()->setBody(
+            Mage::helper('M2ePro')->jsonEncode(
+                array(
+                    'result'  => $result,
+                    'message' => $message
+                )
+            )
         );
-
-        return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('result' => $licenseResult)));
     }
 
     //########################################
@@ -125,32 +149,47 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationWalmartController
                 continue;
             }
 
-            $response = array(
-                'result'  => false,
-                'message' => Mage::helper('M2ePro')->__('You should fill all required fields.')
+            return $this->getResponse()->setBody(
+                Mage::helper('M2ePro')->jsonEncode(
+                    array(
+                        'result'  => false,
+                        'message' => Mage::helper('M2ePro')->__('You should fill all required fields.')
+                    )
+                )
             );
-            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode($response));
         }
 
         $result = true;
+        $message = null;
 
         if (Mage::helper('M2ePro/Module_License')->getKey()) {
-            $result = Mage::helper('M2ePro/Module_License')->updateLicenseUserInfo(
-                $licenseData['email'],
-                $licenseData['firstname'], $licenseData['lastname'],
-                $licenseData['country'], $licenseData['city'],
-                $licenseData['postal_code'], $licenseData['phone']
-            );
+            try {
+                $result = Mage::helper('M2ePro/Module_License')->updateLicenseUserInfo(
+                    $licenseData['email'],
+                    $licenseData['firstname'], $licenseData['lastname'],
+                    $licenseData['country'], $licenseData['city'],
+                    $licenseData['postal_code'], $licenseData['phone']
+                );
 
-            if ($result) {
                 $registry = Mage::getModel('M2ePro/Registry')->load('/wizard/license_form_data/', 'key');
                 $registry->setData('key', '/wizard/license_form_data/');
                 $registry->setData('value', Mage::helper('M2ePro')->jsonEncode($licenseData));
                 $registry->save();
+            } catch (Exception $e) {
+                Mage::helper('M2ePro/Module_Exception')->process($e);
+                $result = false;
+                $message = Mage::helper('M2ePro')->__($e->getMessage());
             }
         }
 
-        return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('result' => $result)));
+        return $this->getResponse()->setBody(
+            Mage::helper('M2ePro')->jsonEncode(
+                array(
+                    'result'  => $result,
+                    'message' => $message
+                )
+            )
+        );
     }
 
     //########################################

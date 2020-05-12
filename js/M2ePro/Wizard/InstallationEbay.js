@@ -102,7 +102,7 @@ WizardInstallationEbay = Class.create(CommonHandler, {
 
                 var response = transport.responseText.evalJSON();
 
-                if (response && response['message']) {
+                if (!response['url'] && response['message']) {
                     MagentoMessageObj.addError(response['message']);
                     return CommonHandlerObj.scroll_page_to_top();
                 }

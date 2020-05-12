@@ -31,8 +31,6 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_PickupStore_ScheduleForUpdate extends Ess_
         $this->processAccount($account);
 
         $this->getOperationHistory()->saveTimePoint(__METHOD__.'process'.$account->getId());
-
-        $this->getLockItemManager()->activate();
     }
 
     //########################################

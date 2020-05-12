@@ -22,6 +22,9 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Order_Acknowledge extends Ess_M2ePro_Mo
         }
 
         foreach ($ordersForProcess as $order) {
+            $order->getLog()->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION);
+
+            /** @var Ess_M2ePro_Model_Walmart_Order_Action_Handler_Acknowledge $actionHandler */
             $actionHandler = Mage::getModel('M2ePro/Walmart_Order_Action_Handler_Acknowledge');
             $actionHandler->setOrder($order);
 

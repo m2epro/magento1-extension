@@ -11,6 +11,7 @@ class Ess_M2ePro_Model_Amazon_Order_Action_Processing extends Ess_M2ePro_Model_A
     const ACTION_TYPE_UPDATE = 'update';
     const ACTION_TYPE_CANCEL = 'cancel';
     const ACTION_TYPE_REFUND = 'refund';
+    const ACTION_TYPE_SEND_INVOICE = 'send_invoice';
 
     //####################################
 

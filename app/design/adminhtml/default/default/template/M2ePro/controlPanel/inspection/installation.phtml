@@ -37,7 +37,7 @@
         </td>
         <td class="value">
             <?php echo "{$this->latestUpgradeDate} (from {$this->latestUpgradeFromVersion} to {$this->latestUpgradeToVersion})"; ?>
-            <a style="margin-left: 10px;" href="<?php echo $this->getUrl('*/adminhtml_controlPanel_tools_m2ePro_install/showInstallationVersionHistory'); ?>" target="_blank"><?php echo Mage::helper('M2ePro')->__('Show All'); ?></a>
+            <a style="margin-left: 10px;" href="<?php echo $this->getUrl('*/adminhtml_controlPanel_database/manageTable', array('table' => 'm2epro_setup')); ?>" target="_blank"><?php echo Mage::helper('M2ePro')->__('Show All'); ?></a>
         </td>
     </tr>
 

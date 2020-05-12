@@ -26,9 +26,11 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit_Tabs_Order extends Mage_Adm
 
     protected function _beforeToHtml()
     {
-        $data = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
-        $magentoOrdersSettings = !empty($data['magento_orders_settings'])
-                                        ? Mage::helper('M2ePro')->jsonDecode($data['magento_orders_settings'])
+        /** @var Ess_M2ePro_Model_Account $account */
+        $account = Mage::helper('M2ePro/Data_Global')->getValue('model_account');
+
+        $magentoOrdersSettings = !empty($account['magento_orders_settings'])
+                                        ? Mage::helper('M2ePro')->jsonDecode($account['magento_orders_settings'])
                                         : array();
 
         // ---------------------------------------

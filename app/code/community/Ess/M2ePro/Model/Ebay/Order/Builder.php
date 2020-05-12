@@ -318,8 +318,21 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
         $externalTransactionsCollection = $this->_order->getChildObject()->getExternalTransactionsCollection();
         $externalTransactionsCollection->load();
 
+        $paymentTransactionId = '';
+        foreach ($this->_externalTransactions as $transactionData) {
+            if (!empty($transactionData['transaction_id'])) {
+                $paymentTransactionId = $transactionData['transaction_id'];
+                break;
+            }
+        }
+
+        $postfix = 0;
         foreach ($this->_externalTransactions as $transactionData) {
             $transactionData['order_id'] = $this->_order->getId();
+            // transaction_id may be empty for refunded transaction
+            if (empty($transactionData['transaction_id'])) {
+                $transactionData['transaction_id'] = $paymentTransactionId . '-' . ++$postfix;
+            }
 
             /** @var $transactionBuilder Ess_M2ePro_Model_Ebay_Order_ExternalTransaction_Builder */
             $transactionBuilder = Mage::getModel('M2ePro/Ebay_Order_ExternalTransaction_Builder');

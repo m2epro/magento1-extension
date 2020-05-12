@@ -24,18 +24,19 @@ class Ess_M2ePro_Observer_Invoice extends Ess_M2ePro_Observer_Abstract
 
         try {
             /** @var $order Ess_M2ePro_Model_Order */
-            $order = Mage::helper('M2ePro/Component_Ebay')
-                                ->getObject('Order', $magentoOrderId, 'magento_order_id');
+            $order = Mage::helper('M2ePro')->getObject('Order', $magentoOrderId, 'magento_order_id');
         } catch (Exception $e) {
             return;
         }
 
-        if (!$order->getChildObject()->canUpdatePaymentStatus()) {
-            return;
-        }
+        if ($order->isComponentModeEbay()) {
+            if (!$order->getChildObject()->canUpdatePaymentStatus()) {
+                return;
+            }
 
-        $order->getLog()->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION);
-        $order->getChildObject()->updatePaymentStatus();
+            $order->getLog()->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION);
+            $order->getChildObject()->updatePaymentStatus();
+        }
     }
 
     //########################################
