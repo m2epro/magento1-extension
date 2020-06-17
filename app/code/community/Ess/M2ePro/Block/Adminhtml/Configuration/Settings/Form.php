@@ -50,8 +50,8 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_Settings_Form extends Ess_M2ePro_
         parent::_prepareLayout();
 
         $this->getLayout()->getBlock('head')
-            ->addJs('M2ePro/Configuration/SettingsHandler.js')
-            ->addJs('M2ePro/Template/EditHandler.js');
+            ->addJs('M2ePro/Configuration/Settings.js')
+            ->addJs('M2ePro/Template/Edit.js');
     }
 
     protected function _beforeToHtml()
@@ -69,7 +69,7 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_Settings_Form extends Ess_M2ePro_
         // ---------------------------------------
         $data = array(
             'label'   => Mage::helper('M2ePro')->__('Restore All Helps & Remembered Choices'),
-            'onclick' => 'SettingsHandlerObj.restoreAllHelpsAndRememberedChoices()',
+            'onclick' => 'SettingsObj.restoreAllHelpsAndRememberedChoices()',
             'class'   => 'restore_block_notices'
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);

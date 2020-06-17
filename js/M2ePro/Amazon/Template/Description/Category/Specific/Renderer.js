@@ -1,5 +1,4 @@
-AmazonTemplateDescriptionCategorySpecificRenderer = Class.create();
-AmazonTemplateDescriptionCategorySpecificRenderer.prototype = {
+window.AmazonTemplateDescriptionCategorySpecificRenderer = Class.create({
 
     // ---------------------------------------
 
@@ -279,4 +278,4 @@ AmazonTemplateDescriptionCategorySpecificRenderer.prototype = {
     }
 
     // ---------------------------------------
-};
+});

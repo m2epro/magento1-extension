@@ -37,7 +37,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View extends Mage_Adminhtml_
             $this->_addButton(
                 'back', array(
                 'label'   => Mage::helper('M2ePro')->__('Back'),
-                'onclick' => 'CommonHandlerObj.back_click(\'' . $url . '\')',
+                'onclick' => 'CommonObj.back_click(\'' . $url . '\')',
                 'class'   => 'back'
                 )
             );
@@ -113,13 +113,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View extends Mage_Adminhtml_
         $processingDataMessage = $helper->escapeJs($helper->__('Processing %product_title% Product(s).'));
         $autoMapProgressTitle = $helper->escapeJs($helper->__('Map Item(s) to Products'));
 
-        $selectItemsMessage = $helper->escapeJs(
-            $helper->__(
-                'Please select the Products you want to perform the Action on.'
-            )
-        );
-        $selectActionMessage = $helper->escapeJs($helper->__('Please select Action.'));
-
         $javascript = <<<HTML
 <script type="text/javascript">
 
@@ -146,9 +139,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View extends Mage_Adminhtml_
     M2ePro.text.successfully_unmapped = '{$successfullyUnmappedMessage}';
     M2ePro.text.successfully_removed = '{$successfullyRemovedMessage}';
 
-    M2ePro.text.select_items_message = '{$selectItemsMessage}';
-    M2ePro.text.select_action_message = '{$selectActionMessage}';
-
     M2ePro.customData.componentMode = '{$component}';
     M2ePro.customData.gridId = 'ebayListingOtherGrid';
 
@@ -159,8 +149,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View extends Mage_Adminhtml_
         ListingProgressBarObj = new ProgressBar('listing_other_progress_bar');
         GridWrapperObj = new AreaWrapper('listing_other_content_container');
 
-        EbayListingOtherGridHandlerObj = new EbayListingOtherGridHandler('ebayListingOtherViewGrid');
-        EbayListingOtherMappingHandlerObj = new ListingOtherMappingHandler(EbayListingOtherGridHandlerObj,'ebay');
+        EbayListingOtherGridObj = new EbayListingOtherGrid('ebayListingOtherViewGrid');
+        EbayListingOtherMappingObj = new ListingOtherMapping(EbayListingOtherGridObj,'ebay');
     });
 
 </script>

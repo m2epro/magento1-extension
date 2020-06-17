@@ -69,7 +69,7 @@ class Ess_M2ePro_Sql_Upgrade_v6_3_6__v6_3_7_AllFeatures extends Ess_M2ePro_Model
         if ($installer->getTablesObject()->isExists('ebay_dictionary_motor_specific')) {
 
             $installer->run(<<<SQL
-DROP TABLE IF EXISTS `m2epro_ebay_dictionary_motor_epid`;
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_ebay_dictionary_motor_epid')}`;
 SQL
             );
 
@@ -191,7 +191,7 @@ SQL
             $tempConfigEntity->delete();
 
             $installer->run(<<<SQL
-UPDATE `m2epro_ebay_account`
+UPDATE `{$this->_installer->getTable('m2epro_ebay_account')}`
 SET `defaults_last_synchronization` = {$sinceTime}
 SQL
             );
@@ -213,7 +213,7 @@ SQL
 
         $installer->run(<<<SQL
 
-DELETE FROM `m2epro_lock_item`
+DELETE FROM `{$this->_installer->getTable('m2epro_lock_item')}`
 WHERE `nick` = 'cron'
 OR    `nick` = 'processing_cron'
 
@@ -248,32 +248,32 @@ SQL
 
         $installer->run(<<<SQL
 
-    UPDATE `m2epro_ebay_template_selling_format`
+    UPDATE `{$this->_installer->getTable('m2epro_ebay_template_selling_format')}`
     SET `fixed_price_mode` = 1
     WHERE `listing_type` = 2 AND `fixed_price_mode` = 0;
 
-    UPDATE `m2epro_amazon_listing_other`
+    UPDATE `{$this->_installer->getTable('m2epro_amazon_listing_other')}`
     SET `online_qty` = NULL
     WHERE `is_afn_channel` = 1 AND `online_qty` IS NOT NULL;
 
-    UPDATE `m2epro_amazon_listing_other`
+    UPDATE `{$this->_installer->getTable('m2epro_amazon_listing_other')}`
     SET `online_qty` = 0
     WHERE `is_afn_channel` = 0 AND `online_qty` IS NULL;
 
-    UPDATE `m2epro_ebay_template_description`
+    UPDATE `{$this->_installer->getTable('m2epro_ebay_template_description')}`
     SET `variation_configurable_images` = '[]'
     WHERE LENGTH(`variation_configurable_images`) = 0;
 
-    UPDATE `m2epro_ebay_template_description`
+    UPDATE `{$this->_installer->getTable('m2epro_ebay_template_description')}`
     SET `variation_configurable_images` = CONCAT('["', `variation_configurable_images`, '"]')
     WHERE `variation_configurable_images` NOT LIKE '[%';
 
-    UPDATE `m2epro_buy_listing`
+    UPDATE `{$this->_installer->getTable('m2epro_buy_listing')}`
     SET `general_id_mode` = 0,
         `general_id_custom_attribute` = ''
     WHERE `general_id_mode` NOT IN(0,1);
 
-    UPDATE `m2epro_listing_product`
+    UPDATE `{$this->_installer->getTable('m2epro_listing_product')}`
     SET `additional_data` = CONCAT(
                                 SUBSTRING(`additional_data`,
                                           1,
@@ -287,7 +287,7 @@ SQL
                             )
     WHERE `additional_data` REGEXP '"ebay_product_images_hash":[^#]+#[0-9]{8}"';
 
-    UPDATE `m2epro_listing_product`
+    UPDATE `{$this->_installer->getTable('m2epro_listing_product')}`
     SET `additional_data` = CONCAT(
                                 SUBSTRING(`additional_data`,
                                           1,
@@ -330,7 +330,7 @@ SQL
                 $userId = $connection->quote($userId);
 
                 $installer->run(<<<SQL
-            UPDATE `m2epro_ebay_account`
+            UPDATE `{$this->_installer->getTable('m2epro_ebay_account')}`
             SET `user_id` = {$userId}
             WHERE `account_id` = {$row['id']};
 SQL
@@ -358,7 +358,7 @@ FROM `{$installer->getTablesObject()->getFullName('buy_account')}`
                     $settings = $connection->quote(json_encode($settings));
 
                     $installer->run(<<<SQL
-                UPDATE `m2epro_buy_account`
+                UPDATE `{$this->_installer->getTable('m2epro_buy_account')}`
                 SET `other_listings_mapping_settings` = {$settings}
                 WHERE `account_id` = {$row['account_id']}
 SQL
@@ -375,8 +375,8 @@ SQL
             $installer->run(<<<SQL
 
 DELETE `mlo`
-FROM `m2epro_locked_object` AS `mlo`
-LEFT JOIN `m2epro_processing_request` AS `mpr` ON `mlo`.`related_hash` = `mpr`.`hash`
+FROM `{$this->_installer->getTable('m2epro_locked_object')}` AS `mlo`
+LEFT JOIN `{$this->_installer->getTable('m2epro_processing_request')}` AS `mpr` ON `mlo`.`related_hash` = `mpr`.`hash`
 WHERE `mpr`.`id` IS NULL;
 
 SQL

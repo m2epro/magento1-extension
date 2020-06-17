@@ -50,7 +50,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Configuration extends Ess_M2ePro_Block_A
 <script type="text/javascript">
 
     Event.observe(window, 'load', function() {
-        CommonHandlerObj = new CommonHandler();
+        CommonObj = new Common();
     });
 
 </script>

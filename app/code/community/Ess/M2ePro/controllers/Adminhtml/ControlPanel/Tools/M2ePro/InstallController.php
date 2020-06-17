@@ -12,55 +12,6 @@ class Ess_M2ePro_Adminhtml_ControlPanel_Tools_M2ePro_InstallController
     //########################################
 
     /**
-     * @title "Repeat Upgrade > 4.1.0"
-     * @description "Repeat Upgrade From Certain Version"
-     * @new_line
-     */
-    public function recurringUpdateAction()
-    {
-        if ($this->getRequest()->getParam('upgrade')) {
-            $version = $this->getRequest()->getParam('version');
-            $version = str_replace(array(','), '.', $version);
-
-            if (!version_compare('3.2.0', $version, '<=')) {
-                $this->_getSession()->addError('Extension upgrade can work only from 3.2.0 version.');
-                $this->_redirectUrl(Mage::helper('M2ePro/View_ControlPanel')->getPageToolsTabUrl());
-                return;
-            }
-
-            /** @var $connWrite Varien_Db_Adapter_Pdo_Mysql */
-            $connWrite = Mage::getSingleton('core/resource')->getConnection('core_write');
-
-            $connWrite->update(
-                Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('core_resource'),
-                array(
-                    'version'      => $version,
-                    'data_version' => $version
-                ),
-                array('code = ?' => 'M2ePro_setup')
-            );
-
-            Mage::helper('M2ePro/Magento')->clearCache();
-
-            $this->_getSession()->addSuccess('Extension upgrade was successfully completed.');
-            $this->_redirectUrl(Mage::helper('M2ePro/View_ControlPanel')->getPageToolsTabUrl());
-
-            return;
-        }
-
-        $urlPhpInfo = Mage::helper('adminhtml')->getUrl('*/*/*', array('upgrade' => 'yes'));
-
-        return $this->getResponse()->setBody(
-            '<form method="GET" action="'.$urlPhpInfo.'">
-                From version: <input type="text" name="version" value="3.2.0" />
-                <input type="submit" title="Upgrade Now!" onclick="return confirm(\'Are you sure?\');" />
-              </form>'
-        );
-    }
-
-    //########################################
-
-    /**
      * @title "Check Files Validity"
      * @description "Check Files Validity"
      */

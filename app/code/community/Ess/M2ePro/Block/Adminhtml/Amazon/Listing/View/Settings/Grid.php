@@ -9,18 +9,26 @@
 class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Settings_Grid
     extends Ess_M2ePro_Block_Adminhtml_Magento_Product_Grid_Abstract
 {
+    /** @var Ess_M2ePro_Model_Listing */
+    protected $_listing = null;
+
+    /** @var Ess_M2ePro_Model_Account */
+    protected $_account = null;
+
     //########################################
 
     public function __construct()
     {
         parent::__construct();
 
-        $listingData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
+        $this->_listing = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
 
-        // Initialization block
-        // ---------------------------------------
-        $this->setId('amazonListingViewSettingsGrid'.$listingData['id']);
-        // ---------------------------------------
+        $this->_account = Mage::helper('M2ePro/Component_Amazon')->getCachedObject(
+            'Account',
+            $this->_listing->getAccountId()
+        );
+
+        $this->setId('amazonListingViewSettingsGrid' . $this->_listing->getId());
 
         $this->_showAdvancedFilterProductsOption = false;
     }
@@ -44,18 +52,14 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Settings_Grid
 
     protected function _prepareCollection()
     {
-        $listingData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
-
-        // Get collection
-        // ---------------------------------------
         /** @var $collection Ess_M2ePro_Model_Resource_Magento_Product_Collection */
         $collection = Mage::getConfig()->getModelInstance(
             'Ess_M2ePro_Model_Resource_Magento_Product_Collection',
             Mage::getModel('catalog/product')->getResource()
         );
         $collection->setListingProductModeOn();
-        $collection->setListing($listingData['id']);
-        $collection->setStoreId($listingData['store_id']);
+        $collection->setListing($this->_listing->getId());
+        $collection->setStoreId($this->_listing->getStoreId());
 
         if ($this->isFilterOrSortByPriceIsUsed(null, 'amazon_online_price')) {
             $collection->setIsNeedToUseIndexerParent(true);
@@ -75,7 +79,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Settings_Grid
                 'additional_data' => 'additional_data'
             ),
             array(
-                'listing_id' => (int)$listingData['id']
+                'listing_id' => (int)$this->_listing->getId()
             )
         );
         $collection->joinTable(
@@ -140,11 +144,8 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Settings_Grid
             'left'
         );
 
-        /** @var Ess_M2ePro_Model_Account $account */
-        $account = Mage::helper('M2ePro/Component_Amazon')->getCachedObject('Account', $listingData['account_id']);
-
         /** @var Ess_M2ePro_Model_Amazon_Account $amazonAccount */
-        $amazonAccount = $account->getChildObject();
+        $amazonAccount = $this->_account->getChildObject();
 
         if ($amazonAccount->getMarketplace()->getChildObject()->isProductTaxCodePolicyAvailable() &&
             $amazonAccount->isVatCalculationServiceEnabled()
@@ -165,28 +166,24 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Settings_Grid
         }
 
         $this->setCollection($collection);
-        $result = parent::_prepareCollection();
 
-        return $result;
+        return parent::_prepareCollection();
     }
 
     protected function _prepareColumns()
     {
-        $listingData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
-
-        /** @var Ess_M2ePro_Model_Account $account */
-        $account = Mage::helper('M2ePro/Component_Amazon')->getCachedObject('Account', (int)$listingData['account_id']);
-        $marketplace = $account->getChildObject()->getMarketplace();
+        $marketplace = $this->_account->getChildObject()->getMarketplace();
 
         $this->addColumn(
             'product_id', array(
-                'header'         => Mage::helper('M2ePro')->__('Product ID'),
-                'align'          => 'right',
-                'width'          => '100px',
-                'type'           => 'number',
-                'index'          => 'entity_id',
-                'filter_index'   => 'entity_id',
-                'frame_callback' => array($this, 'callbackColumnListingProductId')
+                'header'       => Mage::helper('M2ePro')->__('Product ID'),
+                'align'        => 'right',
+                'width'        => '100px',
+                'type'         => 'number',
+                'index'        => 'entity_id',
+                'filter_index' => 'entity_id',
+                'store_id'     => $this->_listing->getStoreId(),
+                'renderer'     => 'M2ePro/adminhtml_grid_column_renderer_productId'
             )
         );
 
@@ -204,13 +201,14 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Settings_Grid
 
         $this->addColumn(
             'sku', array(
-                'header'         => Mage::helper('M2ePro')->__('SKU'),
-                'align'          => 'left',
-                'width'          => '150px',
-                'type'           => 'text',
-                'index'          => 'amazon_sku',
-                'filter_index'   => 'amazon_sku',
-                'frame_callback' => array($this, 'callbackColumnAmazonSku')
+                'header'                 => Mage::helper('M2ePro')->__('SKU'),
+                'align'                  => 'left',
+                'width'                  => '150px',
+                'type'                   => 'text',
+                'index'                  => 'amazon_sku',
+                'filter_index'           => 'amazon_sku',
+                'show_defected_messages' => false,
+                'renderer'               => 'M2ePro/adminhtml_amazon_grid_column_renderer_sku'
             )
         );
 
@@ -251,7 +249,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Settings_Grid
         );
 
         if ($marketplace->getChildObject()->isProductTaxCodePolicyAvailable() &&
-            $account->getChildObject()->isVatCalculationServiceEnabled()
+            $this->_account->getChildObject()->isVatCalculationServiceEnabled()
         ) {
             $this->addColumn(
                 'product_tax_code_template', array(
@@ -289,9 +287,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Settings_Grid
 
     protected function getGroupOrder()
     {
-        $listingData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
-        $account = Mage::helper('M2ePro/Component_Amazon')->getCachedObject('Account', (int)$listingData['account_id']);
-        $marketplace = $account->getChildObject()->getMarketplace();
+        $marketplace = $this->_account->getChildObject()->getMarketplace();
 
         $groups = array(
             'edit_template_description' => Mage::helper('M2ePro')->__('Description Policy'),
@@ -299,7 +295,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Settings_Grid
         );
 
         if ($marketplace->getChildObject()->isProductTaxCodePolicyAvailable() &&
-            $account->getChildObject()->isVatCalculationServiceEnabled()
+            $this->_account->getChildObject()->isVatCalculationServiceEnabled()
         ) {
             $groups['edit_template_product_tax_code'] = Mage::helper('M2ePro')->__('Product Tax Code Policy');
         }
@@ -309,10 +305,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Settings_Grid
 
     protected function getColumnActionsItems()
     {
-        $listingData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
-
-        $account = Mage::helper('M2ePro/Component_Amazon')->getCachedObject('Account', (int)$listingData['account_id']);
-        $marketplace = $account->getChildObject()->getMarketplace();
+        $marketplace = $this->_account->getChildObject()->getMarketplace();
 
         $helper = Mage::helper('M2ePro');
 
@@ -321,14 +314,14 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Settings_Grid
                 'caption' => $helper->__('Assign'),
                 'group'   => 'edit_template_description',
                 'field'   => 'id',
-                'onclick_action' => 'ListingGridHandlerObj.actions[\'assignTemplateDescriptionIdAction\']'
+                'onclick_action' => 'ListingGridObj.actions[\'assignTemplateDescriptionIdAction\']'
             ),
 
             'unassignTemplateDescription' => array(
                 'caption' => $helper->__('Unassign'),
                 'group'   => 'edit_template_description',
                 'field'   => 'id',
-                'onclick_action' => 'ListingGridHandlerObj.unassignTemplateDescriptionIdActionConfrim'
+                'onclick_action' => 'ListingGridObj.unassignTemplateDescriptionIdActionConfrim'
             )
         );
 
@@ -336,31 +329,31 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Settings_Grid
             'caption' => $helper->__('Assign'),
             'group'   => 'edit_template_shipping',
             'field'   => 'id',
-            'onclick_action' => 'ListingGridHandlerObj.actions[\'assignTemplateShippingIdAction\']'
+            'onclick_action' => 'ListingGridObj.actions[\'assignTemplateShippingIdAction\']'
         );
 
         $actions['unassignTemplateShipping'] = array(
             'caption' => $helper->__('Unassign'),
             'group'   => 'edit_template_shipping',
             'field'   => 'id',
-            'onclick_action' => 'ListingGridHandlerObj.unassignTemplateShippingIdActionConfrim'
+            'onclick_action' => 'ListingGridObj.unassignTemplateShippingIdActionConfrim'
         );
 
         if ($marketplace->getChildObject()->isProductTaxCodePolicyAvailable() &&
-            $account->getChildObject()->isVatCalculationServiceEnabled()
+            $this->_account->getChildObject()->isVatCalculationServiceEnabled()
         ) {
             $actions['assignTemplateProductTaxCode'] = array(
                 'caption' => $helper->__('Assign'),
                 'group'   => 'edit_template_product_tax_code',
                 'field'   => 'id',
-                'onclick_action' => 'ListingGridHandlerObj.actions[\'assignTemplateProductTaxCodeIdAction\']'
+                'onclick_action' => 'ListingGridObj.actions[\'assignTemplateProductTaxCodeIdAction\']'
             );
 
             $actions['unassignTemplateProductTaxCode'] = array(
                 'caption' => $helper->__('Unassign'),
                 'group'   => 'edit_template_product_tax_code',
                 'field'   => 'id',
-                'onclick_action' => 'ListingGridHandlerObj.unassignTemplateProductTaxCodeIdActionConfrim'
+                'onclick_action' => 'ListingGridObj.unassignTemplateProductTaxCodeIdActionConfrim'
             );
         }
 
@@ -371,22 +364,12 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Settings_Grid
 
     protected function _prepareMassaction()
     {
-        $listingData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
-
-        /** @var Ess_M2ePro_Model_Account $account */
-        $account = Mage::helper('M2ePro/Component_Amazon')->getCachedObject('Account', (int)$listingData['account_id']);
-
         /** @var Ess_M2ePro_Model_Marketplace $marketplace */
-        $marketplace = $account->getChildObject()->getMarketplace();
+        $marketplace = $this->_account->getChildObject()->getMarketplace();
 
-        // Set massaction identifiers
-        // ---------------------------------------
         $this->setMassactionIdField('id');
         $this->setMassactionIdFieldOnlyIndexValue(true);
-        // ---------------------------------------
 
-        // Set mass-action
-        // ---------------------------------------
         $groups = array(
             'description_policy'                => Mage::helper('M2ePro')->__('Description Policy'),
             'shipping_policy'                   => Mage::helper('M2ePro')->__('Shipping Policy'),
@@ -429,7 +412,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Settings_Grid
         );
 
         if ($marketplace->getChildObject()->isProductTaxCodePolicyAvailable() &&
-            $account->getChildObject()->isVatCalculationServiceEnabled()
+            $this->_account->getChildObject()->isVatCalculationServiceEnabled()
         ) {
             $this->getMassactionBlock()->addItem(
                 'assignTemplateProductTaxCodeId', array(
@@ -469,45 +452,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Settings_Grid
     }
 
     //########################################
-
-    public function callbackColumnListingProductId($value, $row, $column, $isExport)
-    {
-        $listingData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
-
-        $storeId = (int)$listingData['store_id'];
-
-        $withoutImageHtml = '<a href="'
-            .$this->getUrl(
-                'adminhtml/catalog_product/edit',
-                array('id' => $value)
-            )
-            .'" target="_blank">'.$value.'</a>';
-
-        $showProductsThumbnails = (bool)(int)Mage::helper('M2ePro/Module')->getConfig()
-            ->getGroupValue(
-                '/view/',
-                'show_products_thumbnails'
-            );
-        if (!$showProductsThumbnails) {
-            return $withoutImageHtml;
-        }
-
-        /** @var $magentoProduct Ess_M2ePro_Model_Magento_Product */
-        $magentoProduct = Mage::getModel('M2ePro/Magento_Product');
-        $magentoProduct->setProductId($value);
-        $magentoProduct->setStoreId($storeId);
-
-        $imageResized = $magentoProduct->getThumbnailImage();
-        if ($imageResized === null) {
-            return $withoutImageHtml;
-        }
-
-        $imageHtml = $value.'<hr style="border: 1px solid silver; border-bottom: none;"><img src="'.
-            $imageResized->getUrl().'" style="max-width: 100px; max-height: 100px;" />';
-        $withImageHtml = str_replace('>'.$value.'<', '>'.$imageHtml.'<', $withoutImageHtml);
-
-        return $withImageHtml;
-    }
 
     public function callbackColumnProductTitle($productTitle, $row, $column, $isExport)
     {
@@ -583,21 +527,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Settings_Grid
         return $value;
     }
 
-    public function callbackColumnAmazonSku($value, $row, $column, $isExport)
-    {
-        if ((!$row->getData('is_variation_parent') &&
-                $row->getData('amazon_status') == Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED) ||
-            ($row->getData('is_variation_parent') && $row->getData('general_id') == '')) {
-            return '<span style="color: gray;">' . Mage::helper('M2ePro')->__('Not Listed') . '</span>';
-        }
-
-        if ($value === null || $value === '') {
-            $value = Mage::helper('M2ePro')->__('N/A');
-        }
-
-        return $value;
-    }
-
     // ---------------------------------------
 
     public function callbackColumnGeneralId($generalId, $row, $column, $isExport)
@@ -643,11 +572,10 @@ HTML;
     protected function getGeneralIdColumnValueNotEmptyGeneralId($row)
     {
         $generalId = $row->getData('general_id');
-        $marketplaceId = Mage::helper('M2ePro/Data_Global')->getValue('marketplace_id');
 
         $url = Mage::helper('M2ePro/Component_Amazon')->getItemUrl(
             $generalId,
-            $marketplaceId
+            $this->_listing->getMarketplaceId()
         );
 
         $generalIdOwnerHtml = '';
@@ -786,13 +714,13 @@ HTML;
         $javascriptsMain = <<<HTML
 <script type="text/javascript">
 
-    if (typeof ListingGridHandlerObj != 'undefined') {
-        ListingGridHandlerObj.afterInitPage();
+    if (typeof ListingGridObj != 'undefined') {
+        ListingGridObj.afterInitPage();
     }
 
     Event.observe(window, 'load', function() {
         setTimeout(function() {
-            ListingGridHandlerObj.afterInitPage();
+            ListingGridObj.afterInitPage();
         }, 350);
     });
 

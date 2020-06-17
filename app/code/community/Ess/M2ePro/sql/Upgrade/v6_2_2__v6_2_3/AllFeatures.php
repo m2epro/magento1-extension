@@ -34,7 +34,8 @@ class Ess_M2ePro_Sql_Upgrade_v6_2_2__v6_2_3_AllFeatures extends Ess_M2ePro_Model
 
             $installer->run(<<<SQL
 
-INSERT INTO m2epro_config (`group`,`key`,`value`,`notice`,`update_date`,`create_date`) VALUES
+INSERT INTO `{$this->_installer->getTable('m2epro_config')}` 
+(`group`,`key`,`value`,`notice`,`update_date`,`create_date`) VALUES
 ('/cron/', 'last_type_change', NULL, 'Time of last change cron type', '2014-06-25 00:00:00', '2014-06-25 00:00:00');
 
 SQL
@@ -105,11 +106,11 @@ SQL
 
         $installer->run(<<<SQL
 
-    UPDATE `m2epro_ebay_marketplace`
+    UPDATE `{$this->_installer->getTable('m2epro_ebay_marketplace')}`
     SET `is_freight_shipping` = 1
     WHERE `marketplace_id` = 2;
 
-    UPDATE `m2epro_ebay_marketplace`
+    UPDATE `{$this->_installer->getTable('m2epro_ebay_marketplace')}`
     SET `is_stp` = 1
     WHERE `marketplace_id` = 13 -- ES --
     OR    `marketplace_id` = 7 -- FR --

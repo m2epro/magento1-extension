@@ -29,15 +29,13 @@ class Ess_M2ePro_Model_Servicing_Task_Statistic extends Ess_M2ePro_Model_Servici
      */
     public function isAllowed()
     {
-        $cacheConfig = Mage::helper('M2ePro/Module')->getCacheConfig();
-
-        $lastRun = $cacheConfig->getGroupValue('/servicing/statistic/', 'last_run');
+        $lastRun = Mage::helper('M2ePro/Module')->getRegistryValue('/servicing/statistic/last_run/');
 
         if ($this->getInitiator() === Ess_M2ePro_Helper_Data::INITIATOR_DEVELOPER ||
             $lastRun === null ||
             Mage::helper('M2ePro')->getCurrentGmtDate(true) > strtotime($lastRun) + self::RUN_INTERVAL) {
-            $cacheConfig->setGroupValue(
-                '/servicing/statistic/', 'last_run',
+            Mage::helper('M2ePro/Module')->setRegistryValue(
+                '/servicing/statistic/last_run/',
                 Mage::helper('M2ePro')->getCurrentGmtDate()
             );
 
@@ -413,8 +411,7 @@ class Ess_M2ePro_Model_Servicing_Task_Statistic extends Ess_M2ePro_Model_Servici
             $settings['channels'][$component]['enabled'] = $conf->getGroupValue('/component/'.$component.'/', 'mode');
         }
 
-        $configData = $conf->getCollection()->toArray();
-        $settings['config'] = $configData['items'];
+        $settings['config'] = $conf->getAllConfigData();
 
         $data['settings'] = $settings;
     }
@@ -814,7 +811,7 @@ class Ess_M2ePro_Model_Servicing_Task_Statistic extends Ess_M2ePro_Model_Servici
         $this->_appendComponentPolicyInfo('shipping', 'ebay', $data);
         $this->_appendComponentPolicyInfo('return_policy', 'ebay', $data);
         $this->_appendComponentPolicyInfo('category', 'ebay', $data);
-        $this->_appendComponentPolicyInfo('other_category', 'ebay', $data);
+        $this->_appendComponentPolicyInfo('store_category', 'ebay', $data);
 
         $this->_appendComponentPolicyInfo('selling_format', 'walmart', $data);
         $this->_appendComponentPolicyInfo('synchronization', 'walmart', $data);
@@ -1017,7 +1014,7 @@ class Ess_M2ePro_Model_Servicing_Task_Statistic extends Ess_M2ePro_Model_Servici
         $data['policies'][$component][$template]['count'] = (int)$queryStmt->fetchColumn();
 
         if ($component === Ess_M2ePro_Helper_Component_Ebay::NICK &&
-            !in_array($template, array('category', 'other_category')))
+            !in_array($template, array('category', 'store_category')))
         {
             $queryStmt = Mage::getSingleton('core/resource')->getConnection('core_read')
                 ->select()

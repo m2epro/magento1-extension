@@ -20,8 +20,8 @@ class Ess_M2ePro_Adminhtml_Amazon_LogController
             ->addCss('M2ePro/css/Plugin/DropDown.css')
 
             ->addJs('M2ePro/Plugin/DropDown.js')
-            ->addJs('M2ePro/GridHandler.js')
-            ->addJs('M2ePro/LogHandler.js');
+            ->addJs('M2ePro/Grid.js')
+            ->addJs('M2ePro/Log.js');
 
         $this->_initPopUp();
 

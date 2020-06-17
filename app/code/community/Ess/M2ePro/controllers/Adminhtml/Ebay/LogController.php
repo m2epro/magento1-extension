@@ -16,8 +16,8 @@ class Ess_M2ePro_Adminhtml_Ebay_LogController extends Ess_M2ePro_Controller_Admi
             ->_title(Mage::helper('M2ePro')->__('Logs & Events'));
 
         $this->getLayout()->getBlock('head')
-            ->addJs('M2ePro/GridHandler.js')
-            ->addJs('M2ePro/LogHandler.js');
+            ->addJs('M2ePro/Grid.js')
+            ->addJs('M2ePro/Log.js');
 
         $this->_initPopUp();
 

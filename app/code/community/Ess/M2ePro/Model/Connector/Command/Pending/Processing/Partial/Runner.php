@@ -53,10 +53,10 @@ class Ess_M2ePro_Model_Connector_Command_Pending_Processing_Partial_Runner
                 return true;
             }
 
-            $this->incrementNextDataPartNumber();
-
             $this->getResponse()->initFromPreparedResponse($data);
             $this->getResponser(true)->process();
+
+            $this->incrementNextDataPartNumber();
         } catch (Exception $exception) {
             $this->getResponser()->failDetected($exception->getMessage());
             return true;

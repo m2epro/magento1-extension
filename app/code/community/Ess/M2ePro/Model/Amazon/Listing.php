@@ -246,16 +246,6 @@ class Ess_M2ePro_Model_Amazon_Listing extends Ess_M2ePro_Model_Component_Child_A
         return $this->getParentObject()->getProducts($asObjects, $filters);
     }
 
-    /**
-     * @param bool $asObjects
-     * @param array $filters
-     * @return mixed
-     */
-    public function getCategories($asObjects = false, array $filters = array())
-    {
-        return $this->getParentObject()->getCategories($asObjects, $filters);
-    }
-
     //########################################
 
     /**

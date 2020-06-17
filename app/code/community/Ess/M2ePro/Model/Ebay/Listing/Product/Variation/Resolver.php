@@ -312,7 +312,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Resolver
         /** @var Ess_M2ePro_Model_Ebay_Listing_Product $ebayListingProduct */
         $ebayListingProduct = $this->_listingProduct->getChildObject();
 
-        $categoryId = $ebayListingProduct->getCategoryTemplateSource()->getMainCategory();
+        $categoryId = $ebayListingProduct->getCategoryTemplateSource()->getCategoryId();
         $marketplaceId = $this->_listingProduct->getMarketplace()->getId();
 
         $categoryFeatures = Mage::helper('M2ePro/Component_Ebay_Category_Ebay')

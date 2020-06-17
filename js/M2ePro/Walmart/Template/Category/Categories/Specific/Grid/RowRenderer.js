@@ -1,4 +1,4 @@
-WalmartTemplateCategoryCategoriesSpecificGridRowRenderer = Class.create(WalmartTemplateCategoryCategoriesSpecificRenderer, {
+window.WalmartTemplateCategoryCategoriesSpecificGridRowRenderer = Class.create(WalmartTemplateCategoryCategoriesSpecificRenderer, {
 
     // ---------------------------------------
 
@@ -51,7 +51,7 @@ WalmartTemplateCategoryCategoriesSpecificGridRowRenderer = Class.create(WalmartT
 
     load: function($super)
     {
-        this.attributeHandler = AttributeHandlerObj;
+        this.attributeHandler = AttributeObj;
         return $super();
     },
 

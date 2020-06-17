@@ -24,12 +24,7 @@
         ? Mage::helper('M2ePro/Data_Global')->getValue('temp_data')->toArray()
         : array();
 
-    $defaults = array(
-        'ebay_store_title' => '',
-        'ebay_store_url' => '',
-        'ebay_store_subscription_level' => '',
-        'ebay_store_description' => ''
-    );
+    $defaults = Mage::getModel('M2ePro/Ebay_Account_Builder')->getDefaultData();
 
     $formData = array_merge($defaults, $formData);
 
@@ -194,7 +189,7 @@
                             });
 
                             tree.on('click', function(node) {
-                                EbayAccountHandlerObj.ebayStoreSelectCategory(node.attributes.id);
+                                EbayAccountObj.ebayStoreSelectCategory(node.attributes.id);
                             }, tree);
 
                             var root = new Ext.tree.TreeNode({

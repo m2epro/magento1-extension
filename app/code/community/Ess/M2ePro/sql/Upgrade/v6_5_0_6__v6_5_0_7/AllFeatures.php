@@ -113,7 +113,7 @@ SQL
         //----------------------------------------
 
         $installer->run(<<<SQL
-    UPDATE `m2epro_amazon_account`
+    UPDATE `{$this->_installer->getTable('m2epro_amazon_account')}`
     SET `shipping_mode` = 0;
 SQL
         );
@@ -150,12 +150,12 @@ SQL
 
         $installer->run(<<<SQL
 
-TRUNCATE TABLE `m2epro_amazon_listing_product_repricing`;
+TRUNCATE TABLE `{$this->_installer->getTable('m2epro_amazon_listing_product_repricing')}`;
 
-UPDATE `m2epro_amazon_listing_other`
+UPDATE `{$this->_installer->getTable('m2epro_amazon_listing_other')}`
 SET `is_repricing` = 0, `is_repricing_disabled` = 0;
 
-UPDATE `m2epro_amazon_account_repricing`
+UPDATE `{$this->_installer->getTable('m2epro_amazon_account_repricing')}`
 SET `total_products` = 0, `last_checked_listing_product_update_date` = NULL;
 
 SQL
@@ -221,12 +221,13 @@ SQL
             ->getEntity('/cron/service/', 'hostname')->updateKey('hostname_1');
 
         $installer->run(<<<SQL
-DELETE FROM `m2epro_listing_other_log` WHERE `action` IN (2, 3, 9, 10, 11, 12, 13, 14, 15, 16, 17);
+DELETE FROM `{$this->_installer->getTable('m2epro_listing_other_log')}` 
+WHERE `action` IN (2, 3, 9, 10, 11, 12, 13, 14, 15, 16, 17);
 SQL
         );
 
         $installer->run(<<<SQL
-    UPDATE `m2epro_marketplace`
+    UPDATE `{$this->_installer->getTable('m2epro_marketplace')}`
     SET `url` = 'ebay.com/motors'
     WHERE `id` = 9;
 SQL
@@ -271,10 +272,10 @@ SQL
             ->dropColumn('template_new_product_id');
 
         $installer->run(<<<SQL
-DROP TABLE IF EXISTS `m2epro_buy_dictionary_category`;
-DROP TABLE IF EXISTS `m2epro_buy_template_new_product`;
-DROP TABLE IF EXISTS `m2epro_buy_template_new_product_core`;
-DROP TABLE IF EXISTS `m2epro_buy_template_new_product_attribute`;
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_buy_dictionary_category')}`;
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_buy_template_new_product')}`;
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_buy_template_new_product_core')}`;
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_buy_template_new_product_attribute')}`;
 SQL
         );
 
@@ -290,7 +291,7 @@ SQL;
         if ($tempRow === false) {
 
             $installer->run(<<<SQL
-INSERT INTO `m2epro_wizard` (`nick`, `view`, `status`, `step`, `type`, `priority`)
+INSERT INTO `{$this->_installer->getTable('m2epro_wizard')}` (`nick`, `view`, `status`, `step`, `type`, `priority`)
 SELECT 'removedBuyNewSku', 'common', 0, NULL, 0, MAX( `priority` )+1 FROM `m2epro_wizard`;
 SQL
             );
@@ -299,10 +300,10 @@ SQL
         $installer->run(<<<SQL
 DELETE
   `mp`, `mpl`, `mcprs`, `mrps`
-  FROM `m2epro_processing` `mp`
-  LEFT JOIN `m2epro_processing_lock` `mpl` ON `mp`.`id` = `mpl`.`processing_id`
-  LEFT JOIN `m2epro_connector_pending_requester_single` mcprs ON `mp`.`id` = `mcprs`.`processing_id`
-  LEFT JOIN `m2epro_request_pending_single` `mrps` ON `mcprs`.`request_pending_single_id` = `mrps`.`id`
+  FROM `{$this->_installer->getTable('m2epro_processing')}` `mp`
+  LEFT JOIN `{$this->_installer->getTable('m2epro_processing_lock')}` `mpl` ON `mp`.`id` = `mpl`.`processing_id`
+  LEFT JOIN `{$this->_installer->getTable('m2epro_connector_pending_requester_single')}` mcprs ON `mp`.`id` = `mcprs`.`processing_id`
+  LEFT JOIN `{$this->_installer->getTable('m2epro_request_pending_single')}` `mrps` ON `mcprs`.`request_pending_single_id` = `mrps`.`id`
   WHERE `params` LIKE '%action_type":"new_sku"%'
 SQL
         );
@@ -311,12 +312,12 @@ SQL
         $installer->getSynchConfigModifier()->getEntity('/buy/other_listings/update/', 'mode')->updateValue('0');
 
         $installer->run(<<<SQL
-UPDATE `m2epro_buy_listing_other`
+UPDATE `{$this->_installer->getTable('m2epro_buy_listing_other')}`
 SET `title` = '--'
 WHERE `title` IS NULL;
 
-UPDATE `m2epro_listing_product` `mlp`
-INNER JOIN `m2epro_buy_listing_product` `mblp` ON `mlp`.`id` = `mblp`.`listing_product_id`
+UPDATE `{$this->_installer->getTable('m2epro_listing_product')}` `mlp`
+INNER JOIN `{$this->_installer->getTable('m2epro_buy_listing_product')}` `mblp` ON `mlp`.`id` = `mblp`.`listing_product_id`
 SET `mlp`.`status` = 0
 WHERE `mlp`.`status` != 0 AND `mblp`.`general_id` is NULL;
 SQL

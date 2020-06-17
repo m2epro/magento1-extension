@@ -1,4 +1,4 @@
-EditCompatibilityMode = Class.create(CommonHandler, {
+window.EditCompatibilityMode = Class.create(Common, {
 
     // ---------------------------------------
 

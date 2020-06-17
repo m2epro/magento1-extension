@@ -154,8 +154,8 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Product_Category_Summary_Grid
         $helper = Mage::helper('M2ePro');
         return <<<HTML
 <a  href="javascript:"
-    onclick="ProductSourceCategoriesSummaryGridHandlerObj.selectByRowId('{$row->getId()}');
-             ProductSourceCategoriesSummaryGridHandlerObj.remove()"
+    onclick="ProductSourceCategoriesSummaryGridObj.selectByRowId('{$row->getId()}');
+             ProductSourceCategoriesSummaryGridObj.remove()"
    >{$helper->__('Remove')}</a>
 HTML;
     }
@@ -228,7 +228,7 @@ HTML;
 
     M2ePro.url.add({$urls});
 
-    ProductSourceCategoriesSummaryGridHandlerObj = new WalmartListingSummaryGridHandler(
+    ProductSourceCategoriesSummaryGridObj = new WalmartListingSummaryGrid(
         '{$this->getId()}'
     );
 </script>
@@ -238,7 +238,7 @@ HTML;
         $js .= <<<HTML
 <script type="text/javascript">
     {$this->getCollection()->getSize()} || Windows.getFocusedWindow().close();
-    ProductSourceCategoriesSummaryGridHandlerObj.afterInitPage();
+    ProductSourceCategoriesSummaryGridObj.afterInitPage();
 </script>
 HTML;
 

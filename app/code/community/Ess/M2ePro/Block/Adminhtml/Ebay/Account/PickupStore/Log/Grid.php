@@ -180,12 +180,12 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_PickupStore_Log_Grid extends Ess_M
         $javaScriptsMain = <<<HTML
         <script>
 
-            ProductGridHandlerObj = new ListingProductGridHandler();
-            ProductGridHandlerObj.setGridId('{$this->getJsObjectName()}');
+            ProductGridObj = new ListingProductGrid();
+            ProductGridObj.setGridId('{$this->getJsObjectName()}');
 
             var init = function () {
-                {$this->getJsObjectName()}.doFilter = ProductGridHandlerObj.setFilter;
-                {$this->getJsObjectName()}.resetFilter = ProductGridHandlerObj.resetFilter;
+                {$this->getJsObjectName()}.doFilter = ProductGridObj.setFilter;
+                {$this->getJsObjectName()}.resetFilter = ProductGridObj.resetFilter;
             };
 
             {$this->isAjax} ? init()

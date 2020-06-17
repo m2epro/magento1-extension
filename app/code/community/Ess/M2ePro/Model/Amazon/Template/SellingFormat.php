@@ -28,12 +28,16 @@ class Ess_M2ePro_Model_Amazon_Template_SellingFormat extends Ess_M2ePro_Model_Co
     const DATE_VALUE      = 0;
     const DATE_ATTRIBUTE  = 1;
 
+    /** @var Ess_M2ePro_Model_ActiveRecord_Factory */
+    protected $_activeRecordFactory;
+
     //########################################
 
     public function _construct()
     {
         parent::_construct();
         $this->_init('M2ePro/Amazon_Template_SellingFormat');
+        $this->_activeRecordFactory = Mage::getSingleton('M2ePro/ActiveRecord_Factory');
     }
 
     //########################################
@@ -73,38 +77,27 @@ class Ess_M2ePro_Model_Amazon_Template_SellingFormat extends Ess_M2ePro_Model_Co
 
     /**
      * @param bool $asObjects
-     * @param array $filters
-     * @return array
-     * @throws Ess_M2ePro_Model_Exception_Logic
-     */
-    public function getListings($asObjects = false, array $filters = array())
-    {
-        return $this->getRelatedComponentItems('Listing', 'template_selling_format_id', $asObjects, $filters);
-    }
-
-    //########################################
-
-    /**
-     * @param bool $asObjects
-     * @param array $filters
      * @return array|Ess_M2ePro_Model_Amazon_Template_SellingFormat_BusinessDiscount[]
      * @throws Ess_M2ePro_Model_Exception_Logic
      */
-    public function getBusinessDiscounts($asObjects = false, array $filters = array())
+    public function getBusinessDiscounts($asObjects = false)
     {
-        $businessDiscounts = $this->getRelatedSimpleItems(
-            'Amazon_Template_SellingFormat_BusinessDiscount',
-            'template_selling_format_id', $asObjects, $filters
+        $collection = $this->_activeRecordFactory->getObjectCollection(
+            'Amazon_Template_SellingFormat_BusinessDiscount'
         );
+        $collection->addFieldToFilter('template_selling_format_id', $this->getId());
 
-        if ($asObjects) {
-            /** @var $businessDiscount Ess_M2ePro_Model_Amazon_Template_SellingFormat_BusinessDiscount */
-            foreach ($businessDiscounts as $businessDiscount) {
-                $businessDiscount->setSellingFormatTemplate($this->getParentObject());
-            }
+        /** @var $businessDiscount Ess_M2ePro_Model_Amazon_Template_SellingFormat_BusinessDiscount */
+        foreach ($collection->getItems() as $businessDiscount) {
+            $businessDiscount->setSellingFormatTemplate($this->getParentObject());
         }
 
-        return $businessDiscounts;
+        if (!$asObjects) {
+            $result = $collection->toArray();
+            return $result['items'];
+        }
+
+        return $collection->getItems();
     }
 
     //########################################

@@ -61,7 +61,7 @@ $virtualChannelAttributes = $this->getVirtualChannelAttributes();
                     <select name="new_child_product[product][options][]"
                             class="new-child-product-option"
                             disabled="disabled"
-                            onchange="ListingGridHandlerObj.validateNewChildAttributeOptions('product')">
+                            onchange="ListingGridObj.validateNewChildAttributeOptions('product')">
                         <option value=""></option>
                     </select>
                 </td>
@@ -107,7 +107,7 @@ $virtualChannelAttributes = $this->getVirtualChannelAttributes();
                             name="new_child_product[channel][options][]"
                             class="new-child-channel-option"
                             disabled="disabled"
-                            onchange="ListingGridHandlerObj.validateNewChildAttributeOptions('channel')">
+                            onchange="ListingGridObj.validateNewChildAttributeOptions('channel')">
                         <option value=""></option>
                     </select>
                 </td>
@@ -129,8 +129,8 @@ $virtualChannelAttributes = $this->getVirtualChannelAttributes();
     </table>
 
     <div style="text-align: right; padding-top: 5px; clear: both;">
-        <a href="javascript:void(0);" onclick="ListingGridHandlerObj.closeNewChildForm(this);" ><?php echo Mage::helper('M2ePro')->__('Cancel'); ?></a>&nbsp;&nbsp;
-        <button id="variation_manager_product_options_form_submit_btn" onclick="ListingGridHandlerObj.addNewChildProduct()"><?php echo Mage::helper('M2ePro')->__('Confirm'); ?></button>
+        <a href="javascript:void(0);" onclick="ListingGridObj.closeNewChildForm(this);" ><?php echo Mage::helper('M2ePro')->__('Cancel'); ?></a>&nbsp;&nbsp;
+        <button id="variation_manager_product_options_form_submit_btn" onclick="ListingGridObj.addNewChildProduct()"><?php echo Mage::helper('M2ePro')->__('Confirm'); ?></button>
     </div>
 </form>
 

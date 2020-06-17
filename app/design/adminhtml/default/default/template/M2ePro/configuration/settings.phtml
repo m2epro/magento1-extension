@@ -28,7 +28,7 @@ $componentForUrl = count($urlComponents) == 1 ? array_shift($urlComponents) : Es
     )); ?>);
 
     Event.observe(window, 'load', function() {
-        SettingsHandlerObj = new ConfigurationSettingsHandler();
+        SettingsObj = new ConfigurationSettings();
 
         //------------------------------
 
@@ -154,7 +154,7 @@ $componentForUrl = count($urlComponents) == 1 ? array_shift($urlComponents) : Es
                             <label for="force_qty_mode"><?php echo Mage::helper('M2ePro')->__('Manage Stock "No", Backorders'); ?>: </label>
                         </td>
                         <td class="value" colspan="2">
-                            <select id="force_qty_mode" name="force_qty_mode" onchange="SettingsHandlerObj.changeForceQtyMode();">
+                            <select id="force_qty_mode" name="force_qty_mode" onchange="SettingsObj.changeForceQtyMode();">
                                 <option value="0"<?php if ($this->forceQtyMode == 0) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Disallow'); ?></option>
                                 <option value="1"<?php if ($this->forceQtyMode == 1) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Allow'); ?></option>
                             </select>

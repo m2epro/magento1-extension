@@ -10,7 +10,7 @@
 /** @var $this Ess_M2ePro_Block_Adminhtml_Walmart_Template_Synchronization_Edit_Form */
 
 $formData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data') ? Mage::helper('M2ePro/Data_Global')->getValue('temp_data')->toArray() : array();
-$defaults = array('title' => '');
+$defaults = Mage::getModel('M2ePro/Walmart_Template_Synchronization_Builder')->getDefaultData();
 $formData = array_merge($defaults, $formData);
 
 if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
@@ -60,23 +60,23 @@ $isEdit = (bool)$this->getRequest()->getParam('id');
 
     Event.observe(window, 'load', function() {
 
-        WalmartTemplateSynchronizationHandlerObj = new WalmartTemplateSynchronizationHandler();
+        WalmartTemplateSynchronizationObj = new WalmartTemplateSynchronization();
         editForm = new varienForm('edit_form', '<?php echo $this->getValidationUrl(); ?>');
 
         $$('.navigation_bar').each(function(el) {
-            el.observe('click', WalmartTemplateSynchronizationHandlerObj.setVirtualTabAsActive);
+            el.observe('click', WalmartTemplateSynchronizationObj.setVirtualTabAsActive);
         });
 
         setTimeout(function() {
             $$('#walmart_template_synchronization_edit_form_container select').each(function(el) {
-                el.observe('change', WalmartTemplateSynchronizationHandlerObj.setVirtualTabAsChanged);
+                el.observe('change', WalmartTemplateSynchronizationObj.setVirtualTabAsChanged);
             });
         }, 350);
 
         <?php if ($this->getRequest()->isXmlHttpRequest()): ?>
-        WalmartTemplateSynchronizationHandlerObj.initialize();
+        WalmartTemplateSynchronizationObj.initialize();
         <?php else: ?>
-        Event.observe(window, 'load', WalmartTemplateSynchronizationHandlerObj.initialize);
+        Event.observe(window, 'load', WalmartTemplateSynchronizationObj.initialize);
         <?php endif; ?>
 
     });

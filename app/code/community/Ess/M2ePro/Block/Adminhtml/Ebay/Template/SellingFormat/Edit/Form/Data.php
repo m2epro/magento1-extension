@@ -31,7 +31,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_SellingFormat_Edit_Form_Data exte
         if ($this->isCharity()) {
             $data = array(
                 'label'   => Mage::helper('M2ePro')->__('Add Charity'),
-                'onclick' => 'EbayTemplateSellingFormatHandlerObj.addCharityRow();',
+                'onclick' => 'EbayTemplateSellingFormatObj.addCharityRow();',
                 'class'   => 'action primary add_charity_button'
             );
             $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
@@ -39,7 +39,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_SellingFormat_Edit_Form_Data exte
 
             $data = array(
                 'label'   => Mage::helper('M2ePro')->__('Remove'),
-                'onclick' => 'EbayTemplateSellingFormatHandlerObj.removeCharityRow(this);',
+                'onclick' => 'EbayTemplateSellingFormatObj.removeCharityRow(this);',
                 'class'   => 'delete icon-btn remove_charity_button'
             );
             $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
@@ -101,7 +101,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_SellingFormat_Edit_Form_Data exte
 
     public function getDefault()
     {
-        return Mage::getSingleton('M2ePro/Ebay_Template_SellingFormat')->getDefaultSettings();
+        return Mage::getModel('M2ePro/Ebay_Template_SellingFormat_Builder')->getDefaultData();
     }
 
     //########################################
@@ -126,26 +126,20 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_SellingFormat_Edit_Form_Data exte
         if ($template === null || $template->getId() === null) {
             $templateData = $this->getDefault();
             $templateData['component_mode'] = Ess_M2ePro_Helper_Component_Ebay::NICK;
-            $usedAttributes = array();
         } else {
             $templateData = $template->getData();
-            $usedAttributes = $template->getUsedAttributes();
         }
 
-        $messagesBlock = $this->getLayout()
-            ->createBlock('M2ePro/adminhtml_template_messages')
-            ->getResultBlock(
-                Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SELLING_FORMAT,
-                Ess_M2ePro_Helper_Component_Ebay::NICK
-            );
+        /** @var Ess_M2ePro_Block_Adminhtml_Ebay_Template_SellingFormat_Messages $messagesBlock */
+        $messagesBlock = $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_template_sellingFormat_messages');
+        $messagesBlock->setComponentMode(Ess_M2ePro_Helper_Component_Ebay::NICK);
+        $messagesBlock->setTemplateNick(Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SELLING_FORMAT);
 
         $messagesBlock->setData('template_data', $templateData);
-        $messagesBlock->setData('used_attributes', $usedAttributes);
         $messagesBlock->setData('marketplace_id', $marketplace ? $marketplace->getId() : null);
         $messagesBlock->setData('store_id', $store ? $store->getId() : null);
 
         $messages = $messagesBlock->getMessages();
-
         if (empty($messages)) {
             return '';
         }

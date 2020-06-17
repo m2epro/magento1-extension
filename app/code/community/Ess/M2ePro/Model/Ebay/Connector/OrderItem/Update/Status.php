@@ -97,6 +97,10 @@ class Ess_M2ePro_Model_Ebay_Connector_OrderItem_Update_Status
 
         parent::process();
 
+        /** @var Ess_M2ePro_Model_Order_Change $orderChange */
+        $orderChange = Mage::getModel('M2ePro/Order_Change')->load($this->getOrderChangeId());
+        $this->_orderItem->getOrder()->getLog()->setInitiator($orderChange->getCreatorType());
+
         foreach ($this->getResponse()->getMessages()->getEntities() as $message) {
             if (!$message->isError()) {
                 continue;

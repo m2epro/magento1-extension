@@ -6,7 +6,7 @@
  * @license    Commercial use is forbidden
  */
 
-use Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_NewAsin as NewAsinTemplateBlock;
+use Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Product_Add_NewAsin as NewAsinTemplateBlock;
 
 class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
     extends Ess_M2ePro_Controller_Adminhtml_Amazon_MainController
@@ -28,34 +28,34 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
             ->addCss('M2ePro/css/Plugin/ProgressBar.css')
             ->addCss('M2ePro/css/Plugin/AreaWrapper.css')
             ->addJs('mage/adminhtml/rules.js')
-            ->addJs('M2ePro/ActionHandler.js')
-            ->addJs('M2ePro/GridHandler.js')
+            ->addJs('M2ePro/Action.js')
+            ->addJs('M2ePro/Grid.js')
 
             ->addJs('M2ePro/Plugin/ProgressBar.js')
             ->addJs('M2ePro/Plugin/AreaWrapper.js')
             ->addJs('M2ePro/Plugin/ActionColumn.js')
 
-            ->addJs('M2ePro/Listing/ActionHandler.js')
-            ->addJs('M2ePro/Listing/GridHandler.js')
-            ->addJs('M2ePro/Listing/ProductGridHandler.js')
-            ->addJs('M2ePro/GridHandler.js')
-            ->addJs('M2ePro/Listing/Category/TreeHandler.js')
-            ->addJs('M2ePro/Listing/AutoActionHandler.js')
+            ->addJs('M2ePro/Listing/Action.js')
+            ->addJs('M2ePro/Listing/Grid.js')
+            ->addJs('M2ePro/Listing/ProductGrid.js')
+            ->addJs('M2ePro/Grid.js')
+            ->addJs('M2ePro/Listing/Category/Tree.js')
+            ->addJs('M2ePro/Listing/AutoAction.js')
 
-            ->addJs('M2ePro/Amazon/Listing/Category/Summary/GridHandler.js')
-            ->addJs('M2ePro/Amazon/Listing/Category/TreeHandler.js')
-            ->addJs('M2ePro/Amazon/Listing/AddListingHandler.js')
+            ->addJs('M2ePro/Amazon/Listing/Category/Summary/Grid.js')
+            ->addJs('M2ePro/Amazon/Listing/Category/Tree.js')
+            ->addJs('M2ePro/Amazon/Listing/Product/Add.js')
 
-            ->addJs('M2ePro/Amazon/Listing/ActionHandler.js')
-            ->addJs('M2ePro/Amazon/Listing/Template/DescriptionHandler.js')
-            ->addJs('M2ePro/Amazon/Listing/ChannelSettingsHandler.js')
-            ->addJs('M2ePro/Amazon/Listing/SearchAsinGridHandler.js')
-            ->addJs('M2ePro/Amazon/Listing/ProductSearchHandler.js')
-            ->addJs('M2ePro/Amazon/Listing/VariationProductManageHandler.js')
-            ->addJs('M2ePro/Amazon/Listing/FulfillmentHandler.js')
-            ->addJs('M2ePro/Amazon/Listing/RepricingHandler.js')
-            ->addJs('M2ePro/Amazon/Listing/NewAsinTemplateDescriptionGridHandler.js')
-            ->addJs('M2ePro/Amazon/Listing/AutoActionHandler.js');
+            ->addJs('M2ePro/Amazon/Listing/Action.js')
+            ->addJs('M2ePro/Amazon/Listing/Template/Description.js')
+            ->addJs('M2ePro/Amazon/Listing/ChannelSettings.js')
+            ->addJs('M2ePro/Amazon/Listing/SearchAsinGrid.js')
+            ->addJs('M2ePro/Amazon/Listing/ProductSearch.js')
+            ->addJs('M2ePro/Amazon/Listing/VariationProductManage.js')
+            ->addJs('M2ePro/Amazon/Listing/Fulfillment.js')
+            ->addJs('M2ePro/Amazon/Listing/Repricing.js')
+            ->addJs('M2ePro/Amazon/Listing/NewAsinTemplateDescriptionGrid.js')
+            ->addJs('M2ePro/Amazon/Listing/AutoAction.js');
 
         $this->_initPopUp();
 
@@ -136,8 +136,10 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
             );
         }
 
+        $this->setWizardStep('sourceMode');
+
         $this->_initAction()
-            ->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_amazon_listing_add_sourceMode'))
+            ->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_amazon_listing_product_add_sourceMode'))
             ->renderLayout();
     }
 
@@ -145,6 +147,8 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
 
     public function addProductsFromList()
     {
+        $this->setWizardStep('productSelection');
+
         if ($this->getRequest()->getParam('id') === null) {
             $this->_redirect('*/adminhtml_amazon_listing/index');
             return;
@@ -170,12 +174,15 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
 
         $this->setPageHelpLink(null, null, "x/N4gVAQ");
 
-        $this->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_amazon_listing_add_sourceProduct'))
-            ->renderLayout();
+        $this->_addContent(
+            $this->getLayout()->createBlock('M2ePro/adminhtml_amazon_listing_product_add_sourceMode_product')
+        )->renderLayout();
     }
 
     public function addProductsFromCategories()
     {
+        $this->setWizardStep('productSelection');
+
         if ($this->getRequest()->getParam('id') === null) {
             $this->_redirect('*/adminhtml_amazon_listing/index');
             return;
@@ -215,7 +222,9 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
 
         $this->setPageHelpLink(null, null, "x/P4gVAQ");
 
-        $gridContainer = $this->getLayout()->createBlock('M2ePro/adminhtml_amazon_listing_add_sourceCategory');
+        $gridContainer = $this->getLayout()->createBlock(
+            'M2ePro/adminhtml_amazon_listing_product_add_sourceMode_category'
+        );
         $this->_addContent($gridContainer);
 
         /** @var $treeBlock Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Category_Tree */
@@ -252,6 +261,8 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
 
     protected function asinSearchView()
     {
+        $this->setWizardStep('searchAsin');
+
         $listingProductsIds = $this->getListing()->getSetting('additional_data', 'adding_listing_products_ids');
 
         $this->getListing()->setSetting(
@@ -262,7 +273,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
         $this->getListing()->save();
 
         if ($this->getRequest()->isXmlHttpRequest()) {
-            $grid = $this->getLayout()->createBlock('M2ePro/adminhtml_amazon_listing_add_searchAsin_grid');
+            $grid = $this->getLayout()->createBlock('M2ePro/adminhtml_amazon_listing_product_add_searchAsin_grid');
             return $this->getResponse()->setBody($grid->toHtml());
         }
 
@@ -270,19 +281,21 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
 
         $this->setPageHelpLink(null, null, "x/J4kVAQ");
 
-        $this->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_amazon_listing_add_searchAsin'))
+        $this->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_amazon_listing_product_add_searchAsin'))
             ->renderLayout();
     }
 
     protected function addNewAsinView()
     {
+        $this->setWizardStep('newAsin');
+
         $listingId = $this->getRequest()->getParam('id');
 
         if (empty($listingId)) {
             return $this->getResponse()->setBody('You should provide correct parameters.');
         }
 
-        $block = $this->getLayout()->createBlock('M2ePro/adminhtml_amazon_listing_add_newAsin');
+        $block = $this->getLayout()->createBlock('M2ePro/adminhtml_amazon_listing_product_add_newAsin');
 
         $this->_initAction();
 
@@ -293,6 +306,8 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
 
     protected function review()
     {
+        $this->endWizard();
+
         $additionalData = $this->getListing()->getSettings('additional_data');
 
         Mage::helper('M2ePro/Data_Session')->setValue(
@@ -304,7 +319,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
 
         $this->_initAction();
 
-        $this->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_amazon_listing_add_review'))
+        $this->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_amazon_listing_product_add_review'))
             ->renderLayout();
     }
 
@@ -376,9 +391,10 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
         if ($isLastPart == 'yes') {
             $backUrl = $this->getUrl(
                 '*/*/index', array(
-                'id' => $listingId,
-                'skip_products_steps' => empty($tempProducts),
-                'step' => 3
+                    'id'     => $listingId,
+                    'step'   => 3,
+                    'wizard' => $this->getRequest()->getParam('wizard'),
+                    'skip_products_steps' => empty($tempProducts),
                 )
             );
 
@@ -427,8 +443,9 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
 
         $this->_redirect(
             '*/adminhtml_amazon_listing_productAdd/index', array(
-            'step'   => 2,
-            'id'     => $this->getRequest()->getParam('id')
+                'step'   => 2,
+                'id'     => $this->getRequest()->getParam('id'),
+                'wizard' => $this->getRequest()->getParam('wizard')
             )
         );
         return;
@@ -608,7 +625,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
         }
 
         $settings = $this->getLayout()
-            ->createBlock('M2ePro/adminhtml_amazon_listing_add_searchAsin_searchSettings');
+            ->createBlock('M2ePro/adminhtml_amazon_listing_product_add_searchAsin_searchSettings');
 
         return $this->getResponse()->setBody($settings->toHtml());
     }
@@ -653,8 +670,9 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
             !$this->getListing()->getMarketplace()->getChildObject()->isNewAsinAvailable()) {
             $redirectUrl = $this->getUrl(
                 '*/*/index', array(
-                'step' => 5,
-                'id' => $this->getRequest()->getParam('id')
+                    'step'   => 5,
+                    'id'     => $this->getRequest()->getParam('id'),
+                    'wizard' => $this->getRequest()->getParam('wizard')
                 )
             );
             return $this->getResponse()->setBody(
@@ -674,8 +692,9 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
                     array(
                     'redirect' => $this->getUrl(
                         '*/*/index', array(
-                        'id' => $this->getRequest()->getParam('id'),
-                        'step' => $showNewAsinStep ? 4 : 5
+                            'id'     => $this->getRequest()->getParam('id'),
+                            'step'   => $showNewAsinStep ? 4 : 5,
+                            'wizard' => $this->getRequest()->getParam('wizard')
                         )
                     )
                     )
@@ -684,7 +703,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
         }
 
         $newAsinPopup = $this->getLayout()
-            ->createBlock('M2ePro/adminhtml_amazon_listing_add_searchAsin_newAsinPopup');
+            ->createBlock('M2ePro/adminhtml_amazon_listing_product_add_searchAsin_newAsinPopup');
 
         return $this->getResponse()->setBody(
             Mage::helper('M2ePro')->jsonEncode(
@@ -712,8 +731,9 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
                 array(
                 'redirect' => $this->getUrl(
                     '*/*/index', array(
-                    'id' => $this->getRequest()->getParam('id'),
-                    'step' => $showNewAsinStep ? 4 : 5
+                        'id'     => $this->getRequest()->getParam('id'),
+                        'step'   => $showNewAsinStep ? 4 : 5,
+                        'wizard' => $this->getRequest()->getParam('wizard')
                     )
                 )
                 )
@@ -797,8 +817,8 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
 
                 return $this->_redirect(
                     '*/adminhtml_amazon_listing_productAdd/index', array(
-                    '_current' => true,
-                    'step' => 5
+                        '_current' => true,
+                        'step'     => 5,
                     )
                 );
             }
@@ -809,13 +829,13 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
         } else if ($mode == NewAsinTemplateBlock::MODE_CATEGORY) {
             return $this->_redirect(
                 '*/*/descriptionTemplateAssignByMagentoCategory', array(
-                '_current' => true,
+                    '_current' => true,
                 )
             );
         } else if ($mode == NewAsinTemplateBlock::MODE_MANUALLY) {
             return $this->_redirect(
                 '*/*/descriptionTemplateAssignManually', array(
-                '_current' => true,
+                    '_current' => true,
                 )
             );
         }
@@ -835,11 +855,13 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
         }
 
         if ($this->getRequest()->isXmlHttpRequest()) {
-            $grid = $this->getLayout()->createBlock('M2ePro/adminhtml_amazon_listing_add_newAsin_category_grid');
+            $grid = $this->getLayout()->createBlock(
+                'M2ePro/adminhtml_amazon_listing_product_add_newAsin_category_grid'
+            );
             return $this->getResponse()->setBody($grid->toHtml());
         }
 
-        $block = $this->getLayout()->createBlock('M2ePro/adminhtml_amazon_listing_add_newAsin_category');
+        $block = $this->getLayout()->createBlock('M2ePro/adminhtml_amazon_listing_product_add_newAsin_category');
 
         $this->_initAction();
 
@@ -860,7 +882,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
         }
 
         if ($this->getRequest()->isXmlHttpRequest()) {
-            $grid = $this->getLayout()->createBlock('M2ePro/adminhtml_amazon_listing_add_newAsin_manual_grid');
+            $grid = $this->getLayout()->createBlock('M2ePro/adminhtml_amazon_listing_product_add_newAsin_manual_grid');
             return $this->getResponse()->setBody($grid->toHtml());
         }
 
@@ -868,8 +890,11 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
 
         $this->setPageHelpLink(null, null, "x/zYgVAQ");
 
-        $this->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_amazon_listing_add_newAsin_manual'))
-             ->renderLayout();
+        $this->_addContent(
+            $this->getLayout()->createBlock(
+                'M2ePro/adminhtml_amazon_listing_product_add_newAsin_manual'
+            )
+        )->renderLayout();
     }
 
     //########################################
@@ -937,7 +962,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
         }
 
         $popup = $this->loadLayout()->getLayout()
-            ->createBlock('M2ePro/adminhtml_amazon_listing_add_newAsin_warningPopup');
+            ->createBlock('M2ePro/adminhtml_amazon_listing_product_add_newAsin_warningPopup');
 
         return $this->getResponse()->setBody(
             Mage::helper('M2ePro')->jsonEncode(
@@ -1003,8 +1028,8 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
 
         return $this->_redirect(
             '*/adminhtml_amazon_listing_productAdd/index', array(
-            '_current' => true,
-            'step' => 4
+                '_current' => true,
+                'step'     => 4
             )
         );
     }
@@ -1173,6 +1198,35 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
             unset($additionalData['source']);
             $this->getListing()->setSettings('additional_data', $additionalData)->save();
         }
+    }
+
+    //########################################
+
+    protected function setWizardStep($step)
+    {
+        $wizardHelper = Mage::helper('M2ePro/Module_Wizard');
+
+        if (!$wizardHelper->isActive(Ess_M2ePro_Helper_View_Amazon::WIZARD_INSTALLATION_NICK)) {
+            return;
+        }
+
+        $wizardHelper->setStep(Ess_M2ePro_Helper_View_Amazon::WIZARD_INSTALLATION_NICK, $step);
+    }
+
+    protected function endWizard()
+    {
+        $wizardHelper = Mage::helper('M2ePro/Module_Wizard');
+
+        if (!$wizardHelper->isActive(Ess_M2ePro_Helper_View_Amazon::WIZARD_INSTALLATION_NICK)) {
+            return;
+        }
+
+        $wizardHelper->setStatus(
+            Ess_M2ePro_Helper_View_Amazon::WIZARD_INSTALLATION_NICK,
+            Ess_M2ePro_Helper_Module_Wizard::STATUS_COMPLETED
+        );
+
+        Mage::helper('M2ePro/Magento')->clearMenuCache();
     }
 
     //########################################

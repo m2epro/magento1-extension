@@ -1,4 +1,45 @@
-* 6.6.0 (r15094) (12/05/2020) 
+* 6.7.0 (r15287) (17/06/2020) 
+
+Common: [Added] Add 3rd Party Reset button
+Common: [Added] Automatically set maintenance mode if the server connection fails
+Common: [Added] New Active Record engine
+Common: [Added] Ability to reimport Orders manually
+Common: [Improved] Only one config model should be left
+Common: [Improved] Changes to System and Synchronization Logs
+Common: [Improved] JS handlers refactored [m1 compatibility]
+Common: [Improved] Use entities builders
+Common: [Improved] New Help Center
+Common: [Fixed] License problems when a client is blocked on Wizard pages
+Common: [Fixed] Problem with throttling (repeat request when connection error)
+Common: [Fixed] Fatal error in case of invalid response from server
+Common: [Fixed] Data imported by partial runner may be lost in case of a fatal error
+Common: [Fixed] Error on upgrade: Table 'm2epro_walmart_marketplace' doesn't exist (if tables prefixes are used)
+Common: [Fixed] Error on upgrade: Table 'm2epro_walmart_template_selling_format_shipping_override_service' doesn't exist (if tables prefixes are used)
+Common: [Fixed] Base table 'm2epro_listing_log' not found on repeat upgrade (if previous one failed)
+Common: [Fixed] "General error: 1709 Index column size too large" when trying to change some tables to InnoDB
+Common: [Removed] Magento QTY option from Synchronization Policy
+Common: [Removed] QTY_MODE_BETWEEN option from Synchronization Policy
+Common: [Removed] Conditional Revise for Price in Synchronization Policy
+Common: [Removed] Primary Config (merged with Module Config)
+Common: [Removed] Cache Config (use Registry instead)
+Common: [Removed] Usage of MyISAM tables
+eBay: [Added] Improved eBay Categories settings and management
+eBay: [Improved] Send variation images for Bundle product
+eBay: [Improved] Assign Category when import 3rd party item from eBay
+eBay: [Fixed] Error in Logs when Manual Mark Order as Shipped
+Amazon: [Improved] Background Synchronization
+Amazon: [Improved] Allow 500 characters in Bullet Point fields
+Amazon: [Fixed] Error in Logs when Manual Mark Order as Shipped
+Amazon: [Fixed] After upgrading from 6.4.14 to 6.5.0.16 or higher, Australia Marketplace is not displayed
+Amazon: [Fixed] Problem with throttling (throttling manager feed counts were not considered for the price on Relist action)
+Amazon: [Fixed] Some orders do not get imported
+Walmart: [Improved] Problem with throttling (sent lag time only for Canada on QTY feed)
+Walmart: [Fixed] Problem with throttling (promotions are not sent on Relist action)
+Walmart: [Fixed] Problem with throttling (throttling manager feed counts were not considered for the price on Relist action)
+ControlPanel: [Improved] Maintenance Mode does not let to come in Control Panel
+ControlPanel: [Improved] "Build Order Quote" not working in some cases
+
+* 6.6.0 (r15089) (04/05/2020)
 
 Common: [Improved] Improve Cron tasks runner
 Common: [Improved] Always throw an exception on duplicate key while using Magento registry

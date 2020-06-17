@@ -8,43 +8,38 @@
 
 class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Edit extends Mage_Adminhtml_Block_Widget_Form_Container
 {
+    /** @var Ess_M2ePro_Model_Listing */
+    protected $_listing = null;
+
     //########################################
 
     public function __construct()
     {
         parent::__construct();
 
-        // Initialization block
-        // ---------------------------------------
         $this->setId('walmartListingEdit');
         $this->_blockGroup = 'M2ePro';
         $this->_controller = 'adminhtml_walmart_listing';
         $this->_mode = 'edit';
-        // ---------------------------------------
 
-        // Set header text
-        // ---------------------------------------
-        $listingData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
+        $this->_listing = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
 
         if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
             $componentName = Mage::helper('M2ePro/Component_Walmart')->getTitle();
             $headerText = Mage::helper('M2ePro')->__(
                 'Edit %component_name% Listing Settings "%listing_title%"',
                 $componentName,
-                $this->escapeHtml($listingData['title'])
+                $this->escapeHtml($this->_listing->getTitle())
             );
         } else {
             $headerText = Mage::helper('M2ePro')->__(
                 'Edit Listing Settings "%listing_title%"',
-                $this->escapeHtml($listingData['title'])
+                $this->escapeHtml($this->_listing->getTitle())
             );
         }
 
         $this->_headerText = $headerText;
-        // ---------------------------------------
 
-        // Set buttons actions
-        // ---------------------------------------
         $this->removeButton('back');
         $this->removeButton('reset');
         $this->removeButton('delete');
@@ -61,7 +56,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Edit extends Mage_Adminhtml_Blo
             $this->_addButton(
                 'back', array(
                 'label'     => Mage::helper('M2ePro')->__('Back'),
-                'onclick'   => 'WalmartListingSettingsHandlerObj.back_click(\''.$url.'\')',
+                'onclick'   => 'WalmartListingSettingsObj.back_click(\''.$url.'\')',
                 'class'     => 'back'
                 )
             );
@@ -72,7 +67,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Edit extends Mage_Adminhtml_Blo
         $this->_addButton(
             'auto_action', array(
             'label'     => Mage::helper('M2ePro')->__('Auto Add/Remove Rules'),
-            'onclick'   => 'ListingAutoActionHandlerObj.loadAutoActionHtml();'
+            'onclick'   => 'ListingAutoActionObj.loadAutoActionHtml();'
             )
         );
         // ---------------------------------------
@@ -83,14 +78,14 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Edit extends Mage_Adminhtml_Blo
         $url = $this->getUrl(
             '*/adminhtml_walmart_listing/save',
             array(
-                'id'    => $listingData['id'],
+                'id'    => $this->_listing->getId(),
                 'back'  => $backUrl
             )
         );
         $this->_addButton(
             'save', array(
             'label'     => Mage::helper('M2ePro')->__('Save'),
-            'onclick'   => 'WalmartListingSettingsHandlerObj.save_click(\'' . $url . '\')',
+            'onclick'   => 'WalmartListingSettingsObj.save_click(\'' . $url . '\')',
             'class'     => 'save'
             )
         );
@@ -100,7 +95,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Edit extends Mage_Adminhtml_Blo
         $this->_addButton(
             'save_and_continue', array(
             'label'     => Mage::helper('M2ePro')->__('Save And Continue Edit'),
-            'onclick'   => 'WalmartListingSettingsHandlerObj.save_and_edit_click(\''.$url.'\', 1)',
+            'onclick'   => 'WalmartListingSettingsObj.save_and_edit_click(\''.$url.'\', 1)',
             'class'     => 'save'
             )
         );
@@ -147,7 +142,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Edit extends Mage_Adminhtml_Blo
     M2ePro.url.add({$urls});
     M2ePro.translator.add({$translations});
 
-    ListingAutoActionHandlerObj = new WalmartListingAutoActionHandler();
+    ListingAutoActionObj = new WalmartListingAutoAction();
 
 </script>
 HTML;

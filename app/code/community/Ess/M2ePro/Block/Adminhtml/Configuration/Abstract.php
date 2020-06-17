@@ -24,13 +24,13 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_Abstract extends Mage_Adminhtml_B
     {
         $this->getLayout()->getBlock('head')->addJs('M2ePro/General/PhpFunctions.js');
         $this->getLayout()->getBlock('head')->addJs('M2ePro/General/PrototypeSimulate.js');
-        $this->getLayout()->getBlock('head')->addJs('M2ePro/General/CommonHandler.js');
+        $this->getLayout()->getBlock('head')->addJs('M2ePro/General/Common.js');
 
-        $this->getLayout()->getBlock('head')->addJs('M2ePro/General/TranslatorHandler.js');
-        $this->getLayout()->getBlock('head')->addJs('M2ePro/General/PhpHandler.js');
-        $this->getLayout()->getBlock('head')->addJs('M2ePro/General/UrlHandler.js');
+        $this->getLayout()->getBlock('head')->addJs('M2ePro/General/Translator.js');
+        $this->getLayout()->getBlock('head')->addJs('M2ePro/General/Php.js');
+        $this->getLayout()->getBlock('head')->addJs('M2ePro/General/Url.js');
 
-        $this->getLayout()->getBlock('head')->addJs('M2ePro/Plugin/Magento/Message.js');
+        $this->getLayout()->getBlock('head')->addJs('M2ePro/Plugin/Message.js');
         $this->getLayout()->getBlock('head')->addJs('M2ePro/Plugin/Magento/Block.js');
         $this->getLayout()->getBlock('head')->addJs('M2ePro/Plugin/Magento/FieldTip.js');
         $this->getLayout()->getBlock('head')->addJs('M2ePro/Plugin/BlockNotice.js');
@@ -38,7 +38,7 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_Abstract extends Mage_Adminhtml_B
 
         $this->getLayout()->getBlock('head')->addJs('M2ePro/Initialization.js');
 
-        $this->getLayout()->getBlock('head')->addJs('M2ePro/ControlPanelHandler.js');
+        $this->getLayout()->getBlock('head')->addJs('M2ePro/ControlPanel.js');
 
         $this->getLayout()->getBlock('head')->addCss('M2ePro/css/main.css');
         $this->getLayout()->getBlock('head')->addCss('M2ePro/css/Plugin/BlockNotice.css');

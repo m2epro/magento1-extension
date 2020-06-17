@@ -12,51 +12,6 @@ class Ess_M2ePro_Adminhtml_ControlPanel_Module_Integration_AmazonController
     //########################################
 
     /**
-     * @title "Reset 3rd Party"
-     * @description "Clear all 3rd party items for all Accounts"
-     */
-    public function resetOtherListingsAction()
-    {
-        $listingOther = Mage::getModel('M2ePro/Listing_Other');
-        $amazonListingOther = Mage::getModel('M2ePro/Amazon_Listing_Other');
-
-        $stmt = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Other')->getSelect()->query();
-
-        $SKUs = array();
-        foreach ($stmt as $row) {
-            $listingOther->setData($row);
-            $amazonListingOther->setData($row);
-
-            $listingOther->setChildObject($amazonListingOther);
-            $amazonListingOther->setParentObject($listingOther);
-            $SKUs[] = $amazonListingOther->getSku();
-
-            $listingOther->deleteInstance();
-        }
-
-        $tableName = Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('m2epro_amazon_item');
-        $writeConnection = Mage::getSingleton('core/resource')->getConnection('core_write');
-        foreach (array_chunk($SKUs, 1000) as $chunkSKUs) {
-            $writeConnection->delete($tableName, array('sku IN (?)' => $chunkSKUs));
-        }
-
-        $accountsCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Account');
-        $accountsCollection->addFieldToFilter('other_listings_synchronization', 1);
-
-        foreach ($accountsCollection->getItems() as $account) {
-            $additionalData = (array)Mage::helper('M2ePro')->jsonDecode($account->getAdditionalData());
-            unset(
-                $additionalData['is_amazon_other_listings_full_items_data_already_received'],
-                $additionalData['last_other_listing_products_synchronization']
-            );
-            $account->setSettings('additional_data', $additionalData)->save();
-        }
-
-        $this->_getSession()->addSuccess('Successfully removed.');
-        $this->_redirectUrl(Mage::helper('M2ePro/View_ControlPanel')->getPageModuleTabUrl());
-    }
-
-    /**
      * @title "Show Duplicates [listing_id/sku]"
      * @description "[MAX(id) will be saved]"
      */

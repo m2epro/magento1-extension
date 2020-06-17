@@ -50,7 +50,7 @@ class Ess_M2ePro_Block_Adminhtml_Support_ContactForm extends Mage_Adminhtml_Bloc
         // ---------------------------------------
         $data = array(
             'label'   => Mage::helper('M2ePro')->__('Attach Another File'),
-            'onclick' => 'SupportHandlerObj.moreAttachments();',
+            'onclick' => 'SupportObj.moreAttachments();',
             'class'   => 'more_attachments'
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
@@ -60,7 +60,7 @@ class Ess_M2ePro_Block_Adminhtml_Support_ContactForm extends Mage_Adminhtml_Bloc
         // ---------------------------------------
         $data = array(
             'label'   => ' ' . Mage::helper('M2ePro')->__('Send Message') . ' ',
-            'onclick' => 'SupportHandlerObj.save_click();',
+            'onclick' => 'SupportObj.save_click();',
             'class'   => 'send_form'
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);

@@ -15,7 +15,6 @@ final class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processor
     const ONE_SERVER_CALL_INCREASE_TIME = 1;
     const MAX_TOTAL_EXECUTION_TIME      = 180;
 
-    const CONNECTION_ERROR_REPEAT_TIMEOUT = 180;
     const FIRST_CONNECTION_ERROR_DATE_REGISTRY_KEY = '/ebay/listing/product/action/first_connection_error/date/';
 
     //####################################
@@ -159,21 +158,11 @@ final class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processor
             } catch (Exception $exception) {
                 Mage::helper('M2ePro/Module_Exception')->process($exception);
 
-                $currentDate              = Mage::helper('M2ePro')->getCurrentGmtDate();
-                $firstConnectionErrorDate = $this->getFirstConnectionErrorDate();
-
-                if (empty($firstConnectionErrorDate)) {
-                    $this->setFirstConnectionErrorDate($currentDate);
-                    continue;
-                }
-
-                if (strtotime($currentDate) - strtotime($firstConnectionErrorDate)
-                        < self::CONNECTION_ERROR_REPEAT_TIMEOUT) {
-                    return;
-                }
-
-                if (!empty($firstConnectionErrorDate)) {
-                    $this->removeFirstConnectionErrorDate();
+                if ($exception instanceof Ess_M2ePro_Model_Exception_Connection) {
+                    $isRepeat = $exception->handleRepeatTimeout(self::FIRST_CONNECTION_ERROR_DATE_REGISTRY_KEY);
+                    if ($isRepeat) {
+                        return;
+                    }
                 }
 
                 $message = Mage::getModel('M2ePro/Connector_Connection_Response_Message');
@@ -267,6 +256,7 @@ final class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processor
                 $isServerInMaintenanceMode = null;
 
                 foreach ($connectors as $actionId => $connector) {
+                    /** @var Ess_M2ePro_Model_Connector_Command_Abstract $connector */
                     foreach ($actionsPack as $action) {
                         if ($action->getId() != $actionId) {
                             continue;
@@ -299,7 +289,10 @@ final class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processor
                         Mage::helper('M2ePro')->__(
                             "Internal Server Error(s) [%error_message%]",
                             $this->getCombinedErrorMessage($systemErrorsMessages)
-                        ), array(), 0, !$isServerInMaintenanceMode
+                        ),
+                        array(),
+                        0,
+                        !$isServerInMaintenanceMode
                     );
                 }
             }
@@ -465,37 +458,6 @@ final class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processor
         }
 
         return $resultGroupedActions;
-    }
-
-    //####################################
-
-    protected function getFirstConnectionErrorDate()
-    {
-        $registry = Mage::getModel('M2ePro/Registry');
-        $registry->load(self::FIRST_CONNECTION_ERROR_DATE_REGISTRY_KEY, 'key');
-
-        return $registry->getValue();
-    }
-
-    protected function setFirstConnectionErrorDate($date)
-    {
-        $registry = Mage::getModel('M2ePro/Registry');
-        $registry->load(self::FIRST_CONNECTION_ERROR_DATE_REGISTRY_KEY, 'key');
-
-        $registry->setData('key', self::FIRST_CONNECTION_ERROR_DATE_REGISTRY_KEY);
-        $registry->setData('value', $date);
-
-        $registry->save();
-    }
-
-    protected function removeFirstConnectionErrorDate()
-    {
-        $registry = Mage::getModel('M2ePro/Registry');
-        $registry->load(self::FIRST_CONNECTION_ERROR_DATE_REGISTRY_KEY, 'key');
-
-        if ($registry->getId()) {
-            $registry->delete();
-        }
     }
 
     //####################################

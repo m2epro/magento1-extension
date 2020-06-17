@@ -256,13 +256,13 @@
 
         $('transferring_store_id') && $('transferring_store_id').addClassName('required-entry').setStyle({width:'190px'});
 
-        CommonHandlerObj.setValidationCheckRepetitionValue(
+        CommonObj.setValidationCheckRepetitionValue(
             'M2ePro-listing-title',
             '<?php echo Mage::helper('M2ePro')->escapeJs(Mage::helper('M2ePro')->__('This Title is already used for other Listing. Listing Title must be unique.')); ?>',
             'Listing', 'title', 'id', null, '<?php echo Ess_M2ePro_Helper_Component_Ebay::NICK ?>'
         );
 
-        EbayListingTransferringHandlerObj.actionHandler.loadSourceData(<?php echo $this->getSourceAccount()->getId(); ?>,
+        EbayListingTransferringObj.actionHandler.loadSourceData(<?php echo $this->getSourceAccount()->getId(); ?>,
             <?php echo $this->getSourceMarketplace()->getId(); ?>,
             <?php echo json_encode($this->getMarketplaces()); ?>,
             '<?php echo Mage::helper('M2ePro')->escapeHtml($this->getSourceListing()->getTitle()); ?>',
@@ -270,35 +270,35 @@
 
         $('transferring_add_account')
             .stopObserving('click')
-            .observe('click', EbayListingTransferringHandlerObj.addAccountClick);
+            .observe('click', EbayListingTransferringObj.addAccountClick);
 
         $('transferring_account_id')
             .stopObserving('change')
-            .observe('change', function(){EbayListingTransferringHandlerObj.accountIdChange(this);});
+            .observe('change', function(){EbayListingTransferringObj.accountIdChange(this);});
 
         $('transferring_marketplace_id')
             .stopObserving('change')
-            .observe('change', function(){EbayListingTransferringHandlerObj.marketplaceIdChange(this);});
+            .observe('change', function(){EbayListingTransferringObj.marketplaceIdChange(this);});
 
         $('transferring_add_store')
             .stopObserving('click')
-            .observe('click', EbayListingTransferringHandlerObj.addStoreClick);
+            .observe('click', EbayListingTransferringObj.addStoreClick);
 
         $('transferring_store_id')
             .stopObserving('change')
-            .observe('change', function(){EbayListingTransferringHandlerObj.refreshListings();});
+            .observe('change', function(){EbayListingTransferringObj.refreshListings();});
 
         $('transferring_existing_listing')
             .stopObserving('change')
-            .observe('change', function(){EbayListingTransferringHandlerObj.existingListingChange(this);});
+            .observe('change', function(){EbayListingTransferringObj.existingListingChange(this);});
 
         $('transferring_existing_listing_link')
             .stopObserving('click')
-            .observe('click', EbayListingTransferringHandlerObj.existingListingLinkClick);
+            .observe('click', EbayListingTransferringObj.existingListingLinkClick);
 
         $('transferring_new_listing_link')
             .stopObserving('click')
-            .observe('click', EbayListingTransferringHandlerObj.newListingLinkClick);
+            .observe('click', EbayListingTransferringObj.newListingLinkClick);
 
     </script>
 <?php endif; ?>

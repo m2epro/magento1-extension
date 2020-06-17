@@ -18,12 +18,12 @@
     }
 
     .group_container_summary table {
-
         font-size: 12px;
         line-height: 20px;
     }
 </style>
-<div class="entry-edit group_container_summary" id="magento_block_controlPanel_info_module" ">
+
+<div class="entry-edit group_container_summary" id="magento_block_controlPanel_info_module">
 
     <div class="controlPanel_head_container">
         <h4><?php echo Mage::helper('M2ePro')->__('Information'); ?></h4>
@@ -31,53 +31,69 @@
 
     <div class="fieldset">
         <div class="hor-scroll">
-
             <?php echo $this->getChildHtml('actual_info') ?>
-
         </div>
     </div>
 
     <div class="controlPanel_head_container">
-        <h4><?php echo Mage::helper('M2ePro')->__('Inspection'); ?></h4>
+        <h4><?php echo Mage::helper('M2ePro')->__('License'); ?></h4>
     </div>
 
     <div class="fieldset">
         <div class="hor-scroll">
-
-            <?php echo $this->getChildHtml('inspection') ?>
-
-        </div>
-    </div>
-
-</div>
-
-<div class="entry-edit group_container_summary" id="magento_block_controlPanel_database_module">
-
-    <div class="controlPanel_head_container">
-        <h4><?php echo Mage::helper('M2ePro')->__('Database (Module)'); ?></h4>
-    </div>
-
-    <div class="fieldset">
-        <div class="hor-scroll">
-
-            <?php echo $this->getChildHtml('database_module') ?>
-
+            <?php echo $this->getChildHtml('license_info') ?>
         </div>
     </div>
 
 </div>
 
-<div class="entry-edit group_container_summary" id="magento_block_controlPanel_database_integration">
+<div class="entry-edit group_container_summary" id="magento_block_controlPanel_database_general">
 
     <div class="controlPanel_head_container">
-        <h4><?php echo Mage::helper('M2ePro')->__('Database (Integration)'); ?></h4>
+        <h4><?php echo Mage::helper('M2ePro')->__('Database (general)'); ?></h4>
     </div>
 
     <div class="fieldset">
         <div class="hor-scroll">
+            <?php echo $this->getChildHtml('database_general') ?>
+        </div>
+    </div>
 
-            <?php echo $this->getChildHtml('database_integration') ?>
+</div>
 
+<div class="entry-edit group_container_summary" id="magento_block_controlPanel_database_components">
+
+    <div class="controlPanel_head_container">
+        <h4><?php echo Mage::helper('M2ePro')->__('Database (components)'); ?></h4>
+    </div>
+
+    <div class="fieldset">
+        <div class="hor-scroll">
+            <?php echo $this->getChildHtml('database_components') ?>
+        </div>
+    </div>
+
+</div>
+
+<div class="entry-edit group_container_summary" id="magento_block_controlPanel_info_cron">
+
+    <div class="controlPanel_head_container">
+        <h4><?php echo Mage::helper('M2ePro')->__('Cron'); ?></h4>
+    </div>
+
+    <div class="fieldset">
+        <div class="hor-scroll">
+            <?php echo $this->getChildHtml('cron_info') ?>
+        </div>
+    </div>
+
+    <div class="controlPanel_head_container">
+        <h4><?php echo Mage::helper('M2ePro')->__('Version Info'); ?></h4>
+    </div>
+
+    <div class="fieldset">
+        <div class="hor-scroll">
+            <?php echo $this->getChildHtml('version_info') ?>
         </div>
     </div>
 

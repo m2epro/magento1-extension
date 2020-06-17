@@ -1,6 +1,6 @@
 {
   "memory_limit": {
-    "min": 256,
+    "min": 512,
     "recommended": 1024,
     "measure": "Mb"
   },

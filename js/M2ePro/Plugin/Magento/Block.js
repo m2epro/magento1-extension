@@ -1,5 +1,4 @@
-MagentoBlock = Class.create();
-MagentoBlock.prototype = {
+window.MagentoBlock = Class.create({
 
     storageKeys: {
         prefix: 'm2e_mb_'
@@ -151,4 +150,4 @@ MagentoBlock.prototype = {
     }
 
     // ---------------------------------------
-};
+});

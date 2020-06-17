@@ -28,9 +28,9 @@ class Ess_M2ePro_Adminhtml_Listing_MovingController
             'ignoreListings', Mage::helper('M2ePro')->jsonDecode($this->getRequest()->getParam('ignoreListings'))
         );
 
-        $movingHandlerJs = 'ListingGridHandlerObj.movingHandler';
+        $movingHandlerJs = 'ListingGridObj.movingHandler';
         if ($this->getRequest()->getParam('componentMode') == Ess_M2ePro_Helper_Component_Ebay::NICK) {
-            $movingHandlerJs = 'EbayListingSettingsGridHandlerObj.movingHandler';
+            $movingHandlerJs = 'EbayListingSettingsGridObj.movingHandler';
         }
 
         $block = $this->loadLayout()->getLayout()->createBlock(

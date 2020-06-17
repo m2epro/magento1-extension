@@ -105,7 +105,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Marketplace_Edit_Form extends Mage_Admin
         // ---------------------------------------
         $data = array(
             'label'   => Mage::helper('M2ePro')->__('Update Now'),
-            'onclick' => 'MarketplaceHandlerObj.runSingleSynchronization(this)',
+            'onclick' => 'MarketplaceObj.runSingleSynchronization(this)',
             'class'   => 'run_single_button'
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);

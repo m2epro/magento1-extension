@@ -20,12 +20,12 @@ class Ess_M2ePro_Adminhtml_Ebay_OrderController extends Ess_M2ePro_Controller_Ad
              ->addJs('M2ePro/Plugin/ProgressBar.js')
              ->addCss('M2ePro/css/Plugin/ProgressBar.css')
              ->addJs('M2ePro/Order/Debug.js')
-             ->addJs('M2ePro/Order/Handler.js')
-             ->addJs('M2ePro/Order/Edit/ItemHandler.js')
-             ->addJs('M2ePro/Order/Edit/ShippingAddressHandler.js')
-             ->addJs('M2ePro/Ebay/Order/MigrationToV611Handler.js')
-             ->addJs('M2ePro/GridHandler.js')
-             ->addJs('M2ePro/Order/NoteHandler.js')
+             ->addJs('M2ePro/Order.js')
+             ->addJs('M2ePro/Order/Edit/Item.js')
+             ->addJs('M2ePro/Order/Edit/ShippingAddress.js')
+             ->addJs('M2ePro/Ebay/Order/MigrationToV611.js')
+             ->addJs('M2ePro/Grid.js')
+             ->addJs('M2ePro/Order/Note.js')
              ->addJs('M2ePro/Plugin/ActionColumn.js');
 
         $this->setPageHelpLink(null, null, "x/RQAJAQ");

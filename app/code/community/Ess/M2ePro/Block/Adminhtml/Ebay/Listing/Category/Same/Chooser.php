@@ -8,20 +8,19 @@
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Same_Chooser extends Ess_M2ePro_Block_Adminhtml_Widget_Container
 {
+    /** @var Ess_M2ePro_Model_Listing */
+    protected $_listing;
+
     //########################################
 
     public function __construct()
     {
         parent::__construct();
 
-        // Initialization block
-        // ---------------------------------------
-        $this->setId('ebayListingCategorySameChooser');
-        // ---------------------------------------
-
-        $this->_headerText = Mage::helper('M2ePro')->__('eBay Same Categories');
-
-        $this->setTemplate('M2ePro/ebay/listing/category/same/chooser.phtml');
+        $this->_headerText = Mage::helper('M2ePro')->__('Set Category (All Products same Category)');
+        $this->_listing = Mage::helper('M2ePro/Component_Ebay')->getCachedObject(
+            'Listing', $this->getRequest()->getParam('listing_id')
+        );
 
         $this->_addButton(
             'back', array(
@@ -32,7 +31,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Same_Chooser extends Ess_
         );
 
         $onClick = <<<JS
-EbayListingCategoryChooserHandlerObj.submitData(
+EbayListingCategoryObj.modeSameSubmitData(
     '{$this->getUrl('*/*/*', array('step' => 2,'_current' => true))}'
 );
 JS;
@@ -47,110 +46,64 @@ JS;
 
     //########################################
 
-    public function getHeaderWidth()
-    {
-        return 'width:50%;';
-    }
-
-    //########################################
-
-    protected function _beforeToHtml()
-    {
-        parent::_beforeToHtml();
-
-        // ---------------------------------------
-        $listing = Mage::helper('M2ePro/Component_Ebay')->getCachedObject(
-            'Listing', $this->getRequest()->getParam('listing_id')
-        );
-        $viewHeaderBlock = $this->getLayout()->createBlock(
-            'M2ePro/adminhtml_listing_view_header', '',
-            array('listing' => $listing)
-        );
-        $this->setChild('view_header', $viewHeaderBlock);
-        // ---------------------------------------
-
-        // ---------------------------------------
-        $listingData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
-        $internalData = $this->getData('internal_data');
-
-        $chooserBlock = $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_listing_category_chooser');
-        $chooserBlock->setMarketplaceId($listingData['marketplace_id']);
-        $chooserBlock->setAccountId($listingData['account_id']);
-
-        if (!empty($internalData)) {
-            $chooserBlock->setInternalData($internalData);
-        }
-
-        $this->setChild('category_chooser', $chooserBlock);
-        // ---------------------------------------
-
-        // ---------------------------------------
-        $data = array(
-            'label' => Mage::helper('adminhtml')->__('Yes'),
-            'id'    => 'existing_templates_confirm_button'
-        );
-        $this->setChild(
-            'existing_templates_confirm_button',
-            $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data)
-        );
-        // ---------------------------------------
-        $data = array(
-            'label' => Mage::helper('adminhtml')->__('No'),
-            'id'    => 'existing_templates_cancel_button'
-        );
-        $this->setChild(
-            'existing_templates_cancel_button',
-            $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data)
-        );
-        // ---------------------------------------
-    }
-
-    //########################################
-
     protected function _toHtml()
     {
-        $parentHtml = parent::_toHtml();
-
-        // ---------------------------------------
-
-        $urls = Mage::helper('M2ePro')->getControllerActions(
-            'adminhtml_ebay_listing_categorySettings',
-            array(
-                '_current' => true
-            )
+        $helper = Mage::helper('M2ePro');
+        $urls = array_merge(
+            $helper->getControllerActions('adminhtml_ebay_listing_categorySettings', array('_current' => true)),
+            $helper->getControllerActions('adminhtml_ebay_category', array('_current' => true))
         );
 
         $path = 'adminhtml_ebay_listing_categorySettings';
-        $urls[$path] = $this->getUrl(
-            '*/' . $path, array(
-            'step' => 3,
-            '_current' => true
-            )
-        );
+        $urls[$path] = $this->getUrl('*/' . $path, array('step' => 3, '_current' => true));
 
         $path = 'adminhtml_ebay_listing_categorySettings/review';
-        $urls[$path] = $this->getUrl(
-            '*/' . $path, array(
-            '_current' => true
-            )
+        $urls[$path] = $this->getUrl('*/' . $path, array('_current' => true));
+
+        $urls = $helper->jsonEncode($urls);
+
+        $viewHeaderBlock = $this->getLayout()->createBlock(
+            'M2ePro/adminhtml_listing_view_header', '',
+            array('listing' => $this->_listing)
         );
 
-        $urls = Mage::helper('M2ePro')->jsonEncode($urls);
-
-        // ---------------------------------------
-
-        $js = <<<HTML
-
-<script type="text/javascript">
-    M2ePro.url.add($urls);
-</script>
-HTML;
-
-        // ---------------------------------------
+        $chooserBlock = $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_template_category_chooser');
+        $chooserBlock->setMarketplaceId($this->_listing->getMarketplaceId());
+        $chooserBlock->setAccountId($this->_listing->getAccountId());
+        $chooserBlock->setCategoriesData($this->getData('categories_data'));
 
         return <<<HTML
-{$parentHtml}
-{$js}
+<script>
+    EbayListingCategoryObj = new EbayListingCategory(null);
+    M2ePro.url.add($urls);
+    
+    Event.observe(window, 'load', function() {
+
+        EbayTemplateCategoryChooserObj.confirmSpecificsCallback = function() {
+            var typeMain = M2ePro.php.constant('Ess_M2ePro_Helper_Component_Ebay_Category::TYPE_EBAY_MAIN');
+            this.selectedCategories[typeMain].specific = this.selectedSpecifics;
+        }.bind(EbayTemplateCategoryChooserObj)
+        
+        EbayTemplateCategoryChooserObj.resetSpecificsCallback = function() {
+            var typeMain = M2ePro.php.constant('Ess_M2ePro_Helper_Component_Ebay_Category::TYPE_EBAY_MAIN');
+            this.selectedCategories[typeMain].specific = this.selectedSpecifics;
+        }.bind(EbayTemplateCategoryChooserObj)
+    });
+    
+</script>
+
+<div class="content-header">
+    <table cellspacing="0">
+        <tr>
+            <td style="width:50%;">{$this->getHeaderHtml()}</td>
+            <td class="form-buttons">{$this->getButtonsHtml()}</td>
+        </tr>
+    </table>
+</div>
+
+{$viewHeaderBlock->toHtml()}
+
+<div id="ebay_category_chooser">{$chooserBlock->toHtml()}</div>
 HTML;
     }
 

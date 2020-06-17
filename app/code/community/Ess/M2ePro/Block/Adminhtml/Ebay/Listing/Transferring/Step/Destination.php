@@ -41,9 +41,9 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Transferring_Step_Destination exte
             'id'      => 'confirm_button_destination',
             'class'   => 'confirm_button',
             'label'   => Mage::helper('M2ePro')->__('Confirm'),
-            'onclick' => "EbayListingTransferringHandlerObj.validate() &&
-                          EbayListingTransferringHandlerObj.synchronizeMarketplace(
-                              'EbayListingTransferringHandlerObj.confirm();');",
+            'onclick' => "EbayListingTransferringObj.validate() &&
+                          EbayListingTransferringObj.synchronizeMarketplace(
+                              'EbayListingTransferringObj.confirm();');",
             'style'   => 'display: none;'
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);

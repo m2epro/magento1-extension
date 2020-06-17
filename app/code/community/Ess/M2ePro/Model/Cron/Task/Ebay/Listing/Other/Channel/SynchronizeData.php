@@ -125,7 +125,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Other_Channel_SynchronizeData exte
     {
         $nextSinceTime = new DateTime($sinceTime, new DateTimeZone('UTC'));
 
-        $operationHistory = $this->getOperationHistory()->getParentObject('synchronization');
+        $operationHistory = $this->getOperationHistory()->getParentObject('cron_runner');
         if ($operationHistory !== null) {
             $toTime = new DateTime($operationHistory->getData('start_date'), new DateTimeZone('UTC'));
         } else {
@@ -220,8 +220,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Other_Channel_SynchronizeData exte
 
             $this->getSynchronizationLog()->addMessage(
                 Mage::helper('M2ePro')->__($message->getText()),
-                $logType,
-                Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH
+                $logType
             );
         }
     }

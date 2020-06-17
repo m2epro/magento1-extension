@@ -69,12 +69,16 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
      */
     protected $_repricingModel = null;
 
+    /** @var Ess_M2ePro_Model_ActiveRecord_Factory */
+    protected $_activeRecordFactory;
+
     //########################################
 
     public function _construct()
     {
         parent::_construct();
         $this->_init('M2ePro/Amazon_Account');
+        $this->_activeRecordFactory = Mage::getSingleton('M2ePro/ActiveRecord_Factory');
     }
 
     //########################################
@@ -85,8 +89,9 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
             return false;
         }
 
-        $items = $this->getAmazonItems(true);
-        foreach ($items as $item) {
+        $itemCollection = $this->_activeRecordFactory->getObjectCollection('Amazon_Item');
+        $itemCollection->addFieldToFilter('account_id', $this->getId());
+        foreach ($itemCollection->getItems() as $item) {
             $item->deleteInstance();
         }
 
@@ -100,13 +105,6 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
         $this->delete();
 
         return true;
-    }
-
-    //########################################
-
-    public function getAmazonItems($asObjects = false, array $filters = array())
-    {
-        return $this->getRelatedSimpleItems('Amazon_Item', 'account_id', $asObjects, $filters);
     }
 
     //########################################

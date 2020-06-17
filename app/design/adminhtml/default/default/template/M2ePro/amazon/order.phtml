@@ -31,12 +31,12 @@ if (empty($currency)) {
 
     <?php if ($this->getRequest()->getParam('show_merchant_fulfillment')): ?>
     Event.observe(window, 'load', function() {
-        OrderMerchantFulfillmentHandlerObj.getPopupAction(<?php echo $this->order->getId(); ?>);
+        AmazonOrderMerchantFulfillmentObj.getPopupAction(<?php echo $this->order->getId(); ?>);
     });
     <?php endif; ?>
 
     Event.observe(window, 'load', function() {
-        OrderNoteHandlerObj = new OrderNoteHandler('<?php echo $this->getChild('order_note_grid')->getId(); ?>');
+        OrderNoteObj = new OrderNote('<?php echo $this->getChild('order_note_grid')->getId(); ?>');
     });
 
 </script>
@@ -424,7 +424,7 @@ if (empty($currency)) {
                                 <td class="label"><?php echo Mage::helper('M2ePro')->__('Amazon\'s Shipping Services');?>:</td>
                                 <td class="value">
                                     <strong>
-                                        <a href="javascript://" id="fulfillment_manage_title" onclick="OrderMerchantFulfillmentHandlerObj.getPopupAction(<?php echo $this->order->getId(); ?>);">
+                                        <a href="javascript://" id="fulfillment_manage_title" onclick="AmazonOrderMerchantFulfillmentObj.getPopupAction(<?php echo $this->order->getId(); ?>);">
                                             <?php echo Mage::helper('M2ePro')->__('Show Details');?>
                                         </a>
                                     </strong>

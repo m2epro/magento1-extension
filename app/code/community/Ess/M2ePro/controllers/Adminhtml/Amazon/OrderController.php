@@ -19,13 +19,13 @@ class Ess_M2ePro_Adminhtml_Amazon_OrderController
         $this->getLayout()->getBlock('head')
             ->addJs('M2ePro/Plugin/ActionColumn.js')
             ->addJs('M2ePro/Order/Debug.js')
-            ->addJs('M2ePro/Order/Handler.js')
-            ->addJs('M2ePro/Amazon/Order/MerchantFulfillmentHandler.js')
+            ->addJs('M2ePro/Order.js')
+            ->addJs('M2ePro/Amazon/Order/MerchantFulfillment.js')
             ->addJs('M2ePro/Amazon/Order.js')
-            ->addJs('M2ePro/Order/Edit/ItemHandler.js')
-            ->addJs('M2ePro/Order/Edit/ShippingAddressHandler.js')
-            ->addJs('M2ePro/GridHandler.js')
-            ->addJs('M2ePro/Order/NoteHandler.js');
+            ->addJs('M2ePro/Order/Edit/Item.js')
+            ->addJs('M2ePro/Order/Edit/ShippingAddress.js')
+            ->addJs('M2ePro/Grid.js')
+            ->addJs('M2ePro/Order/Note.js');
 
         $this->_initPopUp();
 

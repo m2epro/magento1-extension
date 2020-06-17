@@ -246,7 +246,7 @@ HTML;
                                        Mage::helper('M2ePro')->escapeHtml($magentoAttr) . '"
                                        id="magento_product_attribute_'.$attributeId.'_'.$id.'">';
                     $magentoProductAttributesHtml .= '<select class="amazon_product_attribute_'.$id.'"
-                                       onchange="ListingGridHandlerObj.productSearchHandler.attributesChange(this)"
+                                       onchange="ListingGridObj.productSearchHandler.attributesChange(this)"
                                        style="width: 170px; margin-left: 10px;
                                               margin-bottom: 7px; font-size: 10px;"
                                        id="amazon_product_attribute_'.$attributeId.'_'.$id.'">';
@@ -260,7 +260,7 @@ HTML;
                         if ($attrKey == $amazonAttr) {
                             $selected = 'selected';
                             $magentoProductAttributesJs .= <<<JS
-ListingGridHandlerObj.productSearchHandler.attributesChange({id:"magento_product_attribute_{$magentoAttr}_{$id}"});
+ListingGridObj.productSearchHandler.attributesChange({id:"magento_product_attribute_{$magentoAttr}_{$id}"});
 JS;
                         }
 
@@ -291,7 +291,7 @@ JS;
                 $magentoAttributesText = Mage::helper('M2ePro')->__('Magento Attributes');
                 $amazonAttributesText = Mage::helper('M2ePro')->__('Amazon Attributes');
 
-                $searchHandler = 'ListingGridHandlerObj.productSearchHandler';
+                $searchHandler = 'ListingGridObj.productSearchHandler';
 
                 $value .= <<<HTML
 <form id="matching_attributes_form_{$id}" action="javascript:void(0)">
@@ -332,7 +332,7 @@ HTML;
     {$searchHandler}.searchData[{$id}].magentoVariationSet = {$magentoProductVariationsSet};
     {$searchHandler}.searchData[{$id}].amazonVariation = {$amazonVariations};
 
-    ListingGridHandlerObj.productSearchHandler.renderMatchedAttributesVirtualView({$id});
+    ListingGridObj.productSearchHandler.renderMatchedAttributesVirtualView({$id});
 </script>
 HTML;
                 } else {
@@ -344,7 +344,7 @@ HTML;
     {$searchHandler}.searchData[{$id}].destinationAttributes = {$destinationAttributes};
     {$searchHandler}.searchData[{$id}].amazonVariation = {$amazonVariations};
 
-    ListingGridHandlerObj.productSearchHandler.renderMatchedAttributesVirtualView({$id});
+    ListingGridObj.productSearchHandler.renderMatchedAttributesVirtualView({$id});
 </script>
 HTML;
                 }
@@ -407,7 +407,7 @@ HTML;
             $attributeValues .= '<input type="hidden" value="' . Mage::helper('M2ePro')->escapeHtml($specificName) .
                                 '" class="specifics_name_'.$id.'">';
             $attributeValues .= '<select class="specifics_'.$id.'"
-                                       onchange="ListingGridHandlerObj.productSearchHandler.specificsChange(this)"
+                                       onchange="ListingGridObj.productSearchHandler.specificsChange(this)"
                                        style="width: 170px; margin-bottom: 5px; font-size: 10px;"
                                        id="specific_'.$specificName.'_'.$id.'">';
             $attributeValues .= '<option class="empty" value=""></option>';
@@ -427,7 +427,7 @@ HTML;
             $attributeValues .= '</select><br/>';
 
             $specificsJs .= <<<JS
-ListingGridHandlerObj.productSearchHandler.specificsChange({id:"specific_{$specificName}_{$id}"});
+ListingGridObj.productSearchHandler.specificsChange({id:"specific_{$specificName}_{$id}"});
 JS;
         }
 
@@ -470,7 +470,7 @@ HTML;
             || $this->_listingProduct->getChildObject()->getVariationManager()->isIndividualType()) {
             if (!$row->getData('is_variation_product')) {
                 return <<<HTML
-<a href="javascript:void(0);" onclick="ListingGridHandlerObj.productSearchHandler.mapToGeneralId(
+<a href="javascript:void(0);" onclick="ListingGridObj.productSearchHandler.mapToGeneralId(
     {$this->_productId}, '{$row->getData('general_id')}');">{$assignText}</a>
 HTML;
             }
@@ -493,7 +493,7 @@ HTML;
     </span>
 </span>
 <div id="template_map_link_{$row->getId()}" style="display: none;">
-<a href="javascript:void(0);" onclick="ListingGridHandlerObj.productSearchHandler.mapToGeneralId(
+<a href="javascript:void(0);" onclick="ListingGridObj.productSearchHandler.mapToGeneralId(
     {$this->_productId}, '%general_id%', '%options_data%'
 );">{$assignText}</a>
 </div>
@@ -539,7 +539,7 @@ HTML;
     </span>
 </span>
 <div id="template_map_link_{$row->getId()}" style="display: none;">
-<a href="javascript:void(0);" onclick="ListingGridHandlerObj.productSearchHandler.mapToGeneralId(
+<a href="javascript:void(0);" onclick="ListingGridObj.productSearchHandler.mapToGeneralId(
     {$this->_productId}, '{$row->getData('general_id')}', '%options_data%'
 );">{$assignText}</a>
 </div>

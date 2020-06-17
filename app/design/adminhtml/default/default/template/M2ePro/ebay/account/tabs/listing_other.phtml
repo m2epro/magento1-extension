@@ -20,11 +20,7 @@ if (isset($formData[$key])) {
 
 $helper = Mage::helper('M2ePro');
 
-$defaults = array(
-    'other_listings_synchronization' => 1,
-    'other_listings_mapping_mode' => 0,
-    'other_listings_mapping_settings' => array()
-);
+$defaults = Mage::getModel('M2ePro/Ebay_Account_Builder')->getDefaultData();
 $formData = array_merge($defaults, $formData);
 
 $isEdit = !!$this->getRequest()->getParam('id');
@@ -37,19 +33,19 @@ $isEdit = !!$this->getRequest()->getParam('id');
         setTimeout(function() {
 
             $('other_listings_synchronization')
-                .observe('change', EbayAccountHandlerObj.other_listings_synchronization_change)
+                .observe('change', EbayAccountObj.other_listings_synchronization_change)
                 .simulate('change');
             $('other_listings_mapping_mode')
-                .observe('change', EbayAccountHandlerObj.other_listings_mapping_mode_change)
+                .observe('change', EbayAccountObj.other_listings_mapping_mode_change)
                 .simulate('change');
             $('mapping_sku_mode')
-                .observe('change', EbayAccountHandlerObj.mapping_sku_mode_change)
+                .observe('change', EbayAccountObj.mapping_sku_mode_change)
                 .simulate('change');
             $('mapping_title_mode')
-                .observe('change', EbayAccountHandlerObj.mapping_title_mode_change)
+                .observe('change', EbayAccountObj.mapping_title_mode_change)
                 .simulate('change');
             $('mapping_item_id_mode')
-                .observe('change', EbayAccountHandlerObj.mapping_item_id_mode_change)
+                .observe('change', EbayAccountObj.mapping_item_id_mode_change)
                 .simulate('change');
 
             $('ebayAccountEditTabs_listingOther').removeClassName('changed');

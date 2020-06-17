@@ -31,8 +31,8 @@
     )); ?>);
 
     Event.observe(window, 'load', function() {
-        OrderHandlerObj = new OrderHandler('<?php echo json_encode($this->getGridIds()); ?>');
-        OrderHandlerObj.initializeGrids();
+        OrderObj = new Order('<?php echo json_encode($this->getGridIds()); ?>');
+        OrderObj.initializeGrids();
     });
 
 </script>

@@ -15,9 +15,19 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Categories
     protected $_categoryTemplate = null;
 
     /**
-     * @var Ess_M2ePro_Model_Ebay_Template_OtherCategory
+     * @var Ess_M2ePro_Model_Ebay_Template_Category
      */
-    protected $_otherCategoryTemplate = null;
+    protected $_categorySecondaryTemplate = null;
+
+    /**
+     * @var Ess_M2ePro_Model_Ebay_Template_StoreCategory
+     */
+    protected $_storeCategoryTemplate = null;
+
+    /**
+     * @var Ess_M2ePro_Model_Ebay_Template_StoreCategory
+     */
+    protected $_storeCategorySecondaryTemplate = null;
 
     //########################################
 
@@ -54,16 +64,22 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Categories
     public function getCategoriesData()
     {
         $data = array(
-            'category_main_id' => $this->getCategorySource()->getMainCategory(),
-            'category_secondary_id' => 0,
-            'store_category_main_id' => 0,
+            'category_main_id'            => $this->getCategorySource()->getCategoryId(),
+            'category_secondary_id'       => 0,
+            'store_category_main_id'      => 0,
             'store_category_secondary_id' => 0
         );
 
-        if ($this->getOtherCategoryTemplate() !== null) {
-            $data['category_secondary_id'] = $this->getOtherCategorySource()->getSecondaryCategory();
-            $data['store_category_main_id'] = $this->getOtherCategorySource()->getStoreCategoryMain();
-            $data['store_category_secondary_id'] = $this->getOtherCategorySource()->getStoreCategorySecondary();
+        if ($this->getCategorySecondaryTemplate() !== null) {
+            $data['category_secondary_id'] = $this->getCategorySecondarySource()->getCategoryId();
+        }
+
+        if ($this->getStoreCategoryTemplate() !== null) {
+            $data['store_category_main_id'] = $this->getStoreCategorySource()->getCategoryId();
+        }
+
+        if ($this->getStoreCategorySecondaryTemplate() !== null) {
+            $data['store_category_secondary_id'] = $this->getStoreCategorySecondarySource()->getCategoryId();
         }
 
         return $data;
@@ -583,7 +599,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Categories
 
     protected function getEbayMotorsEpidsAttributes()
     {
-        $categoryId = $this->getCategorySource()->getMainCategory();
+        $categoryId = $this->getCategorySource()->getCategoryId();
         $categoryData = $this->getEbayMarketplace()->getCategory($categoryId);
 
         $features = !empty($categoryData['features']) ?
@@ -603,8 +619,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Categories
     protected function getCategoryTemplate()
     {
         if ($this->_categoryTemplate === null) {
-            $this->_categoryTemplate = $this->getListingProduct()
-                                            ->getChildObject()
+            $this->_categoryTemplate = $this->getListingProduct()->getChildObject()
                                             ->getCategoryTemplate();
         }
 
@@ -612,17 +627,42 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Categories
     }
 
     /**
-     * @return Ess_M2ePro_Model_Ebay_Template_OtherCategory
+     * @return Ess_M2ePro_Model_Ebay_Template_Category
      */
-    protected function getOtherCategoryTemplate()
+    protected function getCategorySecondaryTemplate()
     {
-        if ($this->_otherCategoryTemplate === null) {
-            $this->_otherCategoryTemplate = $this->getListingProduct()
-                                                 ->getChildObject()
-                                                 ->getOtherCategoryTemplate();
+        if ($this->_categorySecondaryTemplate === null) {
+            $this->_categorySecondaryTemplate = $this->getListingProduct()->getChildObject()
+                                                     ->getCategorySecondaryTemplate();
         }
 
-        return $this->_otherCategoryTemplate;
+        return $this->_categorySecondaryTemplate;
+    }
+
+    /**
+     * @return Ess_M2ePro_Model_Ebay_Template_StoreCategory
+     */
+    protected function getStoreCategoryTemplate()
+    {
+        if ($this->_storeCategoryTemplate === null) {
+            $this->_storeCategoryTemplate = $this->getListingProduct()->getChildObject()
+                                                 ->getStoreCategoryTemplate();
+        }
+
+        return $this->_storeCategoryTemplate;
+    }
+
+    /**
+     * @return Ess_M2ePro_Model_Ebay_Template_StoreCategory
+     */
+    protected function getStoreCategorySecondaryTemplate()
+    {
+        if ($this->_storeCategorySecondaryTemplate === null) {
+            $this->_storeCategorySecondaryTemplate = $this->getListingProduct()->getChildObject()
+                                                          ->getStoreCategorySecondaryTemplate();
+        }
+
+        return $this->_storeCategorySecondaryTemplate;
     }
 
     //########################################
@@ -651,11 +691,27 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Categories
     }
 
     /**
-     * @return Ess_M2ePro_Model_Ebay_Template_OtherCategory_Source
+     * @return Ess_M2ePro_Model_Ebay_Template_Category_Source
      */
-    protected function getOtherCategorySource()
+    protected function getCategorySecondarySource()
     {
-        return $this->getEbayListingProduct()->getOtherCategoryTemplateSource();
+        return $this->getEbayListingProduct()->getCategorySecondaryTemplateSource();
+    }
+
+    /**
+     * @return Ess_M2ePro_Model_Ebay_Template_StoreCategory_Source
+     */
+    protected function getStoreCategorySource()
+    {
+        return $this->getEbayListingProduct()->getStoreCategoryTemplateSource();
+    }
+
+    /**
+     * @return Ess_M2ePro_Model_Ebay_Template_StoreCategory_Source
+     */
+    protected function getStoreCategorySecondarySource()
+    {
+        return $this->getEbayListingProduct()->getStoreCategorySecondaryTemplateSource();
     }
 
     //########################################

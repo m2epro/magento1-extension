@@ -42,21 +42,19 @@ $attributesByInputTypes = array(
     Event.observe(window, 'load', function() {
         editForm = new varienForm('<?php echo $this->getForm()->getId(); ?>', '<?php echo $this->getValidationUrl(); ?>');
 
-        varienGlobalEvents && varienGlobalEvents.fireEvent('initReady');
+        WalmartConfigurationGeneralObj = new WalmartConfigurationGeneral();
+        WalmartConfigurationGeneralObj.setConstants('<?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Helper_Component_Walmart'); ?>');
+        WalmartConfigurationGeneralObj.setConstants('<?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Helper_Component_Walmart_Configuration'); ?>');
 
-        WalmartGeneralSettingsObj = new WalmartGeneralSettings();
-        WalmartGeneralSettingsObj.setConstants('<?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Helper_Component_Walmart'); ?>');
-        WalmartGeneralSettingsObj.setConstants('<?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Helper_Component_Walmart_Configuration'); ?>');
-
-        $('sku_mode').observe('change', WalmartGeneralSettingsObj.sku_mode_change);
+        $('sku_mode').observe('change', WalmartConfigurationGeneralObj.sku_mode_change);
 
         $('sku_modification_mode')
-            .observe('change', WalmartGeneralSettingsObj.sku_modification_mode_change);
+            .observe('change', WalmartConfigurationGeneralObj.sku_modification_mode_change);
 
-        $('upc_mode').observe('change', WalmartGeneralSettingsObj.upc_mode_change);
-        $('ean_mode').observe('change', WalmartGeneralSettingsObj.ean_mode_change);
-        $('gtin_mode').observe('change', WalmartGeneralSettingsObj.gtin_mode_change);
-        $('isbn_mode').observe('change', WalmartGeneralSettingsObj.isbn_mode_change);
+        $('upc_mode').observe('change', WalmartConfigurationGeneralObj.upc_mode_change);
+        $('ean_mode').observe('change', WalmartConfigurationGeneralObj.ean_mode_change);
+        $('gtin_mode').observe('change', WalmartConfigurationGeneralObj.gtin_mode_change);
+        $('isbn_mode').observe('change', WalmartConfigurationGeneralObj.isbn_mode_change);
     });
 
 </script>

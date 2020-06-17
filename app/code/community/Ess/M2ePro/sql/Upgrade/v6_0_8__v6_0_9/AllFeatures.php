@@ -219,57 +219,57 @@ class Ess_M2ePro_Sql_Upgrade_v6_0_8__v6_0_9_AllFeatures extends Ess_M2ePro_Model
 
         $installer->run(<<<SQL
 
-UPDATE `m2epro_order_item` AS `moi`
-RIGHT JOIN `m2epro_ebay_order_item` AS `meoi` ON `meoi`.`order_item_id` = `moi`.`id`
-LEFT JOIN `m2epro_order` AS `mo` ON `mo`.`id` = `moi`.`order_id`
+UPDATE `{$this->_installer->getTable('m2epro_order_item')}` AS `moi`
+RIGHT JOIN `{$this->_installer->getTable('m2epro_ebay_order_item')}` AS `meoi` ON `meoi`.`order_item_id` = `moi`.`id`
+LEFT JOIN `{$this->_installer->getTable('m2epro_order')}` AS `mo` ON `mo`.`id` = `moi`.`order_id`
 SET `moi`.`qty_reserved` = `meoi`.`qty_purchased`
 WHERE `mo`.`reservation_state` = 1;
 
-UPDATE `m2epro_order_item` AS `moi`
-RIGHT JOIN `m2epro_amazon_order_item` AS `maoi` ON `maoi`.`order_item_id` = `moi`.`id`
-LEFT JOIN `m2epro_order` AS `mo` ON `mo`.`id` = `moi`.`order_id`
+UPDATE `{$this->_installer->getTable('m2epro_order_item')}` AS `moi`
+RIGHT JOIN `{$this->_installer->getTable('m2epro_amazon_order_item')}` AS `maoi` ON `maoi`.`order_item_id` = `moi`.`id`
+LEFT JOIN `{$this->_installer->getTable('m2epro_order')}` AS `mo` ON `mo`.`id` = `moi`.`order_id`
 SET `moi`.`qty_reserved` = `maoi`.`qty_purchased`
 WHERE `mo`.`reservation_state` = 1;
 
-UPDATE `m2epro_order_item` AS `moi`
-RIGHT JOIN `m2epro_buy_order_item` AS `mboi` ON `mboi`.`order_item_id` = `moi`.`id`
-LEFT JOIN `m2epro_order` AS `mo` ON `mo`.`id` = `moi`.`order_id`
+UPDATE `{$this->_installer->getTable('m2epro_order_item')}` AS `moi`
+RIGHT JOIN `{$this->_installer->getTable('m2epro_buy_order_item')}` AS `mboi` ON `mboi`.`order_item_id` = `moi`.`id`
+LEFT JOIN `{$this->_installer->getTable('m2epro_order')}` AS `mo` ON `mo`.`id` = `moi`.`order_id`
 SET `moi`.`qty_reserved` = `mboi`.`qty`
 WHERE `mo`.`reservation_state` = 1;
 
-UPDATE `m2epro_order_item` AS `moi`
-RIGHT JOIN `m2epro_play_order_item` AS `mpoi` ON `mpoi`.`order_item_id` = `moi`.`id`
-LEFT JOIN `m2epro_order` AS `mo` ON `mo`.`id` = `moi`.`order_id`
+UPDATE `{$this->_installer->getTable('m2epro_order_item')}` AS `moi`
+RIGHT JOIN `{$this->_installer->getTable('m2epro_play_order_item')}` AS `mpoi` ON `mpoi`.`order_item_id` = `moi`.`id`
+LEFT JOIN `{$this->_installer->getTable('m2epro_order')}` AS `mo` ON `mo`.`id` = `moi`.`order_id`
 SET `moi`.`qty_reserved` = `mpoi`.`qty`
 WHERE `mo`.`reservation_state` = 1;
 
-UPDATE `m2epro_config`
+UPDATE `{$this->_installer->getTable('m2epro_config')}`
 SET `value` = 'http://docs.m2epro.com/display/eBayMagentoV6/M2E+Pro+-+User+Guide+(eBay)/'
 WHERE `group` = '/view/ebay/support/'
 AND   `key` = 'documentation_url';
 
-UPDATE `m2epro_config`
+UPDATE `{$this->_installer->getTable('m2epro_config')}`
 SET `group` = '/view/ebay/template/selling_format/'
 WHERE `group` = '/view/ebay/template/shipping/'
 AND   `key` = 'show_tax_category';
 
-UPDATE `m2epro_ebay_marketplace`
+UPDATE `{$this->_installer->getTable('m2epro_ebay_marketplace')}`
 SET `is_global_shipping_program` = 1
 WHERE `marketplace_id` = '9';
 
-UPDATE `m2epro_ebay_marketplace`
+UPDATE `{$this->_installer->getTable('m2epro_ebay_marketplace')}`
 SET `is_multi_currency` = 1
 WHERE `marketplace_id` IN (2, 19);
 
-UPDATE `m2epro_ebay_marketplace`
+UPDATE `{$this->_installer->getTable('m2epro_ebay_marketplace')}`
 SET `is_charity` = 1
 WHERE `marketplace_id` IN (1, 3, 9);
 
-UPDATE `m2epro_ebay_marketplace`
+UPDATE `{$this->_installer->getTable('m2epro_ebay_marketplace')}`
 SET `is_stp` = 1
 WHERE `marketplace_id` IN (1, 3, 8);
 
-UPDATE `m2epro_ebay_marketplace`
+UPDATE `{$this->_installer->getTable('m2epro_ebay_marketplace')}`
 SET `is_stp_advanced` = 1
 WHERE `marketplace_id` IN (3, 8);
 
@@ -290,7 +290,9 @@ SQL;
 
             $installer->run(<<<SQL
 
-INSERT INTO `m2epro_config` (`group`,`key`,`value`,`notice`,`update_date`,`create_date`) VALUES
+INSERT INTO `{$this->_installer->getTable('m2epro_config')}` 
+(`group`,`key`,`value`,`notice`,`update_date`,`create_date`) 
+VALUES
 ('/buy/connector/list/', 'check_sku_existence', '1', '0 - disable\r\n1 - enable',
  '2013-09-18 00:00:00', '2013-09-18 00:00:00');
 
@@ -370,7 +372,7 @@ SQL
 
         $installer->run(<<<SQL
 
-UPDATE `m2epro_processing_request`
+UPDATE `{$this->_installer->getTable('m2epro_processing_request')}`
 SET `responser_model` = REPLACE(
   REPLACE(
     `responser_model`,
@@ -381,7 +383,7 @@ SET `responser_model` = REPLACE(
   'Connector_'
 );
 
-DELETE FROM `m2epro_locked_object`
+DELETE FROM `{$this->_installer->getTable('m2epro_locked_object')}`
 WHERE `related_hash` IN (
     SELECT `hash` FROM `m2epro_processing_request`
     WHERE `responser_model` LIKE '%Amazon_Search_%'
@@ -389,7 +391,7 @@ WHERE `related_hash` IN (
        OR `responser_model` LIKE '%Play_Search_%'
 );
 
-DELETE FROM `m2epro_processing_request`
+DELETE FROM `{$this->_installer->getTable('m2epro_processing_request')}`
 WHERE `responser_model` LIKE '%Amazon_Search_%'
    OR `responser_model` LIKE '%Buy_Search_%'
    OR `responser_model` LIKE '%Play_Search_%';

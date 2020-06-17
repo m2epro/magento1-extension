@@ -605,7 +605,6 @@ class Ess_M2ePro_Observer_Product_AddUpdate_After extends Ess_M2ePro_Observer_Pr
                             array('!from'=>$oldValue,'!to'=>$newValue)
                         ),
                         Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE,
-                        Ess_M2ePro_Model_Log_Abstract::PRIORITY_LOW,
                         array('variation_options' => array($attribute => $option))
                     );
                 }
@@ -625,7 +624,6 @@ class Ess_M2ePro_Observer_Product_AddUpdate_After extends Ess_M2ePro_Observer_Pr
                     array('!from'=>$oldValue,'!to'=>$newValue)
                 ),
                 Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE,
-                Ess_M2ePro_Model_Log_Abstract::PRIORITY_LOW,
                 $additionalData
             );
 
@@ -643,8 +641,7 @@ class Ess_M2ePro_Observer_Product_AddUpdate_After extends Ess_M2ePro_Observer_Pr
                 'From [%from%] to [%to%]'.$messagePostfix.'.',
                 array('!from'=>$oldValue,'!to'=>$newValue)
             ),
-            Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE,
-            Ess_M2ePro_Model_Log_Abstract::PRIORITY_LOW
+            Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE
         );
     }
 

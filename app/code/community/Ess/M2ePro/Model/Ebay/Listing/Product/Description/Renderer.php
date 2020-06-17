@@ -294,34 +294,26 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Description_Renderer
 
     protected function getPrimaryCategoryId()
     {
-        if (!$this->listingProduct->isSetCategoryTemplate()) {
-            return 'N/A';
-        }
-
-        $category = $this->listingProduct->getCategoryTemplateSource()->getMainCategory();
-        return $category ? $category : 'N/A';
+        $source = $this->listingProduct->getCategoryTemplateSource();
+        return $source ? $source->getCategoryId() : 'N/A';
     }
 
     protected function getSecondaryCategoryId()
     {
-        if (!$this->listingProduct->isSetOtherCategoryTemplate()) {
-            return 'N/A';
-        }
-
-        $category = $this->listingProduct->getOtherCategoryTemplateSource()->getSecondaryCategory();
-        return $category ? $category : 'N/A';
+        $source = $this->listingProduct->getCategorySecondaryTemplateSource();
+        return $source ? $source->getCategoryId() : 'N/A';
     }
 
     protected function getStorePrimaryCategoryId()
     {
-        $category = $this->listingProduct->getOtherCategoryTemplateSource()->getStoreCategoryMain();
-        return $category ? $category : 'N/A';
+        $source = $this->listingProduct->getStoreCategoryTemplateSource();
+        return $source ? $source->getCategoryId() : 'N/A';
     }
 
     protected function getStoreSecondaryCategoryId()
     {
-        $category = $this->listingProduct->getOtherCategoryTemplateSource()->getStoreCategorySecondary();
-        return $category ? $category : 'N/A';
+        $source = $this->listingProduct->getStoreCategorySecondaryTemplateSource();
+        return $source ? $source->getCategoryId() : 'N/A';
     }
 
     // ---------------------------------------

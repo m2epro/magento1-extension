@@ -171,13 +171,11 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation extends Ess_M2ePro_Model
 
     /**
      * @param bool $asObjects
-     * @param array $filters
-     * @param bool $tryToGetFromStorage
-     * @return array
+     * @return Ess_M2ePro_Model_Listing_Product_Variation_Option[]|array
      */
-    public function getOptions($asObjects = false, array $filters = array(), $tryToGetFromStorage = true)
+    public function getOptions($asObjects = false)
     {
-        return $this->getParentObject()->getOptions($asObjects, $filters, $tryToGetFromStorage);
+        return $this->getParentObject()->getOptions($asObjects);
     }
 
     //########################################

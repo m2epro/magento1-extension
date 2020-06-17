@@ -27,38 +27,38 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
             ->addJs('M2ePro/Plugin/DropDown.js')
             ->addJs('M2ePro/Plugin/ProgressBar.js')
             ->addJs('M2ePro/Plugin/AreaWrapper.js')
-            ->addJs('M2ePro/Listing/ProductGridHandler.js')
-            ->addJs('M2ePro/Listing/Category/TreeHandler.js')
-            ->addJs('M2ePro/Listing/AutoActionHandler.js')
-            ->addJs('M2ePro/Walmart/Listing/AutoActionHandler.js')
+            ->addJs('M2ePro/Listing/ProductGrid.js')
+            ->addJs('M2ePro/Listing/Category/Tree.js')
+            ->addJs('M2ePro/Listing/AutoAction.js')
+            ->addJs('M2ePro/Walmart/Listing/AutoAction.js')
 
-            ->addJs('M2ePro/GridHandler.js')
+            ->addJs('M2ePro/Grid.js')
             ->addJs('M2ePro/Listing/EditListingTitle.js')
-            ->addJs('M2ePro/Listing/GridHandler.js')
-            ->addJs('M2ePro/Listing/Other/GridHandler.js')
+            ->addJs('M2ePro/Listing/Grid.js')
+            ->addJs('M2ePro/Listing/Other.js')
+            ->addJs('M2ePro/Listing/Other/Grid.js')
 
-            ->addJs('M2ePro/ActionHandler.js')
-            ->addJs('M2ePro/Listing/ActionHandler.js')
-            ->addJs('M2ePro/Listing/MovingHandler.js')
+            ->addJs('M2ePro/Action.js')
+            ->addJs('M2ePro/Listing/Action.js')
+            ->addJs('M2ePro/Listing/Moving.js')
             ->addJs('M2ePro/Walmart/Listing.js')
-            ->addJs('M2ePro/Walmart/Listing/GridHandler.js')
-            ->addJs('M2ePro/Walmart/Listing/ActionHandler.js')
-            ->addJs('M2ePro/Walmart/Listing/Template/CategoryHandler.js')
-            ->addJs('M2ePro/Walmart/Listing/VariationProductManageHandler.js')
-            ->addJs('M2ePro/Walmart/Listing/Other/GridHandler.js')
-            ->addJs('M2ePro/Walmart/Listing/Product/EditChannelDataHandler.js')
+            ->addJs('M2ePro/Walmart/Listing/Grid.js')
+            ->addJs('M2ePro/Walmart/Listing/Action.js')
+            ->addJs('M2ePro/Walmart/Listing/Template/Category.js')
+            ->addJs('M2ePro/Walmart/Listing/VariationProductManage.js')
+            ->addJs('M2ePro/Walmart/Listing/Other/Grid.js')
+            ->addJs('M2ePro/Walmart/Listing/Product/EditChannelData.js')
 
-            ->addJs('M2ePro/TemplateHandler.js')
-            ->addJs('M2ePro/Walmart/Listing/SettingsHandler.js')
-            ->addJs('M2ePro/Walmart/Listing/ChannelSettingsHandler.js')
-            ->addJs('M2ePro/Walmart/Listing/ProductsFilterHandler.js')
+            ->addJs('M2ePro/TemplateManager.js')
+            ->addJs('M2ePro/Walmart/Listing/Settings.js')
+            ->addJs('M2ePro/Walmart/Listing/ProductsFilter.js')
 
-            ->addJs('M2ePro/Walmart/Listing/Product/VariationHandler.js')
+            ->addJs('M2ePro/Walmart/Listing/Product/Variation.js')
 
-            ->addJs('M2ePro/Listing/Other/AutoMappingHandler.js')
-            ->addJs('M2ePro/Listing/Other/MappingHandler.js')
-            ->addJs('M2ePro/Listing/Other/RemovingHandler.js')
-            ->addJs('M2ePro/Listing/Other/UnmappingHandler.js');
+            ->addJs('M2ePro/Listing/Other/AutoMapping.js')
+            ->addJs('M2ePro/Listing/Other/Mapping.js')
+            ->addJs('M2ePro/Listing/Other/Removing.js')
+            ->addJs('M2ePro/Listing/Other/Unmapping.js');
 
         $this->_initPopUp();
 
@@ -204,8 +204,7 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
 
         // ---------------------------------------
 
-        Mage::helper('M2ePro/Data_Global')->setValue('temp_data', $model->getData());
-        Mage::helper('M2ePro/Data_Global')->setValue('marketplace_id', $model->getMarketplaceId());
+        Mage::helper('M2ePro/Data_Global')->setValue('temp_data', $model);
 
         // Set rule model
         // ---------------------------------------
@@ -224,8 +223,7 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
         $id = $this->getRequest()->getParam('id');
         $model = Mage::helper('M2ePro/Component_Walmart')->getCachedObject('Listing', $id);
 
-        Mage::helper('M2ePro/Data_Global')->setValue('temp_data', $model->getData());
-        Mage::helper('M2ePro/Data_Global')->setValue('marketplace_id', $model->getMarketplaceId());
+        Mage::helper('M2ePro/Data_Global')->setValue('temp_data', $model);
 
         // Set rule model
         // ---------------------------------------
@@ -249,7 +247,7 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
             return $this->_redirect('*/adminhtml_walmart_listing/index');
         }
 
-        Mage::helper('M2ePro/Data_Global')->setValue('temp_data', $listing->getData());
+        Mage::helper('M2ePro/Data_Global')->setValue('temp_data', $listing);
 
         $this->_initAction();
         $this->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_walmart_listing_edit'));

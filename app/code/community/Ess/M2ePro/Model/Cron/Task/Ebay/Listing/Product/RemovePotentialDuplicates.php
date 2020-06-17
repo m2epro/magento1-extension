@@ -301,8 +301,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_RemovePotentialDuplicates
             $logsActionId,
             Ess_M2ePro_Model_Listing_Log::ACTION_CHANNEL_CHANGE,
             $statusLogMessage,
-            Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS,
-            Ess_M2ePro_Model_Log_Abstract::PRIORITY_LOW
+            Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS
         );
 
         $additionalData = $listingProduct->getAdditionalData();
@@ -333,8 +332,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_RemovePotentialDuplicates
             $logsActionId,
             Ess_M2ePro_Model_Listing_Log::ACTION_CHANNEL_CHANGE,
             $duplicateDeletedMessage,
-            Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING,
-            Ess_M2ePro_Model_Log_Abstract::PRIORITY_LOW
+            Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING
         );
     }
 

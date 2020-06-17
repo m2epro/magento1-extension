@@ -102,7 +102,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Order_View_Form extends Ess_M2ePro_Block
             $data = array(
                 'class'   => '',
                 'label'   => Mage::helper('M2ePro')->__('Use Amazon\'s Shipping Services'),
-                'onclick' => "OrderMerchantFulfillmentHandlerObj.getPopupAction({$orderId});",
+                'onclick' => "AmazonOrderMerchantFulfillmentObj.getPopupAction({$orderId});",
                 'style'   => 'margin-top: 3px; margin-left: 6px;'
             );
             $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
@@ -115,7 +115,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Order_View_Form extends Ess_M2ePro_Block
             ->setData(
                 array(
                 'label'   => Mage::helper('M2ePro')->__('Add Note'),
-                'onclick' => "OrderNoteHandlerObj.openAddNotePopup({$this->order->getId()})",
+                'onclick' => "OrderNoteObj.openAddNotePopup({$this->order->getId()})",
                 'class'   => 'order_note_btn',
                 )
             );

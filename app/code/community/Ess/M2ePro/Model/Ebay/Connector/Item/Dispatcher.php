@@ -204,8 +204,7 @@ class Ess_M2ePro_Model_Ebay_Connector_Item_Dispatcher
             $this->_logsActionId,
             $action,
             $exception->getMessage(),
-            Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
-            Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH
+            Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR
         );
     }
 

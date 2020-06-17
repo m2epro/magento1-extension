@@ -20,4 +20,36 @@ class Ess_M2ePro_Model_Resource_Ebay_Listing_Other
     }
 
     //########################################
+
+    public function resetEntities()
+    {
+        $listingOther = Mage::getModel('M2ePro/Listing_Other');
+        $ebayListingOther = Mage::getModel('M2ePro/Ebay_Listing_Other');
+
+        $stmt = Mage::helper('M2ePro/Component_Ebay')->getCollection('Listing_Other')->getSelect()->query();
+
+        $itemIds = array();
+        foreach ($stmt as $row) {
+            $listingOther->setData($row);
+            $ebayListingOther->setData($row);
+
+            $listingOther->setChildObject($ebayListingOther);
+            $ebayListingOther->setParentObject($listingOther);
+            $itemIds[] = $ebayListingOther->getItemId();
+
+            $listingOther->deleteInstance();
+        }
+
+        $tableName = Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('m2epro_ebay_item');
+        $writeConnection = Mage::getSingleton('core/resource')->getConnection('core_write');
+        foreach(array_chunk($itemIds, 1000) as $chunkItemIds) {
+            $writeConnection->delete($tableName, array('item_id IN (?)' => $chunkItemIds));
+        }
+
+        foreach (Mage::helper('M2ePro/Component_Ebay')->getCollection('Account') as $account) {
+            $account->setData('other_listings_last_synchronization', null)->save();
+        }
+    }
+
+    //########################################
 }

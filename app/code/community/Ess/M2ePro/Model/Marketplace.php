@@ -12,6 +12,7 @@ use Ess_M2ePro_Model_Walmart_Marketplace as WalmartMarketplace;
 
 /**
  * @method AmazonMarketplace|EbayMarketplace|WalmartMarketplace getChildObject()
+ * @method Ess_M2ePro_Model_Resource_Marketplace getResource()
  */
 class Ess_M2ePro_Model_Marketplace extends Ess_M2ePro_Model_Component_Parent_Abstract
 {
@@ -34,70 +35,6 @@ class Ess_M2ePro_Model_Marketplace extends Ess_M2ePro_Model_Component_Parent_Abs
     public function isLocked()
     {
         return true;
-    }
-
-    public function deleteInstance()
-    {
-        if ($this->isLocked()) {
-            return false;
-        }
-
-        $otherListings = $this->getOtherListings(true);
-        foreach ($otherListings as $otherListing) {
-            $otherListing->deleteInstance();
-        }
-
-        $orders = $this->getOrders(true);
-        foreach ($orders as $order) {
-            $order->deleteInstance();
-        }
-
-        $this->deleteChildInstance();
-        $this->delete();
-
-        return true;
-    }
-
-    //########################################
-
-    /**
-     * @param bool $asObjects
-     * @param array $filters
-     * @return array
-     * @throws Ess_M2ePro_Model_Exception_Logic
-     */
-    public function getOtherListings($asObjects = false, array $filters = array())
-    {
-        $otherListings = $this->getRelatedComponentItems('Listing_Other', 'marketplace_id', $asObjects, $filters);
-
-        if ($asObjects) {
-            foreach ($otherListings as $otherListing) {
-                /** @var $otherListing Ess_M2ePro_Model_Listing_Other */
-                $otherListing->setMarketplace($this);
-            }
-        }
-
-        return $otherListings;
-    }
-
-    /**
-     * @param bool $asObjects
-     * @param array $filters
-     * @return array
-     * @throws Ess_M2ePro_Model_Exception_Logic
-     */
-    public function getOrders($asObjects = false, array $filters = array())
-    {
-        $orders = $this->getRelatedComponentItems('Order', 'marketplace_id', $asObjects, $filters);
-
-        if ($asObjects) {
-            foreach ($orders as $order) {
-                /** @var $order Ess_M2ePro_Model_Order */
-                $order->setMarketplace($this);
-            }
-        }
-
-        return $orders;
     }
 
     //########################################

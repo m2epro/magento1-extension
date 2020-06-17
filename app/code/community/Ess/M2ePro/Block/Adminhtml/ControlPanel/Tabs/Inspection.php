@@ -14,11 +14,7 @@ class Ess_M2ePro_Block_Adminhtml_ControlPanel_Tabs_Inspection extends Mage_Admin
     {
         parent::__construct();
 
-        // Initialization block
-        // ---------------------------------------
         $this->setId('controlPanelInspection');
-        // ---------------------------------------
-
         $this->setTemplate('M2ePro/controlPanel/tabs/inspection.phtml');
     }
 
@@ -26,20 +22,12 @@ class Ess_M2ePro_Block_Adminhtml_ControlPanel_Tabs_Inspection extends Mage_Admin
 
     protected function _beforeToHtml()
     {
-        // ---------------------------------------
         $this->setChild(
             'requirements', $this->getLayout()->createBlock(
                 'M2ePro/adminhtml_controlPanel_inspection_requirements'
             )
         );
-        $this->setChild(
-            'cron', $this->getLayout()->createBlock(
-                'M2ePro/adminhtml_controlPanel_inspection_cron'
-            )
-        );
-        // ---------------------------------------
 
-        // ---------------------------------------
         $this->setChild(
             'caches', $this->getLayout()->createBlock(
                 'M2ePro/adminhtml_controlPanel_inspection_caches'
@@ -61,16 +49,10 @@ class Ess_M2ePro_Block_Adminhtml_ControlPanel_Tabs_Inspection extends Mage_Admin
             )
         );
         $this->setChild(
-            'installation', $this->getLayout()->createBlock(
-                'M2ePro/adminhtml_controlPanel_inspection_installation'
-            )
-        );
-        $this->setChild(
             'other_issues', $this->getLayout()->createBlock(
                 'M2ePro/adminhtml_controlPanel_inspection_otherIssues'
             )
         );
-        // ---------------------------------------
 
         return parent::_beforeToHtml();
     }

@@ -408,7 +408,7 @@ SQL
 
             $installer->run(<<<SQL
 
-    UPDATE `m2epro_amazon_template_synchronization`
+    UPDATE `{$this->_installer->getTable('m2epro_amazon_template_synchronization')}`
     SET `revise_change_shipping_override_template` = 1;
 
 SQL
@@ -455,7 +455,8 @@ SQL
 
             $installer->run(<<<SQL
 
-        INSERT INTO `m2epro_config` (`group`,`key`,`value`,`notice`,`update_date`,`create_date`)
+        INSERT INTO `{$this->_installer->getTable('m2epro_config')}` 
+        (`group`,`key`,`value`,`notice`,`update_date`,`create_date`)
         VALUES ('/debug/logging/', 'send_to_server', 1, '0 - disable,\r\n1 - enable',
                 '2015-08-12 00:00:00', '2015-08-12 00:00:00'),
                ('/ebay/description/', 'upload_images_mode', 2, NULL, '2015-08-21 00:00:00', '2015-08-21 00:00:00');
@@ -477,7 +478,8 @@ SQL
 
             $installer->run(<<<SQL
 
-        INSERT INTO `m2epro_wizard` (`nick`, `view`, `status`, `step`, `type`, `priority`)
+        INSERT INTO `{$this->_installer->getTable('m2epro_wizard')}` 
+        (`nick`, `view`, `status`, `step`, `type`, `priority`)
         VALUES ('amazonShippingOverridePolicy', 'common', 0, NULL, 1, 9);
 SQL
             );
@@ -487,19 +489,19 @@ SQL
 
         $installer->run(<<<SQL
 
-    UPDATE `m2epro_ebay_marketplace`
+    UPDATE `{$this->_installer->getTable('m2epro_ebay_marketplace')}`
     SET `is_international_shipping_rate_table` = 1
     WHERE `marketplace_id` = 1;
 
-    UPDATE `m2epro_ebay_marketplace`
+    UPDATE `{$this->_installer->getTable('m2epro_ebay_marketplace')}`
     SET `is_holiday_return` = 1
     WHERE `marketplace_id` = 19;
 
-    UPDATE `m2epro_ebay_marketplace`
+    UPDATE `{$this->_installer->getTable('m2epro_ebay_marketplace')}`
     SET `is_freight_shipping` = 1
     WHERE `marketplace_id` = 19;
 
-    UPDATE `m2epro_synchronization_config`
+    UPDATE `{$this->_installer->getTable('m2epro_synchronization_config')}`
     SET `value` = 1
     WHERE (`group` = '/ebay/other_listings/' AND `key` = 'mode')
     OR    (`group` = '/amazon/other_listings/' AND `key` = 'mode')
@@ -508,12 +510,12 @@ SQL
     OR    (`group` = '/amazon/other_listings/update/' AND `key` = 'mode')
     OR    (`group` = '/buy/other_listings/update/' AND `key` = 'mode');
 
-    UPDATE `m2epro_wizard` as `mw`
+    UPDATE `{$this->_installer->getTable('m2epro_wizard')}` as `mw`
     SET `mw`.`status` = 3
     WHERE `mw`.`nick` = 'amazonShippingOverridePolicy'
     AND (
         (SELECT `mc`.`value`
-         FROM `m2epro_config` as `mc`
+         FROM `{$this->_installer->getTable('m2epro_config')}` as `mc`
          WHERE `mc`.`value` IS NOT NULL
          AND `mc`.`group` = '/component/amazon/'
          AND `mc`.`key` = 'mode'
@@ -522,7 +524,7 @@ SQL
          OR
 
         (SELECT `mc`.`value`
-         FROM `m2epro_config` as `mc`
+         FROM `{$this->_installer->getTable('m2epro_config')}` as `mc`
          WHERE `mc`.`value` IS NOT NULL
          AND `mc`.`group` = '/component/amazon/'
          AND `mc`.`key` = 'allowed'
@@ -530,7 +532,7 @@ SQL
 
          OR
 
-         (SELECT COUNT(`mm`.`id`) FROM `m2epro_marketplace` as `mm`
+         (SELECT COUNT(`mm`.`id`) FROM `{$this->_installer->getTable('m2epro_marketplace')}` as `mm`
           WHERE `mm`.`component_mode` = 'amazon'
           AND `mm`.`status` = 1) = 0
     );

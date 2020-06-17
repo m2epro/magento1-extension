@@ -336,17 +336,17 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Repricing_Synchronize
 
     protected function getAccountData($account, $key)
     {
-        return $this->getRegistryValue($key . $account->getId() . '/');
+        return Mage::helper('M2ePro/Module')->getRegistryValue($key . $account->getId() . '/');
     }
 
     protected function setAccountData($account, $key, $value)
     {
-        $this->setRegistryValue($key . $account->getId() . '/', $value);
+        Mage::helper('M2ePro/Module')->setRegistryValue($key . $account->getId() . '/', $value);
     }
 
     protected function deleteAccountData($account, $key)
     {
-        $this->deleteRegistryValue($key . $account->getId() . '/');
+        Mage::helper('M2ePro/Module')->deleteRegistryValue($key . $account->getId() . '/');
     }
 
     //####################################

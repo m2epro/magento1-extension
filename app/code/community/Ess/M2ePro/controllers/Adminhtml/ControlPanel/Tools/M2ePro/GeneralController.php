@@ -12,30 +12,6 @@ class Ess_M2ePro_Adminhtml_ControlPanel_Tools_M2ePro_GeneralController
     //########################################
 
     /**
-     * @title "Clear Cache"
-     * @description "Clear extension cache"
-     * @confirm "Are you sure?"
-     */
-    public function clearExtensionCacheAction()
-    {
-        Mage::helper('M2ePro/Module')->clearCache();
-        $this->_getSession()->addSuccess('Extension cache was successfully cleared.');
-        $this->_redirectUrl(Mage::helper('M2ePro/View_ControlPanel')->getPageToolsTabUrl());
-    }
-
-    /**
-     * @title "Clear Config Cache"
-     * @description "Clear config cache"
-     * @confirm "Are you sure?"
-     */
-    public function clearConfigCacheAction()
-    {
-        Mage::helper('M2ePro/Module')->clearConfigCache();
-        $this->_getSession()->addSuccess('Config cache was successfully cleared.');
-        $this->_redirectUrl(Mage::helper('M2ePro/View_ControlPanel')->getPageToolsTabUrl());
-    }
-
-    /**
      * @title "Clear Variables Dir"
      * @description "Clear Variables Dir"
      * @confirm "Are you sure?"
@@ -767,7 +743,7 @@ HTML;
 
         try {
             $response = Mage::helper('M2ePro/Server_Request')->single(
-                array('timeout' => 30), null, null, false, false
+                array('timeout' => 30), null, null, false, false, true
             );
         } catch (Ess_M2ePro_Model_Exception_Connection $e) {
             $resultHtml .= "<h2>{$e->getMessage()}</h2><pre><br/>";

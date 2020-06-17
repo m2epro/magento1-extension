@@ -18,8 +18,8 @@ class Ess_M2ePro_Adminhtml_Ebay_AccountPickupStoreController
 
         $this->getLayout()->getBlock('head')
             ->setCanLoadExtJs(true)
-            ->addJs('M2ePro/AttributeHandler.js')
-            ->addJs('M2ePro/Ebay/PickupStoreHandler.js');
+            ->addJs('M2ePro/Attribute.js')
+            ->addJs('M2ePro/Ebay/PickupStore.js');
 
         $this->_initPopUp();
         $this->setPageHelpLink();

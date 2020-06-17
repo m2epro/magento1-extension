@@ -44,12 +44,12 @@ $urls = json_encode($urls);
     )) ?>);
 </script>
 <script type="text/javascript">
-    TemplateHandlerObj = new TemplateHandler();
+    TemplateManagerObj = new TemplateManager();
 
-    EbayListingTemplateSwitcherHandlerObj = new EbayListingTemplateSwitcherHandler();
-    EbayListingTemplateSwitcherHandlerObj.storeId = <?php echo (int)$store->getId(); ?>;
-    EbayListingTemplateSwitcherHandlerObj.marketplaceId = <?php echo (int)$marketplace->getId(); ?>;
-    EbayListingTemplateSwitcherHandlerObj.listingProductIds = '<?php echo $this->getRequest()->getParam('ids') ?>';
+    EbayListingTemplateSwitcherObj = new EbayListingTemplateSwitcher();
+    EbayListingTemplateSwitcherObj.storeId = <?php echo (int)$store->getId(); ?>;
+    EbayListingTemplateSwitcherObj.marketplaceId = <?php echo (int)$marketplace->getId(); ?>;
+    EbayListingTemplateSwitcherObj.listingProductIds = '<?php echo $this->getRequest()->getParam('ids') ?>';
 </script>
 <style type="text/css">
     #template_payment_data_container,

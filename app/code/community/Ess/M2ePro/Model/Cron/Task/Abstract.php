@@ -58,16 +58,7 @@ abstract class Ess_M2ePro_Model_Cron_Task_Abstract
                 array('progress_nick' => $this->getNick())
             );
         } catch (Exception $exception) {
-            $this->getOperationHistory()->addContentData(
-                'exceptions', array(
-                    'message' => $exception->getMessage(),
-                    'file'    => $exception->getFile(),
-                    'line'    => $exception->getLine(),
-                    'trace'   => $exception->getTraceAsString(),
-                )
-            );
-
-            Mage::helper('M2ePro/Module_Exception')->process($exception);
+            $this->processTaskException($exception);
         }
 
         $this->afterEnd();
@@ -187,16 +178,20 @@ abstract class Ess_M2ePro_Model_Cron_Task_Abstract
     protected function initialize()
     {
         Mage::helper('M2ePro/Module_Exception')->setFatalErrorHandler();
+        Mage::getModel('M2ePro/Synchronization_Log')->setFatalErrorHandler();
     }
 
     protected function updateLastAccess()
     {
-        $this->setCacheConfigValue('last_access', Mage::helper('M2ePro')->getCurrentGmtDate());
+        $this->setConfigValue('last_access', Mage::helper('M2ePro')->getCurrentGmtDate());
     }
 
     protected function updateLastRun()
     {
-        $this->setCacheConfigValue('last_run', Mage::helper('M2ePro')->getCurrentGmtDate());
+        Mage::helper('M2ePro/Module')->setRegistryValue(
+            $this->getConfigGroup() . 'last_run/',
+            Mage::helper('M2ePro')->getCurrentGmtDate()
+        );
     }
 
     // ---------------------------------------
@@ -249,7 +244,7 @@ abstract class Ess_M2ePro_Model_Cron_Task_Abstract
      */
     protected function isIntervalExceeded()
     {
-        $lastRun = $this->getCacheConfigValue('last_run');
+        $lastRun = Mage::helper('M2ePro/Module')->getRegistryValue($this->getConfigGroup() . 'last_run/');
         if ($lastRun === null) {
             return true;
         }
@@ -292,11 +287,7 @@ abstract class Ess_M2ePro_Model_Cron_Task_Abstract
             )
         );
 
-        $this->getSynchronizationLog()->addMessage(
-            Mage::helper('M2ePro')->__($exception->getMessage()),
-            Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
-            Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH
-        );
+        $this->getSynchronizationLog()->addMessageFromException($exception);
 
         Mage::helper('M2ePro/Module_Exception')->process($exception);
     }
@@ -314,37 +305,8 @@ abstract class Ess_M2ePro_Model_Cron_Task_Abstract
 
         $this->getSynchronizationLog()->addMessage(
             $message,
-            Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
-            Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH
+            Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR
         );
-    }
-
-    //########################################
-
-    protected function setRegistryValue($key, $value)
-    {
-        $registryModel = Mage::getModel('M2ePro/Registry')->load($key, 'key');
-        $registryModel->setData('key', $key);
-        $registryModel->setData('value', $value);
-        $registryModel->save();
-    }
-
-    protected function deleteRegistryValue($key)
-    {
-        $registryModel = Mage::getModel('M2ePro/Registry');
-        $registryModel->load($key, 'key');
-
-        if ($registryModel->getId()) {
-            $registryModel->delete();
-        }
-    }
-
-    protected function getRegistryValue($key)
-    {
-        $registryModel = Mage::getModel('M2ePro/Registry');
-        $registryModel->load($key, 'key');
-
-        return $registryModel->getValue();
     }
 
     //########################################
@@ -352,11 +314,6 @@ abstract class Ess_M2ePro_Model_Cron_Task_Abstract
     protected function getConfig()
     {
         return Mage::helper('M2ePro/Module')->getConfig();
-    }
-
-    protected function getCacheConfig()
-    {
-        return Mage::helper('M2ePro/Module')->getCacheConfig();
     }
 
     protected function getConfigGroup()
@@ -374,18 +331,6 @@ abstract class Ess_M2ePro_Model_Cron_Task_Abstract
     protected function getConfigValue($key)
     {
         return $this->getConfig()->getGroupValue($this->getConfigGroup(), $key);
-    }
-
-    // ---------------------------------------
-
-    protected function setCacheConfigValue($key, $value)
-    {
-        return $this->getCacheConfig()->setGroupValue($this->getConfigGroup(), $key, $value);
-    }
-
-    protected function getCacheConfigValue($key)
-    {
-        return $this->getCacheConfig()->getGroupValue($this->getConfigGroup(), $key);
     }
 
     //########################################

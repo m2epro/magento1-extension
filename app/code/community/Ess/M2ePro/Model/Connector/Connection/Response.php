@@ -8,6 +8,8 @@
 
 class Ess_M2ePro_Model_Connector_Connection_Response
 {
+    const SERVER_MAINTENANCE_CODE = 3;
+
     protected $_data = array();
 
     /** @var Ess_M2ePro_Model_Connector_Connection_Response_Message_Set $_messages */
@@ -110,7 +112,7 @@ class Ess_M2ePro_Model_Connector_Connection_Response
                 continue;
             }
 
-            if ($message->getCode() == 3) {
+            if ($message->getCode() == self::SERVER_MAINTENANCE_CODE) {
                 return true;
             }
         }

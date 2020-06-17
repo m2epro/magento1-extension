@@ -73,7 +73,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Account_Grid extends Mage_Adminhtml_Bl
                     ),
                     array(
                         'caption'        => Mage::helper('M2ePro')->__('Delete'),
-                        'onclick_action' => 'AccountGridHandlerObj.accountHandler.on_delete_popup',
+                        'onclick_action' => 'AccountGridObj.accountHandler.on_delete_popup',
                         'field'          => 'id',
                     )
                 )
@@ -155,14 +155,14 @@ abstract class Ess_M2ePro_Block_Adminhtml_Account_Grid extends Mage_Adminhtml_Bl
         M2ePro.translator.add({$translations});
         M2ePro.url.add({$url});
 
-        if (typeof AccountGridHandlerObj != 'undefined') {
-            AccountGridHandlerObj.afterInitPage();
+        if (typeof AccountGridObj != 'undefined') {
+            AccountGridObj.afterInitPage();
         }
 
         Event.observe(window, 'load', function() {
             setTimeout(function() {
-                AccountGridHandlerObj = new AccountGridHandler('{$this->getId()}');
-                AccountGridHandlerObj.afterInitPage();
+                AccountGridObj = new AccountGrid('{$this->getId()}');
+                AccountGridObj.afterInitPage();
             }, 350);
         });
 JS;

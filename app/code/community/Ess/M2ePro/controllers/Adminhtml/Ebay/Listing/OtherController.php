@@ -25,17 +25,17 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_OtherController extends Ess_M2ePro_Contr
              ->addJs('M2ePro/Plugin/AreaWrapper.js')
              ->addCss('M2ePro/css/Plugin/AreaWrapper.css')
 
-             ->addJs('M2ePro/GridHandler.js')
-             ->addJs('M2ePro/Listing/Other/GridHandler.js')
-             ->addJs('M2ePro/Ebay/Listing/Other/GridHandler.js')
+             ->addJs('M2ePro/Grid.js')
+             ->addJs('M2ePro/Listing/Other/Grid.js')
+             ->addJs('M2ePro/Ebay/Listing/Other/Grid.js')
 
-             ->addJs('M2ePro/ActionHandler.js')
-             ->addJs('M2ePro/Listing/MovingHandler.js')
-             ->addJs('M2ePro/Listing/Other/MappingHandler.js')
-             ->addJs('M2ePro/Listing/Other/AutoMappingHandler.js')
+             ->addJs('M2ePro/Action.js')
+             ->addJs('M2ePro/Listing/Moving.js')
+             ->addJs('M2ePro/Listing/Other/Mapping.js')
+             ->addJs('M2ePro/Listing/Other/AutoMapping.js')
 
-            ->addJs('M2ePro/Listing/Other/RemovingHandler.js')
-            ->addJs('M2ePro/Listing/Other/UnmappingHandler.js');
+            ->addJs('M2ePro/Listing/Other/Removing.js')
+            ->addJs('M2ePro/Listing/Other/Unmapping.js');
 
         $this->_initPopUp();
 
@@ -179,6 +179,23 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_OtherController extends Ess_M2ePro_Contr
                 array(
                 'result' => true
                 )
+            )
+        );
+    }
+
+    //########################################
+
+    public function resetAction()
+    {
+        Mage::getResourceModel('M2ePro/Ebay_Listing_Other')->resetEntities();
+
+        $this->getSession()->addSuccess(
+            Mage::helper('M2ePro')->__('eBay 3rd Party Listings were reset.')
+        );
+
+        $this->_redirect(
+            '*/adminhtml_ebay_listing/index', array(
+                'tab' => Ess_M2ePro_Block_Adminhtml_Ebay_ManageListings::TAB_ID_LISTING_OTHER
             )
         );
     }

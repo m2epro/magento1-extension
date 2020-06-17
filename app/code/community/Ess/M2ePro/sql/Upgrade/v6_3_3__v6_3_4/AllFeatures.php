@@ -14,13 +14,13 @@ class Ess_M2ePro_Sql_Upgrade_v6_3_3__v6_3_4_AllFeatures extends Ess_M2ePro_Model
 
         $installer->run(<<<SQL
 
-    DROP TABLE IF EXISTS `m2epro_ebay_dictionary_shipping_category`;
+    DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_ebay_dictionary_shipping_category')}`;
 
-    TRUNCATE TABLE `m2epro_ebay_dictionary_marketplace`;
-    TRUNCATE TABLE `m2epro_ebay_dictionary_category`;
-    TRUNCATE TABLE `m2epro_ebay_dictionary_shipping`;
-    TRUNCATE TABLE `m2epro_ebay_dictionary_motor_specific`;
-    TRUNCATE TABLE `m2epro_ebay_dictionary_motor_ktype`;
+    TRUNCATE TABLE `{$this->_installer->getTable('m2epro_ebay_dictionary_marketplace')}`;
+    TRUNCATE TABLE `{$this->_installer->getTable('m2epro_ebay_dictionary_category')}`;
+    TRUNCATE TABLE `{$this->_installer->getTable('m2epro_ebay_dictionary_shipping')}`;
+    TRUNCATE TABLE `{$this->_installer->getTable('m2epro_ebay_dictionary_motor_specific')}`;
+    TRUNCATE TABLE `{$this->_installer->getTable('m2epro_ebay_dictionary_motor_ktype')}`;
 
     ALTER TABLE `m2epro_registry`
         MODIFY COLUMN `value` LONGTEXT DEFAULT NULL;
@@ -316,7 +316,7 @@ SQL
 
         $installer->run(<<<SQL
 
-    UPDATE `m2epro_ebay_template_selling_format`
+    UPDATE `{$this->_installer->getTable('m2epro_ebay_template_selling_format')}`
     SET `fixed_price_mode` = `buyitnow_price_mode`,
         `fixed_price_coefficient` = `buyitnow_price_coefficient`,
         `fixed_price_custom_attribute` = `buyitnow_price_custom_attribute`,
@@ -326,23 +326,23 @@ SQL
     WHERE
         listing_type = 2 AND buyitnow_price_mode IS NOT NULL AND buyitnow_price_mode <> 0;
 
-    UPDATE `m2epro_ebay_template_selling_format`
+    UPDATE `{$this->_installer->getTable('m2epro_ebay_template_selling_format')}`
     SET `fixed_price_mode` = `buyitnow_price_mode`,
         `fixed_price_coefficient` = `buyitnow_price_coefficient`,
         `fixed_price_custom_attribute` = `buyitnow_price_custom_attribute`
     WHERE
         listing_type = 3 AND buyitnow_price_mode IS NOT NULL AND buyitnow_price_mode <> 0;
 
-    UPDATE `m2epro_ebay_listing_product`
+    UPDATE `{$this->_installer->getTable('m2epro_ebay_listing_product')}`
         SET `online_current_price` = `online_buyitnow_price`,
             `online_buyitnow_price` = NULL
         WHERE `online_start_price` IS NULL AND `online_reserve_price` IS NULL AND online_buyitnow_price IS NOT NULL;
 
-    UPDATE `m2epro_ebay_listing_product`
+    UPDATE `{$this->_installer->getTable('m2epro_ebay_listing_product')}`
         SET `online_current_price` = `online_start_price`
         WHERE `online_start_price` IS NOT NULL AND `online_reserve_price` IS NOT NULL;
 
-    UPDATE `m2epro_ebay_template_description`
+    UPDATE `{$this->_installer->getTable('m2epro_ebay_template_description')}`
         SET `description_template` = REPLACE(description_template, '#value[buy_it_now_price]#', '#value[fixed_price]#')
         WHERE INSTR(`description_template`, '#value[buy_it_now_price]#') > 0;
 
@@ -466,11 +466,12 @@ SQL
 
             $installer->run(<<<SQL
 
-        DELETE FROM `m2epro_config`
+        DELETE FROM `{$this->_installer->getTable('m2epro_config')}`
         WHERE `group` = '/view/ebay/support/'
         OR    `group` = '/view/common/support/';
 
-        INSERT INTO `m2epro_config` (`group`,`key`,`value`,`notice`,`update_date`,`create_date`) VALUES
+        INSERT INTO `{$this->_installer->getTable('m2epro_config')}` 
+        (`group`,`key`,`value`,`notice`,`update_date`,`create_date`) VALUES
             ('/support/', 'documentation_url', 'http://docs.m2epro.com', NULL, '2015-07-03 00:00:00',
              '2015-07-03 00:00:00');
 SQL
@@ -491,7 +492,8 @@ SQL
 
             $installer->run(<<<SQL
 
-        INSERT INTO `m2epro_wizard` (`nick`, `view`, `status`, `step`, `type`, `priority`)
+        INSERT INTO `{$this->_installer->getTable('m2epro_wizard')}` 
+        (`nick`, `view`, `status`, `step`, `type`, `priority`)
         VALUES ('ebayProductDetails', 'ebay', 0, NULL, 1, 7);
 SQL
             );
@@ -512,49 +514,54 @@ SQL
 
             $installer->run(<<<SQL
 
-        UPDATE `m2epro_synchronization_config`
+        UPDATE `{$this->_installer->getTable('m2epro_synchronization_config')}`
         SET `group` = '/amazon/other_listings/update/'
         WHERE `group` = '/amazon/other_listings/' AND `key` = 'mode';
 
-        UPDATE `m2epro_synchronization_config`
+        UPDATE `{$this->_installer->getTable('m2epro_synchronization_config')}`
         SET `group` = '/amazon/other_listings/update/'
         WHERE `group` = '/amazon/other_listings/' AND `key` = 'interval';
 
-        UPDATE `m2epro_synchronization_config`
+        UPDATE `{$this->_installer->getTable('m2epro_synchronization_config')}`
         SET `group` = '/amazon/other_listings/update/'
         WHERE `group` = '/amazon/other_listings/' AND `key` = 'last_time';
 
-        UPDATE `m2epro_synchronization_config`
+        UPDATE `{$this->_installer->getTable('m2epro_synchronization_config')}`
         SET `group` = '/buy/other_listings/update/'
         WHERE `group` = '/buy/other_listings/' AND `key` = 'mode';
 
-        UPDATE `m2epro_synchronization_config`
+        UPDATE `{$this->_installer->getTable('m2epro_synchronization_config')}`
         SET `group` = '/buy/other_listings/update/'
         WHERE `group` = '/buy/other_listings/' AND `key` = 'interval';
 
-        UPDATE `m2epro_synchronization_config`
+        UPDATE `{$this->_installer->getTable('m2epro_synchronization_config')}`
         SET `group` = '/buy/other_listings/update/'
         WHERE `group` = '/buy/other_listings/' AND `key` = 'last_time';
 
-        INSERT INTO `m2epro_synchronization_config` (`group`,`key`,`value`,`notice`,`update_date`,`create_date`) VALUES
-          ('/amazon/other_listings/', 'mode', '1', '0 - disable, \r\n1 - enable',
-           '2013-05-08 00:00:00', '2013-05-08 00:00:00');
+        INSERT INTO `{$this->_installer->getTable('m2epro_synchronization_config')}` 
+        (`group`,`key`,`value`,`notice`,`update_date`,`create_date`) VALUES
+        ('/amazon/other_listings/', 'mode', '1', '0 - disable, \r\n1 - enable',
+        '2013-05-08 00:00:00', '2013-05-08 00:00:00');
 
-        INSERT INTO `m2epro_synchronization_config` (`group`,`key`,`value`,`notice`,`update_date`,`create_date`) VALUES
-          ('/buy/other_listings/', 'mode', '1', '0 - disable, \r\n1 - enable',
-           '2013-05-08 00:00:00', '2013-05-08 00:00:00');
+        INSERT INTO `{$this->_installer->getTable('m2epro_synchronization_config')}` 
+        (`group`,`key`,`value`,`notice`,`update_date`,`create_date`) VALUES
+        ('/buy/other_listings/', 'mode', '1', '0 - disable, \r\n1 - enable',
+        '2013-05-08 00:00:00', '2013-05-08 00:00:00');
 
-        INSERT INTO `m2epro_synchronization_config` (`group`,`key`,`value`,`notice`,`update_date`,`create_date`) VALUES
-          ('/ebay/other_listings/sku/', 'mode', '1', '0 - disable, \r\n1 - enable',
-           '2013-05-08 00:00:00', '2013-05-08 00:00:00');
+        INSERT INTO `{$this->_installer->getTable('m2epro_synchronization_config')}` 
+        (`group`,`key`,`value`,`notice`,`update_date`,`create_date`) VALUES
+        ('/ebay/other_listings/sku/', 'mode', '1', '0 - disable, \r\n1 - enable',
+        '2013-05-08 00:00:00', '2013-05-08 00:00:00');
 
-        INSERT INTO `m2epro_synchronization_config` (`group`,`key`,`value`,`notice`,`update_date`,`create_date`) VALUES
-          ('/amazon/other_listings/title/', 'mode', '1', '0 - disable, \r\n1 - enable',
-           '2013-05-08 00:00:00', '2013-05-08 00:00:00');
+        INSERT INTO `{$this->_installer->getTable('m2epro_synchronization_config')}` 
+        (`group`,`key`,`value`,`notice`,`update_date`,`create_date`) VALUES
+        ('/amazon/other_listings/title/', 'mode', '1', '0 - disable, \r\n1 - enable',
+        '2013-05-08 00:00:00', '2013-05-08 00:00:00');
 
-        INSERT INTO `m2epro_synchronization_config` (`group`,`key`,`value`,`notice`,`update_date`,`create_date`) VALUES
-          ('/buy/other_listings/title/', 'mode', '1', '0 - disable, \r\n1 - enable',
-           '2013-05-08 00:00:00', '2013-05-08 00:00:00');
+        INSERT INTO `{$this->_installer->getTable('m2epro_synchronization_config')}` 
+        (`group`,`key`,`value`,`notice`,`update_date`,`create_date`) VALUES
+        ('/buy/other_listings/title/', 'mode', '1', '0 - disable, \r\n1 - enable',
+        '2013-05-08 00:00:00', '2013-05-08 00:00:00');
 
 SQL
             );
@@ -564,74 +571,74 @@ SQL
 
         $installer->run(<<<SQl
 
-    UPDATE `m2epro_lock_item`
+    UPDATE `{$this->_installer->getTable('m2epro_lock_item')}`
     SET `nick` = REPLACE(
         `nick`,
         'synchronization_ebay_other_listings',
         'synchronization_ebay_other_listings_update'
     );
 
-    UPDATE `m2epro_lock_item`
+    UPDATE `{$this->_installer->getTable('m2epro_lock_item')}`
     SET `nick` = REPLACE(
         `nick`,
         'synchronization_amazon_other_listings',
         'synchronization_amazon_other_listings_update'
     );
 
-    UPDATE `m2epro_lock_item`
+    UPDATE `{$this->_installer->getTable('m2epro_lock_item')}`
     SET `nick` = REPLACE(
         `nick`,
         'synchronization_buy_other_listings',
         'synchronization_buy_other_listings_update'
     );
 
-    UPDATE `m2epro_processing_request`
+    UPDATE `{$this->_installer->getTable('m2epro_processing_request')}`
     SET `responser_model` = 'M2ePro/Amazon_Synchronization_OtherListings_Update_Responser'
     WHERE `responser_model` = 'M2ePro/Amazon_Synchronization_OtherListings_Responser';
 
-    UPDATE `m2epro_processing_request`
+    UPDATE `{$this->_installer->getTable('m2epro_processing_request')}`
     SET `responser_model` = 'M2ePro/Buy_Synchronization_OtherListings_Update_Responser'
     WHERE `responser_model` = 'M2ePro/Buy_Synchronization_OtherListings_Responser';
 
-    UPDATE `m2epro_synchronization_config`
+    UPDATE `{$this->_installer->getTable('m2epro_synchronization_config')}`
     SET `value` = 1
     WHERE (`group` = '/ebay/orders/' AND `key` = 'mode')
     OR    (`group` = '/ebay/feedbacks/' AND `key` = 'mode')
     OR    (`group` = '/ebay/other_listings/' AND `key` = 'mode');
 
-    UPDATE `m2epro_synchronization_config`
+    UPDATE `{$this->_installer->getTable('m2epro_synchronization_config')}`
     SET `value` = 1
     WHERE (`group` = '/amazon/orders/' AND `key` = 'mode')
     OR    (`group` = '/amazon/other_listings/' AND `key` = 'mode');
 
-    UPDATE `m2epro_synchronization_config`
+    UPDATE `{$this->_installer->getTable('m2epro_synchronization_config')}`
     SET `value` = 1
     WHERE (`group` = '/buy/orders/' AND `key` = 'mode')
     OR    (`group` = '/buy/other_listings/' AND `key` = 'mode');
 
-    UPDATE `m2epro_synchronization_config`
+    UPDATE `{$this->_installer->getTable('m2epro_synchronization_config')}`
     SET `value` = '86400'
     WHERE `group` = '/amazon/other_listings/update/' AND `key` = 'interval';
 
-    UPDATE `m2epro_synchronization_config`
+    UPDATE `{$this->_installer->getTable('m2epro_synchronization_config')}`
     SET `value` = '86400'
     WHERE `group` = '/buy/other_listings/update/' AND `key` = 'interval';
 
-    UPDATE `m2epro_synchronization_config`
+    UPDATE `{$this->_installer->getTable('m2epro_synchronization_config')}`
     SET `group` = '/defaults/added_products/'
     WHERE `group` = '/defaults/inspector/auto_actions/';
 
-    UPDATE `m2epro_wizard`
+    UPDATE `{$this->_installer->getTable('m2epro_wizard')}`
     SET `step` = 'account'
     WHERE `step` = 'synchronization'
     AND (`nick` = 'amazon' OR `nick` = 'buy');
 
-    UPDATE `m2epro_wizard` as `mw`
+    UPDATE `{$this->_installer->getTable('m2epro_wizard')}` as `mw`
     SET `mw`.`status` = 3
     WHERE `mw`.`nick` = 'ebayProductDetails'
     AND (
         (SELECT `mc`.`value`
-         FROM `m2epro_config` as `mc`
+         FROM `{$this->_installer->getTable('m2epro_config')}` as `mc`
          WHERE `mc`.`value` IS NOT NULL
          AND `mc`.`group` = '/component/ebay/'
          AND `mc`.`key` = 'mode'
@@ -640,7 +647,7 @@ SQL
          OR
 
         (SELECT `mc`.`value`
-         FROM `m2epro_config` as `mc`
+         FROM `{$this->_installer->getTable('m2epro_config')}` as `mc`
          WHERE `mc`.`value` IS NOT NULL
          AND `mc`.`group` = '/component/ebay/'
          AND `mc`.`key` = 'allowed'
@@ -648,17 +655,17 @@ SQL
 
          OR
 
-         (SELECT COUNT(`mm`.`id`) FROM `m2epro_marketplace` as `mm`
+         (SELECT COUNT(`mm`.`id`) FROM `{$this->_installer->getTable('m2epro_marketplace')}` as `mm`
           WHERE `mm`.`component_mode` = 'ebay'
           AND `mm`.`status` = 1) = 0
     );
 
-    UPDATE `m2epro_wizard` as `mw`
+    UPDATE `{$this->_installer->getTable('m2epro_wizard')}` as `mw`
     SET `mw`.`status` = 3
     WHERE `mw`.`nick` = 'migrationNewAmazon'
     AND (
         (SELECT `mc`.`value`
-         FROM `m2epro_config` as `mc`
+         FROM `{$this->_installer->getTable('m2epro_config')}` as `mc`
          WHERE `mc`.`value` IS NOT NULL
          AND `mc`.`group` = '/component/amazon/'
          AND `mc`.`key` = 'mode'
@@ -667,7 +674,7 @@ SQL
          OR
 
         (SELECT `mc`.`value`
-         FROM `m2epro_config` as `mc`
+         FROM `{$this->_installer->getTable('m2epro_config')}` as `mc`
          WHERE `mc`.`value` IS NOT NULL
          AND `mc`.`group` = '/component/amazon/'
          AND `mc`.`key` = 'allowed'
@@ -675,17 +682,17 @@ SQL
 
          OR
 
-         (SELECT COUNT(`mm`.`id`) FROM `m2epro_marketplace` as `mm`
+         (SELECT COUNT(`mm`.`id`) FROM `{$this->_installer->getTable('m2epro_marketplace')}` as `mm`
           WHERE `mm`.`component_mode` = 'amazon'
           AND `mm`.`status` = 1) = 0
     );
 
-    UPDATE `m2epro_marketplace`
+    UPDATE `{$this->_installer->getTable('m2epro_marketplace')}`
     SET `status` = 0
     WHERE id = 33
     AND (
         (SELECT `mc`.`value`
-         FROM `m2epro_config` as `mc`
+         FROM `{$this->_installer->getTable('m2epro_config')}` as `mc`
          WHERE `mc`.`value` IS NOT NULL
          AND `mc`.`group` = '/component/buy/'
          AND `mc`.`key` = 'mode'
@@ -694,22 +701,22 @@ SQL
          OR
 
         (SELECT `mc`.`value`
-         FROM `m2epro_config` as `mc`
+         FROM `{$this->_installer->getTable('m2epro_config')}` as `mc`
          WHERE `mc`.`value` IS NOT NULL
          AND `mc`.`group` = '/component/buy/'
          AND `mc`.`key` = 'allowed'
          LIMIT 1) < 1
     );
 
-    UPDATE `m2epro_marketplace`
+    UPDATE `{$this->_installer->getTable('m2epro_marketplace')}`
     SET `sorder` = 5
     WHERE `code` = 'IT';
 
-    UPDATE `m2epro_marketplace`
+    UPDATE `{$this->_installer->getTable('m2epro_marketplace')}`
     SET `sorder` = 7
     WHERE `code` = 'FR';
 
-    UPDATE `m2epro_marketplace`
+    UPDATE `{$this->_installer->getTable('m2epro_marketplace')}`
     SET `sorder` = 8
     WHERE `code` = 'ES';
 
@@ -790,7 +797,7 @@ SQl
 
                 $productDetails = $connection->quote(json_encode($productDetails));
 
-                $installer->run("UPDATE `m2epro_ebay_template_description`
+                $installer->run("UPDATE `{$this->_installer->getTable('m2epro_ebay_template_description')}`
                          SET `product_details` = {$productDetails}
                          WHERE `template_description_id` = {$row['template_description_id']}");
             }

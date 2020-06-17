@@ -22,12 +22,12 @@ class Ess_M2ePro_Adminhtml_Walmart_AccountController
         $this->getLayout()->getBlock('head')
             ->setCanLoadExtJs(true)
             ->addJs('M2ePro/Plugin/ActionColumn.js')
-            ->addJs('M2ePro/GridHandler.js')
-            ->addJs('M2ePro/AccountHandler.js')
-            ->addJs('M2ePro/AccountGridHandler.js')
-            ->addJs('M2ePro/AccountHandler.js')
+            ->addJs('M2ePro/Grid.js')
+            ->addJs('M2ePro/Account.js')
+            ->addJs('M2ePro/AccountGrid.js')
+            ->addJs('M2ePro/Account.js')
             ->addJs('M2ePro/Plugin/DropDown.js')
-            ->addJs('M2ePro/Walmart/AccountHandler.js')
+            ->addJs('M2ePro/Walmart/Account.js')
             ->addCss('M2ePro/css/Plugin/AreaWrapper.css')
             ->addCss('M2ePro/css/Plugin/DropDown.css');
         $this->_initPopUp();
@@ -107,323 +107,16 @@ class Ess_M2ePro_Adminhtml_Walmart_AccountController
         }
 
         $id = $this->getRequest()->getParam('id');
-
-        // Base prepare
-        // ---------------------------------------
-        $data = array();
-        // ---------------------------------------
-
-        // tab: general
-        // ---------------------------------------
-        $keys = array(
-            'title',
-            'marketplace_id',
-            'consumer_id',
-            'client_id',
-            'client_secret',
-            'old_private_key'
-        );
-        foreach ($keys as $key) {
-            if (isset($post[$key])) {
-                $data[$key] = $post[$key];
-            }
-        }
-
-        // ---------------------------------------
-
-        // tab: 3rd party listings
-        // ---------------------------------------
-        $keys = array(
-            'related_store_id',
-
-            'other_listings_synchronization',
-            'other_listings_mapping_mode'
-        );
-        foreach ($keys as $key) {
-            if (isset($post[$key])) {
-                $data[$key] = $post[$key];
-            }
-        }
-
-        // ---------------------------------------
-
-        // Mapping
-        // ---------------------------------------
-        $tempData = array();
-        $keys = array(
-            'mapping_sku_mode',
-            'mapping_sku_priority',
-            'mapping_sku_attribute',
-
-            'mapping_upc_mode',
-            'mapping_upc_priority',
-            'mapping_upc_attribute',
-
-            'mapping_gtin_mode',
-            'mapping_gtin_priority',
-            'mapping_gtin_attribute',
-
-            'mapping_wpid_mode',
-            'mapping_wpid_priority',
-            'mapping_wpid_attribute',
-
-            'mapping_title_mode',
-            'mapping_title_priority',
-            'mapping_title_attribute'
-        );
-        foreach ($keys as $key) {
-            if (isset($post[$key])) {
-                $tempData[$key] = $post[$key];
-            }
-        }
-
-        $mappingSettings = array();
-
-        $temp = array(
-            Account::OTHER_LISTINGS_MAPPING_SKU_MODE_DEFAULT,
-            Account::OTHER_LISTINGS_MAPPING_SKU_MODE_CUSTOM_ATTRIBUTE,
-            Account::OTHER_LISTINGS_MAPPING_SKU_MODE_PRODUCT_ID,
-        );
-
-        if (isset($tempData['mapping_sku_mode']) && in_array($tempData['mapping_sku_mode'], $temp)) {
-            $mappingSettings['sku']['mode']     = (int)$tempData['mapping_sku_mode'];
-            $mappingSettings['sku']['priority'] = (int)$tempData['mapping_sku_priority'];
-
-            if ($tempData['mapping_sku_mode'] == Account::OTHER_LISTINGS_MAPPING_SKU_MODE_CUSTOM_ATTRIBUTE) {
-                $mappingSettings['sku']['attribute'] = (string)$tempData['mapping_sku_attribute'];
-            }
-        }
-
-        if (isset($tempData['mapping_upc_mode']) &&
-            $tempData['mapping_upc_mode'] == Account::OTHER_LISTINGS_MAPPING_UPC_MODE_CUSTOM_ATTRIBUTE
-        ) {
-            $mappingSettings['upc']['mode']     = (int)$tempData['mapping_upc_mode'];
-            $mappingSettings['upc']['priority'] = (int)$tempData['mapping_upc_priority'];
-
-            $temp = Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_MAPPING_UPC_MODE_CUSTOM_ATTRIBUTE;
-            if ($tempData['mapping_upc_mode'] == $temp) {
-                $mappingSettings['upc']['attribute'] = (string)$tempData['mapping_upc_attribute'];
-            }
-        }
-
-        if (isset($tempData['mapping_gtin_mode']) &&
-            $tempData['mapping_gtin_mode'] == Account::OTHER_LISTINGS_MAPPING_GTIN_MODE_CUSTOM_ATTRIBUTE
-        ) {
-            $mappingSettings['gtin']['mode']     = (int)$tempData['mapping_gtin_mode'];
-            $mappingSettings['gtin']['priority'] = (int)$tempData['mapping_gtin_priority'];
-
-            if ($tempData['mapping_gtin_mode'] == Account::OTHER_LISTINGS_MAPPING_GTIN_MODE_CUSTOM_ATTRIBUTE) {
-                $mappingSettings['gtin']['attribute'] = (string)$tempData['mapping_gtin_attribute'];
-            }
-        }
-
-        if (isset($tempData['mapping_wpid_mode']) &&
-            $tempData['mapping_wpid_mode'] == Account::OTHER_LISTINGS_MAPPING_WPID_MODE_CUSTOM_ATTRIBUTE
-        ) {
-            $mappingSettings['wpid']['mode']     = (int)$tempData['mapping_wpid_mode'];
-            $mappingSettings['wpid']['priority'] = (int)$tempData['mapping_wpid_priority'];
-
-            if ($tempData['mapping_wpid_mode'] == Account::OTHER_LISTINGS_MAPPING_WPID_MODE_CUSTOM_ATTRIBUTE) {
-                $mappingSettings['wpid']['attribute'] = (string)$tempData['mapping_wpid_attribute'];
-            }
-        }
-
-        if (isset($tempData['mapping_title_mode']) &&
-            ($tempData['mapping_title_mode'] == Account::OTHER_LISTINGS_MAPPING_TITLE_MODE_DEFAULT ||
-            $tempData['mapping_title_mode'] == Account::OTHER_LISTINGS_MAPPING_TITLE_MODE_CUSTOM_ATTRIBUTE)
-        ) {
-            $mappingSettings['title']['mode'] = (int)$tempData['mapping_title_mode'];
-            $mappingSettings['title']['priority'] = (int)$tempData['mapping_title_priority'];
-            $mappingSettings['title']['attribute'] = (string)$tempData['mapping_title_attribute'];
-        }
-
-        $data['other_listings_mapping_settings'] = Mage::helper('M2ePro')->jsonEncode($mappingSettings);
-        // ---------------------------------------
-
-        // tab: orders
-        // ---------------------------------------
-        $data['magento_orders_settings'] = array();
-
-        // m2e orders settings
-        // ---------------------------------------
-        $tempKey = 'listing';
-        $tempSettings = !empty($post['magento_orders_settings'][$tempKey])
-            ? $post['magento_orders_settings'][$tempKey] : array();
-
-        $keys = array(
-            'mode',
-            'store_mode',
-            'store_id'
-        );
-        foreach ($keys as $key) {
-            if (isset($tempSettings[$key])) {
-                $data['magento_orders_settings'][$tempKey][$key] = $tempSettings[$key];
-            }
-        }
-
-        // ---------------------------------------
-
-        // 3rd party orders settings
-        // ---------------------------------------
-        $tempKey = 'listing_other';
-        $tempSettings = !empty($post['magento_orders_settings'][$tempKey])
-            ? $post['magento_orders_settings'][$tempKey] : array();
-
-        $keys = array(
-            'mode',
-            'product_mode',
-            'product_tax_class_id',
-            'store_id'
-        );
-        foreach ($keys as $key) {
-            if (isset($tempSettings[$key])) {
-                $data['magento_orders_settings'][$tempKey][$key] = $tempSettings[$key];
-            }
-        }
-
-        // ---------------------------------------
-
-        // order number settings
-        // ---------------------------------------
-        $tempKey = 'number';
-        $tempSettings = !empty($post['magento_orders_settings'][$tempKey])
-            ? $post['magento_orders_settings'][$tempKey] : array();
-
-        $data['magento_orders_settings'][$tempKey]['source'] = $tempSettings['source'];
-
-        $prefixKeys = array(
-            'prefix',
-        );
-        $tempSettings = !empty($tempSettings['prefix']) ? $tempSettings['prefix'] : array();
-        foreach ($prefixKeys as $key) {
-            if (isset($tempSettings[$key])) {
-                $data['magento_orders_settings'][$tempKey]['prefix'][$key] = $tempSettings[$key];
-            }
-        }
-
-        // ---------------------------------------
-
-        // qty reservation
-        // ---------------------------------------
-        $tempKey = 'qty_reservation';
-        $tempSettings = !empty($post['magento_orders_settings'][$tempKey])
-            ? $post['magento_orders_settings'][$tempKey] : array();
-
-        $keys = array(
-            'days',
-        );
-        foreach ($keys as $key) {
-            if (isset($tempSettings[$key])) {
-                $data['magento_orders_settings'][$tempKey][$key] = $tempSettings[$key];
-            }
-        }
-
-        // ---------------------------------------
-
-        // tax settings
-        // ---------------------------------------
-        $tempKey = 'tax';
-        $tempSettings = !empty($post['magento_orders_settings'][$tempKey])
-            ? $post['magento_orders_settings'][$tempKey] : array();
-
-        $keys = array(
-            'mode'
-        );
-        foreach ($keys as $key) {
-            if (isset($tempSettings[$key])) {
-                $data['magento_orders_settings'][$tempKey][$key] = $tempSettings[$key];
-            }
-        }
-
-        // ---------------------------------------
-
-        // customer settings
-        // ---------------------------------------
-        $tempKey = 'customer';
-        $tempSettings = !empty($post['magento_orders_settings'][$tempKey])
-            ? $post['magento_orders_settings'][$tempKey] : array();
-
-        $keys = array(
-            'mode',
-            'id',
-            'website_id',
-            'group_id',
-//            'subscription_mode'
-        );
-        foreach ($keys as $key) {
-            if (isset($tempSettings[$key])) {
-                $data['magento_orders_settings'][$tempKey][$key] = $tempSettings[$key];
-            }
-        }
-
-        $notificationsKeys = array(
-//            'customer_created',
-            'order_created',
-            'invoice_created'
-        );
-        $tempSettings = !empty($tempSettings['notifications']) ? $tempSettings['notifications'] : array();
-        foreach ($notificationsKeys as $key) {
-            if (in_array($key, $tempSettings)) {
-                $data['magento_orders_settings'][$tempKey]['notifications'][$key] = true;
-            }
-        }
-
-        // ---------------------------------------
-
-        // status mapping settings
-        // ---------------------------------------
-        $tempKey = 'status_mapping';
-        $tempSettings = !empty($post['magento_orders_settings'][$tempKey])
-            ? $post['magento_orders_settings'][$tempKey] : array();
-
-        $keys = array(
-            'mode',
-            'processing',
-            'shipped'
-        );
-        foreach ($keys as $key) {
-            if (isset($tempSettings[$key])) {
-                $data['magento_orders_settings'][$tempKey][$key] = $tempSettings[$key];
-            }
-        }
-
-        // ---------------------------------------
-
-        // invoice/shipment settings
-        // ---------------------------------------
-        $data['magento_orders_settings']['invoice_mode'] = 1;
-        $data['magento_orders_settings']['shipment_mode'] = 1;
-
-        $temp = Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_STATUS_MAPPING_MODE_CUSTOM;
-        if (!empty($data['magento_orders_settings']['status_mapping']['mode']) &&
-            $data['magento_orders_settings']['status_mapping']['mode'] == $temp) {
-            if (!isset($post['magento_orders_settings']['invoice_mode'])) {
-                $data['magento_orders_settings']['invoice_mode'] = 0;
-            }
-
-            if (!isset($post['magento_orders_settings']['shipment_mode'])) {
-                $data['magento_orders_settings']['shipment_mode'] = 0;
-            }
-        }
-
-        // ---------------------------------------
-
-        // ---------------------------------------
-        $data['magento_orders_settings'] = Mage::helper('M2ePro')->jsonEncode($data['magento_orders_settings']);
-        // ---------------------------------------
-
         $isEdit = $id !== null;
 
-        // Add or update model
-        // ---------------------------------------
+        /** @var Ess_M2ePro_Model_Walmart_Account $model */
         $model = Mage::helper('M2ePro/Component_Walmart')->getModel('Account');
-        $id === null && $model->setData($data);
-        $id !== null && $model->loadInstance($id)->addData($data);
+        $isEdit && $model->loadInstance($id);
         $oldData = $model->getOrigData();
-        $id = $model->save()->getId();
-        // ---------------------------------------
 
-        $model->getChildObject()->save();
+        Mage::getModel('M2ePro/Walmart_Account_Builder')->build($model, $post);
+
+        $id = $model->getId();
 
         try {
             // Add or update server
@@ -650,7 +343,7 @@ class Ess_M2ePro_Adminhtml_Walmart_AccountController
         $note   = $response['info']['note'];
 
         if ($status) {
-            return 'MagentoMessageObj.addNotice(\''.$note.'\');';
+            return 'MessageObj.addNotice(\''.$note.'\');';
         }
 
         $errorMessage = Mage::helper('M2ePro')->__(
@@ -658,7 +351,7 @@ class Ess_M2ePro_Adminhtml_Walmart_AccountController
             array('error_message' => $note)
         );
 
-        return 'MagentoMessageObj.addError(\''.$errorMessage.'\');';
+        return 'MessageObj.addError(\''.$errorMessage.'\');';
     }
 
     //########################################

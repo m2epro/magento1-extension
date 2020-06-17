@@ -25,15 +25,71 @@ class Ess_M2ePro_Model_Ebay_Template_Category extends Ess_M2ePro_Model_Component
      */
     protected $_categorySourceModels = array();
 
+    /** @var Ess_M2ePro_Model_ActiveRecord_Factory */
+    protected $_activeRecordFactory;
+
     //########################################
 
     public function _construct()
     {
         parent::_construct();
         $this->_init('M2ePro/Ebay_Template_Category');
+        $this->_activeRecordFactory = Mage::getSingleton('M2ePro/ActiveRecord_Factory');
     }
 
     //########################################
+
+    public function loadByCategoryValue($value, $mode, $marketplaceId, $isCustomTemplate = null)
+    {
+        return $this->getResource()->loadByCategoryValue($this, $value, $mode, $marketplaceId, $isCustomTemplate);
+    }
+
+    //########################################
+
+    public function isLocked()
+    {
+        if (parent::isLocked()) {
+            return true;
+        }
+
+        /** @var Ess_M2ePro_Model_Resource_Collection_Abstract $collection */
+        $collection = Mage::getModel('M2ePro/Ebay_Listing_Product')->getCollection();
+        $collection->getSelect()->where(
+            'template_category_id = ? OR template_category_secondary_id = ?',
+            $this->getId()
+        );
+
+        if ((bool)$collection->getSize()) {
+            return true;
+        }
+
+        /** @var Ess_M2ePro_Model_Resource_Collection_Abstract $collection */
+        $collection = Mage::getModel('M2ePro/Ebay_Listing')->getCollection();
+        $collection->getSelect()->where(
+            'auto_global_adding_template_category_id = ? OR 
+             auto_global_adding_template_category_secondary_id = ? OR
+             auto_website_adding_template_category_id = ? OR
+             auto_website_adding_template_category_secondary_id = ?',
+            $this->getId()
+        );
+
+        if ((bool)$collection->getSize()) {
+            return true;
+        }
+
+        /** @var Ess_M2ePro_Model_Resource_Collection_Abstract $collection */
+        $collection = Mage::getModel('M2ePro/Ebay_Listing_Auto_Category_Group')->getCollection();
+        $collection->getSelect()->where(
+            'adding_template_category_id = ? OR adding_template_category_secondary_id = ?',
+            $this->getId()
+        );
+
+        if ((bool)$collection->getSize()) {
+            return true;
+        }
+
+        return false;
+    }
 
     public function deleteInstance()
     {
@@ -102,24 +158,24 @@ class Ess_M2ePro_Model_Ebay_Template_Category extends Ess_M2ePro_Model_Component
 
     /**
      * @param bool $asObjects
-     * @param array $filters
      * @return array|Ess_M2ePro_Model_Ebay_Template_Category_Specific[]
      */
-    public function getSpecifics($asObjects = false, array $filters = array())
+    public function getSpecifics($asObjects = false)
     {
-        $specifics = $this->getRelatedSimpleItems(
-            'Ebay_Template_Category_Specific', 'template_category_id',
-            $asObjects, $filters
-        );
+        $collection = $this->_activeRecordFactory->getObjectCollection('Ebay_Template_Category_Specific');
+        $collection->addFieldToFilter('template_category_id', $this->getId());
 
-        if ($asObjects) {
-            /** @var Ess_M2ePro_Model_Ebay_Template_Category_Specific $specific */
-            foreach ($specifics as $specific) {
-                $specific->setCategoryTemplate($this);
-            }
+        /** @var Ess_M2ePro_Model_Ebay_Template_Category_Specific $specific */
+        foreach ($collection->getItems() as $specific) {
+            $specific->setCategoryTemplate($this);
         }
 
-        return $specifics;
+        if (!$asObjects) {
+            $result = $collection->toArray();
+            return $result['items'];
+        }
+
+        return $collection->getItems();
     }
 
     //########################################
@@ -127,9 +183,9 @@ class Ess_M2ePro_Model_Ebay_Template_Category extends Ess_M2ePro_Model_Component
     /**
      * @return int
      */
-    public function getCategoryMainId()
+    public function getCategoryId()
     {
-        return (int)$this->getData('category_main_id');
+        return (int)$this->getData('category_id');
     }
 
     /**
@@ -140,7 +196,50 @@ class Ess_M2ePro_Model_Ebay_Template_Category extends Ess_M2ePro_Model_Component
         return (int)$this->getData('marketplace_id');
     }
 
-    // ---------------------------------------
+    /**
+     * @return int
+     */
+    public function getIsCustomTemplate()
+    {
+        return $this->getData('is_custom_template');
+    }
+
+    //---------------------------------------
+
+    /**
+     * @return int
+     */
+    public function getCategoryMode()
+    {
+        return (int)$this->getData('category_mode');
+    }
+
+    public function isCategoryModeNone()
+    {
+        return $this->getCategoryMode() === self::CATEGORY_MODE_NONE;
+    }
+
+    public function isCategoryModeEbay()
+    {
+        return $this->getCategoryMode() === self::CATEGORY_MODE_EBAY;
+    }
+
+    public function isCategoryModeAttribute()
+    {
+        return $this->getCategoryMode() === self::CATEGORY_MODE_ATTRIBUTE;
+    }
+
+    //---------------------------------------
+
+    /**
+     * @return string|null
+     */
+    public function getCategoryAttribute()
+    {
+        return $this->getData('category_attribute');
+    }
+
+    //---------------------------------------
 
     public function getCreateDate()
     {
@@ -155,15 +254,23 @@ class Ess_M2ePro_Model_Ebay_Template_Category extends Ess_M2ePro_Model_Component
     //########################################
 
     /**
+     * @return string
+     */
+    public function getCategoryValue()
+    {
+        return $this->isCategoryModeEbay() ? $this->getCategoryId() : $this->getCategoryAttribute();
+    }
+
+    /**
      * @return array
      */
-    public function getCategoryMainSource()
+    public function getCategorySource()
     {
         return array(
-            'mode'      => $this->getData('category_main_mode'),
-            'value'     => $this->getData('category_main_id'),
-            'path'      => $this->getData('category_main_path'),
-            'attribute' => $this->getData('category_main_attribute')
+            'mode'      => $this->getData('category_mode'),
+            'value'     => $this->getData('category_id'),
+            'path'      => $this->getData('category_path'),
+            'attribute' => $this->getData('category_attribute')
         );
     }
 
@@ -174,18 +281,18 @@ class Ess_M2ePro_Model_Ebay_Template_Category extends Ess_M2ePro_Model_Component
      */
     public function getCategoryPath(Ess_M2ePro_Model_Listing $listing, $withId = true)
     {
-        $src = $this->getCategoryMainSource();
+        $src = $this->getCategorySource();
 
         $data = array(
-            'category_main_id'        => $src['value'],
-            'category_main_mode'      => $src['mode'],
-            'category_main_path'      => $src['path'],
-            'category_main_attribute' => $src['attribute'],
+            'category_id'        => $src['value'],
+            'category_mode'      => $src['mode'],
+            'category_path'      => $src['path'],
+            'category_attribute' => $src['attribute'],
         );
 
         Mage::helper('M2ePro/Component_Ebay_Category')->fillCategoriesPaths($data, $listing);
 
-        $path = $data['category_main_path'];
+        $path = $data['category_path'];
         if ($withId && $src['mode'] == self::CATEGORY_MODE_EBAY) {
             $path .= ' ('.$src['value'].')';
         }
@@ -198,11 +305,11 @@ class Ess_M2ePro_Model_Ebay_Template_Category extends Ess_M2ePro_Model_Component
     /**
      * @return array
      */
-    public function getMainCategoryAttributes()
+    public function getCategoryAttributes()
     {
         $usedAttributes = array();
 
-        $categoryMainSrc = $this->getCategoryMainSource();
+        $categoryMainSrc = $this->getCategorySource();
 
         if ($categoryMainSrc['mode'] == self::CATEGORY_MODE_ATTRIBUTE) {
             $usedAttributes[] = $categoryMainSrc['attribute'];
@@ -213,21 +320,6 @@ class Ess_M2ePro_Model_Ebay_Template_Category extends Ess_M2ePro_Model_Component
         }
 
         return array_values(array_unique($usedAttributes));
-    }
-
-    //########################################
-
-    /**
-     * @return array
-     */
-    public function getDefaultSettings()
-    {
-        return array(
-            'category_main_id' => 0,
-            'category_main_path' => '',
-            'category_main_mode' => self::CATEGORY_MODE_EBAY,
-            'category_main_attribute' => ''
-        );
     }
 
     //########################################

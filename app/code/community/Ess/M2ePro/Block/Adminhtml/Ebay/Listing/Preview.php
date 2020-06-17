@@ -318,6 +318,19 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Preview extends Mage_Adminhtml_Blo
         return $attributeLabels;
     }
 
+    protected function getBundleImagesAttributeLabels()
+    {
+        $variations = $this->_ebayListingProduct->getMagentoProduct()
+            ->getVariationInstance()
+            ->getVariationsTypeStandard();
+
+        if (!empty($variations['set'])) {
+            return array((string)key($variations['set']));
+        }
+
+        return array();
+    }
+
     protected function getImagesDataByAttributeLabels(array $attributeLabels)
     {
         $images = array();
@@ -403,6 +416,10 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Preview extends Mage_Adminhtml_Blo
                 $attributeLabels = array(Ess_M2ePro_Model_Magento_Product_Variation::GROUPED_PRODUCT_ATTRIBUTE_LABEL);
             }
 
+            if ($this->_ebayListingProduct->getMagentoProduct()->isBundleType()) {
+                $attributeLabels = $this->getBundleImagesAttributeLabels();
+            }
+
             if (!empty($attributeLabels)) {
                 $images['variations'] = $this->getImagesDataByAttributeLabels($attributeLabels);
             }
@@ -426,13 +443,13 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Preview extends Mage_Adminhtml_Blo
     public function getCategory()
     {
         $finalCategory = '';
-        $marketplaceId = $this->_ebayListingProduct->getMarketplace()->getMarketplaceId();
+        $marketplaceId = $this->_ebayListingProduct->getMarketplace()->getId();
 
         if ($this->_ebayListingProduct->getCategoryTemplateSource() === null) {
             return $finalCategory;
         }
 
-        $categoryId = $this->_ebayListingProduct->getCategoryTemplateSource()->getMainCategory();
+        $categoryId = $this->_ebayListingProduct->getCategoryTemplateSource()->getCategoryId();
         $categoryTitle = Mage::helper('M2ePro/Component_Ebay_Category_Ebay')->getPath($categoryId, $marketplaceId);
 
         if (!$categoryTitle) {
@@ -446,41 +463,49 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Preview extends Mage_Adminhtml_Blo
 
     public function getOtherCategories()
     {
-        $otherCategoriesFinalTitles = array();
+        $categoriesTitles = array();
 
-        $marketplaceId = $this->_ebayListingProduct->getMarketplace()->getMarketplaceId();
+        $marketplaceId = $this->_ebayListingProduct->getMarketplace()->getId();
         $accountId = $this->_ebayListingProduct->getEbayAccount()->getId();
 
-        $otherCategoryTemplateSource = $this->_ebayListingProduct->getOtherCategoryTemplateSource();
-
-        if ($otherCategoryTemplateSource === null) {
-            return $otherCategoriesFinalTitles;
-        }
-
-        $otherCategoriesIds = array(
-            'secondary' => $otherCategoryTemplateSource->getSecondaryCategory(),
-            'primary_store' => $otherCategoryTemplateSource->getStoreCategoryMain(),
-            'secondary_store' => $otherCategoryTemplateSource->getStoreCategorySecondary()
-        );
-
-        $otherCategoriesTitles = array(
-            'secondary' => Mage::helper('M2ePro/Component_Ebay_Category_Ebay')
-                ->getPath($otherCategoriesIds['secondary'], $marketplaceId),
-            'primary_store' => Mage::helper('M2ePro/Component_Ebay_Category_Store')
-                ->getPath($otherCategoriesIds['primary_store'], $accountId),
-            'secondary_store' => Mage::helper('M2ePro/Component_Ebay_Category_Store')
-                ->getPath($otherCategoriesIds['secondary_store'], $accountId)
-        );
-
-        foreach ($otherCategoriesTitles as $otherCategoryType => $otherCategoryTitle) {
-            if ($otherCategoryTitle) {
-                $otherCategoriesFinalTitles[$otherCategoryType] =
-                    '<a>' . str_replace('>', '</a> > <a>', $otherCategoryTitle)
-                    . '</a> (' . $otherCategoriesIds[$otherCategoryType] . ')';
+        $source = $this->_ebayListingProduct->getCategorySecondaryTemplateSource();
+        if ($source !== null) {
+            $title = Mage::helper('M2ePro/Component_Ebay_Category_Ebay')->getPath(
+                $source->getCategoryId(), $marketplaceId
+            );
+            if (empty($title)) {
+                $categoriesTitles['secondary'] = array($source->getCategoryId(), $title);
             }
         }
 
-        return $otherCategoriesFinalTitles;
+        $source = $this->_ebayListingProduct->getStoreCategoryTemplateSource();
+        if ($source !== null) {
+            $title = Mage::helper('M2ePro/Component_Ebay_Category_Store')->getPath(
+                $source->getCategoryId(), $accountId
+            );
+            if (empty($title)) {
+                $categoriesTitles['primary_store'] = array($source->getCategoryId(), $title);
+            }
+        }
+
+        $source = $this->_ebayListingProduct->getStoreCategorySecondaryTemplateSource();
+        if ($source !== null) {
+            $title = Mage::helper('M2ePro/Component_Ebay_Category_Store')->getPath(
+                $source->getCategoryId(), $accountId
+            );
+            if (empty($title)) {
+                $categoriesTitles['secondary_store'] = array($source->getCategoryId(), $title);
+            }
+        }
+
+        foreach ($categoriesTitles as $categoryType => &$categoryData) {
+            list($id, $title) = $categoryData;
+            $categoryData = '<a>' . str_replace('>', '</a> > <a>', $title) . '</a> (' . $id . ')';
+        }
+
+        unset($categoryData);
+
+        return $categoriesTitles;
     }
 
     public function getSpecifics()

@@ -63,9 +63,9 @@ class Ess_M2ePro_Model_Ebay_Template_Category_Source
     /**
      * @return string
      */
-    public function getMainCategory()
+    public function getCategoryId()
     {
-        $src = $this->getCategoryTemplate()->getCategoryMainSource();
+        $src = $this->getCategoryTemplate()->getCategorySource();
 
         if ($src['mode'] == Ess_M2ePro_Model_Ebay_Template_Category::CATEGORY_MODE_ATTRIBUTE) {
             return $this->getMagentoProduct()->getAttributeValue($src['attribute']);

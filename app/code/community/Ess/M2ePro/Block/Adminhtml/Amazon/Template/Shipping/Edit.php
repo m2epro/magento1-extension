@@ -64,7 +64,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Template_Shipping_Edit
         $this->_addButton(
             'back', array(
             'label'     => Mage::helper('M2ePro')->__('Back'),
-            'onclick'   => 'AmazonTemplateShippingHandlerObj.back_click(\'' . $url . '\')',
+            'onclick'   => 'AmazonTemplateShippingObj.back_click(\'' . $url . '\')',
             'class'     => 'back'
             )
         );
@@ -77,7 +77,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Template_Shipping_Edit
             $this->_addButton(
                 'duplicate', array(
                 'label'   => Mage::helper('M2ePro')->__('Duplicate'),
-                'onclick' => 'AmazonTemplateShippingHandlerObj.duplicate_click'
+                'onclick' => 'AmazonTemplateShippingObj.duplicate_click'
                     .'(\'amazon-template-shipping\')',
                 'class'   => 'add M2ePro_duplicate_button'
                 )
@@ -88,7 +88,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Template_Shipping_Edit
             $this->_addButton(
                 'delete', array(
                 'label'     => Mage::helper('M2ePro')->__('Delete'),
-                'onclick'   => 'AmazonTemplateShippingHandlerObj.delete_click()',
+                'onclick'   => 'AmazonTemplateShippingObj.delete_click()',
                 'class'     => 'delete M2ePro_delete_button'
                 )
             );
@@ -99,7 +99,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Template_Shipping_Edit
         $this->_addButton(
             'save', array(
             'label'     => Mage::helper('M2ePro')->__('Save'),
-            'onclick'   => 'AmazonTemplateShippingHandlerObj.save_click('
+            'onclick'   => 'AmazonTemplateShippingObj.save_click('
                 . '\'\','
                 . '\'' . $this->getSaveConfirmationText() . '\','
                 . '\'' . Ess_M2ePro_Block_Adminhtml_Amazon_Template_Grid::TEMPLATE_SHIPPING . '\''
@@ -113,7 +113,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Template_Shipping_Edit
         $this->_addButton(
             'save_and_continue', array(
             'label'     => Mage::helper('M2ePro')->__('Save And Continue Edit'),
-            'onclick'   => 'AmazonTemplateShippingHandlerObj.save_and_edit_click('
+            'onclick'   => 'AmazonTemplateShippingObj.save_and_edit_click('
                 . '\'\','
                 . 'undefined,'
                 . '\'' . $this->getSaveConfirmationText() . '\','

@@ -139,15 +139,6 @@ abstract class Ess_M2ePro_Block_Adminhtml_Log_Grid_Abstract
         );
     }
 
-    protected function _getLogPriorityList()
-    {
-        return array(
-            Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH => Mage::helper('M2ePro')->__('High'),
-            Ess_M2ePro_Model_Log_Abstract::PRIORITY_MEDIUM => Mage::helper('M2ePro')->__('Medium'),
-            Ess_M2ePro_Model_Log_Abstract::PRIORITY_LOW => Mage::helper('M2ePro')->__('Low')
-        );
-    }
-
     protected function _getLogInitiatorList()
     {
         return array(
@@ -172,6 +163,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Log_Grid_Abstract
                 $value = '<span style="color: orange; font-weight: bold;">'.$value.'</span>';
                 break;
 
+            case Ess_M2ePro_Model_Synchronization_Log::TYPE_FATAL_ERROR:
             case Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR:
                  $value = '<span style="color: red; font-weight: bold;">'.$value.'</span>';
                 break;
@@ -199,17 +191,19 @@ abstract class Ess_M2ePro_Block_Adminhtml_Log_Grid_Abstract
 
     public function callbackDescription($value, $row, $column, $isExport)
     {
-        $fullDescription = Mage::helper('M2ePro/View')->getModifiedLogMessage($row->getData('description'));
+        $fullDescription = str_replace(
+            "\n",
+            '<br>',
+            Mage::helper('M2ePro/View')->getModifiedLogMessage($value)
+        );
 
-        $renderedText = $this->stripTags($fullDescription);
-
+        $renderedText = $this->stripTags($fullDescription, '<br>');
         if (strlen($renderedText) < 200) {
             return $fullDescription;
         }
 
         $renderedText =  Mage::helper('core/string')->truncate($renderedText, 200, '');
-
-        $renderedText .= '&nbsp;(<a href="javascript:void(0)" onclick="LogHandlerObj.showFullText(this);">more</a>)
+        $renderedText .= '&nbsp;(<a href="javascript:void(0)" onclick="LogObj.showFullText(this);">more</a>)
                           <div style="display: none;"><br/>'.$fullDescription.'<br/><br/></div>';
 
         return $renderedText;

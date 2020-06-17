@@ -7,40 +7,20 @@
  */
 
 class Ess_M2ePro_Model_Ebay_Template_Category_AffectedListingsProducts
-    extends Ess_M2ePro_Model_Template_AffectedListingsProducts_Abstract
+    extends Ess_M2ePro_Model_Template_AffectedListingsProductsAbstract
 {
     //########################################
 
-    public function getObjects(array $filters = array())
+    public function loadCollection(array $filters = array())
     {
-        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $listingProductCollection */
-        $listingProductCollection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Listing_Product');
-        $listingProductCollection->addFieldToFilter('template_category_id', $this->_model->getId());
+        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $collection */
+        $collection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Listing_Product');
+        $collection->getSelect()->where(
+            'template_category_id = ? OR template_category_secondary_id = ?',
+            $this->_model->getId()
+        );
 
-        return $listingProductCollection->getItems();
-    }
-
-    public function getData($columns = '*', array $filters = array())
-    {
-        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $listingProductCollection */
-        $listingProductCollection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Listing_Product');
-        $listingProductCollection->addFieldToFilter('template_category_id', $this->_model->getId());
-
-        if (is_array($columns) && !empty($columns)) {
-            $listingProductCollection->getSelect()->reset(Zend_Db_Select::COLUMNS);
-            $listingProductCollection->getSelect()->columns($columns);
-        }
-
-        return $listingProductCollection->getData();
-    }
-
-    public function getIds(array $filters = array())
-    {
-        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $listingProductCollection */
-        $listingProductCollection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Listing_Product');
-        $listingProductCollection->addFieldToFilter('template_category_id', $this->_model->getId());
-
-        return $listingProductCollection->getAllIds();
+        return $collection;
     }
 
     //########################################

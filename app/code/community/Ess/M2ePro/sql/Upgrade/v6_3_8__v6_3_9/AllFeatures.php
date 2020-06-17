@@ -17,7 +17,7 @@ class Ess_M2ePro_Sql_Upgrade_v6_3_8__v6_3_9_AllFeatures extends Ess_M2ePro_Model
             $modifier->addColumn('is_required', 'TINYINT(2) UNSIGNED', 0, 'mode');
 
             $installer->run(<<<SQL
-UPDATE `m2epro_amazon_template_description_specific`
+UPDATE `{$this->_installer->getTable('m2epro_amazon_template_description_specific')}`
 SET `is_required` = 1;
 SQL
             );
@@ -77,7 +77,7 @@ SQL
         //########################################
 
         $installer->run(<<<SQL
-UPDATE `m2epro_amazon_marketplace`
+UPDATE `{$this->_installer->getTable('m2epro_amazon_marketplace')}`
 SET `is_merchant_fulfillment_available` = 1
 WHERE `marketplace_id` IN (25, 28, 29);
 SQL

@@ -6,6 +6,8 @@
  * @license    Commercial use is forbidden
  */
 
+use Ess_M2ePro_Model_Walmart_Account as Account;
+
 class Ess_M2ePro_Adminhtml_Wizard_InstallationWalmartController
     extends Ess_M2ePro_Controller_Adminhtml_Walmart_WizardController
 {
@@ -20,13 +22,11 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationWalmartController
              ->addCss('M2ePro/css/Plugin/AreaWrapper.css')
              ->addJs('M2ePro/Plugin/ProgressBar.js')
              ->addJs('M2ePro/Plugin/AreaWrapper.js')
-             ->addJs('M2ePro/SynchProgressHandler.js')
-             ->addJs('M2ePro/Walmart/Marketplace/SynchProgressHandler.js')
-             ->addJs('M2ePro/MarketplaceHandler.js')
+             ->addJs('M2ePro/SynchProgress.js')
+             ->addJs('M2ePro/Marketplace.js')
              ->addJs('M2ePro/Wizard/InstallationWalmart.js')
-             ->addJs('M2ePro/Wizard/InstallationWalmart/MarketplaceHandler.js')
-             ->addJs('M2ePro/Wizard/InstallationWalmart/CustomHandler.js')
-             ->addJs('M2ePro/Walmart/Configuration/GeneralHandler.js');
+             ->addJs('M2ePro/Walmart/Account.js')
+             ->addJs('M2ePro/Walmart/Configuration/General.js');
 
         return $this;
     }
@@ -40,156 +40,163 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationWalmartController
 
     //########################################
 
-    public function createLicenseAction()
+    public function accountContinueAction()
     {
-        $requiredKeys = array(
-            'email',
-            'firstname',
-            'lastname',
-            'phone',
-            'country',
-            'city',
-            'postal_code',
-        );
-
-        $licenseData = array();
-        foreach ($requiredKeys as $key) {
-            if ($tempValue = $this->getRequest()->getParam($key)) {
-                $licenseData[$key] = Mage::helper('M2ePro')->escapeJs(
-                    Mage::helper('M2ePro')->escapeHtml($tempValue)
-                );
-                continue;
-            }
-
-            return $this->getResponse()->setBody(
-                Mage::helper('M2ePro')->jsonEncode(
-                    array(
-                        'result'  => false,
-                        'message' => Mage::helper('M2ePro')->__('You should fill all required fields.')
-                    )
-                )
-            );
+        $params = $this->getRequest()->getParams();
+        if (empty($params)) {
+            return $this->indexAction();
         }
 
-        $registry = Mage::getModel('M2ePro/Registry')->load('/wizard/license_form_data/', 'key');
-        $registry->setData('key', '/wizard/license_form_data/');
-        $registry->setData('value', Mage::helper('M2ePro')->jsonEncode($licenseData));
-        $registry->save();
-
-        $message = null;
-
-        if (Mage::helper('M2ePro/Module_License')->getKey()) {
-            try {
-                $result = Mage::helper('M2ePro/Module_License')->updateLicenseUserInfo(
-                    $licenseData['email'],
-                    $licenseData['firstname'], $licenseData['lastname'],
-                    $licenseData['country'], $licenseData['city'],
-                    $licenseData['postal_code'], $licenseData['phone']
-                );
-            } catch (Exception $e) {
-                Mage::helper('M2ePro/Module_Exception')->process($e);
-                $result = false;
-                $message = Mage::helper('M2ePro')->__($e->getMessage());
-            }
-
-            return $this->getResponse()->setBody(
-                Mage::helper('M2ePro')->jsonEncode(
-                    array(
-                        'result'  => $result,
-                        'message' => $message
-                    )
-                )
-            );
+        if (empty($params['marketplace_id'])) {
+            $error = Mage::helper('M2ePro')->__('Please select Marketplace');
+            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('message' => $error)));
         }
 
         try {
-            $result = Mage::helper('M2ePro/Module_License')->obtainRecord(
-                $licenseData['email'],
-                $licenseData['firstname'], $licenseData['lastname'],
-                $licenseData['country'], $licenseData['city'],
-                $licenseData['postal_code'], $licenseData['phone']
+            $accountData = array();
+
+            $requiredFields = array(
+                'marketplace_id',
+                'consumer_id',
+                'old_private_key',
+                'client_id',
+                'client_secret'
             );
-        } catch (Exception $e) {
-            Mage::helper('M2ePro/Module_Exception')->process($e);
-            $result = false;
-            $message = Mage::helper('M2ePro')->__($e->getMessage());
+
+            foreach ($requiredFields as $requiredField) {
+                if (!empty($params[$requiredField])) {
+                    $accountData[$requiredField] = $params[$requiredField];
+                }
+            }
+
+            /** @var Ess_M2ePro_Model_Marketplace $marketplace */
+            $marketplace = Mage::getModel('M2ePro/Marketplace')->loadInstance($accountData['marketplace_id']);
+
+            if ($params['marketplace_id'] == Ess_M2ePro_Helper_Component_Walmart::MARKETPLACE_CA &&
+                $params['consumer_id'] && $params['old_private_key']) {
+                $requestData = array(
+                    'marketplace_id' => $params['marketplace_id'],
+                    'consumer_id'    => $params['consumer_id'],
+                    'private_key'    => $params['old_private_key'],
+                );
+            } elseif ($params['marketplace_id'] != Ess_M2ePro_Helper_Component_Walmart::MARKETPLACE_CA &&
+                $params['client_id'] && $params['client_secret']) {
+                $requestData = array(
+                    'marketplace_id' => $params['marketplace_id'],
+                    'client_id'      => $params['client_id'],
+                    'client_secret'  => $params['client_secret'],
+                    'consumer_id'    => $params['consumer_id']
+                );
+            } else {
+                $error = Mage::helper('M2ePro')->__('You should fill all required fields.');
+                return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('message' => $error)));
+            }
+
+            $marketplace->setData('status', Ess_M2ePro_Model_Marketplace::STATUS_ENABLE);
+            $marketplace->save();
+
+            $accountData = array_merge(
+                $this->getAccountDefaultSettings(),
+                array(
+                    'title' => "Default - {$marketplace->getCode()}",
+                ),
+                $accountData
+            );
+
+            /** @var $model Ess_M2ePro_Model_Account */
+            $model = Mage::helper('M2ePro/Component_Walmart')->getModel('Account');
+            Mage::getModel('M2ePro/Walmart_Account_Builder')->build($model, $accountData);
+
+            $id = $model->save()->getId();
+
+            /** @var $dispatcherObject Ess_M2ePro_Model_Walmart_Connector_Dispatcher */
+            $dispatcherObject = Mage::getModel('M2ePro/Walmart_Connector_Dispatcher');
+
+            $connectorObj = $dispatcherObject->getConnector(
+                'account',
+                'add',
+                'entityRequester',
+                $requestData,
+                $id
+            );
+            $dispatcherObject->process($connectorObj);
+        } catch (Exception $exception) {
+            Mage::helper('M2ePro/Module_Exception')->process($exception);
+
+            if (!empty($model)) {
+                $model->deleteInstance();
+            }
+
+            Mage::getModel('M2ePro/Servicing_Dispatcher')->processTask(
+                Mage::getModel('M2ePro/Servicing_Task_License')->getPublicNick()
+            );
+
+            $error = 'The Walmart access obtaining is currently unavailable.<br/>Reason: %error_message%';
+
+            if (!Mage::helper('M2ePro/Module_License')->isValidDomain() ||
+                !Mage::helper('M2ePro/Module_License')->isValidIp()) {
+                $error .= '</br>Go to the <a href="%url%" target="_blank">License Page</a>.';
+                $error = Mage::helper('M2ePro')->__(
+                    $error,
+                    $exception->getMessage(),
+                    Mage::helper('M2ePro/View_Configuration')->getLicenseUrl(array('wizard' => 1))
+                );
+            } else {
+                $error = Mage::helper('M2ePro')->__($error, $exception->getMessage());
+            }
+
+            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('message' => $error)));
         }
 
-        return $this->getResponse()->setBody(
-            Mage::helper('M2ePro')->jsonEncode(
-                array(
-                    'result'  => $result,
-                    'message' => $message
-                )
-            )
+        $this->setStep($this->getNextStep());
+
+        return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('result' => true)));
+    }
+
+    public function listingTutorialContinueAction()
+    {
+        Mage::helper('M2ePro/Module_Wizard')->setStatus(
+            Ess_M2ePro_Helper_View_Walmart::WIZARD_INSTALLATION_NICK,
+            Ess_M2ePro_Helper_Module_Wizard::STATUS_COMPLETED
         );
+
+        Mage::helper('M2ePro/Magento')->clearMenuCache();
+
+        return $this->_redirect('*/adminhtml_walmart_listing_create');
+    }
+
+    public function settingsAction()
+    {
+        return $this->renderSimpleStep();
+    }
+
+    public function settingsContinueAction()
+    {
+        $params = $this->getRequest()->getParams();
+        if (empty($params)) {
+            return $this->indexAction();
+        }
+
+        Mage::helper('M2ePro/Component_Walmart_Configuration')->setConfigValues($params);
+
+        $this->setStep($this->getNextStep());
+
+        return $this->_redirect('*/*/installation');
     }
 
     //########################################
 
-    public function updateLicenseUserInfoAction()
+    protected function getAccountDefaultSettings()
     {
+        $data = Mage::getModel('M2ePro/Walmart_Account_Builder')->getDefaultData();
 
-        $requiredKeys = array(
-            'email',
-            'firstname',
-            'lastname',
-            'phone',
-            'country',
-            'city',
-            'postal_code',
-        );
+        $data['other_listings_synchronization'] = 0;
+        $data['other_listings_mapping_mode'] = 0;
 
-        $licenseData = array();
-        foreach ($requiredKeys as $key) {
-            if ($tempValue = $this->getRequest()->getParam($key)) {
-                $licenseData[$key] = Mage::helper('M2ePro')->escapeJs(
-                    Mage::helper('M2ePro')->escapeHtml($tempValue)
-                );
-                continue;
-            }
+        $data['magento_orders_settings']['listing_other']['store_id'] = Mage::helper('M2ePro/Magento_Store')
+            ->getDefaultStoreId();
 
-            return $this->getResponse()->setBody(
-                Mage::helper('M2ePro')->jsonEncode(
-                    array(
-                        'result'  => false,
-                        'message' => Mage::helper('M2ePro')->__('You should fill all required fields.')
-                    )
-                )
-            );
-        }
-
-        $result = true;
-        $message = null;
-
-        if (Mage::helper('M2ePro/Module_License')->getKey()) {
-            try {
-                $result = Mage::helper('M2ePro/Module_License')->updateLicenseUserInfo(
-                    $licenseData['email'],
-                    $licenseData['firstname'], $licenseData['lastname'],
-                    $licenseData['country'], $licenseData['city'],
-                    $licenseData['postal_code'], $licenseData['phone']
-                );
-
-                $registry = Mage::getModel('M2ePro/Registry')->load('/wizard/license_form_data/', 'key');
-                $registry->setData('key', '/wizard/license_form_data/');
-                $registry->setData('value', Mage::helper('M2ePro')->jsonEncode($licenseData));
-                $registry->save();
-            } catch (Exception $e) {
-                Mage::helper('M2ePro/Module_Exception')->process($e);
-                $result = false;
-                $message = Mage::helper('M2ePro')->__($e->getMessage());
-            }
-        }
-
-        return $this->getResponse()->setBody(
-            Mage::helper('M2ePro')->jsonEncode(
-                array(
-                    'result'  => $result,
-                    'message' => $message
-                )
-            )
-        );
+        return $data;
     }
 
     //########################################

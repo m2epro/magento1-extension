@@ -23,7 +23,7 @@ class Ess_M2ePro_Sql_Upgrade_v6_1_4__v6_1_5_AllFeatures extends Ess_M2ePro_Model
         if ($installer->tableExists($motorsNewTableName)) {
             if ($connection->tableColumnExists($motorsNewTableName, 'id') === false) {
                 $installer->run(<<<SQL
-ALTER TABLE `m2epro_ebay_dictionary_motor_specific`
+ALTER TABLE `{$this->_installer->getTable('m2epro_ebay_dictionary_motor_specific')}`
 ADD COLUMN `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT FIRST,
 DROP PRIMARY KEY,
 ADD PRIMARY KEY (`id`);
@@ -51,7 +51,7 @@ SQL
         if ($installer->tableExists($dictionaryMarketplaceTableName)) {
             if ($connection->tableColumnExists($dictionaryMarketplaceTableName, 'id') === false) {
                 $installer->run(<<<SQL
-            ALTER TABLE `m2epro_ebay_dictionary_marketplace`
+            ALTER TABLE `{$this->_installer->getTable('m2epro_ebay_dictionary_marketplace')}`
             ADD COLUMN `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT FIRST,
             DROP PRIMARY KEY,
             ADD PRIMARY KEY (`id`);
@@ -73,7 +73,7 @@ SQL
         if ($installer->tableExists($dictionaryCategoryTableName)) {
             if ($connection->tableColumnExists($dictionaryCategoryTableName, 'id') === false) {
                 $installer->run(<<<SQL
-          ALTER TABLE `m2epro_ebay_dictionary_category`
+          ALTER TABLE `{$this->_installer->getTable('m2epro_ebay_dictionary_category')}`
           ADD COLUMN `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT FIRST,
           DROP PRIMARY KEY,
           ADD PRIMARY KEY (`id`);
@@ -135,7 +135,7 @@ SQL
 
             if ($connection->tableColumnExists($amazonDictionaryCategoryTableName, 'id') === false) {
                 $installer->run(<<<SQL
-          ALTER TABLE `m2epro_amazon_dictionary_category`
+          ALTER TABLE `{$this->_installer->getTable('m2epro_amazon_dictionary_category')}`
           ADD COLUMN `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT FIRST,
           DROP PRIMARY KEY,
           ADD PRIMARY KEY (`id`);
@@ -164,7 +164,7 @@ SQL
         if ($installer->tableExists($amazonDictionaryMarketplaceTableName)) {
             if ($connection->tableColumnExists($amazonDictionaryMarketplaceTableName, 'id') === false) {
                 $installer->run(<<<SQL
-            ALTER TABLE `m2epro_amazon_dictionary_marketplace`
+            ALTER TABLE `{$this->_installer->getTable('m2epro_amazon_dictionary_marketplace')}`
             ADD COLUMN `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT FIRST,
             DROP PRIMARY KEY,
             ADD PRIMARY KEY (`id`);
@@ -205,7 +205,7 @@ SQL
 
             if ($connection->tableColumnExists($amazonDictionarySpecificTableName, 'id') === false) {
                 $installer->run(<<<SQL
-ALTER TABLE `m2epro_amazon_dictionary_specific`
+ALTER TABLE `{$this->_installer->getTable('m2epro_amazon_dictionary_specific')}`
 ADD COLUMN `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT FIRST,
 DROP PRIMARY KEY,
 ADD PRIMARY KEY (`id`);
@@ -266,7 +266,7 @@ SQL
                 foreach ($marketplaceXsds as $marketplaceId => $xsds) {
                     $xsds = implode(',', $xsds);
                     $installer->run(<<<SQL
-UPDATE m2epro_amazon_dictionary_specific
+UPDATE `{$this->_installer->getTable('m2epro_amazon_dictionary_specific')}`
 SET marketplace_id = {$marketplaceId}
 WHERE xsd_hash IN ({$xsds})
 SQL
@@ -313,7 +313,7 @@ SQL
 
             if ($connection->tableColumnExists($buyDictionaryCategoryTableName, 'id') === false) {
                 $installer->run(<<<SQL
-ALTER TABLE `m2epro_buy_dictionary_category`
+ALTER TABLE `{$this->_installer->getTable('m2epro_buy_dictionary_category')}`
 ADD COLUMN `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT FIRST,
 DROP PRIMARY KEY,
 ADD PRIMARY KEY (`id`);
@@ -350,7 +350,7 @@ SQL
         //########################################
 
         $installer->run(<<<SQL
-UPDATE `m2epro_ebay_marketplace`
+UPDATE `{$this->_installer->getTable('m2epro_ebay_marketplace')}`
 SET `is_global_shipping_program` = 1
 WHERE `marketplace_id` = 9;
 SQL

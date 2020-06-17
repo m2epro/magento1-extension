@@ -65,12 +65,16 @@ class Ess_M2ePro_Model_Walmart_Account extends Ess_M2ePro_Model_Component_Child_
      */
     protected $_marketplaceModel = null;
 
+    /** @var Ess_M2ePro_Model_ActiveRecord_Factory */
+    protected $_activeRecordFactory;
+
     //########################################
 
     public function _construct()
     {
         parent::_construct();
         $this->_init('M2ePro/Walmart_Account');
+        $this->_activeRecordFactory = Mage::getSingleton('M2ePro/ActiveRecord_Factory');
     }
 
     //########################################
@@ -81,8 +85,9 @@ class Ess_M2ePro_Model_Walmart_Account extends Ess_M2ePro_Model_Component_Child_
             return false;
         }
 
-        $items = $this->getWalmartItems(true);
-        foreach ($items as $item) {
+        $itemCollection = $this->_activeRecordFactory->getObjectCollection('Walmart_Item');
+        $itemCollection->addFieldToFilter('account_id', $this->getId());
+        foreach ($itemCollection->getItems() as $item) {
             $item->deleteInstance();
         }
 
@@ -91,13 +96,6 @@ class Ess_M2ePro_Model_Walmart_Account extends Ess_M2ePro_Model_Component_Child_
         $this->delete();
 
         return true;
-    }
-
-    //########################################
-
-    public function getWalmartItems($asObjects = false, array $filters = array())
-    {
-        return $this->getRelatedSimpleItems('Walmart_Item', 'account_id', $asObjects, $filters);
     }
 
     //########################################
@@ -647,18 +645,6 @@ class Ess_M2ePro_Model_Walmart_Account extends Ess_M2ePro_Model_Component_Child_
     {
         $settings = $this->getSetting('magento_orders_settings', array('number', 'prefix'));
         return isset($settings['prefix']) ? $settings['prefix'] : '';
-    }
-
-    // ---------------------------------------
-
-    /**
-     * @return int
-     */
-    public function getQtyReservationDays()
-    {
-        $setting = $this->getSetting('magento_orders_settings', array('qty_reservation', 'days'));
-
-        return (int)$setting;
     }
 
     // ---------------------------------------

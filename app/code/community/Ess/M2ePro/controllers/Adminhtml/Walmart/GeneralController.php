@@ -18,7 +18,7 @@ class Ess_M2ePro_Adminhtml_Walmart_GeneralController
             ->_title(Mage::helper('M2ePro')->__('General'));
 
         $this->getLayout()->getBlock('head')
-            ->addJs('M2ePro/Walmart/Configuration/GeneralHandler.js');
+            ->addJs('M2ePro/Walmart/Configuration/General.js');
 
         $this->_initPopUp();
 

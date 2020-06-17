@@ -8,6 +8,11 @@
 
 class Ess_M2ePro_Model_Log_System extends Ess_M2ePro_Model_Abstract
 {
+    const TYPE_LOGGER              = 100;
+    const TYPE_EXCEPTION           = 200;
+    const TYPE_EXCEPTION_CONNECTOR = 201;
+    const TYPE_FATAL_ERROR         = 300;
+
     //########################################
 
     public function _construct()
@@ -18,21 +23,14 @@ class Ess_M2ePro_Model_Log_System extends Ess_M2ePro_Model_Abstract
 
     //########################################
 
-    public function setType($type)
-    {
-        $this->setData('type', $type);
-    }
-
     public function getType()
     {
         return $this->getData('type');
     }
 
-    // ---------------------------------------
-
-    public function setDescription($description)
+    public function getClass()
     {
-        $this->setData('description', $description);
+        return $this->getData('class');
     }
 
     public function getDescription()
@@ -40,22 +38,14 @@ class Ess_M2ePro_Model_Log_System extends Ess_M2ePro_Model_Abstract
         return $this->getData('description');
     }
 
-    // ---------------------------------------
-
-    /**
-     * @param array $data
-     */
-    public function setAdditionalData(array $data = array())
+    public function getDetailedDescription()
     {
-        $this->setData('additional_data', Mage::helper('M2ePro')->jsonEncode($data));
+        return $this->getData('detailed_description');
     }
 
-    /**
-     * @return array
-     */
     public function getAdditionalData()
     {
-        return (array)Mage::helper('M2ePro')->jsonDecode($this->getData('additional_data'));
+        return $this->getData('additional_data');
     }
 
     //########################################

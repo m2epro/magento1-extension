@@ -106,10 +106,10 @@ $formData = $this->getFormData();
 
     Event.observe(window, 'load', function() {
 
-        TemplateHandlerObj = new TemplateHandler();
+        TemplateManagerObj = new TemplateManager();
 
-        WalmartListingSettingsHandlerObj = new WalmartListingSettingsHandler();
-        WalmartListingSettingsHandlerObj.setConstants('<?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Model_Listing'); ?>');
+        WalmartListingSettingsObj = new WalmartListingSettings();
+        WalmartListingSettingsObj.setConstants('<?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Model_Listing'); ?>');
 
         $('template_selling_format_id').observe('change', function() {
             if ($('template_selling_format_id').value) {
@@ -138,17 +138,17 @@ $formData = $this->getFormData();
         });
         $('template_synchronization_id').simulate('change');
 
-        $('template_selling_format_id').observe('change', WalmartListingSettingsHandlerObj.selling_format_template_id_change);
+        $('template_selling_format_id').observe('change', WalmartListingSettingsObj.selling_format_template_id_change);
         if ($('template_selling_format_id').value) {
             $('template_selling_format_id').simulate('change');
         }
 
-        $('template_description_id').observe('change', WalmartListingSettingsHandlerObj.description_template_id_change);
+        $('template_description_id').observe('change', WalmartListingSettingsObj.description_template_id_change);
         if ($('template_description_id').value) {
             $('template_description_id').simulate('change');
         }
 
-        $('template_synchronization_id').observe('change', WalmartListingSettingsHandlerObj.synchronization_template_id_change);
+        $('template_synchronization_id').observe('change', WalmartListingSettingsObj.synchronization_template_id_change);
         if ($('template_synchronization_id').value) {
             $('template_synchronization_id').simulate('change');
         }
@@ -192,10 +192,10 @@ $formData = $this->getFormData();
                         </td>
                         <td class="value">
                         <span id="edit_selling_format_template_link">
-                            <a href="javascript: void(0);" onclick="WalmartListingSettingsHandlerObj.openWindow(M2ePro.url.editSellingFormatTemplate+$('template_selling_format_id').value);"><?php echo Mage::helper('M2ePro')->__('View') ?>&nbsp;/&nbsp;<?php echo Mage::helper('M2ePro')->__('Edit') ?></a>
+                            <a href="javascript: void(0);" onclick="WalmartListingSettingsObj.openWindow(M2ePro.url.editSellingFormatTemplate+$('template_selling_format_id').value);"><?php echo Mage::helper('M2ePro')->__('View') ?>&nbsp;/&nbsp;<?php echo Mage::helper('M2ePro')->__('Edit') ?></a>
                             <?php echo Mage::helper('M2ePro')->__('or') ?>
                         </span>
-                            <a href="javascript: void(0);" onclick="WalmartListingSettingsHandlerObj.addNewTemplate(M2ePro.url.addNewSellingFormatTemplate, WalmartListingSettingsHandlerObj.newSellingFormatTemplateCallback);"><?php echo Mage::helper('M2ePro')->__('Add New') ?></a>
+                            <a href="javascript: void(0);" onclick="WalmartListingSettingsObj.addNewTemplate(M2ePro.url.addNewSellingFormatTemplate, WalmartListingSettingsObj.newSellingFormatTemplateCallback);"><?php echo Mage::helper('M2ePro')->__('Add New') ?></a>
                         </td>
                     </tr>
 
@@ -220,10 +220,10 @@ $formData = $this->getFormData();
                         </td>
                         <td class="value">
                         <span id="edit_description_template_link">
-                            <a href="javascript: void(0);" onclick="WalmartListingSettingsHandlerObj.openWindow(M2ePro.url.editDescriptionTemplate+$('template_description_id').value);"><?php echo Mage::helper('M2ePro')->__('View') ?>&nbsp;/&nbsp;<?php echo Mage::helper('M2ePro')->__('Edit') ?></a>
+                            <a href="javascript: void(0);" onclick="WalmartListingSettingsObj.openWindow(M2ePro.url.editDescriptionTemplate+$('template_description_id').value);"><?php echo Mage::helper('M2ePro')->__('View') ?>&nbsp;/&nbsp;<?php echo Mage::helper('M2ePro')->__('Edit') ?></a>
                             <?php echo Mage::helper('M2ePro')->__('or') ?>
                         </span>
-                            <a href="javascript: void(0);" onclick="WalmartListingSettingsHandlerObj.addNewTemplate(M2ePro.url.addNewDescriptionTemplate, WalmartListingSettingsHandlerObj.newDescriptionTemplateCallback);"><?php echo Mage::helper('M2ePro')->__('Add New') ?></a>
+                            <a href="javascript: void(0);" onclick="WalmartListingSettingsObj.addNewTemplate(M2ePro.url.addNewDescriptionTemplate, WalmartListingSettingsObj.newDescriptionTemplateCallback);"><?php echo Mage::helper('M2ePro')->__('Add New') ?></a>
                         </td>
                     </tr>
 
@@ -244,10 +244,10 @@ $formData = $this->getFormData();
                         </td>
                         <td class="value">
                         <span id="edit_synchronization_template_link">
-                            <a href="javascript: void(0);" onclick="WalmartListingSettingsHandlerObj.openWindow(M2ePro.url.editSynchronizationTemplate+$('template_synchronization_id').value);"><?php echo Mage::helper('M2ePro')->__('View') ?>&nbsp;/&nbsp;<?php echo Mage::helper('M2ePro')->__('Edit') ?></a>
+                            <a href="javascript: void(0);" onclick="WalmartListingSettingsObj.openWindow(M2ePro.url.editSynchronizationTemplate+$('template_synchronization_id').value);"><?php echo Mage::helper('M2ePro')->__('View') ?>&nbsp;/&nbsp;<?php echo Mage::helper('M2ePro')->__('Edit') ?></a>
                             <?php echo Mage::helper('M2ePro')->__('or') ?>
                         </span>
-                            <a href="javascript: void(0);" onclick="WalmartListingSettingsHandlerObj.addNewTemplate(M2ePro.url.addNewSynchronizationTemplate, WalmartListingSettingsHandlerObj.newSynchronizationTemplateCallback);"><?php echo Mage::helper('M2ePro')->__('Add New') ?></a>
+                            <a href="javascript: void(0);" onclick="WalmartListingSettingsObj.addNewTemplate(M2ePro.url.addNewSynchronizationTemplate, WalmartListingSettingsObj.newSynchronizationTemplateCallback);"><?php echo Mage::helper('M2ePro')->__('Add New') ?></a>
                         </td>
                     </tr>
 

@@ -95,10 +95,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Log_Tabs extends Mage_Adminhtml_Block_W
         );
 
         if ($this->getData('active_tab') == self::TAB_ID_SYNCHRONIZATION) {
-            $tab['content'] = $this->getLayout()
-                ->createBlock('M2ePro/adminhtml_walmart_synchronization_log_help')->toHtml();
-            $tab['content'] .= $this->getLayout()
-                ->createBlock('M2ePro/adminhtml_walmart_synchronization_log')->toHtml();
+            $tab['content'] = $this->getLayout()->createBlock('M2ePro/adminhtml_walmart_synchronization_log')->toHtml();
         } else {
             $tab['url'] = $this->getUrl('*/adminhtml_walmart_log/synchronization', array('_current' => true));
         }
@@ -123,8 +120,8 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Log_Tabs extends Mage_Adminhtml_Block_W
     M2ePro.translator.add({$translations});
 
     Event.observe(window, 'load', function() {
-        LogHandlerObj = new LogHandler();
-        LogHandlerObj.afterInitPage();
+        LogObj = new Log();
+        LogObj.afterInitPage();
     });
 
 </script>

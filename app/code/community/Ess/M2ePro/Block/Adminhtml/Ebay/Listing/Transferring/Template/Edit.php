@@ -88,13 +88,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Transferring_Template_Edit
         );
         // ---------------------------------------
 
-        // ---------------------------------------
-        $html .= <<<HTML
-<script type="text/javascript">
-    EbayListingTemplateSwitcherHandlerObj.checkAttributesAvailability = true;
-</script>
-HTML;
-
         // hide tabs selector if only one tab is allowed for displaying
         // ---------------------------------------
         if (count($this->getAllowedTabs()) == 1) {

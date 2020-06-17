@@ -20,14 +20,15 @@ $formData = array_merge($default, $formData);
 
     var init = function() {
         $('relist_mode')
-            .observe('change', EbayTemplateSynchronizationHandlerObj.relistMode_change)
+            .observe('change', EbayTemplateSynchronizationObj.relistMode_change)
             .simulate('change');
 
-        $('relist_qty_magento').observe('change', EbayTemplateSynchronizationHandlerObj.relistQty_change);
-        $('relist_qty_calculated').observe('change', EbayTemplateSynchronizationHandlerObj.relistQty_change);
+        $('relist_qty_calculated')
+            .observe('change', EbayTemplateSynchronizationObj.relistQty_change)
+            .simulate('change');
 
         $('relist_advanced_rules_mode')
-            .observe('change', EbayTemplateSynchronizationHandlerObj.relistAdvancedRules_change)
+            .observe('change', EbayTemplateSynchronizationObj.relistAdvancedRules_change)
             .simulate('change');
     };
 
@@ -159,85 +160,20 @@ $formData = array_merge($default, $formData);
 
                 <tr>
                     <td class="label">
-                        <label><?php echo Mage::helper('M2ePro')->__('Magento Quantity'); ?>:</label>
+                        <label><?php echo Mage::helper('M2ePro')->__('Quantity'); ?>:</label>
                     </td>
                     <td class="value" style="width: auto;">
-                        <select id="relist_qty_magento" name="synchronization[relist_qty_magento]" class="required-entry M2ePro-validate-stop-relist-conditions-item-qty" qty_type="magento">
-                            <option value="<?php echo Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_NONE; ?>" <?php if ($formData['relist_qty_magento'] == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_NONE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Any'); ?></option>
-                            <!-- <option value="<?php echo Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_LESS; ?>" <?php if ($formData['relist_qty_magento'] == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_LESS): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Less'); ?></option> -->
-                            <option value="<?php echo Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_MORE; ?>" <?php if ($formData['relist_qty_magento'] == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_MORE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('More or Equal'); ?></option>
-                            <option value="<?php echo Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_BETWEEN; ?>" <?php if ($formData['relist_qty_magento'] == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_BETWEEN): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Between'); ?></option>
+                        <select id="relist_qty_calculated" name="synchronization[relist_qty_calculated]" class="required-entry M2ePro-validate-stop-relist-conditions-item-qty">
+                            <option value="<?php echo Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_NONE; ?>" <?php if ($formData['relist_qty_calculated'] == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_NONE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Any'); ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_YES; ?>" <?php if ($formData['relist_qty_calculated'] == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_YES): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('More or Equal'); ?></option>
                         </select>
+                        <input id="relist_qty_calculated_value" name="synchronization[relist_qty_calculated_value]" value="<?php echo $this->escapeHtml($formData['relist_qty_calculated_value']); ?>" type="text" class="M2ePro-required-when-visible input-text validate-digits" style="width: 72px"/>
                         <p class="note">
                             <span><?php echo Mage::helper('M2ePro')->__(
                                 '<b>Any:</b> Relist Items automatically with any Quantity available.<br/>
-                                <b>More or Equal: </b> Relist Items automatically if the Quantity available in Magento is at least equal to the number you set.<br/>
-                                <b>Between:</b> Relist Items automatically if the Quantity available in Magento is between the minimum and maximum numbers you set.'
+                                <b>More or Equal: </b> Relist Items automatically if the Quantity according to the Selling Policy is at least equal to the number you set.'
                             ); ?></span>
                         </p>
-                    </td>
-                </tr>
-
-                <tr id="relist_qty_magento_value_container" <?php if ($formData['relist_qty_magento'] == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_NONE) echo ' style="display: none;"'; ?>>
-                    <td class="label">
-                        <label for="relist_qty_magento_value">
-                            <span id="relist_qty_magento_item" <?php if ($formData['relist_qty_magento'] == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_BETWEEN) echo ' style="display: none;"'; ?>><?php echo Mage::helper('M2ePro')->__('Quantity'); ?>: <span class="required">*</span></span>
-                            <span id="relist_qty_magento_item_min" <?php if ($formData['relist_qty_magento'] != Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_BETWEEN) echo ' style="display: none;"'; ?>><?php echo Mage::helper('M2ePro')->__('Min Quantity'); ?>: <span class="required">*</span></span>
-                        </label>
-                    </td>
-                    <td class="value" style="width: auto;">
-                        <input id="relist_qty_magento_value" name="synchronization[relist_qty_magento_value]" value="<?php echo $this->escapeHtml($formData['relist_qty_magento_value']); ?>" type="text" class="M2ePro-required-when-visible input-text validate-digits" />
-                    </td>
-                </tr>
-
-                <tr id="relist_qty_magento_value_max_container" <?php if ($formData['relist_qty_magento'] != Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_BETWEEN) echo ' style="display: none;"'; ?>>
-                    <td class="label">
-                        <label for="relist_qty_magento_value_max"><?php echo Mage::helper('M2ePro')->__('Max Quantity'); ?>: <span class="required">*</span></label>
-                    </td>
-                    <td class="value" style="width: auto;">
-                        <input id="relist_qty_magento_value_max" name="synchronization[relist_qty_magento_value_max]" value="<?php echo $this->escapeHtml($formData['relist_qty_magento_value_max']); ?>" type="text" class="M2ePro-required-when-visible input-text validate-digits M2ePro-validate-conditions-between" />
-                    </td>
-                </tr>
-
-                <tr>
-                    <td class="label">
-                        <label><?php echo Mage::helper('M2ePro')->__('Calculated Quantity'); ?>:</label>
-                    </td>
-                    <td class="value" style="width: auto;">
-                        <select id="relist_qty_calculated" name="synchronization[relist_qty_calculated]" class="required-entry M2ePro-validate-stop-relist-conditions-item-qty" qty_type="calculated">
-                            <option value="<?php echo Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_NONE; ?>" <?php if ($formData['relist_qty_calculated'] == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_NONE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Any'); ?></option>
-                            <!-- <option value="<?php echo Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_LESS; ?>" <?php if ($formData['relist_qty_calculated'] == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_LESS): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Less'); ?></option> -->
-                            <option value="<?php echo Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_MORE; ?>" <?php if ($formData['relist_qty_calculated'] == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_MORE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('More or Equal'); ?></option>
-                            <option value="<?php echo Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_BETWEEN; ?>" <?php if ($formData['relist_qty_calculated'] == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_BETWEEN): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Between'); ?></option>
-                        </select>
-                        <p class="note">
-                            <span><?php echo Mage::helper('M2ePro')->__(
-                                    '<b>Any:</b> Relist Items automatically with any Quantity available.<br/>
-                                    <b>More or Equal: </b> Relist Items automatically if the Quantity according to the Selling Policy is at least equal to the number you set.<br/>
-                                    <b>Between:</b> Relist Items automatically if the Quantity according to the Selling Policy is between the minimum and maximum numbers you set.'
-                                ); ?></span>
-                        </p>
-                    </td>
-                </tr>
-
-                <tr id="relist_qty_calculated_value_container" <?php if ($formData['relist_qty_calculated'] == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_NONE) echo ' style="display: none;"'; ?>>
-                    <td class="label">
-                        <label for="relist_qty_calculated_value">
-                            <span id="relist_qty_calculated_item" <?php if ($formData['relist_qty_calculated'] == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_BETWEEN) echo ' style="display: none;"'; ?>><?php echo Mage::helper('M2ePro')->__('Quantity'); ?>: <span class="required">*</span></span>
-                            <span id="relist_qty_calculated_item_min" <?php if ($formData['relist_qty_calculated'] != Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_BETWEEN) echo ' style="display: none;"'; ?>><?php echo Mage::helper('M2ePro')->__('Min Quantity'); ?>: <span class="required">*</span></span>
-                        </label>
-                    </td>
-                    <td class="value" style="width: auto;">
-                        <input id="relist_qty_calculated_value" name="synchronization[relist_qty_calculated_value]" value="<?php echo $this->escapeHtml($formData['relist_qty_calculated_value']); ?>" type="text" class="M2ePro-required-when-visible input-text validate-digits" />
-                    </td>
-                </tr>
-
-                <tr id="relist_qty_calculated_value_max_container" <?php if ($formData['relist_qty_calculated'] != Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_BETWEEN) echo ' style="display: none;"'; ?>>
-                    <td class="label">
-                        <label for="relist_qty_calculated_value_max"><?php echo Mage::helper('M2ePro')->__('Max Quantity'); ?>: <span class="required">*</span></label>
-                    </td>
-                    <td class="value" style="width: auto;">
-                        <input id="relist_qty_calculated_value_max" name="synchronization[relist_qty_calculated_value_max]" value="<?php echo $this->escapeHtml($formData['relist_qty_calculated_value_max']); ?>" type="text" class="M2ePro-required-when-visible input-text validate-digits M2ePro-validate-conditions-between" />
                     </td>
                 </tr>
 

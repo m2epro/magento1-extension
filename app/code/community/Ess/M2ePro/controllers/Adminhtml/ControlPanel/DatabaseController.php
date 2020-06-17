@@ -14,8 +14,8 @@ class Ess_M2ePro_Adminhtml_ControlPanel_DatabaseController
     protected function _initAction()
     {
         $this->loadLayout()->getLayout()->getBlock('head')
-            ->addJs('M2ePro/GridHandler.js')
-            ->addJs('M2ePro/ControlPanel/DatabaseGridHandler.js');
+            ->addJs('M2ePro/Grid.js')
+            ->addJs('M2ePro/ControlPanel/DatabaseGrid.js');
 
         $this->_initPopUp();
 

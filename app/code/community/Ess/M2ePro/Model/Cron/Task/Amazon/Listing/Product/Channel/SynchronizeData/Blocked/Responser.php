@@ -28,8 +28,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
 
             $this->getSynchronizationLog()->addMessage(
                 Mage::helper('M2ePro')->__($message->getText()),
-                $logType,
-                Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH
+                $logType
             );
         }
     }
@@ -55,8 +54,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
 
         $this->getSynchronizationLog()->addMessage(
             Mage::helper('M2ePro')->__($messageText),
-            Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
-            Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH
+            Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR
         );
     }
 
@@ -66,14 +64,9 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
     {
         try {
             $this->updateBlockedListingProducts();
-        } catch (Exception $exception) {
-            Mage::helper('M2ePro/Module_Exception')->process($exception);
-
-            $this->getSynchronizationLog()->addMessage(
-                Mage::helper('M2ePro')->__($exception->getMessage()),
-                Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
-                Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH
-            );
+        } catch (Exception $e) {
+            Mage::helper('M2ePro/Module_Exception')->process($e);
+            $this->getSynchronizationLog()->addMessageFromException($e);
         }
     }
 
@@ -131,8 +124,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
                     $this->getLogsActionId(),
                     Ess_M2ePro_Model_Listing_Log::ACTION_CHANNEL_CHANGE,
                     $tempLogMessage,
-                    Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS,
-                    Ess_M2ePro_Model_Log_Abstract::PRIORITY_LOW
+                    Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS
                 );
 
                 if (!empty($notReceivedItem['is_variation_product']) &&

@@ -20,16 +20,16 @@ $marketplaceData = $this->getMarketplaceData();
 <script type="text/javascript">
 
     var init = function() {
-        EbayTemplateReturnHandlerObj = new EbayTemplateReturnHandler();
+        EbayTemplateReturnObj = new EbayTemplateReturn();
 
         M2ePro.php.setConstants(<?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Model_Ebay_Template_ReturnPolicy'); ?>, 'Ess_M2ePro_Model_Ebay_Template_ReturnPolicy');
 
         $('return_accepted')
-            .observe('change', EbayTemplateReturnHandlerObj.acceptedChange)
+            .observe('change', EbayTemplateReturnObj.acceptedChange)
             .simulate('change');
 
         $('return_international_accepted')
-            .observe('change', EbayTemplateReturnHandlerObj.internationalAcceptedChange)
+            .observe('change', EbayTemplateReturnObj.internationalAcceptedChange)
             .simulate('change');
     };
 

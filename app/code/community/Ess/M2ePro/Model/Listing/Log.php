@@ -6,6 +6,9 @@
  * @license    Commercial use is forbidden
  */
 
+/**
+ * @method Ess_M2ePro_Model_Resource_Listing_Log getResource()
+ */
 class Ess_M2ePro_Model_Listing_Log extends Ess_M2ePro_Model_Log_Abstract
 {
     const ACTION_UNKNOWN = 1;
@@ -99,7 +102,6 @@ class Ess_M2ePro_Model_Listing_Log extends Ess_M2ePro_Model_Log_Abstract
         $action = null,
         $description = null,
         $type = null,
-        $priority = null,
         array $additionalData = array()
     ) {
         $dataForAdd = $this->makeDataForAdd(
@@ -111,7 +113,6 @@ class Ess_M2ePro_Model_Listing_Log extends Ess_M2ePro_Model_Log_Abstract
             $action,
             $description,
             $type,
-            $priority,
             $additionalData
         );
 
@@ -127,7 +128,6 @@ class Ess_M2ePro_Model_Listing_Log extends Ess_M2ePro_Model_Log_Abstract
         $action = null,
         $description = null,
         $type = null,
-        $priority = null,
         array $additionalData = array()
     ) {
         $dataForAdd = $this->makeDataForAdd(
@@ -139,7 +139,6 @@ class Ess_M2ePro_Model_Listing_Log extends Ess_M2ePro_Model_Log_Abstract
             $action,
             $description,
             $type,
-            $priority,
             $additionalData
         );
 
@@ -196,62 +195,22 @@ class Ess_M2ePro_Model_Listing_Log extends Ess_M2ePro_Model_Log_Abstract
         $productId = null,
         $listingProductId = null,
         $actionId = null,
-        $action = null,
+        $action = self::ACTION_UNKNOWN,
         $description = null,
-        $type = null,
-        $priority = null,
+        $type = self::TYPE_NOTICE,
         array $additionalData = array()
     ) {
-        $dataForAdd = array();
-
-        $dataForAdd['listing_id'] = (int)$listingId;
-        $dataForAdd['initiator'] = $initiator;
-
-        if ($productId !== null) {
-            $dataForAdd['product_id'] = (int)$productId;
-        } else {
-            $dataForAdd['product_id'] = null;
-        }
-
-        if ($listingProductId !== null) {
-            $dataForAdd['listing_product_id'] = (int)$listingProductId;
-        } else {
-            $dataForAdd['listing_product_id'] = null;
-        }
-
-        if ($actionId !== null) {
-            $dataForAdd['action_id'] = (int)$actionId;
-        } else {
-            $dataForAdd['action_id'] = null;
-        }
-
-        if ($action !== null) {
-            $dataForAdd['action'] = (int)$action;
-        } else {
-            $dataForAdd['action'] = self::ACTION_UNKNOWN;
-        }
-
-        if ($description !== null) {
-            $dataForAdd['description'] = $description;
-        } else {
-            $dataForAdd['description'] = null;
-        }
-
-        if ($type !== null) {
-            $dataForAdd['type'] = (int)$type;
-        } else {
-            $dataForAdd['type'] = self::TYPE_NOTICE;
-        }
-
-        if ($priority !== null) {
-            $dataForAdd['priority'] = (int)$priority;
-        } else {
-            $dataForAdd['priority'] = self::PRIORITY_LOW;
-        }
-
-        $dataForAdd['additional_data'] = Mage::helper('M2ePro')->jsonEncode($additionalData);
-
-        return $dataForAdd;
+        return array(
+            'listing_id'         => (int)$listingId,
+            'initiator'          => $initiator,
+            'product_id'         => $productId,
+            'listing_product_id' => $listingProductId,
+            'action_id'          => $actionId,
+            'action'             => $action,
+            'description'        => $description,
+            'type'               => $type,
+            'additional_data'    => Mage::helper('M2ePro')->jsonEncode($additionalData)
+        );
     }
 
     //########################################

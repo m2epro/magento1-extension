@@ -17,9 +17,6 @@ class Ess_M2ePro_Adminhtml_Amazon_GeneralController
             ->_title(Mage::helper('M2ePro')->__('Configuration'))
             ->_title(Mage::helper('M2ePro')->__('General'));
 
-        $this->getLayout()->getBlock('head')
-            ->addJs('M2ePro/Amazon/Configuration/GeneralHandler.js');
-
         $this->setPageHelpLink(null, null, "x/ioIVAQ");
 
         return $this;

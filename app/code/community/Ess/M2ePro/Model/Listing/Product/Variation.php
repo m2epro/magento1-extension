@@ -54,10 +54,13 @@ class Ess_M2ePro_Model_Listing_Product_Variation extends Ess_M2ePro_Model_Compon
             return false;
         }
 
-        $options = $this->getOptions(true, array(), true, false);
-        foreach ($options as $option) {
-            $option->deleteInstance();
-        }
+        try {
+            foreach ($this->getOptions(true) as $option) {
+                $option->deleteInstance();
+            }
+
+        // @codingStandardsIgnoreLine
+        } catch (\Ess_M2ePro_Model_Exception_Logic $exception) {}
 
         $this->_listingProductModel = null;
 
@@ -123,56 +126,58 @@ class Ess_M2ePro_Model_Listing_Product_Variation extends Ess_M2ePro_Model_Compon
 
     /**
      * @param bool $asObjects
-     * @param array $filters
-     * @param bool $tryToGetFromStorage
-     * @param bool $throwExceptionIfNoOptions
      * @return Ess_M2ePro_Model_Listing_Product_Variation_Option[]
      * @throws Ess_M2ePro_Model_Exception
      */
-    public function getOptions(
-        $asObjects = false,
-        array $filters = array(),
-        $tryToGetFromStorage = true,
-        $throwExceptionIfNoOptions = true
-    ) {
-        $storageKey = "listing_product_{$this->getListingProductId()}_variation_{$this->getId()}_options_" .
-                       sha1((string)$asObjects . Mage::helper('M2ePro')->jsonEncode($filters));
+    public function getOptions($asObjects = false)
+    {
+        $storageKey = "listing_product_{$this->getListingProductId()}_variation_{$this->getId()}_options_"
+                      .(string)$asObjects;
 
-        if ($tryToGetFromStorage && ($cacheData = Mage::helper('M2ePro/Data_Cache_Runtime')->getValue($storageKey))) {
+        if ($cacheData = Mage::helper('M2ePro/Data_Cache_Runtime')->getValue($storageKey)) {
             return $cacheData;
         }
 
-        /** @var $options Ess_M2ePro_Model_Listing_Product_Variation_Option[] */
-        $options = $this->getRelatedComponentItems(
-            'Listing_Product_Variation_Option', 'listing_product_variation_id', $asObjects, $filters
+        /** @var Ess_M2ePro_Model_Resource_ActiveRecord_CollectionAbstract $collection */
+        $collection = Mage::helper('M2ePro/Component')->getComponentCollection(
+            $this->getComponentMode(), 'Listing_Product_Variation_Option'
         );
+        $collection->addFieldToFilter('listing_product_variation_id', $this->getId());
 
-        if ($throwExceptionIfNoOptions && empty($options)) {
+        if ($collection->getSize() === 0) {
             throw new Ess_M2ePro_Model_Exception_Logic(
                 'There are no options for a variation product.',
                 array(
-                                                            'variation_id'       => $this->getId(),
-                                                            'listing_product_id' => $this->getListingProductId()
+                    'variation_id'       => $this->getId(),
+                    'listing_product_id' => $this->getListingProductId()
                 )
             );
         }
 
+        foreach ($collection->getItems() as $option) {
+            /** @var Ess_M2ePro_Model_Listing_Product_Variation_Option $option */
+            $option->setListingProductVariation($this);
+        }
+
         if ($asObjects) {
-            foreach ($options as $option) {
-                $option->setListingProductVariation($this);
-            }
+            $result = $collection->getItems();
+        } else {
+            $result = $collection->toArray();
+            $result = $result['items'];
         }
 
         Mage::helper('M2ePro/Data_Cache_Runtime')->setValue(
-            $storageKey, $options, array(
-            'listing_product',
-            "listing_product_{$this->getListingProductId()}",
-            "listing_product_{$this->getListingProductId()}_variation_{$this->getId()}",
-            "listing_product_{$this->getListingProductId()}_variation_{$this->getId()}_options"
+            $storageKey,
+            $result,
+            array(
+                'listing_product',
+                "listing_product_{$this->getListingProductId()}",
+                "listing_product_{$this->getListingProductId()}_variation_{$this->getId()}",
+                "listing_product_{$this->getListingProductId()}_variation_{$this->getId()}_options"
             )
         );
 
-        return $options;
+        return $result;
     }
 
     //########################################

@@ -58,16 +58,49 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Updating
                 continue;
             }
 
-            $newData = array(
-                'title'           => (string)$receivedItem['title'],
-                'currency'        => (string)$receivedItem['currency'],
-                'online_price'    => (float)$receivedItem['currentPrice'],
-                'online_qty'      => (int)$receivedItem['quantity'],
-                'online_qty_sold' => (int)$receivedItem['quantitySold'],
-                'online_bids'     => (int)$receivedItem['bidCount'],
-                'start_date'      => (string)Mage::helper('M2ePro')->getDate($receivedItem['startTime']),
-                'end_date'        => (string)Mage::helper('M2ePro')->getDate($receivedItem['endTime'])
+            $itemMarketplace = Mage::helper('M2ePro/Component_Ebay')->getCachedObject(
+                'Marketplace',
+                $receivedItem['marketplace'],
+                'code'
             );
+
+            $newData = array(
+                'title'                  => (string)$receivedItem['title'],
+                'currency'               => (string)$receivedItem['currency'],
+                'online_price'           => (float)$receivedItem['currentPrice'],
+                'online_qty'             => (int)$receivedItem['quantity'],
+                'online_qty_sold'        => (int)$receivedItem['quantitySold'],
+                'online_bids'            => (int)$receivedItem['bidCount'],
+                'online_main_category'   => null,
+                'online_categories_data' => null,
+                'start_date'             => (string)Mage::helper('M2ePro')->getDate($receivedItem['startTime']),
+                'end_date'               => (string)Mage::helper('M2ePro')->getDate($receivedItem['endTime'])
+            );
+
+            if (!empty($receivedItem['categories'])) {
+                $categories = array(
+                    'category_main_id'            => 0,
+                    'category_secondary_id'       => 0,
+                    'store_category_main_id'      => 0,
+                    'store_category_secondary_id' => 0
+                );
+
+                foreach ($categories as $categoryKey => &$categoryValue) {
+                    if (!empty($receivedItem['categories'][$categoryKey])) {
+                        $categoryValue = $receivedItem['categories'][$categoryKey];
+                    }
+                }
+
+                unset($categoryValue);
+
+                $categoryPath = Mage::helper('M2ePro/Component_Ebay_Category_Ebay')->getPath(
+                    $categories['category_main_id'],
+                    $itemMarketplace->getId()
+                );
+
+                $newData['online_main_category'] = $categoryPath.' ('.$categories['category_main_id'].')';
+                $newData['online_categories_data'] = Mage::helper('M2ePro')->jsonEncode($categories);
+            }
 
             if (isset($receivedItem['listingDuration'])) {
                 $duration = str_replace(self::EBAY_DURATION_DAYS_PREFIX, '', $receivedItem['listingDuration']);
@@ -87,13 +120,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Updating
             } else {
                 $newData['item_id'] = (double)$receivedItem['id'];
                 $newData['account_id'] = (int)$this->getAccount()->getId();
-                $newData['marketplace_id'] = (int)Mage::helper('M2ePro/Component_Ebay')
-                    ->getCachedObject(
-                        'Marketplace',
-                        $receivedItem['marketplace'],
-                        'code'
-                    )
-                    ->getId();
+                $newData['marketplace_id'] = (int)$itemMarketplace->getId();
             }
 
             $tempListingType = Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_General::LISTING_TYPE_AUCTION;

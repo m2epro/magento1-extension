@@ -24,7 +24,7 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion651_NewProcessing extends Ess_
         $this->fillUpGroupHash();
 
         if ($this->_installer->getTablesObject()->isExists('processing_request')) {
-            $this->_installer->run("DROP TABLE `m2epro_processing_request`");
+            $this->_installer->run("DROP TABLE `{$this->_installer->getTable('m2epro_processing_request')}`");
         }
 
         $this->_installer->getTableModifier('processing_lock')

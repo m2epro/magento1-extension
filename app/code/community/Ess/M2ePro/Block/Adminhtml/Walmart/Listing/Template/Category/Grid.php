@@ -12,8 +12,8 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Template_Category_Grid extends 
     protected $_magentoCategoryIds = array();
     protected $_marketplaceId;
 
-    protected $_mapToTemplateJsFn     = 'ListingGridHandlerObj.templateCategoryHandler.mapToTemplateCategory';
-    protected $_createNewTemplateJsFn = 'ListingGridHandlerObj.templateCategoryHandler.createTemplateCategoryInNewTab';
+    protected $_mapToTemplateJsFn     = 'ListingGridObj.templateCategory.mapToTemplateCategory';
+    protected $_createNewTemplateJsFn = 'ListingGridObj.templateCategory.createTemplateCategoryInNewTab';
 
     //########################################
 

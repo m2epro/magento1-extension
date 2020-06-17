@@ -31,8 +31,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Receive_Details_Responser
 
             $this->getSynchronizationLog()->addMessage(
                 Mage::helper('M2ePro')->__($message->getText()),
-                $logType,
-                Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH
+                $logType
             );
         }
     }
@@ -64,8 +63,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Receive_Details_Responser
 
         $this->getSynchronizationLog()->addMessage(
             Mage::helper('M2ePro')->__($messageText),
-            Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
-            Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH
+            Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR
         );
     }
 

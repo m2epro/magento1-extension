@@ -7,7 +7,7 @@
 
 // @codingStandardsIgnoreFile
 
-/** @var $this Ess_M2ePro_Block_Adminhtml_Listing_AutoAction_Mode_Category */
+/** @var $this Ess_M2ePro_Block_Adminhtml_Listing_AutoAction_Mode_CategoryAbstract */
 
 ?>
 
@@ -22,7 +22,7 @@
     var skipConfirmation = <?php echo json_encode($this->getChild('group_grid')->getCollection()->getSize() == 0) ?>;
 
     $('reset_button').observe('click', function() {
-        ListingAutoActionHandlerObj.reset(skipConfirmation);
+        ListingAutoActionObj.reset(skipConfirmation);
     });
 
 </script>
@@ -91,7 +91,7 @@
     <?php if ($this->getChild('group_grid')->getCollection()->getSize() == 0): ?>
         <a id="reset_button" href="javascript: void(0);" onclick=""><?php echo Mage::helper('M2ePro')->__('Cancel'); ?></a>
     <?php endif; ?>
-    <a id="cancel_button" href="javascript: void(0);" onclick="ListingAutoActionHandlerObj.categoryCancel();" style="display: none;"><?php echo Mage::helper('M2ePro')->__('Cancel'); ?></a>
+    <a id="cancel_button" href="javascript: void(0);" onclick="ListingAutoActionObj.categoryCancel();" style="display: none;"><?php echo Mage::helper('M2ePro')->__('Cancel'); ?></a>
     &nbsp;
     &nbsp;
     <?php echo $this->getChildHtml('close_button'); ?>

@@ -27,11 +27,11 @@ class Ess_M2ePro_Sql_Upgrade_v6_5_0_4__v6_5_0_5_AllFeatures extends Ess_M2ePro_M
         if ($installer->getTableModifier('processing')->isColumnExists('expiration_date')) {
             $installer->run(<<<SQL
 
-    UPDATE `m2epro_processing`
+    UPDATE `{$this->_installer->getTable('m2epro_processing')}`
     SET `expiration_date` = DATE_ADD(`create_date`, INTERVAL 24 HOUR)
     WHERE `expiration_date` = '0000-00-00 00:00:00' AND `model` NOT LIKE '%Translation%';
 
-    UPDATE `m2epro_processing`
+    UPDATE `{$this->_installer->getTable('m2epro_processing')}`
     SET `expiration_date` = DATE_ADD(`create_date`, INTERVAL 240 HOUR)
     WHERE `expiration_date` = '0000-00-00 00:00:00' AND `model` LIKE '%Translation%';
 
@@ -104,25 +104,25 @@ SQL
 
         $installer->run(<<<SQL
 
-    UPDATE `m2epro_cache_config`
+    UPDATE `{$this->_installer->getTable('m2epro_cache_config')}`
     SET `group` = '/view/ebay/listing/advanced/autoaction_popup/',
         `key`   = 'shown'
     WHERE `group` = '/view/ebay/advanced/autoaction_popup/'
       AND `key`   = 'shown';
 
-    UPDATE `m2epro_cache_config`
+    UPDATE `{$this->_installer->getTable('m2epro_cache_config')}`
     SET `group` = '/view/ebay/listing/motors_epids_attribute/',
         `key`   = 'notification_shown'
     WHERE `group` = '/view/ebay/motors_epids_attribute/'
       AND `key`   = 'listing_notification_shown';
 
-    UPDATE `m2epro_cache_config`
+    UPDATE `{$this->_installer->getTable('m2epro_cache_config')}`
     SET `group` = '/view/ebay/template/selling_format/multi_currency_marketplace_2/',
         `key`   = 'notification_shown'
     WHERE `group` = '/view/ebay/multi_currency_marketplace_2/'
       AND `key`   = 'notification_shown';
 
-    UPDATE `m2epro_cache_config`
+    UPDATE `{$this->_installer->getTable('m2epro_cache_config')}`
     SET `group` = '/view/ebay/template/selling_format/multi_currency_marketplace_19/',
         `key`   = 'notification_shown'
     WHERE `group` = '/view/ebay/multi_currency_marketplace_19/'
@@ -207,7 +207,7 @@ SQL
 
             $installer->run(<<<SQL
 
-    INSERT INTO `m2epro_amazon_listing_product_repricing`
+    INSERT INTO `{$this->_installer->getTable('m2epro_amazon_listing_product_repricing')}`
         (`listing_product_id`,
         `update_date`,
         `create_date`)
@@ -324,7 +324,7 @@ SQL
 
             $installer->run(<<<SQL
 
-INSERT INTO `m2epro_wizard` (`nick`, `view`, `status`, `step`, `type`, `priority`)
+INSERT INTO `{$this->_installer->getTable('m2epro_wizard')}` (`nick`, `view`, `status`, `step`, `type`, `priority`)
 SELECT 'removedEbay3rdParty', 'ebay', {$wizardStatus}, NULL, 0, MAX( `priority` )+1 FROM `m2epro_wizard`;
 
 SQL
@@ -333,7 +333,7 @@ SQL
 
         $installer->run(<<<SQL
 
-DELETE FROM `m2epro_synchronization_config`
+DELETE FROM `{$this->_installer->getTable('m2epro_synchronization_config')}`
 WHERE `group` LIKE '%/ebay/other_listings/synchronization/%' OR
       `group` LIKE '%/ebay/other_listing/%';
 
@@ -354,7 +354,7 @@ SQL
 
         $installer->run(<<<SQL
 
-    UPDATE `m2epro_listing_other`
+    UPDATE `{$this->_installer->getTable('m2epro_listing_other')}`
     SET `status` = 3
     WHERE `component_mode` = 'ebay' AND `status` = 6;
 
@@ -396,7 +396,7 @@ SQL
 
         $installer->run(<<<SQL
 
-UPDATE `m2epro_amazon_listing_other`
+UPDATE `{$this->_installer->getTable('m2epro_amazon_listing_other')}`
 SET `title` = 'Unknown (can\'t be received)'
 WHERE `title` IS NULL
 

@@ -12,17 +12,6 @@ class Ess_M2ePro_Model_Cron_Task_System_Servicing_Synchronize extends Ess_M2ePro
 
     //########################################
 
-    public function isPossibleToRun()
-    {
-        if (Mage::helper('M2ePro/Server_Maintenance')->isNow()) {
-            return false;
-        }
-
-        return parent::isPossibleToRun();
-    }
-
-    //########################################
-
     protected function performActions()
     {
         $dispatcher = Mage::getModel('M2ePro/Servicing_Dispatcher');

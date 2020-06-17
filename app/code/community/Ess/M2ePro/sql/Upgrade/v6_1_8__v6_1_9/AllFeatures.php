@@ -73,7 +73,7 @@ ENGINE = MYISAM
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-UPDATE `m2epro_ebay_marketplace`
+UPDATE `{$this->_installer->getTable('m2epro_ebay_marketplace')}`
 SET `is_local_shipping_rate_table` = 1
 WHERE `marketplace_id` = 9;
 

@@ -63,7 +63,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_ReturnPolicy_Edit_Form_Data exten
 
     public function getDefault()
     {
-        return Mage::getSingleton('M2ePro/Ebay_Template_ReturnPolicy')->getDefaultSettings();
+        return Mage::getModel('M2ePro/Ebay_Template_ReturnPolicy_Builder')->getDefaultData();
     }
 
     public function getMarketplaceData()

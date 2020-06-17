@@ -7,13 +7,11 @@
  */
 
 use Ess_M2ePro_Adminhtml_Ebay_Listing_Variation_Product_ManageController as ManageController;
+use Ess_M2ePro_Block_Adminhtml_Ebay_Grid_Column_Renderer_Qty as OnlineQty;
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Variation_Product_Manage_View_Grid
     extends Mage_Adminhtml_Block_Widget_Grid
 {
-    const VARIATION_STATUS_ADD     = 1;
-    const VARIATION_STATUS_DELETE  = 2;
-
     protected $_variationAttributes;
 
     protected $_listingProductId;
@@ -140,14 +138,14 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Variation_Product_Manage_View_Grid
     {
         $this->addColumn(
             'variation', array(
-            'header' => Mage::helper('M2ePro')->__('Magento Variation'),
-            'align' => 'left',
-            'width' => '210px',
+            'header'   => Mage::helper('M2ePro')->__('Magento Variation'),
+            'align'    => 'left',
+            'width'    => '210px',
             'sortable' => false,
-            'index' => 'attributes',
-            'filter_index' => 'attributes',
+            'index'    => 'attributes',
+            'filter_index'   => 'attributes',
             'frame_callback' => array($this, 'callbackColumnVariations'),
-            'filter' => 'M2ePro/adminhtml_grid_column_filter_attributesOptions',
+            'filter'  => 'M2ePro/adminhtml_grid_column_filter_attributesOptions',
             'options' => $this->getVariationsAttributes(),
             'filter_condition_callback' => array($this, 'callbackFilterVariations')
             )
@@ -155,61 +153,62 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Variation_Product_Manage_View_Grid
 
         $this->addColumn(
             'online_sku', array(
-            'header'    => Mage::helper('M2ePro')->__('SKU'),
-            'align'     => 'left',
-            'width'     => '150px',
-            'index'     => 'online_sku',
-            'filter_index' => 'online_sku',
-            'frame_callback' => array($this, 'callbackColumnOnlineSku')
+                'header'    => Mage::helper('M2ePro')->__('SKU'),
+                'align'     => 'left',
+                'width'     => '150px',
+                'index'     => 'online_sku',
+                'filter_index'   => 'online_sku',
+                'frame_callback' => array($this, 'callbackColumnOnlineSku')
             )
         );
 
         $this->addColumn(
             'available_qty', array(
-            'header'    => Mage::helper('M2ePro')->__('Available QTY'),
-            'align'     => 'right',
-            'width'     => '40px',
-            'type'      => 'number',
-            'index'     => 'available_qty',
-            'sortable'  => true,
-            'filter'    => false,
-            'frame_callback' => array($this, 'callbackColumnAvailableQty')
+                'header'   => Mage::helper('M2ePro')->__('Available QTY'),
+                'align'    => 'right',
+                'width'    => '40px',
+                'type'     => 'number',
+                'index'    => 'available_qty',
+                'sortable' => true,
+                'filter'   => false,
+                'renderer' => 'M2ePro/adminhtml_ebay_grid_column_renderer_qty',
+                'render_online_qty' => OnlineQty::ONLINE_AVAILABLE_QTY
             )
         );
 
         $this->addColumn(
             'online_qty_sold', array(
-            'header' => Mage::helper('M2ePro')->__('Sold QTY'),
-            'align' => 'right',
-            'width' => '40px',
-            'type' => 'number',
-            'index' => 'online_qty_sold',
-            'frame_callback' => array($this, 'callbackColumnOnlineQtySold')
+                'header'   => Mage::helper('M2ePro')->__('Sold QTY'),
+                'align'    => 'right',
+                'width'    => '40px',
+                'type'     => 'number',
+                'index'    => 'online_qty_sold',
+                'renderer' => 'M2ePro/adminhtml_ebay_grid_column_renderer_qty',
             )
         );
 
         $this->addColumn(
             'price', array(
-            'header' => Mage::helper('M2ePro')->__('Price'),
-            'align' => 'right',
-            'width' => '40px',
-            'type' => 'number',
-            'index' => 'online_price',
-            'filter_index' => 'online_price',
-            'frame_callback' => array($this, 'callbackColumnPrice'),
+                'header' => Mage::helper('M2ePro')->__('Price'),
+                'align'  => 'right',
+                'width'  => '40px',
+                'type'   => 'number',
+                'index'  => 'online_price',
+                'filter_index'   => 'online_price',
+                'frame_callback' => array($this, 'callbackColumnPrice'),
             )
         );
 
         $this->addColumn(
             'identifiers', array(
-                'header' => Mage::helper('M2ePro')->__('eBay Catalog Identifiers'),
-                'align' => 'left',
-                'width' => '150px',
+                'header'   => Mage::helper('M2ePro')->__('eBay Catalog Identifiers'),
+                'align'    => 'left',
+                'width'    => '150px',
                 'sortable' => false,
-                'index' => 'additional_data',
+                'index'    => 'additional_data',
                 'filter_index' => 'additional_data',
-                'filter' => 'M2ePro/adminhtml_grid_column_filter_attributesOptions',
-                'options' => $this->_identifiers,
+                'filter'       => 'M2ePro/adminhtml_grid_column_filter_attributesOptions',
+                'options'      => $this->_identifiers,
                 'frame_callback' => array($this, 'callbackColumnIdentifiers'),
                 'filter_condition_callback' => array($this, 'callbackFilterIdentifiers')
             )
@@ -221,9 +220,9 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Variation_Product_Manage_View_Grid
             'width' => '60px',
             'index' => 'status',
             'filter_index' => 'status',
-            'type' => 'options',
+            'type'     => 'options',
             'sortable' => false,
-            'options' => array(
+            'options'  => array(
                 Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED => Mage::helper('M2ePro')->__('Not Listed'),
                 Ess_M2ePro_Model_Listing_Product::STATUS_LISTED     => Mage::helper('M2ePro')->__('Active'),
                 Ess_M2ePro_Model_Listing_Product::STATUS_HIDDEN     => Mage::helper('M2ePro')->__('Inactive'),
@@ -283,46 +282,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Variation_Product_Manage_View_Grid
 
         if ($value === null || $value === '') {
             return Mage::helper('M2ePro')->__('N/A');
-        }
-
-        return $value;
-    }
-
-    public function callbackColumnAvailableQty($value, $row, $column, $isExport)
-    {
-        if ($row->getData('status') == Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED &&
-            ($value === null || $value === '')) {
-            return '<span style="color: gray;">' . Mage::helper('M2ePro')->__('Not Listed') . '</span>';
-        }
-
-        if ($value === null || $value === '') {
-            return Mage::helper('M2ePro')->__('N/A');
-        }
-
-        if ($value <= 0) {
-            return '<span style="color: red;">0</span>';
-        }
-
-        if ($row->getData('status') != Ess_M2ePro_Model_Listing_Product::STATUS_LISTED) {
-            return '<span style="color: gray; text-decoration: line-through;">' . $value . '</span>';
-        }
-
-        return $value;
-    }
-
-    public function callbackColumnOnlineQtySold($value, $row, $column, $isExport)
-    {
-        if ($row->getData('status') == Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED &&
-            ($value === null || $value === '')) {
-            return '<span style="color: gray;">' . Mage::helper('M2ePro')->__('Not Listed') . '</span>';
-        }
-
-        if ($value === null || $value === '') {
-            return Mage::helper('M2ePro')->__('N/A');
-        }
-
-        if ($value <= 0) {
-            return '<span style="color: red;">0</span>';
         }
 
         return $value;
@@ -421,10 +380,10 @@ HTML;
             <input type="hidden" name="listing_product_id" value="{$this->getListingProduct()->getId()}">
             <input type="hidden" name="manage_mode" value="{$manageMode}">
             <button class="scalable confirm-btn"
-                    onclick="VariationsGridHandlerObj.confirmVariationIdentifiers(this, '{$variationId}')"
+                    onclick="VariationsGridObj.confirmVariationIdentifiers(this, '{$variationId}')"
                     style="margin-top: 8px; float: right;">Confirm</button>
             <a href="javascript:void(0);" class="scalable"
-                onclick="VariationsGridHandlerObj.cancelVariationIdentifiers('{$variationId}')"
+                onclick="VariationsGridObj.cancelVariationIdentifiers('{$variationId}')"
                 style="margin: 7px 8px; float: right;">Cancel</a>
         </div>
     </div>
@@ -432,7 +391,7 @@ HTML;
 <div style="text-align: left;">
 <a href="javascript:"
     id="edit_variations_{$variationId}"
-    onclick="VariationsGridHandlerObj.editVariationIdentifiers(this, '{$variationId}')"
+    onclick="VariationsGridObj.editVariationIdentifiers(this, '{$variationId}')"
     title="{$linkTitle}">{$linkContent}</a>
 </div>
 </div>
@@ -566,20 +525,20 @@ HTML;
 
     Event.observe(window, 'load', function() {
 
-        FrameHandlerObj = new FrameHandler();
-        CommonHandler.prototype.scroll_page_to_top = function() { return; }
+        GridFrameObj = new GridFrame();
+        Common.prototype.scroll_page_to_top = function() { return; }
 
-        VariationsGridHandlerObj = new EbayListingVariationProductManageVariationsGridHandler(
+        VariationsGridObj = new EbayListingVariationProductManageVariationsGrid(
             'ebayVariationProductManageGrid'
         );
 
         setTimeout(function() {
-            VariationsGridHandlerObj.afterInitPage();
+            VariationsGridObj.afterInitPage();
         }, 350);
     });
 
-    if (typeof VariationsGridHandlerObj != 'undefined') {
-        VariationsGridHandlerObj.afterInitPage();
+    if (typeof VariationsGridObj != 'undefined') {
+        VariationsGridObj.afterInitPage();
     }
 
 </script>

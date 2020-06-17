@@ -9,9 +9,7 @@
 
 /** @var $this Ess_M2ePro_Block_Adminhtml_Walmart_Listing_AutoAction_Mode_Website */
 
-$formData = $this->getFormData();
-$default  = $this->getDefault();
-$formData = array_merge($default, $formData);
+$formData = array_merge($this->getDefault(), $this->getFormData());
 
 /** @var Ess_M2ePro_Model_Resource_Walmart_Template_Category_Collection $collection */
 $collection = Mage::getResourceModel('M2ePro/Walmart_Template_Category_Collection');
@@ -36,16 +34,12 @@ $categoriesTemplates = $collection->getData();
     )); ?>';
 
     $('auto_website_adding_mode')
-        .observe('change', ListingAutoActionHandlerObj.addingModeChange)
+        .observe('change', ListingAutoActionObj.addingModeChange)
         .simulate('change');
-
-    $('continue_button')
-        .stopObserving('click')
-        .observe('click', ListingAutoActionHandlerObj.websiteStepTwo);
 
     $('reset_button')
         .observe('click', function() {
-            ListingAutoActionHandlerObj.reset(false);
+            ListingAutoActionObj.reset(false);
         });
 
     $('adding_category_template_id').observe('change', function(el) {
@@ -139,7 +133,7 @@ $categoriesTemplates = $collection->getData();
                             <strong>Note:</strong> Submitting of Category data is required when you create a new offer on Walmart. Category Policy must be assigned to Products before they are added to M2E Pro Listing.'
                         ); ?></span>
                     </span>
-                        <a href="javascript: void(0);" style="vertical-align: inherit;" onclick="ListingAutoActionHandlerObj.addNewTemplate(M2ePro.url.addNewCategoryTemplate, ListingAutoActionHandlerObj.reloadCategoriesTemplates);"><?php echo Mage::helper('M2ePro')->__('Add New') ?></a>
+                        <a href="javascript: void(0);" style="vertical-align: inherit;" onclick="ListingAutoActionObj.addNewTemplate(M2ePro.url.addNewCategoryTemplate, ListingAutoActionObj.reloadCategoriesTemplates);"><?php echo Mage::helper('M2ePro')->__('Add New') ?></a>
                     </td>
                 </tr>
 
@@ -183,7 +177,7 @@ $categoriesTemplates = $collection->getData();
 <div style="float: right; margin: 10px 0;">
     <?php if (!$this->hasFormData()): ?>
         <a id="reset_button" href="" style="display: none;"></a>
-        <a id="close_button" href="javascript: void(0);" onclick="ListingAutoActionHandlerObj.loadAutoActionHtml();"><?php echo Mage::helper('M2ePro')->__('Cancel') ?></a>
+        <a id="close_button" href="javascript: void(0);" onclick="ListingAutoActionObj.loadAutoActionHtml();"><?php echo Mage::helper('M2ePro')->__('Cancel') ?></a>
     <?php endif; ?>
     &nbsp;
     &nbsp;

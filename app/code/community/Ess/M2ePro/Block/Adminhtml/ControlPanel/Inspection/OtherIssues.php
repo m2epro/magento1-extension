@@ -28,8 +28,7 @@ class Ess_M2ePro_Block_Adminhtml_ControlPanel_Inspection_OtherIssues
     protected function isShown()
     {
         return $this->isGdLibraryUnAvailable() ||
-               $this->isZendOpcacheAvailable() ||
-               $this->isSystemLogNotEmpty();
+               $this->isZendOpcacheAvailable();
     }
 
     //########################################
@@ -42,23 +41,6 @@ class Ess_M2ePro_Block_Adminhtml_ControlPanel_Inspection_OtherIssues
     public function isZendOpcacheAvailable()
     {
         return Mage::helper('M2ePro/Client_Cache')->isZendOpcacheAvailable();
-    }
-
-    public function isSystemLogNotEmpty()
-    {
-        if (!Mage::helper('M2ePro/Module_Database_Structure')->isTableExists('m2epro_system_log')) {
-            return false;
-        }
-
-        $resource = Mage::getSingleton('core/resource');
-
-        $tableName = Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('m2epro_system_log');
-
-        return (int)$resource->getConnection('core_read')
-                             ->select()
-                             ->from($tableName, array(new Zend_Db_Expr('COUNT(*)')))
-                             ->query()
-                             ->fetchColumn() > 0;
     }
 
     //########################################

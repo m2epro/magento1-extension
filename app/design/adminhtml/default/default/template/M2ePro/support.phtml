@@ -22,7 +22,7 @@
     )); ?>);
 
     Event.observe(window, 'load', function() {
-        SupportHandlerObj = new SupportHandler();
+        SupportObj = new Support();
 
         editForm = new varienForm('edit_form', '<?php echo $this->getValidationUrl(); ?>');
         $('query').focus();
@@ -65,10 +65,11 @@
 
         <div class="entry-edit-head">
             <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('System Requirements'); ?></h4>
+            <span class="notice-tool-tip-icon" onclick="window.open('<?php echo Mage::helper('M2ePro/Module_Support')->getKnowledgeBaseUrl('1535371'); ?>', '_blank'); Event.stop(event)" style="cursor: pointer;"></span>
         </div>
 
         <div class="fieldset">
-            <div class="hor-scroll">
+            <div class="hor-scroll" style="min-height: 116px;">
                 <?php echo $this->getChildHtml('system_requirements'); ?>
             </div>
         </div>
@@ -76,6 +77,20 @@
 </div>
 
 <div class="box-right">
+    <div id="support_version_info_container" class="entry-edit">
+
+        <div class="entry-edit-head">
+            <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Version Info'); ?></h4>
+        </div>
+
+        <div class="fieldset">
+            <div class="hor-scroll">
+                <?php echo $this->getChildHtml('version_info'); ?>
+            </div>
+        </div>
+
+    </div>
+
     <div id="support_cron_info_container" class="entry-edit">
 
         <div class="entry-edit-head">
@@ -93,15 +108,14 @@
 
 <div style="clear: both;"></div>
 
-<div id="block_notice_support" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Getting Help and contacting M2E support engineers'); ?>">
+<div id="block_notice_support" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Get Help'); ?>">
     <?php echo Mage::helper('M2ePro')->__(
-        'Finding a help with your M2E extension is easy! Please use some keywords describing your issue in the form below and see if our Knowledgebase or Documentation can help.
-        If your search did not provide you with a resolution, you would have the option to submit a support ticket via the "Contact Support" form which is displayed right after you have searched in the box below.'
+        'Find the answers by searching through our Knowledge Base.<br>If you need assistance, submit your request to our Support via the contact form.'
     ); ?>
 </div>
 
 <div id="support_input_query_container">
-    <input onkeypress="SupportHandlerObj.keyPressQuery(event)" type="text" placeholder="<?php echo Mage::helper('M2ePro')->__('Enter keywords to search'); ?>" name="query" id="query">
+    <input onkeypress="SupportObj.keyPressQuery(event)" type="text" placeholder="<?php echo Mage::helper('M2ePro')->__('Enter keywords to search'); ?>" name="query" id="query">
     <?php echo $this->getChildHtml('user_voice_search'); ?>
 </div>
 

@@ -18,14 +18,7 @@
         $formData['other_listings_mapping_settings'] = (array)json_decode($formData['other_listings_mapping_settings'],true);
     }
 
-    $defaults = array(
-        'title'           => '',
-        'marketplace_id'  => 0,
-        'consumer_id'     => '',
-        'old_private_key' => '',
-        'client_id'       => '',
-        'client_secret'   => ''
-    );
+    $defaults = Mage::getModel('M2ePro/Walmart_Account_Builder')->getDefaultData();
 
     $formData = array_merge($defaults, $formData);
 
@@ -88,11 +81,15 @@
     Event.observe(window, 'load', function() {
         <?php echo $licenseMessage; ?>
 
-        WalmartAccountHandlerObj = new WalmartAccountHandler();
+        AccountObj = new Account();
+        WalmartAccountObj = new WalmartAccount();
+        WalmartAccountObj.initValidation();
+        WalmartAccountObj.initTokenValidation();
+
         editForm = new varienForm('edit_form', '<?php echo $this->getValidationUrl(); ?>');
 
         $('marketplace_id')
-            .observe('change', WalmartAccountHandlerObj.changeMarketplace)
+            .observe('change', WalmartAccountObj.changeMarketplace)
             .simulate('change');
 
         <?php if ($isEdit) : ?>

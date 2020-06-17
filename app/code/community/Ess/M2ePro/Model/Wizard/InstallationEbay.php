@@ -9,8 +9,7 @@
 class Ess_M2ePro_Model_Wizard_InstallationEbay extends Ess_M2ePro_Model_Wizard
 {
     protected $_steps = array(
-        'wizardTutorial',
-        'license',
+        'registration',
         'account',
 
         'listingTutorial',
@@ -19,7 +18,6 @@ class Ess_M2ePro_Model_Wizard_InstallationEbay extends Ess_M2ePro_Model_Wizard
         'listingSelling',
         'listingSynchronization',
 
-        'productTutorial',
         'sourceMode',
         'productSelection',
         'productSettings',
@@ -34,7 +32,7 @@ class Ess_M2ePro_Model_Wizard_InstallationEbay extends Ess_M2ePro_Model_Wizard
     /**
      * @return bool
      */
-    public function isActive()
+    public function isActive($view)
     {
         return Mage::helper('M2ePro/Component_Ebay')->isEnabled();
     }

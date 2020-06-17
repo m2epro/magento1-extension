@@ -62,7 +62,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Product extends Mage_Adminhtml_
         $this->_addButton(
             'back', array(
             'label'     => Mage::helper('M2ePro')->__('Back'),
-            'onclick'   => 'ProductGridHandlerObj.back_click(\''.$url.'\')',
+            'onclick'   => 'ProductGridObj.back_click(\''.$url.'\')',
             'class'     => 'back'
             )
         );
@@ -72,7 +72,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Product extends Mage_Adminhtml_
         $this->_addButton(
             'save', array(
             'label'     => Mage::helper('M2ePro')->__('Save'),
-            'onclick'   => 'ProductGridHandlerObj.save_click(\'view\')',
+            'onclick'   => 'ProductGridObj.save_click(\'view\')',
             'class'     => 'save'
             )
         );

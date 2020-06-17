@@ -25,21 +25,21 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_OtherController
             ->addJs('M2ePro/Plugin/AreaWrapper.js')
             ->addCss('M2ePro/css/Plugin/AreaWrapper.css')
 
-            ->addJs('M2ePro/GridHandler.js')
-            ->addJs('M2ePro/Listing/Other/GridHandler.js')
-            ->addJs('M2ePro/Amazon/Listing/Other/GridHandler.js')
-            ->addJs('M2ePro/Amazon/Listing/AfnQtyHandler.js')
-            ->addJs('M2ePro/Amazon/Listing/RepricingPriceHandler.js')
-            ->addJs('M2ePro/Amazon/Listing/Other/GridHandler.js')
+            ->addJs('M2ePro/Grid.js')
+            ->addJs('M2ePro/Listing/Other/Grid.js')
+            ->addJs('M2ePro/Amazon/Listing/Other/Grid.js')
+            ->addJs('M2ePro/Amazon/Listing/AfnQty.js')
+            ->addJs('M2ePro/Amazon/Listing/RepricingPrice.js')
+            ->addJs('M2ePro/Amazon/Listing/Other/Grid.js')
 
-            ->addJs('M2ePro/ActionHandler.js')
-            ->addJs('M2ePro/Listing/MovingHandler.js')
-            ->addJs('M2ePro/Listing/Other/AutoMappingHandler.js')
+            ->addJs('M2ePro/Action.js')
+            ->addJs('M2ePro/Listing/Moving.js')
+            ->addJs('M2ePro/Listing/Other/AutoMapping.js')
 
-            ->addJs('M2ePro/Listing/Other/MappingHandler.js')
+            ->addJs('M2ePro/Listing/Other/Mapping.js')
 
-            ->addJs('M2ePro/Listing/Other/RemovingHandler.js')
-            ->addJs('M2ePro/Listing/Other/UnmappingHandler.js');
+            ->addJs('M2ePro/Listing/Other/Removing.js')
+            ->addJs('M2ePro/Listing/Other/Unmapping.js');
 
         $this->_initPopUp();
 
@@ -185,6 +185,23 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_OtherController
                 array(
                 'result' => true
                 )
+            )
+        );
+    }
+
+    //########################################
+
+    public function resetAction()
+    {
+        Mage::getResourceModel('M2ePro/Amazon_Listing_Other')->resetEntities();
+
+        $this->_getSession()->addSuccess(
+            Mage::helper('M2ePro')->__('Amazon 3rd Party Listings were reset.')
+        );
+
+        $this->_redirect(
+            '*/adminhtml_amazon_listing/index', array(
+                'tab' => Ess_M2ePro_Block_Adminhtml_Amazon_ManageListings::TAB_ID_LISTING_OTHER
             )
         );
     }

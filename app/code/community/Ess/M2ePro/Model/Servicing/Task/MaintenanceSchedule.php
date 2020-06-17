@@ -30,49 +30,22 @@ class Ess_M2ePro_Model_Servicing_Task_MaintenanceSchedule extends Ess_M2ePro_Mod
 
     public function processResponseData(array $data)
     {
-        if (empty($data['date_enabled_from']) ||
-            empty($data['date_enabled_to']) ||
-            empty($data['date_real_from']) ||
-            empty($data['date_real_to'])
-        ) {
-            $dateEnabledFrom = null;
-            $dateEnabledTo = null;
-            $dateRealFrom = null;
-            $dateRealTo = null;
-        } else {
+        $dateEnabledFrom = false;
+        $dateEnabledTo = false;
+
+        if (!empty($data['date_enabled_from']) && !empty($data['date_enabled_to'])) {
             $dateEnabledFrom = $data['date_enabled_from'];
             $dateEnabledTo = $data['date_enabled_to'];
-            $dateRealFrom = $data['date_real_from'];
-            $dateRealTo = $data['date_real_to'];
         }
 
-        /**  @var $enabledFrom Ess_M2ePro_Model_Registry */
-        $enabledFrom = Mage::getModel('M2ePro/Registry');
-        $enabledFrom->loadByKey('/server/maintenance/schedule/date/enabled/from/');
+        $helper = Mage::helper('M2ePro/Server_Maintenance');
 
-        if ($enabledFrom->getValue() != $dateEnabledFrom) {
-            $enabledFrom->setValue($dateEnabledFrom)->save();
+        if ($helper->getDateEnabledFrom() != $dateEnabledFrom) {
+            $helper->setDateEnabledFrom($dateEnabledFrom);
         }
 
-        /**  @var $realFrom Ess_M2ePro_Model_Registry */
-        $realFrom = Mage::getModel('M2ePro/Registry');
-        $realFrom->loadByKey('/server/maintenance/schedule/date/real/from/');
-
-        if ($realFrom->getValue() != $dateRealFrom) {
-            $realFrom->setValue($dateRealFrom)->save();
-        }
-
-        /**  @var $realTo Ess_M2ePro_Model_Registry */
-        $realTo = Mage::getModel('M2ePro/Registry');
-        $realTo->loadByKey('/server/maintenance/schedule/date/real/to/');
-
-        /**  @var $enabledTo Ess_M2ePro_Model_Registry */
-        $enabledTo = Mage::getModel('M2ePro/Registry');
-        $enabledTo->loadByKey('/server/maintenance/schedule/date/enabled/to/');
-
-        if ($realTo->getValue() != $dateRealTo) {
-            $realTo->setValue($dateRealTo)->save();
-            $enabledTo->setValue($dateEnabledTo)->save();
+        if ($helper->getDateEnabledTo() != $dateEnabledTo) {
+            $helper->setDateEnabledTo($dateEnabledTo);
         }
     }
 

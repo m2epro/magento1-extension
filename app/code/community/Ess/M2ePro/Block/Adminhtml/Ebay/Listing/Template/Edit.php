@@ -76,7 +76,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Edit extends Mage_Adminht
             $this->_addButton(
                 'back', array(
                 'label'     => Mage::helper('M2ePro')->__('Back'),
-                'onclick'   => 'CommonHandlerObj.back_click(\'' . $url . '\')',
+                'onclick'   => 'CommonObj.back_click(\'' . $url . '\')',
                 'class'     => 'back'
                 )
             );
@@ -93,11 +93,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Edit extends Mage_Adminht
                     'back' => $backUrl
                 )
             );
-            $callback = 'function(params) { CommonHandlerObj.postForm(\''.$url.'\', params); }';
+            $callback = 'function(params) { CommonObj.postForm(\''.$url.'\', params); }';
             $this->_addButton(
                 'save', array(
                 'label'     => Mage::helper('M2ePro')->__('Save'),
-                'onclick'   => 'EbayListingTemplateSwitcherHandlerObj.saveSwitchers(' . $callback . ')',
+                'onclick'   => 'EbayListingTemplateSwitcherObj.saveSwitchers(' . $callback . ')',
                 'class'     => 'save'
                 )
             );
@@ -113,11 +113,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Edit extends Mage_Adminht
                 )
             );
 
-            $callback = 'function(params) { CommonHandlerObj.postForm(\''.$url.'\', params); }';
+            $callback = 'function(params) { CommonObj.postForm(\''.$url.'\', params); }';
             $this->_addButton(
                 'save_and_continue', array(
                 'label'     => Mage::helper('M2ePro')->__('Save And Continue Edit'),
-                'onclick'   => 'EbayListingTemplateSwitcherHandlerObj.saveSwitchers(' . $callback . ')',
+                'onclick'   => 'EbayListingTemplateSwitcherObj.saveSwitchers(' . $callback . ')',
                 'class'     => 'save'
                 )
             );
@@ -139,7 +139,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Edit extends Mage_Adminht
                 $this->_addButton(
                     'back', array(
                     'label'     => Mage::helper('M2ePro')->__('Previous Step'),
-                    'onclick'   => 'CommonHandlerObj.back_click(\'' . $url . '\')',
+                    'onclick'   => 'CommonObj.back_click(\'' . $url . '\')',
                     'class'     => 'back'
                     )
                 );
@@ -159,11 +159,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Edit extends Mage_Adminht
             $url = $this->getUrl(
                 '*/adminhtml_ebay_listing_create/index', array('_current' => true, 'step' => $currentStep)
             );
-            $callback = 'function(params) { CommonHandlerObj.postForm(\''.$url.'\', params); }';
+            $callback = 'function(params) { CommonObj.postForm(\''.$url.'\', params); }';
             $this->_addButton(
                 'save', array(
                 'label'     => Mage::helper('M2ePro')->__($nextStepBtnText),
-                'onclick'   => 'EbayListingTemplateSwitcherHandlerObj.saveSwitchers(' . $callback . ')',
+                'onclick'   => 'EbayListingTemplateSwitcherObj.saveSwitchers(' . $callback . ')',
                 'class'     => 'next'
                 )
             );

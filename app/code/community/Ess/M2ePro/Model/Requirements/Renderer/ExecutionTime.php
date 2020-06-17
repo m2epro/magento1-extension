@@ -34,20 +34,21 @@ HTML;
 
     public function getReal()
     {
+        $helper = Mage::helper('M2ePro');
         $color = $this->getCheckObject()->isMeet() ? 'green' : 'red';
 
         if ($this->getCheckObject()->getReal() === null) {
-            $value = Mage::helper('M2ePro')->__('unknown');
+            $url = Mage::helper('M2ePro/Module_Support')->getKnowledgeBaseUrl('1563888');
             $html = <<<HTML
-<span style="color: {$color};">
-    <span>{$value}</span>&nbsp;
+<span style="color: orange;">
+    <span>{$helper->__('unknown')}</span>&nbsp;
+    <a href="{$url}" target="_blank">{$helper->__('[read more]')}</a>&nbsp;
 </span>
 HTML;
         } else if ($this->getCheckObject()->getReal() <= 0) {
-            $value = Mage::helper('M2ePro')->__('unlimited');
             $html = <<<HTML
 <span style="color: {$color};">
-    <span>{$value}</span>&nbsp;
+    <span>{$helper->__('unlimited')}</span>&nbsp;
 </span>
 HTML;
         } else {
@@ -59,24 +60,125 @@ HTML;
 HTML;
         }
 
-        if (Mage::helper('M2ePro/Client')->isPhpApiFastCgi()) {
-            $noticeImage = Mage::getDesign()->getSkinUrl('M2ePro/images/tool-tip-icon.png');
-            $helpImage = Mage::getDesign()->getSkinUrl('M2ePro/images/help.png');
-            $notice = Mage::helper('M2ePro')->__(
-                'PHP is running using <b>fast CGI</b> Module on your web Server.<br/>
-                 It has its own Settings that override max_execution_time in php.ini or .htaccess.'
-            );
-
-            $html .= <<<HTML
-<img src="{$noticeImage}" class="tool-tip-image">
-<span class="tool-tip-message" style="display: none;">
-    <img src="{$helpImage}">
-    <span>{$notice}</span>
-</span>
-HTML;
-        }
-
         return $html;
+    }
+
+    public function getAdditional()
+    {
+        $helper = Mage::helper('M2ePro');
+        $testUrl = Mage::helper('adminhtml')->getUrl('*/adminhtml_support/testExecutionTime');
+        $testResultUrl = Mage::helper('adminhtml')->getUrl('*/adminhtml_support/testExecutionTimeResult');
+
+        return <<<HTML
+<script>
+function executionTimeTest(seconds)
+{
+    seconds = parseInt(seconds);
+    if (isNaN(seconds) || seconds <= 0) {
+        return false;
+    }
+    
+    Windows.getFocusedWindow().close();
+    
+    new Ajax.Request('{$testUrl}', {
+        method: 'post',
+        asynchronous: true,
+        parameters: { seconds: seconds },
+        onComplete: function(transport) {
+            
+            new Ajax.Request('{$testResultUrl}', {
+                method: 'post',
+                asynchronous: true,
+                onComplete: function(transport) {
+                    
+                    MessageObj.clearAll();
+                    var response = transport.responseText.evalJSON();
+                    if (typeof response['result'] === 'undefined') {
+                        MessageObj.addError('{$helper->__('Something went wrong. Please try again later.')}');
+                        return;
+                    }
+                    
+                    if (response['result'] < {$this->getCheckObject()->getMin()}) {
+                        MessageObj.addWarning(
+                            '{$this->getTestWarningMessage()}'
+                            .replace('%value%', response['result'])
+                            .replace('%min-value%', '{$this->getCheckObject()->getMin()}')
+                        );
+                    } else {
+                        MessageObj.addSuccess(
+                            '{$helper->__('Max execution time of %value% sec. is tested.')}'
+                            .replace('%value%', response['result'])
+                        );
+                    }
+                }
+            });
+        }
+    });
+}
+
+function openExecutionTimeTestPopup()
+{
+    var popup = Dialog.info('{$this->getPopupHtml()}', {
+        draggable: true,
+        resizable: true,
+        closable: true,
+        className: "magento",
+        windowClassName: "popup-window",
+        title: '{$helper->__('Check execution time:')}',
+        top: 50,
+        width: 550,
+        height: 320,
+        zIndex: 100,
+        border: false,
+        hideEffect: Element.hide,
+        showEffect: Element.show
+    });
+    popup.options.destroyOnClose = true;
+    CommonObj.autoHeightFix();
+}
+</script>
+
+<a class="button-link button-link-grey" href="#" onclick="openExecutionTimeTestPopup()">{$helper->__('Check')}</a>&nbsp;
+HTML;
+    }
+
+    protected function getPopupHtml()
+    {
+        $data = array(
+            'label'   => Mage::helper('M2ePro')->__('Check'),
+            'onclick' => "executionTimeTest($('execution_time_value').value)",
+        );
+        $button = Mage::app()->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
+
+        $helper = Mage::helper('M2ePro');
+        return $helper->escapeJs(<<<HTML
+<div style="margin-top: 10px;">
+    {$helper->__(
+        'Enter the time you want to test. The minimum recommended value is %min% sec.<br>
+        The Module interface will be unavailable during the check.
+        Synchronization processes won’t be affected.',
+        $this->getCheckObject()->getMin()
+    )}
+    <br><br>
+    <label>{$helper->__('Seconds')}</label>:&nbsp;
+    <input type="text" id="execution_time_value" value="{$this->getCheckObject()->getMin()}" />
+</div>
+
+<div style="margin-top: 10px; margin-bottom: 20px; text-align: right;">
+    {$button->toHtml()}
+</div>
+HTML
+        );
+    }
+
+    protected function getTestWarningMessage()
+    {
+        return Mage::helper('M2ePro')->escapeJs(
+            Mage::helper('M2ePro')->__(
+                'Max execution time of %value% sec. is tested. To ensure your execution time limit is
+                sufficient, the test should be run for at least %min-value% sec.'
+            )
+        );
     }
 
     //########################################

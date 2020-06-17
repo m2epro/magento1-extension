@@ -110,7 +110,7 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630_Marketplace
 
     protected function processAmazonDictionaryCaterory()
     {
-        $this->_installer->run("TRUNCATE TABLE `m2epro_amazon_dictionary_category`");
+        $this->_installer->run("TRUNCATE TABLE `{$this->_installer->getTable('m2epro_amazon_dictionary_category')}`");
 
         $connection = $this->_installer->getConnection();
 
@@ -175,7 +175,9 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630_Marketplace
 
     protected function processAmazonDictionaryMarketplace()
     {
-        $this->_installer->run("TRUNCATE TABLE `m2epro_amazon_dictionary_marketplace`");
+        $this->_installer->run(
+            "TRUNCATE TABLE `{$this->_installer->getTable('m2epro_amazon_dictionary_marketplace')}`"
+        );
 
         $connection = $this->_installer->getConnection();
 
@@ -202,7 +204,7 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630_Marketplace
 
     protected function processAmazonDictionarySpecific()
     {
-        $this->_installer->run("TRUNCATE TABLE `m2epro_amazon_dictionary_specific`");
+        $this->_installer->run("TRUNCATE TABLE `{$this->_installer->getTable('m2epro_amazon_dictionary_specific')}`");
 
         $connection = $this->_installer->getConnection();
 
@@ -248,7 +250,7 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630_Marketplace
         $this->_installer->run(
             <<<SQL
 
-    UPDATE `m2epro_amazon_marketplace`
+    UPDATE `{$this->_installer->getTable('m2epro_amazon_marketplace')}`
     SET is_asin_available = 0
     WHERE marketplace_id = 24;
 

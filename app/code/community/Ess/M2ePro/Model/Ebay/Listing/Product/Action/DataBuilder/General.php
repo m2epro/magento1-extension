@@ -119,7 +119,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_General
             return $data;
         }
 
-        $categoryId = $this->getEbayListingProduct()->getCategoryTemplateSource()->getMainCategory();
+        $categoryId = $this->getEbayListingProduct()->getCategoryTemplateSource()->getCategoryId();
         $marketplaceId = $this->getMarketplace()->getId();
         $categoryFeatures = Mage::helper('M2ePro/Component_Ebay_Category_Ebay')
             ->getFeatures($categoryId, $marketplaceId);

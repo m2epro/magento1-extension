@@ -8,7 +8,6 @@
 
 class Ess_M2ePro_Model_Upgrade_MigrationToMagento2_Runner
 {
-    const MIGRATION_VERSION = '1.2.0';
     const BACKUP_PREFIX     = 'mtm2';
     const MAP_PREFIX        = 'mtm2map';
     const CONFIG_PREFIX     = '/migrationtomagento2/source/';
@@ -17,22 +16,24 @@ class Ess_M2ePro_Model_Upgrade_MigrationToMagento2_Runner
 
     public function initialize()
     {
-        Mage::helper('M2ePro/Primary')->getConfig()->setGroupValue(
+        $config = Mage::helper('M2ePro/Module')->getConfig();
+
+        $config->setGroupValue(
             self::CONFIG_PREFIX, 'is_prepared_for_migration', 0
         );
-        Mage::helper('M2ePro/Primary')->getConfig()->setGroupValue(
-            self::CONFIG_PREFIX, 'version', self::MIGRATION_VERSION
+        $config->setGroupValue(
+            self::CONFIG_PREFIX, 'version', Mage::helper('M2ePro/Module')->getPublicVersion()
         );
-        Mage::helper('M2ePro/Primary')->getConfig()->setGroupValue(
+        $config->setGroupValue(
             self::CONFIG_PREFIX. 'magento/', 'version', Mage::helper('M2ePro/Magento')->getVersion()
         );
-        Mage::helper('M2ePro/Primary')->getConfig()->setGroupValue(
+        $config->setGroupValue(
             self::CONFIG_PREFIX. 'magento/', 'edition', Mage::helper('M2ePro/Magento')->getEditionName()
         );
-        Mage::helper('M2ePro/Primary')->getConfig()->setGroupValue(
+        $config->setGroupValue(
             self::CONFIG_PREFIX. 'magento/', 'tables_prefix', Mage::helper('M2ePro/Magento')->getDatabaseTablesPrefix()
         );
-        Mage::helper('M2ePro/Primary')->getConfig()->setGroupValue(
+        $config->setGroupValue(
             self::CONFIG_PREFIX. 'm2epro/', 'version', Mage::helper('M2ePro/Module')->getPublicVersion()
         );
     }
@@ -47,7 +48,7 @@ class Ess_M2ePro_Model_Upgrade_MigrationToMagento2_Runner
 
     public function complete()
     {
-        Mage::helper('M2ePro/Primary')->getConfig()->setGroupValue(self::CONFIG_PREFIX, 'is_prepared_for_migration', 1);
+        Mage::helper('M2ePro/Module')->getConfig()->setGroupValue(self::CONFIG_PREFIX, 'is_prepared_for_migration', 1);
         Mage::helper('M2ePro/Module_Maintenance')->enable();
         Mage::helper('M2ePro/Magento')->clearCache();
     }
@@ -124,7 +125,6 @@ class Ess_M2ePro_Model_Upgrade_MigrationToMagento2_Runner
             'walmart_listing_product_action_processing',
             'walmart_listing_product_action_processing_list',
 
-            'cache_config',
             'operation_history',
             'magento_product_websites_update',
             'order_change',
@@ -193,7 +193,6 @@ class Ess_M2ePro_Model_Upgrade_MigrationToMagento2_Runner
             'm2epro_walmart_listing_product_action_processing',
             'm2epro_walmart_listing_product_action_processing_list',
 
-            'm2epro_cache_config',
             'm2epro_operation_history',
             'm2epro_magento_product_websites_update',
             'm2epro_order_change',

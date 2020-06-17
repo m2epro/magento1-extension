@@ -74,8 +74,7 @@ class Ess_M2ePro_Model_Amazon_Repricing_Abstract
 
             $this->getSynchronizationLog()->addMessage(
                 Mage::helper('M2ePro')->__($message->getText()),
-                Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
-                Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH
+                Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR
             );
 
             $exception = new Exception($message->getText());

@@ -6,6 +6,8 @@
  * @license    Commercial use is forbidden
  */
 
+use Ess_M2ePro_Block_Adminhtml_Ebay_Grid_Column_Renderer_Qty as OnlineQty;
+
 class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
     //########################################
@@ -71,6 +73,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View_Grid extends Mage_Admin
                 'online_qty'            => new Zend_Db_Expr('(second_table.online_qty - second_table.online_qty_sold)'),
                 'online_qty_sold'       => 'second_table.online_qty_sold',
                 'online_price'          => 'second_table.online_price',
+                'online_main_category'  => 'second_table.online_main_category',
                 'status'                => 'main_table.status',
                 'start_date'            => 'second_table.start_date',
                 'end_date'              => 'second_table.end_date',
@@ -126,25 +129,26 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View_Grid extends Mage_Admin
 
         $this->addColumn(
             'online_qty', array(
-                'header'         => Mage::helper('M2ePro')->__('Available QTY'),
-                'align'          => 'right',
-                'width'          => '50px',
-                'type'           => 'number',
-                'index'          => 'online_qty',
-                'filter_index'   => new Zend_Db_Expr('(second_table.online_qty - second_table.online_qty_sold)'),
-                'frame_callback' => array($this, 'callbackColumnOnlineAvailableQty')
+                'header'       => Mage::helper('M2ePro')->__('Available QTY'),
+                'align'        => 'right',
+                'width'        => '50px',
+                'type'         => 'number',
+                'index'        => 'online_qty',
+                'filter_index' => new Zend_Db_Expr('(second_table.online_qty - second_table.online_qty_sold)'),
+                'renderer'     => 'M2ePro/adminhtml_ebay_grid_column_renderer_qty',
+                'render_online_qty' => OnlineQty::ONLINE_AVAILABLE_QTY,
             )
         );
 
         $this->addColumn(
             'online_qty_sold', array(
-                'header'         => Mage::helper('M2ePro')->__('Sold QTY'),
-                'align'          => 'right',
-                'width'          => '50px',
-                'type'           => 'number',
-                'index'          => 'online_qty_sold',
-                'filter_index'   => 'second_table.online_qty_sold',
-                'frame_callback' => array($this, 'callbackColumnOnlineQtySold')
+                'header'       => Mage::helper('M2ePro')->__('Sold QTY'),
+                'align'        => 'right',
+                'width'        => '50px',
+                'type'         => 'number',
+                'index'        => 'online_qty_sold',
+                'filter_index' => 'second_table.online_qty_sold',
+                'renderer'     => 'M2ePro/adminhtml_ebay_grid_column_renderer_qty'
             )
         );
 
@@ -182,15 +186,15 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View_Grid extends Mage_Admin
 
         $this->addColumn(
             'end_date', array(
-                'header'         => Mage::helper('M2ePro')->__('End Date'),
-                'align'          => 'right',
-                'width'          => '160px',
-                'type'           => 'datetime',
-                'format'         => Mage::app()->getLocale()
-                                        ->getDateTimeFormat(Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM),
-                'index'          => 'end_date',
-                'filter_index'   => 'second_table.end_date',
-                'frame_callback' => array($this, 'callbackColumnEndTime')
+                'header'       => Mage::helper('M2ePro')->__('End Date'),
+                'align'        => 'right',
+                'width'        => '160px',
+                'type'         => 'datetime',
+                'format'       => Mage::app()->getLocale()
+                                       ->getDateTimeFormat(Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM),
+                'index'        => 'end_date',
+                'filter_index' => 'second_table.end_date',
+                'renderer'     => 'M2ePro/adminhtml_ebay_grid_column_renderer_dateTime'
             )
         );
 
@@ -260,7 +264,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View_Grid extends Mage_Admin
             }
 
             $htmlValue = '&nbsp;<a href="javascript:void(0);"
-                                    onclick="EbayListingOtherMappingHandlerObj.openPopUp(\''.
+                                    onclick="EbayListingOtherMappingObj.openPopUp(\''.
                                         $productTitle.
                                         '\','.
                                         (int)$row->getId().
@@ -279,7 +283,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View_Grid extends Mage_Admin
             .'</a>';
 
         $htmlValue .= '&nbsp&nbsp&nbsp<a href="javascript:void(0);"'
-            .' onclick="EbayListingOtherGridHandlerObj.movingHandler.getGridHtml('
+            .' onclick="EbayListingOtherGridObj.movingHandler.getGridHtml('
             .Mage::helper('M2ePro')->jsonEncode(array((int)$row->getData('id')))
             .')">'
             .Mage::helper('M2ePro')->__('Move')
@@ -290,10 +294,9 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View_Grid extends Mage_Admin
 
     public function callbackColumnProductTitle($value, $row, $column, $isExport)
     {
-        $value = '<span>' . Mage::helper('M2ePro')->escapeHtml($value) . '</span>';
+        $helper = Mage::helper('M2ePro');
 
         $tempSku = $row->getData('sku');
-
         if ($tempSku === null) {
             $tempSku = '<i style="color:gray;">receiving...</i>';
         } elseif ($tempSku == '') {
@@ -302,12 +305,19 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View_Grid extends Mage_Admin
             $tempSku = Mage::helper('M2ePro')->escapeHtml($tempSku);
         }
 
-        $value .= '<br/><strong>'
-                  .Mage::helper('M2ePro')->__('SKU')
-                  .':</strong> '
-                  .$tempSku;
+        $categoryHtml = '';
+        if ($category = $row->getData('online_main_category')) {
+            $categoryHtml = <<<HTML
+<strong>{$helper->__('Category')}:</strong>&nbsp;
+{$helper->escapeHtml($category)}
+HTML;
+        }
 
-        return $value;
+        return <<<HTML
+<span>{$helper->escapeHtml($value)}</span><br/>
+<strong>{$helper->__('SKU')}:</strong>&nbsp;{$tempSku}<br/>
+{$categoryHtml}
+HTML;
     }
 
     public function callbackColumnItemId($value, $row, $column, $isExport)
@@ -322,36 +332,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View_Grid extends Mage_Admin
             $row->getData('marketplace_id')
         );
         $value = '<a href="' . $url . '" target="_blank">' . $value . '</a>';
-
-        return $value;
-    }
-
-    public function callbackColumnOnlineAvailableQty($value, $row, $column, $isExport)
-    {
-        if ($value === null || $value === '') {
-            return Mage::helper('M2ePro')->__('N/A');
-        }
-
-        if ($value <= 0) {
-            return '<span style="color: red;">0</span>';
-        }
-
-        if ($row->getData('status') != Ess_M2ePro_Model_Listing_Product::STATUS_LISTED) {
-            return '<span style="color: gray; text-decoration: line-through;">' . $value . '</span>';
-        }
-
-        return $value;
-    }
-
-    public function callbackColumnOnlineQtySold($value, $row, $column, $isExport)
-    {
-        if ($value === null || $value === '') {
-            return Mage::helper('M2ePro')->__('N/A');
-        }
-
-        if ($value <= 0) {
-            return '<span style="color: red;">0</span>';
-        }
 
         return $value;
     }
@@ -398,24 +378,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View_Grid extends Mage_Admin
 
             default:
                 break;
-        }
-
-        return $value;
-    }
-
-    public function callbackColumnStartTime($value, $row, $column, $isExport)
-    {
-        if (empty($value)) {
-            return Mage::helper('M2ePro')->__('N/A');
-        }
-
-        return $value;
-    }
-
-    public function callbackColumnEndTime($value, $row, $column, $isExport)
-    {
-        if (empty($value)) {
-            return Mage::helper('M2ePro')->__('N/A');
         }
 
         return $value;
@@ -476,13 +438,13 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View_Grid extends Mage_Admin
         $javascriptsMain = <<<HTML
 <script type="text/javascript">
 
-    if (typeof EbayListingOtherGridHandlerObj != 'undefined') {
-        EbayListingOtherGridHandlerObj.afterInitPage();
+    if (typeof EbayListingOtherGridObj != 'undefined') {
+        EbayListingOtherGridObj.afterInitPage();
     }
 
     Event.observe(window, 'load', function() {
         setTimeout(function() {
-            EbayListingOtherGridHandlerObj.afterInitPage();
+            EbayListingOtherGridObj.afterInitPage();
         }, 350);
     });
 

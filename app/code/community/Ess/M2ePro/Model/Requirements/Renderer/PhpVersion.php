@@ -12,6 +12,9 @@
 
 class Ess_M2ePro_Model_Requirements_Renderer_PhpVersion extends Ess_M2ePro_Model_Requirements_Renderer_Abstract
 {
+    /** @var bool */
+    protected $_hideIfMeet = true;
+
     //########################################
 
     public function getTitle()
@@ -38,6 +41,11 @@ HTML;
     <span>{$this->getCheckObject()->getReal()}</span>&nbsp;
 </span>
 HTML;
+    }
+
+    public function getAdditional()
+    {
+        return '';
     }
 
     //########################################

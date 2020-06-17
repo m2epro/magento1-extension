@@ -48,41 +48,34 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_License_Form extends Ess_M2ePro_B
     protected function _prepareLayout()
     {
         parent::_prepareLayout();
-        $this->getLayout()->getBlock('head')->addJs('M2ePro/Configuration/LicenseHandler.js');
+        $this->getLayout()->getBlock('head')->addJs('M2ePro/Configuration/License.js');
         $this->initPopUp();
     }
 
     protected function _beforeToHtml()
     {
         try {
-            Mage::helper('M2ePro/Client')->updateBackupConnectionData(true);
-        } catch (Exception $exception) {
-        }
+            Mage::helper('M2ePro/Client')->updateLocationData(true);
+        // @codingStandardsIgnoreLine
+        } catch (Exception $exception) {}
 
-        /** @var Ess_M2ePro_Helper_Module_License $licenseHelper */
-        $licenseHelper = Mage::helper('M2ePro/Module_License');
-
-        $cacheConfig = Mage::helper('M2ePro/Module')->getCacheConfig();
-
-        // Set data for form
-        // ---------------------------------------
-        $this->key = Mage::helper('M2ePro')->escapeHtml($licenseHelper->getKey());
-        $this->status = $licenseHelper->getStatus();
+        $this->key = Mage::helper('M2ePro')->escapeHtml(Mage::helper('M2ePro/Module_License')->getKey());
+        $this->status = Mage::helper('M2ePro/Module_License')->getStatus();
 
         $this->licenseData = array(
-            'domain' => Mage::helper('M2ePro')->escapeHtml($licenseHelper->getDomain()),
-            'ip' => Mage::helper('M2ePro')->escapeHtml($licenseHelper->getIp()),
-            'info' => array(
-                'email' => Mage::helper('M2ePro')->escapeHtml($licenseHelper->getEmail()),
+            'domain'     => Mage::helper('M2ePro')->escapeHtml(Mage::helper('M2ePro/Module_License')->getDomain()),
+            'ip'         => Mage::helper('M2ePro')->escapeHtml(Mage::helper('M2ePro/Module_License')->getIp()),
+            'info'       => array(
+                'email' => Mage::helper('M2ePro')->escapeHtml(Mage::helper('M2ePro/Module_License')->getEmail()),
             ),
-            'valid' => array(
-                'domain' => $licenseHelper->isValidDomain(),
-                'ip' => $licenseHelper->isValidIp()
+            'valid'      => array(
+                'domain' => Mage::helper('M2ePro/Module_License')->isValidDomain(),
+                'ip'     => Mage::helper('M2ePro/Module_License')->isValidIp()
             ),
             'connection' => array(
-                'domain' => $cacheConfig->getGroupValue('/license/connection/', 'domain'),
-                'ip' => $cacheConfig->getGroupValue('/license/connection/', 'ip'),
-                'directory' => $cacheConfig->getGroupValue('/license/connection/', 'directory')
+                'domain'    => Mage::helper('M2ePro/Client')->getDomain(),
+                'ip'        => Mage::helper('M2ePro/Client')->getIp(),
+                'directory' => Mage::helper('M2ePro/Client')->getBaseDirectory()
             )
         );
 
@@ -118,7 +111,7 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_License_Form extends Ess_M2ePro_B
         // ---------------------------------------
         $data = array(
             'label'   => Mage::helper('M2ePro')->__('Use Another Key'),
-            'onclick' => 'LicenseHandlerObj.changeLicenseKeyPopup();',
+            'onclick' => 'LicenseObj.changeLicenseKeyPopup();',
             'class'   => 'change_license'
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
@@ -126,7 +119,7 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_License_Form extends Ess_M2ePro_B
 
         $data = array(
             'label'   => Mage::helper('M2ePro')->__('Confirm'),
-            'onclick' => 'LicenseHandlerObj.confirmLicenseKey();',
+            'onclick' => 'LicenseObj.confirmLicenseKey();',
             'class'   => 'confirm_key'
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);

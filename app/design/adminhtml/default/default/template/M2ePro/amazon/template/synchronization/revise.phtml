@@ -24,16 +24,7 @@
 
 <?php
     $formData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data') ? Mage::helper('M2ePro/Data_Global')->getValue('temp_data')->toArray() : array();
-    $defaults = array(
-        'revise_update_qty'                              => 1,
-        'revise_update_qty_max_applied_value_mode'       => 1,
-        'revise_update_qty_max_applied_value'            => 5,
-        'revise_update_price'                            => 1,
-        'revise_update_price_max_allowed_deviation_mode' => 1,
-        'revise_update_price_max_allowed_deviation'      => 3,
-        'revise_update_details'                          => 0,
-        'revise_update_images'                           => 0,
-    );
+    $defaults = Mage::getModel('M2ePro/Amazon_Template_Synchronization_Builder')->getDefaultData();
 
     $formData = array_merge($defaults, $formData);
     $isEdit = !!$this->getRequest()->getParam('id');
@@ -41,41 +32,22 @@
 
 <script type="text/javascript">
 
-    // Data for current tab
-    //-----------------------------
     M2ePro.translator.add(<?php echo json_encode(array(
         'Wrong value. Only integer numbers.' => Mage::helper('M2ePro')->__('Wrong value. Only integer numbers.')
     )); ?>);
 
-    M2ePro.formData.revise_update_qty = '<?php echo Mage::helper('M2ePro')->escapeJs($formData['revise_update_qty']); ?>';
-    M2ePro.formData.revise_update_price = '<?php echo Mage::helper('M2ePro')->escapeJs($formData['revise_update_price']); ?>';
-    M2ePro.formData.revise_update_qty_max_applied_value = '<?php echo Mage::helper('M2ePro')->escapeJs($formData['revise_update_qty_max_applied_value']); ?>';
-
     Event.observe(window, 'load', function() {
 
-        AmazonTemplateSynchronizationHandlerObj = new AmazonTemplateSynchronizationHandler();
+        AmazonTemplateSynchronizationObj = new AmazonTemplateSynchronization();
 
         $('revise_update_qty')
-                .observe('change', AmazonTemplateSynchronizationHandlerObj.reviseQty_change)
-                .simulate('change');
+            .observe('change', AmazonTemplateSynchronizationObj.reviseQty_change)
+            .simulate('change');
 
         $('revise_update_qty_max_applied_value_mode')
-                .observe('change', AmazonTemplateSynchronizationHandlerObj.reviseQtyMaxAppliedValueMode_change)
-                .simulate('change');
-
-        $('revise_update_details')
-            .observe('change', AmazonTemplateSynchronizationHandlerObj.reviseDetailsOrImagesMode_change);
-
-        $('revise_update_images')
-            .observe('change', AmazonTemplateSynchronizationHandlerObj.reviseDetailsOrImagesMode_change);
-
-        $('revise_update_price').observe('change', AmazonTemplateSynchronizationHandlerObj.revisePrice_change)
-            .simulate('change');
-
-        $('revise_update_price_max_allowed_deviation_mode').observe('change', AmazonTemplateSynchronizationHandlerObj.revisePriceMaxAllowedDeviationMode_change)
+            .observe('change', AmazonTemplateSynchronizationObj.reviseQtyMaxAppliedValueMode_change)
             .simulate('change');
     });
-    //-----------------------------
 
 </script>
 
@@ -114,21 +86,10 @@
                     </td>
                     <td class="value" style="width: auto;">
                         <select id="revise_update_qty_max_applied_value_mode" name="revise_update_qty_max_applied_value_mode" class="required-entry">
-                            <option value="0" <?php if ($formData['revise_update_qty_max_applied_value_mode'] == 0): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
-                            <option value="1" <?php if ($formData['revise_update_qty_max_applied_value_mode'] == 1): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
+                            <option value="0" <?php if ($formData['revise_update_qty_max_applied_value_mode'] == 0): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Disabled'); ?></option>
+                            <option value="1" <?php if ($formData['revise_update_qty_max_applied_value_mode'] == 1): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Revise When Less or Equal to'); ?></option>
                         </select>
-                            <p class="note">
-                                <span><?php echo Mage::helper('M2ePro')->__('Set \'Yes\' to narrow the conditions under which the Item Quantity should be revised. It allows optimizing the sync process.'); ?></span>
-                            </p>
-                    </td>
-                </tr>
-
-                <tr id="revise_update_qty_max_applied_value_tr" style="display: none;">
-                    <td class="label">
-                        <label><?php echo Mage::helper('M2ePro')->__('Revise When Less or Equal to'); ?>: <span class="required">*</span></label>
-                    </td>
-                    <td id="revise_update_qty_max_applied_value_td" class="value" style="width: auto;">
-                        <input id="revise_update_qty_max_applied_value" name="revise_update_qty_max_applied_value" value="<?php echo $this->escapeHtml($formData['revise_update_qty_max_applied_value']); ?>" type="text" class="input-text validate-qty input-text M2ePro-required-when-visible" />
+                        <input id="revise_update_qty_max_applied_value" name="revise_update_qty_max_applied_value" value="<?php echo $this->escapeHtml($formData['revise_update_qty_max_applied_value']); ?>" type="text" class="input-text validate-qty input-text M2ePro-required-when-visible" style="width: 72px" />
                         <p class="note">
                             <span><?php echo Mage::helper('M2ePro')->__('Set the Quantity In Stock limit at which the Revise Action should be triggered. We recommend keeping this value relatively low, between 10 and 20 Items.'); ?></span>
                         </p>
@@ -157,53 +118,6 @@
                         </p>
                     </td>
                 </tr>
-
-                <tr id="revise_update_price_max_allowed_deviation_mode_tr" style="display: none;">
-                    <td class="label">
-                        <label><?php echo Mage::helper('M2ePro')->__('Conditional Revise'); ?>:</label>
-                    </td>
-                    <td class="value" style="width: auto;">
-                        <select id="revise_update_price_max_allowed_deviation_mode" name="revise_update_price_max_allowed_deviation_mode" class="required-entry">
-                            <option value="0" <?php if ($formData['revise_update_price_max_allowed_deviation_mode'] == 0): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
-                            <option value="1" <?php if ($formData['revise_update_price_max_allowed_deviation_mode'] == 1): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
-                        </select>
-                        <p class="note">
-                            <span><?php echo Mage::helper('M2ePro')->__('Set \'Yes\' to narrow the conditions under which the Item Price should be revised. It allows optimizing the sync process.'); ?></span>
-                        </p>
-                    </td>
-                </tr>
-
-                <tr id="revise_update_price_max_allowed_deviation_tr" style="display: none;">
-                    <td class="label">
-                        <label><?php echo Mage::helper('M2ePro')->__('Revise When Deviation More or Equal than'); ?>:</label>
-                    </td>
-                    <td class="value" style="width: auto;">
-                        <select id="revise_update_price_max_allowed_deviation" name="revise_update_price_max_allowed_deviation" class="required-entry">
-                            <?php $percentageStep = 0.5 ?>
-                            <?php for ($priceDeviationValue = 0.5; $priceDeviationValue <= 20; $priceDeviationValue += $percentageStep): ?>
-                                <option value="<?php echo $priceDeviationValue ?>" <?php if ($formData['revise_update_price_max_allowed_deviation'] == $priceDeviationValue): ?>selected="selected"<?php endif; ?>><?php echo $priceDeviationValue ?> %</option>
-                                <?php $priceDeviationValue >= 5 && $percentageStep = 1; ?>
-                            <?php endfor; ?>
-                        </select>
-                        <p class="note">
-                            <span>
-                                <?php echo Mage::helper('M2ePro')->__('
-                                    It is a percent value of maximum possible deviation between Item Price in Selling Policy and Amazon Item Price that can be ignored.<br/><br/>
-                                    For example, your Magento Product Price is 23.25$. According to Selling Policy, the Item Price is equal to Magento Product Price. The ‘Revise When Deviation More or Equal than’ option is set to 1% which equals to 0.23$.<br/>
-                                    &emsp;1) if Magento Product Price is increased to 23.26$ (by 0.1$), the Price value will not be revised on Amazon as this Price change is within the allowable deviation (0.23$).<br/>
-                                    &emsp;2) if Magento Product Price is increased to 23.5$ (by 0.25$), the Price value will be revised on Amazon as this Price change exceeds the allowable deviation (0.23$).<br/>
-                                    After Amazon Item Price is successfully revised, the allowable deviation will be calculated based on the new Price value which equals to 23.5$ in our example.
-                                '); ?>
-                            </span>
-                        </p>
-                    </td>
-                </tr>
-
-                <tr id="revise_update_qty_max_applied_value_line_tr">
-                    <td class="value" colspan="2" style="width: auto;">
-                        <hr style="border: 1px solid silver; border-bottom: none;">
-                    </td>
-                <tr>
 
                 <tr>
                     <td class="label">
@@ -251,58 +165,13 @@
 <div id="revise_qty_max_applied_value_confirmation_popup_template" style="display: none;">
     <div style="padding: 5px">
         <?php echo Mage::helper('M2ePro')->__(
-            '<br/>Disabling this option might affect synchronization performance. Please read
- <a href="%url%" target="_blank">this article</a> before using the option.',
+            '<br/>Disabling this option might affect synchronization performance. Please read <a href="%url%" target="_blank">this article</a> before using the option.',
             Mage::helper('M2ePro/Module_Support')->getSupportUrl('knowledgebase/1579746/')
         ); ?>
     </div>
 
     <div style="float: right; padding: 10px;">
         <a href="javascript:void(0)" onclick="Windows.getFocusedWindow().close()"><?php echo Mage::helper('M2ePro')->__('Cancel') ?></a>&nbsp;&nbsp;
-        <button onclick="AmazonTemplateSynchronizationHandlerObj.reviseQtyMaxAppliedValueDisableConfirm()"><?php echo Mage::helper('M2ePro')->__('Confirm') ?></button>
-    </div>
-</div>
-
-<div id="revise_update_details_confirmation_popup_template" style="display: none;">
-    <div style="padding: 5px">
-        <?php echo Mage::helper('M2ePro')->__(
-            '<br/>Enabling this option might affect synchronization performance. Please read
-             <a href="%url%" target="_blank">this article</a> before using the option.',
-            Mage::helper('M2ePro/Module_Support')->getSupportUrl('knowledgebase/1580145/')
-        ); ?>
-    </div>
-
-    <div style="float: right; padding: 10px;">
-        <a href="javascript:void(0)" onclick="Windows.getFocusedWindow().close()"><?php echo Mage::helper('M2ePro')->__('Cancel') ?></a>&nbsp;&nbsp;
-        <button onclick="AmazonTemplateSynchronizationHandlerObj.reviseDetailsEnableConfirm()"><?php echo Mage::helper('M2ePro')->__('Confirm') ?></button>
-    </div>
-</div>
-
-<div id="revise_update_images_confirmation_popup_template" style="display: none;">
-    <div style="padding: 5px">
-        <?php echo Mage::helper('M2ePro')->__(
-            '<br/>Enabling this option might affect synchronization performance. Please read
-             <a href="%url%" target="_blank">this article</a> before using the option.',
-            Mage::helper('M2ePro/Module_Support')->getSupportUrl('knowledgebase/1580145/')
-        ); ?>
-    </div>
-
-    <div style="float: right; padding: 10px;">
-        <a href="javascript:void(0)" onclick="Windows.getFocusedWindow().close()"><?php echo Mage::helper('M2ePro')->__('Cancel') ?></a>&nbsp;&nbsp;
-        <button onclick="AmazonTemplateSynchronizationHandlerObj.reviseImagesEnableConfirm()"><?php echo Mage::helper('M2ePro')->__('Confirm') ?></button>
-    </div>
-</div>
-
-<div id="revise_price_max_max_allowed_deviation_confirmation_popup_template" style="display: none;">
-    <div style="padding: 10px 15px;">
-        <?php echo Mage::helper('M2ePro')->__(
-            'Disabling this option might affect synchronization performance. Please read this <a href="%url%" target="_blank">article</a> before using the option.',
-            Mage::helper('M2ePro/Module_Support')->getKnowledgeBaseUrl('1587081')
-        ); ?>
-    </div>
-
-    <div style="float: right; padding-bottom: 20px;">
-        <a href="javascript:void(0)" onclick="Windows.getFocusedWindow().close()"><?php echo Mage::helper('M2ePro')->__('Cancel') ?></a>&nbsp;&nbsp;
-        <button onclick="AmazonTemplateSynchronizationHandlerObj.revisePriceMaxAllowedDeviationDisableConfirm()"><?php echo Mage::helper('M2ePro')->__('Confirm') ?></button>
+        <button onclick="AmazonTemplateSynchronizationObj.reviseQtyMaxAppliedValueDisableConfirm()"><?php echo Mage::helper('M2ePro')->__('Confirm') ?></button>
     </div>
 </div>

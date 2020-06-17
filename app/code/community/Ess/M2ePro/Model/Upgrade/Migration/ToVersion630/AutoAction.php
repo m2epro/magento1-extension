@@ -367,19 +367,19 @@ SQL
         $this->_installer->run(
             <<<SQL
 
-    UPDATE `m2epro_listing` ml
-        JOIN `m2epro_ebay_listing` mel ON (ml.id = mel.listing_id)
+    UPDATE `{$this->_installer->getTable('m2epro_listing')}` ml
+        JOIN `{$this->_installer->getTable('m2epro_ebay_listing')}` mel ON (ml.id = mel.listing_id)
     SET ml.auto_mode = mel.auto_mode,
         ml.auto_global_adding_mode = mel.auto_global_adding_mode,
         ml.auto_website_adding_mode = mel.auto_website_adding_mode,
         ml.auto_website_deleting_mode = mel.auto_website_deleting_mode;
 
-    INSERT INTO `m2epro_listing_auto_category_group` (id, listing_id, title, adding_mode, deleting_mode)
+    INSERT INTO `{$this->_installer->getTable('m2epro_listing_auto_category_group')}` (id, listing_id, title, adding_mode, deleting_mode)
     SELECT DISTINCT melacg.id, melacg.listing_id, melacg.title, melac.adding_mode, melac.deleting_mode
-    FROM `m2epro_ebay_listing_auto_category_group` melacg
-        JOIN `m2epro_ebay_listing_auto_category` melac ON (melacg.id = melac.group_id);
+    FROM `{$this->_installer->getTable('m2epro_ebay_listing_auto_category_group')}` melacg
+        JOIN `{$this->_installer->getTable('m2epro_ebay_listing_auto_category')}` melac ON (melacg.id = melac.group_id);
 
-    UPDATE `m2epro_listing_auto_category_group` mlacg
+    UPDATE `{$this->_installer->getTable('m2epro_listing_auto_category_group')}` mlacg
     SET mlacg.component_mode = "ebay",
         mlacg.update_date = NOW(),
         mlacg.create_date = NOW();
@@ -388,47 +388,47 @@ SQL
                                 adding_template_category_id,
                                 adding_template_other_category_id)
     SELECT DISTINCT group_id, adding_template_category_id, adding_template_other_category_id
-    FROM `m2epro_ebay_listing_auto_category`;
+    FROM `{$this->_installer->getTable('m2epro_ebay_listing_auto_category')}`;
 
-    INSERT INTO `m2epro_listing_auto_category` (group_id, category_id, update_date, create_date)
+    INSERT INTO `{$this->_installer->getTable('m2epro_listing_auto_category')}` (group_id, category_id, update_date, create_date)
     SELECT group_id, category_id, update_date, create_date
-    FROM `m2epro_ebay_listing_auto_category`;
+    FROM `{$this->_installer->getTable('m2epro_ebay_listing_auto_category')}`;
 
-    INSERT INTO `m2epro_listing_auto_category_group` (listing_id, adding_mode, deleting_mode, component_mode)
+    INSERT INTO `{$this->_installer->getTable('m2epro_listing_auto_category_group')}` (listing_id, adding_mode, deleting_mode, component_mode)
     SELECT DISTINCT mlc.listing_id, ml.categories_add_action, ml.categories_delete_action, ml.component_mode
-    FROM `m2epro_listing_category` mlc
-        JOIN `m2epro_listing` ml ON (ml.id = mlc.listing_id);
+    FROM `{$this->_installer->getTable('m2epro_listing_category')}` mlc
+        JOIN `{$this->_installer->getTable('m2epro_listing')}` ml ON (ml.id = mlc.listing_id);
 
-    UPDATE `m2epro_listing_auto_category_group` mlacg
+    UPDATE `{$this->_installer->getTable('m2epro_listing_auto_category_group')}` mlacg
     SET mlacg.title = "Automatic Action Rule",
         mlacg.update_date = NOW(),
         mlacg.create_date = NOW()
     WHERE mlacg.title = "";
 
-    INSERT INTO `m2epro_amazon_listing_auto_category_group` (listing_auto_category_group_id)
+    INSERT INTO `{$this->_installer->getTable('m2epro_amazon_listing_auto_category_group')}` (listing_auto_category_group_id)
     SELECT mlacg.id
-    FROM `m2epro_listing_auto_category_group` mlacg
+    FROM `{$this->_installer->getTable('m2epro_listing_auto_category_group')}` mlacg
     WHERE mlacg.component_mode = 'amazon';
 
-    UPDATE `m2epro_listing` ml
-        JOIN `m2epro_listing_auto_category_group` mlacg ON (ml.id = mlacg.listing_id)
+    UPDATE `{$this->_installer->getTable('m2epro_listing')}` ml
+        JOIN `{$this->_installer->getTable('m2epro_listing_auto_category_group')}` mlacg ON (ml.id = mlacg.listing_id)
     SET ml.auto_mode = 3;
 
-    INSERT INTO `m2epro_buy_listing_auto_category_group` (listing_auto_category_group_id)
+    INSERT INTO `{$this->_installer->getTable('m2epro_buy_listing_auto_category_group')}` (listing_auto_category_group_id)
     SELECT mlacg.id
-    FROM `m2epro_listing_auto_category_group` mlacg
+    FROM `{$this->_installer->getTable('m2epro_listing_auto_category_group')}` mlacg
     WHERE mlacg.component_mode = 'buy';
 
-    INSERT INTO `m2epro_play_listing_auto_category_group` (listing_auto_category_group_id)
+    INSERT INTO `{$this->_installer->getTable('m2epro_play_listing_auto_category_group')}` (listing_auto_category_group_id)
     SELECT mlacg.id
-    FROM `m2epro_listing_auto_category_group` mlacg
+    FROM `{$this->_installer->getTable('m2epro_listing_auto_category_group')}` mlacg
     WHERE mlacg.component_mode = 'play';
 
-    INSERT INTO `m2epro_listing_auto_category` (group_id, category_id, update_date, create_date)
+    INSERT INTO `{$this->_installer->getTable('m2epro_listing_auto_category')}` (group_id, category_id, update_date, create_date)
     SELECT mlacg.id, mlc.category_id, mlc.update_date, mlc.create_date
-    FROM `m2epro_listing_category` mlc
-        JOIN `m2epro_listing` ml ON (ml.id = mlc.listing_id)
-        JOIN `m2epro_listing_auto_category_group` mlacg ON (mlc.listing_id = mlacg.listing_id);
+    FROM `{$this->_installer->getTable('m2epro_listing_category')}` mlc
+        JOIN `{$this->_installer->getTable('m2epro_listing')}` ml ON (ml.id = mlc.listing_id)
+        JOIN `{$this->_installer->getTable('m2epro_listing_auto_category_group')}` mlacg ON (mlc.listing_id = mlacg.listing_id);
 SQL
         );
     }
@@ -442,9 +442,9 @@ SQL
         $this->_installer->run(
             <<<SQL
 
-    DROP TABLE IF EXISTS `m2epro_listing_category`;
-    DROP TABLE IF EXISTS `m2epro_ebay_listing_auto_category`;
-    DROP TABLE IF EXISTS `m2epro_ebay_listing_auto_category_group`;
+    DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_listing_category')}`;
+    DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_ebay_listing_auto_category')}`;
+    DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_ebay_listing_auto_category_group')}`;
 
 SQL
         );

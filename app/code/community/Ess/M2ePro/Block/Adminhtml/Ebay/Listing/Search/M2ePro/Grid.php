@@ -198,13 +198,6 @@ HTML;
 HTML;
     }
 
-    protected function getProcessingLocks($row)
-    {
-        $objectId = $row->getData('listing_product_id');
-        $object = Mage::helper('M2ePro/Component_Ebay')->getObject('Listing_Product', $objectId);
-        return $object->getProcessingLocks();
-    }
-
     //########################################
 
     protected function callbackFilterProductId($collection, $column)

@@ -1,11 +1,10 @@
-ListingEditListingTitle = Class.create();
-ListingEditListingTitle.prototype = {
+window.ListingEditListingTitle = Class.create({
 
     // ---------------------------------------
 
     initialize: function(gridId) {
         this.gridId = gridId;
-        CommonHandlerObj.setValidationCheckRepetitionValue('M2ePro-listing-title',
+        CommonObj.setValidationCheckRepetitionValue('M2ePro-listing-title',
                                                             M2ePro.text.title_not_unique_error,
                                                             'Listing', 'title', 'id', null,
                                                             M2ePro.php.constant('Ess_M2ePro_Helper_Component::NICK'));
@@ -86,4 +85,4 @@ ListingEditListingTitle.prototype = {
     }
 
     // ---------------------------------------
-};
+});

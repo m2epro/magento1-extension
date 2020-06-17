@@ -37,14 +37,14 @@ $componentForUrl = count($urlComponents) == 1 ? array_shift($urlComponents) : Es
     )); ?>);
 
     Event.observe(window, 'load', function() {
-        LogClearingHandlerObj = new ConfigurationLogClearingHandler();
+        LogClearingObj = new ConfigurationLogClearing();
 
-        LogClearingHandlerObj.changeModeLog('<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_LISTINGS; ?>');
-        LogClearingHandlerObj.changeModeLog('<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_SYNCHRONIZATIONS; ?>');
-        LogClearingHandlerObj.changeModeLog('<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_ORDERS; ?>');
+        LogClearingObj.changeModeLog('<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_LISTINGS; ?>');
+        LogClearingObj.changeModeLog('<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_SYNCHRONIZATIONS; ?>');
+        LogClearingObj.changeModeLog('<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_ORDERS; ?>');
 
         <?php if ($this->isPickupStoreFeatureEnabled): ?>
-            LogClearingHandlerObj.changeModeLog('<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_EBAY_PICKUP_STORE; ?>');
+            LogClearingObj.changeModeLog('<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_EBAY_PICKUP_STORE; ?>');
         <?php endif; ?>
 
         configEditForm = new varienForm('config_edit_form', '<?php echo $this->getValidationUrl(); ?>');
@@ -93,7 +93,7 @@ $componentForUrl = count($urlComponents) == 1 ? array_shift($urlComponents) : Es
                         </td>
                         <td class="value">
                             <?php $mode = isset($this->modes[Ess_M2ePro_Model_Log_Clearing::LOG_LISTINGS]) ? $this->modes[Ess_M2ePro_Model_Log_Clearing::LOG_LISTINGS] : 1; ?>
-                            <select id="<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_LISTINGS; ?>_log_mode" name="<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_LISTINGS; ?>_log_mode" onchange="LogClearingHandlerObj.changeModeLog('<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_LISTINGS; ?>');">
+                            <select id="<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_LISTINGS; ?>_log_mode" name="<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_LISTINGS; ?>_log_mode" onchange="LogClearingObj.changeModeLog('<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_LISTINGS; ?>');">
                                 <option value="0"<?php if ($mode == 0) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
                                 <option value="1"<?php if ($mode == 1) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
                             </select>
@@ -157,7 +157,7 @@ $componentForUrl = count($urlComponents) == 1 ? array_shift($urlComponents) : Es
                         </td>
                         <td class="value">
                             <?php $mode = isset($this->modes[Ess_M2ePro_Model_Log_Clearing::LOG_SYNCHRONIZATIONS]) ? $this->modes[Ess_M2ePro_Model_Log_Clearing::LOG_SYNCHRONIZATIONS] : 1; ?>
-                            <select id="<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_SYNCHRONIZATIONS; ?>_log_mode" name="<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_SYNCHRONIZATIONS; ?>_log_mode" onchange="LogClearingHandlerObj.changeModeLog('<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_SYNCHRONIZATIONS; ?>');">
+                            <select id="<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_SYNCHRONIZATIONS; ?>_log_mode" name="<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_SYNCHRONIZATIONS; ?>_log_mode" onchange="LogClearingObj.changeModeLog('<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_SYNCHRONIZATIONS; ?>');">
                                 <option value="0"<?php if (0 == $mode) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
                                 <option value="1"<?php if (1 == $mode) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
                             </select>
@@ -221,7 +221,7 @@ $componentForUrl = count($urlComponents) == 1 ? array_shift($urlComponents) : Es
                             </td>
                             <td class="value">
                                 <?php $mode = isset($this->modes[Ess_M2ePro_Model_Log_Clearing::LOG_ORDERS]) ? $this->modes[Ess_M2ePro_Model_Log_Clearing::LOG_ORDERS] : 1; ?>
-                                <select id="<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_ORDERS; ?>_log_mode" name="<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_ORDERS; ?>_log_mode" onchange="LogClearingHandlerObj.changeModeLog('<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_ORDERS; ?>');">
+                                <select id="<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_ORDERS; ?>_log_mode" name="<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_ORDERS; ?>_log_mode" onchange="LogClearingObj.changeModeLog('<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_ORDERS; ?>');">
                                     <option value="0"<?php if (0 == $mode) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
                                     <option value="1"<?php if (1 == $mode) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
                                 </select>
@@ -287,7 +287,7 @@ $componentForUrl = count($urlComponents) == 1 ? array_shift($urlComponents) : Es
                                 </td>
                                 <td class="value">
                                     <?php $mode = isset($this->modes[Ess_M2ePro_Model_Log_Clearing::LOG_EBAY_PICKUP_STORE]) ? $this->modes[Ess_M2ePro_Model_Log_Clearing::LOG_EBAY_PICKUP_STORE] : 1; ?>
-                                    <select id="<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_EBAY_PICKUP_STORE; ?>_log_mode" name="<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_EBAY_PICKUP_STORE; ?>_log_mode" onchange="LogClearingHandlerObj.changeModeLog('<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_EBAY_PICKUP_STORE; ?>');">
+                                    <select id="<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_EBAY_PICKUP_STORE; ?>_log_mode" name="<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_EBAY_PICKUP_STORE; ?>_log_mode" onchange="LogClearingObj.changeModeLog('<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_EBAY_PICKUP_STORE; ?>');">
                                         <option value="0"<?php if (0 == $mode) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
                                         <option value="1"<?php if (1 == $mode) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
                                     </select>

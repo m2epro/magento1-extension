@@ -89,8 +89,9 @@ class Ess_M2ePro_Sql_Upgrade_v6_1_5__v6_1_6_AllFeatures extends Ess_M2ePro_Model
 
             $installer->run(<<<SQL
 
-INSERT INTO m2epro_config (`group`,`key`,`value`,`notice`,`update_date`,`create_date`) VALUES
-('/cron/service/', 'disabled', '0', NULL, '2014-01-01 00:00:00', '2014-01-01 00:00:00');
+INSERT INTO `{$this->_installer->getTable('m2epro_config')}` 
+(`group`,`key`,`value`,`notice`,`update_date`,`create_date`) 
+VALUES ('/cron/service/', 'disabled', '0', NULL, '2014-01-01 00:00:00', '2014-01-01 00:00:00');
 
 SQL
             );
@@ -99,7 +100,7 @@ SQL
         //########################################
 
         $installer->run(<<<SQL
-UPDATE `m2epro_ebay_marketplace`
+UPDATE `{$this->_installer->getTable('m2epro_ebay_marketplace')}`
 SET `is_multivariation` = 1
 WHERE `marketplace_id` = 12;
 SQL

@@ -92,17 +92,12 @@ class Ess_M2ePro_Block_Adminhtml_Template_SellingFormat_Messages
 
     public function getMessages()
     {
-        $messages = array();
+        $messages = parent::getMessages();
 
-        // ---------------------------------------
         $message = $this->getCurrencyConversionMessage();
         if ($message !== null) {
             $messages[self::TYPE_CURRENCY_CONVERSION] = $message;
         }
-
-        // ---------------------------------------
-
-        $messages = array_merge($messages, parent::getMessages());
 
         return $messages;
     }

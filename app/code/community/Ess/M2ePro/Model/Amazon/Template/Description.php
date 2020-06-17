@@ -30,12 +30,16 @@ class Ess_M2ePro_Model_Amazon_Template_Description extends Ess_M2ePro_Model_Comp
      */
     protected $_descriptionSourceModels = array();
 
+    /** @var Ess_M2ePro_Model_ActiveRecord_Factory */
+    protected $_activeRecordFactory;
+
     //########################################
 
     public function _construct()
     {
         parent::_construct();
         $this->_init('M2ePro/Amazon_Template_Description');
+        $this->_activeRecordFactory = Mage::getSingleton('M2ePro/ActiveRecord_Factory');
     }
 
     //########################################
@@ -187,29 +191,28 @@ class Ess_M2ePro_Model_Amazon_Template_Description extends Ess_M2ePro_Model_Comp
 
     /**
      * @param bool $asObjects
-     * @param array $filters
      * @return array|Ess_M2ePro_Model_Amazon_Template_Description_Specific[]
      */
-    public function getSpecifics($asObjects = false, array $filters = array())
+    public function getSpecifics($asObjects = false)
     {
-        $specifics = $this->getRelatedSimpleItems(
-            'Amazon_Template_Description_Specific', 'template_description_id',
-            $asObjects, $filters
-        );
-        if ($asObjects) {
-            /** @var Ess_M2ePro_Model_Amazon_Template_Description_Specific $specific */
-            foreach ($specifics as $specific) {
-                $specific->setDescriptionTemplate($this->getParentObject());
-            }
+        $collection = $this->_activeRecordFactory->getObjectCollection('Amazon_Template_Description_Specific');
+        $collection->addFieldToFilter('template_description_id', $this->getId());
+
+        /** @var Ess_M2ePro_Model_Amazon_Template_Description_Specific $specific */
+        foreach ($collection->getItems() as $specific) {
+            $specific->setDescriptionTemplate($this->getParentObject());
         }
 
         if (!$asObjects) {
-            foreach ($specifics as &$specific) {
+            $result = $collection->toArray();
+            foreach ($result['items'] as &$specific) {
                 $specific['attributes'] = (array)Mage::helper('M2ePro')->jsonDecode($specific['attributes']);
             }
+
+            return $result['items'];
         }
 
-        return $specifics;
+        return $collection->getItems();
     }
 
     //########################################

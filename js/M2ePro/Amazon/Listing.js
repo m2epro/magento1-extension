@@ -1,5 +1,4 @@
-AmazonListing = Class.create();
-AmazonListing.prototype = {
+window.AmazonListing = Class.create({
 
     // ---------------------------------------
 
@@ -25,4 +24,4 @@ AmazonListing.prototype = {
     viewLogs: function(url) {
         window.open(url)
     }
-};
+});

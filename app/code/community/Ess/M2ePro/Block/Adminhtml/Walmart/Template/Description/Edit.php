@@ -15,16 +15,11 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Description_Edit
     {
         parent::__construct();
 
-        // Initialization block
-        // ---------------------------------------
         $this->setId('walmartTemplateDescriptionEdit');
         $this->_blockGroup = 'M2ePro';
         $this->_controller = 'adminhtml_walmart_template_description';
         $this->_mode = 'edit';
-        // ---------------------------------------
 
-        // Set header text
-        // ---------------------------------------
         if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
             $componentName = Mage::helper('M2ePro/Component_Walmart')->getTitle();
 
@@ -50,80 +45,82 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Description_Edit
             }
         }
 
-        // ---------------------------------------
-
-        // Set buttons actions
-        // ---------------------------------------
         $this->removeButton('back');
         $this->removeButton('reset');
         $this->removeButton('delete');
         $this->removeButton('add');
         $this->removeButton('save');
         $this->removeButton('edit');
-        // ---------------------------------------
 
-        // ---------------------------------------
         $url = Mage::helper('M2ePro')->getBackUrl('list');
         $this->_addButton(
             'back', array(
-            'label'     => Mage::helper('M2ePro')->__('Back'),
-            'onclick'   => 'CommonHandlerObj.back_click(\'' . $url . '\')',
-            'class'     => 'back'
+            'label'   => Mage::helper('M2ePro')->__('Back'),
+            'onclick' => 'CommonObj.back_click(\'' . $url . '\')',
+            'class'   => 'back'
             )
         );
-        // ---------------------------------------
 
-        if ($this->isEditMode()) {
+        $isSaveAndClose = (bool)$this->getRequest()->getParam('close_on_save', false);
+
+        if (!$isSaveAndClose && $this->isEditMode()) {
             $headId = 'walmart-template-description';
-            // ---------------------------------------
             $this->_addButton(
                 'duplicate', array(
                 'label'   => Mage::helper('M2ePro')->__('Duplicate'),
-                'onclick' => "WalmartTemplateDescriptionHandlerObj.duplicate_click('{$headId}')",
+                'onclick' => "WalmartTemplateDescriptionObj.duplicate_click('{$headId}')",
                 'class'   => 'add M2ePro_duplicate_button'
                 )
             );
-            // ---------------------------------------
 
-            // ---------------------------------------
             $this->_addButton(
                 'delete', array(
-                'label'     => Mage::helper('M2ePro')->__('Delete'),
-                'onclick'   => 'CommonHandlerObj.delete_click()',
-                'class'     => 'delete M2ePro_delete_button'
+                'label'   => Mage::helper('M2ePro')->__('Delete'),
+                'onclick' => 'CommonObj.delete_click()',
+                'class'   => 'delete M2ePro_delete_button'
                 )
             );
-            // ---------------------------------------
         }
 
-        // ---------------------------------------
-        $this->_addButton(
-            'save', array(
-            'label'     => Mage::helper('M2ePro')->__('Save'),
-            'onclick'   => 'WalmartTemplateDescriptionHandlerObj.save_click('
-                . '\'\','
-                . '\'' . $this->getSaveConfirmationText() . '\','
-                . '\'' . Ess_M2ePro_Block_Adminhtml_Walmart_Template_Grid::TEMPLATE_DESCRIPTION . '\''
-                . ')',
-            'class'     => 'save'
-            )
-        );
-        // ---------------------------------------
+        if ($isSaveAndClose) {
+            $this->removeButton('back');
 
-        // ---------------------------------------
-        $this->_addButton(
-            'save_and_continue', array(
-            'label'     => Mage::helper('M2ePro')->__('Save And Continue Edit'),
-            'onclick'   => 'WalmartTemplateDescriptionHandlerObj.save_and_edit_click('
-                . '\'\','
-                . 'undefined,'
-                . '\'' . $this->getSaveConfirmationText() . '\','
-                . '\'' . Ess_M2ePro_Block_Adminhtml_Walmart_Template_Grid::TEMPLATE_DESCRIPTION . '\''
-                . ')',
-            'class'     => 'save'
-            )
-        );
-        // ---------------------------------------
+            $this->_addButton(
+                'save',
+                array(
+                    'label'   => Mage::helper('M2ePro')->__('Save And Close'),
+                    'onclick' => 'WalmartTemplateDescriptionObj.saveAndClose('
+                        . '\'' . $this->getUrl('*/*/save', array('_current' => true)) . '\','
+                        . ')',
+                    'class'   => 'save'
+                )
+            );
+        } else {
+            $this->_addButton(
+                'save', array(
+                    'label'   => Mage::helper('M2ePro')->__('Save'),
+                    'onclick' => 'WalmartTemplateDescriptionObj.save_click('
+                        . '\'\','
+                        . '\'' . $this->getSaveConfirmationText() . '\','
+                        . '\'' . Ess_M2ePro_Block_Adminhtml_Walmart_Template_Grid::TEMPLATE_DESCRIPTION . '\''
+                        . ')',
+                    'class'   => 'save'
+                )
+            );
+
+            $this->_addButton(
+                'save_and_continue', array(
+                    'label'   => Mage::helper('M2ePro')->__('Save And Continue Edit'),
+                    'onclick' => 'WalmartTemplateDescriptionObj.save_and_edit_click('
+                        . '\'\','
+                        . 'undefined,'
+                        . '\'' . $this->getSaveConfirmationText() . '\','
+                        . '\'' . Ess_M2ePro_Block_Adminhtml_Walmart_Template_Grid::TEMPLATE_DESCRIPTION . '\''
+                        . ')',
+                    'class'   => 'save'
+                )
+            );
+        }
     }
 
     //########################################

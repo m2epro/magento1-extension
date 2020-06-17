@@ -8,11 +8,14 @@
 
 class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View extends Mage_Adminhtml_Block_Widget_Grid_Container
 {
-    const VIEW_MODE_WALMART   = 'walmart';
+    const VIEW_MODE_WALMART  = 'walmart';
     const VIEW_MODE_MAGENTO  = 'magento';
     const VIEW_MODE_SETTINGS = 'settings';
 
     const DEFAULT_VIEW_MODE = self::VIEW_MODE_WALMART;
+
+    /** @var Ess_M2ePro_Model_Listing */
+    protected $_listing = null;
 
     //########################################
 
@@ -20,11 +23,12 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View extends Mage_Adminhtml_Blo
     {
         parent::__construct();
 
+        $this->_listing = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
+
         $this->setId('walmartListingView');
         $this->_blockGroup = 'M2ePro';
         $this->_controller = 'adminhtml_walmart_listing_view_' . $this->getViewMode();
 
-        $listingData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
 
         if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
             $componentName = Mage::helper('M2ePro/Component_Walmart')->getTitle();
@@ -42,7 +46,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View extends Mage_Adminhtml_Blo
 
         $url = $this->getUrl(
             '*/adminhtml_walmart_log/listing', array(
-            'id' => $listingData['id']
+            'id' => $this->_listing->getId()
             )
         );
         $this->_addButton(
@@ -91,8 +95,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View extends Mage_Adminhtml_Blo
     protected function getParam($paramName, $default = null)
     {
         $session = Mage::helper('M2ePro/Data_Session');
-        $listingData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
-        $sessionParamName = $this->getId() . $listingData['id'] . $paramName;
+        $sessionParamName = $this->getId() . $this->_listing->getId() . $paramName;
 
         if ($this->getRequest()->has($paramName)) {
             $param = $this->getRequest()->getParam($paramName);
@@ -122,8 +125,6 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View extends Mage_Adminhtml_Blo
             return parent::getGridHtml();
         }
 
-        $listingData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
-
         /** @var $helper Ess_M2ePro_Helper_Data */
         $helper = Mage::helper('M2ePro');
 
@@ -142,7 +143,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View extends Mage_Adminhtml_Blo
             'channel' => Ess_M2ePro_Helper_Component_Walmart::NICK,
             'back' => $helper->makeBackUrlParam(
                 '*/adminhtml_walmart_listing/view', array(
-                'id' => $listingData['id']
+                'id' => $this->_listing->getId()
                 )
             )
             )
@@ -177,18 +178,16 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View extends Mage_Adminhtml_Blo
         $productsIdsForList = empty($temp) ? '' : $temp;
 
         $gridId = $this->getChild('grid')->getId();
-        $ignoreListings = Mage::helper('M2ePro')->jsonEncode(array($listingData['id']));
+        $ignoreListings = Mage::helper('M2ePro')->jsonEncode(array($this->_listing->getId()));
 
-        $marketplaceId = Mage::helper('M2ePro/Data_Global')->getValue('marketplace_id');
-        $marketplaceInstance = Mage::helper('M2ePro/Component_Walmart')->getCachedObject('Marketplace', $marketplaceId);
-        $marketplace = Mage::helper('M2ePro')->jsonEncode($marketplaceInstance->getData());
+        $marketplace = Mage::helper('M2ePro')->jsonEncode($this->_listing->getMarketplace()->getData());
 
         $logViewUrl = $this->getUrl(
             '*/adminhtml_walmart_log/listing', array(
-            'id' => $listingData['id'],
+            'id' => $this->_listing->getId(),
             'back' => $helper->makeBackUrlParam(
                 '*/adminhtml_walmart_listing/view',
-                array('id' =>$listingData['id'])
+                array('id'  => $this->_listing->getId())
             )
             )
         );
@@ -220,31 +219,11 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View extends Mage_Adminhtml_Blo
 
         $saveListingAdditionalDataActionUrl = $this->getUrl(
             '*/adminhtml_listing/saveListingAdditionalData', array(
-            'id' => $listingData['id']
+            'id' => $this->_listing->getId()
             )
         );
 
         $popupTitle = $helper->escapeJs($helper->__('Moving Walmart Items'));
-
-        $taskCompletedMessage = $helper->escapeJs($helper->__('Task completed. Please wait ...'));
-        $taskCompletedSuccessMessage = $helper->escapeJs(
-            $helper->__('"%task_title%" Task was successfully submitted to be processed.')
-        );
-        $taskRealtimeCompletedSuccessMessage = $helper->escapeJs(
-            $helper->__('"%task_title%" Task was completed successfully.')
-        );
-        $taskCompletedWarningMessage = $helper->escapeJs(
-            $helper->__(
-                '"%task_title%" Task was completed with warnings.
-            <a target="_blank" href="%url%">View Log</a> for the details.'
-            )
-        );
-        $taskCompletedErrorMessage = $helper->escapeJs(
-            $helper->__(
-                '"%task_title%" Task was completed with errors.
-            <a target="_blank" href="%url%">View Log</a> for the details.'
-            )
-        );
 
         $lockedObjNoticeMessage = $helper->escapeJs($helper->__('Some Walmart request(s) are being processed now.'));
         $sendingDataToWalmartMessage = $helper->escapeJs(
@@ -290,20 +269,6 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View extends Mage_Adminhtml_Blo
         );
 
         $removingSelectedItemsMessage = $helper->escapeJs($helper->__('Removing From Listing Selected Items'));
-
-        $selectItemsMessage = $helper->escapeJs(
-            $helper->__('Please select the Products you want to perform the Action on.')
-        );
-        $selectActionMessage = $helper->escapeJs($helper->__('Please select Action.'));
-
-        $successWord = $helper->escapeJs($helper->__('Success'));
-        $noticeWord = $helper->escapeJs($helper->__('Notice'));
-        $warningWord = $helper->escapeJs($helper->__('Warning'));
-        $errorWord = $helper->escapeJs($helper->__('Error'));
-        $closeWord = $helper->escapeJs($helper->__('Close'));
-
-        $assignString = Mage::helper('M2ePro')->__('Assign');
-        $textConfirm = $helper->escapeJs($helper->__('Are you sure?'));
 
         $variationProductManage = $this->getUrl(
             '*/adminhtml_walmart_listing_variation_product_manage/index'
@@ -352,7 +317,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View extends Mage_Adminhtml_Blo
 
         $categoryTemplateUrl = $this->getUrl(
             '*/adminhtml_walmart_template_newProduct', array(
-            'marketplace_id' => Mage::helper('M2ePro/Data_Global')->getValue('marketplace_id'),
+            'marketplace_id' => $this->_listing->getMarketplaceId(),
             )
         );
 
@@ -367,7 +332,6 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View extends Mage_Adminhtml_Blo
 
         $noVariationsLeftText = $helper->__('All variations are already added.');
 
-        $notSet = $helper->__('Not Set');
         $setAttributes = $helper->__('Set Attributes');
         $variationManageMatchedAttributesError = $helper->__('Please choose valid Attributes.');
         $variationManageMatchedAttributesErrorDuplicateSelection =
@@ -486,12 +450,6 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View extends Mage_Adminhtml_Blo
 
     M2ePro.text.popup_title = '{$popupTitle}';
 
-    M2ePro.text.task_completed_message = '{$taskCompletedMessage}';
-    M2ePro.text.task_completed_success_message = '{$taskCompletedSuccessMessage}';
-    M2ePro.text.task_realtime_completed_success_message = '{$taskRealtimeCompletedSuccessMessage}';
-    M2ePro.text.task_completed_warning_message = '{$taskCompletedWarningMessage}';
-    M2ePro.text.task_completed_error_message = '{$taskCompletedErrorMessage}';
-
     M2ePro.text.locked_obj_notice = '{$lockedObjNoticeMessage}';
     M2ePro.text.sending_data_message = '{$sendingDataToWalmartMessage}';
     M2ePro.text.view_all_product_log_message = '{$viewAllProductLogMessage}';
@@ -509,24 +467,10 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View extends Mage_Adminhtml_Blo
     M2ePro.text.removing_selected_items_message = '{$removingSelectedItemsMessage}';
     M2ePro.text.reset_blocked_products_message = '{$resetBlockedProductsMessage}';
 
-    M2ePro.text.select_items_message = '{$selectItemsMessage}';
-    M2ePro.text.select_action_message = '{$selectActionMessage}';
-
-    M2ePro.text.success_word = '{$successWord}';
-    M2ePro.text.notice_word = '{$noticeWord}';
-    M2ePro.text.warning_word = '{$warningWord}';
-    M2ePro.text.error_word = '{$errorWord}';
-    M2ePro.text.close_word = '{$closeWord}';
-
     M2ePro.text.templateDescriptionPopupTitle = '{$templateDescriptionPopupTitle}';
-
-    M2ePro.text.assign = '{$assignString}';
-    M2ePro.text.confirm = '{$textConfirm}';
 
     M2ePro.text.no_variations_left = '{$noVariationsLeftText}';
 
-    M2ePro.text.not_set = '{$notSet}';
-    M2ePro.text.set_attributes = '{$setAttributes}';
     M2ePro.text.variation_manage_matched_attributes_error = '{$variationManageMatchedAttributesError}';
     M2ePro.text.variation_manage_matched_attributes_error_duplicate =
         '{$variationManageMatchedAttributesErrorDuplicateSelection}';
@@ -545,25 +489,25 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View extends Mage_Adminhtml_Blo
 
     Event.observe(window, 'load', function() {
 
-        ListingGridHandlerObj = new WalmartListingGridHandler(
+        ListingGridObj = new WalmartListingGrid(
             '{$gridId}',
-            {$listingData['id']}
+            {$this->_listing->getId()}
         );
 
         ListingProgressBarObj = new ProgressBar('listing_view_progress_bar');
         GridWrapperObj = new AreaWrapper('listing_view_content_container');
 
-        ListingProductVariationHandlerObj = new WalmartListingProductVariationHandler(M2ePro,
-                                                                               ListingGridHandlerObj);
+        ListingProductVariationObj = new WalmartListingProductVariation(M2ePro,
+                                                                               ListingGridObj);
 
         if (M2ePro.productsIdsForList) {
-            ListingGridHandlerObj.getGridMassActionObj().checkedString = M2ePro.productsIdsForList;
-            ListingGridHandlerObj.actionHandler.listAction();
+            ListingGridObj.getGridMassActionObj().checkedString = M2ePro.productsIdsForList;
+            ListingGridObj.actionHandler.listAction();
         }
 
-        ListingAutoActionHandlerObj = new WalmartListingAutoActionHandler();
+        ListingAutoActionObj = new WalmartListingAutoAction();
         if ({$showAutoAction}) {
-            ListingAutoActionHandlerObj.loadAutoActionHtml();
+            ListingAutoActionObj.loadAutoActionHtml();
         }
 
     });
@@ -600,7 +544,11 @@ HTML;
         // ---------------------------------------
         $viewHeaderBlock = $this->getLayout()->createBlock(
             'M2ePro/adminhtml_listing_view_header', '',
-            array('listing' => Mage::helper('M2ePro/Component_Walmart')->getCachedObject('Listing', $listingData['id']))
+            array(
+                'listing' => Mage::helper('M2ePro/Component_Walmart')->getCachedObject(
+                    'Listing',
+                    $this->_listing->getId())
+            )
         );
         // ---------------------------------------
 
@@ -629,12 +577,9 @@ HTML;
 
     public function getHeaderHtml()
     {
-        $listingData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
-
-        // ---------------------------------------
         $collection = Mage::getModel('M2ePro/Listing')->getCollection();
         $collection->addFieldToFilter('component_mode', Ess_M2ePro_Helper_Component_Walmart::NICK);
-        $collection->addFieldToFilter('id', array('neq' => $listingData['id']));
+        $collection->addFieldToFilter('id', array('neq' => $this->_listing->getId()));
         $collection->setPageSize(200);
         $collection->setOrder('title', 'ASC');
 
@@ -687,11 +632,10 @@ HTML;
     {
         $items = array();
 
-        $listingData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
         $backUrl = Mage::helper('M2ePro')->makeBackUrlParam(
             '*/adminhtml_walmart_listing/view',
             array(
-                'id' => $listingData['id']
+                'id' => $this->_listing->getId()
             )
         );
 
@@ -699,7 +643,7 @@ HTML;
         $url = $this->getUrl(
             '*/adminhtml_walmart_listing/edit',
             array(
-                'id' => $listingData['id'],
+                'id' => $this->_listing->getId(),
                 'back' => $backUrl
             )
         );
@@ -713,7 +657,7 @@ HTML;
         // ---------------------------------------
         $items[] = array(
             'url' => 'javascript: void(0);',
-            'onclick' => 'ListingAutoActionHandlerObj.loadAutoActionHtml();',
+            'onclick' => 'ListingAutoActionObj.loadAutoActionHtml();',
             'label' => Mage::helper('M2ePro')->__('Auto Add/Remove Rules')
         );
         // ---------------------------------------
@@ -725,10 +669,9 @@ HTML;
     {
         $items = array();
 
-        $listingData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
         $backUrl = Mage::helper('M2ePro')->makeBackUrlParam(
             '*/adminhtml_walmart_listing/view', array(
-            'id' => $listingData['id']
+            'id' => $this->_listing->getId()
             )
         );
 
@@ -736,11 +679,11 @@ HTML;
         $url = $this->getUrl(
             '*/adminhtml_walmart_listing_productAdd/index',
             array(
-                'id' => $listingData['id'],
+                'id' => $this->_listing->getId(),
                 'back' => $backUrl,
                 'clear' => 1,
                 'step' => 2,
-                'source' => Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Add_SourceMode::SOURCE_LIST
+                'source' => Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Product_Add_SourceMode::SOURCE_LIST
             )
         );
         $items[] = array(
@@ -753,11 +696,11 @@ HTML;
         $url = $this->getUrl(
             '*/adminhtml_walmart_listing_productAdd/index',
             array(
-                'id' => $listingData['id'],
+                'id' => $this->_listing->getId(),
                 'back' => $backUrl,
                 'clear' => 1,
                 'step' => 2,
-                'source' => Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Add_SourceMode::SOURCE_CATEGORIES
+                'source' => Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Product_Add_SourceMode::SOURCE_CATEGORIES
             )
         );
         $items[] = array(

@@ -227,7 +227,7 @@ HTML;
         // ---------------------------------------
         $viewHeaderBlock = $this->getLayout()->createBlock(
             'M2ePro/adminhtml_listing_view_header', '',
-            array('listing' => Mage::helper('M2ePro/Data_Global')->getValue('temp_data'))
+            array('listing' => $this->_listing)
         );
 
         $html .= $viewHeaderBlock->toHtml();
@@ -248,31 +248,31 @@ HTML;
         // ---------------------------------------
         $urls = Mage::helper('M2ePro')->jsonEncode(
             array_merge(
-                $helper->getControllerActions(
-                    'adminhtml_ebay_listing', array('_current' => true)
-                ),
-                $helper->getControllerActions(
-                    'adminhtml_ebay_listing_autoAction', array('listing_id' => $this->getRequest()->getParam('id'))
-                ),
-                $helper->getControllerActions(
-                    'adminhtml_ebay_listing_transferring', array('listing_id' => $this->getRequest()->getParam('id'))
-                ),
                 $helper->getControllerActions('adminhtml_ebay_account'),
                 $helper->getControllerActions('adminhtml_ebay_listing_categorySettings'),
                 $helper->getControllerActions('adminhtml_ebay_marketplace'),
-                array('adminhtml_system_store/index' =>
-                Mage::helper('adminhtml')->getUrl('adminhtml/system_store/')),
-                array('logViewUrl' =>
-                $this->getUrl(
-                    'M2ePro/adminhtml_ebay_log/synchronization',
-                    array('back'=>$helper->makeBackUrlParam('*/adminhtml_ebay_synchronization/index'))
-                )),
-                array('runSynchNow' =>
-                $this->getUrl('M2ePro/adminhtml_ebay_marketplace/runSynchNow')),
-                array('variationProductManage' =>
-                $this->getUrl('*/adminhtml_ebay_listing_variation_product_manage/index')),
-                array('getListingProductBids' =>
-                $this->getUrl('*/adminhtml_ebay_listing/getListingProductBids'))
+                $helper->getControllerActions('adminhtml_ebay_listing', array('_current' => true)),
+                $helper->getControllerActions('adminhtml_ebay_category', array('_current' => true)),
+                $helper->getControllerActions(
+                    'adminhtml_ebay_listing_autoAction',
+                    array('listing_id' => $this->getRequest()->getParam('id'))
+                ),
+                $helper->getControllerActions(
+                    'adminhtml_ebay_listing_transferring',
+                    array('listing_id' => $this->getRequest()->getParam('id'))
+                ),
+                array(
+                    'adminhtml_system_store/index' => Mage::helper('adminhtml')->getUrl('adminhtml/system_store/'),
+                    'logViewUrl' => $this->getUrl(
+                        'M2ePro/adminhtml_ebay_log/synchronization',
+                        array('back'=>$helper->makeBackUrlParam('*/adminhtml_ebay_synchronization/index'))
+                    ),
+                    'runSynchNow' => $this->getUrl('M2ePro/adminhtml_ebay_marketplace/runSynchNow'),
+                    'variationProductManage' => $this->getUrl(
+                        '*/adminhtml_ebay_listing_variation_product_manage/index'
+                    ),
+                    'getListingProductBids' => $this->getUrl('*/adminhtml_ebay_listing/getListingProductBids')
+                )
             )
         );
         // ---------------------------------------
@@ -320,12 +320,10 @@ HTML;
 </script>
 HTML;
 
-        $javascript = '';
-
         if (!$this->getRequest()->isXmlHttpRequest()) {
             $html .= <<<HTML
 <script type="text/javascript">
-    ListingAutoActionHandlerObj = new EbayListingAutoActionHandler();
+    ListingAutoActionObj = new EbayListingAutoAction();
 </script>
 HTML;
         }
@@ -334,8 +332,7 @@ HTML;
 
         return $html .
                $addProductsDropDownBlock->toHtml() .
-               parent::getGridHtml() .
-               $javascript;
+               parent::getGridHtml();
     }
 
     //########################################
@@ -392,7 +389,7 @@ HTML;
         // ---------------------------------------
         $items[] = array(
             'url' => 'javascript: void(0);',
-            'onclick' => 'ListingAutoActionHandlerObj.loadAutoActionHtml();',
+            'onclick' => 'ListingAutoActionObj.loadAutoActionHtml();',
             'label' => Mage::helper('M2ePro')->__('Auto Add/Remove Rules')
         );
         // ---------------------------------------

@@ -16,12 +16,16 @@ class Ess_M2ePro_Model_Ebay_Template_Payment extends Ess_M2ePro_Model_Component_
      */
     protected $_marketplaceModel = null;
 
+    /** @var Ess_M2ePro_Model_ActiveRecord_Factory */
+    protected $_activeRecordFactory;
+
     //########################################
 
     public function _construct()
     {
         parent::_construct();
         $this->_init('M2ePro/Ebay_Template_Payment');
+        $this->_activeRecordFactory = Mage::getSingleton('M2ePro/ActiveRecord_Factory');
     }
 
     /**
@@ -107,15 +111,19 @@ class Ess_M2ePro_Model_Ebay_Template_Payment extends Ess_M2ePro_Model_Component_
 
     /**
      * @param bool $asObjects
-     * @param array $filters
      * @return array|Ess_M2ePro_Model_Ebay_Template_Payment_Service[]
      */
-    public function getServices($asObjects = false, array $filters = array())
+    public function getServices($asObjects = false)
     {
-        return $this->getRelatedSimpleItems(
-            'Ebay_Template_Payment_Service', 'template_payment_id',
-            $asObjects, $filters
-        );
+        $collection = $this->_activeRecordFactory->getObjectCollection('Ebay_Template_Payment_Service');
+        $collection->addFieldToFilter('template_payment_id', $this->getId());
+
+        if (!$asObjects) {
+            $result = $collection->toArray();
+            return $result['items'];
+        }
+
+        return $collection->getItems();
     }
 
     //########################################
@@ -174,21 +182,6 @@ class Ess_M2ePro_Model_Ebay_Template_Payment extends Ess_M2ePro_Model_Component_
     public function isPayPalImmediatePaymentEnabled()
     {
         return (bool)$this->getData('pay_pal_immediate_payment');
-    }
-
-    //########################################
-
-    /**
-     * @return array
-     */
-    public function getDefaultSettings()
-    {
-        return array(
-            'pay_pal_mode'              => 0,
-            'pay_pal_email_address'     => '',
-            'pay_pal_immediate_payment' => 0,
-            'services'                  => array()
-        );
     }
 
     //########################################

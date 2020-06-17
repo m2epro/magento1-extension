@@ -1,0 +1,68 @@
+<?php
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
+ */
+
+/** @var Ess_M2ePro_Block_Adminhtml_HelpBlock $this */
+
+// @codingStandardsIgnoreFile
+
+?>
+
+<script>
+    var <?php echo $this->getId(); ?>init = function() {
+        var blockId = '<?php echo $this->getId(); ?>';
+        ModuleNoticeObj.prepareCollapseableArrow(blockId);
+
+        if (<?php echo Mage::helper('M2ePro')->jsonEncode(!$this->hasNoHide()); ?> && ModuleNoticeObj.isHiddenBlock(blockId)) {
+            ModuleNoticeObj.hide(blockId);
+        }
+
+        if (<?php echo Mage::helper('M2ePro')->jsonEncode(!$this->hasNoCollapse()); ?> && ModuleNoticeObj.isClosedContent(blockId)) {
+            ModuleNoticeObj.hideContent(blockId);
+        }
+    };
+
+    Event.observe(window, 'load', function() {
+        <?php echo $this->getId(); ?>init();
+    });
+    Ajax.Responders.register({
+        onComplete: function() {
+            <?php echo $this->getId(); ?>init();
+        }
+    });
+</script>
+
+<div id="<?php echo $this->getId(); ?>"
+     class="block_notices is_prepared <?php echo $this->getClass(); ?>"
+     <?php if ($this->getStyle()): ?>style="<?php echo $this->getStyle(); ?>"<?php endif; ?>
+>
+    <?php if ($this->getTitle()) : ?>
+        <div class="block_notices_header">
+            <div class="block_notices_header_left">
+                <?php if (!$this->hasNoCollapse()) : ?><a href="javascript:void(0);" onclick="ModuleNoticeObj.toggleContent('<?php echo $this->getId(); ?>')"><?php endif ?>
+                    <span class="title"><?php echo $this->getTitle(); ?></span>&nbsp;
+                    <span class="subtitle">[<?php echo $this->getSubTitle() ? $this->getSubTitle() : Mage::helper('M2ePro')->__('Help'); ?>]</span>&nbsp;
+                    <span class="arrow"></span>
+                <?php if (!$this->hasNoCollapse()) : ?></a><?php endif ?>
+            </div>
+            <div class="block_notices_header_right">
+                <?php if (!$this->hasNoHide()) : ?>
+                    <a href="javascript:void(0);" onclick="ModuleNoticeObj.hideBlock('<?php echo $this->getId(); ?>')" title="<?php echo Mage::helper('M2ePro')->__('Hide Block'); ?>">
+                        <span class="hideblock">&times;</span>
+                    </a>
+                <?php endif ?>
+            </div>
+            <div style="clear:both;"></div>
+        </div>
+    <?php endif; ?>
+
+    <div class="block_notices_content" style="margin-top: 5px;">
+        <div>
+            <?php echo Mage::helper('M2ePro')->__($this->getContent()); ?>
+        </div>
+    </div>
+
+</div>

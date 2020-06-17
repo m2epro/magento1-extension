@@ -199,13 +199,13 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Product_Grid extends Mage_Adminh
     {
         $this->addColumn(
             'product_id', array(
-                'header'         => Mage::helper('M2ePro')->__('ID'),
-                'align'          => 'right',
-                'width'          => '100px',
-                'type'           => 'number',
-                'index'          => 'entity_id',
-                'filter_index'   => 'entity_id',
-                'frame_callback' => array($this, 'callbackColumnProductId')
+                'header'       => Mage::helper('M2ePro')->__('ID'),
+                'align'        => 'right',
+                'width'        => '100px',
+                'type'         => 'number',
+                'index'        => 'entity_id',
+                'filter_index' => 'entity_id',
+                'renderer'     => 'M2ePro/adminhtml_grid_column_renderer_productId',
             )
         );
 
@@ -368,43 +368,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Product_Grid extends Mage_Adminh
 
     //########################################
 
-    public function callbackColumnProductId($value, $row, $column, $isExport)
-    {
-        $productId = (int)$value;
-
-        $withoutImageHtml = '<a href="'
-                            .$this->getUrl(
-                                'adminhtml/catalog_product/edit',
-                                array('id' => $productId)
-                            )
-                            .'" target="_blank">'
-                            .$productId
-                            .'</a>';
-
-        $showProductsThumbnails = (bool)(int)Mage::helper('M2ePro/Module')
-                                                        ->getConfig()
-                                                        ->getGroupValue('/view/', 'show_products_thumbnails');
-        if (!$showProductsThumbnails) {
-            return $withoutImageHtml;
-        }
-
-        /** @var $magentoProduct Ess_M2ePro_Model_Magento_Product */
-        $magentoProduct = Mage::getModel('M2ePro/Magento_Product');
-        $magentoProduct->setProductId($productId);
-        $magentoProduct->setStoreId(0);
-
-        $imageResized = $magentoProduct->getThumbnailImage();
-        if ($imageResized === null) {
-            return $withoutImageHtml;
-        }
-
-        $imageHtml = $productId.'<hr/><img style="max-width: 100px; max-height: 100px;" src="'.
-            $imageResized->getUrl().'" />';
-        $withImageHtml = str_replace('>'.$productId.'<', '>'.$imageHtml.'<', $withoutImageHtml);
-
-        return $withImageHtml;
-    }
-
     public function callbackColumnProductTitle($value, $row, $column, $isExport)
     {
         return Mage::helper('M2ePro')->escapeHtml($value);
@@ -507,16 +470,10 @@ STYLE;
 
         $isShowRuleBlock = Mage::helper('M2ePro')->jsonEncode($this->isShowRuleBlock());
 
-        $selectItemsMessage = $helper->escapeJs(
-            $helper->__('Please select the Products you want to perform the Action on.')
-        );
-        $createEmptyListingMessage = $helper->escapeJs($helper->__('Are you sure you want to create empty Listing?'));
-
-        $showAdvancedFilterButtonText = $helper->escapeJs($helper->__('Show Advanced Filter'));
-        $hideAdvancedFilterButtonText = $helper->escapeJs($helper->__('Hide Advanced Filter'));
-
         $addProductsUrl = $this->getUrl(
-            '*/adminhtml_amazon_listing_productAdd/addProducts'
+            '*/adminhtml_amazon_listing_productAdd/addProducts', array(
+                'wizard' => $this->getRequest()->getParam('wizard')
+            )
         );
         $backUrl = $this->getUrl('*/*/index');
 
@@ -530,23 +487,19 @@ STYLE;
         M2ePro.text = {};
     }
 
-    M2ePro.text.select_items_message = '{$selectItemsMessage}';
-    M2ePro.text.create_empty_listing_message = '{$createEmptyListingMessage}';
-    M2ePro.text.show_advanced_filter = '{$showAdvancedFilterButtonText}';
-    M2ePro.text.hide_advanced_filter = '{$hideAdvancedFilterButtonText}';
     M2ePro.url.add_products = '{$addProductsUrl}';
     M2ePro.url.back = '{$backUrl}';
 
     WrapperObj = new AreaWrapper('add_products_container');
     ProgressBarObj = new ProgressBar('add_products_progress_bar');
-    AddListingObj = new AmazonListingAddListingHandler(M2ePro, ProgressBarObj, WrapperObj);
-    AddListingObj.listing_id = '{$this->getRequest()->getParam('id')}';
-    ProductGridHandlerObj = new ListingProductGridHandler(AddListingObj);
-    ProductGridHandlerObj.setGridId('{$this->getId()}');
+    AddProductObj = new AmazonListingProductAdd(M2ePro, ProgressBarObj, WrapperObj);
+    AddProductObj.listing_id = '{$this->getRequest()->getParam('id')}';
+    ProductGridObj = new ListingProductGrid(AddProductObj);
+    ProductGridObj.setGridId('{$this->getId()}');
 
     var init = function () {
-        {$this->getId()}JsObject.doFilter = ProductGridHandlerObj.setFilter;
-        {$this->getId()}JsObject.resetFilter = ProductGridHandlerObj.resetFilter;
+        {$this->getId()}JsObject.doFilter = ProductGridObj.setFilter;
+        {$this->getId()}JsObject.resetFilter = ProductGridObj.resetFilter;
         if ({$isShowRuleBlock}) {
             $('listing_product_rules').show();
             if ($('advanced_filter_button')) {
@@ -571,7 +524,7 @@ HTML;
             // ---------------------------------------
             $data = array(
                 'label'   => Mage::helper('adminhtml')->__('Show Advanced Filter'),
-                'onclick' => 'ProductGridHandlerObj.advancedFilterToggle()',
+                'onclick' => 'ProductGridObj.advancedFilterToggle()',
                 'class'   => 'task',
                 'id'      => 'advanced_filter_button'
             );

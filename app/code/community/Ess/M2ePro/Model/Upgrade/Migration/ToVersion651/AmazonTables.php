@@ -70,7 +70,7 @@ SELECT * FROM {$this->getFullTableName('marketplace')} WHERE `id` IN (34, 35, 36
             $this->_installer->run(
                 <<<SQL
 
-INSERT INTO `m2epro_marketplace` VALUES
+INSERT INTO `{$this->_installer->getTable('m2epro_marketplace')}` VALUES
   (34, 9, 'Mexico', 'MX', 'amazon.com.mx', 0, 10, 'America', 'amazon',
   '2017-09-27 00:00:00', '2017-09-27 00:00:00'),
   (35, 10, 'Australia', 'AU', 'amazon.com.au', 0, 11, 'Australia Region', 'amazon',
@@ -78,12 +78,18 @@ INSERT INTO `m2epro_marketplace` VALUES
   (36, 0, 'India', 'IN', 'amazon.in', 0, 12, 'Asia / Pacific', 'amazon',
   '2017-09-27 00:00:00', '2017-09-27 00:00:00');
 
-INSERT INTO `m2epro_amazon_marketplace` VALUES
+INSERT INTO `{$this->_installer->getTable('m2epro_amazon_marketplace')}` VALUES
   (34, '8636-1433-4377', 'MXN',1,0,0,0,0),
   (35, '2770-5005-3793', 'AUD',1,0,0,0,0),
   (36, NULL, '',0,0,0,0,0);
 
 SQL
+            );
+        } else {
+            $this->_installer->getConnection()->update(
+                $this->_installer->getFullTableName('marketplace'),
+                array('group_title' => 'Australia Region'),
+                array('id = ?' => 35)
             );
         }
 
@@ -255,18 +261,18 @@ SELECT `id` FROM {$accountsTable} WHERE `component_mode` = 'amazon';
 
         $this->_installer->run(
             <<<SQL
-UPDATE `m2epro_amazon_listing_product_repricing`
+UPDATE `{$this->_installer->getTable('m2epro_amazon_listing_product_repricing')}`
 SET `is_online_inactive` = 0;
 
-UPDATE `m2epro_amazon_listing_other`
+UPDATE `{$this->_installer->getTable('m2epro_amazon_listing_other')}`
 SET `is_repricing_inactive` = 0;
 
-UPDATE `m2epro_listing_product` mlp
+UPDATE `{$this->_installer->getTable('m2epro_listing_product')}` mlp
 JOIN `m2epro_amazon_listing_product` malp ON mlp.id = malp.listing_product_id
 SET mlp.additional_data = REPLACE(`additional_data`, 'repricing_disabled_count', 'repricing_not_managed_count')
 WHERE malp.is_repricing = 1;
 
-UPDATE `m2epro_listing_product` mlp
+UPDATE `{$this->_installer->getTable('m2epro_listing_product')}` mlp
 JOIN `m2epro_amazon_listing_product` malp ON mlp.id = malp.listing_product_id
 SET mlp.additional_data = REPLACE(`additional_data`, 'repricing_enabled_count', 'repricing_managed_count')
 WHERE malp.is_repricing = 1;
@@ -290,7 +296,7 @@ SQL
 
         $this->_installer->run(
             <<<SQL
-UPDATE `m2epro_amazon_template_synchronization`
+UPDATE `{$this->_installer->getTable('m2epro_amazon_template_synchronization')}`
 SET `stop_mode` = 1
 WHERE (`stop_status_disabled`+`stop_out_off_stock`+`stop_qty_magento`+`stop_qty_calculated`) > 0;
 SQL

@@ -42,12 +42,7 @@
         $formData['other_listings_mapping_settings'] = (array)json_decode($formData['other_listings_mapping_settings'],true);
     }
 
-    $defaults = array(
-        'title'          => '',
-        'marketplace_id' => 0,
-        'merchant_id'    => '',
-        'token'          => ''
-    );
+    $defaults = Mage::getModel('M2ePro/Amazon_Account_Builder')->getDefaultData();
 
     $formData = array_merge($defaults, $formData);
 
@@ -104,13 +99,13 @@
     Event.observe(window, 'load', function() {
         <?php echo $licenseMessage; ?>
 
-        AmazonAccountHandlerObj = new AmazonAccountHandler();
+        AmazonAccountObj = new AmazonAccount();
         editForm = new varienForm('edit_form', '<?php echo $this->getValidationUrl(); ?>');
 
         <?php if ($isAuthMode) { ?>
-            AmazonAccountHandlerObj.changeMarketplace(<?php echo $authMarketplace['id']; ?>);
+            AmazonAccountObj.changeMarketplace(<?php echo $authMarketplace['id']; ?>);
         <?php } elseif ($isEdit) { ?>
-            AmazonAccountHandlerObj.showGetAccessData(<?php echo $formData['marketplace_id']; ?>);
+            AmazonAccountObj.showGetAccessData(<?php echo $formData['marketplace_id']; ?>);
         <?php } else {?>
             if ($('marketplace_id').value) {
                 $('marketplace_id').simulate('change');
@@ -197,7 +192,7 @@
                     </td>
                     <td class="value">
 
-                        <select id="marketplace_id" name="marketplace_id" <?php if ($isEdit) { ?>disabled="disabled"<?php } ?> onchange="AmazonAccountHandlerObj.changeMarketplace(this.value);" class="required-entry">
+                        <select id="marketplace_id" name="marketplace_id" <?php if ($isEdit) { ?>disabled="disabled"<?php } ?> onchange="AmazonAccountObj.changeMarketplace(this.value);" class="required-entry">
 
                             <?php if (!$isEdit) { ?>
                                 <option style="display:none;"></option>
@@ -236,7 +231,7 @@
                         <td class="label"></td>
                         <td class="value">
                             <?php if($marketplaceRow['is_automatic_token_retrieving_available']): ?>
-                                <a href="" onclick="return AmazonAccountHandlerObj.get_token(<?php echo $marketplaceRow['id'];?>)" target="_self"><?php echo Mage::helper('M2ePro')->__('Get Access Data') ?></a>
+                                <a href="" onclick="return AmazonAccountObj.get_token(<?php echo $marketplaceRow['id'];?>)" target="_self"><?php echo Mage::helper('M2ePro')->__('Get Access Data') ?></a>
                             <?php else: ?>
                                 <a href="<?php echo Mage::helper('M2ePro/Component_Amazon')->getRegisterUrl($marketplaceRow['id']); ?>" target="_blank"><?php echo Mage::helper('M2ePro')->__('Get Access Data') ?></a>
                             <?php endif; ?>

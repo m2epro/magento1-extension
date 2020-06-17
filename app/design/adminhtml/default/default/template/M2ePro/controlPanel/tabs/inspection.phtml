@@ -67,24 +67,6 @@
 
 <div class="box-right">
 
-    <?php if ($this->getChild('cron')->isShown()) { ?>
-        <div class="entry-edit" id="magento_block_controlPanel_inspection_cron">
-
-            <div class="controlPanel_head_container">
-                <h4><?php echo Mage::helper('M2ePro')->__('Cron'); ?></h4>
-            </div>
-
-            <div class="fieldset">
-                <div class="hor-scroll">
-
-                    <?php echo $this->getChildHtml('cron') ?>
-
-                </div>
-            </div>
-
-        </div>
-    <?php } ?>
-
     <?php if ($this->getChild('conflicted_modules')->isShown()) { ?>
         <div class="entry-edit" id="magento_block_controlPanel_inspection_conflicted_modules">
 
@@ -156,24 +138,6 @@
 
         </div>
     <?php } ?>
-
-    <?php if ($this->getChild('installation')->isShown()) { ?>
-        <div class="entry-edit" id="magento_block_controlPanel_inspection_installation">
-
-            <div class="controlPanel_head_container">
-                <h4><?php echo Mage::helper('M2ePro')->__('Installation'); ?></h4>
-            </div>
-
-            <div class="fieldset">
-                <div class="hor-scroll">
-
-                    <?php echo $this->getChildHtml('installation') ?>
-
-                </div>
-            </div>
-
-        </div>
-    <?php }?>
 
 </div>
 

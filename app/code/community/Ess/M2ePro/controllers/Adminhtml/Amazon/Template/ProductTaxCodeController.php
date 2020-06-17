@@ -18,9 +18,9 @@ class Ess_M2ePro_Adminhtml_Amazon_Template_ProductTaxCodeController
              ->_title(Mage::helper('M2ePro')->__('Product Tax Code Policies'));
 
         $this->getLayout()->getBlock('head')
-            ->addJs('M2ePro/Template/EditHandler.js')
-            ->addJs('M2ePro/Amazon/Template/EditHandler.js')
-            ->addJs('M2ePro/Amazon/Template/ProductTaxCodeHandler.js');
+            ->addJs('M2ePro/Template/Edit.js')
+            ->addJs('M2ePro/Amazon/Template/Edit.js')
+            ->addJs('M2ePro/Amazon/Template/ProductTaxCode.js');
 
         $this->_initPopUp();
 
@@ -81,31 +81,13 @@ class Ess_M2ePro_Adminhtml_Amazon_Template_ProductTaxCodeController
 
         $id = $this->getRequest()->getParam('id');
 
-        // Base prepare
-        // ---------------------------------------
-        $data = array();
-
-        $keys = array(
-            'title',
-
-            'product_tax_code_mode',
-            'product_tax_code_value',
-            'product_tax_code_attribute',
-        );
-
-        foreach ($keys as $key) {
-            if (isset($post[$key])) {
-                $data[$key] = $post[$key];
-            }
-        }
-
         $model = Mage::getModel('M2ePro/Amazon_Template_ProductTaxCode')->load($id);
 
         $snapshotBuilder = Mage::getModel('M2ePro/Amazon_Template_ProductTaxCode_SnapshotBuilder');
         $snapshotBuilder->setModel($model);
         $oldData = $snapshotBuilder->getSnapshot();
 
-        $model->addData($data)->save();
+        Mage::getModel('M2ePro/Amazon_Template_ProductTaxCode_Builder')->build($model, $post);
 
         $snapshotBuilder = Mage::getModel('M2ePro/Amazon_Template_ProductTaxCode_SnapshotBuilder');
         $snapshotBuilder->setModel($model);

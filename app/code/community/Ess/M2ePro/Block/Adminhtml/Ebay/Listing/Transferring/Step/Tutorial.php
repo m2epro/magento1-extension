@@ -31,7 +31,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Transferring_Step_Tutorial extends
             'id'      => 'confirm_button_tutorial',
             'class'   => 'confirm_button',
             'label'   => Mage::helper('M2ePro')->__('Confirm'),
-            'onclick' => 'EbayListingTransferringHandlerObj.go();',
+            'onclick' => 'EbayListingTransferringObj.go();',
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('confirm_button', $buttonBlock);

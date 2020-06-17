@@ -33,10 +33,10 @@ class Ess_M2ePro_Sql_Upgrade_v6_5_1_0__v6_5_2_0_AllFeatures extends Ess_M2ePro_M
             ->commit();
 
         $installer->run(<<<SQL
-UPDATE `m2epro_ebay_template_return`
+UPDATE `{$this->_installer->getTable('m2epro_ebay_template_return')}`
 SET `international_accepted` = 'ReturnsNotAccepted';
 
-UPDATE `m2epro_ebay_marketplace`
+UPDATE `{$this->_installer->getTable('m2epro_ebay_marketplace')}`
 SET `is_return_description` = 1
 WHERE `marketplace_id` IN (8, 13, 7, 10, 5);
 SQL

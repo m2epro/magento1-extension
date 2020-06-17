@@ -120,7 +120,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Other
     public function getLotSizeData()
     {
         $categoryFeatures = Mage::helper('M2ePro/Component_Ebay_Category_Ebay')->getFeatures(
-            $this->getEbayListingProduct()->getCategoryTemplateSource()->getMainCategory(),
+            $this->getEbayListingProduct()->getCategoryTemplateSource()->getCategoryId(),
             $this->getMarketplace()->getId()
         );
 

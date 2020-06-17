@@ -42,14 +42,10 @@ abstract class Ess_M2ePro_Model_Amazon_Repricing_Synchronization_Abstract
                 Ess_M2ePro_Helper_Component_Amazon_Repricing::COMMAND_SYNCHRONIZE,
                 $requestData
             );
-        } catch (Exception $exception) {
-            $this->getSynchronizationLog()->addMessage(
-                Mage::helper('M2ePro')->__($exception->getMessage()),
-                Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
-                Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH
-            );
+        } catch (Exception $e) {
+            Mage::helper('M2ePro/Module_Exception')->process($e, false);
+            $this->getSynchronizationLog()->addMessageFromException($e);
 
-            Mage::helper('M2ePro/Module_Exception')->process($exception, false);
             return false;
         }
 

@@ -84,14 +84,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Product_Template_Edit extends Mage
         );
         // ---------------------------------------
 
-        // ---------------------------------------
-        $html .= <<<HTML
-<script type="text/javascript">
-    EbayListingTemplateSwitcherHandlerObj.checkAttributesAvailability = true;
-</script>
-HTML;
-        // ---------------------------------------
-
         // hide tabs selector if only one tab is allowed for displaying
         // ---------------------------------------
         if (count($this->getAllowedTabs()) == 1) {
@@ -120,11 +112,11 @@ HTML;
         $cancelWord = Mage::helper('M2ePro')->__('Cancel');
 
         // ---------------------------------------
-        $callback = 'function(params) { EbayListingSettingsGridHandlerObj.saveSettings(params); }';
+        $callback = 'function(params) { EbayListingSettingsGridObj.saveSettings(params); }';
         $data = array(
             'class'   => 'save',
             'label'   => Mage::helper('M2ePro')->__('Save'),
-            'onclick' => 'EbayListingTemplateSwitcherHandlerObj.saveSwitchers(' . $callback . ')',
+            'onclick' => 'EbayListingTemplateSwitcherObj.saveSwitchers(' . $callback . ')',
         );
         $saveButtonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         // ---------------------------------------

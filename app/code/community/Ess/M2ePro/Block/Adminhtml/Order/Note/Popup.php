@@ -30,7 +30,7 @@ class Ess_M2ePro_Block_Adminhtml_Order_Note_Popup extends Ess_M2ePro_Block_Admin
                 array(
                 'style'   => 'float: right;',
                 'label'   => Mage::helper('M2ePro')->__('Save'),
-                'onclick' => "OrderNoteHandlerObj.saveNote()"
+                'onclick' => "OrderNoteObj.saveNote()"
                 )
             );
 

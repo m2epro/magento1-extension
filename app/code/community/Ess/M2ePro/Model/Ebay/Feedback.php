@@ -121,17 +121,13 @@ class Ess_M2ePro_Model_Ebay_Feedback extends Ess_M2ePro_Model_Component_Abstract
                 );
             }
         } catch (Exception $e) {
+            Mage::helper('M2ePro/Module_Exception')->process($e);
+
             $synchronizationLog = Mage::getModel('M2ePro/Synchronization_Log');
             $synchronizationLog->setComponentMode(Ess_M2ePro_Helper_Component_Ebay::NICK);
             $synchronizationLog->setSynchronizationTask(Ess_M2ePro_Model_Synchronization_Log::TASK_OTHER);
+            $synchronizationLog->addMessageFromException($e);
 
-            $synchronizationLog->addMessage(
-                Mage::helper('M2ePro')->__($e->getMessage()),
-                Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
-                Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH
-            );
-
-            Mage::helper('M2ePro/Module_Exception')->process($e);
             return false;
         }
 

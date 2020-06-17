@@ -6,26 +6,57 @@
  * @license    Commercial use is forbidden
  */
 
-class Ess_M2ePro_Block_Adminhtml_Listing_View_Header extends Ess_M2ePro_Block_Adminhtml_Widget_Container
+class Ess_M2ePro_Block_Adminhtml_Listing_View_Header extends Ess_M2ePro_Block_Adminhtml_Widget_Info
 {
-    protected $_template = 'M2ePro/listing/view/header.phtml';
+    //########################################
+
+    protected function _prepareLayout()
+    {
+        $accountTitle = Mage::helper('M2ePro')->escapeHtml($this->getAccountTitle());
+        $storeView = Mage::helper('M2ePro')->escapeHtml($this->getStoreViewBreadcrumb());
+        $originalStoreView = Mage::helper('M2ePro')->escapeHtml($this->getStoreViewBreadcrumb(false));
+
+        $accountHtml = $accountTitle;
+        if (!$this->getRequest()->getParam('wizard')) {
+            $accountUrl = $this->getUrl(
+                'M2ePro/adminhtml_' . $this->getAccount()->getComponentMode() . '_account/edit/',
+                array('id' => $this->getAccount()->getId())
+            );
+
+            $accountHtml = <<<HTML
+    <a href="{$accountUrl}" target="_blank">{$accountTitle}</a>
+HTML;
+        }
+
+        $this->setInfo(
+            array(
+                array(
+                    'label' => Mage::helper('M2ePro')->__('Listing'),
+                    'value' => Mage::helper('M2ePro')->escapeHtml($this->getListingTitle())
+                ),
+                array(
+                    'label' => Mage::helper('M2ePro')->__('Account'),
+                    'value' => $accountHtml
+                ),
+                array(
+                    'label' => Mage::helper('M2ePro')->__('Marketplace'),
+                    'value' => Mage::helper('M2ePro')->escapeHtml($this->getMarketplaceTitle())
+                ),
+                array(
+                    'label' => Mage::helper('M2ePro')->__('Magento Store View'),
+                    'value' => <<<HTML
+    <span title="{$originalStoreView}">{$storeView}</span>
+HTML
+                )
+            )
+        );
+
+        return parent::_prepareLayout();
+    }
 
     //########################################
 
-    public function getComponent()
-    {
-        if ($this->getListing()->isComponentModeEbay()) {
-            return Mage::helper('M2ePro')->__('eBay');
-        }
-
-        if ($this->getListing()->isComponentModeAmazon()) {
-            return Mage::helper('M2ePro')->__('Amazon');
-        }
-
-        return '';
-    }
-
-    public function getProfileTitle()
+    public function getListingTitle()
     {
         return $this->cutLongLines($this->getListing()->getTitle());
     }
@@ -45,17 +76,6 @@ class Ess_M2ePro_Block_Adminhtml_Listing_View_Header extends Ess_M2ePro_Block_Ad
         $breadcrumb = Mage::helper('M2ePro/Magento_Store')->getStorePath($this->getListing()->getStoreId());
 
         return $cutLongValues ? $this->cutLongLines($breadcrumb) : $breadcrumb;
-    }
-
-    //########################################
-
-    protected function cutLongLines($line)
-    {
-        if (strlen($line) < 50) {
-            return $line;
-        }
-
-        return substr($line, 0, 50) . '...';
     }
 
     //########################################

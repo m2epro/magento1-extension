@@ -6,8 +6,8 @@
  * @license    Commercial use is forbidden
  */
 
-use Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Add_CategoryTemplate as CategoryTemplateBlock;
-use Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Add_SourceMode as SourceModeBlock;
+use Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Product_Add_CategoryTemplate as CategoryTemplateBlock;
+use Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Product_Add_SourceMode as SourceModeBlock;
 
 class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
     extends Ess_M2ePro_Controller_Adminhtml_Walmart_MainController
@@ -29,30 +29,29 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
             ->addCss('M2ePro/css/Plugin/ProgressBar.css')
             ->addCss('M2ePro/css/Plugin/AreaWrapper.css')
             ->addJs('mage/adminhtml/rules.js')
-            ->addJs('M2ePro/ActionHandler.js')
-            ->addJs('M2ePro/GridHandler.js')
+            ->addJs('M2ePro/Action.js')
+            ->addJs('M2ePro/Grid.js')
 
             ->addJs('M2ePro/Plugin/ProgressBar.js')
             ->addJs('M2ePro/Plugin/AreaWrapper.js')
             ->addJs('M2ePro/Plugin/ActionColumn.js')
 
-            ->addJs('M2ePro/Listing/ActionHandler.js')
-            ->addJs('M2ePro/Listing/GridHandler.js')
-            ->addJs('M2ePro/Listing/ProductGridHandler.js')
-            ->addJs('M2ePro/GridHandler.js')
-            ->addJs('M2ePro/Listing/Category/TreeHandler.js')
-            ->addJs('M2ePro/Listing/AutoActionHandler.js')
+            ->addJs('M2ePro/Listing/Action.js')
+            ->addJs('M2ePro/Listing/Grid.js')
+            ->addJs('M2ePro/Listing/ProductGrid.js')
+            ->addJs('M2ePro/Grid.js')
+            ->addJs('M2ePro/Listing/Category/Tree.js')
+            ->addJs('M2ePro/Listing/AutoAction.js')
 
-            ->addJs('M2ePro/Walmart/Listing/Category/Summary/GridHandler.js')
-            ->addJs('M2ePro/Walmart/Listing/Category/TreeHandler.js')
-            ->addJs('M2ePro/Walmart/Listing/AddListingHandler.js')
+            ->addJs('M2ePro/Walmart/Listing/Category/Summary/Grid.js')
+            ->addJs('M2ePro/Walmart/Listing/Category/Tree.js')
+            ->addJs('M2ePro/Walmart/Listing/Product/Add.js')
 
-            ->addJs('M2ePro/Walmart/Listing/ActionHandler.js')
-            ->addJs('M2ePro/Walmart/Listing/Template/CategoryHandler.js')
-            ->addJs('M2ePro/Walmart/Listing/CategoryTemplateGridHandler.js')
-            ->addJs('M2ePro/Walmart/Listing/ChannelSettingsHandler.js')
-            ->addJs('M2ePro/Walmart/Listing/VariationProductManageHandler.js')
-            ->addJs('M2ePro/Walmart/Listing/AutoActionHandler.js');
+            ->addJs('M2ePro/Walmart/Listing/Action.js')
+            ->addJs('M2ePro/Walmart/Listing/Template/Category.js')
+            ->addJs('M2ePro/Walmart/Listing/CategoryTemplateGrid.js')
+            ->addJs('M2ePro/Walmart/Listing/VariationProductManage.js')
+            ->addJs('M2ePro/Walmart/Listing/AutoAction.js');
 
         $this->_initPopUp();
 
@@ -131,7 +130,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
         }
 
         $this->_initAction()
-            ->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_walmart_listing_add_sourceMode'))
+            ->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_walmart_listing_product_add_sourceMode'))
             ->renderLayout();
     }
 
@@ -164,8 +163,9 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
 
         $this->setPageHelpLink(null, null, "x/L4taAQ");
 
-        $this->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_walmart_listing_add_sourceProduct'))
-            ->renderLayout();
+        $this->_addContent(
+            $this->getLayout()->createBlock('M2ePro/adminhtml_walmart_listing_product_add_sourceMode_product')
+        )->renderLayout();
     }
 
     public function addProductsFromCategories()
@@ -209,7 +209,9 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
 
         $this->setPageHelpLink(null, null, "x/L4taAQ");
 
-        $gridContainer = $this->getLayout()->createBlock('M2ePro/adminhtml_walmart_listing_add_sourceCategory');
+        $gridContainer = $this->getLayout()->createBlock(
+            'M2ePro/adminhtml_walmart_listing_product_add_sourceMode_category'
+        );
         $this->_addContent($gridContainer);
 
         /** @var $treeBlock Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Category_Tree */
@@ -252,7 +254,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
             return $this->getResponse()->setBody('You should provide correct parameters.');
         }
 
-        $block = $this->getLayout()->createBlock('M2ePro/adminhtml_walmart_listing_add_categoryTemplate');
+        $block = $this->getLayout()->createBlock('M2ePro/adminhtml_walmart_listing_product_add_categoryTemplate');
 
         $this->_initAction();
 
@@ -307,8 +309,8 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
             $additionalData['adding_listing_products_ids']
         );
 
-        /** @var Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Add_Review $blockReview */
-        $blockReview = $this->getLayout()->createBlock('M2ePro/adminhtml_walmart_listing_add_review');
+        /** @var Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Product_Add_Review $blockReview */
+        $blockReview = $this->getLayout()->createBlock('M2ePro/adminhtml_walmart_listing_product_add_review');
 
         if (isset($additionalData['source'])) {
             $blockReview->setSource($additionalData['source']);
@@ -778,11 +780,13 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
 
         if ($this->getRequest()->isXmlHttpRequest()) {
             $grid = $this->getLayout()
-                ->createBlock('M2ePro/adminhtml_walmart_listing_add_categoryTemplate_category_grid');
+                ->createBlock('M2ePro/adminhtml_walmart_listing_product_add_categoryTemplate_category_grid');
             return $this->getResponse()->setBody($grid->toHtml());
         }
 
-        $block = $this->getLayout()->createBlock('M2ePro/adminhtml_walmart_listing_add_categoryTemplate_category');
+        $block = $this->getLayout()->createBlock(
+            'M2ePro/adminhtml_walmart_listing_product_add_categoryTemplate_category'
+        );
 
         $this->_initAction();
 
@@ -802,7 +806,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
 
         if ($this->getRequest()->isXmlHttpRequest()) {
             $grid = $this->getLayout()
-                ->createBlock('M2ePro/adminhtml_walmart_listing_add_categoryTemplate_manual_grid');
+                ->createBlock('M2ePro/adminhtml_walmart_listing_product_add_categoryTemplate_manual_grid');
             return $this->getResponse()->setBody($grid->toHtml());
         }
 
@@ -810,7 +814,9 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
 
         $this->setPageHelpLink(null, null, "x/L4taAQ");
 
-        $block = $this->getLayout()->createBlock('M2ePro/adminhtml_walmart_listing_add_categoryTemplate_manual');
+        $block = $this->getLayout()->createBlock(
+            'M2ePro/adminhtml_walmart_listing_product_add_categoryTemplate_manual'
+        );
         $this->_addContent($block)->renderLayout();
     }
 

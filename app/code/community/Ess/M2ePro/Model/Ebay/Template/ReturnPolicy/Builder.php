@@ -6,75 +6,66 @@
  * @license    Commercial use is forbidden
  */
 
-class Ess_M2ePro_Model_Ebay_Template_ReturnPolicy_Builder
-    extends Ess_M2ePro_Model_Ebay_Template_Builder_Abstract
+use Ess_M2ePro_Model_Ebay_Template_ReturnPolicy as ReturnPolicy;
+
+class Ess_M2EPro_Model_Ebay_Template_ReturnPolicy_Builder
+    extends Ess_M2ePro_Model_Ebay_Template_AbstractBuilder
 {
     //########################################
 
-    public function build(array $data)
+    protected function validate()
     {
-        if (empty($data)) {
-            return null;
-        }
-
-        $this->validate($data);
-
-        $data = $this->prepareData($data);
-
-        $marketplace = Mage::helper('M2ePro/Component_Ebay')->getCachedObject(
-            'Marketplace', $data['marketplace_id']
-        );
-
-        $template = Mage::getModel('M2ePro/Ebay_Template_ReturnPolicy');
-
-        if (isset($data['id'])) {
-            $template->load($data['id']);
-        }
-
-        $template->addData($data);
-        $template->save();
-        $template->setMarketplace($marketplace);
-
-        return $template;
-    }
-
-    //########################################
-
-    protected function validate(array $data)
-    {
-        // ---------------------------------------
-        if (empty($data['marketplace_id'])) {
+        if (empty($this->_rawData['marketplace_id'])) {
             throw new Ess_M2ePro_Model_Exception_Logic('Marketplace ID is empty.');
         }
 
-        // ---------------------------------------
-
-        parent::validate($data);
+        parent::validate();
     }
 
-    protected function prepareData(array &$data)
+    protected function prepareData()
     {
-        $prepared = parent::prepareData($data);
+        $this->validate();
 
-        $prepared['marketplace_id'] = (int)$data['marketplace_id'];
+        $data = parent::prepareData();
+
+        $data['marketplace_id'] = (int)$this->_rawData['marketplace_id'];
 
         $domesticKeys = array(
             'accepted', 'option', 'within', 'shipping_cost'
         );
         foreach ($domesticKeys as $keyName) {
-            isset($data[$keyName]) && $prepared[$keyName] = $data[$keyName];
+            isset($this->_rawData[$keyName]) && $data[$keyName] = $this->_rawData[$keyName];
         }
 
         $internationalKeys = array(
             'international_accepted', 'international_option', 'international_within', 'international_shipping_cost'
         );
         foreach ($internationalKeys as $keyName) {
-            isset($data[$keyName]) && $prepared[$keyName] = $data[$keyName];
+            isset($this->_rawData[$keyName]) && $data[$keyName] = $this->_rawData[$keyName];
         }
 
-        isset($data['description']) && $prepared['description'] = $data['description'];
+        isset($this->_rawData['description']) && $data['description'] = $this->_rawData['description'];
 
-        return $prepared;
+        return $data;
+    }
+
+    //########################################
+
+    public function getDefaultData()
+    {
+        return array(
+            'accepted'      => ReturnPolicy::RETURNS_ACCEPTED,
+            'option'        => '',
+            'within'        => '',
+            'shipping_cost' => '',
+
+            'international_accepted'      => ReturnPolicy::RETURNS_NOT_ACCEPTED,
+            'international_option'        => '',
+            'international_within'        => '',
+            'international_shipping_cost' => '',
+
+            'description' => ''
+        );
     }
 
     //########################################

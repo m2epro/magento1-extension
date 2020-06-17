@@ -8,6 +8,7 @@
 
 class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Product_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
+    /** @var Ess_M2ePro_Model_Listing */
     protected $_listing;
 
     //########################################
@@ -18,18 +19,12 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Product_Grid extends Mage_Admin
 
         $listingData = $this->getListing()->getData();
 
-        // Initialization block
-        // ---------------------------------------
         $this->setId('listingProductGrid'.(isset($listingData['id'])?$listingData['id']:''));
-        // ---------------------------------------
 
-        // Set default values
-        // ---------------------------------------
         $this->setDefaultSort('product_id');
         $this->setDefaultDir('DESC');
         $this->setSaveParametersInSession(true);
         $this->setUseAjax(true);
-        // ---------------------------------------
 
         $this->isAjax = Mage::helper('M2ePro')->jsonEncode($this->getRequest()->isXmlHttpRequest());
     }
@@ -199,24 +194,24 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Product_Grid extends Mage_Admin
     {
         $this->addColumn(
             'product_id', array(
-            'header'    => Mage::helper('M2ePro')->__('ID'),
-            'align'     => 'right',
-            'width'     => '100px',
-            'type'      => 'number',
-            'index'     => 'entity_id',
-            'filter_index' => 'entity_id',
-            'frame_callback' => array($this, 'callbackColumnProductId')
+                'header'    => Mage::helper('M2ePro')->__('ID'),
+                'align'     => 'right',
+                'width'     => '100px',
+                'type'      => 'number',
+                'index'     => 'entity_id',
+                'filter_index' => 'entity_id',
+                'renderer'     => 'M2ePro/adminhtml_grid_column_renderer_productId',
             )
         );
 
         $this->addColumn(
             'name', array(
-            'header'    => Mage::helper('M2ePro')->__('Title'),
-            'align'     => 'left',
-            'type'      => 'text',
-            'index'     => 'name',
-            'filter_index' => 'name',
-            'frame_callback' => array($this, 'callbackColumnProductTitle')
+                'header'    => Mage::helper('M2ePro')->__('Title'),
+                'align'     => 'left',
+                'type'      => 'text',
+                'index'     => 'name',
+                'filter_index' => 'name',
+                'frame_callback' => array($this, 'callbackColumnProductTitle')
             )
         );
 
@@ -235,29 +230,29 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Product_Grid extends Mage_Admin
 
         $this->addColumn(
             'is_in_stock', array(
-            'header'    => Mage::helper('M2ePro')->__('Stock Availability'),
-            'align'     => 'left',
-            'width'     => '90px',
-            'type'      => 'options',
-            'sortable'  => false,
-            'index'     => 'is_in_stock',
-            'filter_index' => 'is_in_stock',
-            'options' => array(
-                '1' => Mage::helper('M2ePro')->__('In Stock'),
-                '0' => Mage::helper('M2ePro')->__('Out of Stock')
-            ),
-            'frame_callback' => array($this, 'callbackColumnIsInStock')
+                'header'    => Mage::helper('M2ePro')->__('Stock Availability'),
+                'align'     => 'left',
+                'width'     => '90px',
+                'type'      => 'options',
+                'sortable'  => false,
+                'index'     => 'is_in_stock',
+                'filter_index' => 'is_in_stock',
+                'options' => array(
+                    '1' => Mage::helper('M2ePro')->__('In Stock'),
+                    '0' => Mage::helper('M2ePro')->__('Out of Stock')
+                ),
+                'frame_callback' => array($this, 'callbackColumnIsInStock')
             )
         );
 
         $this->addColumn(
             'sku', array(
-            'header'    => Mage::helper('M2ePro')->__('SKU'),
-            'align'     => 'left',
-            'width'     => '90px',
-            'type'      => 'text',
-            'index'     => 'sku',
-            'filter_index' => 'sku'
+                'header'    => Mage::helper('M2ePro')->__('SKU'),
+                'align'     => 'left',
+                'width'     => '90px',
+                'type'      => 'text',
+                'index'     => 'sku',
+                'filter_index' => 'sku'
             )
         );
 
@@ -265,67 +260,67 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Product_Grid extends Mage_Admin
 
         $this->addColumn(
             'price', array(
-            'header'    => Mage::helper('M2ePro')->__('Price'),
-            'align'     => 'right',
-            'width'     => '100px',
-            'type'      => 'price',
-            'currency_code' => $store->getBaseCurrency()->getCode(),
-            'index'     => 'price',
-            'filter_index' => 'price',
-            'frame_callback' => array($this, 'callbackColumnPrice')
+                'header'    => Mage::helper('M2ePro')->__('Price'),
+                'align'     => 'right',
+                'width'     => '100px',
+                'type'      => 'price',
+                'currency_code' => $store->getBaseCurrency()->getCode(),
+                'index'     => 'price',
+                'filter_index' => 'price',
+                'frame_callback' => array($this, 'callbackColumnPrice')
             )
         );
 
         $this->addColumn(
             'qty', array(
-            'header'    => Mage::helper('M2ePro')->__('QTY'),
-            'align'     => 'right',
-            'width'     => '100px',
-            'type'      => 'number',
-            'index'     => 'qty',
-            'filter_index' => 'qty',
-            'frame_callback' => array($this, 'callbackColumnQty')
+                'header'    => Mage::helper('M2ePro')->__('QTY'),
+                'align'     => 'right',
+                'width'     => '100px',
+                'type'      => 'number',
+                'index'     => 'qty',
+                'filter_index' => 'qty',
+                'frame_callback' => array($this, 'callbackColumnQty')
             )
         );
 
         $this->addColumn(
             'visibility', array(
-            'header'    => Mage::helper('M2ePro')->__('Visibility'),
-            'align'     => 'left',
-            'width'     => '90px',
-            'type'      => 'options',
-            'sortable'  => false,
-            'index'     => 'visibility',
-            'filter_index' => 'visibility',
-            'options' => Mage::getModel('catalog/product_visibility')->getOptionArray()
+                'header'    => Mage::helper('M2ePro')->__('Visibility'),
+                'align'     => 'left',
+                'width'     => '90px',
+                'type'      => 'options',
+                'sortable'  => false,
+                'index'     => 'visibility',
+                'filter_index' => 'visibility',
+                'options' => Mage::getModel('catalog/product_visibility')->getOptionArray()
             )
         );
 
         $this->addColumn(
             'status', array(
-            'header'    => Mage::helper('M2ePro')->__('Status'),
-            'align'     => 'left',
-            'width'     => '90px',
-            'type'      => 'options',
-            'sortable'  => false,
-            'index'     => 'status',
-            'filter_index' => 'status',
-            'options' => Mage::getSingleton('catalog/product_status')->getOptionArray(),
-            'frame_callback' => array($this, 'callbackColumnStatus')
+                'header'    => Mage::helper('M2ePro')->__('Status'),
+                'align'     => 'left',
+                'width'     => '90px',
+                'type'      => 'options',
+                'sortable'  => false,
+                'index'     => 'status',
+                'filter_index' => 'status',
+                'options' => Mage::getSingleton('catalog/product_status')->getOptionArray(),
+                'frame_callback' => array($this, 'callbackColumnStatus')
             )
         );
 
         if (!Mage::app()->isSingleStoreMode()) {
             $this->addColumn(
                 'websites', array(
-                'header'    => Mage::helper('M2ePro')->__('Websites'),
-                'align'     => 'left',
-                'width'     => '90px',
-                'type'      => 'options',
-                'sortable'  => false,
-                'index'     => 'websites',
-                'filter_index' => 'websites',
-                'options'   => Mage::getModel('core/website')->getCollection()->toOptionHash()
+                    'header'    => Mage::helper('M2ePro')->__('Websites'),
+                    'align'     => 'left',
+                    'width'     => '90px',
+                    'type'      => 'options',
+                    'sortable'  => false,
+                    'index'     => 'websites',
+                    'filter_index' => 'websites',
+                    'options'   => Mage::getModel('core/website')->getCollection()->toOptionHash()
                 )
             );
         }
@@ -367,43 +362,6 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Product_Grid extends Mage_Admin
     }
 
     //########################################
-
-    public function callbackColumnProductId($value, $row, $column, $isExport)
-    {
-        $productId = (int)$value;
-
-        $withoutImageHtml = '<a href="'
-                            .$this->getUrl(
-                                'adminhtml/catalog_product/edit',
-                                array('id' => $productId)
-                            )
-                            .'" target="_blank">'
-                            .$productId
-                            .'</a>';
-
-        $showProductsThumbnails = (bool)(int)Mage::helper('M2ePro/Module')
-                                                        ->getConfig()
-                                                        ->getGroupValue('/view/', 'show_products_thumbnails');
-        if (!$showProductsThumbnails) {
-            return $withoutImageHtml;
-        }
-
-        /** @var $magentoProduct Ess_M2ePro_Model_Magento_Product */
-        $magentoProduct = Mage::getModel('M2ePro/Magento_Product');
-        $magentoProduct->setProductId($productId);
-        $magentoProduct->setStoreId(0);
-
-        $imageResized = $magentoProduct->getThumbnailImage();
-        if ($imageResized === null) {
-            return $withoutImageHtml;
-        }
-
-        $imageHtml = $productId.'<hr/><img style="max-width: 100px; max-height: 100px;" src="'.
-            $imageResized->getUrl().'" />';
-        $withImageHtml = str_replace('>'.$productId.'<', '>'.$imageHtml.'<', $withoutImageHtml);
-
-        return $withImageHtml;
-    }
 
     public function callbackColumnProductTitle($value, $row, $column, $isExport)
     {
@@ -503,17 +461,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Product_Grid extends Mage_Admin
 </style>
 STYLE;
 
-        $helper = Mage::helper('M2ePro');
-
         $isShowRuleBlock = Mage::helper('M2ePro')->jsonEncode($this->isShowRuleBlock());
-
-        $selectItemsMessage = $helper->escapeJs(
-            $helper->__('Please select the Products you want to perform the Action on.')
-        );
-        $createEmptyListingMessage = $helper->escapeJs($helper->__('Are you sure you want to create empty Listing?'));
-
-        $showAdvancedFilterButtonText = $helper->escapeJs($helper->__('Show Advanced Filter'));
-        $hideAdvancedFilterButtonText = $helper->escapeJs($helper->__('Hide Advanced Filter'));
 
         $addProductsUrl = $this->getUrl(
             '*/adminhtml_walmart_listing_productAdd/addProducts'
@@ -530,23 +478,19 @@ STYLE;
         M2ePro.text = {};
     }
 
-    M2ePro.text.select_items_message = '{$selectItemsMessage}';
-    M2ePro.text.create_empty_listing_message = '{$createEmptyListingMessage}';
-    M2ePro.text.show_advanced_filter = '{$showAdvancedFilterButtonText}';
-    M2ePro.text.hide_advanced_filter = '{$hideAdvancedFilterButtonText}';
     M2ePro.url.add_products = '{$addProductsUrl}';
     M2ePro.url.back = '{$backUrl}';
 
     WrapperObj = new AreaWrapper('add_products_container');
     ProgressBarObj = new ProgressBar('add_products_progress_bar');
-    AddListingObj = new WalmartListingAddListingHandler(M2ePro, ProgressBarObj, WrapperObj);
-    AddListingObj.listing_id = '{$this->getRequest()->getParam('id')}';
-    ProductGridHandlerObj = new ListingProductGridHandler(AddListingObj);
-    ProductGridHandlerObj.setGridId('{$this->getId()}');
+    AddProductObj = new WalmartListingProductAdd(M2ePro, ProgressBarObj, WrapperObj);
+    AddProductObj.listing_id = '{$this->getRequest()->getParam('id')}';
+    ProductGridObj = new ListingProductGrid(AddProductObj);
+    ProductGridObj.setGridId('{$this->getId()}');
 
     var init = function () {
-        {$this->getId()}JsObject.doFilter = ProductGridHandlerObj.setFilter;
-        {$this->getId()}JsObject.resetFilter = ProductGridHandlerObj.resetFilter;
+        {$this->getId()}JsObject.doFilter = ProductGridObj.setFilter;
+        {$this->getId()}JsObject.resetFilter = ProductGridObj.resetFilter;
         if ({$isShowRuleBlock}) {
             $('listing_product_rules').show();
             if ($('advanced_filter_button')) {
@@ -571,7 +515,7 @@ HTML;
             // ---------------------------------------
             $data = array(
                 'label'   => Mage::helper('adminhtml')->__('Show Advanced Filter'),
-                'onclick' => 'ProductGridHandlerObj.advancedFilterToggle()',
+                'onclick' => 'ProductGridObj.advancedFilterToggle()',
                 'class'   => 'task',
                 'id'      => 'advanced_filter_button'
             );

@@ -23,11 +23,7 @@
 
 <?php
     $formData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data') ? Mage::helper('M2ePro/Data_Global')->getValue('temp_data')->toArray() : array();
-    $defaults = array(
-        'feedbacks_receive' => 0,
-        'feedbacks_auto_response' => Ess_M2ePro_Model_Ebay_Account::FEEDBACKS_AUTO_RESPONSE_NONE,
-        'feedbacks_auto_response_only_positive' => 0
-    );
+    $defaults = Mage::getModel('M2ePro/Ebay_Account_Builder')->getDefaultData();
     $formData = array_merge($defaults, $formData);
 
     $isEdit = !!$this->getRequest()->getParam('id');
@@ -42,8 +38,8 @@
 
     Event.observe(window, 'load', function() {
         setTimeout(function() {
-            $('feedbacks_receive').observe('change', EbayAccountHandlerObj.feedbacksReceiveChange);
-            $('feedbacks_auto_response').observe('change', EbayAccountHandlerObj.feedbacksAutoResponseChange);
+            $('feedbacks_receive').observe('change', EbayAccountObj.feedbacksReceiveChange);
+            $('feedbacks_auto_response').observe('change', EbayAccountObj.feedbacksAutoResponseChange);
         }, 350);
     });
     //-----------------------------
@@ -68,7 +64,7 @@
                     <td class="value" style="width: auto;">
                         <select id="feedbacks_receive" name="feedbacks_receive" class="required-entry">
                             <option value="0" <?php if ($formData['feedbacks_receive'] == 0): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
-                            <option value="1>" <?php if ($formData['feedbacks_receive'] == 1): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
+                            <option value="1" <?php if ($formData['feedbacks_receive'] == 1): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
                         </select>
                         <p class="note">
                             <span><?php echo Mage::helper('M2ePro')->__('Choose whether to Import Feedback from eBay Buyers into Magento.'); ?></span>
@@ -203,7 +199,7 @@
                             </div>
 
                             <div id="block_accounts_feedbacks_form_template_button_cancel" style="float: left;">
-                                <a href="javascript:" onclick="EbayAccountHandlerObj.feedbacksCancelForm();"><?php echo Mage::helper('M2ePro')->__('Cancel'); ?></a>
+                                <a href="javascript:" onclick="EbayAccountObj.feedbacksCancelForm();"><?php echo Mage::helper('M2ePro')->__('Cancel'); ?></a>
                                 <div style="float: right; width: 10px;">&nbsp;</div>
                             </div>
 

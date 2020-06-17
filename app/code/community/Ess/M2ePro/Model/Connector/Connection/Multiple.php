@@ -36,7 +36,8 @@ class Ess_M2ePro_Model_Connector_Connection_Multiple extends Ess_M2ePro_Model_Co
             $this->getServerHostName(),
             $this->isTryToResendOnError(),
             $this->isTryToSwitchEndpointOnError(),
-            $this->isAsynchronous()
+            $this->isAsynchronous(),
+            $this->isCanIgnoreMaintenance()
         );
     }
 
@@ -45,24 +46,16 @@ class Ess_M2ePro_Model_Connector_Connection_Multiple extends Ess_M2ePro_Model_Co
         $responseError = false;
         $successResponses = array();
 
-        $connectionErrorMessage = 'The Action was not completed because connection with M2E Pro Server was not set.
-        There are several possible reasons:  temporary connection problem – please wait and try again later;
-        block of outgoing connection by firewall – please, ensure that connection to s1.m2epro.com and
-        s2.m2epro.com, port 443 is allowed; CURL library is not installed or it does not support HTTPS Protocol –
-        please, install/update CURL library on your server and ensure it supports HTTPS Protocol.
-        More information you can find <a target="_blank" href="'.
-        Mage::helper('M2ePro/Module_Support')
-            ->getKnowledgebaseUrl('server-connection')
-        .'">here</a>';
-
         foreach ($result as $key => $response) {
             try {
                 if ($response['body'] === false) {
                     throw new Ess_M2ePro_Model_Exception_Connection(
-                        $connectionErrorMessage,
-                        array('curl_error_number'  => $response['curl_error_number'],
-                                      'curl_error_message' => $response['curl_error_message'],
-                        'curl_info'          => $response['curl_info'])
+                        $this->getConnectionErrorMessage(),
+                        array(
+                            'curl_error_number'  => $response['curl_error_number'],
+                            'curl_error_message' => $response['curl_error_message'],
+                            'curl_info'          => $response['curl_info']
+                        )
                     );
                 }
 
@@ -73,12 +66,12 @@ class Ess_M2ePro_Model_Connector_Connection_Multiple extends Ess_M2ePro_Model_Co
                 $this->_responses[$key] = $responseObj;
                 $successResponses[]     = $responseObj;
             } catch (Ess_M2ePro_Model_Exception_Connection_InvalidResponse $exception) {
-                $responseError          = true;
-                $this->_responses[$key] = $this->createFailedResponse($connectionErrorMessage);
+                $responseError = true;
+                $this->_responses[$key] = $this->createFailedResponse($this->getConnectionErrorMessage());
                 Mage::helper('M2ePro/Module_Logger')->process($response, 'Invalid Response Format', false);
             } catch (Exception $exception) {
-                $responseError          = true;
-                $this->_responses[$key] = $this->createFailedResponse($connectionErrorMessage);
+                $responseError = true;
+                $this->_responses[$key] = $this->createFailedResponse($this->getConnectionErrorMessage());
                 Mage::helper('M2ePro/Module_Exception')->process($exception, false);
             }
         }
@@ -88,12 +81,19 @@ class Ess_M2ePro_Model_Connector_Connection_Multiple extends Ess_M2ePro_Model_Co
         }
 
         foreach ($successResponses as $response) {
+            if ($response->isServerInMaintenanceMode()) {
+                Mage::helper('M2ePro/Server_Maintenance')->processUnexpectedMaintenance();
+            }
+
             if ($response->getMessages()->hasSystemErrorEntity()) {
                 $exception = new Ess_M2ePro_Model_Exception(
                     Mage::helper('M2ePro')->__(
                         "Internal Server Error(s) [%error_message%]",
                         $response->getMessages()->getCombinedSystemErrorsString()
-                    ), array(), 0, !$response->isServerInMaintenanceMode()
+                    ),
+                    array(),
+                    0,
+                    !$response->isServerInMaintenanceMode()
                 );
 
                 Mage::helper('M2ePro/Module_Exception')->process($exception);

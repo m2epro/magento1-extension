@@ -40,8 +40,7 @@ class Ess_M2ePro_Model_Amazon_Connector_Product_List_Responser
 
             $this->getLogger()->logListingProductMessage(
                 $this->_listingProduct,
-                $message,
-                Ess_M2ePro_Model_Log_Abstract::PRIORITY_MEDIUM
+                $message
             );
 
             return;

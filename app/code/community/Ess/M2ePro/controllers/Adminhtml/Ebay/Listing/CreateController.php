@@ -25,20 +25,20 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CreateController
             ->addCss('M2ePro/css/Plugin/DropDown.css')
             ->addCss('M2ePro/css/Plugin/AreaWrapper.css')
             ->addCss('M2ePro/css/Plugin/ProgressBar.css')
-            ->addJs('M2ePro/AttributeHandler.js')
+            ->addJs('M2ePro/Attribute.js')
             ->addJs('M2ePro/Plugin/AreaWrapper.js')
             ->addJs('M2ePro/Plugin/ProgressBar.js')
-            ->addJs('M2ePro/SynchProgressHandler.js')
-            ->addJs('M2ePro/Ebay/Listing/MarketplaceSynchProgressHandler.js')
-            ->addJs('M2ePro/TemplateHandler.js')
-            ->addJs('M2ePro/Ebay/Listing/Template/SwitcherHandler.js')
-            ->addJs('M2ePro/Ebay/Template/PaymentHandler.js')
-            ->addJs('M2ePro/Ebay/Template/ReturnHandler.js')
-            ->addJs('M2ePro/Ebay/Template/ShippingHandler.js')
-            ->addJs('M2ePro/Ebay/Template/Shipping/ExcludedLocationsHandler.js')
-            ->addJs('M2ePro/Ebay/Template/SellingFormatHandler.js')
-            ->addJs('M2ePro/Ebay/Template/DescriptionHandler.js')
-            ->addJs('M2ePro/Ebay/Template/SynchronizationHandler.js');
+            ->addJs('M2ePro/SynchProgress.js')
+            ->addJs('M2ePro/Ebay/Listing/MarketplaceSynchProgress.js')
+            ->addJs('M2ePro/TemplateManager.js')
+            ->addJs('M2ePro/Ebay/Listing/Template/Switcher.js')
+            ->addJs('M2ePro/Ebay/Template/Payment.js')
+            ->addJs('M2ePro/Ebay/Template/Return.js')
+            ->addJs('M2ePro/Ebay/Template/Shipping.js')
+            ->addJs('M2ePro/Ebay/Template/Shipping/ExcludedLocations.js')
+            ->addJs('M2ePro/Ebay/Template/SellingFormat.js')
+            ->addJs('M2ePro/Ebay/Template/Description.js')
+            ->addJs('M2ePro/Ebay/Template/Synchronization.js');
 
         $this->_initPopUp();
 
@@ -313,7 +313,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CreateController
             // ---------------------------------------
 
             if ((bool)$this->getRequest()->getParam('wizard', false)) {
-                $this->setWizardStep('productTutorial');
+                $this->setWizardStep('sourceMode');
                 return $this->_redirect('*/adminhtml_wizard_installationEbay');
             }
 
@@ -351,14 +351,18 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CreateController
 
     protected function createDefaultSynchronizationTemplate()
     {
-        $data = Mage::getModel('M2ePro/Ebay_Template_Synchronization')->getDefaultSettings();
+        // TODO delete if not needed
+        $data = Mage::getModel('M2ePro/Ebay_Template_Synchronization_Builder')->getDefaultData();
         $data['title'] = $this->getSessionValue('listing_title');
         $data['is_custom_template'] = 1;
 
         $builder = Mage::getSingleton('M2ePro/Ebay_Template_Manager')
             ->setTemplate(Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SYNCHRONIZATION)
             ->getTemplateBuilder();
-        $template = $builder->build($data);
+        $template = $builder->build(
+            Mage::getModel('M2ePro/Ebay_Template_Synchronization'),
+            $data
+        );
 
         return $template;
     }
@@ -410,8 +414,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CreateController
             $actionId,
             Ess_M2ePro_Model_Listing_Log::ACTION_ADD_LISTING,
             'Listing was successfully Added',
-            Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE,
-            Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH
+            Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE
         );
         // ---------------------------------------
 

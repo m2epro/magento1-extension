@@ -8,12 +8,16 @@
 
 class Ess_M2ePro_Model_Listing_Auto_Category_Group extends Ess_M2ePro_Model_Component_Parent_Abstract
 {
+    /** @var Ess_M2ePro_Model_ActiveRecord_Factory */
+    protected $_activeRecordFactory;
+
     //########################################
 
     public function _construct()
     {
         parent::_construct();
         $this->_init('M2ePro/Listing_Auto_Category_Group');
+        $this->_activeRecordFactory = Mage::getSingleton('M2ePro/ActiveRecord_Factory');
     }
 
     //########################################
@@ -109,13 +113,20 @@ class Ess_M2ePro_Model_Listing_Auto_Category_Group extends Ess_M2ePro_Model_Comp
 
     /**
      * @param bool $asObjects
-     * @param array $filters
-     * @return array|Ess_M2ePro_Model_Abstract[]
+     * @return array|Ess_M2ePro_Model_Listing_Auto_Category[]
      * @throws Ess_M2ePro_Model_Exception_Logic
      */
-    public function getCategories($asObjects = false, array $filters = array())
+    public function getCategories($asObjects = false)
     {
-        return $this->getRelatedSimpleItems('Listing_Auto_Category', 'group_id', $asObjects, $filters);
+        $collection = $this->_activeRecordFactory->getObjectCollection('Listing_Auto_Category');
+        $collection->addFieldToFilter('group_id', $this->getId());
+
+        if (!$asObjects) {
+            $result = $collection->toArray();
+            return $result['items'];
+        }
+
+        return $collection->getItems();
     }
 
     public function clearCategories()
@@ -134,8 +145,7 @@ class Ess_M2ePro_Model_Listing_Auto_Category_Group extends Ess_M2ePro_Model_Comp
             return false;
         }
 
-        $items = $this->getRelatedSimpleItems('Listing_Auto_Category', 'group_id', true);
-        foreach ($items as $item) {
+        foreach ($this->getCategories(true) as $item) {
             $item->deleteInstance();
         }
 

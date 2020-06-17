@@ -59,11 +59,11 @@ class Ess_M2ePro_Block_Adminhtml_General extends Mage_Adminhtml_Block_Widget
             <<<JS
 var M2ePro = {};
 
-M2ePro.url        = new UrlHandler();
-M2ePro.php        = new PhpHandler();
-M2ePro.translator = new TranslatorHandler();
+M2ePro.url        = new GeneralUrl();
+M2ePro.php        = new GeneralPhp();
+M2ePro.translator = new GeneralTranslator();
 
-ControlPanelHandlerObj = new ControlPanelHandler();
+ControlPanelObj = new ControlPanel();
 
 // backward compatibility
 M2ePro.text       = {};
@@ -87,6 +87,7 @@ JS
                 'Help',
                 'Assign',
                 'Attention',
+                'Set Attributes',
                 'Not Set',
                 'Hide Block',
                 'Show Tips',
@@ -99,6 +100,7 @@ JS
                 'None',
                 'Cancel',
                 'Confirm',
+                'Add',
                 'In Progress',
                 'Product(s)',
 
@@ -126,7 +128,28 @@ JS
                 'Synchronization ended with errors.',
                 $synchWarningMessage,
                 $synchErrorMessage,
+
+                'Task completed. Please wait ...',
+                '"%task_title%" Task was completed successfully.',
+                '"%task_title%" Task was successfully submitted to be processed.',
+
+                'Show Advanced Filter',
+                'Hide Advanced Filter',
+
+                'Reset 3rd Party Listings'
             )
+        );
+
+        $this->_jsTranslator->add(
+            '"%task_title%" Task was completed with warnings.
+            <a target="_blank" href="%url%">View Log</a> for the details.',
+            '"%task_title%" Task was completed with warnings.'
+        );
+
+        $this->_jsTranslator->add(
+            '"%task_title%" Task was completed with errors.
+            <a target="_blank" href="%url%">View Log</a> for the details.',
+            '"%task_title%" Task was completed with errors.'
         );
     }
 

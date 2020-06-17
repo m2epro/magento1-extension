@@ -60,10 +60,10 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Variation_Product_Manage_View
     {
         $javascriptMain = <<<HTML
 <script type="text/javascript">
-    FrameHandlerObj = new FrameHandler();
+    GridFrameObj = new GridFrame();
 
-    EbayListingEbayGridHandlerObj.variationProductManageHandler.loadVariationsGrid(true);
-    EbayListingEbayGridHandlerObj.variationProductManageHandler.loadDeletedVariationsGrid(true);
+    EbayListingEbayGridObj.variationProductManageHandler.loadVariationsGrid(true);
+    EbayListingEbayGridObj.variationProductManageHandler.loadDeletedVariationsGrid(true);
 </script>
 HTML;
         return $javascriptMain . parent::_toHtml();

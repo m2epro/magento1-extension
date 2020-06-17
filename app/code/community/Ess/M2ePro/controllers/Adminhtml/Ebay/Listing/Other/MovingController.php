@@ -34,7 +34,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_Other_MovingController
                 'grid_url' => $this->getUrl(
                     '*/adminhtml_ebay_listing_other_moving/moveToListingGrid', array('_current'=>true)
                 ),
-                'moving_handler_js' => 'EbayListingOtherGridHandlerObj.movingHandler',
+                'moving_handler_js' => 'EbayListingOtherGridObj.movingHandler',
             )
         );
         $this->getResponse()->setBody($block->toHtml());

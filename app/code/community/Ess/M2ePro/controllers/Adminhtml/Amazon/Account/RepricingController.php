@@ -74,17 +74,17 @@ class Ess_M2ePro_Adminhtml_Amazon_Account_RepricingController
         $this->addRepricingMessages($messages);
 
         if ($status == '1') {
+
             $accountRepricingModel = Mage::getModel('M2ePro/Amazon_Account_Repricing');
 
-            $accountRepricingModel->setData(
+            Mage::getModel('M2ePro/Amazon_Account_Repricing_Builder')->build(
+                $accountRepricingModel,
                 array(
-                'account_id' => $accountId,
-                'email' => $email,
-                'token' => $token
+                    'account_id' => $accountId,
+                    'email' => $email,
+                    'token' => $token
                 )
             );
-
-            $accountRepricingModel->save();
 
             /** @var $repricing Ess_M2ePro_Model_Amazon_Repricing_Synchronization_General */
             $repricing = Mage::getModel('M2ePro/Amazon_Repricing_Synchronization_General', $account);

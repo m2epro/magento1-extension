@@ -291,48 +291,11 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_SynchronizationTempla
             }
         }
 
-        if ($walmartSynchronizationTemplate->isStopWhenQtyMagentoHasValue()) {
-            $productQty = (int)$walmartListingProduct->getQty(true);
-
-            $typeQty = (int)$walmartSynchronizationTemplate->getStopWhenQtyMagentoHasValueType();
-            $minQty = (int)$walmartSynchronizationTemplate->getStopWhenQtyMagentoHasValueMin();
-            $maxQty = (int)$walmartSynchronizationTemplate->getStopWhenQtyMagentoHasValueMax();
-
-            if ($typeQty == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_LESS &&
-                $productQty <= $minQty) {
-                return true;
-            }
-
-            if ($typeQty == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_MORE &&
-                $productQty >= $minQty) {
-                return true;
-            }
-
-            if ($typeQty == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_BETWEEN &&
-                $productQty >= $minQty && $productQty <= $maxQty) {
-                return true;
-            }
-        }
-
         if ($walmartSynchronizationTemplate->isStopWhenQtyCalculatedHasValue()) {
             $productQty = (int)$walmartListingProduct->getQty(false);
+            $minQty = (int)$walmartSynchronizationTemplate->getStopWhenQtyCalculatedHasValue();
 
-            $typeQty = (int)$walmartSynchronizationTemplate->getStopWhenQtyCalculatedHasValueType();
-            $minQty = (int)$walmartSynchronizationTemplate->getStopWhenQtyCalculatedHasValueMin();
-            $maxQty = (int)$walmartSynchronizationTemplate->getStopWhenQtyCalculatedHasValueMax();
-
-            if ($typeQty == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_LESS &&
-                $productQty <= $minQty) {
-                return true;
-            }
-
-            if ($typeQty == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_MORE &&
-                $productQty >= $minQty) {
-                return true;
-            }
-
-            if ($typeQty == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_BETWEEN &&
-                $productQty >= $minQty && $productQty <= $maxQty) {
+            if ($productQty <= $minQty) {
                 return true;
             }
         }
@@ -438,8 +401,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_SynchronizationTempla
         $currentPrice = $walmartListingProduct->getPrice();
         $onlinePrice  = $walmartListingProduct->getOnlinePrice();
 
-        $isChanged = $walmartSynchronizationTemplate->isPriceChangedOverAllowedDeviation($onlinePrice, $currentPrice);
-        if ($isChanged) {
+        if ($currentPrice != $onlinePrice) {
             return true;
         }
 

@@ -73,28 +73,79 @@ class Ess_M2ePro_Adminhtml_ControlPanel_InspectionController
         return $this->getResponse()->setBody(Mage::getModel('cron/schedule')->load($id)->getMessages());
     }
 
-    // ---------------------------------------
+    //########################################
 
-    public function repairCrashedTableAction()
+    public function changeMaintenanceModeAction()
     {
-        if (!$tableName = $this->getRequest()->getParam('table_name')) {
-            $this->_getSession()->addError('Table Name is not presented.');
-            return $this->_redirectUrl(Mage::helper('M2ePro/View_ControlPanel')->getPageInspectionTabUrl());
+        if (Mage::helper('M2ePro/Module_Maintenance')->isEnabled()) {
+            Mage::helper('M2ePro/Module_Maintenance')->disable();
+        } else {
+            Mage::helper('M2ePro/Module_Maintenance')->enable();
         }
 
-        Mage::helper('M2ePro/Module_Database_Repair')->repairCrashedTable($tableName)
-            ? $this->_getSession()->addSuccess('Successfully repaired.')
-            : $this->_getSession()->addError('Error.');
+        $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Changed successfully.'));
+        return $this->_redirectUrl(Mage::helper('M2ePro/View_ControlPanel')->getPageUrl());
+    }
 
-        return $this->_redirectUrl(Mage::helper('M2ePro/View_ControlPanel')->getPageInspectionTabUrl());
+    public function changeMaintenanceCanBeIgnoredAction()
+    {
+        if (Mage::helper('M2ePro/Module_Maintenance')->isMaintenanceCanBeIgnored()) {
+            Mage::helper('M2ePro/Module_Maintenance')->setMaintenanceCanBeIgnored(0);
+        } else {
+            Mage::helper('M2ePro/Module_Maintenance')->setMaintenanceCanBeIgnored(1);
+        }
+
+        $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Changed successfully.'));
+        return $this->_redirectUrl(Mage::helper('M2ePro/View_ControlPanel')->getPageUrl());
     }
 
     //########################################
 
-    public function mainChecksAction()
+    public function setMagentoCoreSetupValueAction()
     {
-        $block = $this->getLayout()->createBlock('M2ePro/adminhtml_ControlPanel_inspection_mainChecks');
-        return $this->getResponse()->setBody($block->toHtml());
+        $version = $this->getRequest()->getParam('version');
+        if (!$version) {
+            $this->_getSession()->addWarning('Version is not provided.');
+            return $this->_redirectUrl(Mage::helper('M2ePro/View_ControlPanel')->getPageUrl());
+        }
+
+        $version = str_replace(',', '.', $version);
+        if (!version_compare(Ess_M2ePro_Model_Upgrade_MySqlSetup::MIN_SUPPORTED_VERSION_FOR_UPGRADE, $version, '<=')) {
+            $this->_getSession()->addError(
+                sprintf(
+                    'Extension upgrade can work only from %s version.',
+                    Ess_M2ePro_Model_Upgrade_MySqlSetup::MIN_SUPPORTED_VERSION_FOR_UPGRADE
+                )
+            );
+            return $this->_redirectUrl(Mage::helper('M2ePro/View_ControlPanel')->getPageUrl());
+        }
+
+        Mage::getSingleton('core/resource')->getConnection('core_write')->update(
+            Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('core_resource'),
+            array(
+                'version'      => $version,
+                'data_version' => $version
+            ),
+            array('code = ?' => Ess_M2ePro_Model_Upgrade_MySqlSetup::MODULE_IDENTIFIER)
+        );
+
+        Mage::helper('M2ePro/Magento')->clearCache();
+
+        $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Extension upgrade was successfully completed.'));
+        return $this->_redirectUrl(Mage::helper('M2ePro/View_ControlPanel')->getPageUrl());
+    }
+
+    public function dropMagentoCoreSetupValueAction()
+    {
+        Mage::getSingleton('core/resource')->getConnection('core_write')->delete(
+            Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('core_resource'),
+            array('code = ?' => Ess_M2ePro_Model_Upgrade_MySqlSetup::MODULE_IDENTIFIER)
+        );
+
+        Mage::helper('M2ePro/Magento')->clearCache();
+
+        $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Extension install was successfully completed.'));
+        return $this->_redirectUrl(Mage::helper('M2ePro/View_ControlPanel')->getPageUrl());
     }
 
     //########################################

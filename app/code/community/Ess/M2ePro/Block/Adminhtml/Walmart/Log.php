@@ -54,8 +54,8 @@ HTML;
 <script type="text/javascript">
 
     Event.observe(window, 'load', function() {
-        CommonHandlerObj = new CommonHandler();
-        LogHandlerObj = new LogHandler();
+        CommonObj = new Common();
+        LogObj = new Log();
     });
 
 </script>

@@ -67,7 +67,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Template_ProductTaxCode_Edit
         $this->_addButton(
             'back', array(
             'label'     => Mage::helper('M2ePro')->__('Back'),
-            'onclick'   => 'AmazonTemplateProductTaxCodeHandlerObj.back_click(\'' . $url . '\')',
+            'onclick'   => 'AmazonTemplateProductTaxCodeObj.back_click(\'' . $url . '\')',
             'class'     => 'back'
             )
         );
@@ -80,7 +80,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Template_ProductTaxCode_Edit
             $this->_addButton(
                 'duplicate', array(
                 'label'   => Mage::helper('M2ePro')->__('Duplicate'),
-                'onclick' => 'AmazonTemplateProductTaxCodeHandlerObj.duplicate_click'
+                'onclick' => 'AmazonTemplateProductTaxCodeObj.duplicate_click'
                     .'(\'amazon-template-TaxCode\')',
                 'class'   => 'add M2ePro_duplicate_button'
                 )
@@ -91,7 +91,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Template_ProductTaxCode_Edit
             $this->_addButton(
                 'delete', array(
                 'label'     => Mage::helper('M2ePro')->__('Delete'),
-                'onclick'   => 'AmazonTemplateProductTaxCodeHandlerObj.delete_click()',
+                'onclick'   => 'AmazonTemplateProductTaxCodeObj.delete_click()',
                 'class'     => 'delete M2ePro_delete_button'
                 )
             );
@@ -102,7 +102,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Template_ProductTaxCode_Edit
         $this->_addButton(
             'save', array(
             'label'     => Mage::helper('M2ePro')->__('Save'),
-            'onclick'   => 'AmazonTemplateProductTaxCodeHandlerObj.save_click('
+            'onclick'   => 'AmazonTemplateProductTaxCodeObj.save_click('
                 . '\'\','
                 . '\'' . $this->getSaveConfirmationText() . '\','
                 . '\'' . Ess_M2ePro_Block_Adminhtml_Amazon_Template_Grid::TEMPLATE_PRODUCT_TAX_CODE . '\''
@@ -116,7 +116,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Template_ProductTaxCode_Edit
         $this->_addButton(
             'save_and_continue', array(
             'label'     => Mage::helper('M2ePro')->__('Save And Continue Edit'),
-            'onclick'   => 'AmazonTemplateProductTaxCodeHandlerObj.save_and_edit_click('
+            'onclick'   => 'AmazonTemplateProductTaxCodeObj.save_and_edit_click('
                 . '\'\','
                 . 'undefined,'
                 . '\'' . $this->getSaveConfirmationText() . '\','

@@ -207,8 +207,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Feedbacks_DownloadNew extends Ess_M2ePro_M
 
             $this->getSynchronizationLog()->addMessage(
                 Mage::helper('M2ePro')->__($message->getText()),
-                $logType,
-                Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH
+                $logType
             );
         }
     }

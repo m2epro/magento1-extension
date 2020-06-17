@@ -22,21 +22,22 @@
 
 </style>
 
-<script type="text/javascript" src="<?php echo $this->getJsUrl('M2ePro/VideoTutorialHandler.js'); ?>"></script>
+<script type="text/javascript" src="<?php echo $this->getJsUrl('M2ePro/VideoTutorial.js'); ?>"></script>
 
 <script type="text/javascript">
 
-    VideoTutorialHandlerObj = new VideoTutorialHandler(
+    VideoTutorialObj = new VideoTutorial(
         'video_tutorial_pop_up',
         '<?php echo Mage::helper('M2ePro')->escapeJs(Mage::helper('M2ePro')->__('eBay/Magento Integration: Listing')); ?>',
         function() {}
     );
 
-    VideoTutorialHandlerObj.closeCallback = function() { return true; };
+    VideoTutorialObj.closeCallback = function() { return true; };
 
     M2ePro.url.add(<?php echo json_encode(array(
         'adminhtml_ebay_account/edit' => $this->getUrl('M2ePro/adminhtml_ebay_account/edit/'),
         'adminhtml_ebay_marketplace/synchGetExecutingInfo' => $this->getUrl('M2ePro/adminhtml_ebay_marketplace/synchGetExecutingInfo/'),
+        'logViewUrl' => $this->getUrl('M2ePro/adminhtml_ebay_log/synchronization', array('wizard' => $this->getRequest()->getParam('wizard'))),
     )); ?>);
 
 </script>
@@ -298,20 +299,21 @@
             'adminhtml_ebay_listing_create/index','<?php echo $this->getUrl('*/adminhtml_ebay_listing_create/index', array('_current' => true, 'step' => 1)); ?>'
         );
 
-        var marketplaceSynchProgressHandlerObj = new EbayListingMarketplaceSynchProgressHandler(
+        var marketplaceSynchProgressObj = new EbayListingMarketplaceSynchProgress(
             new ProgressBar('progress_bar'),
             new AreaWrapper('content_container')
         );
 
         var synchronizeMarketplace = function(marketplaceId) {
 
-            new Ajax.Request('<?php echo $this->getUrl('*/adminhtml_ebay_general/isMarketplaceEnabled'); ?>', {
+            new Ajax.Request('<?php echo $this->getUrl('*/adminhtml_general/isMarketplaceEnabled'); ?>', {
                 method: 'get',
-                parameters: { marketplace_id: marketplaceId },
+                parameters: {marketplace_id: marketplaceId},
                 onSuccess: function(transport) {
 
-                    if (transport.responseText.evalJSON()) {
-                        return marketplaceSynchProgressHandlerObj.end();
+                    var result = transport.responseText.evalJSON();
+                    if (result.status) {
+                        return marketplaceSynchProgressObj.end();
                     }
 
                     var params = {};
@@ -324,9 +326,10 @@
 
                             var title = 'eBay ' + $('marketplace_id').down('option[value='+$('marketplace_id').value+']').innerHTML;
 
-                            marketplaceSynchProgressHandlerObj.runTask(
+                            marketplaceSynchProgressObj.runTask(
                                 title,
-                                '<?php echo $this->getUrl('*/adminhtml_ebay_marketplace/runSynchNow'); ?>' + 'marketplace_id/' + marketplaceId
+                                '<?php echo $this->getUrl('*/adminhtml_ebay_marketplace/runSynchNow'); ?>' + 'marketplace_id/' + marketplaceId,
+                                '<?php echo $this->getUrl('*/adminhtml_ebay_marketplace/synchGetExecutingInfo'); ?>'
                             );
 
                         }
@@ -336,7 +339,7 @@
         };
 
         $$('.next_step_button').each(function(btn) { btn.observe('click',function() {
-            if (marketplaceSynchProgressHandlerObj.runningNow) {
+            if (marketplaceSynchProgressObj.runningNow) {
                 return alert('<?php echo Mage::helper('M2ePro')->__('Please wait while Synchronization is finished.'); ?>');
             }
             editForm.validate() && synchronizeMarketplace($('marketplace_id').value);
@@ -357,7 +360,7 @@
 
     var init = function() {
 
-        CommonHandlerObj.setValidationCheckRepetitionValue(
+        CommonObj.setValidationCheckRepetitionValue(
             'M2ePro-listing-title',
             '<?php echo Mage::helper('M2ePro')->escapeJs(Mage::helper('M2ePro')->__('The specified Title is already used for other Listing. Listing Title must be unique.')); ?>',
             'Listing', 'title', 'id', null, '<?php echo Ess_M2ePro_Helper_Component_Ebay::NICK ?>'

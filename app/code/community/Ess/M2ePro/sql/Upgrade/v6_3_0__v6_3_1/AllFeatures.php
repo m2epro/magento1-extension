@@ -107,13 +107,13 @@ class Ess_M2ePro_Sql_Upgrade_v6_3_0__v6_3_1_AllFeatures extends Ess_M2ePro_Model
 
         $installer->run(<<<SQL
 
-UPDATE `m2epro_wizard` as `mw`
+UPDATE `{$this->_installer->getTable('m2epro_wizard')}` as `mw`
 SET `mw`.`status` = 3
 WHERE `mw`.`nick` = 'migrationNewAmazon'
 AND (
 
     (SELECT `mc`.`value`
-     FROM `m2epro_config` as `mc`
+     FROM `{$this->_installer->getTable('m2epro_config')}` as `mc`
      WHERE `mc`.`value` IS NOT NULL
      AND `mc`.`group` = '/component/amazon/'
      AND `mc`.`key` = 'mode'
@@ -122,7 +122,7 @@ AND (
     OR
 
     (SELECT `mc`.`value`
-     FROM `m2epro_config` as `mc`
+     FROM `{$this->_installer->getTable('m2epro_config')}` as `mc`
      WHERE `mc`.`value` IS NOT NULL
      AND `mc`.`group` = '/component/amazon/'
      AND `mc`.`key` = 'allowed'
@@ -130,7 +130,7 @@ AND (
 
 );
 
-UPDATE `m2epro_ebay_dictionary_marketplace`
+UPDATE `{$this->_installer->getTable('m2epro_ebay_dictionary_marketplace')}`
 SET `client_details_last_update_date` = NULL,
     `server_details_last_update_date` = NULL;
 

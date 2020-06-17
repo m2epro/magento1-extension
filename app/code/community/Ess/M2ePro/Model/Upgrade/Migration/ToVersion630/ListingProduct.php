@@ -262,7 +262,7 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630_ListingProduct
         $this->_installer->run(
             <<<SQL
 
-    UPDATE `m2epro_listing_product`
+    UPDATE `{$this->_installer->getTable('m2epro_listing_product')}`
     SET additional_data = REPLACE(additional_data, '"variation_options":', '"variation_product_options":')
     WHERE INSTR(additional_data, '"variation_options":') > 0;
 
@@ -279,15 +279,15 @@ SQL
             $this->_installer->run(
                 <<<SQL
 
-UPDATE `m2epro_amazon_listing_product`
+UPDATE `{$this->_installer->getTable('m2epro_amazon_listing_product')}`
 SET general_id_search_status = 0,
     general_id_search_suggest_data = NULL;
 
-UPDATE `m2epro_buy_listing_product`
+UPDATE `{$this->_installer->getTable('m2epro_buy_listing_product')}`
 SET general_id_search_status = 0,
     general_id_search_suggest_data = NULL;
 
-UPDATE `m2epro_play_listing_product`
+UPDATE `{$this->_installer->getTable('m2epro_play_listing_product')}`
 SET general_id_search_status = 0,
     general_id_search_suggest_data = NULL;
 SQL

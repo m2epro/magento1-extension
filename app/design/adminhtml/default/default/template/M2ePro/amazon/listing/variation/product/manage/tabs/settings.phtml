@@ -57,7 +57,7 @@ $magentoProductVariations = $this->getListingProduct()->getMagentoProduct()->get
     <p><?php echo Mage::helper('M2ePro')->__('You are not the Creator of Amazon Parent Product: %asin%. It is not allowed to you to create New Amazon Child Products.', $this->getGeneralIdLink()) ?>
     <?php if ($this->showGeneralIdActions()) { ?>
         <br/>
-        <button onclick="ListingGridHandlerObj.variationProductManageHandler.setGeneralIdOwner(<?php echo Ess_M2ePro_Model_Amazon_Listing_Product::IS_GENERAL_ID_OWNER_YES ?>)"><?php echo Mage::helper('M2ePro')->__('I am the Creator'); ?></button>
+        <button onclick="ListingGridObj.variationProductManageHandler.setGeneralIdOwner(<?php echo Ess_M2ePro_Model_Amazon_Listing_Product::IS_GENERAL_ID_OWNER_YES ?>)"><?php echo Mage::helper('M2ePro')->__('I am the Creator'); ?></button>
         <span style="display: inline-block; vertical-align: middle">
             <img src="<?php echo $this->getSkinUrl('M2ePro/images/tool-tip-icon.png'); ?>"
                  class="tool-tip-image"
@@ -79,7 +79,7 @@ $magentoProductVariations = $this->getListingProduct()->getMagentoProduct()->get
 
     <p><?php echo Mage::helper('M2ePro')->__('You are the Creator of Amazon Parent Product %asin%. It is allowed to you to create New Amazon Child Products. <br/><br/><b>Please Note:</b> New Amazon Child Products will be created based on Description Policy %template_link%.', array('asin' => $this->getGeneralIdLink(), 'template_link' => $this->getDescriptionTemplateLink())) ?>
     <?php if ($this->showGeneralIdActions()) { ?>
-        <a href="javascript:void(0);" onclick="ListingGridHandlerObj.variationProductManageHandler.setGeneralIdOwner(<?php echo Ess_M2ePro_Model_Amazon_Listing_Product::IS_GENERAL_ID_OWNER_NO ?>)"><?php echo Mage::helper('M2ePro')->__('I am not Creator'); ?></a></p>
+        <a href="javascript:void(0);" onclick="ListingGridObj.variationProductManageHandler.setGeneralIdOwner(<?php echo Ess_M2ePro_Model_Amazon_Listing_Product::IS_GENERAL_ID_OWNER_NO ?>)"><?php echo Mage::helper('M2ePro')->__('I am not Creator'); ?></a></p>
     <?php } ?>
 
 <?php } elseif (!$this->hasGeneralId() && $this->isGeneralIdOwner()) { ?>
@@ -118,7 +118,7 @@ $magentoProductVariations = $this->getListingProduct()->getMagentoProduct()->get
         <div style="text-align: right; margin: 10px 0px;">
             <a href="javascript:void(0);" onclick="Windows.getFocusedWindow().close();"><?php echo Mage::helper('M2ePro')->__('Cancel'); ?></a>
             &nbsp;&nbsp;
-            <button onclick="ListingGridHandlerObj.variationProductManageHandler.setProductSku()"><?php echo Mage::helper('M2ePro')->__('Confirm'); ?></button>
+            <button onclick="ListingGridObj.variationProductManageHandler.setProductSku()"><?php echo Mage::helper('M2ePro')->__('Confirm'); ?></button>
         </div>
     </form>
 </div>
@@ -190,7 +190,7 @@ $magentoProductVariations = $this->getListingProduct()->getMagentoProduct()->get
                 <?php } ?>
 
                 <?php if (!$this->isInAction()) {?>
-                    <button onclick="ListingGridHandlerObj.variationProductManageHandler.changeVariationTheme(this)">
+                    <button onclick="ListingGridObj.variationProductManageHandler.changeVariationTheme(this)">
                         <?php echo $this->hasChannelTheme() ? Mage::helper('M2ePro')->__('Change') : Mage::helper('M2ePro')->__('Set Theme'); ?>
                     </button>&nbsp;&nbsp;
                     <span id="edit_variation_btns" style="display: none;">
@@ -200,8 +200,8 @@ $magentoProductVariations = $this->getListingProduct()->getMagentoProduct()->get
                             <span><?php echo Mage::helper('M2ePro')->__('Some Variation Themes cannot be used because number of Attributes in Variation Theme is not equal to number of Magento Product Attributes.'); ?></span>
                         </span>
                         &nbsp;&nbsp;
-                        <a href="javascript:void(0);" onclick="ListingGridHandlerObj.variationProductManageHandler.cancelVariationTheme(this);"><?php echo Mage::helper('M2ePro')->__('Cancel'); ?></a>&nbsp;&nbsp;
-                        <button onclick="ListingGridHandlerObj.variationProductManageHandler.setVariationTheme()"><?php echo Mage::helper('M2ePro')->__('Confirm'); ?></button>
+                        <a href="javascript:void(0);" onclick="ListingGridObj.variationProductManageHandler.cancelVariationTheme(this);"><?php echo Mage::helper('M2ePro')->__('Cancel'); ?></a>&nbsp;&nbsp;
+                        <button onclick="ListingGridObj.variationProductManageHandler.setVariationTheme()"><?php echo Mage::helper('M2ePro')->__('Confirm'); ?></button>
                     </span>
                 <?php } ?>
             </td>
@@ -232,8 +232,8 @@ $magentoProductVariations = $this->getListingProduct()->getMagentoProduct()->get
 ?>
 
 <script type="application/javascript">
-    ListingGridHandlerObj.variationProductManageHandler.virtualAmazonMatchedAttributes = false;
-    ListingGridHandlerObj.variationProductManageHandler.amazonVariationSet = false;
+    ListingGridObj.variationProductManageHandler.virtualAmazonMatchedAttributes = false;
+    ListingGridObj.variationProductManageHandler.amazonVariationSet = false;
 
     M2ePro.text.help_icon_magento_greater_left = '<?php echo $magentoGreaterLeftSideText ?>';
     M2ePro.text.help_icon_magento_greater_right = '<?php echo $magentoGreaterRightSideText ?>';
@@ -291,24 +291,24 @@ $magentoProductVariations = $this->getListingProduct()->getMagentoProduct()->get
                 <?php if ($this->getMatcherAttributes()->isSourceAmountGreater()) { ?>
 
             <script type="application/javascript">
-                ListingGridHandlerObj.variationProductManageHandler.matchingType = ListingGridHandlerObj.variationProductManageHandler.MATCHING_TYPE_VIRTUAL_AMAZON;
-                ListingGridHandlerObj.variationProductManageHandler.matchedAttributes = <?php echo json_encode($this->getMatchedAttributes(), JSON_FORCE_OBJECT)?>;
-                ListingGridHandlerObj.variationProductManageHandler.productAttributes = <?php echo json_encode($this->getProductAttributes())?>;
-                ListingGridHandlerObj.variationProductManageHandler.destinationAttributes = <?php echo json_encode($this->getDestinationAttributes())?>;
-                ListingGridHandlerObj.variationProductManageHandler.magentoVariationSet = <?php echo json_encode($magentoProductVariations['set'])?>;
+                ListingGridObj.variationProductManageHandler.matchingType = ListingGridObj.variationProductManageHandler.MATCHING_TYPE_VIRTUAL_AMAZON;
+                ListingGridObj.variationProductManageHandler.matchedAttributes = <?php echo json_encode($this->getMatchedAttributes(), JSON_FORCE_OBJECT)?>;
+                ListingGridObj.variationProductManageHandler.productAttributes = <?php echo json_encode($this->getProductAttributes())?>;
+                ListingGridObj.variationProductManageHandler.destinationAttributes = <?php echo json_encode($this->getDestinationAttributes())?>;
+                ListingGridObj.variationProductManageHandler.magentoVariationSet = <?php echo json_encode($magentoProductVariations['set'])?>;
 
-                ListingGridHandlerObj.variationProductManageHandler.renderMatchedAttributesNotSetView();
+                ListingGridObj.variationProductManageHandler.renderMatchedAttributesNotSetView();
             </script>
 
                 <?php } elseif ($this->getMatcherAttributes()->isDestinationAmountGreater()) {?>
 
             <script type="application/javascript">
-                ListingGridHandlerObj.variationProductManageHandler.matchingType = ListingGridHandlerObj.variationProductManageHandler.MATCHING_TYPE_VIRTUAL_MAGENTO;
-                ListingGridHandlerObj.variationProductManageHandler.matchedAttributes = <?php echo json_encode($this->getMatchedAttributes(), JSON_FORCE_OBJECT)?>;
-                ListingGridHandlerObj.variationProductManageHandler.destinationAttributes = <?php echo json_encode($this->getDestinationAttributes())?>;
-                ListingGridHandlerObj.variationProductManageHandler.amazonVariationSet = <?php echo json_encode($this->getAmazonVariationsSet())?>;
+                ListingGridObj.variationProductManageHandler.matchingType = ListingGridObj.variationProductManageHandler.MATCHING_TYPE_VIRTUAL_MAGENTO;
+                ListingGridObj.variationProductManageHandler.matchedAttributes = <?php echo json_encode($this->getMatchedAttributes(), JSON_FORCE_OBJECT)?>;
+                ListingGridObj.variationProductManageHandler.destinationAttributes = <?php echo json_encode($this->getDestinationAttributes())?>;
+                ListingGridObj.variationProductManageHandler.amazonVariationSet = <?php echo json_encode($this->getAmazonVariationsSet())?>;
 
-                ListingGridHandlerObj.variationProductManageHandler.renderMatchedAttributesNotSetView();
+                ListingGridObj.variationProductManageHandler.renderMatchedAttributesNotSetView();
             </script>
 
                 <?php } ?>
@@ -399,11 +399,11 @@ $magentoProductVariations = $this->getListingProduct()->getMagentoProduct()->get
 
                     <tr>
                         <td class="label" colspan="2" style="text-align: right; <?php echo $this->isChangeMatchedAttributesAllowed() ? '' : 'display: none;' ?>">
-                            <button onclick="ListingGridHandlerObj.variationProductManageHandler.changeMatchedAttributes(this)">
+                            <button onclick="ListingGridObj.variationProductManageHandler.changeMatchedAttributes(this)">
                                 <?php echo $this->hasMatchedAttributes() ? Mage::helper('M2ePro')->__('Change') : Mage::helper('M2ePro')->__('Set Attributes'); ?>
                             </button>
-                            <a href="javascript:void(0);" onclick="ListingGridHandlerObj.variationProductManageHandler.cancelMatchedAttributes(this);" style="display: none;"><?php echo Mage::helper('M2ePro')->__('Cancel'); ?></a>&nbsp;&nbsp;
-                            <button onclick="ListingGridHandlerObj.variationProductManageHandler.setMatchedAttributes()" style="display: none;"><?php echo Mage::helper('M2ePro')->__('Confirm'); ?></button>
+                            <a href="javascript:void(0);" onclick="ListingGridObj.variationProductManageHandler.cancelMatchedAttributes(this);" style="display: none;"><?php echo Mage::helper('M2ePro')->__('Cancel'); ?></a>&nbsp;&nbsp;
+                            <button onclick="ListingGridObj.variationProductManageHandler.setMatchedAttributes()" style="display: none;"><?php echo Mage::helper('M2ePro')->__('Confirm'); ?></button>
                         </td>
                     </tr>
                 </table>
@@ -462,7 +462,7 @@ $magentoProductVariations = $this->getListingProduct()->getMagentoProduct()->get
 
 <?php } else { ?>
 
-    <?php echo Mage::helper('M2ePro')->__('To sell existing Amazon Child Products or to add New Child Products (if you are the Creator) click <a href="%url%" onclick="%onclick%">"Add New Child Product"</a> Button on Child Products Tab.', array('url' => 'javascript:void(0);', 'onclick' => 'ListingGridHandlerObj.variationProductManageHandler.openVariationsTab('.(int)!$this->hasUnusedChannelVariations().');')); ?>
+    <?php echo Mage::helper('M2ePro')->__('To sell existing Amazon Child Products or to add New Child Products (if you are the Creator) click <a href="%url%" onclick="%onclick%">"Add New Child Product"</a> Button on Child Products Tab.', array('url' => 'javascript:void(0);', 'onclick' => 'ListingGridObj.variationProductManageHandler.openVariationsTab('.(int)!$this->hasUnusedChannelVariations().');')); ?>
 
 <?php } ?>
 

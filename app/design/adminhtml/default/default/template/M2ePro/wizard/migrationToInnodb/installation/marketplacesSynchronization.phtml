@@ -1,0 +1,42 @@
+<?php
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
+ */
+
+// @codingStandardsIgnoreFile
+
+/** @var $this Ess_M2ePro_Block_Adminhtml_Wizard_MigrationToInnodb_Installation_MarketplacesSynchronization_Content */
+?>
+
+<?php foreach ($this->getEnabledMarketplaces() as $component => $marketplaces) : ?>
+
+    <div class="entry-edit" id="migrationToInnodb_marketplaces_group_<?php echo $component; ?>" collapseable="no">
+
+        <div class="entry-edit-head">
+            <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__("Enabled {$component} Marketplaces"); ?></h4>
+        </div>
+
+        <div class="fieldset">
+            <div class="hor-scroll">
+
+                <table class="form-list" cellspacing="0" cellpadding="0">
+
+                    <?php foreach($marketplaces as $marketplace) { ?>
+                        <tr id="status_<?php echo $marketplace->getId(); ?>">
+                            <td class="label">
+                                <span id="marketplace_<?php echo $marketplace->getId(); ?>"><?php echo $marketplace->getTitle(); ?></span>
+                                <input type="hidden" class="marketplace-id" component="<?php echo $marketplace->getComponentTitle(); ?>" value="<?php echo $marketplace->getId(); ?>">
+                            </td>
+                         </tr>
+                    <?php } ?>
+
+                </table>
+
+            </div>
+        </div>
+
+    </div>
+
+<?php endforeach; ?>

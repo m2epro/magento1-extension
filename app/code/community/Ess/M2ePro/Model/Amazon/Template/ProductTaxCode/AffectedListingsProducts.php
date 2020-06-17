@@ -7,11 +7,11 @@
  */
 
 class Ess_M2ePro_Model_Amazon_Template_ProductTaxCode_AffectedListingsProducts
-    extends Ess_M2ePro_Model_Template_AffectedListingsProducts_Abstract
+    extends Ess_M2ePro_Model_Template_AffectedListingsProductsAbstract
 {
     //########################################
 
-    public function getObjects(array $filters = array())
+    public function loadCollection(array $filters = array())
     {
         /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $listingProductCollection */
         $listingProductCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Product');
@@ -21,38 +21,7 @@ class Ess_M2ePro_Model_Amazon_Template_ProductTaxCode_AffectedListingsProducts
             $listingProductCollection->addFieldToFilter('is_variation_parent', 0);
         }
 
-        return $listingProductCollection->getItems();
-    }
-
-    public function getData($columns = '*', array $filters = array())
-    {
-        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $listingProductCollection */
-        $listingProductCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Product');
-        $listingProductCollection->addFieldToFilter('template_product_tax_code_id', $this->_model->getId());
-
-        if (!empty($filters['only_physical_units'])) {
-            $listingProductCollection->addFieldToFilter('is_variation_parent', 0);
-        }
-
-        if (is_array($columns) && !empty($columns)) {
-            $listingProductCollection->getSelect()->reset(Zend_Db_Select::COLUMNS);
-            $listingProductCollection->getSelect()->columns($columns);
-        }
-
-        return $listingProductCollection->getData();
-    }
-
-    public function getIds(array $filters = array())
-    {
-        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $listingProductCollection */
-        $listingProductCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Product');
-        $listingProductCollection->addFieldToFilter('template_product_tax_code_id', $this->_model->getId());
-
-        if (!empty($filters['only_physical_units'])) {
-            $listingProductCollection->addFieldToFilter('is_variation_parent', 0);
-        }
-
-        return $listingProductCollection->getAllIds();
+        return $listingProductCollection;
     }
 
     //########################################

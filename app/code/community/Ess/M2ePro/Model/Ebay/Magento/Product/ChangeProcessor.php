@@ -173,7 +173,7 @@ class Ess_M2ePro_Model_Ebay_Magento_Product_ChangeProcessor
 
         $categoryTemplate = $this->getEbayListingProduct()->getCategoryTemplate();
 
-        return array_unique($categoryTemplate->getMainCategoryAttributes());
+        return array_unique($categoryTemplate->getCategoryAttributes());
     }
 
     public function getShippingTrackingAttributes()

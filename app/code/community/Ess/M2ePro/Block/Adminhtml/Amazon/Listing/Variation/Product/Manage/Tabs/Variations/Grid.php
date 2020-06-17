@@ -179,12 +179,12 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Variation_Product_Manage_Tabs_Va
 
         $this->addColumn(
             'sku', array(
-                'header'         => Mage::helper('M2ePro')->__('SKU'),
-                'align'          => 'left',
-                'type'           => 'text',
-                'index'          => 'sku',
-                'filter_index'   => 'sku',
-                'frame_callback' => array($this, 'callbackColumnAmazonSku')
+                'header'       => Mage::helper('M2ePro')->__('SKU'),
+                'align'        => 'left',
+                'type'         => 'text',
+                'index'        => 'sku',
+                'filter_index' => 'sku',
+                'renderer'     => 'M2ePro/adminhtml_amazon_grid_column_renderer_sku',
             )
         );
 
@@ -208,20 +208,23 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Variation_Product_Manage_Tabs_Va
                 'type'                      => 'number',
                 'index'                     => 'online_qty',
                 'filter_index'              => 'online_qty',
-                'frame_callback'            => array($this, 'callbackColumnAvailableQty'),
+                'show_receiving'            => false,
+                'renderer'                  => 'M2ePro/adminhtml_amazon_grid_column_renderer_qty',
                 'filter'                    => 'M2ePro/adminhtml_amazon_grid_column_filter_qty',
                 'filter_condition_callback' => array($this, 'callbackFilterQty')
             )
         );
 
         $priceColumn = array(
-            'header' => Mage::helper('M2ePro')->__('Price'),
-            'align' => 'right',
-            'width' => '70px',
-            'type' => 'number',
-            'index' => 'online_current_price',
-            'filter_index' => 'online_current_price',
-            'frame_callback' => array($this, 'callbackColumnPrice'),
+            'header'                    => Mage::helper('M2ePro')->__('Price'),
+            'align'                     => 'right',
+            'width'                     => '70px',
+            'type'                      => 'number',
+            'index'                     => 'online_current_price',
+            'filter_index'              => 'online_current_price',
+            'marketplace_id'            => $this->getListingProduct()->getListing()->getMarketplaceId(),
+            'account_id'                => $this->getListingProduct()->getListing()->getAccountId(),
+            'renderer'                  => 'M2ePro/adminhtml_amazon_grid_column_renderer_price',
             'filter_condition_callback' => array($this, 'callbackFilterPrice')
         );
 
@@ -233,20 +236,20 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Variation_Product_Manage_Tabs_Va
 
         $this->addColumn(
             'status', array(
-                'header' => Mage::helper('M2ePro')->__('Status'),
-                'width' => '100px',
-                'index' => 'status',
-                'filter_index' => 'status',
-                'type' => 'options',
-                'sortable' => false,
-                'options' => array(
+                'header'        => Mage::helper('M2ePro')->__('Status'),
+                'width'         => '100px',
+                'index'         => 'status',
+                'filter_index'  => 'status',
+                'type'          => 'options',
+                'sortable'      => false,
+                'options'       => array(
                     Ess_M2ePro_Model_Listing_Product::STATUS_UNKNOWN => Mage::helper('M2ePro')->__('Unknown'),
                     Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED => Mage::helper('M2ePro')->__('Not Listed'),
                     Ess_M2ePro_Model_Listing_Product::STATUS_LISTED => Mage::helper('M2ePro')->__('Active'),
                     Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED => Mage::helper('M2ePro')->__('Inactive'),
                     Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED => Mage::helper('M2ePro')->__('Inactive (Blocked)')
                 ),
-                'frame_callback' => array($this, 'callbackColumnStatus')
+                'renderer'     => 'M2ePro/adminhtml_amazon_grid_column_renderer_status'
             )
         );
 
@@ -391,7 +394,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Variation_Product_Manage_Tabs_Va
             $html .= <<<HTML
 <form action="javascript:void(0);" class="product-options-edit"></form>
 <a href="javascript:"
-    onclick="ListingGridHandlerObj.editProductOptions(this, {$attributes}, {$variationsTree}, {$listingProductId})"
+    onclick="ListingGridObj.editProductOptions(this, {$attributes}, {$variationsTree}, {$listingProductId})"
     title="{$linkTitle}">{$linkContent}</a>
 HTML;
         }
@@ -493,54 +496,6 @@ HTML;
         return $html;
     }
 
-    public function callbackColumnAmazonSku($value, $row, $column, $isExport)
-    {
-        if ($row->getData('status') == Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED) {
-            return '<span style="color: gray;">' . Mage::helper('M2ePro')->__('Not Listed') . '</span>';
-        }
-
-        if ($value === null || $value === '') {
-            $value = Mage::helper('M2ePro')->__('N/A');
-        }
-
-        if ($row->getData('defected_messages')) {
-            $defectedMessages = Mage::helper('M2ePro')->jsonDecode($row->getData('defected_messages'));
-
-            $msg = '';
-            foreach ($defectedMessages as $message) {
-                if (empty($message['message'])) {
-                    continue;
-                }
-
-                $msg .= '<p>'.$message['message'] . '&nbsp;';
-                if (!empty($message['value'])) {
-                    $msg .= Mage::helper('M2ePro')->__('Current Value') . ': "' . $message['value'] . '"';
-                }
-
-                $msg .= '</p>';
-            }
-
-            if (empty($msg)) {
-                return $value;
-            }
-
-            $value .= <<<HTML
-<span style="float:right;">
-    <img id="map_link_defected_message_icon_{$row->getId()}"
-         class="tool-tip-image"
-         style="vertical-align: middle;"
-         src="{$this->getSkinUrl('M2ePro/images/warning.png')}">
-    <span class="tool-tip-message tool-tip-warning tip-left" style="display:none;">
-        <img src="{$this->getSkinUrl('M2ePro/images/i_notice.gif')}">
-        <span>{$msg}</span>
-    </span>
-</span>
-HTML;
-        }
-
-        return $value;
-    }
-
     public function callbackColumnGeneralId($generalId, $row, $column, $isExport)
     {
         if ($generalId === null || $generalId === '') {
@@ -555,399 +510,6 @@ HTML;
         }
 
         return $this->getGeneralIdLink($generalId);
-    }
-
-    public function callbackColumnAvailableQty($qty, $row, $column, $isExport)
-    {
-        if ($row->getData('status') == Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED) {
-            return '<span style="color: gray;">' . Mage::helper('M2ePro')->__('Not Listed') . '</span>';
-        }
-
-        if ($row->getData('status') == Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED) {
-            return Mage::helper('M2ePro')->__('N/A');
-        }
-
-        if ((bool)$row->getData('is_afn_channel')) {
-            $sku = $row->getData('sku');
-
-            if (empty($sku)) {
-                return Mage::helper('M2ePro')->__('AFN');
-            }
-
-            $productId = $row->getData('id');
-            /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
-            $listingProduct = Mage::helper('M2ePro/Component_Amazon')->getObject('Listing_Product', $productId);
-
-            $afn = Mage::helper('M2ePro')->__('AFN');
-            $total = Mage::helper('M2ePro')->__('Total');
-            $inStock = Mage::helper('M2ePro')->__('In Stock');
-            $accountId = $listingProduct->getListing()->getAccountId();
-
-            return <<<HTML
-<div id="m2ePro_afn_qty_value_{$productId}">
-    <span class="m2ePro-online-sku-value" productId="{$productId}" style="display: none">{$sku}</span>
-    <span class="m2epro-empty-afn-qty-data" style="display: none">{$afn}</span>
-    <div class="m2epro-afn-qty-data" style="display: none">
-        <div class="total">{$total}: <span></span></div>
-        <div class="in-stock">{$inStock}: <span></span></div>
-    </div>
-    <a href="javascript:void(0)"
-        onclick="AmazonListingAfnQtyHandlerObj.showAfnQty(this,'{$sku}','{$productId}',{$accountId})">
-        {$afn}</a>
-</div>
-HTML;
-        }
-
-        if ($qty === null || $qty === '') {
-            return Mage::helper('M2ePro')->__('N/A');
-        }
-
-        if ($qty <= 0) {
-            return '<span style="color: red;">0</span>';
-        }
-
-        return $qty;
-    }
-
-    public function callbackColumnPrice($value, $row, $column, $isExport)
-    {
-        if ($row->getData('status') == Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED) {
-            return '<span style="color: gray;">' . Mage::helper('M2ePro')->__('Not Listed') . '</span>';
-        }
-
-        if ($row->getData('status') == Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED) {
-            return Mage::helper('M2ePro')->__('N/A');
-        }
-
-        $onlineRegularPrice  = $row->getData('online_regular_price');
-        $onlineBusinessPrice = $row->getData('online_business_price');
-
-        $repricingHtml ='';
-
-        if (Mage::helper('M2ePro/Component_Amazon_Repricing')->isEnabled() &&
-            (bool)(int)$row->getData('is_repricing')) {
-            $image = 'money';
-            $text = Mage::helper('M2ePro')->__(
-                'This Product is used by Amazon Repricing Tool, so its Price cannot be managed via M2E Pro. <br>
-                 <strong>Please note</strong> that the Price value(s) shown in the grid might
-                 be different from the actual one from Amazon. It is caused by the delay
-                 in the values updating made via the Repricing Service'
-            );
-
-            if ((int)$row->getData('is_repricing_disabled') == 1 || (int)$row->getData('is_repricing_inactive') == 1) {
-                $image = 'money_disabled';
-                $text = Mage::helper('M2ePro')->__(
-                    'This Item is disabled or unable to be repriced on Amazon Repricing Tool.
-                     Its Price is updated via M2E Pro.'
-                );
-            }
-
-            $repricingHtml = <<<HTML
-<span style="float:right; text-align: left;">&nbsp;
-    <img class="tool-tip-image"
-         style="vertical-align: middle; width: 16px;"
-         src="{$this->getSkinUrl('M2ePro/images/'.$image.'.png')}">
-    <span class="tool-tip-message tool-tip-message tip-left" style="display:none;">
-        <img src="{$this->getSkinUrl('M2ePro/images/i_icon.png')}">
-        <span>{$text}</span>
-    </span>
-</span>
-HTML;
-        }
-
-        if (($onlineRegularPrice === null || $onlineRegularPrice === '') &&
-            ($onlineBusinessPrice === null || $onlineBusinessPrice === '')
-        ) {
-            return Mage::helper('M2ePro')->__('N/A') . $repricingHtml;
-        }
-
-        $marketplaceId = $this->getListingProduct()->getListing()->getMarketplaceId();
-        $currency = Mage::helper('M2ePro/Component_Amazon')
-            ->getCachedObject('Marketplace', $marketplaceId)
-            ->getChildObject()
-            ->getDefaultCurrency();
-
-        if ((float)$onlineRegularPrice <= 0) {
-            $priceValue = '<span style="color: #f00;">0</span>';
-        } else {
-            $priceValue = Mage::app()->getLocale()->currency($currency)->toCurrency($onlineRegularPrice);
-        }
-
-        if ($row->getData('is_repricing') &&
-            !$row->getData('is_repricing_disabled') &&
-            !$row->getData('is_repricing_inactive')) {
-            $accountId = $this->getListingProduct()->getListing()->getAccountId();
-            $sku = $row->getData('sku');
-
-            $priceValue =<<<HTML
-<a id="m2epro_repricing_price_value_{$sku}"
-   class="m2epro-repricing-price-value"
-   sku="{$sku}"
-   account_id="{$accountId}"
-   href="javascript:void(0)"
-   onclick="AmazonListingRepricingPriceHandlerObj.showRepricingPrice()">
-    {$priceValue}</a>
-HTML;
-        }
-
-        $resultHtml = '';
-
-        $salePrice = $row->getData('online_regular_sale_price');
-        if ((float)$salePrice > 0) {
-            $currentTimestamp = strtotime(Mage::helper('M2ePro')->getCurrentGmtDate(false, 'Y-m-d 00:00:00'));
-
-            $startDateTimestamp = strtotime($row->getData('online_regular_sale_price_start_date'));
-            $endDateTimestamp   = strtotime($row->getData('online_regular_sale_price_end_date'));
-
-            if ($currentTimestamp <= $endDateTimestamp) {
-                $iconHelpPath = $this->getSkinUrl('M2ePro/images/i_logo.png');
-                $toolTipIconPath = $this->getSkinUrl('M2ePro/images/i_icon.png');
-
-                $dateFormat = Mage::app()->getLocale()->getDateFormat(Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM);
-
-                $fromDate = Mage::app()->getLocale()->date(
-                    $row->getData('online_regular_sale_price_start_date'), $dateFormat
-                )->toString($dateFormat);
-                $toDate = Mage::app()->getLocale()->date(
-                    $row->getData('online_regular_sale_price_end_date'), $dateFormat
-                )->toString($dateFormat);
-
-                $intervalHtml = '<span><img class="tool-tip-image"
-                                 style="vertical-align: middle;"
-                                 src="'.$toolTipIconPath.'"><span class="tool-tip-message" style="display:none;
-                                                                  text-align: left;
-                                                                  width: 120px;
-                                                                  background: #E3E3E3;">
-                                <img src="'.$iconHelpPath.'">
-                                <span style="color:gray;">
-                                    <strong>From:</strong> '.$fromDate.'<br/>
-                                    <strong>To:</strong> '.$toDate.'
-                                </span>
-                            </span></span>';
-
-                $salePriceValue = Mage::app()->getLocale()->currency($currency)->toCurrency($salePrice);
-
-                if ($currentTimestamp >= $startDateTimestamp &&
-                    $currentTimestamp <= $endDateTimestamp &&
-                    $salePrice < (float)$onlineRegularPrice
-                ) {
-                    $resultHtml .= '<span style="color: grey; text-decoration: line-through;">'.$priceValue.'</span>' .
-                                    $repricingHtml;
-                    $resultHtml .= '<br/>'.$intervalHtml.'&nbsp;'.$salePriceValue;
-                } else {
-                    $resultHtml .= $priceValue . $repricingHtml;
-                    $resultHtml .= '<br/>'.$intervalHtml.
-                        '<span style="color:gray;">'.'&nbsp;'.$salePriceValue.'</span>';
-                }
-            }
-        }
-
-        if (empty($resultHtml)) {
-            $resultHtml = $priceValue . $repricingHtml;
-        }
-
-        if ((float)$onlineBusinessPrice > 0) {
-            $businessPriceValue = '<strong>B2B:</strong> '
-                                  .Mage::app()->getLocale()->currency($currency)->toCurrency($onlineBusinessPrice);
-
-            $businessDiscounts = $row->getData('online_business_discounts');
-            if (!empty($businessDiscounts) && $businessDiscounts = json_decode($businessDiscounts, true)) {
-                $iconHelpPath = $this->getSkinUrl('M2ePro/images/i_logo.png');
-                $toolTipIconPath = $this->getSkinUrl('M2ePro/images/i_icon.png');
-
-                $discountsHtml = '';
-
-                foreach ($businessDiscounts as $qty => $price) {
-                    $price = Mage::app()->getLocale()->currency($currency)->toCurrency($price);
-                    $discountsHtml .= 'QTY >= '.(int)$qty.', price '.$price.'<br />';
-                }
-
-                $discountsHtml = ' <span><img class="tool-tip-image"
-                                 style="vertical-align: middle;"
-                                 src="'.$toolTipIconPath.'"><span class="tool-tip-message tip-left" style="display:none;
-                                                                  text-align: left;
-                                                                  width: 150px;
-                                                                  background: #E3E3E3;">
-                                <img src="'.$iconHelpPath.'">
-                                <span style="color:gray;">
-                                    '.$discountsHtml.'
-                                </span>
-                            </span></span>';
-
-                $businessPriceValue .= $discountsHtml;
-            }
-
-            if (!empty($resultHtml)) {
-                $businessPriceValue = '<br />'.$businessPriceValue;
-            }
-
-            $resultHtml .= $businessPriceValue;
-        }
-
-        return $resultHtml;
-    }
-
-    public function callbackColumnStatus($value, $row, $column, $isExport)
-    {
-        $listingProductId = (int)$row->getData('id');
-
-        $html = $this->getViewLogIconHtml($row);
-
-        /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
-        $listingProduct = Mage::helper('M2ePro/Component_Amazon')->getObject('Listing_Product', $listingProductId);
-
-        $synchNote = $listingProduct->getSetting('additional_data', 'synch_template_list_rules_note');
-        if (!empty($synchNote)) {
-            $synchNote = Mage::helper('M2ePro/View')->getModifiedLogMessage($synchNote);
-
-            if (empty($html)) {
-                $html = <<<HTML
-<span style="float:right;">
-    <img id="map_link_error_icon_{$row->getId()}"
-         class="tool-tip-image"
-         style="vertical-align: middle;"
-         src="{$this->getSkinUrl('M2ePro/images/warning.png')}">
-    <span class="tool-tip-message tool-tip-warning tip-left" style="display:none;">
-        <img src="{$this->getSkinUrl('M2ePro/images/i_notice.gif')}">
-        <span>{$synchNote}</span>
-    </span>
-</span>
-HTML;
-            } else {
-                $html .= <<<HTML
-<div id="synch_template_list_rules_note_{$listingProductId}" style="display: none">{$synchNote}</div>
-HTML;
-            }
-        }
-
-        switch ($row->getData('status')) {
-            case Ess_M2ePro_Model_Listing_Product::STATUS_UNKNOWN:
-            case Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED:
-                $html .= '<span style="color: gray;">' . $value . '</span>';
-                break;
-
-            case Ess_M2ePro_Model_Listing_Product::STATUS_LISTED:
-                $html .= '<span style="color: green;">' . $value . '</span>';
-                break;
-
-            case Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED:
-                $html .= '<span style="color: red;">'.$value.'</span>';
-                break;
-
-            case Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED:
-                $html .= '<span style="color: orange; font-weight: bold;">'.$value.'</span>';
-                break;
-
-            default:
-                break;
-        }
-
-        $scheduledActionsCollection = Mage::getResourceModel('M2ePro/Listing_Product_ScheduledAction_Collection');
-        $scheduledActionsCollection->addFieldToFilter('listing_product_id', $row->getData('id'));
-
-        /** @var Ess_M2ePro_Model_Listing_Product_ScheduledAction $scheduledAction */
-        $scheduledAction = $scheduledActionsCollection->getFirstItem();
-
-        switch ($scheduledAction->getActionType()) {
-            case Ess_M2ePro_Model_Listing_Product::ACTION_LIST:
-                $html .= '<br/><span style="color: #605fff">[List is Scheduled...]</span>';
-                break;
-
-            case Ess_M2ePro_Model_Listing_Product::ACTION_RELIST:
-                $html .= '<br/><span style="color: #605fff">[Relist is Scheduled...]</span>';
-                break;
-
-            case Ess_M2ePro_Model_Listing_Product::ACTION_REVISE:
-
-                $reviseParts = array();
-
-                $additionalData = $scheduledAction->getAdditionalData();
-                if (!empty($additionalData['configurator'])) {
-                    $configurator = Mage::getModel('M2ePro/Amazon_Listing_Product_Action_Configurator');
-                    $configurator->setData($additionalData['configurator']);
-
-                    if ($configurator->isIncludingMode()) {
-                        if ($configurator->isQtyAllowed()) {
-                            $reviseParts[] = 'QTY';
-                        }
-
-                        if ($configurator->isRegularPriceAllowed() || $configurator->isBusinessPriceAllowed()) {
-                            $reviseParts[] = 'Price';
-                        }
-
-                        if ($configurator->isDetailsAllowed()) {
-                            $reviseParts[] = 'Details';
-                        }
-
-                        if ($configurator->isImagesAllowed()) {
-                            $reviseParts[] = 'Images';
-                        }
-                    }
-                }
-
-                if (!empty($reviseParts)) {
-                    $html .= '<br/><span style="color: #605fff">[Revise of '.implode(', ', $reviseParts)
-                             .' is Scheduled...]</span>';
-                } else {
-                    $html .= '<br/><span style="color: #605fff">[Revise is Scheduled...]</span>';
-                }
-                break;
-
-            case Ess_M2ePro_Model_Listing_Product::ACTION_STOP:
-                $html .= '<br/><span style="color: #605fff">[Stop is Scheduled...]</span>';
-                break;
-
-            case Ess_M2ePro_Model_Listing_Product::ACTION_DELETE:
-                $html .= '<br/><span style="color: #605fff">[Delete is Scheduled...]</span>';
-                break;
-
-            default:
-                break;
-        }
-
-        $tempLocks = $this->getLockedData($row);
-        $tempLocks = $tempLocks['object_locks'];
-
-        foreach ($tempLocks as $lock) {
-            switch ($lock->getTag()) {
-                case 'list_action':
-                    $html .= '<br/><span style="color: #605fff">[Listing...]</span>';
-                    break;
-
-                case 'relist_action':
-                    $html .= '<br/><span style="color: #605fff">[Relisting...]</span>';
-                    break;
-
-                case 'revise_action':
-                    $html .= '<br/><span style="color: #605fff">[Revising...]</span>';
-                    break;
-
-                case 'stop_action':
-                    $html .= '<br/><span style="color: #605fff">[Stopping...]</span>';
-                    break;
-
-                case 'stop_and_remove_action':
-                    $html .= '<br/><span style="color: #605fff">[Stopping...]</span>';
-                    break;
-
-                case 'delete_and_remove_action':
-                    $html .= '<br/><span style="color: #605fff">[Removing...]</span>';
-                    break;
-
-                case 'switch_to_afn_action':
-                    $html .= '<br/><span style="color: #605fff">[Switch to AFN in Progress...]</span>';
-                    break;
-
-                case 'switch_to_mfn_action':
-                    $html .= '<br/><span style="color: #605fff">[Switch to MFN in Progress...]</span>';
-                    break;
-
-                default:
-                    break;
-            }
-        }
-
-        return $html;
     }
 
     public function callbackProductOptions($collection, $column)
@@ -1110,218 +672,6 @@ HTML;
 
     //########################################
 
-    /**
-     * @param Ess_M2ePro_Model_Listing_Product $listingProduct
-     * @return string
-     */
-    public function getViewLogIconHtml($listingProduct)
-    {
-        $listingProductId = (int)$listingProduct->getId();
-
-        // Get last messages
-        // ---------------------------------------
-        /** @var $connRead Varien_Db_Adapter_Pdo_Mysql */
-        $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
-
-        $dbSelect = $connRead->select()
-            ->from(
-                Mage::getResourceModel('M2ePro/Listing_Log')->getMainTable(),
-                array('action_id','action','type','description','create_date','initiator')
-            )
-            ->where('`listing_product_id` = ?', $listingProductId)
-            ->where('`action_id` IS NOT NULL')
-            ->where('`action` IN (?)', $this->getAvailableActions())
-            ->order(array('id DESC'))
-            ->limit(30);
-
-        $logRows = $connRead->fetchAll($dbSelect);
-        // ---------------------------------------
-
-        // Get grouped messages by action_id
-        // ---------------------------------------
-        $actionsRows = array();
-        $tempActionRows = array();
-        $lastActionId = false;
-
-        foreach ($logRows as $row) {
-            $row['description'] = Mage::helper('M2ePro/View')->getModifiedLogMessage($row['description']);
-
-            if ($row['action_id'] !== $lastActionId) {
-                if (!empty($tempActionRows)) {
-                    $actionsRows[] = array(
-                        'type' => $this->getMainTypeForActionId($tempActionRows),
-                        'date' => $this->getMainDateForActionId($tempActionRows),
-                        'action' => $this->getActionForAction($tempActionRows[0]),
-                        'initiator' => $this->getInitiatorForAction($tempActionRows[0]),
-                        'items' => $tempActionRows
-                    );
-                    $tempActionRows = array();
-                }
-
-                $lastActionId = $row['action_id'];
-            }
-
-            $tempActionRows[] = $row;
-        }
-
-        if (!empty($tempActionRows)) {
-            $actionsRows[] = array(
-                'type' => $this->getMainTypeForActionId($tempActionRows),
-                'date' => $this->getMainDateForActionId($tempActionRows),
-                'action' => $this->getActionForAction($tempActionRows[0]),
-                'initiator' => $this->getInitiatorForAction($tempActionRows[0]),
-                'items' => $tempActionRows
-            );
-        }
-
-        if (empty($actionsRows)) {
-            return '';
-        }
-
-        foreach ($actionsRows as &$actionsRow) {
-            usort(
-                $actionsRow['items'], function($a, $b)
-                {
-                $sortOrder = array(
-                    Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS => 1,
-                    Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR => 2,
-                    Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING => 3,
-                );
-
-                return $sortOrder[$a["type"]] > $sortOrder[$b["type"]];
-                }
-            );
-        }
-
-        unset($actionsRow);
-
-        $tips = array(
-            Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS => 'Last Action was completed successfully.',
-            Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR => 'Last Action was completed with error(s).',
-            Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING => 'Last Action was completed with warning(s).'
-        );
-
-        $icons = array(
-            Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS => 'normal',
-            Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR => 'error',
-            Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING => 'warning'
-        );
-
-        $summary = $this->getLayout()->createBlock(
-            'M2ePro/adminhtml_log_grid_summary', '', array(
-                'entity_id'         => (int)$listingProduct->getId(),
-                'rows'              => $actionsRows,
-                'tips'              => $tips,
-                'icons'             => $icons,
-                'view_help_handler' => 'ListingGridHandlerObj.viewItemHelp',
-                'hide_help_handler' => 'ListingGridHandlerObj.hideItemHelp',
-            )
-        );
-
-        return $summary->toHtml();
-    }
-
-    protected function getAvailableActions()
-    {
-        return array(
-            Ess_M2ePro_Model_Listing_Log::ACTION_LIST_PRODUCT_ON_COMPONENT,
-            Ess_M2ePro_Model_Listing_Log::ACTION_RELIST_PRODUCT_ON_COMPONENT,
-            Ess_M2ePro_Model_Listing_Log::ACTION_REVISE_PRODUCT_ON_COMPONENT,
-            Ess_M2ePro_Model_Listing_Log::ACTION_STOP_PRODUCT_ON_COMPONENT,
-            Ess_M2ePro_Model_Listing_Log::ACTION_DELETE_PRODUCT_FROM_COMPONENT,
-            Ess_M2ePro_Model_Listing_Log::ACTION_STOP_AND_REMOVE_PRODUCT,
-            Ess_M2ePro_Model_Listing_Log::ACTION_DELETE_AND_REMOVE_PRODUCT,
-            Ess_M2ePro_Model_Listing_Log::ACTION_CHANNEL_CHANGE,
-            Ess_M2ePro_Model_Listing_Log::ACTION_SWITCH_TO_AFN_ON_COMPONENT,
-            Ess_M2ePro_Model_Listing_Log::ACTION_SWITCH_TO_MFN_ON_COMPONENT
-        );
-    }
-
-    public function getActionForAction($actionRows)
-    {
-        $string = '';
-
-        switch ($actionRows['action']) {
-            case Ess_M2ePro_Model_Listing_Log::ACTION_LIST_PRODUCT_ON_COMPONENT:
-                $string = Mage::helper('M2ePro')->__('List');
-                break;
-            case Ess_M2ePro_Model_Listing_Log::ACTION_RELIST_PRODUCT_ON_COMPONENT:
-                $string = Mage::helper('M2ePro')->__('Relist');
-                break;
-            case Ess_M2ePro_Model_Listing_Log::ACTION_REVISE_PRODUCT_ON_COMPONENT:
-                $string = Mage::helper('M2ePro')->__('Revise');
-                break;
-            case Ess_M2ePro_Model_Listing_Log::ACTION_STOP_PRODUCT_ON_COMPONENT:
-                $string = Mage::helper('M2ePro')->__('Stop');
-                break;
-            case Ess_M2ePro_Model_Listing_Log::ACTION_DELETE_PRODUCT_FROM_COMPONENT:
-                $string = Mage::helper('M2ePro')->__('Remove from Channel');
-                break;
-            case Ess_M2ePro_Model_Listing_Log::ACTION_STOP_AND_REMOVE_PRODUCT:
-                $string = Mage::helper('M2ePro')->__('Stop on Channel / Remove from Listing');
-                break;
-            case Ess_M2ePro_Model_Listing_Log::ACTION_DELETE_AND_REMOVE_PRODUCT:
-                $string = Mage::helper('M2ePro')->__('Remove from Channel & Listing');
-                break;
-            case Ess_M2ePro_Model_Listing_Log::ACTION_CHANNEL_CHANGE:
-                $string = Mage::helper('M2ePro')->__('Channel Change');
-                break;
-            case Ess_M2ePro_Model_Listing_Log::ACTION_SWITCH_TO_AFN_ON_COMPONENT:
-                $string = Mage::helper('M2ePro')->__('Switch to AFN');
-                break;
-            case Ess_M2ePro_Model_Listing_Log::ACTION_SWITCH_TO_MFN_ON_COMPONENT:
-                $string = Mage::helper('M2ePro')->__('Switch to MFN');
-                break;
-        }
-
-        return $string;
-    }
-
-    public function getInitiatorForAction($actionRows)
-    {
-        $string = '';
-
-        switch ((int)$actionRows['initiator']) {
-            case Ess_M2ePro_Helper_Data::INITIATOR_UNKNOWN:
-                $string = '';
-                break;
-            case Ess_M2ePro_Helper_Data::INITIATOR_USER:
-                $string = Mage::helper('M2ePro')->__('Manual');
-                break;
-            case Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION:
-                $string = Mage::helper('M2ePro')->__('Automatic');
-                break;
-        }
-
-        return $string;
-    }
-
-    public function getMainTypeForActionId($actionRows)
-    {
-        $type = Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS;
-
-        foreach ($actionRows as $row) {
-            if ($row['type'] == Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR) {
-                $type = Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR;
-                break;
-            }
-
-            if ($row['type'] == Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING) {
-                $type = Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING;
-            }
-        }
-
-        return $type;
-    }
-
-    public function getMainDateForActionId($actionRows)
-    {
-        $format = Mage::app()->getLocale()->getDateTimeFormat(Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM);
-        return Mage::app()->getLocale()->date(strtotime($actionRows[0]['create_date']))->toString($format);
-    }
-
-    //########################################
-
     public function getMainButtonsHtml()
     {
         $html = '';
@@ -1353,7 +703,7 @@ HTML;
             // ---------------------------------------
             $data = array(
                 'label'   => Mage::helper('adminhtml')->__('Add New Child Product'),
-                'onclick' => 'ListingGridHandlerObj.showNewChildForm('. !$this->hasUnusedChannelVariations() .')',
+                'onclick' => 'ListingGridObj.showNewChildForm('. !$this->hasUnusedChannelVariations() .')',
                 'class'   => 'task',
                 'id'      => 'add_new_child_button'
             );
@@ -1535,23 +885,6 @@ HTML;
             '*/adminhtml_amazon_listing_variation_product_manage/setChildListingProductOptions'
         );
 
-        $taskCompletedMessage = $helper->escapeJs($helper->__('Task completed. Please wait ...'));
-        $taskCompletedSuccessMessage = $helper->escapeJs(
-            $helper->__('"%task_title%" Task was successfully submitted to be processed.')
-        );
-        $taskCompletedWarningMessage = $helper->escapeJs(
-            $helper->__(
-                '"%task_title%" Task was completed with warnings.
-            <a target="_blank" href="%url%">View Log</a> for the details.'
-            )
-        );
-        $taskCompletedErrorMessage = $helper->escapeJs(
-            $helper->__(
-                '"%task_title%" Task was completed with errors.
-            <a target="_blank" href="%url%">View Log</a> for the details.'
-            )
-        );
-
         $lockedObjNoticeMessage = $helper->escapeJs($helper->__('Some Amazon request(s) are being processed now.'));
         $sendingDataToAmazonMessage = $helper->escapeJs(
             $helper->__(
@@ -1589,20 +922,7 @@ HTML;
                 Mage::helper('M2ePro')->__('Removing From Amazon And Listing Selected Items')
             );
 
-        $selectItemsMessage = $helper->escapeJs($helper->__('Please select Items.'));
-        $selectActionMessage = $helper->escapeJs($helper->__('Please select Action.'));
-
         $errorChangingProductOptions = $helper->escapeJs($helper->__('Please Select Product Options.'));
-
-        $successWord = $helper->escapeJs($helper->__('Success'));
-        $noticeWord = $helper->escapeJs($helper->__('Notice'));
-        $warningWord = $helper->escapeJs($helper->__('Warning'));
-        $errorWord = $helper->escapeJs($helper->__('Error'));
-        $closeWord = $helper->escapeJs($helper->__('Close'));
-        $confirmWord = $helper->escapeJs($helper->__('Confirm'));
-        $cancelWord = $helper->escapeJs($helper->__('Cancel'));
-
-        $textConfirm = $helper->escapeJs($helper->__('Are you sure?'));
 
         $mapToTemplateDescription = $this->getUrl('*/adminhtml_amazon_listing/mapToTemplateDescription');
         $unmapFromTemplateDescription = $this->getUrl('*/adminhtml_amazon_listing/unmapFromTemplateDescription');
@@ -1657,11 +977,6 @@ HTML;
     M2ePro.url.getAFNQtyBySku = '{$getAFNQtyBySku}';
     M2ePro.url.getUpdatedRepricingPriceBySkus = '{$getUpdatedRepricingPriceBySkus}';
 
-    M2ePro.text.task_completed_message = '{$taskCompletedMessage}';
-    M2ePro.text.task_completed_success_message = '{$taskCompletedSuccessMessage}';
-    M2ePro.text.task_completed_warning_message = '{$taskCompletedWarningMessage}';
-    M2ePro.text.task_completed_error_message = '{$taskCompletedErrorMessage}';
-
     M2ePro.text.locked_obj_notice = '{$lockedObjNoticeMessage}';
     M2ePro.text.sending_data_message = '{$sendingDataToAmazonMessage}';
     M2ePro.text.view_all_product_log_message = '{$viewAllProductLogMessage}';
@@ -1677,22 +992,9 @@ HTML;
     M2ePro.text.stopping_and_removing_selected_items_message = '{$stoppingAndRemovingSelectedItemsMessage}';
     M2ePro.text.deleting_and_removing_selected_items_message = '{$deletingAndRemovingSelectedItemsMessage}';
 
-    M2ePro.text.select_items_message = '{$selectItemsMessage}';
-    M2ePro.text.select_action_message = '{$selectActionMessage}';
-
     M2ePro.text.error_changing_product_options = '{$errorChangingProductOptions}';
 
-    M2ePro.text.success_word = '{$successWord}';
-    M2ePro.text.notice_word = '{$noticeWord}';
-    M2ePro.text.warning_word = '{$warningWord}';
-    M2ePro.text.error_word = '{$errorWord}';
-    M2ePro.text.close_word = '{$closeWord}';
-    M2ePro.text.confirm_word = '{$confirmWord}';
-    M2ePro.text.cancel_word = '{$cancelWord}';
-
     M2ePro.text.templateDescriptionPopupTitle = '{$templateDescriptionPopupTitle}';
-
-    M2ePro.text.confirm = '{$textConfirm}';
 
     M2ePro.customData.componentMode = '{$component}';
     M2ePro.customData.gridId = 'amazonVariationProductManageGrid';
@@ -1726,9 +1028,9 @@ HTML;
 
     Event.observe(window, 'load', function() {
 
-        CommonHandler.prototype.scroll_page_to_top = function() { return; }
+        Common.prototype.scroll_page_to_top = function() { return; }
 
-        ListingGridHandlerObj = new AmazonListingVariationProductManageVariationsGridHandler(
+        ListingGridObj = new AmazonListingVariationProductManageVariationsGrid(
             'amazonVariationProductManageGrid',
             {$listingId}
         );
@@ -1736,16 +1038,16 @@ HTML;
         ListingProgressBarObj = new ProgressBar('listing_view_progress_bar');
         GridWrapperObj = new AreaWrapper('listing_view_content_container');
 
-        AmazonListingAfnQtyHandlerObj = new AmazonListingAfnQtyHandler();
-        AmazonListingRepricingPriceHandlerObj = new AmazonListingRepricingPriceHandler();
+        AmazonListingAfnQtyObj = new AmazonListingAfnQty();
+        AmazonListingRepricingPriceObj = new AmazonListingRepricingPrice();
 
         setTimeout(function() {
-            ListingGridHandlerObj.afterInitPage();
+            ListingGridObj.afterInitPage();
         }, 350);
     });
 
-    if (typeof ListingGridHandlerObj != 'undefined') {
-        ListingGridHandlerObj.afterInitPage();
+    if (typeof ListingGridObj != 'undefined') {
+        ListingGridObj.afterInitPage();
     }
 
     {$hideMassAction}

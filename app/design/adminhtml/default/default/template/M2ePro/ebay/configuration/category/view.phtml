@@ -1,0 +1,26 @@
+<?php
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
+ */
+
+// @codingStandardsIgnoreFile
+
+/** @var $this Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_View */
+
+?>
+
+<div class="content-header">
+    <table cellspacing="0">
+        <tr>
+            <td><?php echo $this->getHeaderHtml() ?></td>
+            <td class="form-buttons">
+                <?php echo $this->getButtonsHtml() ?>
+            </td>
+        </tr>
+    </table>
+</div>
+<?php echo $this->getChildHtml('info')?>
+<?php echo $this->getChildHtml('tabs')?>
+<div id="tabs_container"></div>

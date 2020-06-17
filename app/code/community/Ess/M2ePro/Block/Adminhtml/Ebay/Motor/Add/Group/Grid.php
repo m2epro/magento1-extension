@@ -153,7 +153,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Motor_Add_Group_Grid extends Mage_Adminhtm
         }
 
         return <<<HTML
-<a onclick="EbayMotorAddGroupGridHandlerObj.viewGroupContentPopup({$row->getId()}, '{$title}');"
+<a onclick="EbayMotorAddGroupGridObj.viewGroupContentPopup({$row->getId()}, '{$title}');"
     href="javascript:void(0)">
     {$itemsCount}
 </a>
@@ -176,12 +176,12 @@ HTML;
 
         if ($this->canDisplayContainer()) {
             $additionalHtml .= <<<JS
-EbayMotorAddGroupGridHandlerObj = new EbayMotorAddGroupGridHandler('{$this->getId()}');
+EbayMotorAddGroupGridObj = new EbayMotorAddGroupGrid('{$this->getId()}');
 JS;
         }
 
         $additionalHtml .= <<<JS
-EbayMotorAddGroupGridHandlerObj.afterInitPage();
+EbayMotorAddGroupGridObj.afterInitPage();
 JS;
 
         $additionalHtml .= '</script>';

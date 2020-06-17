@@ -71,7 +71,7 @@ $itemId = isset($duplicateMark['item_id']) ? $duplicateMark['item_id'] : null;
 
     <?php endif; ?>
 
-    <a href="javascript: void(0);" onclick="EbayListingEbayGridHandlerObj.solveItemDuplicateAction(<?php echo $this->listingProduct->getId(); ?>, false, false);">
+    <a href="javascript: void(0);" onclick="EbayListingEbayGridObj.solveItemDuplicateAction(<?php echo $this->listingProduct->getId(); ?>, false, false);">
         <span>
             <?php echo Mage::helper('M2ePro')->__('Ignore this problem for the Item %s%', $itemId); ?>
         </span>
@@ -80,7 +80,7 @@ $itemId = isset($duplicateMark['item_id']) ? $duplicateMark['item_id'] : null;
 
     <?php if ($itemId) : ?>
 
-        <a href="javascript:void(0);" onclick="EbayListingEbayGridHandlerObj.solveItemDuplicateAction(<?php echo $this->listingProduct->getId(); ?>, true, false);">
+        <a href="javascript:void(0);" onclick="EbayListingEbayGridObj.solveItemDuplicateAction(<?php echo $this->listingProduct->getId(); ?>, true, false);">
             <span>
                 <?php echo Mage::helper('M2ePro')->__('Stop Item %s% on eBay', $itemId); ?>
             </span>
@@ -88,7 +88,7 @@ $itemId = isset($duplicateMark['item_id']) ? $duplicateMark['item_id'] : null;
 
         <br>
 
-        <a href="javascript:void(0);" onclick="EbayListingEbayGridHandlerObj.solveItemDuplicateAction(<?php echo $this->listingProduct->getId(); ?>, true, true);">
+        <a href="javascript:void(0);" onclick="EbayListingEbayGridObj.solveItemDuplicateAction(<?php echo $this->listingProduct->getId(); ?>, true, true);">
         <span>
             <?php echo Mage::helper('M2ePro')->__('Stop Item %s% on eBay and list/relist the current Item.', $itemId); ?>
         </span>

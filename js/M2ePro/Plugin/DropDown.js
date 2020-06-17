@@ -1,5 +1,4 @@
-DropDown = Class.create();
-DropDown.prototype = {
+window.DropDown = Class.create({
 
     // ---------------------------------------
 
@@ -107,4 +106,4 @@ DropDown.prototype = {
     }
 
     // ---------------------------------------
-};
+});

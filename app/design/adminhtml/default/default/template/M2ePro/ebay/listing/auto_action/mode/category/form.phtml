@@ -9,12 +9,8 @@
 
 /** @var $this Ess_M2ePro_Block_Adminhtml_Ebay_Listing_AutoAction_Mode_Category_Form */
 
-?>
+$formData = array_merge($this->getDefault(), $this->getFormData());
 
-<?php
-    $formData = $this->getFormData();
-    $default  = $this->getDefault();
-    $formData = array_merge($default, $formData);
 ?>
 
 <script type="text/javascript">
@@ -24,19 +20,19 @@
 
 <script type="text/javascript">
 
-    ListingAutoActionHandlerObj.magentoCategoryIdsFromOtherGroups = <?php echo json_encode($this->getCategoriesFromOtherGroups()) ?>;
+    ListingAutoActionObj.magentoCategoryIdsFromOtherGroups = <?php echo json_encode($this->getCategoriesFromOtherGroups()) ?>;
 
     $('adding_mode')
-        .observe('change', ListingAutoActionHandlerObj.addingModeChange)
+        .observe('change', ListingAutoActionObj.addingModeChange)
         .simulate('change');
 
     $('continue_button')
         .stopObserving('click')
-        .observe('click', ListingAutoActionHandlerObj.categoryStepTwo);
+        .observe('click', ListingAutoActionObj.categoryStepTwo);
 
     $('reset_button')
         .observe('click', function() {
-            ListingAutoActionHandlerObj.reset(false);
+            ListingAutoActionObj.reset(false);
         });
 
 </script>
@@ -72,7 +68,7 @@
     }
 </style>
 
-<div id="data_container" style="padding-bottom: 10px;">
+<div id="data_container">
 
     <div id="category_tree_container">
         <?php echo $this->getChildHtml('category_tree') ?>
@@ -170,6 +166,7 @@
     </div>
 
 </div>
+<div id="ebay_category_chooser"></div>
 
 <div>
     <input type="hidden" name="validate_category_selection" id="validate_category_selection" class="M2ePro-validate-category-selection" />

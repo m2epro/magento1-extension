@@ -25,29 +25,28 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_Variation_Product_ManageController
             ->addJs('M2ePro/Plugin/DropDown.js')
             ->addJs('M2ePro/Plugin/ProgressBar.js')
             ->addJs('M2ePro/Plugin/AreaWrapper.js')
-            ->addJs('M2ePro/Listing/ProductGridHandler.js')
+            ->addJs('M2ePro/Listing/ProductGrid.js')
 
-            ->addJs('M2ePro/GridHandler.js')
-            ->addJs('M2ePro/Listing/GridHandler.js')
-            ->addJs('M2ePro/Walmart/Listing/GridHandler.js')
+            ->addJs('M2ePro/Grid.js')
+            ->addJs('M2ePro/Listing/Grid.js')
+            ->addJs('M2ePro/Walmart/Listing/Grid.js')
 
-            ->addJs('M2ePro/ActionHandler.js')
-            ->addJs('M2ePro/Listing/ActionHandler.js')
-            ->addJs('M2ePro/Listing/MovingHandler.js')
-            ->addJs('M2ePro/Walmart/Listing/ActionHandler.js')
-            ->addJs('M2ePro/Walmart/Listing/Template/CategoryHandler.js')
-            ->addJs('M2ePro/Walmart/Listing/VariationProductManageHandler.js')
-            ->addJs('M2ePro/Walmart/Listing/Product/EditChannelDataHandler.js')
-            ->addJs('M2ePro/Walmart/Listing/VariationProductManageVariationsGridHandler.js')
+            ->addJs('M2ePro/Action.js')
+            ->addJs('M2ePro/Listing/Action.js')
+            ->addJs('M2ePro/Listing/Moving.js')
+            ->addJs('M2ePro/Walmart/Listing/Action.js')
+            ->addJs('M2ePro/Walmart/Listing/Template/Category.js')
+            ->addJs('M2ePro/Walmart/Listing/VariationProductManage.js')
+            ->addJs('M2ePro/Walmart/Listing/Product/EditChannelData.js')
+            ->addJs('M2ePro/Walmart/Listing/VariationProductManageVariationsGrid.js')
 
-            ->addJs('M2ePro/TemplateHandler.js')
-            ->addJs('M2ePro/Walmart/Listing/Category/TreeHandler.js')
-            ->addJs('M2ePro/Walmart/Listing/AddListingHandler.js')
-            ->addJs('M2ePro/Walmart/Listing/SettingsHandler.js')
-            ->addJs('M2ePro/Walmart/Listing/ChannelSettingsHandler.js')
-            ->addJs('M2ePro/Walmart/Listing/ProductsFilterHandler.js')
+            ->addJs('M2ePro/TemplateManager.js')
+            ->addJs('M2ePro/Walmart/Listing/Category/Tree.js')
+            ->addJs('M2ePro/Walmart/Listing/Product/Add.js')
+            ->addJs('M2ePro/Walmart/Listing/Settings.js')
+            ->addJs('M2ePro/Walmart/Listing/ProductsFilter.js')
 
-            ->addJs('M2ePro/Walmart/Listing/Product/VariationHandler.js');
+            ->addJs('M2ePro/Walmart/Listing/Product/Variation.js');
 
         $this->_initPopUp();
 
@@ -323,7 +322,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_Variation_Product_ManageController
             ->createBlock('M2ePro/adminhtml_walmart_listing_template_description_grid');
         $grid->setCheckNewAsinAccepted(true);
         $grid->setProductsIds(array($productId));
-        $grid->setMapToTemplateJsFn('ListingGridHandlerObj.variationProductManageHandler.mapToTemplateDescription');
+        $grid->setMapToTemplateJsFn('ListingGridObj.variationProductManageHandler.mapToTemplateDescription');
 
         return $this->getResponse()->setBody($grid->toHtml());
     }
@@ -770,78 +769,6 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_Variation_Product_ManageController
 
         $sku = $listingProduct->getSku();
         return !empty($sku);
-    }
-
-    protected function setGeneralIdOwner($productId, $generalIdOwner)
-    {
-        $data = array('success' => true);
-
-        /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
-        $listingProduct = Mage::helper('M2ePro/Component_Walmart')->getObject('Listing_Product', $productId);
-
-        /** @var Ess_M2ePro_Model_Walmart_Listing_Product $walmartListingProduct */
-        $walmartListingProduct = $listingProduct->getChildObject();
-
-        if ($generalIdOwner == Ess_M2ePro_Model_Walmart_Listing_Product::IS_GENERAL_ID_OWNER_YES) {
-            if (!$walmartListingProduct->isExistDescriptionTemplate()) {
-                $data['success'] = false;
-                $data['msg'] = Mage::helper('M2ePro')->__(
-                    'Description Policy with enabled ability to create new Product Type(s)
-                     should be added in order for operation to be finished.'
-                );
-
-                return $data;
-            }
-
-            if (!$walmartListingProduct->getWalmartDescriptionTemplate()->isNewAsinAccepted()) {
-                $data['success'] = false;
-                $data['msg'] = Mage::helper('M2ePro')->__(
-                    'Description Policy with enabled ability to create new Product Type(s)
-                     should be added in order for operation to be finished.'
-                );
-
-                return $data;
-            }
-
-            $detailsModel = Mage::getModel('M2ePro/Walmart_Marketplace_Details');
-            $detailsModel->setMarketplaceId($listingProduct->getListing()->getMarketplaceId());
-            $themes = $detailsModel->getVariationAttributes(
-                $walmartListingProduct->getWalmartDescriptionTemplate()->getProductDataNick()
-            );
-
-            if (empty($themes)) {
-                $data['success'] = false;
-                $data['msg'] = Mage::helper('M2ePro')->__(
-                    'The Category chosen in the Description Policy does not support variations.'
-                );
-
-                return $data;
-            }
-
-            $productAttributes = $walmartListingProduct->getVariationManager()
-                ->getTypeModel()
-                ->getProductAttributes();
-
-            $isCountEqual = false;
-            foreach ($themes as $theme) {
-                if (count($theme['attributes']) == count($productAttributes)) {
-                    $isCountEqual = true;
-                    break;
-                }
-            }
-
-            if (!$isCountEqual) {
-                $data['success'] = false;
-                $data['msg'] = Mage::helper('M2ePro')->__('Number of attributes doesn’t match');
-
-                return $data;
-            }
-        }
-
-        $listingProduct->setData('is_general_id_owner', $generalIdOwner)->save();
-        $walmartListingProduct->getVariationManager()->getTypeModel()->getProcessor()->process();
-
-        return $data;
     }
 
     //########################################

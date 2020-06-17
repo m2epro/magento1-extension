@@ -137,7 +137,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Grid extends Ess_M2ePro_Block_Ad
                     'params' => array(
                         'back' => $backUrl,
                         'step' => 2,
-                        'source' => Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_SourceMode::SOURCE_LIST
+                        'source' => Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Product_Add_SourceMode::SOURCE_LIST
                     )
                 )
             ),
@@ -151,7 +151,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Grid extends Ess_M2ePro_Block_Ad
                     'params' => array(
                         'back' => $backUrl,
                         'step' => 2,
-                        'source' => Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_SourceMode::SOURCE_CATEGORIES
+                        'source' => Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Product_Add_SourceMode::SOURCE_CATEGORIES
                     )
                 )
             ),

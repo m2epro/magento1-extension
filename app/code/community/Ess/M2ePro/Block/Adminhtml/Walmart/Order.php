@@ -32,26 +32,59 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Order extends Mage_Adminhtml_Block_Widg
         $this->removeButton('save');
         $this->removeButton('edit');
 
+        $this->_addButton(
+            'upload_by_user', array(
+                'label'     => Mage::helper('M2ePro')->__('Order Reimport'),
+                'onclick'   => 'UploadByUserObj.openPopup()',
+                'class'     => 'button_link'
+            )
+        );
+
         $url = $this->getUrl('*/adminhtml_walmart_account/index');
         $this->_addButton(
             'accounts', array(
-            'label'     => Mage::helper('M2ePro')->__('Accounts'),
-            'onclick'   => 'setLocation(\'' . $url .'\')',
-            'class'     => 'button_link'
+                'label'     => Mage::helper('M2ePro')->__('Accounts'),
+                'onclick'   => 'setLocation(\'' . $url .'\')',
+                'class'     => 'button_link'
             )
         );
 
         $url = $this->getUrl('*/adminhtml_walmart_log/order');
         $this->_addButton(
             'logs', array(
-            'label'     => Mage::helper('M2ePro')->__('Logs & Events'),
-            'onclick'   => 'window.open(\'' . $url .'\')',
-            'class'     => 'button_link'
+                'label'     => Mage::helper('M2ePro')->__('Logs & Events'),
+                'onclick'   => 'window.open(\'' . $url .'\')',
+                'class'     => 'button_link'
             )
         );
     }
 
     //########################################
+
+    protected function _prepareLayout()
+    {
+        parent::_prepareLayout();
+
+        $this->getLayout()->getBlock('head')->addJs('M2ePro/Order/UploadByUser.js');
+
+        Mage::helper('M2ePro/View')->getJsUrlsRenderer()->addControllerActions('adminhtml_order_uploadByUser');
+
+        Mage::helper('M2ePro/View')->getJsTranslatorRenderer()->addTranslations(
+            array(
+                'Order Reimport',
+                'Order importing in progress.',
+                'Order importing is canceled.'
+            )
+        );
+
+        Mage::helper('M2ePro/View')->getJsRenderer()->addOnReadyJs(
+            <<<JS
+UploadByUserObj = new UploadByUser('walmart', 'orderUploadByUserPopupGrid');
+JS
+        );
+
+        return $this;
+    }
 
     public function getGridHtml()
     {
@@ -114,7 +147,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Order extends Mage_Adminhtml_Block_Widg
         return <<<HTML
 <script type="text/javascript">
     setTimeout(function() {
-        OrderHandlerObj.initializeGrids();
+        OrderObj.initializeGrids();
     }, 50);
 </script>
 HTML;

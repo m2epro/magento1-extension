@@ -27,7 +27,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_Edit_Tabs_General extends Mage_Adm
         // ---------------------------------------
         $data = array(
             'label'   => Mage::helper('M2ePro')->__('Get Token'),
-            'onclick' => 'EbayAccountHandlerObj.get_token();',
+            'onclick' => 'EbayAccountObj.get_token();',
             'class'   => 'get_token_button'
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
@@ -38,7 +38,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_Edit_Tabs_General extends Mage_Adm
         if ($this->isSellApiMode()) {
             $data = array(
                 'label'   => Mage::helper('M2ePro')->__('Get Token'),
-                'onclick' => 'EbayAccountHandlerObj.get_sell_api_token();',
+                'onclick' => 'EbayAccountObj.get_sell_api_token();',
                 'class'   => 'get_sell_token_button'
             );
             $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);

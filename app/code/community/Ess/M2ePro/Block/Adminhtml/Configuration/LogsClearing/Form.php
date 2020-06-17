@@ -42,12 +42,11 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_LogsClearing_Form
     protected function _prepareLayout()
     {
         parent::_prepareLayout();
-        $this->getLayout()->getBlock('head')->addJs('M2ePro/Configuration/LogClearingHandler.js');
+        $this->getLayout()->getBlock('head')->addJs('M2ePro/Configuration/LogClearing.js');
     }
 
     protected function _beforeToHtml()
     {
-        /** @var $config Ess_M2ePro_Model_Config_Module */
         $config = Mage::helper('M2ePro/Module')->getConfig();
         $tasks = array(
             Ess_M2ePro_Model_Log_Clearing::LOG_LISTINGS,
@@ -79,7 +78,7 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_LogsClearing_Form
             // ---------------------------------------
             $data = array(
                 'label'   => Mage::helper('M2ePro')->__('Run Now'),
-                'onclick' => 'LogClearingHandlerObj.runNowLog(\'' . $task . '\')',
+                'onclick' => 'LogClearingObj.runNowLog(\'' . $task . '\')',
                 'class'   => 'run_now_' . $task
             );
             $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
@@ -93,7 +92,7 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_LogsClearing_Form
             // ---------------------------------------
             $data = array(
                 'label'   => Mage::helper('M2ePro')->__('Clear All'),
-                'onclick' => 'LogClearingHandlerObj.clearAllLog(\'' . $task . '\')',
+                'onclick' => 'LogClearingObj.clearAllLog(\'' . $task . '\')',
                 'class'   => 'clear_all_' . $task
             );
             $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);

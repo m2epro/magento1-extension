@@ -64,7 +64,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Product_Variation_Manage
 
         // ---------------------------------------
 
-        $onClick = 'ListingProductVariationHandlerObj.manageGenerateAction(false);';
+        $onClick = 'ListingProductVariationObj.manageGenerateAction(false);';
         $buttonBlock = $this->getLayout()
             ->createBlock('adminhtml/widget_button')
             ->setData(
@@ -77,7 +77,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Product_Variation_Manage
             );
         $this->setChild('variation_manage_generate_all', $buttonBlock);
 
-        $onClick = 'ListingProductVariationHandlerObj.manageGenerateAction(true);';
+        $onClick = 'ListingProductVariationObj.manageGenerateAction(true);';
         $buttonBlock = $this->getLayout()
             ->createBlock('adminhtml/widget_button')
             ->setData(

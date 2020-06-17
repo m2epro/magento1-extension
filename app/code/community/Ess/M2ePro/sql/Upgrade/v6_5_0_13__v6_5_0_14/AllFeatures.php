@@ -22,14 +22,14 @@ class Ess_M2ePro_Sql_Upgrade_v6_5_0_13__v6_5_0_14_AllFeatures extends Ess_M2ePro
         //########################################
 
         $installer->run(<<<SQL
-UPDATE `m2epro_amazon_template_synchronization`
+UPDATE `{$this->_installer->getTable('m2epro_amazon_template_synchronization')}`
 SET `stop_mode` = 1
 WHERE (`stop_status_disabled`+`stop_out_off_stock`+`stop_qty_magento`+`stop_qty_calculated`) > 0;
 SQL
         );
 
         $installer->run(<<<SQL
-UPDATE `m2epro_ebay_template_synchronization`
+UPDATE `{$this->_installer->getTable('m2epro_ebay_template_synchronization')}`
 SET `stop_mode` = 1
 WHERE (`stop_status_disabled`+`stop_out_off_stock`+`stop_qty_magento`+`stop_qty_calculated`) > 0;
 SQL

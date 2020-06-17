@@ -49,7 +49,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Category_Categories_Chooser_Ed
             'id'      => 'category_edit_confirm_button',
             'class'   => '',
             'label'   => Mage::helper('M2ePro')->__('Confirm'),
-            'onclick' => 'WalmartTemplateCategoryCategoriesChooserHandlerObj.confirmCategory();',
+            'onclick' => 'WalmartTemplateCategoryCategoriesChooserObj.confirmCategory();',
         );
         $doneButton = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         // ---------------------------------------
@@ -59,7 +59,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Category_Categories_Chooser_Ed
         $buttonsContainer = <<< HTML
 <div id="chooser_buttons_container">
     <a href="javascript:void(0)"
-       onclick="WalmartTemplateCategoryCategoriesChooserHandlerObj.cancelPopUp()">{$cancelWord}</a>
+       onclick="WalmartTemplateCategoryCategoriesChooserObj.cancelPopUp()">{$cancelWord}</a>
     &nbsp;&nbsp;&nbsp;&nbsp;
     {$doneButton->toHtml()}
     <script type="text/javascript">walmartTemplateCategoryCategoriesChooserTabsJsTabs.moveTabContentInDest();</script>

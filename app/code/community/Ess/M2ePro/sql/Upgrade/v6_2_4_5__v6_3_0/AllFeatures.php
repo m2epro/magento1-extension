@@ -21,27 +21,27 @@ class Ess_M2ePro_Sql_Upgrade_v6_2_4_5__v6_3_0_AllFeatures extends Ess_M2ePro_Mod
 
         $installer->run(<<<SQL
 
-    DELETE FROM `m2epro_config`
+    DELETE FROM `{$this->_installer->getTable('m2epro_config')}`
     WHERE `group` = '/view/common/amazon/listing/' AND
           `key` = 'tutorial_shown';
 
-    DELETE FROM `m2epro_config`
+    DELETE FROM `{$this->_installer->getTable('m2epro_config')}`
     WHERE `group` = '/view/common/buy/listing/' AND
           `key` = 'tutorial_shown';
 
-    DELETE FROM `m2epro_config`
+    DELETE FROM `{$this->_installer->getTable('m2epro_config')}`
     WHERE `group` = '/view/common/play/listing/' AND
           `key` = 'tutorial_shown';
 
-    DELETE FROM `m2epro_cache_config`
+    DELETE FROM `{$this->_installer->getTable('m2epro_cache_config')}`
     WHERE `group` LIKE '/amazon/category/recent/marketplace/%';
 
-    DELETE FROM `m2epro_lock_item`
+    DELETE FROM `{$this->_installer->getTable('m2epro_lock_item')}`
     WHERE (`nick` REGEXP '^ebay_listing_[0-9]+$') OR
           (`nick` REGEXP '^(ebay|amazon|buy|play){1}_listing_product_[0-9]+$' AND
            `update_date` < DATE_SUB(NOW(), INTERVAL 7 DAY));
 
-    UPDATE `m2epro_wizard`
+    UPDATE `{$this->_installer->getTable('m2epro_wizard')}`
     SET `status` = 0,
         `step` = NULL,
         `type` = 1
@@ -64,7 +64,8 @@ SQL
 
             $installer->run(<<<SQL
 
-INSERT INTO `m2epro_config` (`group`,`key`,`value`,`notice`,`update_date`,`create_date`) VALUES
+INSERT INTO `{$this->_installer->getTable('m2epro_config')}` 
+(`group`,`key`,`value`,`notice`,`update_date`,`create_date`) VALUES
 ('/view/ebay/terapeak/', 'mode', '1', NULL, '2015-02-05 00:00:00', '2015-02-05 00:00:00');
 
 SQL

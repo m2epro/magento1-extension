@@ -134,7 +134,7 @@
             <img src="<?php echo $this->getSkinUrl('M2ePro/images/warning.png'); ?>" alt="" />&nbsp;<span><?php echo Mage::helper('M2ePro')->__('Selected Product Option is Out of Stock.') ?></span>
         </div>
         <div>
-            <a href="javascript: void(0);" onclick="OrderEditItemHandlerObj.closePopUp();"><?php echo Mage::helper('M2ePro')->__('Cancel') ?></a>
+            <a href="javascript: void(0);" onclick="OrderEditItemObj.closePopUp();"><?php echo Mage::helper('M2ePro')->__('Cancel') ?></a>
             &nbsp;
             &nbsp;
             &nbsp;
@@ -150,7 +150,7 @@
     $$('.form-element').each(function (element) {
         element.observe('change', function() {
             if (element.selectedIndex != 0) {
-                CommonHandlerObj.hideEmptyOption(element);
+                CommonObj.hideEmptyOption(element);
             }
 
             var hasEmptyOptions = $$('.form-element').any(function(element) { return element.value == '' });
@@ -189,8 +189,8 @@
         element.simulate('change');
     });
 
-    if (OrderEditItemHandlerObj && OrderEditItemHandlerObj.popUp) {
-        setTimeout(function() { OrderEditItemHandlerObj.popUp.updateHeight(); }, 50);
+    if (OrderEditItemObj && OrderEditItemObj.popUp) {
+        setTimeout(function() { OrderEditItemObj.popUp.updateHeight(); }, 50);
     }
 
 </script>

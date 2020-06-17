@@ -107,15 +107,15 @@ if (empty($cachedData)) {
     minimumDeclaredValue = <?php echo $this->getData('declared_value'); ?>;
 
     $('fulfillment_package_dimension_predefined')
-        .observe('change', OrderMerchantFulfillmentHandlerObj.packageDimensionChange)
+        .observe('change', AmazonOrderMerchantFulfillmentObj.packageDimensionChange)
         .simulate('change');
 
     $('fulfillment_ship_from_address_country')
-        .observe('change', OrderMerchantFulfillmentHandlerObj.shippingCountryChange)
+        .observe('change', AmazonOrderMerchantFulfillmentObj.shippingCountryChange)
         .simulate('change');
 
     setTimeout(function () {
-        OrderMerchantFulfillmentHandlerObj.onPopupScroll();
+        AmazonOrderMerchantFulfillmentObj.onPopupScroll();
     }, 50);
 
 </script>
@@ -447,7 +447,7 @@ if (empty($cachedData)) {
     </form>
 </div>
 <div class="control">
-    <a href="javascript://" onclick="OrderMerchantFulfillmentHandlerObj.closePopUp();"><?php echo Mage::helper('M2ePro')->__('Cancel'); ?></a>
+    <a href="javascript://" onclick="AmazonOrderMerchantFulfillmentObj.closePopUp();"><?php echo Mage::helper('M2ePro')->__('Cancel'); ?></a>
     &nbsp;
     &nbsp;
     &nbsp;

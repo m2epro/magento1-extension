@@ -6,96 +6,67 @@
  * @license    Commercial use is forbidden
  */
 
-class Ess_M2ePro_Model_Ebay_Template_Payment_Builder
-    extends Ess_M2ePro_Model_Ebay_Template_Builder_Abstract
+class Ess_M2EPro_Model_Ebay_Template_Payment_Builder
+    extends Ess_M2ePro_Model_Ebay_Template_AbstractBuilder
 {
     //########################################
 
-    public function build(array $data)
+    public function build($model, array $rawData)
     {
-        if (empty($data)) {
-            return null;
-        }
+        /** @var Ess_M2ePro_Model_Ebay_Template_Payment $model */
+        $model = parent::build($model, $rawData);
 
-        $this->validate($data);
-
-        $data = $this->prepareData($data);
-
-        $marketplace = Mage::helper('M2ePro/Component_Ebay')->getCachedObject(
-            'Marketplace', $data['marketplace_id']
-        );
-
-        $template = Mage::getModel('M2ePro/Ebay_Template_Payment');
-
-        if (isset($data['id'])) {
-            $template->load($data['id']);
-        }
-
-        $template->addData($data);
-        $template->save();
-        $template->setMarketplace($marketplace);
-
-        $services = $template->getServices(true);
+        $services = $model->getServices(true);
         foreach ($services as $service) {
             $service->deleteInstance();
         }
 
-        if (empty($data['services']) || !is_array($data['services'])) {
-            return $template;
+        if (empty($this->_rawData['services']) || !is_array($this->_rawData['services'])) {
+            return $model;
         }
 
-        foreach ($data['services'] as $codeName) {
-            $this->createService($template->getId(), $codeName);
+        foreach ($this->_rawData['services'] as $codeName) {
+            $this->createService($model->getId(), $codeName);
         }
 
-        return $template;
+        return $model;
     }
 
     //########################################
 
-    protected function validate(array $data)
+    protected function validate()
     {
-        // ---------------------------------------
-        if (empty($data['marketplace_id'])) {
+        if (empty($this->_rawData['marketplace_id'])) {
             throw new Ess_M2ePro_Model_Exception_Logic('Marketplace ID is empty.');
         }
 
-        // ---------------------------------------
-
-        parent::validate($data);
+        parent::validate();
     }
 
-    protected function prepareData(array &$data)
+    protected function prepareData()
     {
-        $prepared = parent::prepareData($data);
+        $this->validate();
 
-        // ---------------------------------------
-        $prepared['marketplace_id'] = (int)$data['marketplace_id'];
-        // ---------------------------------------
+        $data = parent::prepareData();
 
-        // ---------------------------------------
-        if (isset($data['pay_pal_mode'])) {
-            $prepared['pay_pal_mode'] = (int)(bool)$data['pay_pal_mode'];
+        $data['marketplace_id'] = (int)$this->_rawData['marketplace_id'];
+
+        if (isset($this->_rawData['pay_pal_mode'])) {
+            $data['pay_pal_mode'] = (int)(bool)$this->_rawData['pay_pal_mode'];
         } else {
-            $prepared['pay_pal_mode'] = 0;
+            $data['pay_pal_mode'] = 0;
         }
 
-        if (isset($data['pay_pal_email_address'])) {
-            $prepared['pay_pal_email_address'] = $data['pay_pal_email_address'];
+        if (isset($this->_rawData['pay_pal_email_address'])) {
+            $data['pay_pal_email_address'] = $this->_rawData['pay_pal_email_address'];
         }
 
-        $prepared['pay_pal_immediate_payment'] = 0;
-        if (isset($data['pay_pal_immediate_payment'])) {
-            $prepared['pay_pal_immediate_payment'] = (int)(bool)$data['pay_pal_immediate_payment'];
+        $data['pay_pal_immediate_payment'] = 0;
+        if (isset($this->_rawData['pay_pal_immediate_payment'])) {
+            $data['pay_pal_immediate_payment'] = (int)(bool)$this->_rawData['pay_pal_immediate_payment'];
         }
 
-        if (isset($data['services']) && is_array($data['services'])) {
-            $prepared['services'] = $data['services'];
-        }
-
-        // ---------------------------------------
-
-        return $prepared;
+        return $data;
     }
 
     //########################################
@@ -112,6 +83,18 @@ class Ess_M2ePro_Model_Ebay_Template_Payment_Builder
         $model->save();
 
         return $model;
+    }
+
+    //########################################
+
+    public function getDefaultData()
+    {
+        return array(
+            'pay_pal_mode'              => 0,
+            'pay_pal_email_address'     => '',
+            'pay_pal_immediate_payment' => 0,
+            'services'                  => array()
+        );
     }
 
     //########################################

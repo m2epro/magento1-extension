@@ -95,9 +95,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Log_Tabs extends Ess_M2ePro_Block_Adminh
         );
 
         if ($this->getData('active_tab') == self::TAB_ID_SYNCHRONIZATION) {
-            $tab['content'] = $this->getLayout()
-                ->createBlock('M2ePro/adminhtml_amazon_synchronization_log_help')->toHtml();
-            $tab['content'] .= $this->getLayout()->createBlock('M2ePro/adminhtml_amazon_synchronization_log')->toHtml();
+            $tab['content'] = $this->getLayout()->createBlock('M2ePro/adminhtml_amazon_synchronization_log')->toHtml();
         } else {
             $tab['url'] = $this->getUrl('*/adminhtml_amazon_log/synchronization', array('_current' => true));
         }
@@ -122,8 +120,8 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Log_Tabs extends Ess_M2ePro_Block_Adminh
     M2ePro.translator.add({$translations});
 
     Event.observe(window, 'load', function() {
-        LogHandlerObj = new LogHandler();
-        LogHandlerObj.afterInitPage();
+        LogObj = new Log();
+        LogObj.afterInitPage();
     });
 
 </script>

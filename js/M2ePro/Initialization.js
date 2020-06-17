@@ -1,8 +1,8 @@
 // Create main objects
 // ---------------------------------------
-CommonHandlerObj = new CommonHandler();
+CommonObj = new Common();
 
-MagentoMessageObj = new MagentoMessage();
+MessageObj = new Message();
 MagentoBlockObj = new MagentoBlock();
 
 LocalStorageObj = new LocalStorage();
@@ -43,7 +43,7 @@ function initializationCustomAttributeInputs()
 
 function initializationMagentoBlocks()
 {
-    CommonHandlerObj.initCommonValidators();
+    CommonObj.initCommonValidators();
 
     $$('.block_notices_module').each(function(blockObj) {
         ModuleNoticeObj.observeModulePrepareStart(blockObj);

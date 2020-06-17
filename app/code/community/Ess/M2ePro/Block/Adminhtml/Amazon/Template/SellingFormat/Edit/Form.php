@@ -46,7 +46,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Template_SellingFormat_Edit_Form extends
             ->createBlock('adminhtml/widget_button')
             ->setData(
                 array(
-                'onclick' => 'AmazonTemplateSellingFormatHandlerObj.addRow(\'fixed\');',
+                'onclick' => 'AmazonTemplateSellingFormatObj.addRow(\'fixed\');',
                 'class' => 'add add_discount_rule_button'
                 )
             );
@@ -59,7 +59,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Template_SellingFormat_Edit_Form extends
             ->setData(
                 array(
                 'label'   => Mage::helper('M2ePro')->__('Remove'),
-                'onclick' => 'AmazonTemplateSellingFormatHandlerObj.removeRow(this);',
+                'onclick' => 'AmazonTemplateSellingFormatObj.removeRow(this);',
                 'class' => 'delete icon-btn remove_discount_rule_button'
                 )
             );

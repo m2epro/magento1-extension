@@ -7,7 +7,7 @@
  */
 
 class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_AutoAction_Mode_Category_Form
-    extends Ess_M2ePro_Block_Adminhtml_Listing_AutoAction_Mode_Category_Form
+    extends Ess_M2ePro_Block_Adminhtml_Listing_AutoAction_Mode_Category_FormAbstract
 {
     //########################################
 
@@ -22,14 +22,11 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_AutoAction_Mode_Category_Form
 
     public function getDefault()
     {
-        return array(
-            'id' => null,
-            'title' => null,
-            'category_id' => null,
-            'adding_mode' => Ess_M2ePro_Model_Listing::ADDING_MODE_NONE,
-            'deleting_mode' => Ess_M2ePro_Model_Listing::DELETING_MODE_NONE,
-            'adding_add_not_visible' => Ess_M2ePro_Model_Listing::AUTO_ADDING_ADD_NOT_VISIBLE_YES,
-            'adding_category_template_id' => null
+        return array_merge(
+            parent::getDefault(),
+            array(
+                'adding_category_template_id' => null
+            )
         );
     }
 

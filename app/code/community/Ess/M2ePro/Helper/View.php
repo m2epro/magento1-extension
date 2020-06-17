@@ -184,7 +184,9 @@ class Ess_M2ePro_Helper_View extends Mage_Core_Helper_Abstract
 
     public function isCurrentViewIntegration()
     {
-        return $this->isCurrentViewEbay() || $this->isCurrentViewAmazon() || $this->isCurrentViewWalmart();
+        $isSupportPage = stripos(Mage::app()->getRequest()->getControllerName(), 'adminhtml_support') !== false;
+        return $this->isCurrentViewEbay() || $this->isCurrentViewAmazon() || $this->isCurrentViewWalmart() ||
+               $isSupportPage;
     }
 
     // ---------------------------------------

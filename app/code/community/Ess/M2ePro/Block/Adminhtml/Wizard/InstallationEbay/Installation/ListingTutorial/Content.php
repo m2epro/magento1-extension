@@ -14,41 +14,40 @@ class Ess_M2ePro_Block_Adminhtml_Wizard_InstallationEbay_Installation_ListingTut
     public function __construct()
     {
         parent::__construct();
-
-        // Initialization block
-        // ---------------------------------------
-        $this->setId('wizardInstallationListingTutorial');
-        // ---------------------------------------
-
-        $this->setTemplate('M2ePro/wizard/installationEbay/installation/listing_tutorial.phtml');
+        $this->setId('wizardInstallationEbayListingTutorial');
     }
 
-    //########################################
-
-    protected function _beforeToHtml()
+    protected function _prepareLayout()
     {
-        // ---------------------------------------
-        $nextStep = Mage::helper('M2ePro/Module_Wizard')->getWizard($this->getNick())->getNextStep();
+        $this->getLayout()->getBlock('wizard.help.block')->setContent(
+            Mage::helper('M2ePro')->__(
+                <<<HTML
+<div class="wizard_block">
+    <h2>
+        Congratulations! You have successfully registered your M2E Pro Extension and linked your eBay Account to it.
+    </h2>
 
-        $onClick = <<<JS
-WizardHandlerObj.setStep('{$nextStep}',setLocation.bind(window, location.href));
-JS;
+    <p>
+        The next step involves creating your first M2E Pro Listing.
+    </p>
 
-        // ---------------------------------------
-        $buttonBlock = $this->getLayout()
-            ->createBlock('adminhtml/widget_button')
-            ->setData(
-                array(
-                'label'   => Mage::helper('M2ePro')->__('Continue'),
-                'onclick' => $onClick,
-                'class'   => 'continue_button'
-                )
-            );
-        $this->setChild('continue_button', $buttonBlock);
+    <br/>
+    <p>
+        M2E Pro Listing is a group of Magento Products combined under specific sets of rules. 
+        <br/> 
+        These are the Products which will be offered as eBay Items by a Seller on a particular Marketplace.
+    </p>
 
-        // ---------------------------------------
+    <br/>
+    <p>
+        Click on <strong>Create First Listing</strong> button to proceed.
+    </p>
+</div>
+HTML
+            )
+        );
 
-        return parent::_beforeToHtml();
+        return parent::_prepareLayout();
     }
 
     //########################################

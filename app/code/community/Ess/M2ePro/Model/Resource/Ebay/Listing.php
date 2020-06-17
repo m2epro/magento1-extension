@@ -174,24 +174,5 @@ class Ess_M2ePro_Model_Resource_Ebay_Listing
         }
     }
 
-    public function getTemplateCategoryIds($listingId)
-    {
-        $listingProductTable     = Mage::getResourceModel('M2ePro/Listing_Product')->getMainTable();
-        $ebayListingProductTable = Mage::getResourceModel('M2ePro/Ebay_Listing_Product')->getMainTable();
-
-        $select = $this->_getReadAdapter()
-            ->select()
-            ->from(array('elp' => $ebayListingProductTable))
-            ->joinLeft(array('lp' => $listingProductTable), 'lp.id = elp.listing_product_id')
-            ->reset(Zend_Db_Select::COLUMNS)
-            ->columns(array('template_category_id'))
-            ->where('lp.listing_id = ?', $listingId)
-            ->where('template_category_id IS NOT NULL');
-
-        $ids = $select->query()->fetchAll(PDO::FETCH_COLUMN);
-
-        return array_unique($ids);
-    }
-
     //########################################
 }

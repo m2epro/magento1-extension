@@ -140,7 +140,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_Edit_Tabs_Feedback_Grid extends Ma
 
     public function callbackActionEdit($value, $row, $column, $isExport)
     {
-        $value = '<a href="javascript:void(0);" onclick="EbayAccountHandlerObj.feedbacksOpenEditForm(\''
+        $value = '<a href="javascript:void(0);" onclick="EbayAccountObj.feedbacksOpenEditForm(\''
                 .$row->getData('id').'\',\''.Mage::helper('M2ePro')->escapeJs($row->getData('body')).'\');">'
                 .Mage::helper('M2ePro')->__('Edit').'</a>';
         return $value;
@@ -148,7 +148,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_Edit_Tabs_Feedback_Grid extends Ma
 
     public function callbackActionDelete($value, $row, $column, $isExport)
     {
-        $value = '<a href="javascript:void(0);" onclick="EbayAccountHandlerObj.feedbacksDeleteAction(\''
+        $value = '<a href="javascript:void(0);" onclick="EbayAccountObj.feedbacksDeleteAction(\''
                 .$row->getData('id').'\');">'
                 .Mage::helper('M2ePro')->__('Delete').'</a>';
         return $value;

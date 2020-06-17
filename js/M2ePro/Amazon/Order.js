@@ -1,4 +1,4 @@
-AmazonOrder = Class.create(CommonHandler, {
+window.AmazonOrder = Class.create(Common, {
 
     // ---------------------------------------
 
@@ -13,8 +13,8 @@ AmazonOrder = Class.create(CommonHandler, {
             onSuccess: function(transport) {
                 var response = transport.responseText.evalJSON();
 
-                MagentoMessageObj.clearAll();
-                MagentoMessageObj['add' + response.msg.type[0].toUpperCase() + response.msg.type.slice(1)](response.msg.text);
+                MessageObj.clearAll();
+                MessageObj['add' + response.msg.type[0].toUpperCase() + response.msg.type.slice(1)](response.msg.text);
             }
         });
     },

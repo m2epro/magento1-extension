@@ -256,7 +256,7 @@ SQL
         $this->_installer->run(
             <<<SQL
 
-        INSERT INTO `m2epro_registry` (`key`, `value`, update_date, create_date)
+        INSERT INTO `{$this->_installer->getTable('m2epro_registry')}` (`key`, `value`, update_date, create_date)
         VALUES ('{$registryKey}', {$dataForInsert}, {$dateForInsert}, {$dateForInsert});
 
 SQL
@@ -313,7 +313,7 @@ SQL
             $this->_installer->run(
                 <<<SQL
 
-    UPDATE `m2epro_amazon_listing_product`
+    UPDATE `{$this->_installer->getTable('m2epro_amazon_listing_product')}`
     SET template_new_product_id = NULL;
 
 SQL
@@ -426,7 +426,7 @@ SQL
         $this->_installer->run(
             <<<SQL
 
-INSERT INTO `m2epro_template_description`
+INSERT INTO `{$this->_installer->getTable('m2epro_template_description')}`
 SELECT
     `id`,
     `title`,
@@ -435,7 +435,7 @@ SELECT
     `update_date`
 FROM {$backupTable};
 
-INSERT INTO `m2epro_ebay_template_description`
+INSERT INTO `{$this->_installer->getTable('m2epro_ebay_template_description')}`
 SELECT
     `id`,
     `is_custom_template`,

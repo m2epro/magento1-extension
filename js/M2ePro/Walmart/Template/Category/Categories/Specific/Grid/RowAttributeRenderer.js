@@ -1,4 +1,4 @@
-WalmartTemplateCategoryCategoriesSpecificGridRowAttributeRenderer = Class.create(WalmartTemplateCategoryCategoriesSpecificGridRowRenderer, {
+window.WalmartTemplateCategoryCategoriesSpecificGridRowAttributeRenderer = Class.create(WalmartTemplateCategoryCategoriesSpecificGridRowRenderer, {
 
     // ---------------------------------------
 

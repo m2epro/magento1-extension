@@ -23,13 +23,6 @@ class Ess_M2ePro_Model_Ebay_Marketplace extends Ess_M2ePro_Model_Component_Child
 
     //########################################
 
-    public function getEbayItems($asObjects = false, array $filters = array())
-    {
-        return $this->getRelatedSimpleItems('Ebay_Item', 'marketplace_id', $asObjects, $filters);
-    }
-
-    //########################################
-
     public function getCurrency()
     {
         return $this->getData('currency');

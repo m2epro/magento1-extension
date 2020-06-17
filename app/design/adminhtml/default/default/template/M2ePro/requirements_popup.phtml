@@ -48,7 +48,7 @@
     }
 
     Event.observe(window,'load',function() {
-        MagentoMessageObj.addError('<?php echo Mage::helper('M2ePro')->__(
+        MessageObj.addError('<?php echo Mage::helper('M2ePro')->__(
             'M2E Pro has detected, that your System Configuration does not meet minimum requirements, so there might be problems with its work. Please <a href="javascript:" onclick="%script_code%">check it</a> and amend appropriate Settings.',
             'showRequirementsPopup()') ?>'
         )

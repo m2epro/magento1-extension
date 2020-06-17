@@ -6,99 +6,34 @@
  * @license    Commercial use is forbidden
  */
 
-class Ess_M2ePro_Block_Adminhtml_Wizard_InstallationWalmart_Installation
+abstract class Ess_M2ePro_Block_Adminhtml_Wizard_InstallationWalmart_Installation
     extends Ess_M2ePro_Block_Adminhtml_Wizard_Installation
 {
-    public $isLicenseStepFinished = false;
-
     //########################################
 
     protected function _beforeToHtml()
     {
-        /** @var Ess_M2ePro_Helper_Module_Wizard $wizardHelper */
-        $wizardHelper = $this->helper('M2ePro/Module_Wizard');
+        parent::_beforeToHtml();
 
-        $earlierFormData = Mage::getModel('M2ePro/Registry')->load('/wizard/license_form_data/', 'key')
-            ->getSettings('value');
-
-        if (Mage::helper('M2ePro/Module_License')->getKey() && !empty($earlierFormData)) {
-            $this->isLicenseStepFinished = true;
-
-            if (empty($earlierFormData['email']) ||
-                empty($earlierFormData['firstname']) ||
-                empty($earlierFormData['lastname']) ||
-                empty($earlierFormData['phone']) ||
-                empty($earlierFormData['country']) ||
-                empty($earlierFormData['city']) ||
-                empty($earlierFormData['postal_code'])
-            ) {
-                $this->isLicenseStepFinished = false;
-            }
-        }
-
-        if ($this->isLicenseStepFinished && $wizardHelper->getStep($this->getNick()) == 'license') {
-            $nextStep = $wizardHelper->getWizard($this->getNick())->getNextStep();
-            $wizardHelper->setStep($this->getNick(), $nextStep);
-        }
-
-        // Steps
-        // ---------------------------------------
-        $this->setChild(
-            'step_description',
-            $this->helper('M2ePro/Module_Wizard')->createBlock('installation_description', $this->getNick())
-        );
-
-        $block = $this->helper('M2ePro/Module_Wizard')->createBlock('installation_license', $this->getNick());
-        $block->setData('isLicenseStepFinished', $this->isLicenseStepFinished);
-        $this->setChild('step_license', $block);
-
-        $this->setChild(
-            'step_marketplace',
-            $this->helper('M2ePro/Module_Wizard')->createBlock('installation_marketplace', $this->getNick())
-        );
-
-        $this->setChild(
-            'step_account',
-            $this->helper('M2ePro/Module_Wizard')->createBlock('installation_account', $this->getNick())
-        );
-
-        $this->setChild(
-            'step_settings',
-            $this->helper('M2ePro/Module_Wizard')->createBlock('installation_settings', $this->getNick())
-        );
-        // ---------------------------------------
-
-        return parent::_beforeToHtml();
+        $this->updateButton('continue', 'onclick', 'InstallationWalmartWizardObj.continueStep();');
     }
-
-    //########################################
 
     protected function getHeaderTextHtml()
     {
-        return 'Configuration Wizard (Magento Walmart Integration)';
+        return Mage::helper('M2ePro')->__('Configuration of Walmart Integration');
     }
 
-    protected function _toHtml()
+    protected function _prepareLayout()
     {
-        $urls = Mage::helper('M2ePro')->jsonEncode(
-            Mage::helper('M2ePro')->getControllerActions('adminhtml_wizard_installationWalmart')
+        Mage::helper('M2ePro/View')->getJsRenderer()->addOnReadyJs(
+            <<<JS
+        InstallationWalmartWizardObj = new WizardInstallationWalmart();
+JS
         );
 
-        $additionalJs = <<<SCRIPT
-<script type="text/javascript">
-    M2ePro.url.add({$urls});
-    InstallationWalmartWizardObj = new WizardInstallationWalmart();
-</script>
-SCRIPT;
-
-        return parent::_toHtml()
-            . $additionalJs
-            . $this->getChildHtml('step_description')
-            . $this->getChildHtml('step_license')
-            . $this->getChildHtml('step_marketplace')
-            . $this->getChildHtml('step_account')
-            . $this->getChildHtml('step_settings');
+        return parent::_prepareLayout();
     }
 
     //########################################
 }
+

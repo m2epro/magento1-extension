@@ -15,13 +15,7 @@ if (isset($formData['other_listings_mapping_settings'])) {
     $formData['other_listings_mapping_settings'] = (array)json_decode($formData['other_listings_mapping_settings'],true);
 }
 
-$defaults = array(
-    'related_store_id' => 0,
-
-    'other_listings_synchronization' => 1,
-    'other_listings_mapping_mode' => 1,
-    'other_listings_mapping_settings' => array(),
-);
+$defaults = Mage::getModel('M2ePro/Walmart_Account_Builder')->getDefaultData();
 
 $formData = array_merge($defaults, $formData);
 $isEdit = !!$this->getRequest()->getParam('id');
@@ -41,26 +35,26 @@ $isEdit = !!$this->getRequest()->getParam('id');
         setTimeout(function() {
 
             $('other_listings_synchronization')
-                .observe('change', WalmartAccountHandlerObj.other_listings_synchronization_change)
+                .observe('change', WalmartAccountObj.other_listings_synchronization_change)
                 .simulate('change');
             $('other_listings_mapping_mode')
-                .observe('change', WalmartAccountHandlerObj.other_listings_mapping_mode_change)
+                .observe('change', WalmartAccountObj.other_listings_mapping_mode_change)
                 .simulate('change');
 
             $('mapping_sku_mode')
-                .observe('change', WalmartAccountHandlerObj.mapping_sku_mode_change)
+                .observe('change', WalmartAccountObj.mapping_sku_mode_change)
                 .simulate('change');
             $('mapping_upc_mode')
-                .observe('change', WalmartAccountHandlerObj.mapping_upc_mode_change)
+                .observe('change', WalmartAccountObj.mapping_upc_mode_change)
                 .simulate('change');
             $('mapping_gtin_mode')
-                .observe('change', WalmartAccountHandlerObj.mapping_gtin_mode_change)
+                .observe('change', WalmartAccountObj.mapping_gtin_mode_change)
                 .simulate('change');
             $('mapping_wpid_mode')
-                .observe('change', WalmartAccountHandlerObj.mapping_wpid_mode_change)
+                .observe('change', WalmartAccountObj.mapping_wpid_mode_change)
                 .simulate('change');
             $('mapping_title_mode')
-                .observe('change', WalmartAccountHandlerObj.mapping_title_mode_change)
+                .observe('change', WalmartAccountObj.mapping_title_mode_change)
                 .simulate('change');
 
             $('walmartAccountEditTabs_listingOther').removeClassName('changed');

@@ -136,9 +136,7 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_account_pickup_store_log
   `action_id` INT(11) UNSIGNED NOT NULL,
   `action` TINYINT(2) UNSIGNED NOT NULL DEFAULT 1,
   `type` TINYINT(2) UNSIGNED NOT NULL DEFAULT 1,
-  `priority` TINYINT(2) UNSIGNED NOT NULL DEFAULT 3,
   `description` TEXT DEFAULT NULL,
-  `update_date` DATETIME DEFAULT NULL,
   `create_date` DATETIME DEFAULT NULL,
   PRIMARY KEY (`id`),
   INDEX `account_pickup_store_state_id` (`account_pickup_store_state_id`),
@@ -146,11 +144,10 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_account_pickup_store_log
   INDEX `location_title` (`location_title`),
   INDEX `action` (`action`),
   INDEX `action_id` (`action_id`),
-  INDEX `priority` (`priority`),
   INDEX `type` (`type`),
   INDEX `create_date` (`create_date`)
 )
-ENGINE = MYISAM
+ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
@@ -171,9 +168,9 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_dictionary_category')}` 
   INDEX `is_leaf` (`is_leaf`),
   INDEX `parent_category_id` (`parent_category_id`),
   INDEX `title` (`title`),
-  INDEX `path` (`path`(500))
+  INDEX `path` (`path`(255))
 )
-ENGINE = MYISAM
+ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
@@ -296,9 +293,13 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_listing')}` (
   `products_sold_count` INT(11) UNSIGNED NOT NULL DEFAULT 0,
   `items_sold_count` INT(11) UNSIGNED NOT NULL DEFAULT 0,
   `auto_global_adding_template_category_id` INT(11) UNSIGNED DEFAULT NULL,
-  `auto_global_adding_template_other_category_id` INT(11) UNSIGNED DEFAULT NULL,
+  `auto_global_adding_template_category_secondary_id` INT(11) UNSIGNED DEFAULT NULL,
+  `auto_global_adding_template_store_category_id` INT(11) UNSIGNED DEFAULT NULL,
+  `auto_global_adding_template_store_category_secondary_id` INT(11) UNSIGNED DEFAULT NULL,
   `auto_website_adding_template_category_id` INT(11) UNSIGNED DEFAULT NULL,
-  `auto_website_adding_template_other_category_id` INT(11) UNSIGNED DEFAULT NULL,
+  `auto_website_adding_template_category_secondary_id` INT(11) UNSIGNED DEFAULT NULL,
+  `auto_website_adding_template_store_category_id` INT(11) UNSIGNED DEFAULT NULL,
+  `auto_website_adding_template_store_category_secondary_id` INT(11) UNSIGNED DEFAULT NULL,
   `template_payment_mode` TINYINT(2) UNSIGNED NOT NULL DEFAULT 1,
   `template_payment_id` INT(11) UNSIGNED DEFAULT NULL,
   `template_payment_custom_id` INT(11) UNSIGNED DEFAULT NULL,
@@ -321,9 +322,15 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_listing')}` (
   `parts_compatibility_mode` VARCHAR(10) DEFAULT NULL,
   PRIMARY KEY (`listing_id`),
   INDEX `auto_global_adding_template_category_id` (`auto_global_adding_template_category_id`),
-  INDEX `auto_global_adding_template_other_category_id` (`auto_global_adding_template_other_category_id`),
+  INDEX `auto_global_adding_template_category_secondary_id` (`auto_global_adding_template_category_secondary_id`),
+  INDEX `auto_global_adding_template_store_category_id` (`auto_global_adding_template_store_category_id`),
+  INDEX `auto_global_adding_template_store_category_secondary_id`
+      (`auto_global_adding_template_store_category_secondary_id`),
   INDEX `auto_website_adding_template_category_id` (`auto_website_adding_template_category_id`),
-  INDEX `auto_website_adding_template_other_category_id` (`auto_website_adding_template_other_category_id`),
+  INDEX `auto_website_adding_template_category_secondary_id` (`auto_website_adding_template_category_secondary_id`),
+  INDEX `auto_website_adding_template_store_category_id` (`auto_website_adding_template_store_category_id`),
+  INDEX `auto_website_adding_template_store_category_secondary_id`
+      (`auto_website_adding_template_store_category_secondary_id`),
   INDEX `items_sold_count` (`items_sold_count`),
   INDEX `products_sold_count` (`products_sold_count`),
   INDEX `template_description_custom_id` (`template_description_custom_id`),
@@ -353,10 +360,14 @@ DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_ebay_listing_auto_cat
 CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_listing_auto_category_group')}` (
     `listing_auto_category_group_id` int(11) UNSIGNED NOT NULL,
     `adding_template_category_id` int(11) UNSIGNED DEFAULT NULL,
-    `adding_template_other_category_id` int(11) UNSIGNED DEFAULT NULL,
+    `adding_template_category_secondary_id` int(11) UNSIGNED DEFAULT NULL,
+    `adding_template_store_category_id` int(11) UNSIGNED DEFAULT NULL,
+    `adding_template_store_category_secondary_id` int(11) UNSIGNED DEFAULT NULL,
     PRIMARY KEY (`listing_auto_category_group_id`),
     INDEX `adding_template_category_id` (`adding_template_category_id`),
-    INDEX `adding_template_other_category_id` (`adding_template_other_category_id`)
+    INDEX `adding_template_category_secondary_id` (`adding_template_category_secondary_id`),
+    INDEX `adding_template_store_category_id` (`adding_template_store_category_id`),
+    INDEX `adding_template_store_category_secondary_id` (`adding_template_store_category_secondary_id`)
 )
 ENGINE = INNODB
 CHARACTER SET utf8
@@ -374,6 +385,8 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_listing_other')}` (
   `online_qty` INT(11) UNSIGNED NOT NULL DEFAULT 0,
   `online_qty_sold` INT(11) UNSIGNED NOT NULL DEFAULT 0,
   `online_bids` INT(11) UNSIGNED DEFAULT NULL,
+  `online_main_category` VARCHAR(255) DEFAULT NULL,
+  `online_categories_data` LONGTEXT DEFAULT NULL,
   `start_date` DATETIME NOT NULL,
   `end_date` DATETIME DEFAULT NULL,
   PRIMARY KEY (`listing_other_id`),
@@ -396,7 +409,9 @@ DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_ebay_listing_product'
 CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_listing_product')}` (
   `listing_product_id` INT(11) UNSIGNED NOT NULL,
   `template_category_id` INT(11) UNSIGNED DEFAULT NULL,
-  `template_other_category_id` INT(11) UNSIGNED DEFAULT NULL,
+  `template_category_secondary_id` INT(11) UNSIGNED DEFAULT NULL,
+  `template_store_category_id` INT(11) UNSIGNED DEFAULT NULL,
+  `template_store_category_secondary_id` INT(11) UNSIGNED DEFAULT NULL,
   `ebay_item_id` INT(11) UNSIGNED DEFAULT NULL,
   `item_uuid` VARCHAR(32) DEFAULT NULL,
   `is_duplicate` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
@@ -460,10 +475,12 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_listing_product')}` (
   INDEX `online_title` (`online_title`),
   INDEX `start_date` (`start_date`),
   INDEX `template_category_id` (`template_category_id`),
+  INDEX `template_category_secondary_id` (`template_category_secondary_id`),
+  INDEX `template_store_category_id` (`template_store_category_id`),
+  INDEX `template_store_category_secondary_id` (`template_store_category_secondary_id`),
   INDEX `template_description_custom_id` (`template_description_custom_id`),
   INDEX `template_description_id` (`template_description_id`),
   INDEX `template_description_mode` (`template_description_mode`),
-  INDEX `template_other_category_id` (`template_other_category_id`),
   INDEX `template_payment_custom_id` (`template_payment_custom_id`),
   INDEX `template_payment_id` (`template_payment_id`),
   INDEX `template_payment_mode` (`template_payment_mode`),
@@ -641,7 +658,7 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_dictionary_motor_epid')}
   INDEX `scope` (`scope`),
   INDEX `street_name` (`street_name`)
 )
-ENGINE = MYISAM
+ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
@@ -670,7 +687,7 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_dictionary_motor_ktype')
   INDEX `variant` (`variant`),
   INDEX `is_custom` (`is_custom`)
 )
-ENGINE = MYISAM
+ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
@@ -686,7 +703,7 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_motor_filter')}` (
     PRIMARY KEY (id),
     INDEX type (`type`)
 )
-ENGINE = MYISAM
+ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
@@ -808,14 +825,16 @@ DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_ebay_template_categor
 CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_template_category')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `marketplace_id` INT(11) UNSIGNED NOT NULL,
-  `category_main_id` INT(11) UNSIGNED NOT NULL,
-  `category_main_path` VARCHAR(255) DEFAULT NULL,
-  `category_main_mode` TINYINT(2) UNSIGNED NOT NULL DEFAULT 2,
-  `category_main_attribute` VARCHAR(255) NOT NULL,
+  `is_custom_template` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
+  `category_id` INT(11) UNSIGNED NOT NULL,
+  `category_path` VARCHAR(255) DEFAULT NULL,
+  `category_mode` TINYINT(2) UNSIGNED NOT NULL DEFAULT 2,
+  `category_attribute` VARCHAR(255) NOT NULL,
   `update_date` DATETIME DEFAULT NULL,
   `create_date` DATETIME DEFAULT NULL,
   PRIMARY KEY (`id`),
-  INDEX `marketplace_id` (`marketplace_id`)
+  INDEX `marketplace_id` (`marketplace_id`),
+  INDEX `is_custom_template` (`is_custom_template`)
 )
 ENGINE = INNODB
 CHARACTER SET utf8
@@ -880,28 +899,18 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_ebay_template_other_category')}`;
-CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_template_other_category')}` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_ebay_template_store_category')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_template_store_category')}` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `marketplace_id` int(11) UNSIGNED NOT NULL,
   `account_id` int(11) UNSIGNED NOT NULL,
-  `category_secondary_id` int(11) UNSIGNED NOT NULL,
-  `category_secondary_path` varchar(255) DEFAULT NULL,
-  `category_secondary_mode` tinyint(2) UNSIGNED NOT NULL DEFAULT 2,
-  `category_secondary_attribute` varchar(255) NOT NULL,
-  `store_category_main_id` decimal(20, 0) UNSIGNED NOT NULL,
-  `store_category_main_path` varchar(255) DEFAULT NULL,
-  `store_category_main_mode` tinyint(2) UNSIGNED NOT NULL DEFAULT 0,
-  `store_category_main_attribute` varchar(255) NOT NULL,
-  `store_category_secondary_id` decimal(20, 0) UNSIGNED NOT NULL,
-  `store_category_secondary_path` varchar(255) DEFAULT NULL,
-  `store_category_secondary_mode` tinyint(2) UNSIGNED NOT NULL DEFAULT 0,
-  `store_category_secondary_attribute` varchar(255) NOT NULL,
+  `category_id` int(11) UNSIGNED NOT NULL,
+  `category_path` varchar(255) DEFAULT NULL,
+  `category_mode` tinyint(2) UNSIGNED NOT NULL DEFAULT 2,
+  `category_attribute` varchar(255) NOT NULL,
   `update_date` datetime DEFAULT NULL,
   `create_date` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
-  INDEX `account_id` (`account_id`),
-  INDEX `marketplace_id` (`marketplace_id`)
+  INDEX `account_id` (`account_id`)
 )
 ENGINE = INNODB
 CHARACTER SET utf8
@@ -1121,20 +1130,14 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_template_synchronization
   `list_mode` TINYINT(2) UNSIGNED NOT NULL,
   `list_status_enabled` TINYINT(2) UNSIGNED NOT NULL,
   `list_is_in_stock` TINYINT(2) UNSIGNED NOT NULL,
-  `list_qty_magento` TINYINT(2) UNSIGNED NOT NULL,
-  `list_qty_magento_value` INT(11) UNSIGNED NOT NULL,
-  `list_qty_magento_value_max` INT(11) UNSIGNED NOT NULL,
   `list_qty_calculated` TINYINT(2) UNSIGNED NOT NULL,
   `list_qty_calculated_value` INT(11) UNSIGNED NOT NULL,
-  `list_qty_calculated_value_max` INT(11) UNSIGNED NOT NULL,
   `list_advanced_rules_mode` TINYINT(2) UNSIGNED NOT NULL,
   `list_advanced_rules_filters` TEXT DEFAULT NULL,
   `revise_update_qty` TINYINT(2) UNSIGNED NOT NULL,
   `revise_update_qty_max_applied_value_mode` TINYINT(2) UNSIGNED NOT NULL,
   `revise_update_qty_max_applied_value` INT(11) UNSIGNED DEFAULT NULL,
   `revise_update_price` TINYINT(2) UNSIGNED NOT NULL,
-  `revise_update_price_max_allowed_deviation_mode` TINYINT(2) UNSIGNED NOT NULL,
-  `revise_update_price_max_allowed_deviation` INT(11) UNSIGNED DEFAULT NULL,
   `revise_update_title` TINYINT(2) UNSIGNED NOT NULL,
   `revise_update_sub_title` TINYINT(2) UNSIGNED NOT NULL,
   `revise_update_description` TINYINT(2) UNSIGNED NOT NULL,
@@ -1148,23 +1151,15 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_template_synchronization
   `relist_filter_user_lock` TINYINT(2) UNSIGNED NOT NULL,
   `relist_status_enabled` TINYINT(2) UNSIGNED NOT NULL,
   `relist_is_in_stock` TINYINT(2) UNSIGNED NOT NULL,
-  `relist_qty_magento` TINYINT(2) UNSIGNED NOT NULL,
-  `relist_qty_magento_value` INT(11) UNSIGNED NOT NULL,
-  `relist_qty_magento_value_max` INT(11) UNSIGNED NOT NULL,
   `relist_qty_calculated` TINYINT(2) UNSIGNED NOT NULL,
   `relist_qty_calculated_value` INT(11) UNSIGNED NOT NULL,
-  `relist_qty_calculated_value_max` INT(11) UNSIGNED NOT NULL,
   `relist_advanced_rules_mode` TINYINT(2) UNSIGNED NOT NULL,
   `relist_advanced_rules_filters` TEXT DEFAULT NULL,
   `stop_mode` TINYINT(2) UNSIGNED NOT NULL,
   `stop_status_disabled` TINYINT(2) UNSIGNED NOT NULL,
   `stop_out_off_stock` TINYINT(2) UNSIGNED NOT NULL,
-  `stop_qty_magento` TINYINT(2) UNSIGNED NOT NULL,
-  `stop_qty_magento_value` INT(11) UNSIGNED NOT NULL,
-  `stop_qty_magento_value_max` INT(11) UNSIGNED NOT NULL,
   `stop_qty_calculated` TINYINT(2) UNSIGNED NOT NULL,
   `stop_qty_calculated_value` INT(11) UNSIGNED NOT NULL,
-  `stop_qty_calculated_value_max` INT(11) UNSIGNED NOT NULL,
   `stop_advanced_rules_mode` TINYINT(2) UNSIGNED NOT NULL,
   `stop_advanced_rules_filters` TEXT DEFAULT NULL,
   PRIMARY KEY (`template_synchronization_id`),
@@ -1189,7 +1184,6 @@ INSERT INTO `{$this->_installer->getTable('m2epro_config')}` (`group`,`key`,`val
   ('/ebay/order/settings/marketplace_8/', 'use_first_street_line_as_company', '1', NOW(), NOW()),
   ('/ebay/connector/listing/', 'check_the_same_product_already_listed', '1', NOW(), NOW()),
   ('/component/ebay/variation/', 'mpn_can_be_changed', '0', NOW(), NOW()),
-  ('/view/ebay/template/category/', 'use_last_specifics', '0', NOW(), NOW()),
   ('/ebay/motors/', 'epids_motor_attribute', NULL, NOW(), NOW()),
   ('/ebay/motors/', 'epids_uk_attribute', NULL, NOW(), NOW()),
   ('/ebay/motors/', 'epids_de_attribute', NULL, NOW(), NOW()),

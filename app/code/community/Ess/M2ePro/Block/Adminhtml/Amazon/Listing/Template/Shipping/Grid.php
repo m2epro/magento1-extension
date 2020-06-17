@@ -115,7 +115,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Template_Shipping_Grid
                     array(
                         'id'      => 'shipping_template_refresh_btn',
                         'label'   => Mage::helper('M2ePro')->__('Refresh'),
-                        'onclick' => "ListingGridHandlerObj.templateShippingHandler.loadGrid()"
+                        'onclick' => "ListingGridObj.templateShippingHandler.loadGrid()"
                     )
                 )
         );
@@ -185,7 +185,7 @@ HTML;
         el.style.padding = '5px 5px';
     });
 
-    ListingGridHandlerObj.templateShippingHandler.newTemplateUrl='{$this->getNewTemplateShippingUrl()}';
+    ListingGridObj.templateShippingHandler.newTemplateUrl='{$this->getNewTemplateShippingUrl()}';
 
     {$this->getJsObjectName()}.reloadParams = {$this->getJsObjectName()}.reloadParams || {};
     {$this->getJsObjectName()}.reloadParams['products_ids'] = '{$productsIdsStr}';

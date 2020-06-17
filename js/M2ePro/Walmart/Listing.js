@@ -1,5 +1,4 @@
-WalmartListing = Class.create();
-WalmartListing.prototype = {
+window.WalmartListing = Class.create({
 
     // ---------------------------------------
 
@@ -25,4 +24,4 @@ WalmartListing.prototype = {
     viewLogs: function(url) {
         window.open(url)
     }
-};
+});

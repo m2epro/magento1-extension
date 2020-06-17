@@ -62,12 +62,16 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
     const MAGENTO_ORDERS_STATUS_MAPPING_PAID = 'processing';
     const MAGENTO_ORDERS_STATUS_MAPPING_SHIPPED = 'complete';
 
+    /** @var Ess_M2ePro_Model_ActiveRecord_Factory */
+    protected $_activeRecordFactory;
+
     //########################################
 
     public function _construct()
     {
         parent::_construct();
         $this->_init('M2ePro/Ebay_Account');
+        $this->_activeRecordFactory = Mage::getSingleton('M2ePro/ActiveRecord_Factory');
     }
 
     //########################################
@@ -78,35 +82,44 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
             return false;
         }
 
-        $storeCategoriesTable = Mage::helper('M2ePro/Module_Database_Structure')
-            ->getTableNameWithPrefix('m2epro_ebay_account_store_category');
-
         Mage::getSingleton('core/resource')->getConnection('core_write')
-            ->delete($storeCategoriesTable, array('account_id = ?'=>$this->getId()));
+            ->delete(
+                Mage::helper('M2ePro/Module_Database_Structure')
+                    ->getTableNameWithPrefix('m2epro_ebay_account_store_category'),
+                array('account_id = ?' => $this->getId())
+            );
 
-        $otherCategoryTemplates = $this->getOtherCategoryTemplates(true);
-        foreach ($otherCategoryTemplates as $otherCategoryTemplate) {
-            $otherCategoryTemplate->deleteInstance();
+        $storeCategoryTemplates = $this->_activeRecordFactory->getObjectCollection('Ebay_Template_StoreCategory');
+        $storeCategoryTemplates->addFieldToFilter('account_id', $this->getId());
+        foreach ($storeCategoryTemplates->getItems() as $storeCategoryTemplate) {
+            /** @var Ess_M2ePro_Model_Ebay_Template_StoreCategory $storeCategoryTemplate */
+            $storeCategoryTemplate->deleteInstance();
         }
 
-        $feedbacks = $this->getFeedbacks(true);
-        foreach ($feedbacks as $feedback) {
+        $feedbacks = $this->_activeRecordFactory->getObjectCollection('Ebay_Feedback');
+        $feedbacks->addFieldToFilter('account_id', $this->getId());
+        foreach ($feedbacks->getItems() as $feedback) {
+            /** @var Ess_M2ePro_Model_Ebay_Feedback $feedback */
             $feedback->deleteInstance();
         }
 
-        $feedbackTemplates = $this->getFeedbackTemplates(true);
-        foreach ($feedbackTemplates as $feedbackTemplate) {
+        $feedbackTemplates = $this->_activeRecordFactory->getObjectCollection('Ebay_Feedback_Template');
+        $feedbackTemplates->addFieldToFilter('account_id', $this->getId());
+        foreach ($feedbackTemplates->getItems() as $feedbackTemplate) {
+            /** @var Ess_M2ePro_Model_Ebay_Feedback_Template $feedbackTemplate */
             $feedbackTemplate->deleteInstance();
         }
 
-        $items = $this->getEbayItems(true);
-        foreach ($items as $item) {
+        $itemCollection = $this->_activeRecordFactory->getObjectCollection('Ebay_Item');
+        $itemCollection->addFieldToFilter('account_id', $this->getId());
+        foreach ($itemCollection->getItems() as $item) {
+            /** @var Ess_M2ePro_Model_Ebay_Item $item */
             $item->deleteInstance();
         }
 
-        $pickupStoreCollection = Mage::getModel('M2ePro/Ebay_Account_PickupStore')->getCollection()
-                                       ->addFieldToFilter('account_id', $this->getId());
-        foreach ($pickupStoreCollection as $pickupStore) {
+        $pickupCollection = $this->_activeRecordFactory->getObjectCollection('Ebay_Account_PickupStore');
+        $pickupCollection->addFieldToFilter('account_id', $this->getId());
+        foreach ($pickupCollection->getItems() as $pickupStore) {
             /** @var Ess_M2ePro_Model_Ebay_Account_PickupStore $pickupStore */
             $pickupStore->deleteInstance();
         }
@@ -114,52 +127,6 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
         $this->delete();
 
         return true;
-    }
-
-    //########################################
-
-    /**
-     * @param bool $asObjects
-     * @param array $filters
-     * @return array|Ess_M2ePro_Model_Abstract[]
-     * @throws Ess_M2ePro_Model_Exception_Logic
-     */
-    public function getOtherCategoryTemplates($asObjects = false, array $filters = array())
-    {
-        return $this->getRelatedSimpleItems('Ebay_Template_OtherCategory', 'account_id', $asObjects, $filters);
-    }
-
-    /**
-     * @param bool $asObjects
-     * @param array $filters
-     * @return array|Ess_M2ePro_Model_Abstract[]
-     * @throws Ess_M2ePro_Model_Exception_Logic
-     */
-    public function getFeedbacks($asObjects = false, array $filters = array())
-    {
-        return $this->getRelatedSimpleItems('Ebay_Feedback', 'account_id', $asObjects, $filters);
-    }
-
-    /**
-     * @param bool $asObjects
-     * @param array $filters
-     * @return array|Ess_M2ePro_Model_Abstract[]
-     * @throws Ess_M2ePro_Model_Exception_Logic
-     */
-    public function getFeedbackTemplates($asObjects = false, array $filters = array())
-    {
-        return $this->getRelatedSimpleItems('Ebay_Feedback_Template', 'account_id', $asObjects, $filters);
-    }
-
-    /**
-     * @param bool $asObjects
-     * @param array $filters
-     * @return array|Ess_M2ePro_Model_Abstract[]
-     * @throws Ess_M2ePro_Model_Exception_Logic
-     */
-    public function getEbayItems($asObjects = false, array $filters = array())
-    {
-        return $this->getRelatedSimpleItems('Ebay_Item', 'account_id', $asObjects, $filters);
     }
 
     //########################################
@@ -1197,8 +1164,11 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
         $tableAccountStoreCategories = Mage::helper('M2ePro/Module_Database_Structure')
             ->getTableNameWithPrefix('m2epro_ebay_account_store_category');
 
-        Mage::getSingleton('core/resource')->getConnection('core_write')
-            ->delete($tableAccountStoreCategories, array('account_id = ?'=>$this->getId()));
+        Mage::getSingleton('core/resource')->getConnection('core_write')->delete(
+            $tableAccountStoreCategories,
+            array('account_id = ?' => $this->getId())
+        );
+        Mage::helper('M2ePro/Component_Ebay_Category')->removeStoreRecent();
 
         if (empty($data['categories'])) {
             return;
@@ -1255,70 +1225,6 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
     {
         Mage::helper('M2ePro/Data_Cache_Permanent')->removeTagValues('account');
         return parent::delete();
-    }
-
-    //########################################
-
-    /**
-     * @return array
-     */
-    public function getDefaultSettings()
-    {
-        return array(
-
-            'marketplaces_data' => Mage::helper('M2ePro')->jsonEncode(array()),
-
-            'feedbacks_receive' => 0,
-            'feedbacks_auto_response' => self::FEEDBACKS_AUTO_RESPONSE_NONE,
-            'feedbacks_auto_response_only_positive' => 0,
-
-            'other_listings_synchronization' => 0,
-            'other_listings_mapping_mode' => 0,
-            'other_listings_mapping_settings' => Mage::helper('M2ePro')->jsonEncode(array()),
-
-            'magento_orders_settings' => Mage::helper('M2ePro')->jsonEncode(
-                array(
-                    'listing' => array(
-                        'mode' => 1,
-                        'store_mode' => self::MAGENTO_ORDERS_LISTINGS_STORE_MODE_DEFAULT,
-                        'store_id' => null
-                    ),
-                    'listing_other' => array(
-                        'mode' => 1,
-                        'product_mode' => self::MAGENTO_ORDERS_LISTINGS_OTHER_PRODUCT_MODE_IMPORT,
-                        'product_tax_class_id' => Ess_M2ePro_Model_Magento_Product::TAX_CLASS_ID_NONE,
-                        'store_id' => Mage::helper('M2ePro/Magento_Store')->getDefaultStoreId(),
-                    ),
-                    'customer' => array(
-                        'mode' => self::MAGENTO_ORDERS_CUSTOMER_MODE_GUEST,
-                        'id' => null,
-                        'website_id' => null,
-                        'group_id' => null,
-                        'notifications' => array(
-                            'invoice_created' => false,
-                            'order_created' => false
-                        )
-                    ),
-                    'creation' => array(
-                        'mode' => self::MAGENTO_ORDERS_CREATE_CHECKOUT_AND_PAID,
-                    ),
-                    'tax' => array(
-                        'mode' => self::MAGENTO_ORDERS_TAX_MODE_MIXED
-                    ),
-                    'status_mapping' => array(
-                        'mode' => self::MAGENTO_ORDERS_STATUS_MAPPING_MODE_DEFAULT,
-                        'new' => self::MAGENTO_ORDERS_STATUS_MAPPING_NEW,
-                        'paid' => self::MAGENTO_ORDERS_STATUS_MAPPING_PAID,
-                        'shipped' => self::MAGENTO_ORDERS_STATUS_MAPPING_SHIPPED
-                    ),
-                    'qty_reservation' => array(
-                        'days' => 0
-                    ),
-                    'invoice_mode'  => 1,
-                    'shipment_mode' => 1
-                )
-            )
-        );
     }
 
     //########################################

@@ -28,20 +28,27 @@ abstract class Ess_M2ePro_Block_Adminhtml_Synchronization_Log_Grid extends Ess_M
 
     //########################################
 
+    protected function _getLogTypeList()
+    {
+        return array(
+            Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING            => Mage::helper('M2ePro')->__('Warning'),
+            Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR              => Mage::helper('M2ePro')->__('Error'),
+            Ess_M2ePro_Model_Synchronization_Log::TYPE_FATAL_ERROR => Mage::helper('M2ePro')->__('Fatal Error')
+        );
+    }
+
+    //########################################
+
     protected function _prepareCollection()
     {
         $collection = Mage::getModel('M2ePro/Synchronization_Log')->getCollection();
-        $collection->addFieldToFilter('component_mode', $this->getComponentMode());
+        $collection->getSelect()->where('component_mode IS NULL OR component_mode = ?', $this->getComponentMode());
 
-        // some actions must be excluded
-        // ---------------------------------------
         $allTitles = Mage::helper('M2ePro/Module_Log')->getActionsTitlesByClass('Synchronization_Log');
         if (count($this->getActionTitles()) != count($allTitles)) {
             $excludeTasks = array_diff($allTitles, $this->getActionTitles());
             $collection->addFieldToFilter('task', array('nin' => array_keys($excludeTasks)));
         }
-
-        // ---------------------------------------
 
         $this->setCollection($collection);
 
@@ -51,8 +58,9 @@ abstract class Ess_M2ePro_Block_Adminhtml_Synchronization_Log_Grid extends Ess_M
     protected function _prepareColumns()
     {
         $this->addColumn(
-            'create_date', array(
-                'header' => Mage::helper('M2ePro')->__('Creation Date'),
+            'create_date',
+            array(
+                'header' => Mage::helper('M2ePro')->__('Date'),
                 'align'  => 'left',
                 'type'   => 'datetime',
                 'format' => Mage::app()->getLocale()->getDateTimeFormat(Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM),
@@ -62,8 +70,9 @@ abstract class Ess_M2ePro_Block_Adminhtml_Synchronization_Log_Grid extends Ess_M
         );
 
         $this->addColumn(
-            'task', array(
-                'header'       => Mage::helper('M2ePro')->__('Synchronization'),
+            'task',
+            array(
+                'header'       => Mage::helper('M2ePro')->__('Task'),
                 'align'        => 'left',
                 'width'        => '200px',
                 'type'         => 'options',
@@ -75,8 +84,9 @@ abstract class Ess_M2ePro_Block_Adminhtml_Synchronization_Log_Grid extends Ess_M
         );
 
         $this->addColumn(
-            'description', array(
-                'header'         => Mage::helper('M2ePro')->__('Description'),
+            'description',
+            array(
+                'header'         => Mage::helper('M2ePro')->__('Message'),
                 'align'          => 'left',
                 'type'           => 'text',
                 'string_limit'   => 350,
@@ -87,9 +97,23 @@ abstract class Ess_M2ePro_Block_Adminhtml_Synchronization_Log_Grid extends Ess_M
         );
 
         $this->addColumn(
-            'type', array(
+            'detailed_description',
+            array(
+                'header'         => Mage::helper('M2ePro')->__('Detailed'),
+                'align'          => 'left',
+                'type'           => 'text',
+                'string_limit'   => 65000,
+                'index'          => 'detailed_description',
+                'filter_index'   => 'main_table.detailed_description',
+                'frame_callback' => array($this, 'callbackDescription')
+            )
+        );
+
+        $this->addColumn(
+            'type',
+            array(
                 'header'         => Mage::helper('M2ePro')->__('Type'),
-                'width'          => '80px',
+                'width'          => '120px',
                 'index'          => 'type',
                 'align'          => 'right',
                 'type'           => 'options',

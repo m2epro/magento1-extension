@@ -8,48 +8,71 @@
 
 class Ess_M2ePro_Helper_Module_Maintenance extends Mage_Core_Helper_Abstract
 {
-    const CONFIG_PATH = 'm2epro/maintenance';
+    const MAINTENANCE_CONFIG_PATH                = 'm2epro/maintenance';
+    const MAINTENANCE_CAB_BE_IGNORED_CONFIG_PATH = 'm2epro/setup/ignore_maintenance';
+
     const MENU_ROOT_NODE_NICK = 'm2epro_maintenance';
 
     //########################################
 
     public function isEnabled()
     {
-        $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
+        return (bool)$this->getConfig(self::MAINTENANCE_CONFIG_PATH);
+    }
 
-        $select = $connRead->select()
-            ->from(
-                Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('core_config_data'), 'value'
-            )
-            ->where('scope = ?', 'default')
-            ->where('scope_id = ?', 0)
-            ->where('path = ?', self::CONFIG_PATH);
+    public function enable()
+    {
+        $this->setConfig(self::MAINTENANCE_CONFIG_PATH, 1);
+    }
 
-        return (bool)$connRead->fetchOne($select);
+    public function disable()
+    {
+        $this->setConfig(self::MAINTENANCE_CONFIG_PATH, 0);
+    }
+
+    //----------------------------------------
+
+    public function isMaintenanceCanBeIgnored()
+    {
+        return (bool)$this->getConfig(self::MAINTENANCE_CAB_BE_IGNORED_CONFIG_PATH);
+    }
+
+    public function setMaintenanceCanBeIgnored($value)
+    {
+        $this->setConfig(self::MAINTENANCE_CAB_BE_IGNORED_CONFIG_PATH, $value);
     }
 
     //########################################
 
-    public function enable()
+    protected function getConfig($path)
     {
-        $connWrite = Mage::getSingleton('core/resource')->getConnection('core_write');
+        $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
 
-        $select = $connWrite->select()
+        $select = $connRead
+            ->select()
             ->from(
-                Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('core_config_data'), 'value'
+                Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('core_config_data'),
+                'value'
             )
             ->where('scope = ?', 'default')
             ->where('scope_id = ?', 0)
-            ->where('path = ?', self::CONFIG_PATH);
+            ->where('path = ?', $path);
 
-        if ($connWrite->fetchOne($select) === false) {
+        return $connRead->fetchOne($select);
+    }
+
+    protected function setConfig($path, $value)
+    {
+        $connWrite = Mage::getSingleton('core/resource')->getConnection('core_write');
+
+        if ($this->getConfig($path) === false) {
             $connWrite->insert(
                 Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('core_config_data'),
                 array(
-                    'scope' => 'default',
+                    'scope'    => 'default',
                     'scope_id' => 0,
-                    'path' => self::CONFIG_PATH,
-                    'value' => 1
+                    'path'     => $path,
+                    'value'    => $value
                 )
             );
             return;
@@ -57,26 +80,11 @@ class Ess_M2ePro_Helper_Module_Maintenance extends Mage_Core_Helper_Abstract
 
         $connWrite->update(
             Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('core_config_data'),
-            array('value' => 1),
+            array('value' => $value),
             array(
-                'scope = ?' => 'default',
+                'scope = ?'    => 'default',
                 'scope_id = ?' => 0,
-                'path = ?' => self::CONFIG_PATH,
-            )
-        );
-    }
-
-    public function disable()
-    {
-        $connWrite = Mage::getSingleton('core/resource')->getConnection('core_write');
-
-        $connWrite->update(
-            Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('core_config_data'),
-            array('value' => 0),
-            array(
-                'scope = ?' => 'default',
-                'scope_id = ?' => 0,
-                'path = ?' => self::CONFIG_PATH,
+                'path = ?'     => $path,
             )
         );
     }

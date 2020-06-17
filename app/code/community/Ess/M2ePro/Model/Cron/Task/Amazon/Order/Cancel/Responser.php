@@ -30,8 +30,49 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Cancel_Responser
     {
         parent::failDetected($messageText);
 
-        $this->_order->getLog()->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION);
+        /** @var Ess_M2ePro_Model_Order_Change $orderChange */
+        $orderChange = Mage::getModel('M2ePro/Order_Change')->load($this->_params['order']['change_id']);
+        $this->_order->getLog()->setInitiator($orderChange->getCreatorType());
         $this->_order->addErrorLog('Amazon Order was not cancelled. Reason: %msg%', array('msg' => $messageText));
+    }
+
+    /**
+     * @return bool
+     */
+    protected function isNeedProcessResponse()
+    {
+        if (!parent::isNeedProcessResponse()) {
+            return false;
+        }
+
+        if ($this->getResponse()->getMessages()->hasErrorEntities()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @param array $messages
+     * @return void
+     */
+    protected function processResponseMessages(array $messages = array())
+    {
+        parent::processResponseMessages();
+
+        $orderChange = Mage::getModel('M2ePro/Order_Change')->load($this->_params['order']['change_id']);
+        $this->_order->getLog()->setInitiator($orderChange->getCreatorType());
+
+        foreach ($this->getResponse()->getMessages()->getEntities() as $message) {
+            if ($message->isError()) {
+                $this->_order->addErrorLog(
+                    'Amazon Order was not cancelled. Reason: %msg%',
+                    array('msg' => $message->getText())
+                );
+            } else {
+                $this->_order->addWarningLog($message->getText());
+            }
+        }
     }
 
     //########################################
@@ -57,7 +98,6 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Cancel_Responser
         $messagesSet->init($responseData['messages']);
 
         foreach ($messagesSet->getEntities() as $message) {
-            $this->_order->getLog()->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION);
             if ($message->isError()) {
                 $isFailed = true;
 
@@ -70,16 +110,11 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Cancel_Responser
             }
         }
 
-        //----------------------
-
         if ($isFailed) {
             return;
         }
 
-        //----------------------
-        $this->_order->getLog()->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION);
         $this->_order->addSuccessLog('Amazon Order was cancelled.');
-        //----------------------
     }
 
     //########################################

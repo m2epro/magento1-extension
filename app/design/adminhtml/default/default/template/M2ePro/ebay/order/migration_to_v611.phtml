@@ -25,10 +25,10 @@
     Event.observe(window,'load',function() {
         var orderMigrationProgressBarObj = new ProgressBar('order_migration_progress_bar');
 
-        EbayOrderMigrationToV611HandlerObj = new EbayOrderMigrationToV611Handler();
-        EbayOrderMigrationToV611HandlerObj.setProgressBarObj(orderMigrationProgressBarObj);
-        EbayOrderMigrationToV611HandlerObj.setNotMigratedOrdersCount(<?php echo $this->getNotMigratedOrdersCount(); ?>);
-        EbayOrderMigrationToV611HandlerObj.setOrdersCountPerAjaxRequest(<?php echo $this->getOrdersCountPerAjaxRequest(); ?>);
+        EbayOrderMigrationToV611Obj = new EbayOrderMigrationToV611();
+        EbayOrderMigrationToV611Obj.setProgressBarObj(orderMigrationProgressBarObj);
+        EbayOrderMigrationToV611Obj.setNotMigratedOrdersCount(<?php echo $this->getNotMigratedOrdersCount(); ?>);
+        EbayOrderMigrationToV611Obj.setOrdersCountPerAjaxRequest(<?php echo $this->getOrdersCountPerAjaxRequest(); ?>);
     });
 
 </script>
@@ -39,6 +39,6 @@
     <?php echo Mage::helper('M2ePro')->__('The orders are not available because orders data was not completely migrated in the process of upgrade to the M2E Pro version 6.1.1 or higher. <br/>You should execute data migration for further work with orders.<br/> To start data migration press "Migrate" Button and wait until the process is completed. '); ?>
 
     <div style="text-align: center">
-        <button id="run_migration_button" onclick="EbayOrderMigrationToV611HandlerObj.runMigration()"><?php echo Mage::helper('M2ePro')->__('Migrate'); ?></button>
+        <button id="run_migration_button" onclick="EbayOrderMigrationToV611Obj.runMigration()"><?php echo Mage::helper('M2ePro')->__('Migrate'); ?></button>
     </div>
 </div>

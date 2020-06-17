@@ -6,19 +6,22 @@
  * @license    Commercial use is forbidden
  */
 
+/**
+ * @method Ess_M2ePro_Model_Walmart_Template_Category getModel()
+ */
 class Ess_M2ePro_Model_Walmart_Template_Category_SnapshotBuilder
-    extends Ess_M2ePro_Model_Template_SnapshotBuilder_Abstract
+    extends Ess_M2ePro_Model_ActiveRecord_SnapshotBuilder
 {
     //########################################
 
     public function getSnapshot()
     {
-        $data = $this->_model->getData();
+        $data = $this->getModel()->getData();
         if (empty($data)) {
             return array();
         }
 
-        $data['specifics'] = $this->_model->getSpecifics();
+        $data['specifics'] = $this->getModel()->getSpecifics();
 
         $ignoredKeys = array(
             'id', 'title', 'template_category_id',
@@ -34,9 +37,11 @@ class Ess_M2ePro_Model_Walmart_Template_Category_SnapshotBuilder
 
                 $value !== null && !is_array($value) && $value = (string)$value;
             }
+
+            unset($value);
         }
 
-        unset($value);
+        unset($specificsData);
 
         return $data;
     }

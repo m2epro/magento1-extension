@@ -16,7 +16,7 @@ $callback = $this->getCallback();
 ?>
 
 <script type="text/javascript">
-    ListingCategoryTreeHandlerObj = new ListingCategoryTreeHandler();
+    ListingCategoryTreeObj = new ListingCategoryTree();
 </script>
 
 <div class="tree-actions" style="margin-bottom: 5px;">
@@ -81,9 +81,9 @@ $callback = $this->getCallback();
             }
 
             if (node.ui.checkbox.checked) {
-                ListingCategoryTreeHandlerObj.tree_categoryAdd(node.id);
+                ListingCategoryTreeObj.tree_categoryAdd(node.id);
             } else {
-                ListingCategoryTreeHandlerObj.tree_categoryRemove(node.id);
+                ListingCategoryTreeObj.tree_categoryRemove(node.id);
             }
 
             <?php if (!empty($callback)): ?>
@@ -99,7 +99,7 @@ $callback = $this->getCallback();
         });
 
         tree.setRootNode(root);
-        ListingCategoryTreeHandlerObj.tree_buildCategory(root, <?php echo $this->getTreeJson(); ?>);
+        ListingCategoryTreeObj.tree_buildCategory(root, <?php echo $this->getTreeJson(); ?>);
 
         tree.render();
         root.expand();

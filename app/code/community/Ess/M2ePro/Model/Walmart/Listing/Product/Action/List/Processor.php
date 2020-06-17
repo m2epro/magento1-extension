@@ -18,7 +18,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_Processor
 
     const PENDING_REQUEST_MAX_LIFE_TIME = 86400;
 
-    const CONNECTION_ERROR_REPEAT_TIMEOUT = 180;
     const FIRST_CONNECTION_ERROR_DATE_REGISTRY_KEY = '/walmart/listing/product/action/first_connection_error/date/';
 
     //########################################
@@ -930,20 +929,11 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_Processor
         } catch (Exception $exception) {
             Mage::helper('M2ePro/Module_Exception')->process($exception);
 
-            $currentDate              = Mage::helper('M2ePro')->getCurrentGmtDate();
-            $firstConnectionErrorDate = $this->getFirstConnectionErrorDate();
-
-            if (empty($firstConnectionErrorDate)) {
-                $this->setFirstConnectionErrorDate($currentDate);
-                return;
-            }
-
-            if (strtotime($currentDate) - strtotime($firstConnectionErrorDate) < self::CONNECTION_ERROR_REPEAT_TIMEOUT){
-                return;
-            }
-
-            if (!empty($firstConnectionErrorDate)) {
-                $this->removeFirstConnectionErrorDate();
+            if ($exception instanceof Ess_M2ePro_Model_Exception_Connection) {
+                $isRepeat = $exception->handleRepeatTimeout(self::FIRST_CONNECTION_ERROR_DATE_REGISTRY_KEY);
+                if ($isRepeat) {
+                    return;
+                }
             }
 
             $message = Mage::getModel('M2ePro/Connector_Connection_Response_Message');
@@ -1098,47 +1088,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_Processor
         }
 
         return 1000;
-    }
-
-    //########################################
-
-    /**
-     * @return mixed
-     */
-    protected function getFirstConnectionErrorDate()
-    {
-        $registry = Mage::getModel('M2ePro/Registry');
-        $registry->load(self::FIRST_CONNECTION_ERROR_DATE_REGISTRY_KEY, 'key');
-
-        return $registry->getValue();
-    }
-
-    /**
-     * @param $date
-     * @throws Exception
-     */
-    protected function setFirstConnectionErrorDate($date)
-    {
-        $registry = Mage::getModel('M2ePro/Registry');
-        $registry->load(self::FIRST_CONNECTION_ERROR_DATE_REGISTRY_KEY, 'key');
-
-        $registry->setData('key', self::FIRST_CONNECTION_ERROR_DATE_REGISTRY_KEY);
-        $registry->setData('value', $date);
-
-        $registry->save();
-    }
-
-    /**
-     * @throws Exception
-     */
-    protected function removeFirstConnectionErrorDate()
-    {
-        $registry = Mage::getModel('M2ePro/Registry');
-        $registry->load(self::FIRST_CONNECTION_ERROR_DATE_REGISTRY_KEY, 'key');
-
-        if ($registry->getId()) {
-            $registry->delete();
-        }
     }
 
     //########################################

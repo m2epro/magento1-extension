@@ -21,30 +21,6 @@ class Ess_M2ePro_Model_Amazon_Marketplace extends Ess_M2ePro_Model_Component_Chi
 
     //########################################
 
-    /**
-     * @param bool $asObjects
-     * @param array $filters
-     * @return array|Ess_M2ePro_Model_Abstract[]
-     * @throws Ess_M2ePro_Model_Exception_Logic
-     */
-    public function getAmazonItems($asObjects = false, array $filters = array())
-    {
-        return $this->getRelatedSimpleItems('Amazon_Item', 'marketplace_id', $asObjects, $filters);
-    }
-
-    /**
-     * @param bool $asObjects
-     * @param array $filters
-     * @return array|Ess_M2ePro_Model_Abstract[]
-     * @throws Ess_M2ePro_Model_Exception_Logic
-     */
-    public function getDescriptionTemplates($asObjects = false, array $filters = array())
-    {
-        return $this->getRelatedSimpleItems('Amazon_Template_Description', 'marketplace_id', $asObjects, $filters);
-    }
-
-    //########################################
-
     public function getCurrency()
     {
         return $this->getData('default_currency');

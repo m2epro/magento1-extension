@@ -254,12 +254,12 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Order_Grid extends Mage_Adminhtml_Block_
                 array(
                     'caption' => Mage::helper('M2ePro')->__('Mark As Shipped'),
                     'field'   => 'id',
-                    'onclick_action' => 'OrderMerchantFulfillmentHandlerObj.markAsShippedAction'
+                    'onclick_action' => 'AmazonOrderMerchantFulfillmentObj.markAsShippedAction'
                 ),
                 array(
                     'caption' => Mage::helper('M2ePro')->__('Amazon\'s Shipping Services'),
                     'field'   => 'id',
-                    'onclick_action' => 'OrderMerchantFulfillmentHandlerObj.getPopupAction'
+                    'onclick_action' => 'AmazonOrderMerchantFulfillmentObj.getPopupAction'
                 )
             ),
             'filter'    => false,
@@ -453,8 +453,8 @@ HTML;
             'rows' => $logRows,
             'tips' => $tips,
             'icons' => $icons,
-            'view_help_handler' => 'OrderHandlerObj.viewOrderHelp',
-            'hide_help_handler' => 'OrderHandlerObj.hideOrderHelp',
+            'view_help_handler' => 'OrderObj.viewOrderHelp',
+            'hide_help_handler' => 'OrderObj.hideOrderHelp',
             )
         );
 
@@ -519,7 +519,7 @@ HTML;
                 $orderItemId = $item->getId();
                 $orderItemEditLabel = Mage::helper('M2ePro')->__('edit');
 
-                $js = "{OrderEditItemHandlerObj.edit('{$gridId}', {$orderItemId});}";
+                $js = "{OrderEditItemObj.edit('{$gridId}', {$orderItemId});}";
 
                 $editItemHtml = <<<HTML
 <span>&nbsp;<a href="javascript:void(0);" onclick="{$js}">[{$orderItemEditLabel}]</a></span>

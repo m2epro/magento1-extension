@@ -25,7 +25,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View_Walmart_Sku_Main
         $data = array(
             'id'    => 'edit-sku-button',
             'label' => Mage::helper('M2ePro')->__('Submit'),
-            'onclick' => 'ListingGridHandlerObj.editChannelDataHandler.editSku()'
+            'onclick' => 'ListingGridObj.editChannelDataHandler.editSku()'
         );
         $buttonBackBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('submit_button', $buttonBackBlock);

@@ -28,7 +28,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Stop_Request
     //########################################
 
     /**
-     * LagTime and Qty always should be send together for Canada(ONLY) Marketplace
+     * LagTime and Qty always should be sent together for Canada(ONLY) Marketplace
      * @return array
      */
     public function getLagTimeData()

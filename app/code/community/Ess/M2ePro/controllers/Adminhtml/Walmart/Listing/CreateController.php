@@ -21,10 +21,17 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_CreateController
 
         $this->getLayout()->getBlock('head')
             ->setCanLoadExtJs(true)
-            ->addJs('M2ePro/TemplateHandler.js')
-            ->addJs('M2ePro/Walmart/Listing/AddListingHandler.js')
-            ->addJs('M2ePro/Walmart/Listing/SettingsHandler.js')
-            ->addJs('M2ePro/Walmart/Listing/ChannelSettingsHandler.js');
+            ->addCss('M2ePro/css/Plugin/ProgressBar.css')
+            ->addCss('M2ePro/css/Plugin/AreaWrapper.css')
+
+            ->addJs('M2ePro/Plugin/ProgressBar.js')
+            ->addJs('M2ePro/Plugin/AreaWrapper.js')
+            ->addJs('M2ePro/SynchProgress.js')
+            ->addJs('M2ePro/TemplateManager.js')
+            ->addJs('M2ePro/Walmart/Listing/Product/Add.js')
+            ->addJs('M2ePro/Walmart/Listing/Settings.js')
+            ->addJs('M2ePro/Walmart/Listing/Create/General.js')
+            ->addJs('M2ePro/Walmart/Listing/Create/General/MarketplaceSynchProgress.js');
 
         $this->_initPopUp();
 
@@ -55,7 +62,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_CreateController
 
         $this->setPageHelpLink(null, null, "x/L4taAQ");
 
-        $this->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_walmart_listing_add', ''));
+        $this->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_walmart_listing_create'));
 
         $this->renderLayout();
     }
@@ -102,8 +109,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_CreateController
             $actionId,
             Ess_M2ePro_Model_Listing_Log::ACTION_ADD_LISTING,
             'Listing was successfully Added',
-            Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE,
-            Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH
+            Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE
         );
         // ---------------------------------------
 

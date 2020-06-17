@@ -184,28 +184,6 @@ class Ess_M2ePro_Model_Ebay_Template_ReturnPolicy extends Ess_M2ePro_Model_Compo
 
     //########################################
 
-    /**
-     * @return array
-     */
-    public function getDefaultSettings()
-    {
-        return array(
-            'accepted'      => self::RETURNS_ACCEPTED,
-            'option'        => '',
-            'within'        => '',
-            'shipping_cost' => '',
-
-            'international_accepted'      => self::RETURNS_NOT_ACCEPTED,
-            'international_option'        => '',
-            'international_within'        => '',
-            'international_shipping_cost' => '',
-
-            'description' => ''
-        );
-    }
-
-    //########################################
-
     public function save()
     {
         Mage::helper('M2ePro/Data_Cache_Permanent')->removeTagValues('ebay_template_returnpolicy');

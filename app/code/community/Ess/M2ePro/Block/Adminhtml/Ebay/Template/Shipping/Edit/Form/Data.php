@@ -201,7 +201,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Shipping_Edit_Form_Data extends M
 
     public function getDefault()
     {
-        $default = Mage::getModel('M2ePro/Ebay_Template_Shipping')->getDefaultSettings();
+        $default = Mage::getModel('M2ePro/Ebay_Template_Shipping_Builder')->getDefaultData();
         $default['excluded_locations'] = Mage::helper('M2ePro')->jsonDecode($default['excluded_locations']);
 
         // populate address fields with the data from magento configuration
@@ -684,26 +684,20 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Shipping_Edit_Form_Data extends M
         if ($template === null || $template->getId() === null) {
             $templateData = $this->getDefault();
             $templateData['component_mode'] = Ess_M2ePro_Helper_Component_Ebay::NICK;
-            $usedAttributes = array();
         } else {
             $templateData = $template->getData();
-            $usedAttributes = $template->getUsedAttributes();
         }
 
-        $messagesBlock = $this->getLayout()
-            ->createBlock('M2ePro/adminhtml_template_messages')
-            ->getResultBlock(
-                Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SHIPPING,
-                Ess_M2ePro_Helper_Component_Ebay::NICK
-            );
+        /** @var Ess_M2ePro_Block_Adminhtml_Ebay_Template_Shipping_Messages $messagesBlock */
+        $messagesBlock = $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_template_shipping_messages');
+        $messagesBlock->setComponentMode(Ess_M2ePro_Helper_Component_Ebay::NICK);
+        $messagesBlock->setTemplateNick(Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SHIPPING);
 
         $messagesBlock->setData('template_data', $templateData);
-        $messagesBlock->setData('used_attributes', $usedAttributes);
         $messagesBlock->setData('marketplace_id', $marketplace ? $marketplace->getId() : null);
         $messagesBlock->setData('store_id', $store ? $store->getId() : null);
 
         $messages = $messagesBlock->getMessages();
-
         if (empty($messages)) {
             return '';
         }
@@ -722,7 +716,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Shipping_Edit_Form_Data extends M
                             ->createBlock('adminhtml/widget_button')
                             ->setData(
                                 array(
-                                'onclick' => 'EbayTemplateShippingHandlerObj.addRow(\'local\');',
+                                'onclick' => 'EbayTemplateShippingObj.addRow(\'local\');',
                                 'class' => 'add add_local_shipping_method_button'
                                 )
                             );
@@ -734,7 +728,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Shipping_Edit_Form_Data extends M
                             ->createBlock('adminhtml/widget_button')
                             ->setData(
                                 array(
-                                'onclick' => 'EbayTemplateShippingHandlerObj.addRow(\'international\');',
+                                'onclick' => 'EbayTemplateShippingObj.addRow(\'international\');',
                                 'class' => 'add add_international_shipping_method_button'
                                 )
                             );
@@ -747,7 +741,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Shipping_Edit_Form_Data extends M
                             ->setData(
                                 array(
                                 'label'   => Mage::helper('M2ePro')->__('Remove'),
-                                'onclick' => 'EbayTemplateShippingHandlerObj.removeRow.call(this, \'%type%\');',
+                                'onclick' => 'EbayTemplateShippingObj.removeRow.call(this, \'%type%\');',
                                 'class' => 'delete icon-btn remove_shipping_method_button'
                                 )
                             );
@@ -758,7 +752,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Shipping_Edit_Form_Data extends M
         $data = array(
             'id'      => 'save_popup_button',
             'label'   => Mage::helper('M2ePro')->__('Save'),
-            'onclick' => 'EbayTemplateShippingExcludedLocationsHandlerObj.savePopup()',
+            'onclick' => 'EbayTemplateShippingExcludedLocationsObj.savePopup()',
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('save_popup_button', $buttonBlock);

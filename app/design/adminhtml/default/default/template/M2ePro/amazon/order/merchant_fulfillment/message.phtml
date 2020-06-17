@@ -48,12 +48,12 @@
     <?php endif; ?>
 
     <?php if($this->getData('message') == 'markAsShipped'):?>
-        <?php echo Mage::helper('M2ePro')->__('You cannot mark this Order as Shipped because this is the Amazon Prime Order. You should use <a href="#" onclick="OrderMerchantFulfillmentHandlerObj.useMerchantFulfillmentAction()">Amazon\'s Shipping Services</a> feature instead.'); ?>
+        <?php echo Mage::helper('M2ePro')->__('You cannot mark this Order as Shipped because this is the Amazon Prime Order. You should use <a href="#" onclick="AmazonOrderMerchantFulfillmentObj.useMerchantFulfillmentAction()">Amazon\'s Shipping Services</a> feature instead.'); ?>
     <?php endif; ?>
 </div>
 
 <div class="control">
-    <button type="button" onclick="OrderMerchantFulfillmentHandlerObj.closePopUp();">
+    <button type="button" onclick="AmazonOrderMerchantFulfillmentObj.closePopUp();">
         <?php echo Mage::helper('M2ePro')->__('Close'); ?>
     </button>
 </div>

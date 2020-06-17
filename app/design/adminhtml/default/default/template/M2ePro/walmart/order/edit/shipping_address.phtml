@@ -24,10 +24,10 @@ $address = $this->getData('address');
     M2ePro.formData.region = '<?php echo Mage::helper('M2ePro')->escapeJs($this->getData('region_code')) ?>';
 
     Event.observe(window, 'load', function() {
-        OrderEditShippingAddressHandlerObj = new OrderEditShippingAddressHandler('country_code', 'state_td', 'state');
+        OrderEditShippingAddressObj = new OrderEditShippingAddress('country_code', 'state_td', 'state');
 
         $('country_code')
-            .observe('change', OrderEditShippingAddressHandlerObj.countryCodeChange)
+            .observe('change', OrderEditShippingAddressObj.countryCodeChange)
             .simulate('change');
 
         editForm = new varienForm('edit_form', '<?php echo $this->getValidationUrl(); ?>');

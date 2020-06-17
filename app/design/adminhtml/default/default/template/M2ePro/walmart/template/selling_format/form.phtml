@@ -54,66 +54,11 @@
         $formData['promotions'] = $model->getChildObject()->getPromotions();
     }
 
-    $default = array(
-        'title' => '',
-        'marketplace_id' => $this->getRequest()->getParam('marketplace_id', ''),
-
-        'qty_mode' => Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_PRODUCT,
-        'qty_custom_value' => 1,
-        'qty_custom_attribute' => '',
-        'qty_percentage' => 100,
-        'qty_modification_mode' => Ess_M2ePro_Model_Walmart_Template_SellingFormat::QTY_MODIFICATION_MODE_OFF,
-        'qty_min_posted_value' => Ess_M2ePro_Model_Walmart_Template_SellingFormat::QTY_MIN_POSTED_DEFAULT_VALUE,
-        'qty_max_posted_value' => Ess_M2ePro_Model_Walmart_Template_SellingFormat::QTY_MAX_POSTED_DEFAULT_VALUE,
-
-        'price_mode' => Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_PRODUCT,
-        'price_coefficient' => '',
-        'price_custom_attribute' => '',
-
-        'map_price_mode' => Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_NONE,
-        'map_price_custom_attribute' => '',
-
-        'price_variation_mode' => Ess_M2ePro_Model_Walmart_Template_SellingFormat::PRICE_VARIATION_MODE_PARENT,
-
-        'promotions_mode' => Ess_M2ePro_Model_Walmart_Template_SellingFormat::PROMOTIONS_MODE_NO,
-        'promotions' => array(),
-
-        'sale_time_start_date_mode' => Ess_M2ePro_Model_Walmart_Template_SellingFormat::DATE_NONE,
-        'sale_time_end_date_mode' => Ess_M2ePro_Model_Walmart_Template_SellingFormat::DATE_NONE,
-
-        'sale_time_start_date_custom_attribute' => '',
-        'sale_time_end_date_custom_attribute' => '',
-
-        'sale_time_start_date_value' => Mage::helper('M2ePro')->getCurrentGmtDate(false, 'Y-m-d'),
-        'sale_time_end_date_value' => Mage::helper('M2ePro')->getCurrentGmtDate(false, 'Y-m-d'),
-
-        'item_weight_mode' => Ess_M2ePro_Model_Walmart_Template_SellingFormat::WEIGHT_MODE_CUSTOM_VALUE,
-        'item_weight_custom_value' => '',
-        'item_weight_custom_attribute' => '',
-
-        'price_vat_percent' => 0,
-
-        'lag_time_mode' => Ess_M2ePro_Model_Walmart_Template_SellingFormat::LAG_TIME_MODE_RECOMMENDED,
-        'lag_time_value' => 0,
-        'lag_time_custom_attribute' => '',
-
-        'product_tax_code_mode' => Ess_M2ePro_Model_Walmart_Template_SellingFormat::PRODUCT_TAX_CODE_MODE_VALUE,
-        'product_tax_code_custom_value' => '',
-        'product_tax_code_custom_attribute' => '',
-
-        'must_ship_alone_mode' => Ess_M2ePro_Model_Walmart_Template_SellingFormat::MUST_SHIP_ALONE_MODE_NONE,
-        'must_ship_alone_value' => '',
-        'must_ship_alone_custom_attribute' => '',
-
-        'ships_in_original_packaging_mode' => Ess_M2ePro_Model_Walmart_Template_SellingFormat::SHIPS_IN_ORIGINAL_PACKAGING_MODE_NONE,
-        'ships_in_original_packaging_value' => '',
-        'ships_in_original_packaging_custom_attribute' => '',
-
-        'attributes_mode' => Ess_M2ePro_Model_Walmart_Template_SellingFormat::ATTRIBUTES_MODE_NONE,
-        'attributes' => '',
-
-        'shipping_override_rule_mode' => Ess_M2ePro_Model_Walmart_Template_SellingFormat::SHIPPING_OVERRIDE_RULE_MODE_NO,
-        'shipping_override_rule' => array()
+    $default = array_merge(
+        Mage::getModel('M2ePro/Walmart_Template_SellingFormat_Builder')->getDefaultData(),
+        array(
+            'marketplace_id' => $this->getRequest()->getParam('marketplace_id', ''),
+        )
     );
 
     $formData = array_merge($default, $formData);
@@ -266,89 +211,89 @@
 
     Event.observe(window, 'load', function() {
 
-        AttributeHandlerObj = new AttributeHandler();
-        AttributeHandlerObj.setAvailableAttributes(<?php echo json_encode($allAttributeSets); ?>);
-        WalmartTemplateSellingFormatHandlerObj = new WalmartTemplateSellingFormatHandler();
+        AttributeObj = new Attribute();
+        AttributeObj.setAvailableAttributes(<?php echo json_encode($allAttributeSets); ?>);
+        WalmartTemplateSellingFormatObj = new WalmartTemplateSellingFormat();
 
         $('marketplace_id')
-            .observe('change', WalmartTemplateSellingFormatHandlerObj.marketplaceIdOnChange)
+            .observe('change', WalmartTemplateSellingFormatObj.marketplaceIdOnChange)
             .simulate('change');
 
         $('qty_mode')
-             .observe('change', WalmartTemplateSellingFormatHandlerObj.qty_mode_change)
+             .observe('change', WalmartTemplateSellingFormatObj.qty_mode_change)
              .simulate('change');
 
         $('qty_modification_mode')
-             .observe('change', WalmartTemplateSellingFormatHandlerObj.qtyPostedMode_change)
+             .observe('change', WalmartTemplateSellingFormatObj.qtyPostedMode_change)
              .simulate('change');
 
         if ($('price_mode')) {
             $('price_mode')
-                .observe('change', WalmartTemplateSellingFormatHandlerObj.price_mode_change)
+                .observe('change', WalmartTemplateSellingFormatObj.price_mode_change)
                 .simulate('change');
         }
 
         if ($('map_price_mode')) {
             $('map_price_mode')
-                .observe('change', WalmartTemplateSellingFormatHandlerObj.map_price_mode_change)
+                .observe('change', WalmartTemplateSellingFormatObj.map_price_mode_change)
                 .simulate('change');
         }
 
         if ($('sale_time_start_date_mode')) {
             $('sale_time_start_date_mode')
-                .observe('change', WalmartTemplateSellingFormatHandlerObj.sale_time_start_date_mode_change)
+                .observe('change', WalmartTemplateSellingFormatObj.sale_time_start_date_mode_change)
                 .simulate('change');
         }
 
         if ($('sale_time_end_date_mode')) {
             $('sale_time_end_date_mode')
-                .observe('change', WalmartTemplateSellingFormatHandlerObj.sale_time_end_date_mode_change)
+                .observe('change', WalmartTemplateSellingFormatObj.sale_time_end_date_mode_change)
                 .simulate('change');
         }
 
         if ($('price_increase_vat_percent')) {
             $('price_increase_vat_percent')
-                .observe('change', WalmartTemplateSellingFormatHandlerObj.price_increase_vat_percent_mode_change)
+                .observe('change', WalmartTemplateSellingFormatObj.price_increase_vat_percent_mode_change)
                 .simulate('change');
         }
 
         $('promotions_mode')
-            .observe('change', WalmartTemplateSellingFormatHandlerObj.promotions_mode_change)
+            .observe('change', WalmartTemplateSellingFormatObj.promotions_mode_change)
             .simulate('change');
 
         $('shipping_override_rule_mode')
-            .observe('change', WalmartTemplateSellingFormatHandlerObj.shipping_override_rule_mode_change)
+            .observe('change', WalmartTemplateSellingFormatObj.shipping_override_rule_mode_change)
             .simulate('change');
 
         $('item_weight_mode')
-            .observe('change', WalmartTemplateSellingFormatHandlerObj.item_weight_mode_change)
+            .observe('change', WalmartTemplateSellingFormatObj.item_weight_mode_change)
             .simulate('change');
 
         $('must_ship_alone_mode')
-            .observe('change', WalmartTemplateSellingFormatHandlerObj.must_ship_alone_mode_change)
+            .observe('change', WalmartTemplateSellingFormatObj.must_ship_alone_mode_change)
             .simulate('change');
 
         $('ships_in_original_packaging_mode')
-            .observe('change', WalmartTemplateSellingFormatHandlerObj.ships_in_original_packaging_mode_change)
+            .observe('change', WalmartTemplateSellingFormatObj.ships_in_original_packaging_mode_change)
             .simulate('change');
 
         $('attributes_mode')
             .observe('change', function () {
-                WalmartTemplateSellingFormatHandlerObj.multi_element_mode_change.call(this,'attributes',10);
+                WalmartTemplateSellingFormatObj.multi_element_mode_change.call(this,'attributes',10);
             })
             .simulate('change');
 
         $('lag_time_mode')
-            .observe('change', WalmartTemplateSellingFormatHandlerObj.lag_time_mode_change)
+            .observe('change', WalmartTemplateSellingFormatObj.lag_time_mode_change)
             .simulate('change');
 
         $('product_tax_code_mode')
-            .observe('change', WalmartTemplateSellingFormatHandlerObj.product_tax_code_mode_change)
+            .observe('change', WalmartTemplateSellingFormatObj.product_tax_code_mode_change)
             .simulate('change');
 
         <?php if ($this->getRequest()->getParam('id')) { ?>
-            WalmartTemplateSellingFormatHandlerObj.renderPromotions(<?php echo json_encode($formData['promotions']); ?>);
-            WalmartTemplateSellingFormatHandlerObj.renderRules(<?php echo json_encode($formData['shipping_override_rule']); ?>);
+            WalmartTemplateSellingFormatObj.renderPromotions(<?php echo json_encode($formData['promotions']); ?>);
+            WalmartTemplateSellingFormatObj.renderRules(<?php echo json_encode($formData['shipping_override_rule']); ?>);
         <?php }?>
 
         editForm = new varienForm('edit_form', '<?php echo $this->getValidationUrl(); ?>');
@@ -924,7 +869,7 @@
                                 calculate the taxes on each sale based on the Item sold and delivery location.<br><br>
                                 <strong>Note:</strong> The current Sales Tax Codes can be found
                                  <a href="javascript:void(0)" onclick="%onclick%">here</a>.',
-                                'WalmartTemplateSellingFormatHandlerObj.openTaxCodePopup(true);'
+                                'WalmartTemplateSellingFormatObj.openTaxCodePopup(true);'
                                 ); ?></span>
                             </p>
                         </td>
@@ -1296,13 +1241,13 @@
                                 <label><?php echo Mage::helper('M2ePro')->__('Attributes (name / value) #%s', $i + 1); ?>: <span class="required">*</span></label>
                             </td>
                             <td class="value">
-                                <input id="attributes_name_<?php echo $i; ?>" onkeyup="WalmartTemplateSellingFormatHandlerObj.multi_element_keyup('attributes',this)"
+                                <input id="attributes_name_<?php echo $i; ?>" onkeyup="WalmartTemplateSellingFormatObj.multi_element_keyup('attributes',this)"
                                        name="attributes_name[]" type="text" class="input-text M2ePro-required-when-visible"
                                        value="<?php echo !empty($formData['attributes'][$i]['name']) ? Mage::helper('M2ePro')->escapeHtml($formData['attributes'][$i]['name']) : ''; ?>">
                             </td>
                             <td class="value">&nbsp;/</td>
                             <td class="value">
-                                <input id="attributes_value_<?php echo $i; ?>" onkeyup="WalmartTemplateSellingFormatHandlerObj.multi_element_keyup('attributes',this)"
+                                <input id="attributes_value_<?php echo $i; ?>" onkeyup="WalmartTemplateSellingFormatObj.multi_element_keyup('attributes',this)"
                                        name="attributes_value[]" type="text" class="input-text M2ePro-required-when-visible"
                                        value="<?php echo !empty($formData['attributes'][$i]['value']) ? Mage::helper('M2ePro')->escapeHtml($formData['attributes'][$i]['value']) : ''; ?>">
                                 <p class="note">
@@ -1327,9 +1272,9 @@
                     <tr id="attributes_actions_tr" style="display: none;">
                         <td></td>
                         <td class="value" style="padding-top: 0 !important;">
-                            <a id="show_attributes_action" href="javascript: void(0);" onclick="WalmartTemplateSellingFormatHandlerObj.showElement('attributes');"><?php echo Mage::helper('M2ePro')->__('Add New') ?></a>
+                            <a id="show_attributes_action" href="javascript: void(0);" onclick="WalmartTemplateSellingFormatObj.showElement('attributes');"><?php echo Mage::helper('M2ePro')->__('Add New') ?></a>
                             /
-                            <a id="hide_attributes_action" href="javascript: void(0);" onclick="WalmartTemplateSellingFormatHandlerObj.hideElement('attributes');"><?php echo Mage::helper('M2ePro')->__('Remove') ?></a>
+                            <a id="hide_attributes_action" href="javascript: void(0);" onclick="WalmartTemplateSellingFormatObj.hideElement('attributes');"><?php echo Mage::helper('M2ePro')->__('Remove') ?></a>
                         </td>
                     </tr>
 

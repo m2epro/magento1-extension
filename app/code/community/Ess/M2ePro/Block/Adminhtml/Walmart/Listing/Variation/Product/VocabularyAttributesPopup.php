@@ -28,7 +28,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_VocabularyAtt
         $data = array(
             'class'   => 'switch-to-individual-btn',
             'label'   => Mage::helper('M2ePro')->__('Yes'),
-            'onclick' => 'WalmartListingVariationProductManageHandlerObj.addAttributesToVocabulary(true)',
+            'onclick' => 'WalmartListingVariationProductManageObj.addAttributesToVocabulary(true)',
         );
         $this->setChild(
             'yes_btn',
@@ -38,7 +38,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_VocabularyAtt
         $data = array(
             'class'   => 'switch-to-individual-popup-close',
             'label'   => Mage::helper('M2ePro')->__('No'),
-            'onclick' => 'WalmartListingVariationProductManageHandlerObj.addAttributesToVocabulary(false)',
+            'onclick' => 'WalmartListingVariationProductManageObj.addAttributesToVocabulary(false)',
         );
         $this->setChild(
             'no_btn',

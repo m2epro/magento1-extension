@@ -33,20 +33,12 @@
     $isEdit && $formData = array('general' => Mage::helper('M2ePro/Data_Global')->getValue('temp_data')->getData());
 
     $default = array(
-        'general' => array(
-            'id'             => '',
-            'title'          => '',
-            'marketplace_id' => $this->getRequest()->getParam('marketplace_id', ''),
-
-            'is_new_asin_accepted' => $this->getRequest()->getParam('is_new_asin_accepted', 0),
-
-            'category_path'     => '',
-            'product_data_nick' => '',
-            'browsenode_id'     => '',
-
-            'registered_parameter'          => '',
-            'worldwide_id_mode'             => Ess_M2ePro_Model_Amazon_Template_Description::WORLDWIDE_ID_MODE_NONE,
-            'worldwide_id_custom_attribute' => ''
+        'general' => array_merge(
+            Mage::getModel('M2ePro/Amazon_Template_Description_Builder')->getDefaultData(),
+            array(
+                'marketplace_id' => $this->getRequest()->getParam('marketplace_id', ''),
+                'is_new_asin_accepted' => $this->getRequest()->getParam('is_new_asin_accepted', 0),
+            )
         )
     );
 
@@ -120,33 +112,33 @@
 
     Event.observe(window, 'load', function() {
 
-        AttributeHandlerObj = new AttributeHandler();
-        AttributeHandlerObj.setAvailableAttributes(<?php echo json_encode($this->getData('all_attributes')); ?>);
+        AttributeObj = new Attribute();
+        AttributeObj.setAvailableAttributes(<?php echo json_encode($this->getData('all_attributes')); ?>);
 
-        AmazonTemplateDescriptionHandlerObj                 = new AmazonTemplateDescriptionHandler();
-        AmazonTemplateDescriptionCategoryChooserHandlerObj  = new AmazonTemplateDescriptionCategoryChooserHandler();
-        AmazonTemplateDescriptionCategorySpecificHandlerObj = new AmazonTemplateDescriptionCategorySpecificHandler();
+        AmazonTemplateDescriptionObj                 = new AmazonTemplateDescription();
+        AmazonTemplateDescriptionCategoryChooserObj  = new AmazonTemplateDescriptionCategoryChooser();
+        AmazonTemplateDescriptionCategorySpecificObj = new AmazonTemplateDescriptionCategorySpecific();
 
-        AmazonTemplateDescriptionHandlerObj.setSpecificHandler(AmazonTemplateDescriptionCategorySpecificHandlerObj);
-        AmazonTemplateDescriptionCategoryChooserHandlerObj.setSpecificHandler(AmazonTemplateDescriptionCategorySpecificHandlerObj);
+        AmazonTemplateDescriptionObj.setSpecificHandler(AmazonTemplateDescriptionCategorySpecificObj);
+        AmazonTemplateDescriptionCategoryChooserObj.setSpecificHandler(AmazonTemplateDescriptionCategorySpecificObj);
 
-        $('marketplace_id').observe('change', AmazonTemplateDescriptionHandlerObj.onChangeMarketplace);
+        $('marketplace_id').observe('change', AmazonTemplateDescriptionObj.onChangeMarketplace);
 
-        $('new_asin_accepted').observe('change', AmazonTemplateDescriptionHandlerObj.onChangeNewAsinAccepted);
+        $('new_asin_accepted').observe('change', AmazonTemplateDescriptionObj.onChangeNewAsinAccepted);
 
-        $('edit_category_link').observe('click', AmazonTemplateDescriptionHandlerObj.onClickEditCategory);
-        $('product_data_nick_select').observe('change', AmazonTemplateDescriptionHandlerObj.onChangeProductDataNick);
+        $('edit_category_link').observe('click', AmazonTemplateDescriptionObj.onClickEditCategory);
+        $('product_data_nick_select').observe('change', AmazonTemplateDescriptionObj.onChangeProductDataNick);
 
         $('worldwide_id_mode')
-            .observe('change', AmazonTemplateDescriptionHandlerObj.onChangeWorldwideId)
+            .observe('change', AmazonTemplateDescriptionObj.onChangeWorldwideId)
             .simulate('change');
 
         $('registered_parameter')
-            .observe('change', AmazonTemplateDescriptionHandlerObj.onChangeRegisteredParameter)
+            .observe('change', AmazonTemplateDescriptionObj.onChangeRegisteredParameter)
             .simulate('change');
 
         <?php if ($isEdit) { ?>
-            AmazonTemplateDescriptionHandlerObj.prepareEditMode();
+            AmazonTemplateDescriptionObj.prepareEditMode();
         <?php } ?>
 
         editForm = new varienForm('edit_form', '<?php echo $this->getValidationUrl(); ?>');

@@ -18,9 +18,9 @@ class Ess_M2ePro_Adminhtml_Amazon_Template_ShippingController
              ->_title(Mage::helper('M2ePro')->__('Shipping Policies'));
 
         $this->getLayout()->getBlock('head')
-            ->addJs('M2ePro/Template/EditHandler.js')
-            ->addJs('M2ePro/Amazon/Template/EditHandler.js')
-            ->addJs('M2ePro/Amazon/Template/ShippingHandler.js');
+            ->addJs('M2ePro/Template/Edit.js')
+            ->addJs('M2ePro/Amazon/Template/Edit.js')
+            ->addJs('M2ePro/Amazon/Template/Shipping.js');
 
         $this->_initPopUp();
 
@@ -81,31 +81,13 @@ class Ess_M2ePro_Adminhtml_Amazon_Template_ShippingController
 
         $id = $this->getRequest()->getParam('id');
 
-        // Base prepare
-        // ---------------------------------------
-        $data = array();
-
-        $keys = array(
-            'title',
-
-            'template_name_mode',
-            'template_name_value',
-            'template_name_attribute',
-        );
-
-        foreach ($keys as $key) {
-            if (isset($post[$key])) {
-                $data[$key] = $post[$key];
-            }
-        }
-
         $model = Mage::getModel('M2ePro/Amazon_Template_Shipping')->load($id);
 
         $snapshotBuilder = Mage::getModel('M2ePro/Amazon_Template_Shipping_SnapshotBuilder');
         $snapshotBuilder->setModel($model);
         $oldData = $snapshotBuilder->getSnapshot();
 
-        $model->addData($data)->save();
+        Mage::getModel('M2ePro/Amazon_Template_Shipping_Builder')->build($model, $post);
 
         $snapshotBuilder = Mage::getModel('M2ePro/Amazon_Template_Shipping_SnapshotBuilder');
         $snapshotBuilder->setModel($model);

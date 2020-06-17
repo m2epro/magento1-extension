@@ -7,11 +7,9 @@
 
 // @codingStandardsIgnoreFile
 
-/** @var $this Ess_M2ePro_Block_Adminhtml_Listing_AutoAction_Mode_Category_Form */
+/** @var $this Ess_M2ePro_Block_Adminhtml_Walmart_Listing_AutoAction_Mode_Category_Form */
 
-$formData = $this->getFormData();
-$default  = $this->getDefault();
-$formData = array_merge($default, $formData);
+$formData = array_merge($this->getDefault(), $this->getFormData());
 
 /** @var Ess_M2ePro_Model_Resource_Walmart_Template_Category_Collection $collection */
 $collection = Mage::getModel('M2ePro/Walmart_Template_Category')->getCollection();
@@ -34,19 +32,15 @@ $categoryTemplates = $collection->getData();
         'marketplace_id'            => $this->getListing()->getMarketplaceId()
     )); ?>';
 
-    ListingAutoActionHandlerObj.magentoCategoryIdsFromOtherGroups = <?php echo json_encode($this->getCategoriesFromOtherGroups()) ?>;
+    ListingAutoActionObj.magentoCategoryIdsFromOtherGroups = <?php echo json_encode($this->getCategoriesFromOtherGroups()) ?>;
 
     $('adding_mode')
-        .observe('change', ListingAutoActionHandlerObj.addingModeChange)
+        .observe('change', ListingAutoActionObj.addingModeChange)
         .simulate('change');
-
-    $('continue_button')
-        .stopObserving('click')
-        .observe('click', ListingAutoActionHandlerObj.categoryStepTwo);
 
     $('reset_button')
         .observe('click', function() {
-            ListingAutoActionHandlerObj.reset(false);
+            ListingAutoActionObj.reset(false);
         });
 
     $('adding_category_template_id').observe('change', function(el) {
@@ -165,7 +159,7 @@ $categoryTemplates = $collection->getData();
                                 <strong>Note:</strong> Submitting of Category data is required when you create a new offer on Walmart. Category Policy must be assigned to Products before they are added to M2E Pro Listing.'
                             ); ?></span>
                             </span>
-                        <a href="javascript: void(0);" style="vertical-align: inherit;" onclick="ListingAutoActionHandlerObj.addNewTemplate(M2ePro.url.addNewCategoryTemplate, ListingAutoActionHandlerObj.reloadCategoriesTemplates);"><?php echo Mage::helper('M2ePro')->__('Add New') ?></a>
+                        <a href="javascript: void(0);" style="vertical-align: inherit;" onclick="ListingAutoActionObj.addNewTemplate(M2ePro.url.addNewCategoryTemplate, ListingAutoActionObj.reloadCategoriesTemplates);"><?php echo Mage::helper('M2ePro')->__('Add New') ?></a>
                     </td>
                 </tr>
 

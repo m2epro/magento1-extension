@@ -1,5 +1,4 @@
-ProgressBar = Class.create();
-ProgressBar.prototype = {
+window.ProgressBar = Class.create({
 
     // ---------------------------------------
 
@@ -222,4 +221,4 @@ ProgressBar.prototype = {
     }
 
     // ---------------------------------------
-};
+});

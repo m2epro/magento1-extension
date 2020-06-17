@@ -223,7 +223,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_View_Grid extends Mage_Adm
             }
 
             $htmlValue = '&nbsp;<a href="javascript:void(0);"
-                                    onclick="AmazonListingOtherMappingHandlerObj.openPopUp(\''.
+                                    onclick="AmazonListingOtherMappingObj.openPopUp(\''.
                                         $productTitle.
                                         '\','.
                                         (int)$row->getId().
@@ -242,7 +242,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_View_Grid extends Mage_Adm
                      .'</a>';
 
         $htmlValue .= '&nbsp&nbsp&nbsp<a href="javascript:void(0);"'
-                      .' onclick="AmazonListingOtherGridHandlerObj.movingHandler.getGridHtml('
+                      .' onclick="AmazonListingOtherGridObj.movingHandler.getGridHtml('
                       .Mage::helper('M2ePro')->jsonEncode(array((int)$row->getData('id')))
                       .')">'
                       .Mage::helper('M2ePro')->__('Move')
@@ -300,7 +300,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_View_Grid extends Mage_Adm
         <div class="in-stock">{$inStock}: <span></span></div>
     </div>
     <a href="javascript:void(0)"
-        onclick="AmazonListingAfnQtyHandlerObj.showAfnQty(this,'{$sku}',{$productId}, {$accountId})">
+        onclick="AmazonListingAfnQtyObj.showAfnQty(this,'{$sku}',{$productId}, {$accountId})">
         {$afn}</a>
 </div>
 HTML;
@@ -384,7 +384,7 @@ HTML;
    sku="{$sku}"
    account_id="{$accountId}"
    href="javascript:void(0)"
-   onclick="AmazonListingRepricingPriceHandlerObj.showRepricingPrice()">
+   onclick="AmazonListingRepricingPriceObj.showRepricingPrice()">
     {$priceValue}</a>
 HTML;
         }
@@ -543,13 +543,13 @@ HTML;
         $javascriptsMain = <<<HTML
 <script type="text/javascript">
 
-    if (typeof AmazonListingOtherGridHandlerObj != 'undefined') {
-        AmazonListingOtherGridHandlerObj.afterInitPage();
+    if (typeof AmazonListingOtherGridObj != 'undefined') {
+        AmazonListingOtherGridObj.afterInitPage();
     }
 
     Event.observe(window, 'load', function() {
         setTimeout(function() {
-            AmazonListingOtherGridHandlerObj.afterInitPage();
+            AmazonListingOtherGridObj.afterInitPage();
         }, 350);
     });
 

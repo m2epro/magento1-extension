@@ -112,7 +112,7 @@ class Ess_M2ePro_Block_Adminhtml_ControlPanel_Tabs_Database_Table_Grid
         if ($this->ifNeedToUseMergeMode()) {
             array_walk(
                 $columns, function(&$el) {
-                $el['is_parent'] = true; 
+                $el['is_parent'] = true;
                 }
             );
 
@@ -122,7 +122,7 @@ class Ess_M2ePro_Block_Adminhtml_ControlPanel_Tabs_Database_Table_Grid
             $childColumns = Mage::helper('M2ePro/Module_Database_Structure')->getTableInfo($table);
             array_walk(
                 $childColumns, function(&$el) {
-                $el['is_parent'] = false; 
+                $el['is_parent'] = false;
                 }
             );
 
@@ -228,7 +228,7 @@ class Ess_M2ePro_Block_Adminhtml_ControlPanel_Tabs_Database_Table_Grid
 
         $commonJs = <<<HTML
 <script type="text/javascript">
-    ControlPanelDatabaseGridHandlerObj.afterInitPage();
+    ControlPanelDatabaseGridObj.afterInitPage();
 </script>
 HTML;
         $additionalJs = '';
@@ -237,7 +237,7 @@ HTML;
 <script type="text/javascript">
 
    M2ePro.url.add({$urls});
-   ControlPanelDatabaseGridHandlerObj = new ControlPanelDatabaseGridHandler('{$this->getId()}');
+   ControlPanelDatabaseGridObj = new ControlPanelDatabaseGrid('{$this->getId()}');
 
 </script>
 HTML;
@@ -299,8 +299,8 @@ HTML;
         $divMouseActions = '';
         if (!$column->getData('is_auto_increment') && strlen($inputValue) < $column->getData('string_limit')) {
             $divMouseActions = <<<HTML
-onmouseover="ControlPanelDatabaseGridHandlerObj.mouseOverCell('{$cellId}');"
-onmouseout="ControlPanelDatabaseGridHandlerObj.mouseOutCell('{$cellId}');"
+onmouseover="ControlPanelDatabaseGridObj.mouseOverCell('{$cellId}');"
+onmouseout="ControlPanelDatabaseGridObj.mouseOutCell('{$cellId}');"
 HTML;
         }
 
@@ -311,21 +311,21 @@ HTML;
 
     <span id="{$cellId}_edit_container" style="display: none;">
         <textarea style="width:100%; height:100%;" id="{$cellId}_edit_input"
-                  onkeydown="ControlPanelDatabaseGridHandlerObj.onKeyDownEdit('{$rowId}','{$columnId}', event)"
+                  onkeydown="ControlPanelDatabaseGridObj.onKeyDownEdit('{$rowId}','{$columnId}', event)"
 >{$inputValue}</textarea>
     </span>
 
     <span id="{$cellId}_edit_link" style="display: none;">&nbsp;
         <a href="javascript:void(0);"
-           onclick="ControlPanelDatabaseGridHandlerObj.switchCellToEdit('{$cellId}');">edit</a>
+           onclick="ControlPanelDatabaseGridObj.switchCellToEdit('{$cellId}');">edit</a>
     </span>
     <span id="{$cellId}_view_link" style="display: none;">&nbsp;
         <a href="javascript:void(0);"
-           onclick="ControlPanelDatabaseGridHandlerObj.switchCellToView('{$cellId}');">cancel</a>
+           onclick="ControlPanelDatabaseGridObj.switchCellToView('{$cellId}');">cancel</a>
     </span>
     <span id="{$cellId}_save_link" style="display: none;">&nbsp;
         <a href="javascript:void(0);"
-           onclick="ControlPanelDatabaseGridHandlerObj.saveTableCell('{$rowId}','{$columnId}');">save</a>
+           onclick="ControlPanelDatabaseGridObj.saveTableCell('{$rowId}','{$columnId}');">save</a>
     </span>
 </div>
 HTML;
@@ -334,7 +334,7 @@ HTML;
     public function callbackColumnActions($value, $row, $column, $isExport)
     {
         $html = <<<HTML
-<a href="javascript:void(0);" onclick="ControlPanelDatabaseGridHandlerObj.deleteTableRows('{$row->getId()}')">
+<a href="javascript:void(0);" onclick="ControlPanelDatabaseGridObj.deleteTableRows('{$row->getId()}')">
     <span>delete</span>
 </a>
 HTML;
@@ -363,7 +363,7 @@ HTML;
             $html .= <<<HTML
 <br/>
 <a style="color: green;" href="javascript:void(0);"
-   onclick="ControlPanelDatabaseGridHandlerObj.mergeParentTable('{$componentMode}')">
+   onclick="ControlPanelDatabaseGridObj.mergeParentTable('{$componentMode}')">
     <span>join</span>
 </a>
 HTML;
@@ -395,14 +395,20 @@ HTML;
     {
         $value = $column->getFilter()->getValue();
 
+        if ($this->isNullFilter($value)) {
+            $collection->getSelect()
+                ->where("TIME_TO_SEC(TIMEDIFF(`end_date`, `start_date`)) IS NULL");
+            return $this;
+        }
+
         if ($value === null || !$value = preg_grep('/^\d+:\d{2}$/', $value)) {
             return $this;
         }
 
         $value = array_map(
             function($item) {
-            list($minutes, $seconds) = explode(':', $item);
-            return (int) $minutes * 60 + $seconds;
+                list($minutes, $seconds) = explode(':', $item);
+                return (int) $minutes * 60 + $seconds;
             }, $value
         );
 
@@ -464,8 +470,7 @@ HTML;
 
         if (!$column->getFilterConditionCallback()) {
             $value = $column->getFilter()->getValue();
-            $field = ( $column->getFilterIndex() ) ? $column->getFilterIndex()
-                : $column->getIndex();
+            $field = ($column->getFilterIndex()) ? $column->getFilterIndex() : $column->getIndex();
 
             if ($this->isNullFilter($value)) {
                 $this->getCollection()->addFieldToFilter($field, array('null' => true));
@@ -477,8 +482,13 @@ HTML;
                 return $this;
             }
 
-            if ($this->isUnEqualFilter($value)) {
+            if ($this->isNotEqualFilter($value)) {
                 $this->getCollection()->addFieldToFilter($field, array('neq' => preg_replace('/^!=/', '', $value)));
+                return $this;
+            }
+
+            if ($this->isNotLikeFilter($value)) {
+                $this->getCollection()->addFieldToFilter($field, array('nlike' => preg_replace('/^!%/', '', $value)));
                 return $this;
             }
         }
@@ -512,9 +522,32 @@ HTML;
         return false;
     }
 
-    protected function isUnEqualFilter($value)
+    protected function isNotEqualFilter($value)
     {
         if (is_string($value) && strpos($value, '!=') === 0) {
+            return true;
+        }
+
+        if (isset($value['from'], $value['to']) &&
+            strpos($value['from'], '!=') === 0 &&
+            strpos($value['to'], '!=') === 0
+        ) {
+            return true;
+        }
+
+        return false;
+    }
+
+    protected function isNotLikeFilter($value)
+    {
+        if (is_string($value) && strpos($value, '!%') === 0) {
+            return true;
+        }
+
+        if (isset($value['from'], $value['to']) &&
+            strpos($value['from'], '!%') === 0 &&
+            strpos($value['to'], '!%') === 0
+        ) {
             return true;
         }
 

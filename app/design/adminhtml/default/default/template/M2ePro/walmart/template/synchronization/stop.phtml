@@ -26,22 +26,7 @@
 
 <?php
     $formData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data') ? Mage::helper('M2ePro/Data_Global')->getValue('temp_data')->toArray() : array();
-    $defaults = array(
-        'stop_mode' => 1,
-
-        'stop_status_disabled' => 1,
-        'stop_out_off_stock' => 1,
-
-        'stop_qty_magento'           => Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_NONE,
-        'stop_qty_magento_value'     => '0',
-        'stop_qty_magento_value_max' => '10',
-
-        'stop_qty_calculated'           => Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_NONE,
-        'stop_qty_calculated_value'     => '0',
-        'stop_qty_calculated_value_max' => '10',
-
-        'stop_advanced_rules_mode' => 0,
-    );
+    $defaults = Mage::getModel('M2ePro/Walmart_Template_Synchronization_Builder')->getDefaultData();
     $formData = array_merge($defaults, $formData);
 
     $isEdit = !!$this->getRequest()->getParam('id');
@@ -49,29 +34,17 @@
 
 <script type="text/javascript">
 
-    M2ePro.formData.stop_mode = '<?php echo Mage::helper('M2ePro')->escapeJs($formData['stop_mode']); ?>';
-
-    M2ePro.formData.stop_status_disabled = '<?php echo Mage::helper('M2ePro')->escapeJs($formData['stop_status_disabled']); ?>';
-    M2ePro.formData.stop_out_off_stock = '<?php echo Mage::helper('M2ePro')->escapeJs($formData['stop_out_off_stock']); ?>';
-
-    M2ePro.formData.stop_qty_magento = '<?php echo Mage::helper('M2ePro')->escapeJs($formData['stop_qty_magento']); ?>';
-    M2ePro.formData.stop_qty_magento_value = '<?php echo Mage::helper('M2ePro')->escapeJs($formData['stop_qty_magento_value']); ?>';
-    M2ePro.formData.stop_qty_magento_value_max = '<?php echo Mage::helper('M2ePro')->escapeJs($formData['stop_qty_magento_value_max']); ?>';
-
-    M2ePro.formData.stop_qty_calculated = '<?php echo Mage::helper('M2ePro')->escapeJs($formData['stop_qty_calculated']); ?>';
-    M2ePro.formData.stop_qty_calculated_value = '<?php echo Mage::helper('M2ePro')->escapeJs($formData['stop_qty_calculated_value']); ?>';
-    M2ePro.formData.stop_qty_calculated_value_max = '<?php echo Mage::helper('M2ePro')->escapeJs($formData['stop_qty_calculated_value_max']); ?>';
-
     Event.observe(window, 'load', function() {
         $('stop_mode')
-            .observe('change', WalmartTemplateSynchronizationHandlerObj.stopMode_change)
+            .observe('change', WalmartTemplateSynchronizationObj.stopMode_change)
             .simulate('change');
 
-        $('stop_qty_magento').observe('change', WalmartTemplateSynchronizationHandlerObj.stopQty_change);
-        $('stop_qty_calculated').observe('change', WalmartTemplateSynchronizationHandlerObj.stopQty_change);
+        $('stop_qty_calculated')
+            .observe('change', WalmartTemplateSynchronizationObj.stopQty_change)
+            .simulate('change');
 
         $('stop_advanced_rules_mode')
-            .observe('change', WalmartTemplateSynchronizationHandlerObj.stopAdvancedRules_change)
+            .observe('change', WalmartTemplateSynchronizationObj.stopAdvancedRules_change)
             .simulate('change');
     });
 
@@ -153,77 +126,17 @@
 
                 <tr>
                     <td class="label">
-                        <label><?php echo Mage::helper('M2ePro')->__('Stop When Magento Quantity Is'); ?>: </label>
+                        <label><?php echo Mage::helper('M2ePro')->__('Stop When Quantity Is'); ?>: </label>
                     </td>
                     <td class="value" style="width: auto;">
-                        <select id="stop_qty_magento" name="stop_qty_magento" class="required-entry" qty_type="magento">
-                            <option value="<?php echo Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_NONE; ?>" <?php if ($formData['stop_qty_magento'] == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_NONE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('No Action'); ?></option>
-                            <option value="<?php echo Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_LESS; ?>" <?php if ($formData['stop_qty_magento'] == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_LESS): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Less or Equal'); ?></option>
-                            <!-- <option value="<?php echo Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_MORE; ?>" <?php if ($formData['stop_qty_magento'] == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_MORE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('More'); ?></option> -->
-                            <option value="<?php echo Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_BETWEEN; ?>" <?php if ($formData['stop_qty_magento'] == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_BETWEEN): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Between'); ?></option>
-                        </select>
-                        <p class="note">
-                            <span><?php echo Mage::helper('M2ePro')->__('Automatically stops the Items on Walmart when their Magento Quantity reaches the specified value.'); ?></span>
-                        </p>
-                    </td>
-                </tr>
-
-                <tr id="stop_qty_magento_value_container" <?php if ($formData['stop_qty_magento'] == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_NONE) echo ' style="display: none;"'; ?>>
-                    <td class="label">
-                        <label for="stop_qty_magento_value">
-                            <span id="stop_qty_magento_item" <?php if ($formData['stop_qty_magento'] == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_BETWEEN) echo ' style="display: none;"'; ?>><?php echo Mage::helper('M2ePro')->__('Quantity'); ?>: <span class="required">*</span></span>
-                            <span id="stop_qty_magento_item_min" <?php if ($formData['stop_qty_magento'] != Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_BETWEEN) echo ' style="display: none;"'; ?>><?php echo Mage::helper('M2ePro')->__('Min Quantity'); ?>: <span class="required">*</span></span>
-                        </label>
-                    </td>
-                    <td class="value" style="width: auto;">
-                        <input id="stop_qty_magento_value" name="stop_qty_magento_value" value="<?php echo $this->escapeHtml($formData['stop_qty_magento_value']); ?>" type="text" class="M2ePro-required-when-visible input-text validate-digits" />
-                    </td>
-                </tr>
-
-                <tr id="stop_qty_magento_value_max_container" <?php if ($formData['stop_qty_magento'] != Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_BETWEEN) echo ' style="display: none;"'; ?>>
-                    <td class="label">
-                        <label for="stop_qty_magento_value_max"><?php echo Mage::helper('M2ePro')->__('Max Quantity'); ?>: <span class="required">*</span></label>
-                    </td>
-                    <td class="value" style="width: auto;">
-                        <input id="stop_qty_magento_value_max" name="stop_qty_magento_value_max" value="<?php echo $this->escapeHtml($formData['stop_qty_magento_value_max']); ?>" type="text" class="M2ePro-required-when-visible input-text validate-digits M2ePro-validate-conditions-between" />
-                    </td>
-                </tr>
-
-                <tr>
-                    <td class="label">
-                        <label><?php echo Mage::helper('M2ePro')->__('Stop When Calculated Quantity Is'); ?>: </label>
-                    </td>
-                    <td class="value" style="width: auto;">
-                        <select id="stop_qty_calculated" name="stop_qty_calculated" class="required-entry" qty_type="calculated">
+                        <select id="stop_qty_calculated" name="stop_qty_calculated" class="required-entry">
                             <option value="<?php echo Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_NONE; ?>" <?php if ($formData['stop_qty_calculated'] == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_NONE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('No Action'); ?></option>
-                            <option value="<?php echo Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_LESS; ?>" <?php if ($formData['stop_qty_calculated'] == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_LESS): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Less or Equal'); ?></option>
-                            <!-- <option value="<?php echo Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_MORE; ?>" <?php if ($formData['stop_qty_calculated'] == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_MORE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('More'); ?></option> -->
-                            <option value="<?php echo Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_BETWEEN; ?>" <?php if ($formData['stop_qty_calculated'] == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_BETWEEN): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Between'); ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_YES; ?>" <?php if ($formData['stop_qty_calculated'] == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_YES): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Less or Equal'); ?></option>
                         </select>
+                        <input id="stop_qty_calculated_value" name="stop_qty_calculated_value" value="<?php echo $this->escapeHtml($formData['stop_qty_calculated_value']); ?>" type="text" class="M2ePro-required-when-visible input-text validate-digits" style="width: 72px;" />
                         <p class="note">
                             <span><?php echo Mage::helper('M2ePro')->__('Automatically stops the Items on Walmart when their Quantity calculated based on the Selling Policy settings reaches the specified value.'); ?></span>
                         </p>
-                    </td>
-                </tr>
-
-                <tr id="stop_qty_calculated_value_container" <?php if ($formData['stop_qty_calculated'] == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_NONE) echo ' style="display: none;"'; ?>>
-                    <td class="label">
-                        <label for="stop_qty_calculated_value">
-                            <span id="stop_qty_calculated_item" <?php if ($formData['stop_qty_calculated'] == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_BETWEEN) echo ' style="display: none;"'; ?>><?php echo Mage::helper('M2ePro')->__('Quantity'); ?>: <span class="required">*</span></span>
-                            <span id="stop_qty_calculated_item_min" <?php if ($formData['stop_qty_calculated'] != Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_BETWEEN) echo ' style="display: none;"'; ?>><?php echo Mage::helper('M2ePro')->__('Min Quantity'); ?>: <span class="required">*</span></span>
-                        </label>
-                    </td>
-                    <td class="value" style="width: auto;">
-                        <input id="stop_qty_calculated_value" name="stop_qty_calculated_value" value="<?php echo $this->escapeHtml($formData['stop_qty_calculated_value']); ?>" type="text" class="M2ePro-required-when-visible input-text validate-digits" />
-                    </td>
-                </tr>
-
-                <tr id="stop_qty_calculated_value_max_container" <?php if ($formData['stop_qty_calculated'] != Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_BETWEEN) echo ' style="display: none;"'; ?>>
-                    <td class="label">
-                        <label for="stop_qty_calculated_value_max"><?php echo Mage::helper('M2ePro')->__('Max Quantity'); ?>: <span class="required">*</span></label>
-                    </td>
-                    <td class="value" style="width: auto;">
-                        <input id="stop_qty_calculated_value_max" name="stop_qty_calculated_value_max" value="<?php echo $this->escapeHtml($formData['stop_qty_calculated_value_max']); ?>" type="text" class="M2ePro-required-when-visible input-text validate-digits M2ePro-validate-conditions-between" />
                     </td>
                 </tr>
 

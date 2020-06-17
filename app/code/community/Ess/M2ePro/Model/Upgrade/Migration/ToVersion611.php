@@ -187,7 +187,7 @@ SQL;
             $this->_installer->run(
                 <<<SQL
 
-INSERT INTO `m2epro_config` (`group`,`key`,`value`,`notice`,`update_date`,`create_date`) VALUES
+INSERT INTO `{$tempTable}` (`group`,`key`,`value`,`notice`,`update_date`,`create_date`) VALUES
 ('/ebay/order/migration_to_v611/', 'is_need_migrate', '1', null, '2013-09-18 00:00:00', '2013-09-18 00:00:00');
 
 SQL

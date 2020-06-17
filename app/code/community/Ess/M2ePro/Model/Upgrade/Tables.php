@@ -16,27 +16,12 @@ class Ess_M2ePro_Model_Upgrade_Tables
     /** @var Varien_Db_Adapter_Pdo_Mysql */
     protected $_connection = null;
 
-    /**
-     * @var string[]
-     */
-    protected $_entities = array();
-
     //########################################
 
     public function __construct(Ess_M2ePro_Model_Upgrade_MySqlSetup $installer)
     {
         $this->_installer  = $installer;
         $this->_connection = $installer->getConnection();
-
-        $this->init();
-    }
-
-    public function init()
-    {
-        $magentoTablesPrefix = Mage::helper('M2ePro/Magento')->getDatabaseTablesPrefix();
-        foreach (Mage::helper('M2ePro/Module_Database_Structure')->getMysqlTables() as $tableName) {
-            $this->_entities[str_replace($magentoTablesPrefix . self::PREFIX, '', $tableName)] = $tableName;
-        }
     }
 
     //########################################
@@ -65,24 +50,6 @@ class Ess_M2ePro_Model_Upgrade_Tables
         }
 
         return $this->_connection;
-    }
-
-    //########################################
-
-    public function getAllEntities()
-    {
-        return $this->_entities;
-    }
-
-    public function getCurrentEntities()
-    {
-        $result = array();
-
-        foreach (Mage::helper('M2ePro/Module_Database_Structure')->getModuleTables() as $table) {
-            $result[$table] = $this->_entities[$table];
-        }
-
-        return $result;
     }
 
     //########################################

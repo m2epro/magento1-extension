@@ -90,7 +90,7 @@ $magentoProductVariations = $this->getListingProduct()->getMagentoProduct()->get
                     <?php if (!$this->getListingProductTypeModel()->hasChannelGroupId() && !$this->getListingProduct()->isSetProcessingLock('child_products_in_action')) { ?>
                         <tr id="change_channel_attributes_btn">
                             <td class="label" colspan="2" style="text-align: right;">
-                                <button onclick="ListingGridHandlerObj.variationProductManageHandler.changeChannelAttributes(this)">
+                                <button onclick="ListingGridObj.variationProductManageHandler.changeChannelAttributes(this)">
                                     <?php echo $this->getListingProductTypeModel()->hasChannelAttributes() ? Mage::helper('M2ePro')->__('Change') : Mage::helper('M2ePro')->__('Set Attributes'); ?>
                                 </button>
                             </td>
@@ -125,8 +125,8 @@ $magentoProductVariations = $this->getListingProduct()->getMagentoProduct()->get
                     <tfoot>
                         <tr id="change_channel_attributes_action">
                             <td class="label" style="text-align: right;">
-                                <a href="javascript:void(0);" onclick="ListingGridHandlerObj.variationProductManageHandler.cancelChannelAttributes(this);"><?php echo Mage::helper('M2ePro')->__('Cancel'); ?></a>&nbsp;&nbsp;
-                                <button onclick="ListingGridHandlerObj.variationProductManageHandler.setChannelAttributes()"><?php echo Mage::helper('M2ePro')->__('Confirm'); ?></button>
+                                <a href="javascript:void(0);" onclick="ListingGridObj.variationProductManageHandler.cancelChannelAttributes(this);"><?php echo Mage::helper('M2ePro')->__('Cancel'); ?></a>&nbsp;&nbsp;
+                                <button onclick="ListingGridObj.variationProductManageHandler.setChannelAttributes()"><?php echo Mage::helper('M2ePro')->__('Confirm'); ?></button>
                             </td>
                         </tr>
                     </tfoot>
@@ -155,8 +155,8 @@ $magentoProductVariations = $this->getListingProduct()->getMagentoProduct()->get
 ?>
 
 <script type="application/javascript">
-    ListingGridHandlerObj.variationProductManageHandler.virtualWalmartMatchedAttributes = false;
-    ListingGridHandlerObj.variationProductManageHandler.walmartVariationSet = false;
+    ListingGridObj.variationProductManageHandler.virtualWalmartMatchedAttributes = false;
+    ListingGridObj.variationProductManageHandler.walmartVariationSet = false;
 
     M2ePro.text.help_icon_magento_greater_left = '<?php echo $magentoGreaterLeftSideText ?>';
     M2ePro.text.help_icon_magento_greater_right = '<?php echo $magentoGreaterRightSideText ?>';
@@ -220,23 +220,23 @@ $magentoProductVariations = $this->getListingProduct()->getMagentoProduct()->get
                 <?php if ($this->getMatcherAttributes()->isSourceAmountGreater()) { ?>
 
             <script type="application/javascript">
-                ListingGridHandlerObj.variationProductManageHandler.matchingType = ListingGridHandlerObj.variationProductManageHandler.MATCHING_TYPE_VIRTUAL_WALMART;
-                ListingGridHandlerObj.variationProductManageHandler.matchedAttributes = <?php echo json_encode($this->getMatchedAttributes(), JSON_FORCE_OBJECT)?>;
-                ListingGridHandlerObj.variationProductManageHandler.productAttributes = <?php echo json_encode($this->getProductAttributes())?>;
-                ListingGridHandlerObj.variationProductManageHandler.destinationAttributes = <?php echo json_encode($this->getDestinationAttributes())?>;
-                ListingGridHandlerObj.variationProductManageHandler.magentoVariationSet = <?php echo json_encode($magentoProductVariations['set'])?>;
+                ListingGridObj.variationProductManageHandler.matchingType = ListingGridObj.variationProductManageHandler.MATCHING_TYPE_VIRTUAL_WALMART;
+                ListingGridObj.variationProductManageHandler.matchedAttributes = <?php echo json_encode($this->getMatchedAttributes(), JSON_FORCE_OBJECT)?>;
+                ListingGridObj.variationProductManageHandler.productAttributes = <?php echo json_encode($this->getProductAttributes())?>;
+                ListingGridObj.variationProductManageHandler.destinationAttributes = <?php echo json_encode($this->getDestinationAttributes())?>;
+                ListingGridObj.variationProductManageHandler.magentoVariationSet = <?php echo json_encode($magentoProductVariations['set'])?>;
 
-                ListingGridHandlerObj.variationProductManageHandler.renderMatchedAttributesNotSetView();
+                ListingGridObj.variationProductManageHandler.renderMatchedAttributesNotSetView();
             </script>
 
                 <?php } elseif ($this->getMatcherAttributes()->isDestinationAmountGreater()) {?>
 
             <script type="application/javascript">
-                ListingGridHandlerObj.variationProductManageHandler.matchingType = ListingGridHandlerObj.variationProductManageHandler.MATCHING_TYPE_VIRTUAL_MAGENTO;
-                ListingGridHandlerObj.variationProductManageHandler.matchedAttributes = <?php echo json_encode($this->getMatchedAttributes(), JSON_FORCE_OBJECT)?>;
-                ListingGridHandlerObj.variationProductManageHandler.destinationAttributes = <?php echo json_encode($this->getDestinationAttributes())?>;
+                ListingGridObj.variationProductManageHandler.matchingType = ListingGridObj.variationProductManageHandler.MATCHING_TYPE_VIRTUAL_MAGENTO;
+                ListingGridObj.variationProductManageHandler.matchedAttributes = <?php echo json_encode($this->getMatchedAttributes(), JSON_FORCE_OBJECT)?>;
+                ListingGridObj.variationProductManageHandler.destinationAttributes = <?php echo json_encode($this->getDestinationAttributes())?>;
 
-                ListingGridHandlerObj.variationProductManageHandler.renderMatchedAttributesNotSetView();
+                ListingGridObj.variationProductManageHandler.renderMatchedAttributesNotSetView();
             </script>
 
                 <?php } ?>
@@ -327,11 +327,11 @@ $magentoProductVariations = $this->getListingProduct()->getMagentoProduct()->get
 
                     <tr>
                         <td class="label" colspan="2" style="text-align: right; <?php echo $this->isChangeMatchedAttributesAllowed() ? '' : 'display: none;' ?>">
-                            <button onclick="ListingGridHandlerObj.variationProductManageHandler.changeMatchedAttributes(this)">
+                            <button onclick="ListingGridObj.variationProductManageHandler.changeMatchedAttributes(this)">
                                 <?php echo $this->hasMatchedAttributes() ? Mage::helper('M2ePro')->__('Change') : Mage::helper('M2ePro')->__('Set Attributes'); ?>
                             </button>
-                            <a href="javascript:void(0);" onclick="ListingGridHandlerObj.variationProductManageHandler.cancelMatchedAttributes(this);" style="display: none;"><?php echo Mage::helper('M2ePro')->__('Cancel'); ?></a>&nbsp;&nbsp;
-                            <button onclick="ListingGridHandlerObj.variationProductManageHandler.setMatchedAttributes()" style="display: none;"><?php echo Mage::helper('M2ePro')->__('Confirm'); ?></button>
+                            <a href="javascript:void(0);" onclick="ListingGridObj.variationProductManageHandler.cancelMatchedAttributes(this);" style="display: none;"><?php echo Mage::helper('M2ePro')->__('Cancel'); ?></a>&nbsp;&nbsp;
+                            <button onclick="ListingGridObj.variationProductManageHandler.setMatchedAttributes()" style="display: none;"><?php echo Mage::helper('M2ePro')->__('Confirm'); ?></button>
                         </td>
                     </tr>
                 </table>
@@ -376,7 +376,7 @@ $magentoProductVariations = $this->getListingProduct()->getMagentoProduct()->get
                     </select>
                 </td>
                 <td class="value">
-                    <button onclick="ListingGridHandlerObj.variationProductManageHandler.setSwatchImagesAttribute()">
+                    <button onclick="ListingGridObj.variationProductManageHandler.setSwatchImagesAttribute()">
                         <?php echo Mage::helper('M2ePro')->__('Change'); ?>
                     </button>
                 </td>

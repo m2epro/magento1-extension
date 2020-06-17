@@ -12,43 +12,6 @@ class Ess_M2ePro_Adminhtml_ControlPanel_Module_Integration_EbayController
     //########################################
 
     /**
-     * @title "Reset 3rd Party"
-     * @description "Clear all 3rd party items for all Accounts"
-     */
-    public function resetOtherListingsAction()
-    {
-        $listingOther = Mage::getModel('M2ePro/Listing_Other');
-        $ebayListingOther = Mage::getModel('M2ePro/Ebay_Listing_Other');
-
-        $stmt = Mage::helper('M2ePro/Component_Ebay')->getCollection('Listing_Other')->getSelect()->query();
-
-        $itemIds = array();
-        foreach ($stmt as $row) {
-            $listingOther->setData($row);
-            $ebayListingOther->setData($row);
-
-            $listingOther->setChildObject($ebayListingOther);
-            $ebayListingOther->setParentObject($listingOther);
-            $itemIds[] = $ebayListingOther->getItemId();
-
-            $listingOther->deleteInstance();
-        }
-
-        $tableName = Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('m2epro_ebay_item');
-        $writeConnection = Mage::getSingleton('core/resource')->getConnection('core_write');
-        foreach(array_chunk($itemIds, 1000) as $chunkItemIds) {
-            $writeConnection->delete($tableName, array('item_id IN (?)' => $chunkItemIds));
-        }
-
-        foreach (Mage::helper('M2ePro/Component_Ebay')->getCollection('Account') as $account) {
-            $account->setData('other_listings_last_synchronization', null)->save();
-        }
-
-        $this->_getSession()->addSuccess('Successfully removed.');
-        $this->_redirectUrl(Mage::helper('M2ePro/View_ControlPanel')->getPageModuleTabUrl());
-    }
-
-    /**
      * @title "Stop 3rd Party"
      * @description "[in order to resolve the problem with duplicates]"
      * @new_line
@@ -158,56 +121,46 @@ class Ess_M2ePro_Adminhtml_ControlPanel_Module_Integration_EbayController
     public function showNonexistentTemplatesAction()
     {
         if ($this->getRequest()->getParam('fix')) {
-            $action       = $this->getRequest()->getParam('action');
+            $template   = $this->getRequest()->getParam('template');
+            $field      = $this->getRequest()->getParam('field');
+            $fieldValue = $this->getRequest()->getParam('field_value');
 
-            $template     = $this->getRequest()->getParam('template_nick');
-            $currentMode  = $this->getRequest()->getParam('current_mode');
-            $currentValue = $this->getRequest()->getParam('value');
-
-            if ($action == 'set_null') {
-                $field = $currentMode == 'template' ? "template_{$template}_id"
-                                                    : "template_{$template}_custom_id";
-
+            if ($this->getRequest()->getParam('action') === 'set_null') {
                 $collection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Listing_Product');
-                $collection->addFieldToFilter($field, $currentValue);
+                $collection->addFieldToFilter($field, $fieldValue);
 
                 foreach ($collection->getItems() as $listingProduct) {
-                    $listingProduct->setData($field, null)->save();
+                    $listingProduct->setData($field, null);
+                    $listingProduct->save();
                 }
             }
 
-            if ($action == 'set_parent') {
-                $field = $currentMode == 'template' ? "template_{$template}_id"
-                                                    : "template_{$template}_custom_id";
-
+            if ($this->getRequest()->getParam('action') === 'set_parent') {
                 $collection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Listing_Product');
-                $collection->addFieldToFilter($field, $currentValue);
-
-                $data = array(
-                    "template_{$template}_mode" => Ess_M2ePro_Model_Ebay_Template_Manager::MODE_PARENT,
-                    $field                      => null
-                );
+                $collection->addFieldToFilter($field, $fieldValue);
 
                 foreach ($collection->getItems() as $listingProduct) {
-                    $listingProduct->addData($data)->save();
+                    $listingProduct->setData(
+                        "template_{$template}_mode", Ess_M2ePro_Model_Ebay_Template_Manager::MODE_PARENT
+                    );
+                    $listingProduct->setData($field, null);
+                    $listingProduct->save();
                 }
             }
 
-            if ($action == 'set_template' && $this->getRequest()->getParam('template_id')) {
-                $field = $currentMode == 'template' ? "template_{$template}_id"
-                                                    : "template_{$template}_custom_id";
-
+            if ($this->getRequest()->getParam('action') === 'set_template' &&
+                $this->getRequest()->getParam('template_id')
+            ) {
                 $collection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Listing');
-                $collection->addFieldToFilter($field, $currentValue);
-
-                $data = array(
-                    "template_{$template}_mode" => Ess_M2ePro_Model_Ebay_Template_Manager::MODE_TEMPLATE,
-                    $field                      => null,
-                );
-                $data["template_{$template}_id"] = (int)$this->getRequest()->getParam('template_id');
+                $collection->addFieldToFilter($field, $fieldValue);
 
                 foreach ($collection->getItems() as $listing) {
-                    $listing->addData($data)->save();
+                    $listing->setData(
+                        "template_{$template}_mode", Ess_M2ePro_Model_Ebay_Template_Manager::MODE_TEMPLATE
+                    );
+                    $listing->setData($field, null);
+                    $listing->setData("template_{$template}_id", (int)$this->getRequest()->getParam('template_id'));
+                    $listing->save();
                 }
             }
 
@@ -216,9 +169,14 @@ class Ess_M2ePro_Adminhtml_ControlPanel_Module_Integration_EbayController
 
         $nonexistentTemplates = array();
 
-        $simpleTemplates = array('category', 'other_category');
-        foreach ($simpleTemplates as $templateName) {
-            $tempResult = $this->getNonexistentTemplatesBySimpleLogic($templateName);
+        $simpleTemplates = array(
+            'template_category_id'                 => 'category',
+            'template_category_secondary_id'       => 'category',
+            'template_store_category_id'           => 'store_category',
+            'template_store_category_secondary_id' => 'store_category'
+        );
+        foreach ($simpleTemplates as $templateIdField => $templateName) {
+            $tempResult = $this->getNonexistentTemplatesBySimpleLogic($templateName, $templateIdField);
             !empty($tempResult) && $nonexistentTemplates[$templateName] = $tempResult;
         }
 
@@ -244,6 +202,7 @@ class Ess_M2ePro_Adminhtml_ControlPanel_Module_Integration_EbayController
     <th>Listing ID</th>
     <th>Listing Product ID</th>
     <th>Policy ID</th>
+    <th>Policy ID Field</th>
     <th>My Mode</th>
     <th>Parent Mode</th>
     <th>Actions</th>
@@ -254,23 +213,24 @@ HTML;
         foreach ($nonexistentTemplates as $templateName => $items) {
             $tableContent .= <<<HTML
 <tr>
-    <td colspan="6" align="center"><b>{$templateName}</b></td>
+    <td colspan="7" align="center"><b>{$templateName}</b></td>
 </tr>
 HTML;
 
             foreach ($items as $index => $itemInfo) {
-                $myModeWord = '';
-                $parentModeWord = '';
-                $actionsHtml = '';
+                $myModeWord     = '--';
+                $parentModeWord = '--';
+                $actionsHtml    = '';
 
                 if (!isset($itemInfo['my_mode']) && !isset($itemInfo['parent_mode'])) {
                     $url = Mage::helper('adminhtml')->getUrl(
-                        '*/*/*', array(
-                        'fix'           => '1',
-                        'template_nick' => $templateName,
-                        'current_mode'  => 'template',
-                        'action'        => 'set_null',
-                        'value'         => $itemInfo['my_needed_id'],
+                        '*/*/*',
+                        array(
+                            'fix'         => '1',
+                            'action'      => 'set_null',
+                            'template'    => $templateName,
+                            'field_value' => $itemInfo['my_needed_id'],
+                            'field'       => $itemInfo['my_needed_id_field'],
                         )
                     );
 
@@ -286,12 +246,13 @@ HTML;
                 if (isset($itemInfo['my_mode']) && $itemInfo['my_mode'] == 1) {
                     $myModeWord = 'custom';
                     $url = Mage::helper('adminhtml')->getUrl(
-                        '*/*/*', array(
-                        'fix'           => '1',
-                        'template_nick' => $templateName,
-                        'current_mode'  => $myModeWord,
-                        'action'        => 'set_parent',
-                        'value'         => $itemInfo['my_needed_id'],
+                        '*/*/*',
+                        array(
+                            'fix'         => '1',
+                            'action'      => 'set_parent',
+                            'template'    => $templateName,
+                            'field_value' => $itemInfo['my_needed_id'],
+                            'field'       => $itemInfo['my_needed_id_field'],
                         )
                     );
 
@@ -303,12 +264,13 @@ HTML;
                 if (isset($itemInfo['my_mode']) && $itemInfo['my_mode'] == 2) {
                     $myModeWord = 'template';
                     $url = Mage::helper('adminhtml')->getUrl(
-                        '*/*/*', array(
-                        'fix'           => '1',
-                        'template_nick' => $templateName,
-                        'current_mode'  => $myModeWord,
-                        'action'        => 'set_parent',
-                        'value'         => $itemInfo['my_needed_id'],
+                        '*/*/*',
+                        array(
+                            'fix'         => '1',
+                            'action'      => 'set_parent',
+                            'template'    => $templateName,
+                            'field_value' => $itemInfo['my_needed_id'],
+                            'field'       => $itemInfo['my_needed_id_field'],
                         )
                     );
 
@@ -320,12 +282,13 @@ HTML;
                 if (isset($itemInfo['parent_mode']) && $itemInfo['parent_mode'] == 1) {
                     $parentModeWord = 'custom';
                     $url = Mage::helper('adminhtml')->getUrl(
-                        '*/*/*', array(
-                        'fix'           => '1',
-                        'action'        => 'set_template',
-                        'template_nick' => $templateName,
-                        'current_mode'  => $parentModeWord,
-                        'value'         => $itemInfo['my_needed_id'],
+                        '*/*/*',
+                        array(
+                            'fix'         => '1',
+                            'action'      => 'set_template',
+                            'template'    => $templateName,
+                            'field_value' => $itemInfo['my_needed_id'],
+                            'field'       => $itemInfo['my_needed_id_field'],
                         )
                     );
                     $onClick = <<<JS
@@ -343,12 +306,13 @@ HTML;
                 if (isset($itemInfo['parent_mode']) && $itemInfo['parent_mode'] == 2) {
                     $parentModeWord = 'template';
                     $url = Mage::helper('adminhtml')->getUrl(
-                        '*/*/*', array(
-                        'fix'           => '1',
-                        'action'        => 'set_template',
-                        'template_nick' => $templateName,
-                        'current_mode'  => $parentModeWord,
-                        'value'         => $itemInfo['my_needed_id'],
+                        '*/*/*',
+                        array(
+                            'fix'         => '1',
+                            'action'      => 'set_template',
+                            'template'    => $templateName,
+                            'field_value' => $itemInfo['my_needed_id'],
+                            'field'       => $itemInfo['my_needed_id_field'],
                         )
                     );
                     $onClick = <<<JS
@@ -364,7 +328,7 @@ HTML;
                 }
 
                 $key = $templateName .'##'. $myModeWord .'##'. $itemInfo['listing_id'];
-                if ($myModeWord == 'parent' && in_array($key, $alreadyRendered)) {
+                if ($myModeWord === 'parent' && in_array($key, $alreadyRendered)) {
                     continue;
                 }
 
@@ -374,6 +338,7 @@ HTML;
     <td>{$itemInfo['listing_id']}</td>
     <td>{$itemInfo['my_id']}</td>
     <td>{$itemInfo['my_needed_id']}</td>
+    <td>{$itemInfo['my_needed_id_field']}</td>
     <td>{$myModeWord}</td>
     <td>{$parentModeWord}</td>
     <td>
@@ -403,15 +368,13 @@ HTML;
 
     protected function getNonexistentTemplatesByDifficultLogic($templateCode)
     {
-        /** @var $resource Mage_Core_Model_Resource */
-        $resource = Mage::getSingleton('core/resource');
-        $connRead = $resource->getConnection('core_read');
+        $databaseHelper = Mage::helper('M2ePro/Module_Database_Structure');
 
-        $subSelect = $connRead->select()
+        $subSelect = Mage::getSingleton('core/resource')->getConnection('core_read')
+            ->select()
             ->from(
                 array(
-                    'melp' => Mage::helper('M2ePro/Module_Database_Structure')
-                        ->getTableNameWithPrefix('m2epro_ebay_listing_product')
+                    'melp' => $databaseHelper->getTableNameWithPrefix('m2epro_ebay_listing_product')
                 ),
                 array(
                     'my_id'          => 'listing_product_id',
@@ -426,21 +389,29 @@ HTML;
                         WHEN melp.template_{$templateCode}_mode = 0 THEN IF(mel.template_{$templateCode}_mode = 1,
                                                                             mel.template_{$templateCode}_custom_id,
                                                                             mel.template_{$templateCode}_id)
-                    END"
-                    ))
+                        END"
+                    ),
+                    'my_needed_id_field' => new Zend_Db_Expr(
+                        "CASE
+                        WHEN melp.template_{$templateCode}_mode = 2 THEN 'template_{$templateCode}_id'
+                        WHEN melp.template_{$templateCode}_mode = 1 THEN 'template_{$templateCode}_custom_id'
+                        WHEN melp.template_{$templateCode}_mode = 0 THEN IF(mel.template_{$templateCode}_mode = 1,
+                                                                            'template_{$templateCode}_custom_id',
+                                                                            'template_{$templateCode}_id')
+                        END"
+                    )
+                )
             )
             ->joinLeft(
                 array(
-                    'mlp' => Mage::helper('M2ePro/Module_Database_Structure')
-                        ->getTableNameWithPrefix('m2epro_listing_product')
+                    'mlp' => $databaseHelper->getTableNameWithPrefix('m2epro_listing_product')
                 ),
                 'melp.listing_product_id = mlp.id',
                 array('listing_id' => 'listing_id')
             )
             ->joinLeft(
                 array(
-                    'mel' => Mage::helper('M2ePro/Module_Database_Structure')
-                        ->getTableNameWithPrefix('m2epro_ebay_listing')
+                    'mel' => $databaseHelper->getTableNameWithPrefix('m2epro_ebay_listing')
                 ),
                 'mlp.listing_id = mel.listing_id',
                 array(
@@ -451,72 +422,72 @@ HTML;
             );
 
         $templateIdName = 'id';
-        $horizontalTemplates = array(
-            Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SELLING_FORMAT,
-            Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SYNCHRONIZATION,
-            Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_DESCRIPTION,
-        );
-        in_array($templateCode, $horizontalTemplates) && $templateIdName = "template_{$templateCode}_id";
+        if (in_array($templateCode, Mage::getModel('M2ePro/Ebay_Template_Manager')->getHorizontalTemplates())) {
+            $templateIdName = "template_{$templateCode}_id";
+        }
 
-        $result = $connRead->select()
-        ->from(
-            array('subselect' => new Zend_Db_Expr('('.$subSelect->__toString().')')),
-            array(
-                   'subselect.my_id',
-                   'subselect.listing_id',
-                   'subselect.my_mode',
-                   'subselect.parent_mode',
-                   'subselect.my_needed_id',
-               )
-        )
-        ->joinLeft(
-            array(
-                   'template' => Mage::helper('M2ePro/Module_Database_Structure')
-                       ->getTableNameWithPrefix("m2epro_ebay_template_{$templateCode}")
-               ),
-            "subselect.my_needed_id = template.{$templateIdName}",
-            array()
-        )
-           ->where("template.{$templateIdName} IS NULL")
-           ->query()->fetchAll();
-
-        return $result;
-    }
-
-    protected function getNonexistentTemplatesBySimpleLogic($templateCode)
-    {
-        /** @var $resource Mage_Core_Model_Resource */
-        $resource = Mage::getSingleton('core/resource');
-        $connRead = $resource->getConnection('core_read');
-
-        $select = $connRead->select()
+        $result = Mage::getSingleton('core/resource')->getConnection('core_read')
+            ->select()
             ->from(
                 array(
-                    'melp' => Mage::helper('M2ePro/Module_Database_Structure')
-                        ->getTableNameWithPrefix('m2epro_ebay_listing_product')
+                    'subselect' => new Zend_Db_Expr(
+                        '('.$subSelect->__toString().')'
+                    )
                 ),
                 array(
-                    'my_id'        => 'listing_product_id',
-                    'my_needed_id' => "template_{$templateCode}_id",
+                    'subselect.my_id',
+                    'subselect.listing_id',
+                    'subselect.my_mode',
+                    'subselect.parent_mode',
+                    'subselect.my_needed_id',
+                    'subselect.my_needed_id_field',
                 )
             )
             ->joinLeft(
                 array(
-                    'mlp' => Mage::helper('M2ePro/Module_Database_Structure')
-                        ->getTableNameWithPrefix('m2epro_listing_product')
+                    'template' => $databaseHelper->getTableNameWithPrefix("m2epro_ebay_template_{$templateCode}")
+                ),
+                "subselect.my_needed_id = template.{$templateIdName}",
+                array()
+            )
+            ->where("template.{$templateIdName} IS NULL")
+            ->query()
+            ->fetchAll();
+
+        return $result;
+    }
+
+    protected function getNonexistentTemplatesBySimpleLogic($templateCode, $templateIdField)
+    {
+        $databaseHelper = Mage::helper('M2ePro/Module_Database_Structure');
+
+        $select = Mage::getSingleton('core/resource')->getConnection('core_read')
+            ->select()
+            ->from(
+                array(
+                    'melp' => $databaseHelper->getTableNameWithPrefix('m2epro_ebay_listing_product')
+                ),
+                array(
+                    'my_id'              => 'listing_product_id',
+                    'my_needed_id'       => $templateIdField,
+                    'my_needed_id_field' => new Zend_Db_Expr("'{$templateIdField}'")
+                )
+            )
+            ->joinLeft(
+                array(
+                    'mlp' => $databaseHelper->getTableNameWithPrefix('m2epro_listing_product')
                 ),
                 'melp.listing_product_id = mlp.id',
                 array('listing_id' => 'listing_id')
             )
             ->joinLeft(
                 array(
-                    'template' => Mage::helper('M2ePro/Module_Database_Structure')
-                        ->getTableNameWithPrefix("m2epro_ebay_template_{$templateCode}")
+                    'template' => $databaseHelper->getTableNameWithPrefix("m2epro_ebay_template_{$templateCode}")
                 ),
-                "melp.template_{$templateCode}_id = template.id",
+                "melp.{$templateIdField} = template.id",
                 array()
             )
-            ->where("melp.template_{$templateCode}_id IS NOT NULL")
+            ->where("melp.{$templateIdField} IS NOT NULL")
             ->where("template.id IS NULL");
 
         return $select->query()->fetchAll();
@@ -766,58 +737,6 @@ HTML;
 </html>
 HTML;
         return $this->getResponse()->setBody(str_replace('#count#', count($duplicated), $html));
-    }
-
-    //########################################
-
-    /**
-     * @title "Fix many same categories templates"
-     * @description "[remove the same templates and set original templates to the settings of listings products]"
-     * @new_line
-     */
-    public function fixManySameCategoriesTemplatesAction()
-    {
-        $affectedListingProducts = $removedTemplates = 0;
-
-        $snapshots = array();
-        $snapshotBuilder = Mage::getModel('M2ePro/Ebay_Template_Category_SnapshotBuilder');
-
-        foreach (Mage::getModel('M2ePro/Ebay_Template_Category')->getCollection() as $template) {
-            /**@var Ess_M2ePro_Model_Ebay_Template_Category $template */
-
-            $snapshotBuilder->setModel($template);
-            $shot = $snapshotBuilder->getSnapshot();
-            unset($shot['id'], $shot['create_date'], $shot['update_date']);
-            $key = sha1(Mage::helper('M2ePro')->jsonEncode($shot));
-
-            if (!array_key_exists($key, $snapshots)) {
-                $snapshots[$key] = $template;
-                continue;
-            }
-
-            $affectedListingProducts = Mage::getModel('M2ePro/Ebay_Template_Category_AffectedListingsProducts');
-            $affectedListingProducts->setModel($template);
-
-            foreach ($affectedListingProducts->getObjects() as $listingsProduct) {
-                /**@var Ess_M2ePro_Model_Listing_Product $listingsProduct */
-
-                $originalTemplate = $snapshots[$key];
-                $listingsProduct->setData('template_category_id', $originalTemplate->getId())
-                                ->save();
-
-                $affectedListingProducts++;
-            }
-
-            $template->deleteInstance();
-            $removedTemplates++;
-        }
-
-        $this->getResponse()->setBody(
-            <<<HTML
-Templates were removed: {$removedTemplates}.<br>
-Listings Product Affected: {$affectedListingProducts}.<br>
-HTML
-        );
     }
 
     //########################################

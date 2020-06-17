@@ -1,4 +1,4 @@
-AmazonTemplateDescriptionCategorySpecificGridRowRenderer = Class.create(AmazonTemplateDescriptionCategorySpecificRenderer, {
+window.AmazonTemplateDescriptionCategorySpecificGridRowRenderer = Class.create(AmazonTemplateDescriptionCategorySpecificRenderer, {
 
     // ---------------------------------------
 
@@ -55,7 +55,7 @@ AmazonTemplateDescriptionCategorySpecificGridRowRenderer = Class.create(AmazonTe
 
     load: function($super)
     {
-        this.attributeHandler = AttributeHandlerObj;
+        this.attributeHandler = AttributeObj;
         return $super();
     },
 

@@ -351,7 +351,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Listing_Log_Grid extends Ess_M2ePro_Bl
         if ($this->getRequest()->isAjax()) {
             $javascript = <<<JAVASCIRPT
 <script type="text/javascript">
-    LogHandlerObj.afterInitPage();
+    LogObj.afterInitPage();
 </script>
 JAVASCIRPT;
             return $javascript . parent::_toHtml();
@@ -370,8 +370,8 @@ JAVASCIRPT;
     M2ePro.translator.add({$translations});
 
     Event.observe(window, 'load', function() {
-        LogHandlerObj = new LogHandler();
-        LogHandlerObj.afterInitPage();
+        LogObj = new Log();
+        LogObj.afterInitPage();
     });
 
 </script>

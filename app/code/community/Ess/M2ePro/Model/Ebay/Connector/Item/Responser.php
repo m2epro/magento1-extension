@@ -65,8 +65,7 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Item_Responser
 
         $this->getLogger()->logListingProductMessage(
             $this->_listingProduct,
-            $message,
-            Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH
+            $message
         );
     }
 
@@ -298,7 +297,6 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Item_Responser
 
     //########################################
 
-    //TODO: Improve this functionality so that is was able to fix some sort of variation product errors
     protected function tryToResolveVariationMpnErrors()
     {
         if (!$this->canPerformGetItemCall()) {

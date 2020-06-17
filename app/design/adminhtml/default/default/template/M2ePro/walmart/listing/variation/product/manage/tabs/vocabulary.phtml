@@ -68,7 +68,7 @@ $fixedAttributes = $data['fixed_attributes'];
     <tr>
         <td colspan="2" class="label">
             <div style="text-align: right">
-                <button onclick="ListingGridHandlerObj.variationProductManageHandler.saveAutoActionSettings()">
+                <button onclick="ListingGridObj.variationProductManageHandler.saveAutoActionSettings()">
                     <?php echo Mage::helper('M2ePro')->__('Save'); ?>
                 </button>
             </div>
@@ -117,7 +117,7 @@ $fixedAttributes = $data['fixed_attributes'];
             <?php if (empty($fixedAttributes[$magentoAttribute]) || !in_array($walmartAttribute, $fixedAttributes[$magentoAttribute])) { ?>
             <a title="<?php echo Mage::helper('M2ePro')->__('Remove') ?>"
                href="javascript:void(0)"
-               onclick="ListingGridHandlerObj.variationProductManageHandler.removeAttributeFromVocabulary(this)"
+               onclick="ListingGridObj.variationProductManageHandler.removeAttributeFromVocabulary(this)"
                style="color: red; font-size: 14px; text-decoration: none;"
             ><img style="height: 11px;" src="<?php echo $this->getSkinUrl('M2ePro/images/delete.png')?>"></a>
             <?php } ?>
@@ -147,7 +147,7 @@ $fixedAttributes = $data['fixed_attributes'];
                     <span><?php echo implode(', ', $walmartOptionsGroup) ?></span>&nbsp;
                     <a title="<?php echo Mage::helper('M2ePro')->__('Remove') ?>"
                        href="javascript:void(0)"
-                       onclick="ListingGridHandlerObj.variationProductManageHandler.removeOptionFromVocabulary(this)"
+                       onclick="ListingGridObj.variationProductManageHandler.removeOptionFromVocabulary(this)"
                        style="color: red; font-size: 14px; text-decoration: none;"
                     ><img style="height: 11px;" src="<?php echo $this->getSkinUrl('M2ePro/images/delete.png')?>"></a>
                 </li>

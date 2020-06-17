@@ -10,31 +10,32 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_AutoActionController
     extends Ess_M2ePro_Controller_Adminhtml_Amazon_MainController
 {
     /** @var Ess_M2ePro_Model_Listing $_listing */
-    protected $_listing = null;
+    protected $_listing;
 
     //########################################
 
     protected function _initAction()
     {
         $this->loadLayout();
-
         return $this;
+    }
+
+    protected function _isAllowed()
+    {
+        return Mage::getSingleton('admin/session')->isAllowed(
+            Ess_M2ePro_Helper_View_Amazon::MENU_ROOT_NODE_NICK . '/listings'
+        );
     }
 
     //########################################
 
     public function indexAction()
     {
-        // ---------------------------------------
-        $autoMode  = $this->getRequest()->getParam('auto_mode');
-        $listing   = $this->getListing();
-
+        $listing = $this->getListing();
         Mage::helper('M2ePro/Data_Global')->setValue('listing', $listing);
-        // ---------------------------------------
 
-        if (empty($autoMode)) {
-            $autoMode = $listing->getChildObject()->getAutoMode();
-        }
+        $autoMode  = $this->getRequest()->getParam('auto_mode');
+        empty($autoMode) && $autoMode = $listing->getAutoMode();
 
         $this->loadLayout();
 
@@ -61,15 +62,12 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_AutoActionController
 
     public function getAutoCategoryFormHtmlAction()
     {
-        // ---------------------------------------
         $listing = $this->getListing();
         Mage::helper('M2ePro/Data_Global')->setValue('listing', $listing);
-        // ---------------------------------------
 
         $this->loadLayout();
 
         $block = $this->getLayout()->createBlock('M2ePro/adminhtml_amazon_listing_autoAction_mode_category_form');
-
         $this->getResponse()->setBody($block->toHtml());
     }
 
@@ -85,35 +83,29 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_AutoActionController
             return;
         }
 
-        // ---------------------------------------
         $listing = $this->getListing();
-        // ---------------------------------------
-
         $data = Mage::helper('M2ePro')->jsonDecode($post['auto_action_data']);
 
         $listingData = array(
-            'auto_mode' => Ess_M2ePro_Model_Listing::AUTO_MODE_NONE,
-            'auto_global_adding_mode' => Ess_M2ePro_Model_Listing::ADDING_MODE_NONE,
-            'auto_global_adding_add_not_visible' => Ess_M2ePro_Model_Listing::AUTO_ADDING_ADD_NOT_VISIBLE_YES,
-            'auto_website_adding_mode' => Ess_M2ePro_Model_Listing::ADDING_MODE_NONE,
-            'auto_website_adding_add_not_visible' => Ess_M2ePro_Model_Listing::AUTO_ADDING_ADD_NOT_VISIBLE_YES,
-            'auto_website_deleting_mode' => Ess_M2ePro_Model_Listing::DELETING_MODE_NONE
+            'auto_mode'                                   => Ess_M2ePro_Model_Listing::AUTO_MODE_NONE,
+            'auto_global_adding_mode'                     => Ess_M2ePro_Model_Listing::ADDING_MODE_NONE,
+            'auto_global_adding_add_not_visible'          => Ess_M2ePro_Model_Listing::AUTO_ADDING_ADD_NOT_VISIBLE_YES,
+            'auto_global_adding_description_template_id'  => null,
+            'auto_website_adding_mode'                    => Ess_M2ePro_Model_Listing::ADDING_MODE_NONE,
+            'auto_website_adding_add_not_visible'         => Ess_M2ePro_Model_Listing::AUTO_ADDING_ADD_NOT_VISIBLE_YES,
+            'auto_website_deleting_mode'                  => Ess_M2ePro_Model_Listing::DELETING_MODE_NONE,
+            'auto_website_adding_description_template_id' => null
         );
 
-        if ($listing->isComponentModeAmazon()) {
-            $listingData['auto_global_adding_description_template_id'] = null;
-            $listingData['auto_website_adding_description_template_id'] = null;
-        }
-
         $groupData = array(
-            'id' => null,
-            'category' => null,
-            'title' => null,
-            'auto_mode' => Ess_M2ePro_Model_Listing::AUTO_MODE_NONE,
-            'adding_mode' => Ess_M2ePro_Model_Listing::ADDING_MODE_NONE,
+            'id'                     => null,
+            'category'               => null,
+            'title'                  => null,
+            'auto_mode'              => Ess_M2ePro_Model_Listing::AUTO_MODE_NONE,
+            'adding_mode'            => Ess_M2ePro_Model_Listing::ADDING_MODE_NONE,
             'adding_add_not_visible' => Ess_M2ePro_Model_Listing::AUTO_ADDING_ADD_NOT_VISIBLE_YES,
-            'deleting_mode' => Ess_M2ePro_Model_Listing::DELETING_MODE_NONE,
-            'categories' => array()
+            'deleting_mode'          => Ess_M2ePro_Model_Listing::DELETING_MODE_NONE,
+            'categories'             => array()
         );
 
         // mode global
@@ -121,17 +113,12 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_AutoActionController
         if ($data['auto_mode'] == Ess_M2ePro_Model_Listing::AUTO_MODE_GLOBAL) {
             $listingData['auto_mode'] = Ess_M2ePro_Model_Listing::AUTO_MODE_GLOBAL;
             $listingData['auto_global_adding_mode'] = $data['auto_global_adding_mode'];
-
-            if ($listing->isComponentModeAmazon()) {
-                $listingData['auto_global_adding_description_template_id'] = $data['adding_description_template_id'];
-            }
+            $listingData['auto_global_adding_description_template_id'] = $data['adding_description_template_id'];
 
             if ($listingData['auto_global_adding_mode'] != Ess_M2ePro_Model_Listing::ADDING_MODE_NONE) {
                 $listingData['auto_global_adding_add_not_visible'] = $data['auto_global_adding_add_not_visible'];
             }
         }
-
-        // ---------------------------------------
 
         // mode website
         // ---------------------------------------
@@ -139,25 +126,22 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_AutoActionController
             $listingData['auto_mode'] = Ess_M2ePro_Model_Listing::AUTO_MODE_WEBSITE;
             $listingData['auto_website_adding_mode'] = $data['auto_website_adding_mode'];
             $listingData['auto_website_deleting_mode'] = $data['auto_website_deleting_mode'];
-
-            if ($listing->isComponentModeAmazon()) {
-                $listingData['auto_website_adding_description_template_id'] = $data['adding_description_template_id'];
-            }
+            $listingData['auto_website_adding_description_template_id'] = $data['adding_description_template_id'];
 
             if ($listingData['auto_website_adding_mode'] != Ess_M2ePro_Model_Listing::ADDING_MODE_NONE) {
                 $listingData['auto_website_adding_add_not_visible'] = $data['auto_website_adding_add_not_visible'];
             }
         }
 
-        // ---------------------------------------
-
         // mode category
         // ---------------------------------------
         if ($data['auto_mode'] == Ess_M2ePro_Model_Listing::AUTO_MODE_CATEGORY) {
             $listingData['auto_mode'] = Ess_M2ePro_Model_Listing::AUTO_MODE_CATEGORY;
 
-            $group = Mage::helper('M2ePro/Component')
-                ->getComponentModel($listing->getComponentMode(), 'Listing_Auto_Category_Group');
+            $group = Mage::helper('M2ePro/Component')->getComponentModel(
+                $listing->getComponentMode(),
+                'Listing_Auto_Category_Group'
+            );
 
             if ((int)$data['id'] > 0) {
                 $group->loadInstance((int)$data['id']);
@@ -178,8 +162,6 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_AutoActionController
             }
         }
 
-        // ---------------------------------------
-
         $listing->addData($listingData)->save();
     }
 
@@ -187,23 +169,18 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_AutoActionController
 
     public function resetAction()
     {
-        // ---------------------------------------
         $listing = $this->getListing();
-        // ---------------------------------------
 
         $data = array(
             'auto_mode' => Ess_M2ePro_Model_Listing::AUTO_MODE_NONE,
             'auto_global_adding_mode' => Ess_M2ePro_Model_Listing::ADDING_MODE_NONE,
             'auto_global_adding_add_not_visible' => Ess_M2ePro_Model_Listing::AUTO_ADDING_ADD_NOT_VISIBLE_YES,
+            'auto_global_adding_description_template_id' => null,
             'auto_website_adding_mode' => Ess_M2ePro_Model_Listing::ADDING_MODE_NONE,
             'auto_website_adding_add_not_visible' => Ess_M2ePro_Model_Listing::AUTO_ADDING_ADD_NOT_VISIBLE_YES,
-            'auto_website_deleting_mode' => Ess_M2ePro_Model_Listing::DELETING_MODE_NONE
+            'auto_website_deleting_mode' => Ess_M2ePro_Model_Listing::DELETING_MODE_NONE,
+            'auto_website_adding_description_template_id' => null,
         );
-
-        if ($listing->isComponentModeAmazon()) {
-            $data['auto_global_adding_description_template_id'] = null;
-            $data['auto_website_adding_description_template_id'] = null;
-        }
 
         $listing->addData($data)->save();
 
@@ -219,11 +196,10 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_AutoActionController
         $groupId = $this->getRequest()->getParam('group_id');
         $categoryId = $this->getRequest()->getParam('category_id');
 
-        $category = Mage::getModel('M2ePro/Listing_Auto_Category')
-            ->getCollection()
-                ->addFieldToFilter('group_id', (int)$groupId)
-                ->addFieldToFilter('category_id', (int)$categoryId)
-                ->getFirstItem();
+        $category = Mage::getModel('M2ePro/Listing_Auto_Category')->getCollection()
+            ->addFieldToFilter('group_id', (int)$groupId)
+            ->addFieldToFilter('category_id', (int)$categoryId)
+            ->getFirstItem();
 
         if (!$category->getId()) {
             return;
@@ -259,10 +235,9 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_AutoActionController
             return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('unique' => false)));
         }
 
-        $collection = Mage::getModel('M2ePro/Listing_Auto_Category_Group')
-            ->getCollection()
-                ->addFieldToFilter('listing_id', $listingId)
-                ->addFieldToFilter('title', $title);
+        $collection = Mage::getModel('M2ePro/Listing_Auto_Category_Group')->getCollection()
+            ->addFieldToFilter('listing_id', $listingId)
+            ->addFieldToFilter('title', $title);
 
         if ($groupId) {
             $collection->addFieldToFilter('id', array('neq' => $groupId));
@@ -285,19 +260,18 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_AutoActionController
 
     //########################################
 
+    /**
+     * @return Ess_M2ePro_Model_Listing
+     */
     protected function getListing()
     {
         if ($this->_listing === null) {
-            $this->_listing = Mage::helper('M2ePro/Component')
-                                  ->getCachedUnknownObject('Listing', $this->getRequest()->getParam('listing_id'));
+            $this->_listing = Mage::helper('M2ePro/Component_Amazon')->getCachedObject(
+                'Listing', $this->getRequest()->getParam('listing_id')
+            );
         }
 
         return $this->_listing;
-    }
-
-    protected function getComponent()
-    {
-        return $this->getRequest()->getParam('component');
     }
 
     //########################################

@@ -63,15 +63,15 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630_Listing
         $this->_installer->run(
             <<<SQL
 
-    UPDATE `m2epro_amazon_listing`
+    UPDATE `{$this->_installer->getTable('m2epro_amazon_listing')}`
     SET sku_mode = 1
     WHERE sku_mode = 0;
 
-    UPDATE `m2epro_buy_listing`
+    UPDATE `{$this->_installer->getTable('m2epro_buy_listing')}`
     SET sku_mode = 1
     WHERE sku_mode = 0;
 
-    UPDATE `m2epro_play_listing`
+    UPDATE `{$this->_installer->getTable('m2epro_play_listing')}`
     SET sku_mode = 1
     WHERE sku_mode = 0;
 
@@ -84,17 +84,17 @@ SQL
         $this->_installer->run(
             <<<SQL
 
-    UPDATE `m2epro_amazon_listing`
+    UPDATE `{$this->_installer->getTable('m2epro_amazon_listing')}`
     SET condition_mode = 1,
         condition_value = 'New'
     WHERE condition_mode = 0;
 
-    UPDATE `m2epro_buy_listing`
+    UPDATE `{$this->_installer->getTable('m2epro_buy_listing')}`
     SET condition_mode = 1,
         condition_value = 1
     WHERE condition_mode = 0;
 
-    UPDATE `m2epro_play_listing`
+    UPDATE `{$this->_installer->getTable('m2epro_play_listing')}`
     SET condition_mode = 1,
         condition_value = 'New'
     WHERE condition_mode = 0;
@@ -113,17 +113,17 @@ SQL
             $this->getInstaller()->run(
                 <<<SQL
 
-    UPDATE `m2epro_amazon_listing`
+    UPDATE `{$this->_installer->getTable('m2epro_amazon_listing')}`
     SET    `condition_note_value` = CONCAT('#', `condition_note_custom_attribute`, '#'),
            `condition_note_mode` = 1
     WHERE  `condition_note_mode` = 2;
 
-    UPDATE `m2epro_buy_listing`
+    UPDATE `{$this->_installer->getTable('m2epro_buy_listing')}`
     SET    `condition_note_value` = CONCAT('#', `condition_note_custom_attribute`, '#'),
            `condition_note_mode` = 1
     WHERE  `condition_note_mode` = 2;
 
-    UPDATE `m2epro_play_listing`
+    UPDATE `{$this->_installer->getTable('m2epro_play_listing')}`
     SET    `condition_note_value` = CONCAT('#', `condition_note_custom_attribute`, '#'),
            `condition_note_mode` = 1
     WHERE  `condition_note_mode` = 2;
@@ -135,15 +135,15 @@ SQL
         $this->getInstaller()->run(
             <<<SQL
 
-    UPDATE `m2epro_amazon_listing`
+    UPDATE `{$this->_installer->getTable('m2epro_amazon_listing')}`
     SET condition_note_mode = 3
     WHERE condition_note_mode = 0;
 
-    UPDATE `m2epro_buy_listing`
+    UPDATE `{$this->_installer->getTable('m2epro_buy_listing')}`
     SET condition_note_mode = 3
     WHERE condition_note_mode = 0;
 
-    UPDATE `m2epro_play_listing`
+    UPDATE `{$this->_installer->getTable('m2epro_play_listing')}`
     SET condition_note_mode = 3
     WHERE condition_note_mode = 0;
 
@@ -174,19 +174,19 @@ SQL
         $this->_installer->run(
             <<<SQL
 
-UPDATE `m2epro_buy_listing`
+UPDATE `{$this->_installer->getTable('m2epro_buy_listing')}`
 SET shipping_standard_mode = 3
 WHERE shipping_standard_mode = 0;
 
-UPDATE `m2epro_buy_listing`
+UPDATE `{$this->_installer->getTable('m2epro_buy_listing')}`
 SET shipping_expedited_mode = 3
 WHERE shipping_expedited_mode = 0;
 
-UPDATE `m2epro_buy_listing`
+UPDATE `{$this->_installer->getTable('m2epro_buy_listing')}`
 SET shipping_one_day_mode = 3
 WHERE shipping_one_day_mode = 0;
 
-UPDATE `m2epro_buy_listing`
+UPDATE `{$this->_installer->getTable('m2epro_buy_listing')}`
 SET shipping_two_day_mode = 3
 WHERE shipping_two_day_mode = 0;
 

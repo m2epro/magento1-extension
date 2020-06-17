@@ -52,19 +52,19 @@ $attributesByInputTypes = array(
         Event.observe(window, 'load', function() {
 
             $('regular_price_mode')
-                .observe('change', AmazonAccountHandlerObj.regular_price_mode_change)
+                .observe('change', AmazonAccountObj.regular_price_mode_change)
                 .simulate('change');
 
             $('min_price_mode')
-                .observe('change', AmazonAccountHandlerObj.min_price_mode_change)
+                .observe('change', AmazonAccountObj.min_price_mode_change)
                 .simulate('change');
 
             $('max_price_mode')
-                .observe('change', AmazonAccountHandlerObj.max_price_mode_change)
+                .observe('change', AmazonAccountObj.max_price_mode_change)
                 .simulate('change');
 
             $('disable_mode')
-                .observe('change', AmazonAccountHandlerObj.disable_mode_change)
+                .observe('change', AmazonAccountObj.disable_mode_change)
                 .simulate('change');
 
         });
@@ -126,14 +126,14 @@ $attributesByInputTypes = array(
                 <tr>
                     <td class="value" style="width: auto;">
                         <?php echo Mage::helper('M2ePro')->__('First, you have to link this Amazon Account with Amazon Repricing Tool'); ?>&nbsp;
-                        <button type="button" onclick="AmazonAccountHandlerObj.linkOrRegisterRepricing()"><?php echo Mage::helper('M2ePro')->__('Link Now'); ?></button>
+                        <button type="button" onclick="AmazonAccountObj.linkOrRegisterRepricing()"><?php echo Mage::helper('M2ePro')->__('Link Now'); ?></button>
                     </td>
                 </tr>
                 <?php } else { ?>
                 <tr>
                     <td class="label" colspan="2" style="width: 100%;">
                         <?php echo Mage::helper('M2ePro')->__('This Amazon Account is successfully linked with Amazon Repricing Tool'); ?>&nbsp;
-                        <button type="button" onclick="AmazonAccountHandlerObj.unlinkRepricing()"><?php echo Mage::helper('M2ePro')->__('Unlink'); ?></button>
+                        <button type="button" onclick="AmazonAccountObj.unlinkRepricing()"><?php echo Mage::helper('M2ePro')->__('Unlink'); ?></button>
                     </td>
                 </tr>
                 <tr>
@@ -143,7 +143,7 @@ $attributesByInputTypes = array(
                     <td class="value" style="width: auto;">
                         <span id="repricing_email"><?php echo $this->repricingObj->getEmail(); ?></span>&nbsp;
                         <br/>
-                        <a href="javascript:void(0)" onclick="AmazonAccountHandlerObj.openManagement()"><?php echo Mage::helper('M2ePro')->__('Go to Amazon Repricing Tool'); ?></a>
+                        <a href="javascript:void(0)" onclick="AmazonAccountObj.openManagement()"><?php echo Mage::helper('M2ePro')->__('Go to Amazon Repricing Tool'); ?></a>
                     </td>
                 </tr>
                 <?php } ?>

@@ -59,7 +59,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_Edit extends Mage_Adminhtml_Block_
                 $this->_addButton(
                     'save', array(
                     'label'     => Mage::helper('M2ePro')->__('Save And Close'),
-                    'onclick'   => 'EbayAccountHandlerObj.saveAndClose()',
+                    'onclick'   => 'EbayAccountObj.saveAndClose()',
                     'class'     => 'save'
                     )
                 );
@@ -67,7 +67,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_Edit extends Mage_Adminhtml_Block_
                 $this->_addButton(
                     'save_and_continue', array(
                     'label'     => Mage::helper('M2ePro')->__('Save And Continue Edit'),
-                    'onclick'   => 'EbayAccountHandlerObj.save_and_edit_click(\'\',\'ebayAccountEditTabs\')',
+                    'onclick'   => 'EbayAccountObj.save_and_edit_click(\'\',\'ebayAccountEditTabs\')',
                     'class'     => 'save'
                     )
                 );
@@ -79,7 +79,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_Edit extends Mage_Adminhtml_Block_
         $this->_addButton(
             'back', array(
             'label'     => Mage::helper('M2ePro')->__('Back'),
-            'onclick'   => 'EbayAccountHandlerObj.back_click(\'' .Mage::helper('M2ePro')->getBackUrl('list').'\')',
+            'onclick'   => 'EbayAccountObj.back_click(\'' .Mage::helper('M2ePro')->getBackUrl('list').'\')',
             'class'     => 'back'
             )
         );
@@ -90,7 +90,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_Edit extends Mage_Adminhtml_Block_
             $this->_addButton(
                 'delete', array(
                 'label'     => Mage::helper('M2ePro')->__('Delete'),
-                'onclick'   => "EbayAccountHandlerObj.delete_click({$accountId})",
+                'onclick'   => "EbayAccountObj.delete_click({$accountId})",
                 'class'     => 'delete M2ePro_delete_button'
                 )
             );
@@ -98,7 +98,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_Edit extends Mage_Adminhtml_Block_
             $this->_addButton(
                 'save', array(
                 'label'     => Mage::helper('M2ePro')->__('Save'),
-                'onclick'   => 'EbayAccountHandlerObj.save_click()',
+                'onclick'   => 'EbayAccountObj.save_click()',
                 'class'     => 'save'
                 )
             );
@@ -107,7 +107,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_Edit extends Mage_Adminhtml_Block_
         $this->_addButton(
             'save_and_continue', array(
             'label'     => Mage::helper('M2ePro')->__('Save And Continue Edit'),
-            'onclick'   => 'EbayAccountHandlerObj.save_and_edit_click(\'\',\'ebayAccountEditTabs\')',
+            'onclick'   => 'EbayAccountObj.save_and_edit_click(\'\',\'ebayAccountEditTabs\')',
             'class'     => 'save'
             )
         );

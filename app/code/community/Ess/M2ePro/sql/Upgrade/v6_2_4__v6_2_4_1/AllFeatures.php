@@ -67,16 +67,16 @@ class Ess_M2ePro_Sql_Upgrade_v6_2_4__v6_2_4_1_AllFeatures extends Ess_M2ePro_Mod
 
         $installer->run(<<<SQL
 
-UPDATE `m2epro_ebay_template_selling_format`
+UPDATE `{$this->_installer->getTable('m2epro_ebay_template_selling_format')}`
 SET `qty_min_posted_value` = 1;
 
-UPDATE `m2epro_amazon_template_selling_format`
+UPDATE `{$this->_installer->getTable('m2epro_amazon_template_selling_format')}`
 SET `qty_min_posted_value` = 1;
 
-UPDATE `m2epro_buy_template_selling_format`
+UPDATE `{$this->_installer->getTable('m2epro_buy_template_selling_format')}`
 SET `qty_min_posted_value` = 1;
 
-UPDATE `m2epro_play_template_selling_format`
+UPDATE `{$this->_installer->getTable('m2epro_play_template_selling_format')}`
 SET `qty_min_posted_value` = 1;
 
 SQL
@@ -86,7 +86,7 @@ SQL
 
         $installer->run(<<<SQL
 
-UPDATE `m2epro_cache_config`
+UPDATE `{$this->_installer->getTable('m2epro_cache_config')}`
 SET `value` = null
 WHERE `group` = '/installation/version/history/' AND `create_date` = `value`;
 

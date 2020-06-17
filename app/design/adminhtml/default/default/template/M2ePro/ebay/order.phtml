@@ -26,7 +26,7 @@ echo $this->getChildHtml('item_edit');
     )); ?>);
 
     Event.observe(window, 'load', function() {
-        OrderNoteHandlerObj = new OrderNoteHandler('<?php echo $this->getChild('order_note_grid')->getId(); ?>');
+        OrderNoteObj = new OrderNote('<?php echo $this->getChild('order_note_grid')->getId(); ?>');
     });
 
 </script>

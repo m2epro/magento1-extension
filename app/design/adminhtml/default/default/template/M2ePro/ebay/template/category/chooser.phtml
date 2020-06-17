@@ -1,0 +1,215 @@
+<?php
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
+ */
+
+// @codingStandardsIgnoreFile
+/** @var $this Ess_M2ePro_Block_Adminhtml_Ebay_Template_Category_Chooser */
+
+use Ess_M2ePro_Helper_Component_Ebay_Category as Category;
+
+$categoriesData = $this->getCategoriesData();
+$itemSpecificsRequired = isset($categoriesData[Category::TYPE_EBAY_MAIN]['mode']) && $this->isItemSpecificsRequired();
+
+?>
+
+<script type="text/javascript">
+    M2ePro.url.add(<?php echo Mage::helper('M2ePro')->jsonEncode(Mage::helper('M2ePro')->getControllerActions('adminhtml_ebay_marketplace')) ?>);
+
+    M2ePro.php.setConstants(<?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Model_Ebay_Template_Category'); ?>, 'Ess_M2ePro_Model_Ebay_Template_Category');
+    M2ePro.php.setConstants(<?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Helper_Component_Ebay_Category'); ?>, 'Ess_M2ePro_Helper_Component_Ebay_Category');
+    M2ePro.php.setConstants(<?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Block_Adminhtml_Ebay_Template_Category_Chooser'); ?>, 'Ess_M2ePro_Block_Adminhtml_Ebay_Template_Category_Chooser');
+
+    M2ePro.translator.add(<?php echo Mage::helper('M2ePro')->jsonEncode(array(
+        'Select'                           => Mage::helper('M2ePro')->__('Select'),
+        'Reset'                            => Mage::helper('M2ePro')->__('Reset'),
+        'No recently used Categories'      => Mage::helper('M2ePro')->__('No recently used Categories'),
+        'Change Category'                  => Mage::helper('M2ePro')->__('Change Category'),
+        'Category'                         => Mage::helper('M2ePro')->__('Category'),
+        'Not Selected'                     => Mage::helper('M2ePro')->__('Not Selected'),
+        'No results'                       => Mage::helper('M2ePro')->__('No results'),
+
+        'Category Settings' => Mage::helper('M2ePro')->__('Category Settings'),
+        'Specifics'           => Mage::helper('M2ePro')->__('Specifics'),
+        'eBay Primary Store Category must be selected.' => Mage::helper('M2ePro')->__('eBay Primary Store Category must be selected.'),
+
+        'Try to refreshEbayCategories.'  => Mage::helper('M2ePro')->__('Try to <a href="javascript:void(0)" onclick="EbayTemplateCategoryChooserObj.refreshEbayCategories()">update Marketplaces Data</a> and repeat the Search.'),
+        'Try to refreshStoreCategories.' => Mage::helper('M2ePro')->__('Try to <a href="javascript:void(0)" onclick="EbayTemplateCategoryChooserObj.refreshStoreCategories()">refresh eBay Store Data</a> and repeat the Search.'),
+    )); ?>);
+
+    EbayTemplateCategoryChooserObj = new EbayTemplateCategoryChooser(
+        '<?php echo $this->getMarketplaceId(); ?>',
+        '<?php echo $this->getAccountId(); ?>'
+    );
+    EbayTemplateCategoryChooserObj.setCategoryMode('<?php echo $this->getCategoryMode(); ?>');
+    EbayTemplateCategoryChooserObj.setSelectedCategories(<?php echo json_encode($categoriesData, JSON_FORCE_OBJECT); ?>);
+    EbayTemplateCategoryChooserObj.setAttributes(<?php echo Mage::helper('M2ePro')->jsonEncode($this->getAttributes()); ?>);
+    EbayTemplateCategoryChooserObj.setIsEditCategoryAllowed('<?php echo (int)$this->getIsEditCategoryAllowed(); ?>');
+    EbayTemplateCategoryChooserObj.setIsWizardMode(<?php echo Mage::helper('M2ePro')->jsonEncode(!Mage::helper('M2ePro/View_Ebay')->isInstallationWizardFinished()); ?>);
+
+</script>
+
+<form id="edit_form">
+    <input name="form_key" value="<?php echo $this->getFormKey(); ?>" type="hidden" />
+
+    <?php if ($this->isCategoryModeBoth() || $this->isCategoryModeEbay() || $this->isCategoryModeEbayPrimary() || $this->isCategoryModeEbaySecondary()): ?>
+
+    <div class="entry-edit" id="magento_block_ebay_listing_category_chooser_ebay">
+
+        <div class="entry-edit-head">
+            <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('eBay Category'); ?></h4>
+        </div>
+
+        <div class="fieldset">
+            <div class="hor-scroll">
+
+                <table class="form-list" cellspacing="0" cellpadding="0">
+
+                    <?php if (!$this->isCategoryModeEbaySecondary()) : ?>
+                    <tr>
+                        <td class="label" style="width: 110px;">
+                            <?php echo Mage::helper('M2ePro')->__('Primary'); ?>: <span class="required">*</span>
+                        </td>
+
+                        <td class="value" style="min-width: 300px;">
+                            <?php echo $this->getCategoryPathHtml(Category::TYPE_EBAY_MAIN) ?>
+                            <input type="hidden" class="M2ePro-required-when-visible" value="<?php if (isset($categoriesData[Category::TYPE_EBAY_MAIN]['value'])) : echo $categoriesData[Category::TYPE_EBAY_MAIN]['value']; endif; ?>" />
+                        </td>
+                        <?php if ($this->getIsEditCategoryAllowed()) : ?>
+                            <td class="value">
+                                <a href="#" onclick="EbayTemplateCategoryChooserObj.showEditPopUp(<?php echo Category::TYPE_EBAY_MAIN; ?>)"><?php echo Mage::helper('M2ePro')->__('Edit'); ?></a>
+                            </td>
+                        <?php endif; ?>
+                    </tr>
+
+                    <tr>
+                        <td class="label" style="width: 110px;">
+                            <?php echo Mage::helper('M2ePro')->__('Item Specifics'); ?>:
+                            <?php if ($itemSpecificsRequired): ?>
+                                <span class="required">*</span>
+                            <?php endif; ?>
+                        </td>
+
+                        <td class="value" style="min-width: 300px;">
+                            <?php if (!isset($categoriesData[Category::TYPE_EBAY_MAIN]['is_custom_template'])) : ?>
+                                <?php $color = $itemSpecificsRequired ? 'red' : 'grey'; ?>
+                                <span style="font-style: italic; color: <?php echo $color; ?>"><?php echo Mage::helper('M2ePro')->__('Not Set'); ?></span>
+                            <?php elseif ($categoriesData[Category::TYPE_EBAY_MAIN]['is_custom_template'] == 1) : ?>
+                                <span><?php echo Mage::helper('M2ePro')->__('Custom'); ?></span>
+                            <?php else : ?>
+                                <span><?php echo Mage::helper('M2ePro')->__('Default'); ?></span>
+                            <?php endif; ?>
+                            <input type="hidden" class="<?php if ($itemSpecificsRequired) : echo ' M2ePro-required-when-visible '; endif; ?>" value="<?php if (isset($categoriesData[Category::TYPE_EBAY_MAIN]['is_custom_template'])) : echo $categoriesData[Category::TYPE_EBAY_MAIN]['is_custom_template']; endif; ?>" />
+                        </td>
+
+                        <?php if (isset($categoriesData[Category::TYPE_EBAY_MAIN]['mode']) && $categoriesData[Category::TYPE_EBAY_MAIN]['mode'] != Ess_M2ePro_Model_Ebay_Template_Category::CATEGORY_MODE_NONE): ?>
+                            <td class="value">
+                                <a href="#" onclick="EbayTemplateCategoryChooserObj.editSpecifics()"><?php echo Mage::helper('M2ePro')->__('Edit'); ?></a>
+                            </td>
+                        <?php endif; ?>
+
+                        <?php if (isset($categoriesData[Category::TYPE_EBAY_MAIN]['is_custom_template']) && $categoriesData[Category::TYPE_EBAY_MAIN]['is_custom_template']): ?>
+                            <td class="value">
+                                <a href="#" onclick="EbayTemplateCategoryChooserObj.resetSpecificsToDefault()"><?php echo Mage::helper('M2ePro')->__('Reset to Default'); ?></a>
+                            </td>
+                        <?php endif; ?>
+                    </tr>
+                    <?php endif; ?>
+
+                    <?php if ($this->isCategoryModeBoth() || $this->isCategoryModeEbay()) : ?>
+                        <tr>
+                            <td colspan="6" style="padding: 10px 0">
+                                <hr style="border: 1px solid silver; border-bottom: none;">
+                            </td>
+                        </tr>
+                    <?php endif; ?>
+
+                    <?php if (!$this->isCategoryModeEbayPrimary()) : ?>
+                    <tr>
+                        <td class="label" style="width: 110px;">
+                            <?php echo Mage::helper('M2ePro')->__('Secondary'); ?>:
+                        </td>
+
+                        <td class="value" style="min-width: 300px;">
+                            <?php echo $this->getCategoryPathHtml(Category::TYPE_EBAY_SECONDARY) ?>
+                        </td>
+
+                        <?php if ($this->getIsEditCategoryAllowed()) : ?>
+                            <td class="value">
+                                <a href="#" onclick="EbayTemplateCategoryChooserObj.showEditPopUp(<?php echo Category::TYPE_EBAY_SECONDARY; ?>)"><?php echo Mage::helper('M2ePro')->__('Edit'); ?></a>
+                            </td>
+                        <?php endif; ?>
+                    </tr>
+                    <?php endif; ?>
+
+                </table>
+
+            </div>
+        </div>
+    </div>
+
+    <?php endif; ?>
+
+    <?php if ($this->hasStoreCatalog()) : ?>
+
+        <?php if ($this->isCategoryModeBoth() || $this->isCategoryModeStore()) : ?>
+
+        <div class="entry-edit" id="magento_block_ebay_listing_category_chooser_store">
+
+            <div class="entry-edit-head">
+                <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('eBay Store Category'); ?></h4>
+            </div>
+
+            <div class="fieldset">
+                <div class="hor-scroll">
+
+                    <table class="form-list" cellspacing="0" cellpadding="0">
+
+                        <tr>
+                            <td class="label" style="width: 110px;">
+                                <?php echo Mage::helper('M2ePro')->__('Primary'); ?>:
+                            </td>
+
+                            <td class="value" style="min-width: 300px;">
+                                <?php echo $this->getCategoryPathHtml(Category::TYPE_STORE_MAIN) ?>
+                                <input type="hidden" class="main_store_category_value" value="<?php echo isset($categoriesData[Category::TYPE_STORE_MAIN]['value']) ? $categoriesData[Category::TYPE_STORE_MAIN]['value'] : ''; ?>" />
+                            </td>
+
+                            <?php if ($this->getIsEditCategoryAllowed()) : ?>
+                                <td class="value">
+                                    <a href="#" onclick="EbayTemplateCategoryChooserObj.showEditPopUp(<?php echo Category::TYPE_STORE_MAIN; ?>)"><?php echo Mage::helper('M2ePro')->__('Edit'); ?></a>
+                                </td>
+                            <?php endif; ?>
+                        </tr>
+
+                        <tr>
+                            <td class="label" style="width: 110px;">
+                                <?php echo Mage::helper('M2ePro')->__('Secondary'); ?>:
+                            </td>
+
+                            <td class="value" style="min-width: 300px;">
+                                <?php echo $this->getCategoryPathHtml(Category::TYPE_STORE_SECONDARY) ?>
+                                <input type="hidden" id="secondary_store_category_value" class="secondary_store_category_value" value="<?php echo isset($categoriesData[Category::TYPE_STORE_SECONDARY]['value']) ? $categoriesData[Category::TYPE_STORE_SECONDARY]['value'] : ''; ?>" />
+                            </td>
+
+                            <?php if ($this->getIsEditCategoryAllowed()) : ?>
+                                <td class="value">
+                                    <a href="#" onclick="EbayTemplateCategoryChooserObj.showEditPopUp(<?php echo Category::TYPE_STORE_SECONDARY; ?>)"><?php echo Mage::helper('M2ePro')->__('Edit'); ?></a>
+                                </td>
+                            <?php endif; ?>
+                        </tr>
+
+                    </table>
+
+                </div>
+            </div>
+
+        </div>
+
+        <?php endif; ?>
+
+    <?php endif; ?>
+
+</form>

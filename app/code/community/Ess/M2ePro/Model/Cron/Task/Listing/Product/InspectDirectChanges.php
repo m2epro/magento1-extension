@@ -97,7 +97,9 @@ class Ess_M2ePro_Model_Cron_Task_Listing_Product_InspectDirectChanges extends Es
 
     protected function getLastListingProductId($component)
     {
-        $configValue = $this->getRegistryValue(self::KEY_PREFIX.'/'.$component.'/last_listing_product_id/');
+        $configValue = Mage::helper('M2ePro/Module')->getRegistryValue(
+            self::KEY_PREFIX.'/'.$component.'/last_listing_product_id/'
+        );
 
         if ($configValue === null) {
             return 0;
@@ -108,7 +110,10 @@ class Ess_M2ePro_Model_Cron_Task_Listing_Product_InspectDirectChanges extends Es
 
     protected function setLastListingProductId($component, $listingProductId)
     {
-        $this->setRegistryValue(self::KEY_PREFIX.'/'.$component.'/last_listing_product_id/', (int)$listingProductId);
+        Mage::helper('M2ePro/Module')->setRegistryValue(
+            self::KEY_PREFIX.'/'.$component.'/last_listing_product_id/',
+            (int)$listingProductId
+        );
     }
 
     //########################################

@@ -41,7 +41,7 @@ class Ess_M2ePro_Sql_Upgrade_v6_2_3__v6_2_4_AllFeatures extends Ess_M2ePro_Model
 
         $installer->run(<<<SQL
 
-UPDATE `m2epro_ebay_marketplace`
+UPDATE `{$this->_installer->getTable('m2epro_ebay_marketplace')}`
 SET `is_click_and_collect` = 1
 WHERE `marketplace_id` = 3 OR -- UK --
       `marketplace_id` = 4;   -- AU --

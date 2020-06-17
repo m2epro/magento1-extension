@@ -98,7 +98,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Template_ProductTaxCode_Grid
                     array(
                         'id'      => 'productTaxCode_template_refresh_btn',
                         'label'   => Mage::helper('M2ePro')->__('Refresh'),
-                        'onclick' => "ListingGridHandlerObj.templateProductTaxCodeHandler.loadGrid()"
+                        'onclick' => "ListingGridObj.templateProductTaxCodeHandler.loadGrid()"
                     )
                 )
         );
@@ -168,7 +168,7 @@ HTML;
         el.style.padding = '5px 5px';
     });
 
-    ListingGridHandlerObj.templateProductTaxCodeHandler.newTemplateUrl='{$this->getNewTemplateProductTaxCodeUrl()}';
+    ListingGridObj.templateProductTaxCodeHandler.newTemplateUrl='{$this->getNewTemplateProductTaxCodeUrl()}';
 
     {$this->getJsObjectName()}.reloadParams = {$this->getJsObjectName()}.reloadParams || {};
     {$this->getJsObjectName()}.reloadParams['products_ids'] = '{$productsIdsStr}';

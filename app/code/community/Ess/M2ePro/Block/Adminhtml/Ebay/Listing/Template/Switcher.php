@@ -362,7 +362,7 @@ HTML;
         $data = array(
             'class'   => 'save-custom-template-' . $nick,
             'label'   => Mage::helper('M2ePro')->__('Save as New Policy'),
-            'onclick' => 'EbayListingTemplateSwitcherHandlerObj.customSaveAsTemplate(\''. $nick .'\');',
+            'onclick' => 'EbayListingTemplateSwitcherObj.customSaveAsTemplate(\''. $nick .'\');',
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('save_custom_as_template', $buttonBlock);

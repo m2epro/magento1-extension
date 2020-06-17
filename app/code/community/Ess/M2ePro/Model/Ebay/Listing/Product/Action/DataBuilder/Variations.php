@@ -242,7 +242,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Variations
 
         $isVariationEnabled = Mage::helper('M2ePro/Component_Ebay_Category_Ebay')
                                     ->isVariationEnabled(
-                                        (int)$this->getCategorySource()->getMainCategory(),
+                                        (int)$this->getCategorySource()->getCategoryId(),
                                         $this->getMarketplace()->getId()
                                     );
 
@@ -432,7 +432,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Variations
             return $data;
         }
 
-        $categoryId = $this->getCategorySource()->getMainCategory();
+        $categoryId = $this->getCategorySource()->getCategoryId();
         $marketplaceId = $this->getMarketplace()->getId();
         $categoryFeatures = Mage::helper('M2ePro/Component_Ebay_Category_Ebay')
                                   ->getFeatures($categoryId, $marketplaceId);

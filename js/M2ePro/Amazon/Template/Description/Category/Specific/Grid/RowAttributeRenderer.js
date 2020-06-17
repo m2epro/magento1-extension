@@ -1,4 +1,4 @@
-AmazonTemplateDescriptionCategorySpecificGridRowAttributeRenderer = Class.create(AmazonTemplateDescriptionCategorySpecificGridRowRenderer, {
+window.AmazonTemplateDescriptionCategorySpecificGridRowAttributeRenderer = Class.create(AmazonTemplateDescriptionCategorySpecificGridRowRenderer, {
 
     // ---------------------------------------
 

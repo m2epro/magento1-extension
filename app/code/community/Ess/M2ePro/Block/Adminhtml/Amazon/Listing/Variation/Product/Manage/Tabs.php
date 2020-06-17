@@ -141,7 +141,7 @@ HTML;
         $data = array(
             'style' => 'float: right; margin-top: 7px; ',
             'label'   => Mage::helper('M2ePro')->__('Close'),
-            'onclick' => 'ListingGridHandlerObj.variationProductManageHandler.closeManageVariationsPopup()'
+            'onclick' => 'ListingGridObj.variationProductManageHandler.closeManageVariationsPopup()'
         );
         $closeBtn = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
 
@@ -153,7 +153,7 @@ HTML;
         amazonVariationProductManageTabsJsTabs.tabs[0].hide();
     }
 
-    ListingGridHandlerObj.variationProductManageHandler.loadVariationsGrid({$showChildProducts});
+    ListingGridObj.variationProductManageHandler.loadVariationsGrid({$showChildProducts});
 </script>
 HTML;
 

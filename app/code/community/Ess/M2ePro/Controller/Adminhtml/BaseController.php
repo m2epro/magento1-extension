@@ -60,7 +60,6 @@ abstract class Ess_M2ePro_Controller_Adminhtml_BaseController
          *
          * The code below is the logical extension of the method \Ess_M2ePro_Controller_Router::addModule.
          */
-        // -----------------------------------------------------------------
         if (!Mage::getSingleton('admin/session')->isLoggedIn()) {
             $this->_isUnAuthorized = true;
 
@@ -84,23 +83,8 @@ abstract class Ess_M2ePro_Controller_Adminhtml_BaseController
             }
         }
 
-        // -----------------------------------------------------------------
-
-        if (Mage::helper('M2ePro/Module_Maintenance')->isEnabled()) {
-            return $this->_redirect('*/adminhtml_maintenance');
-        }
-
-        if (Mage::helper('M2ePro/Module')->isDisabled()) {
-            return $this->_redirect('adminhtml/dashboard');
-        }
-
-        if (Mage::helper('M2ePro/Component')->getEnabledComponents() === array()) {
-            return $this->_redirect('adminhtml/dashboard');
-        }
-
         Mage::helper('M2ePro/Module_Exception')->setFatalErrorHandler();
 
-        // flag that controller is loaded
         if (Mage::helper('M2ePro/Data_Global')->getValue('is_base_controller_loaded') === null) {
             Mage::helper('M2ePro/Data_Global')->setValue('is_base_controller_loaded', true);
         }
@@ -166,6 +150,18 @@ abstract class Ess_M2ePro_Controller_Adminhtml_BaseController
 
     protected function _preDispatch()
     {
+        if (Mage::helper('M2ePro/Module_Maintenance')->isEnabled()) {
+            return $this->_redirect('*/adminhtml_maintenance');
+        }
+
+        if (Mage::helper('M2ePro/Module')->isDisabled()) {
+            return $this->_redirect('adminhtml/dashboard');
+        }
+
+        if (Mage::helper('M2ePro/Component')->getEnabledComponents() === array()) {
+            return $this->_redirect('adminhtml/dashboard');
+        }
+
         return null;
     }
 

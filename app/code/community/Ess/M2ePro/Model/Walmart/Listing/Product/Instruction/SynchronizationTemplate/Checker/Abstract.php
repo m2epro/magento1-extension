@@ -81,7 +81,6 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_Synchronizat
 
             SynchronizationChangeProcessor::INSTRUCTION_TYPE_REVISE_PRICE_ENABLED,
             SynchronizationChangeProcessor::INSTRUCTION_TYPE_REVISE_PRICE_DISABLED,
-            SynchronizationChangeProcessor::INSTRUCTION_TYPE_REVISE_PRICE_SETTINGS_CHANGED,
 
             Ess_M2ePro_Model_Walmart_Listing_Product::INSTRUCTION_TYPE_CHANNEL_PRICE_CHANGED,
             Ess_M2ePro_Model_Listing::INSTRUCTION_TYPE_PRODUCT_MOVED_FROM_OTHER,

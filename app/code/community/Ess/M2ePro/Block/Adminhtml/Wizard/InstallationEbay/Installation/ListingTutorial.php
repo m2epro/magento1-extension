@@ -20,13 +20,19 @@ class Ess_M2ePro_Block_Adminhtml_Wizard_InstallationEbay_Installation_ListingTut
 
     protected function _beforeToHtml()
     {
-        // Set header text
-        // ---------------------------------------
-        $this->_headerText = Mage::helper('M2ePro')->__('What Is An M2E Pro Listing?');
-        // ---------------------------------------
+        parent::_beforeToHtml();
 
-        // ---------------------------------------
-        return parent::_beforeToHtml();
+        $this->updateButton('continue', 'label', Mage::helper('M2ePro')->__('Create First Listing'));
+        $this->updateButton('continue', 'class', 'primary');
+    }
+
+    protected function _prepareLayout()
+    {
+        Mage::helper('M2ePro/View')->getJsUrlsRenderer()->add(
+            $this->getUrl('*/adminhtml_ebay_listing_create/index'), 'ebay_listing_create'
+        );
+
+        return parent::_prepareLayout();
     }
 
     //########################################

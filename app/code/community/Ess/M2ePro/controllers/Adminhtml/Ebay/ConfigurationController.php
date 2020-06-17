@@ -16,7 +16,7 @@ class Ess_M2ePro_Adminhtml_Ebay_ConfigurationController extends Ess_M2ePro_Contr
             ->_title(Mage::helper('M2ePro')->__('Configuration'));
 
         $this->getLayout()->getBlock('head')
-            ->addJs('M2ePro/Ebay/ConfigurationHandler.js');
+            ->addJs('M2ePro/Ebay/Configuration.js');
 
         $this->_initPopUp();
 
@@ -66,10 +66,6 @@ class Ess_M2ePro_Adminhtml_Ebay_ConfigurationController extends Ess_M2ePro_Contr
             (int)$this->getRequest()->getParam('view_ebay_feedbacks_notification_mode')
         );
 
-        Mage::helper('M2ePro/Module')->getConfig()->setGroupValue(
-            '/view/ebay/template/category/', 'use_last_specifics',
-            (int)$this->getRequest()->getParam('use_last_specifics_mode')
-        );
         Mage::helper('M2ePro/Module')->getConfig()->setGroupValue(
             '/ebay/connector/listing/', 'check_the_same_product_already_listed',
             (int)$this->getRequest()->getParam('check_the_same_product_already_listed_mode')

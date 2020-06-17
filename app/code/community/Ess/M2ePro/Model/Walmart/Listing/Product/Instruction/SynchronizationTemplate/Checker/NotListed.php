@@ -161,125 +161,25 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_SynchronizationTempla
             }
         }
 
-        if ($walmartSynchronizationTemplate->isListWhenQtyMagentoHasValue()) {
-            $result = false;
-
-            if ($variationManager->isRelationParentType()) {
-                $productQty = (int)$listingProduct->getMagentoProduct()->getQty(true);
-            } else {
-                $productQty = (int)$walmartListingProduct->getQty(true);
-            }
-
-            $typeQty = (int)$walmartSynchronizationTemplate->getListWhenQtyMagentoHasValueType();
-            $minQty = (int)$walmartSynchronizationTemplate->getListWhenQtyMagentoHasValueMin();
-            $maxQty = (int)$walmartSynchronizationTemplate->getListWhenQtyMagentoHasValueMax();
-
-            $note = '';
-
-            if ($typeQty == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_LESS) {
-                if ($productQty <= $minQty) {
-                    $result = true;
-                } else {
-                    $note = Mage::helper('M2ePro/Module_Log')->encodeDescription(
-                        'Product was not Listed as its Quantity is %product_qty% in Magento.
-                        The Magento Quantity condition in the List Rules was not met.',
-                        array(
-                            '!product_qty' => $productQty,
-                        )
-                    );
-                }
-            }
-
-            if ($typeQty == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_MORE) {
-                if ($productQty >= $minQty) {
-                    $result = true;
-                } else {
-                    $note = Mage::helper('M2ePro/Module_Log')->encodeDescription(
-                        'Product was not Listed as its Quantity is %product_qty% in Magento.
-                        The Magento Quantity condition in the List Rules was not met.',
-                        array(
-                            '!product_qty' => $productQty,
-                        )
-                    );
-                }
-            }
-
-            if ($typeQty == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_BETWEEN) {
-                if ($productQty >= $minQty && $productQty <= $maxQty) {
-                    $result = true;
-                } else {
-                    $note = Mage::helper('M2ePro/Module_Log')->encodeDescription(
-                        'Product was not Listed as its Quantity is %product_qty% in Magento.
-                        The Magento Quantity condition in the List Rules was not met.',
-                        array(
-                            '!product_qty' => $productQty,
-                        )
-                    );
-                }
-            }
-
-            if (!$result) {
-                if (!empty($note)) {
-                    $additionalData['synch_template_list_rules_note'] = $note;
-                    $listingProduct->setSettings('additional_data', $additionalData)->save();
-                }
-
-                return false;
-            }
-        }
-
         if ($walmartSynchronizationTemplate->isListWhenQtyCalculatedHasValue() &&
             !$variationManager->isRelationParentType()
         ) {
             $result = false;
             $productQty = (int)$walmartListingProduct->getQty(false);
-
-            $typeQty = (int)$walmartSynchronizationTemplate->getListWhenQtyCalculatedHasValueType();
-            $minQty = (int)$walmartSynchronizationTemplate->getListWhenQtyCalculatedHasValueMin();
-            $maxQty = (int)$walmartSynchronizationTemplate->getListWhenQtyCalculatedHasValueMax();
+            $minQty = (int)$walmartSynchronizationTemplate->getListWhenQtyCalculatedHasValue();
 
             $note = '';
 
-            if ($typeQty == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_LESS) {
-                if ($productQty <= $minQty) {
-                    $result = true;
-                } else {
-                    $note = Mage::helper('M2ePro/Module_Log')->encodeDescription(
-                        'Product was not Listed as its Quantity is %product_qty% in Magento.
-                        The Calculated Quantity condition in the List Rules was not met.',
-                        array(
-                            '!product_qty' => $productQty,
-                        )
-                    );
-                }
-            }
-
-            if ($typeQty == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_MORE) {
-                if ($productQty >= $minQty) {
-                    $result = true;
-                } else {
-                    $note = Mage::helper('M2ePro/Module_Log')->encodeDescription(
-                        'Product was not Listed as its Quantity is %product_qty% in Magento.
-                        The Calculated Quantity condition in the List Rules was not met.',
-                        array(
-                            '!product_qty' => $productQty,
-                        )
-                    );
-                }
-            }
-
-            if ($typeQty == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_BETWEEN) {
-                if ($productQty >= $minQty && $productQty <= $maxQty) {
-                    $result = true;
-                } else {
-                    $note = Mage::helper('M2ePro/Module_Log')->encodeDescription(
-                        'Product was not Listed as its Quantity is %product_qty% in Magento.
-                        The Calculated Quantity condition in the List Rules was not met.',
-                        array(
-                            '!product_qty' => $productQty,
-                        )
-                    );
-                }
+            if ($productQty >= $minQty) {
+                $result = true;
+            } else {
+                $note = Mage::helper('M2ePro/Module_Log')->encodeDescription(
+                    'Product was not Listed as its Quantity is %product_qty% in Magento.
+                    The Calculated Quantity condition in the List Rules was not met.',
+                    array(
+                        '!product_qty' => $productQty,
+                    )
+                );
             }
 
             if (!$result) {

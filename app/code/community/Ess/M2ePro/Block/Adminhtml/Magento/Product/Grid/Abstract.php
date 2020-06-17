@@ -20,13 +20,10 @@ abstract class Ess_M2ePro_Block_Adminhtml_Magento_Product_Grid_Abstract
     {
         parent::__construct();
 
-        // Set default values
-        // ---------------------------------------
         $this->setDefaultSort('product_id');
         $this->setDefaultDir('DESC');
         $this->setSaveParametersInSession(true);
         $this->setUseAjax(true);
-        // ---------------------------------------
 
         $this->isAjax = Mage::helper('M2ePro')->jsonEncode($this->getRequest()->isXmlHttpRequest());
     }
@@ -50,13 +47,8 @@ abstract class Ess_M2ePro_Block_Adminhtml_Magento_Product_Grid_Abstract
 
     protected function _prepareMassaction()
     {
-        // Set massaction identifiers
-        // ---------------------------------------
         $this->getMassactionBlock()->setFormFieldName('ids');
-        // ---------------------------------------
 
-        // Set fake action
-        // ---------------------------------------
         if ($this->getMassactionBlock()->getCount() == 0) {
             $this->getMassactionBlock()->addItem(
                 'fake', array(
@@ -65,8 +57,6 @@ abstract class Ess_M2ePro_Block_Adminhtml_Magento_Product_Grid_Abstract
                 )
             );
         }
-
-        // ---------------------------------------
 
         return parent::_prepareMassaction();
     }
@@ -96,59 +86,6 @@ abstract class Ess_M2ePro_Block_Adminhtml_Magento_Product_Grid_Abstract
     }
 
     //########################################
-
-    public function callbackColumnMagentoProductId($value, $row, $column, $isExport)
-    {
-        return $this->callbackColumnProductId($value, $row, $column, $isExport, Mage_Core_Model_App::ADMIN_STORE_ID);
-    }
-
-    public function callbackColumnListingProductId($value, $row, $column, $isExport)
-    {
-        return $this->callbackColumnProductId($value, $row, $column, $isExport);
-    }
-
-    public function callbackColumnProductId($value, $row, $column, $isExport, $storeId = null)
-    {
-        /** @var Ess_M2ePro_Model_Listing $listing */
-        $listing = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
-
-        $productId = (int)$value;
-
-        if ($storeId === null) {
-            $storeId = 0;
-            if ($listing) {
-                $storeId = (int)$listing['store_id'];
-            }
-        }
-
-        $url = $this->getUrl('adminhtml/catalog_product/edit', array('id' => $productId, 'store' => $storeId));
-        $htmlWithoutThumbnail = '<a href="' . $url . '" target="_blank">'.$productId.'</a>';
-
-        $showProductsThumbnails = (bool)(int)Mage::helper('M2ePro/Module')->getConfig()
-            ->getGroupValue('/view/', 'show_products_thumbnails');
-
-        if (!$showProductsThumbnails) {
-            return $htmlWithoutThumbnail;
-        }
-
-        /** @var $magentoProduct Ess_M2ePro_Model_Magento_Product */
-        $magentoProduct = Mage::getModel('M2ePro/Magento_Product');
-        $magentoProduct->setProductId($productId);
-        $magentoProduct->setStoreId($storeId);
-
-        $thumbnail = $magentoProduct->getThumbnailImage();
-        if ($thumbnail === null) {
-            return $htmlWithoutThumbnail;
-        }
-
-        return <<<HTML
-<a href="{$url}" target="_blank">
-    {$productId}
-    <hr style="border: 1px solid silver; border-bottom: none;">
-    <img style="max-width: 100px; max-height: 100px;" src="{$thumbnail->getUrl()}" />
-</a>
-HTML;
-    }
 
     public function callbackColumnProductTitle($value, $row, $column, $isExport)
     {
@@ -209,7 +146,7 @@ HTML;
         if (!$this->getChild('advanced_filter_button')) {
             $data = array(
                 'label'   => Mage::helper('adminhtml')->__('Show Advanced Filter'),
-                'onclick' => 'ProductGridHandlerObj.advancedFilterToggle()',
+                'onclick' => 'ProductGridObj.advancedFilterToggle()',
                 'class'   => 'task',
                 'id'      => 'advanced_filter_button'
             );
@@ -279,15 +216,6 @@ HTML;
         }
 
         // ---------------------------------------
-        $helper = Mage::helper('M2ePro');
-
-        $selectItemsMessage = $helper->escapeJs(
-            $helper->__('Please select the Products you want to perform the Action on.')
-        );
-        $createEmptyListingMessage = $helper->escapeJs($helper->__('Are you sure you want to create empty Listing?'));
-
-        $showAdvancedFilterButtonText = $helper->escapeJs($helper->__('Show Advanced Filter'));
-        $hideAdvancedFilterButtonText = $helper->escapeJs($helper->__('Hide Advanced Filter'));
 
         $js = <<<HTML
 <script type="text/javascript">
@@ -299,17 +227,12 @@ HTML;
         M2ePro.text = {};
     }
 
-    M2ePro.text.select_items_message = '{$selectItemsMessage}';
-    M2ePro.text.create_empty_listing_message = '{$createEmptyListingMessage}';
-    M2ePro.text.show_advanced_filter = '{$showAdvancedFilterButtonText}';
-    M2ePro.text.hide_advanced_filter = '{$hideAdvancedFilterButtonText}';
-
-    ProductGridHandlerObj = new ListingProductGridHandler();
-    ProductGridHandlerObj.setGridId('{$this->getJsObjectName()}');
+    ProductGridObj = new ListingProductGrid();
+    ProductGridObj.setGridId('{$this->getJsObjectName()}');
 
     var init = function () {
-        {$this->getJsObjectName()}.doFilter = ProductGridHandlerObj.setFilter;
-        {$this->getJsObjectName()}.resetFilter = ProductGridHandlerObj.resetFilter;
+        {$this->getJsObjectName()}.doFilter = ProductGridObj.setFilter;
+        {$this->getJsObjectName()}.resetFilter = ProductGridObj.resetFilter;
     };
 
     {$this->isAjax} ? init()

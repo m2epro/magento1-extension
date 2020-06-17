@@ -15,17 +15,12 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Shipping_Messages
 
     public function getMessages()
     {
-        $messages = array();
+        $messages = parent::getMessages();
 
-        // ---------------------------------------
         $message = $this->getCurrencyConversionMessage();
         if ($message !== null) {
             $messages[self::TYPE_CURRENCY_CONVERSION] = $message;
         }
-
-        // ---------------------------------------
-
-        $messages = array_merge($messages, parent::getMessages());
 
         return $messages;
     }
@@ -143,32 +138,41 @@ HTML;
             return false;
         }
 
+        $isPriceConvertEnabled = (int)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
+            '/magento/attribute/', 'price_type_converting'
+        );
+
+        if (!$isPriceConvertEnabled) {
+            return false;
+        }
+
         $template = Mage::getModel('M2ePro/Ebay_Template_Shipping');
         $template->addData($this->getTemplateData());
 
         $attributes = array();
         if ($template->getId()) {
-            $services = $template->getServices(true);
 
-            foreach ($services as $service) {
+            foreach ($template->getServices(true) as $service) {
                 /** @var Ess_M2ePro_Model_Ebay_Template_Shipping_Service $service */
-                $attributes = array_merge($attributes, $service->getUsedAttributes());
+                $attributes = array_merge(
+                    $attributes,
+                    $service->getCostAttributes(),
+                    $service->getCostAdditionalAttributes(),
+                    $service->getCostSurchargeAttributes()
+                );
             }
         } else {
             $shippingCostAttributes = $template->getData('shipping_cost_attribute');
-
             if (!empty($shippingCostAttributes)) {
                 $attributes = array_merge($attributes, $shippingCostAttributes);
             }
 
             $shippingCostAdditionalAttributes = $template->getData('shipping_cost_additional_attribute');
-
             if (!empty($shippingCostAdditionalAttributes)) {
                 $attributes = array_merge($attributes, $shippingCostAdditionalAttributes);
             }
 
             $shippingCostSurchargeAttributes = $template->getData('shipping_cost_surcharge_attribute');
-
             if (!empty($shippingCostSurchargeAttributes)) {
                 $attributes = array_merge($attributes, $shippingCostSurchargeAttributes);
             }
@@ -183,11 +187,7 @@ HTML;
             $preparedAttributes, array('price')
         );
 
-        if (count($attributes)) {
-            return true;
-        }
-
-        return false;
+        return !empty($attributes);
     }
 
     //########################################

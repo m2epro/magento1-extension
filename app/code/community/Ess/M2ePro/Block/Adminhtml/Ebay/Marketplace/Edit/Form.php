@@ -97,7 +97,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Marketplace_Edit_Form extends Mage_Adminht
             ->setData(
                 array(
                 'label'   => Mage::helper('M2ePro')->__('Update Now'),
-                'onclick' => 'MarketplaceHandlerObj.runSingleSynchronization(this)',
+                'onclick' => 'MarketplaceObj.runSingleSynchronization(this)',
                 'class' => 'run_single_button'
                 )
             );

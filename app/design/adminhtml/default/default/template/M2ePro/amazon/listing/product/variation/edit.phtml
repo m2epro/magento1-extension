@@ -45,7 +45,7 @@
 <div style="clear: both; margin-top: 10px"></div>
 
 <div style="padding: 7px 0; text-align: right">
-    <a href="javascript:void(0);" id="variation_edit_close" class="close" onclick="ListingProductVariationHandlerObj.editPopup.close();"><?php echo Mage::helper('M2ePro')->__('Cancel'); ?></a>
+    <a href="javascript:void(0);" id="variation_edit_close" class="close" onclick="ListingProductVariationObj.editPopup.close();"><?php echo Mage::helper('M2ePro')->__('Cancel'); ?></a>
     &nbsp;
     <?php echo $this->getChildHtml('variation_edit_confirm'); ?>
 </div>
@@ -55,11 +55,11 @@
 <script type="text/javascript">
 
     var init = function() {
-        ListingProductVariationHandlerObj.setNeededVariationData(
+        ListingProductVariationObj.setNeededVariationData(
             <?php echo json_encode(array_keys($this->getMagentoVariationsSets())); ?>,
             <?php echo json_encode($this->getMagentoVariationsTree()); ?>
         );
-        ListingProductVariationHandlerObj.editPopupInit(
+        ListingProductVariationObj.editPopupInit(
             <?php echo json_encode($this->currentVariation); ?>
         );
     };

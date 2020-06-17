@@ -7,7 +7,7 @@
  */
 
 class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_AutoAction_Mode
-    extends Ess_M2ePro_Block_Adminhtml_Listing_AutoAction_Mode
+    extends Ess_M2ePro_Block_Adminhtml_Listing_AutoAction_ModeAbstract
 {
     //########################################
 

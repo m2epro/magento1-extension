@@ -277,48 +277,11 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Instruction_SynchronizationTemplat
             }
         }
 
-        if ($amazonSynchronizationTemplate->isStopWhenQtyMagentoHasValue()) {
-            $productQty = (int)$amazonListingProduct->getQty(true);
-
-            $typeQty = (int)$amazonSynchronizationTemplate->getStopWhenQtyMagentoHasValueType();
-            $minQty = (int)$amazonSynchronizationTemplate->getStopWhenQtyMagentoHasValueMin();
-            $maxQty = (int)$amazonSynchronizationTemplate->getStopWhenQtyMagentoHasValueMax();
-
-            if ($typeQty == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_LESS &&
-                $productQty <= $minQty) {
-                return true;
-            }
-
-            if ($typeQty == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_MORE &&
-                $productQty >= $minQty) {
-                return true;
-            }
-
-            if ($typeQty == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_BETWEEN &&
-                $productQty >= $minQty && $productQty <= $maxQty) {
-                return true;
-            }
-        }
-
         if ($amazonSynchronizationTemplate->isStopWhenQtyCalculatedHasValue()) {
             $productQty = (int)$amazonListingProduct->getQty(false);
+            $minQty = (int)$amazonSynchronizationTemplate->getStopWhenQtyCalculatedHasValue();
 
-            $typeQty = (int)$amazonSynchronizationTemplate->getStopWhenQtyCalculatedHasValueType();
-            $minQty = (int)$amazonSynchronizationTemplate->getStopWhenQtyCalculatedHasValueMin();
-            $maxQty = (int)$amazonSynchronizationTemplate->getStopWhenQtyCalculatedHasValueMax();
-
-            if ($typeQty == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_LESS &&
-                $productQty <= $minQty) {
-                return true;
-            }
-
-            if ($typeQty == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_MORE &&
-                $productQty >= $minQty) {
-                return true;
-            }
-
-            if ($typeQty == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_BETWEEN &&
-                $productQty >= $minQty && $productQty <= $maxQty) {
+            if ($productQty <= $minQty) {
                 return true;
             }
         }
@@ -420,8 +383,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Instruction_SynchronizationTemplat
         $currentPrice = $amazonListingProduct->getRegularPrice();
         $onlinePrice  = $amazonListingProduct->getOnlineRegularPrice();
 
-        $isChanged = $amazonSynchronizationTemplate->isPriceChangedOverAllowedDeviation($onlinePrice, $currentPrice);
-        if ($isChanged) {
+        if ($currentPrice != $onlinePrice) {
             return true;
         }
 
@@ -448,11 +410,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Instruction_SynchronizationTemplat
             return true;
         }
 
-        $isChanged = $amazonSynchronizationTemplate->isPriceChangedOverAllowedDeviation(
-            $onlineSalePrice, $currentSalePrice
-        );
-
-        if ($isChanged) {
+        if ($onlineSalePrice != $currentSalePrice) {
             return true;
         }
 
@@ -492,7 +450,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Instruction_SynchronizationTemplat
         $currentPrice = $amazonListingProduct->getBusinessPrice();
         $onlinePrice  = $amazonListingProduct->getOnlineBusinessPrice();
 
-        if ($amazonSynchronizationTemplate->isPriceChangedOverAllowedDeviation($onlinePrice, $currentPrice)) {
+        if ($currentPrice != $onlinePrice) {
             return true;
         }
 
@@ -515,11 +473,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Instruction_SynchronizationTemplat
 
             $onlineDiscount = $onlineDiscounts[$qty];
 
-            $isChanged = $amazonSynchronizationTemplate->isPriceChangedOverAllowedDeviation(
-                $onlineDiscount, $currentDiscount
-            );
-
-            if ($isChanged) {
+            if ($onlineDiscount != $currentDiscount) {
                 return true;
             }
         }

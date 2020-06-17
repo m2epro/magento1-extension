@@ -27,13 +27,12 @@ class Ess_M2ePro_Model_Servicing_Task_Settings extends Ess_M2ePro_Model_Servicin
     {
         $requestData = array();
 
-        $tempValue = Mage::helper('M2ePro/Module')->getCacheConfig()->getGroupValue(
-            '/server/location/',
-            'default_index_given_by_server_at'
+        $tempValue = Mage::helper('M2ePro/Module')->getRegistryValue(
+            '/server/location/default_index_given_by_server_at/'
         );
         if ($tempValue) {
-            $primaryConfig = Mage::helper('M2ePro/Primary')->getConfig();
-            $requestData['current_default_server_baseurl_index'] = $primaryConfig->getGroupValue(
+            $config = Mage::helper('M2ePro/Module')->getConfig();
+            $requestData['current_default_server_baseurl_index'] = $config->getGroupValue(
                 '/server/location/',
                 'default_index'
             );
@@ -46,7 +45,6 @@ class Ess_M2ePro_Model_Servicing_Task_Settings extends Ess_M2ePro_Model_Servicin
     {
         $this->updateServersBaseUrls($data);
         $this->updateDefaultServerBaseUrlIndex($data);
-        $this->updateCronHosts($data);
         $this->updateLastVersion($data);
         $this->updateSendLogs($data);
         $this->updateAnalytics($data);
@@ -63,7 +61,7 @@ class Ess_M2ePro_Model_Servicing_Task_Settings extends Ess_M2ePro_Model_Servicin
         $index = 1;
         $configUpdates = array();
 
-        $config = Mage::helper('M2ePro/Primary')->getConfig();
+        $config = Mage::helper('M2ePro/Module')->getConfig();
 
         foreach ($data['servers_baseurls'] as $newHostName => $newBaseUrl) {
             $oldHostName = $config->getGroupValue('/server/location/'.$index.'/', 'hostname');
@@ -130,47 +128,16 @@ class Ess_M2ePro_Model_Servicing_Task_Settings extends Ess_M2ePro_Model_Servicin
             return;
         }
 
-        Mage::helper('M2ePro/Primary')->getConfig()->setGroupValue(
+        Mage::helper('M2ePro/Module')->getConfig()->setGroupValue(
             '/server/location/',
             'default_index',
             (int)$data['default_server_baseurl_index']
         );
 
-        Mage::helper('M2ePro/Module')->getCacheConfig()->setGroupValue(
-            '/server/location/',
-            'default_index_given_by_server_at',
+        Mage::helper('M2ePro/Module')->setRegistryValue(
+            '/server/location/default_index_given_by_server_at/',
             Mage::helper('M2ePro')->getCurrentGmtDate()
         );
-    }
-
-    protected function updateCronHosts(array $data)
-    {
-        if (!isset($data['cron_domains'])) {
-            return;
-        }
-
-        $index = 1;
-        $config = Mage::helper('M2ePro/Module')->getConfig();
-
-        foreach ($data['cron_domains'] as $newCronHost) {
-            $oldGroupValue = $config->getGroupValue('/cron/service/', 'hostname_'.$index);
-
-            if ($oldGroupValue != $newCronHost) {
-                $config->setGroupValue('/cron/service/', 'hostname_'.$index, $newCronHost);
-            }
-
-            $index++;
-        }
-
-        for ($i = $index; $i < 100; $i++) {
-            $oldGroupValue = $config->getGroupValue('/cron/service/', 'hostname_'.$i);
-
-            if ($oldGroupValue === null) {
-                break;
-            }
-
-            $config->deleteGroupValue('/server/', 'hostname_'.$i);
-        }
     }
 
     protected function updateLastVersion(array $data)
@@ -179,12 +146,13 @@ class Ess_M2ePro_Model_Servicing_Task_Settings extends Ess_M2ePro_Model_Servicin
             return;
         }
 
-        Mage::helper('M2ePro/Module')->getCacheConfig()->setGroupValue(
-            '/installation/', 'public_last_version', $data['last_version']['magento_1']['public']
+        Mage::helper('M2ePro/Module')->setRegistryValue(
+            '/installation/public_last_version/',
+            $data['last_version']['magento_1']['public']
         );
-
-        Mage::helper('M2ePro/Module')->getCacheConfig()->setGroupValue(
-            '/installation/', 'build_last_version', $data['last_version']['magento_1']['build']
+        Mage::helper('M2ePro/Module')->setRegistryValue(
+            '/installation/build_last_version/',
+            $data['last_version']['magento_1']['build']
         );
     }
 
@@ -195,7 +163,7 @@ class Ess_M2ePro_Model_Servicing_Task_Settings extends Ess_M2ePro_Model_Servicin
         }
 
         Mage::helper('M2ePro/Module')->getConfig()->setGroupValue(
-            '/debug/logging/', 'send_to_server', (int)$data['send_logs']
+            '/server/logging/', 'send', (int)$data['send_logs']
         );
     }
 

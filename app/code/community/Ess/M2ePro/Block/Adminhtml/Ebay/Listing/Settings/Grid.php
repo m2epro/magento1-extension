@@ -41,7 +41,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Settings_Grid
 
     protected function getGridHandlerJs()
     {
-        return 'EbayListingProductAddSettingsGridHandler';
+        return 'EbayListingProductAddSettingsGrid';
     }
 
     //########################################
@@ -140,7 +140,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Settings_Grid
             'caption' => Mage::helper('M2ePro')->__('Remove Item'),
             'group'   => 'other',
             'field'   => 'id',
-            'onclick_action' => 'EbayListingSettingsGridHandlerObj.actions[\'removeItemAction\']'
+            'onclick_action' => 'EbayListingSettingsGridObj.actions[\'removeItemAction\']'
         );
 
         return $actions;
@@ -201,7 +201,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Settings_Grid
     M2ePro.url.add({$urls});
     M2ePro.translator.add({$translations});
 
-    ListingAutoActionHandlerObj = new EbayListingAutoActionHandler();
+    ListingAutoActionObj = new EbayListingAutoAction();
 </script>
 HTML;
 

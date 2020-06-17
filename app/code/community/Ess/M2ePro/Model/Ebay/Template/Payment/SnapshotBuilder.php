@@ -6,18 +6,21 @@
  * @license    Commercial use is forbidden
  */
 
-class Ess_M2ePro_Model_Ebay_Template_Payment_SnapshotBuilder extends Ess_M2ePro_Model_Template_SnapshotBuilder_Abstract
+/**
+ * @method Ess_M2ePro_Model_Ebay_Template_Payment getModel()
+ */
+class Ess_M2ePro_Model_Ebay_Template_Payment_SnapshotBuilder extends Ess_M2ePro_Model_ActiveRecord_SnapshotBuilder
 {
     //########################################
 
     public function getSnapshot()
     {
-        $data = $this->_model->getData();
+        $data = $this->getModel()->getData();
         if (empty($data)) {
             return array();
         }
 
-        $data['services'] = $this->_model->getServices();
+        $data['services'] = $this->getModel()->getServices();
 
         $ignoredKeys = array(
             'id', 'template_payment_id',

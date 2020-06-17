@@ -53,7 +53,7 @@ class Ess_M2ePro_Block_Adminhtml_ControlPanel_Tabs_Database_Table_TableCellsPopu
         $data = array(
             'id'      => 'controlPanel_database_update_cell_popup_confirm_button',
             'label'   => Mage::helper('M2ePro')->__('Confirm'),
-            'onclick' => 'ControlPanelDatabaseGridHandlerObj.confirmUpdateCells();',
+            'onclick' => 'ControlPanelDatabaseGridObj.confirmUpdateCells();',
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('popup_confirm_update_button', $buttonBlock);
@@ -63,7 +63,7 @@ class Ess_M2ePro_Block_Adminhtml_ControlPanel_Tabs_Database_Table_TableCellsPopu
         $data = array(
             'id'      => 'controlPanel_database_add_cell_popup_confirm_button',
             'label'   => Mage::helper('M2ePro')->__('Confirm'),
-            'onclick' => 'ControlPanelDatabaseGridHandlerObj.confirmAddRow();',
+            'onclick' => 'ControlPanelDatabaseGridObj.confirmAddRow();',
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('popup_confirm_add_button', $buttonBlock);

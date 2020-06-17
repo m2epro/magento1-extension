@@ -16,12 +16,16 @@ class Ess_M2ePro_Model_Walmart_Template_Category extends Ess_M2ePro_Model_Compon
      */
     protected $_marketplaceModel = null;
 
+    /** @var Ess_M2ePro_Model_ActiveRecord_Factory */
+    protected $_activeRecordFactory;
+
     //########################################
 
     public function _construct()
     {
         parent::_construct();
         $this->_init('M2ePro/Walmart_Template_Category');
+        $this->_activeRecordFactory = Mage::getSingleton('M2ePro/ActiveRecord_Factory');
     }
 
     //########################################
@@ -109,29 +113,28 @@ class Ess_M2ePro_Model_Walmart_Template_Category extends Ess_M2ePro_Model_Compon
 
     /**
      * @param bool $asObjects
-     * @param array $filters
      * @return array|Ess_M2ePro_Model_Walmart_Template_Category_Specific[]
      */
-    public function getSpecifics($asObjects = false, array $filters = array())
+    public function getSpecifics($asObjects = false)
     {
-        $specifics = $this->getRelatedSimpleItems(
-            'Walmart_Template_Category_Specific', 'template_category_id',
-            $asObjects, $filters
-        );
-        if ($asObjects) {
-            /** @var Ess_M2ePro_Model_Walmart_Template_Category_Specific $specific */
-            foreach ($specifics as $specific) {
-                $specific->setDescriptionTemplate($this->getParentObject());
-            }
+        $collection = $this->_activeRecordFactory->getObjectCollection('Walmart_Template_Category_Specific');
+        $collection->addFieldToFilter('template_category_id', $this->getId());
+
+        /** @var Ess_M2ePro_Model_Walmart_Template_Category_Specific $specific */
+        foreach ($collection->getItems() as $specific) {
+            $specific->setCategoryTemplate($this);
         }
 
         if (!$asObjects) {
-            foreach ($specifics as &$specific) {
+            $result = $collection->toArray();
+            foreach ($result['items'] as &$specific) {
                 $specific['attributes'] = (array)Mage::helper('M2ePro')->jsonDecode($specific['attributes']);
             }
+
+            return $result['items'];
         }
 
-        return $specifics;
+        return $collection->getItems();
     }
 
     //########################################

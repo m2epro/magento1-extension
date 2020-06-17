@@ -59,12 +59,12 @@ $id = !empty($formData['id']) ? $formData['id'] : 0;
 
     M2ePro.formData.id = <?php echo Mage::helper('M2ePro')->escapeJs($id); ?>;
 
-    var EbayPickupStoreHandlerObj = new EbayPickupStoreHandler();
+    var EbayPickupStoreObj = new EbayPickupStore();
 
     <?php if ($this->getRequest()->isXmlHttpRequest()): ?>
-        EbayPickupStoreHandlerObj.init();
+        EbayPickupStoreObj.init();
     <?php else: ?>
-        Event.observe(window, 'load', EbayPickupStoreHandlerObj.init.bind(EbayPickupStoreHandlerObj));
+        Event.observe(window, 'load', EbayPickupStoreObj.init.bind(EbayPickupStoreObj));
     <?php endif; ?>
 </script>
 

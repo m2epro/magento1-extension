@@ -12,52 +12,49 @@ class Ess_M2ePro_Helper_Module_License extends Mage_Core_Helper_Abstract
 
     public function getKey()
     {
-        $key = Mage::helper('M2ePro/Primary')->getConfig()->getGroupValue('/license/', 'key');
-        return $key !== null ? (string)$key : '';
+        return (string)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue('/license/', 'key');
     }
-
-    // ---------------------------------------
 
     public function getStatus()
     {
-        $status = Mage::helper('M2ePro/Primary')->getConfig()->getGroupValue('/license/', 'status');
-        return (bool)$status;
+        return (bool)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue('/license/', 'status');
     }
-
-    // ---------------------------------------
 
     public function getDomain()
     {
-        $domain = Mage::helper('M2ePro/Primary')->getConfig()->getGroupValue('/license/', 'domain');
-        return $domain !== null ? (string)$domain : '';
+        return (string)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue('/license/domain/', 'valid');
     }
 
     public function getIp()
     {
-        $ip = Mage::helper('M2ePro/Primary')->getConfig()->getGroupValue('/license/', 'ip');
-        return $ip !== null ? (string)$ip : '';
+        return (string)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue('/license/ip/', 'valid');
     }
-
-    // ---------------------------------------
 
     public function getEmail()
     {
-        $email = Mage::helper('M2ePro/Primary')->getConfig()->getGroupValue('/license/info/', 'email');
-        return $email !== null ? (string)$email : '';
+        return (string)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue('/license/info/', 'email');
     }
-
-    // ---------------------------------------
 
     public function isValidDomain()
     {
-        $isValid = Mage::helper('M2ePro/Primary')->getConfig()->getGroupValue('/license/valid/', 'domain');
+        $isValid = Mage::helper('M2ePro/Module')->getConfig()->getGroupValue('/license/domain/', 'is_valid');
         return $isValid === null || (bool)$isValid;
     }
 
     public function isValidIp()
     {
-        $isValid = Mage::helper('M2ePro/Primary')->getConfig()->getGroupValue('/license/valid/', 'ip');
+        $isValid = Mage::helper('M2ePro/Module')->getConfig()->getGroupValue('/license/ip/', 'is_valid');
         return $isValid === null || (bool)$isValid;
+    }
+
+    public function getRealDomain()
+    {
+        return (string)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue('/license/domain/', 'real');
+    }
+
+    public function getRealIp()
+    {
+        return (string)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue('/license/ip/', 'real');
     }
 
     //########################################
@@ -76,7 +73,7 @@ class Ess_M2ePro_Helper_Module_License extends Mage_Core_Helper_Abstract
         }
 
         $requestParams = array(
-            'domain' => Mage::helper('M2ePro/Client')->getDomain(),
+            'domain'    => Mage::helper('M2ePro/Client')->getDomain(),
             'directory' => Mage::helper('M2ePro/Client')->getBaseDirectory()
         );
 
@@ -110,7 +107,7 @@ class Ess_M2ePro_Helper_Module_License extends Mage_Core_Helper_Abstract
             return false;
         }
 
-        Mage::helper('M2ePro/Primary')->getConfig()->setGroupValue('/license/', 'key', (string)$response['key']);
+        Mage::helper('M2ePro/Module')->getConfig()->setGroupValue('/license/', 'key', (string)$response['key']);
 
         Mage::getModel('M2ePro/Servicing_Dispatcher')->processTask(
             Mage::getModel('M2ePro/Servicing_Task_License')->getPublicNick()
@@ -197,6 +194,27 @@ class Ess_M2ePro_Helper_Module_License extends Mage_Core_Helper_Abstract
         }
 
         return $userInfo;
+    }
+
+    public function getData()
+    {
+        return array(
+            'key'        => $this->getKey(),
+            'status'     => $this->getStatus(),
+            'domain'     => $this->getDomain(),
+            'ip'         => $this->getIp(),
+            'info'       => array(
+                'email' => $this->getEmail()
+            ),
+            'valid'      => array(
+                'domain' => $this->isValidDomain(),
+                'ip'     => $this->isValidIp()
+            ),
+            'connection' => array(
+                'domain'    => $this->getRealDomain(),
+                'ip'        => $this->getRealIp()
+            )
+        );
     }
 
     //########################################

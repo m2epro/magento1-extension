@@ -8,23 +8,21 @@
 
 class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Edit extends Mage_Adminhtml_Block_Widget_Form_Container
 {
+    /** @var Ess_M2ePro_Model_Listing */
+    protected $_listing = null;
+
     //########################################
 
     public function __construct()
     {
         parent::__construct();
 
-        // Initialization block
-        // ---------------------------------------
         $this->setId('amazonListingEdit');
         $this->_blockGroup = 'M2ePro';
         $this->_controller = 'adminhtml_amazon_listing';
         $this->_mode = 'edit';
-        // ---------------------------------------
 
-        // Set header text
-        // ---------------------------------------
-        $listingData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
+        $this->_listing = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
 
         if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
             $componentName = Mage::helper('M2ePro/Component_Amazon')->getTitle();
@@ -32,19 +30,15 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Edit extends Mage_Adminhtml_Bloc
             $this->_headerText = Mage::helper('M2ePro')->__(
                 'Edit %component_name% Listing Settings "%listing_title%"',
                 $componentName,
-                $this->escapeHtml($listingData['title'])
+                $this->escapeHtml($this->_listing->getTitle())
             );
         } else {
             $this->_headerText = Mage::helper('M2ePro')->__(
                 'Edit Listing Settings "%listing_title%"',
-                $this->escapeHtml($listingData['title'])
+                $this->escapeHtml($this->_listing->getTitle())
             );
         }
 
-        // ---------------------------------------
-
-        // Set buttons actions
-        // ---------------------------------------
         $this->removeButton('back');
         $this->removeButton('reset');
         $this->removeButton('delete');
@@ -61,7 +55,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Edit extends Mage_Adminhtml_Bloc
             $this->_addButton(
                 'back', array(
                     'label'   => Mage::helper('M2ePro')->__('Back'),
-                    'onclick' => 'AmazonListingSettingsHandlerObj.back_click(\'' . $url . '\')',
+                    'onclick' => 'AmazonListingSettingsObj.back_click(\'' . $url . '\')',
                     'class'   => 'back'
                 )
             );
@@ -72,7 +66,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Edit extends Mage_Adminhtml_Bloc
         $this->_addButton(
             'auto_action', array(
                 'label'   => Mage::helper('M2ePro')->__('Auto Add/Remove Rules'),
-                'onclick' => 'ListingAutoActionHandlerObj.loadAutoActionHtml();'
+                'onclick' => 'ListingAutoActionObj.loadAutoActionHtml();'
             )
         );
         // ---------------------------------------
@@ -83,14 +77,14 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Edit extends Mage_Adminhtml_Bloc
         $url = $this->getUrl(
             '*/adminhtml_amazon_listing/save',
             array(
-                'id'    => $listingData['id'],
+                'id'    => $this->_listing->getId(),
                 'back'  => $backUrl
             )
         );
         $this->_addButton(
             'save', array(
                 'label'   => Mage::helper('M2ePro')->__('Save'),
-                'onclick' => 'AmazonListingSettingsHandlerObj.save_click(\'' . $url . '\')',
+                'onclick' => 'AmazonListingSettingsObj.save_click(\'' . $url . '\')',
                 'class'   => 'save'
             )
         );
@@ -100,7 +94,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Edit extends Mage_Adminhtml_Bloc
         $this->_addButton(
             'save_and_continue', array(
                 'label'   => Mage::helper('M2ePro')->__('Save And Continue Edit'),
-                'onclick' => 'AmazonListingSettingsHandlerObj.save_and_edit_click(\'' . $url . '\', 1)',
+                'onclick' => 'AmazonListingSettingsObj.save_and_edit_click(\'' . $url . '\', 1)',
                 'class'   => 'save'
             )
         );
@@ -163,7 +157,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Edit extends Mage_Adminhtml_Bloc
     M2ePro.url.add({$urls});
     M2ePro.translator.add({$translations});
 
-    ListingAutoActionHandlerObj = new AmazonListingAutoActionHandler();
+    ListingAutoActionObj = new AmazonListingAutoAction();
 
 </script>
 HTML;

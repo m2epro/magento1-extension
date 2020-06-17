@@ -30,7 +30,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Template_Description_Edit_Tabs_Definitio
         // ---------------------------------------
         $data = array(
             'label'   => Mage::helper('M2ePro')->__('Insert'),
-            'onclick' => "AttributeHandlerObj.appendToText('select_attributes_for_title', 'title_template');",
+            'onclick' => "AttributeObj.appendToText('select_attributes_for_title', 'title_template');",
             'class'   => 'select_attributes_for_title_button'
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
@@ -40,7 +40,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Template_Description_Edit_Tabs_Definitio
         // ---------------------------------------
         $data = array(
             'label'   => Mage::helper('M2ePro')->__('Insert'),
-            'onclick' => "AttributeHandlerObj.appendToTextarea('#' + $('select_attributes').value + '#');",
+            'onclick' => "AttributeObj.appendToTextarea('#' + $('select_attributes').value + '#');",
             'class'   => 'add_product_attribute_button',
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
@@ -84,8 +84,8 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Template_Description_Edit_Tabs_Definitio
     protected function getMultiElementButton($type, $index)
     {
         $onClick = <<<JS
-AttributeHandlerObj.appendToText('select_attributes_for_{$type}_{$index}', '{$type}_{$index}');
-AmazonTemplateDescriptionDefinitionHandlerObj.multi_element_keyup('{$type}',{value:' '});
+AttributeObj.appendToText('select_attributes_for_{$type}_{$index}', '{$type}_{$index}');
+AmazonTemplateDescriptionDefinitionObj.multi_element_keyup('{$type}',{value:' '});
 JS;
         $data = array(
             'label'   => Mage::helper('M2ePro')->__('Insert'),

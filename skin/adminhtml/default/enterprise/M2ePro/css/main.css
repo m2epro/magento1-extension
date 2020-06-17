@@ -83,6 +83,37 @@ select.lacklustre_selected option[value="1"] {
 
 /* ================================================ */
 
+a.button-link {
+    display: inline-block !important;
+    padding: 1px 7px 2px 7px !important;
+    margin: 2px 0 2px 0 !important;
+    border-style: solid !important;
+    border-width: 1px !important;
+    text-decoration: none !important;
+    text-align: center !important;
+    font-weight: bold !important;
+}
+
+a.button-link-grey {
+    background: #FFFFFF url("../../images/btn_back_bg.gif") repeat-x 0 100% !important;
+    border-color: #CCCCCC #AAAAAA #AAAAAA #CCCCCC !important;
+    color: #555555 !important;
+}
+a.button-link-grey:hover {
+    box-shadow: 0 0 20px rgba(255,255,255,.6), inset 0 0 20px rgba(255,255,255,1) !important;
+}
+
+a.button-link-orange {
+    background: #ffac47 url("../../images/btn_bg.gif") repeat-x 0 100% !important;
+    border-color: #ed6502 #a04300 #a04300 #ed6502 !important;
+    color: #fff !important;
+}
+a.button-link-orange:hover {
+    background: #f77c16 url("../../images/btn_over_bg.gif") repeat-x 0 0 !important;
+}
+
+/* ================================================ */
+
 /* Grid Filter Styles */
 /* ================================================ */
 
@@ -117,12 +148,11 @@ select.lacklustre_selected option[value="1"] {
 }
 
 .static-switcher-block {
-    float: right !important;
-    margin-top: 8px !important;
+    margin-top: 9px !important;
 }
 
 .static-switcher {
-    float: right !important;
+    float: left;
     padding-right: 10px !important;
     padding-left: 10px !important;
     line-height: 20px !important;
@@ -283,6 +313,88 @@ td.help_line .hl_messages_text {
 
 td.help_line .hl_footer {
     float: right !important;
+}
+
+/* ================================================ */
+
+/* Form Elements */
+/* ================================================ */
+
+.m2epro-fieldset label {
+    width: 200px !important;
+    margin-right: 10px !important;
+    font-weight: bold;
+}
+
+.m2epro-fieldset label[for="store_id"] {
+    margin: 0 !important;
+    padding: 12px 0 0 12px;
+}
+
+.m2epro-fieldset input:not([type="radio"]):not([type="checkbox"]), .m2epro-fieldset textarea {
+    width: 274px;
+}
+
+.m2epro-fieldset select {
+    padding: 2px 0;
+    width: 280px;
+}
+
+.m2epro-fieldset input[type="radio"] {
+    margin-right: 5px;
+}
+
+.m2epro-fieldset input[type="radio"] ~ label {
+    font-weight: normal;
+}
+
+.m2epro-fieldset .field-row {
+    margin-bottom: 10px !important;
+}
+
+.m2epro-fieldset .tool-tip-image {
+    padding-left: 8px;
+    vertical-align: top !important;
+}
+
+.m2epro-fieldset .tool-tip-message span {
+    color: black !important;
+}
+
+.m2epro-separator hr {
+    border-style: solid;
+    border-color: #CCCCCC;
+    margin-bottom: 25px;
+    border-bottom-width: 0;
+    width: 70%;
+    margin-left: 70px;
+}
+
+.control-value {
+    display: inline-block;
+}
+
+/* ================================================ */
+
+/* Installation Wizard */
+/* ================================================ */
+
+#wizard_amazon_marketplaces label[for="marketplace_id"],
+#wizard_ebay_accounts label[for="mode"] {
+    width: auto !important;
+    max-width: 75%;
+}
+
+#amazon_wizard_installation_account_manual_authorization {
+    margin: 20px 0 0 0;
+}
+
+#amazon_wizard_installation_account_manual_authorization ul.messages li {
+    font-size: inherit !important;
+}
+
+.account-mode-choose:last-of-type {
+    display: none;
 }
 
 /* ================================================ */
@@ -642,12 +754,20 @@ table.walmart-identifiers-table td {
     background-color: #D7E5EF;
 }
 
+.walmart-sku {
+    word-break: break-all;
+    width: calc(100% - 20px);
+}
+
+.walmart-identifiers-gtin {
+    width: calc(100% - 40px);
+    padding-right: 15px;
+}
+
 .walmart-identifiers-gtin,
 .walmart-sku{
     float: left;
     display: inline-block;
-    width: calc(100% - 20px);
-    word-break: break-all;
 }
 
 .walmart-identifiers-gtin-edit,

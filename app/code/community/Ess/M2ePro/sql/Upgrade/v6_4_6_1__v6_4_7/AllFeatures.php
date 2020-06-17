@@ -89,7 +89,7 @@ SQL
 
             $installer->run(<<<SQL
 
-    INSERT INTO `m2epro_amazon_listing_product_repricing`
+    INSERT INTO `{$this->_installer->getTable('m2epro_amazon_listing_product_repricing')}`
         (`listing_product_id`,
         `update_date`,
         `create_date`)

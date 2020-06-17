@@ -6,7 +6,7 @@
  * @license    Commercial use is forbidden
  */
 
-class Ess_M2ePro_Model_Ebay_Template_Category_Diff extends Ess_M2ePro_Model_Template_Diff_Abstract
+class Ess_M2ePro_Model_Ebay_Template_Category_Diff extends Ess_M2ePro_Model_ActiveRecord_Diff
 {
     //########################################
 
@@ -20,10 +20,10 @@ class Ess_M2ePro_Model_Ebay_Template_Category_Diff extends Ess_M2ePro_Model_Temp
     public function isCategoriesDifferent()
     {
         $keys = array(
-            'category_main_id',
-            'category_main_mode',
-            'category_main_path',
-            'category_main_attribute',
+            'category_id',
+            'category_mode',
+            'category_path',
+            'category_attribute',
             'specifics'
         );
 

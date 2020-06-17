@@ -196,8 +196,7 @@ class Ess_M2ePro_Model_Ebay_Connector_AccountPickupStore_Synchronize_ProductsRes
             $this->_params['logs_action_id'],
             $this->getLogsAction($stateItem),
             $message->getText(),
-            $this->getLogsMessageType($message),
-            $this->getLogsPriority($message)
+            $this->getLogsMessageType($message)
         );
     }
 
@@ -235,19 +234,6 @@ class Ess_M2ePro_Model_Ebay_Connector_AccountPickupStore_Synchronize_ProductsRes
         }
 
         return Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR;
-    }
-
-    protected function getLogsPriority(Ess_M2ePro_Model_Connector_Connection_Response_Message $message)
-    {
-        if ($message->isError()) {
-            return Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH;
-        }
-
-        if ($message->isNotice()) {
-            return Ess_M2ePro_Model_Log_Abstract::PRIORITY_LOW;
-        }
-
-        return Ess_M2ePro_Model_Log_Abstract::PRIORITY_MEDIUM;
     }
 
     //########################################

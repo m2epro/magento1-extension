@@ -20,7 +20,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Search_Grid extends Mag
                 'type'                      => 'number',
                 'index'                     => 'entity_id',
                 'filter_index'              => 'entity_id',
-                'frame_callback'            => array($this, 'callbackColumnProductId'),
+                'renderer'                  => 'M2ePro/adminhtml_grid_column_renderer_productId',
                 'filter_condition_callback' => array($this, 'callbackFilterProductId')
             )
         );
@@ -62,7 +62,8 @@ abstract class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Search_Grid extends Mag
                 'type'                      => 'text',
                 'index'                     => 'online_sku',
                 'filter_index'              => 'online_sku',
-                'frame_callback'            => array($this, 'callbackColumnAmazonSku'),
+                'show_defected_messages'    => false,
+                'renderer'                  => 'M2ePro/adminhtml_amazon_grid_column_renderer_sku',
                 'filter_condition_callback' => array($this, 'callbackFilterOnlineSku')
             )
         );
@@ -155,56 +156,6 @@ abstract class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Search_Grid extends Mag
 
     //########################################
 
-    public function callbackColumnProductId($value, $row, $column, $isExport)
-    {
-        if ($row->getData('entity_id') === null) {
-            return Mage::helper('M2ePro')->__('N/A');
-        }
-
-        $productId = (int)$row->getData('entity_id');
-        $storeId   = (int)$row->getData('store_id');
-
-        $url = $this->getUrl('adminhtml/catalog_product/edit', array('id' => $productId));
-        $withoutImageHtml = '<a href="'.$url.'" target="_blank">'.$productId.'</a>';
-
-        $showProductsThumbnails = (bool)(int)Mage::helper('M2ePro/Module')
-                                                ->getConfig()->getGroupValue('/view/', 'show_products_thumbnails');
-        if (!$showProductsThumbnails) {
-            return $withoutImageHtml;
-        }
-
-        /** @var $magentoProduct Ess_M2ePro_Model_Magento_Product */
-        $magentoProduct = Mage::getModel('M2ePro/Magento_Product');
-        $magentoProduct->setProductId($productId);
-        $magentoProduct->setStoreId($storeId);
-
-        $imageResized = $magentoProduct->getThumbnailImage();
-        if ($imageResized === null) {
-            return $withoutImageHtml;
-        }
-
-        $imageHtml = $productId.'<hr/><img style="max-width: 100px; max-height: 100px;" src="'.
-            $imageResized->getUrl().'" />';
-        $withImageHtml = str_replace('>'.$productId.'<', '>'.$imageHtml.'<', $withoutImageHtml);
-
-        return $withImageHtml;
-    }
-
-    public function callbackColumnAmazonSku($value, $row, $column, $isExport)
-    {
-        if ((!$row->getData('is_variation_parent') &&
-            $row->getData('status') == Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED) ||
-            ($row->getData('is_variation_parent') && $row->getData('general_id') == '')) {
-            return '<span style="color: gray;">' . Mage::helper('M2ePro')->__('Not Listed') . '</span>';
-        }
-
-        if ($value === null || $value === '') {
-            return Mage::helper('M2ePro')->__('N/A');
-        }
-
-        return $value;
-    }
-
     public function callbackColumnGeneralId($value, $row, $column, $isExport)
     {
         if (empty($value)) {
@@ -257,7 +208,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Search_Grid extends Mag
         <div class="in-stock">{$inStockWord}: <span></span></div>
     </div>
     <a href="javascript:void(0)"
-        onclick="AmazonListingAfnQtyHandlerObj.showAfnQty(this,'{$sku}','{$productId}',{$accountId})">
+        onclick="AmazonListingAfnQtyObj.showAfnQty(this,'{$sku}','{$productId}',{$accountId})">
         {$afnWord}</a>
 </div>
 HTML;
@@ -498,7 +449,7 @@ HTML;
    sku="{$sku}"
    account_id="{$accountId}"
    href="javascript:void(0)"
-   onclick="AmazonListingRepricingPriceHandlerObj.showRepricingPrice()">
+   onclick="AmazonListingRepricingPriceObj.showRepricingPrice()">
     {$priceValue}</a>
 HTML;
         }
@@ -678,8 +629,8 @@ HTML;
     M2ePro.url.getAFNQtyBySku = '{$getAFNQtyBySku}';
     M2ePro.url.getUpdatedRepricingPriceBySkus = '{$getUpdatedRepricingPriceBySkus}';
 
-    AmazonListingAfnQtyHandlerObj = new AmazonListingAfnQtyHandler();
-    AmazonListingRepricingPriceHandlerObj = new AmazonListingRepricingPriceHandler();
+    AmazonListingAfnQtyObj = new AmazonListingAfnQty();
+    AmazonListingRepricingPriceObj = new AmazonListingRepricingPrice();
 </script>
 HTML;
 

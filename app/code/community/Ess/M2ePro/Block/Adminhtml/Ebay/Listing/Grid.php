@@ -91,13 +91,13 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Grid extends Ess_M2ePro_Block_Admi
     {
         $this->addColumn(
             'items_sold_count', array(
-            'header'    => Mage::helper('M2ePro')->__('Sold QTY'),
-            'align'     => 'right',
-            'width'     => '100px',
-            'type'      => 'number',
-            'index'     => 'items_sold_count',
-            'filter_index' => 'second_table.items_sold_count',
-            'frame_callback' => array($this, 'callbackColumnSoldQTY')
+                'header'         => Mage::helper('M2ePro')->__('Sold QTY'),
+                'align'          => 'right',
+                'width'          => '100px',
+                'type'           => 'number',
+                'index'          => 'items_sold_count',
+                'filter_index'   => 'second_table.items_sold_count',
+                'frame_callback' => array($this, 'callbackColumnSoldQTY')
             )
         );
 
@@ -128,14 +128,14 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Grid extends Ess_M2ePro_Block_Admi
                 'caption'        => $helper->__('Add From Products List'),
                 'group'          => 'products_actions',
                 'field'          => 'id',
-                'onclick_action' => 'EbayListingGridHandlerObj.addProductsSourceProductsAction',
+                'onclick_action' => 'EbayListingGridObj.addProductsSourceProductsAction',
             ),
 
             'addProductsSourceCategories' => array(
                 'caption'        => $helper->__('Add From Categories'),
                 'group'          => 'products_actions',
                 'field'          => 'id',
-                'onclick_action' => 'EbayListingGridHandlerObj.addProductsSourceCategoriesAction',
+                'onclick_action' => 'EbayListingGridObj.addProductsSourceCategoriesAction',
             ),
 
             'autoActions' => array(
@@ -386,7 +386,7 @@ HTML;
             'Ess_M2ePro_Helper_Component'
         );
 
-        EbayListingGridHandlerObj = new EbayListingGridHandler('{$this->getId()}');
+        EbayListingGridObj = new EbayListingGrid('{$this->getId()}');
         EditListingTitleObj = new ListingEditListingTitle('{$this->getId()}');
         EditCompatibilityModeObj = new EditCompatibilityMode('{$this->getId()}');
     });

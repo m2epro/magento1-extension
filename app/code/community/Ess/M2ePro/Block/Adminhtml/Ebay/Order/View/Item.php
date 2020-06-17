@@ -212,7 +212,7 @@ HTML;
 
             $class = 'class="gray"';
 
-            $js = "{OrderEditItemHandlerObj.edit('{$gridId}', {$orderItemId});}";
+            $js = "{OrderEditItemObj.edit('{$gridId}', {$orderItemId});}";
             $editLink = '<a href="javascript:void(0);" onclick="'.$js.'" '.$class.'>'.$action.'</a>';
         }
 
@@ -220,7 +220,7 @@ HTML;
         if ($row->getProductId()) {
             $action = Mage::helper('M2ePro')->__('Unmap');
 
-            $js = "{OrderEditItemHandlerObj.unassignProduct('{$gridId}', {$orderItemId});}";
+            $js = "{OrderEditItemObj.unassignProduct('{$gridId}', {$orderItemId});}";
             $discardLink = '<a href="javascript:void(0);" onclick="'.$js.'" class="gray">'.$action.'</a>';
 
             if ($editLink) {

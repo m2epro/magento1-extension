@@ -29,7 +29,7 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_Advanced_Form extends Ess_M2ePro_
     protected function _prepareLayout()
     {
         parent::_prepareLayout();
-        $this->getLayout()->getBlock('head')->addJs('M2ePro/Configuration/AdvancedHandler.js');
+        $this->getLayout()->getBlock('head')->addJs('M2ePro/Configuration/Advanced.js');
         $this->initPopUp();
     }
 
@@ -40,7 +40,7 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_Advanced_Form extends Ess_M2ePro_
         // ---------------------------------------
         $data = array(
             'label'   => Mage::helper('M2ePro')->__('Proceed'),
-            'onclick' => 'AdvancedHandlerObj.informationPopup()',
+            'onclick' => 'AdvancedObj.informationPopup()',
             'class'   => 'proceed_button'
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
@@ -67,7 +67,7 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_Advanced_Form extends Ess_M2ePro_
         // ---------------------------------------
         $data = array(
             'label'   => Mage::helper('M2ePro')->__('Proceed'),
-            'onclick' => 'AdvancedHandlerObj.moduleModePopup(\''.Mage::helper('M2ePro')->__($popupTitle).'\')',
+            'onclick' => 'AdvancedObj.moduleModePopup(\''.Mage::helper('M2ePro')->__($popupTitle).'\')',
             'class'   => 'proceed_button'
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);

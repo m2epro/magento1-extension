@@ -130,16 +130,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Action_ProcessResults
 
             $processing->save();
         } catch (\Exception $exception) {
-            $this->getOperationHistory()->addContentData(
-                'exceptions', array(
-                'message' => $exception->getMessage(),
-                'file'    => $exception->getFile(),
-                'line'    => $exception->getLine(),
-                'trace'   => $exception->getTraceAsString(),
-                )
-            );
-
-            Mage::helper('M2ePro/Module_Exception')->process($exception, false);
+            $this->processTaskException($exception);
         }
 
         $action->deleteInstance();

@@ -27,23 +27,6 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_cache_config')}`;
-CREATE TABLE `{$this->_installer->getTable('m2epro_cache_config')}` (
-  `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `group` VARCHAR(255) DEFAULT NULL,
-  `key` VARCHAR(255) NOT NULL,
-  `value` VARCHAR(255) DEFAULT NULL,
-  `update_date` DATETIME DEFAULT NULL,
-  `create_date` DATETIME DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  INDEX `group` (`group`),
-  INDEX `key` (`key`),
-  INDEX `value` (`value`)
-)
-ENGINE = INNODB
-CHARACTER SET utf8
-COLLATE utf8_general_ci;
-
 DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_config')}`;
 CREATE TABLE `{$this->_installer->getTable('m2epro_config')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -148,11 +131,9 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_listing_log')}` (
   `action` TINYINT(2) UNSIGNED NOT NULL DEFAULT 1,
   `initiator` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `type` TINYINT(2) UNSIGNED NOT NULL DEFAULT 1,
-  `priority` TINYINT(2) UNSIGNED NOT NULL DEFAULT 3,
   `description` TEXT DEFAULT NULL,
   `component_mode` VARCHAR(10) DEFAULT NULL,
   `additional_data` LONGTEXT DEFAULT NULL,
-  `update_date` DATETIME DEFAULT NULL,
   `create_date` DATETIME DEFAULT NULL,
   PRIMARY KEY (`id`),
   INDEX `account_id` (`account_id`),
@@ -165,13 +146,12 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_listing_log')}` (
   INDEX `listing_product_id` (`listing_product_id`),
   INDEX `parent_listing_product_id` (`parent_listing_product_id`),
   INDEX `listing_title` (`listing_title`),
-  INDEX `priority` (`priority`),
   INDEX `product_id` (`product_id`),
   INDEX `product_title` (`product_title`),
   INDEX `type` (`type`),
   INDEX `create_date` (`create_date`)
 )
-ENGINE = MYISAM
+ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
@@ -317,7 +297,7 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_lock_item')}` (
   INDEX `nick` (`nick`),
   INDEX `parent_id` (`parent_id`)
 )
-ENGINE = MYISAM
+ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
@@ -419,7 +399,7 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_order_change')}` (
   INDEX `order_id` (`order_id`),
   INDEX `processing_attempt_count` (`processing_attempt_count`)
 )
-ENGINE = MYISAM
+ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
@@ -453,7 +433,6 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_order_log')}` (
   `description` TEXT DEFAULT NULL,
   `component_mode` VARCHAR(10) DEFAULT NULL,
   `additional_data` LONGTEXT DEFAULT NULL,
-  `update_date` DATETIME DEFAULT NULL,
   `create_date` DATETIME DEFAULT NULL,
   PRIMARY KEY (`id`),
   INDEX `account_id` (`account_id`),
@@ -501,23 +480,6 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_primary_config')}`;
-CREATE TABLE `{$this->_installer->getTable('m2epro_primary_config')}` (
-  `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `group` VARCHAR(255) DEFAULT NULL,
-  `key` VARCHAR(255) NOT NULL,
-  `value` VARCHAR(255) DEFAULT NULL,
-  `update_date` DATETIME DEFAULT NULL,
-  `create_date` DATETIME DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  INDEX `group` (`group`),
-  INDEX `key` (`key`),
-  INDEX `value` (`value`)
-)
-ENGINE = INNODB
-CHARACTER SET utf8
-COLLATE utf8_general_ci;
-
 DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_processing')}`;
 CREATE TABLE `{$this->_installer->getTable('m2epro_processing')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -536,7 +498,7 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_processing')}` (
   INDEX `is_completed` (`is_completed`),
   INDEX `expiration_date` (`expiration_date`)
 )
-ENGINE = MYISAM
+ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
@@ -555,7 +517,7 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_processing_lock')}` (
   INDEX `object_id` (`object_id`),
   INDEX `tag` (`tag`)
 )
-ENGINE = MYISAM
+ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
@@ -575,7 +537,7 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_request_pending_single')}` (
   INDEX `server_hash` (`server_hash`),
   INDEX `is_completed` (`is_completed`)
 )
-ENGINE = MYISAM
+ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
@@ -596,7 +558,7 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_request_pending_partial')}` (
   INDEX `next_part` (`next_part`),
   INDEX `is_completed` (`is_completed`)
 )
-ENGINE = MYISAM
+ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
@@ -610,7 +572,7 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_request_pending_partial_data'
   INDEX `part_number` (`part_number`),
   INDEX `request_pending_partial_id` (`request_pending_partial_id`)
 )
-ENGINE = MYISAM
+ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
@@ -655,7 +617,7 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_stop_queue')}` (
   INDEX `component_mode` (`component_mode`),
   INDEX `is_processed` (`is_processed`)
 )
-ENGINE = MYISAM
+ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
@@ -685,22 +647,20 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_synchronization_log')}` (
   `task` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `initiator` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `type` TINYINT(2) UNSIGNED NOT NULL DEFAULT 1,
-  `priority` TINYINT(2) UNSIGNED NOT NULL DEFAULT 3,
   `description` TEXT DEFAULT NULL,
+  `detailed_description` LONGTEXT DEFAULT NULL,
   `component_mode` VARCHAR(10) DEFAULT NULL,
   `additional_data` LONGTEXT DEFAULT NULL,
-  `update_date` DATETIME DEFAULT NULL,
   `create_date` DATETIME DEFAULT NULL,
   PRIMARY KEY (`id`),
   INDEX `component_mode` (`component_mode`),
   INDEX `initiator` (`initiator`),
-  INDEX `priority` (`priority`),
   INDEX `task` (`task`),
   INDEX `operation_history_id` (`operation_history_id`),
   INDEX `type` (`type`),
   INDEX `create_date` (`create_date`)
 )
-ENGINE = MYISAM
+ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
@@ -708,14 +668,16 @@ DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_system_log')}`;
 CREATE TABLE `{$this->_installer->getTable('m2epro_system_log')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `type` VARCHAR(255) DEFAULT NULL,
-  `description` LONGTEXT DEFAULT NULL,
+  `class` VARCHAR(255) DEFAULT NULL,
+  `description` TEXT DEFAULT NULL,
+  `detailed_description` LONGTEXT DEFAULT NULL,
   `additional_data` LONGTEXT DEFAULT NULL,
-  `update_date` DATETIME DEFAULT NULL,
   `create_date` DATETIME DEFAULT NULL,
   PRIMARY KEY (`id`),
-  INDEX `type` (`type`)
+  INDEX `type` (`type`),
+  INDEX `class` (`class`)
 )
-ENGINE = MYISAM
+ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
@@ -737,7 +699,7 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_operation_history')}` (
   INDEX `start_date` (`start_date`),
   INDEX `end_date` (`end_date`)
 )
-ENGINE = MYISAM
+ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
@@ -837,23 +799,27 @@ SQL
 
         $this->_installer->run(
             <<<SQL
-
-INSERT INTO `{$this->_installer->getTable('m2epro_primary_config')}` (`group`,`key`,`value`,`update_date`,`create_date`) VALUES
-  ('/license/', 'key', NULL, NOW(), NOW()),
-  ('/license/', 'status', 1, NOW(), NOW()),
-  ('/license/', 'domain', NULL, NOW(), NOW()),
-  ('/license/', 'ip', NULL, NOW(), NOW()),
-  ('/license/info/', 'email', NULL, NOW(), NOW()),
-  ('/license/valid/', 'domain', NULL, NOW(),NOW()),
-  ('/license/valid/', 'ip', NULL, NOW(), NOW()),
-  ('/server/', 'application_key', 'b79a495170da3b081c9ebae6c255c7fbe1b139b5', NOW(), NOW()),
-  ('/server/', 'installation_key', '{$this->_installer->generateRandomHash()}', NOW(), NOW()),
-  ('/server/location/1/', 'baseurl', 'https://s1.m2epro.com/', NOW(), NOW()),
-  ('/server/location/', 'default_index', '1', NOW(), NOW());
-
 INSERT INTO `{$this->_installer->getTable('m2epro_config')}` (`group`,`key`,`value`,`update_date`,`create_date`) VALUES
   ('/', 'is_disabled', '0', NOW(), NOW()),
   ('/', 'environment', 'production', NOW(), NOW()),
+  ('/', 'installation_key', '{$this->_installer->generateRandomHash()}', NOW(), NOW()),
+  ('/license/', 'key', NULL, NOW(), NOW()),
+  ('/license/', 'status', 1, NOW(), NOW()),
+  ('/license/domain/', 'real', NULL, NOW(), NOW()),
+  ('/license/domain/', 'valid', NULL, NOW(), NOW()),
+  ('/license/domain/', 'is_valid', NULL, NOW(),NOW()),
+  ('/license/ip/', 'real', NULL, NOW(), NOW()),
+  ('/license/ip/', 'valid', NULL, NOW(), NOW()),
+  ('/license/ip/', 'is_valid', NULL, NOW(), NOW()),
+  ('/license/info/', 'email', NULL, NOW(), NOW()),
+  ('/server/', 'application_key', 'b79a495170da3b081c9ebae6c255c7fbe1b139b5', NOW(), NOW()),
+  ('/server/exceptions/', 'send', '1', NOW(), NOW()),
+  ('/server/exceptions/', 'filters', '0', NOW(), NOW()),
+  ('/server/fatal_error/', 'send', '1', NOW(), NOW()),
+  ('/server/logging/', 'send', 1, NOW(), NOW()),
+  ('/server/location/1/', 'baseurl', 'https://s1.m2epro.com/', NOW(), NOW()),
+  ('/server/location/', 'default_index', '1', NOW(), NOW()),
+  ('/server/location/', 'current_index', '1', NOW(), NOW()),
   ('/cron/', 'mode', '1', NOW(), NOW()),
   ('/cron/', 'runner', 'magento', NOW(), NOW()),
   ('/cron/', 'last_access', NULL, NOW(), NOW()),
@@ -863,7 +829,6 @@ INSERT INTO `{$this->_installer->getTable('m2epro_config')}` (`group`,`key`,`val
   ('/cron/service/', 'auth_key', NULL, NOW(), NOW()),
   ('/cron/service/', 'disabled', '0', NOW(), NOW()),
   ('/cron/magento/', 'disabled', '0', NOW(), NOW()),
-  ('/cron/service/', 'hostname_1', 'cron.m2epro.com', NOW(), NOW()),
   ('/cron/task/system/servicing/synchronize/', 'interval', '{$servicingInterval}', NOW(), NOW()),
   ('/listing/product/inspector/', 'mode', '0', NOW(), NOW()),
   ('/logs/clearing/listings/', 'days', '30', NOW(), NOW()),
@@ -890,10 +855,6 @@ INSERT INTO `{$this->_installer->getTable('m2epro_config')}` (`group`,`key`,`val
   ('/view/ebay/template/selling_format/', 'show_tax_category', '0', NOW(), NOW()),
   ('/view/ebay/feedbacks/notification/', 'mode', '0', NOW(), NOW()),
   ('/view/ebay/feedbacks/notification/', 'last_check', NULL, NOW(), NOW()),
-  ('/debug/exceptions/', 'send_to_server', '1', NOW(), NOW()),
-  ('/debug/exceptions/', 'filters_mode', '0', NOW(), NOW()),
-  ('/debug/fatal_error/', 'send_to_server', '1', NOW(), NOW()),
-  ('/debug/logging/', 'send_to_server', 1, NOW(), NOW()),
   ('/renderer/description/', 'convert_linebreaks', '1', NOW(), NOW()),
   ('/other/paypal/', 'url', 'paypal.com/cgi-bin/webscr/', NOW(), NOW()),
   ('/product/index/', 'mode', '1', NOW(), NOW()),
@@ -909,9 +870,10 @@ INSERT INTO `{$this->_installer->getTable('m2epro_config')}` (`group`,`key`,`val
   ('/magento/product/grouped_type/', 'custom_types', '', NOW(), NOW());
 
 INSERT INTO `{$this->_installer->getTable('m2epro_wizard')}` VALUES
-  (1,  'installationEbay',             'ebay',    0, NULL, 1, 1),
-  (2,  'installationAmazon',           'amazon',  0, NULL, 1, 2),
-  (10, 'installationWalmart',          'walmart', 0, NULL, 1, 10);
+  (1,  'installationEbay',      'ebay',    0, NULL, 1, 1),
+  (2,  'installationAmazon',    'amazon',  0, NULL, 1, 2),
+  (10, 'installationWalmart',   'walmart', 0, NULL, 1, 10),
+  (11, 'migrationToInnodb',     '*',       3, NULL, 1, 11);
 
 SQL
         );

@@ -57,7 +57,8 @@ abstract class Ess_M2ePro_Model_Connector_Command_Pending_Requester
             $message = Mage::getModel('M2ePro/Connector_Connection_Response_Message');
             $message->initFromException($exception);
 
-            if ($this->getConnection()->getResponse() === null) {
+            if ($this->getConnection()->getResponse() === null ||
+                $this->getConnection()->getResponse()->getMessages() === null) {
                 $response = Mage::getModel('M2ePro/Connector_Connection_Response');
                 $response->initFromPreparedResponse(array(), array());
 

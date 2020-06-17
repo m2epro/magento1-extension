@@ -65,10 +65,10 @@ class Ess_M2ePro_Sql_Update_y18_m09_WalmartListChanges extends Ess_M2ePro_Model_
         if ($isCheckDateColumnExists) {
             $this->_installer->run(
                 <<<SQL
-UPDATE `m2epro_walmart_listing_product_action_processing_list`
+UPDATE `{$this->_installer->getTable('m2epro_walmart_listing_product_action_processing_list')}`
 SET `stage` = 1 WHERE `scheduled_check_date` IS NULL;
 
-UPDATE `m2epro_walmart_listing_product_action_processing_list`
+UPDATE `{$this->_installer->getTable('m2epro_walmart_listing_product_action_processing_list')}`
 SET `stage` = 2 WHERE `scheduled_check_date` IS NOT NULL;
 SQL
             );

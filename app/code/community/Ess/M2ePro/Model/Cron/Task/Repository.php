@@ -99,7 +99,7 @@ class Ess_M2ePro_Model_Cron_Task_Repository
             'component' => Ess_M2ePro_Helper_Component_Ebay::NICK,
             'group'     => self::GROUP_EBAY,
         ),
-        Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Other_ResolveSku::NICK => array(
+        Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Other_ResolveNonReceivedData::NICK => array(
             'component' => Ess_M2ePro_Helper_Component_Ebay::NICK,
             'group'     => self::GROUP_EBAY,
         ),
@@ -125,6 +125,10 @@ class Ess_M2ePro_Model_Cron_Task_Repository
             'group'     => self::GROUP_EBAY,
         ),
         Ess_M2ePro_Model_Cron_Task_Ebay_Order_CreateFailed::NICK => array(
+            'component' => Ess_M2ePro_Helper_Component_Ebay::NICK,
+            'group'     => self::GROUP_EBAY,
+        ),
+        Ess_M2ePro_Model_Cron_Task_Ebay_Order_UploadByUser::NICK => array(
             'component' => Ess_M2ePro_Helper_Component_Ebay::NICK,
             'group'     => self::GROUP_EBAY,
         ),
@@ -197,6 +201,10 @@ class Ess_M2ePro_Model_Cron_Task_Repository
             'group'     => self::GROUP_AMAZON,
         ),
         Ess_M2ePro_Model_Cron_Task_Amazon_Order_CreateFailed::NICK => array(
+            'component' => Ess_M2ePro_Helper_Component_Amazon::NICK,
+            'group'     => self::GROUP_AMAZON,
+        ),
+        Ess_M2ePro_Model_Cron_Task_Amazon_Order_UploadByUser::NICK => array(
             'component' => Ess_M2ePro_Helper_Component_Amazon::NICK,
             'group'     => self::GROUP_AMAZON,
         ),
@@ -290,6 +298,10 @@ class Ess_M2ePro_Model_Cron_Task_Repository
             'group'     => self::GROUP_WALMART,
         ),
         Ess_M2ePro_Model_Cron_Task_Walmart_Order_CreateFailed::NICK => array(
+            'component' => Ess_M2ePro_Helper_Component_Walmart::NICK,
+            'group'     => self::GROUP_WALMART,
+        ),
+        Ess_M2ePro_Model_Cron_Task_Walmart_Order_UploadByUser::NICK => array(
             'component' => Ess_M2ePro_Helper_Component_Walmart::NICK,
             'group'     => self::GROUP_WALMART,
         ),

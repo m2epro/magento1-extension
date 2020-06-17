@@ -48,7 +48,7 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630_Processing
         $this->_installer->run(
             <<<SQL
 
-DELETE FROM `m2epro_locked_object`
+DELETE FROM `{$this->_installer->getTable('m2epro_locked_object')}`
   WHERE model_name = 'M2ePro/Account'
   OR model_name = 'M2ePro/Marketplace';
 
@@ -117,10 +117,10 @@ SQL
         $this->getInstaller()->run(
             <<<SQL
 
-    DELETE FROM `m2epro_locked_object`
+    DELETE FROM `{$this->_installer->getTable('m2epro_locked_object')}`
       WHERE `related_hash` IN ($hashes);
 
-    DELETE FROM `m2epro_processing_request`
+    DELETE FROM `{$this->_installer->getTable('m2epro_processing_request')}`
       WHERE `hash` IN ($hashes);
 
 SQL

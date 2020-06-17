@@ -7,7 +7,7 @@
  */
 
 abstract class Ess_M2ePro_Model_Amazon_Template_ChangeProcessor_Abstract
-    extends Ess_M2ePro_Model_Template_ChangeProcessor_Abstract
+    extends Ess_M2ePro_Model_Template_ChangeProcessorAbstract
 {
     //########################################
 

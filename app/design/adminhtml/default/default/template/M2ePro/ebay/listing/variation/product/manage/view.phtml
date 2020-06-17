@@ -27,10 +27,10 @@
     <?php if ($this->getDeletedVariations()) : ?>
 
         <div style="text-align: right; margin: 5px;">
-            <a href="javascript:void(0);" id="deleted_magento_variations_show" onclick="EbayListingEbayGridHandlerObj.variationProductManageHandler.showDeletedMagentoVariations();" style="display: none;">
+            <a href="javascript:void(0);" id="deleted_magento_variations_show" onclick="EbayListingEbayGridObj.variationProductManageHandler.showDeletedMagentoVariations();" style="display: none;">
                 <?php echo Mage::helper('M2ePro')->__('Show Old Inactive Variations'); ?>
             </a>
-            <a href="javascript:void(0);" id="deleted_magento_variations_hide" onclick="EbayListingEbayGridHandlerObj.variationProductManageHandler.hideDeletedMagentoVariations();" style="display: none">
+            <a href="javascript:void(0);" id="deleted_magento_variations_hide" onclick="EbayListingEbayGridObj.variationProductManageHandler.hideDeletedMagentoVariations();" style="display: none">
                 <?php echo Mage::helper('M2ePro')->__('Hide Old Inactive Variations'); ?>
             </a>
         </div>
@@ -51,7 +51,7 @@
 </div>
 
 <div style="float: right; margin-bottom: 20px; margin-top: 10px;">
-    <button type="button" style="min-width: 55px; margin-left: 10px;" onclick="EbayListingEbayGridHandlerObj.variationProductManageHandler.closeManageVariationsPopup();">
+    <button type="button" style="min-width: 55px; margin-left: 10px;" onclick="EbayListingEbayGridObj.variationProductManageHandler.closeManageVariationsPopup();">
         <?php echo Mage::helper('M2ePro')->__('Close'); ?>
     </button>
 </div>

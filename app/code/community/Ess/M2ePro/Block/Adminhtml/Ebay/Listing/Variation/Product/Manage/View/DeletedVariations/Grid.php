@@ -28,19 +28,13 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Variation_Product_Manage_View_Dele
     {
         parent::__construct();
 
-        // Initialization block
-        // ---------------------------------------
         $this->setId('deletedMagentoVariationsGrid');
-        // ---------------------------------------
 
-        // Set default values
-        // ---------------------------------------
         $this->setFilterVisibility(false);
         $this->setPagerVisibility(false);
         $this->setDefaultSort('id');
         $this->setDefaultDir('ASC');
         $this->setUseAjax(true);
-        // ---------------------------------------
     }
 
     //########################################
@@ -104,66 +98,64 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Variation_Product_Manage_View_Dele
     {
         $this->addColumn(
             'specifics', array(
-            'header' => Mage::helper('M2ePro')->__('Specifics'),
-            'align' => 'left',
-            'width' => '210px',
-            'sortable' => false,
-            'index' => 'specifics',
-            'frame_callback' => array($this, 'callbackColumnSpecifics'),
+                'header' => Mage::helper('M2ePro')->__('Specifics'),
+                'align' => 'left',
+                'width' => '210px',
+                'sortable' => false,
+                'index' => 'specifics',
+                'frame_callback' => array($this, 'callbackColumnSpecifics')
             )
         );
 
         $this->addColumn(
             'online_sku', array(
-            'header'    => Mage::helper('M2ePro')->__('SKU'),
-            'align'     => 'left',
-            'width'     => '150px',
-            'index'     => 'sku',
-            'sortable' => false,
-            'frame_callback' => array($this, 'callbackColumnOnlineSku')
+                'header'    => Mage::helper('M2ePro')->__('SKU'),
+                'align'     => 'left',
+                'width'     => '150px',
+                'index'     => 'sku',
+                'sortable' => false
             )
         );
 
         $this->addColumn(
             'qty', array(
-            'header'    => Mage::helper('M2ePro')->__('Available QTY'),
-            'align'     => 'right',
-            'width'     => '40px',
-            'index'     => 'qty',
-            'sortable' => false,
-            'frame_callback' => array($this, 'callbackColumnAvailableQty')
+                'header'    => Mage::helper('M2ePro')->__('Available QTY'),
+                'align'     => 'right',
+                'width'     => '40px',
+                'index'     => 'qty',
+                'sortable' => false
             )
         );
 
         $this->addColumn(
             'price', array(
-            'header' => Mage::helper('M2ePro')->__('Price'),
-            'align' => 'right',
-            'width' => '40px',
-            'index' => 'price',
-            'sortable' => false,
-            'frame_callback' => array($this, 'callbackColumnPrice'),
+                'header' => Mage::helper('M2ePro')->__('Price'),
+                'align' => 'right',
+                'width' => '40px',
+                'index' => 'price',
+                'sortable' => false,
+                'frame_callback' => array($this, 'callbackColumnPrice')
             )
         );
 
         $this->addColumn(
             'identifiers', array(
-            'header' => Mage::helper('M2ePro')->__('eBay Catalog Identifiers'),
-            'align' => 'left',
-            'width' => '150px',
-            'index' => 'details',
-            'sortable' => false,
-            'frame_callback' => array($this, 'callbackColumnIdentifiers')
+                'header' => Mage::helper('M2ePro')->__('eBay Catalog Identifiers'),
+                'align' => 'left',
+                'width' => '150px',
+                'index' => 'details',
+                'sortable' => false,
+                'frame_callback' => array($this, 'callbackColumnIdentifiers')
             )
         );
 
         $this->addColumn(
             'status', array(
-            'header'=> Mage::helper('M2ePro')->__('Status'),
-            'width' => '60px',
-            'index' => 'status',
-            'sortable' => false,
-            'frame_callback' => array($this, 'callbackColumnStatus')
+                'header'=> Mage::helper('M2ePro')->__('Status'),
+                'width' => '60px',
+                'index' => 'status',
+                'sortable' => false,
+                'frame_callback' => array($this, 'callbackColumnStatus')
             )
         );
     }
@@ -183,16 +175,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Variation_Product_Manage_View_Dele
         $html .= '</div>';
 
         return $html;
-    }
-
-    public function callbackColumnOnlineSku($value, $row, $column, $isExport)
-    {
-        return $value;
-    }
-
-    public function callbackColumnAvailableQty($value, $row, $column, $isExport)
-    {
-        return $value;
     }
 
     public function callbackColumnPrice($value, $row, $column, $isExport)
@@ -278,10 +260,10 @@ HTML;
             <input type="hidden" name="listing_product_id" value="{$this->_listingProduct->getId()}">
             <input type="hidden" name="manage_mode" value="{$manageMode}">
             <button class="scalable confirm-btn"
-                    onclick="VariationsGridHandlerObj.confirmVariationIdentifiers(this, '{$variationId}')"
+                    onclick="VariationsGridObj.confirmVariationIdentifiers(this, '{$variationId}')"
                     style="margin-top: 8px; float: right;">Confirm</button>
             <a href="javascript:void(0);" class="scalable"
-                onclick="VariationsGridHandlerObj.cancelVariationIdentifiers('{$variationId}')"
+                onclick="VariationsGridObj.cancelVariationIdentifiers('{$variationId}')"
                 style="margin: 7px 8px; float: right;">Cancel</a>
         </div>
     </div>
@@ -289,7 +271,7 @@ HTML;
 <div style="text-align: left;">
     <a href="javascript:"
         id="edit_variations_{$variationId}"
-        onclick="VariationsGridHandlerObj.editVariationIdentifiers(this, '{$variationId}')"
+        onclick="VariationsGridObj.editVariationIdentifiers(this, '{$variationId}')"
         title="{$linkTitle}">{$linkContent}</a>
 </div>
 </div>
@@ -322,20 +304,20 @@ HTML;
 
     Event.observe(window, 'load', function() {
 
-        FrameHandlerObj = new FrameHandler();
-        CommonHandler.prototype.scroll_page_to_top = function() { return; }
+        GridFrameObj = new GridFrame();
+        Common.prototype.scroll_page_to_top = function() { return; }
 
-        VariationsGridHandlerObj = new EbayListingVariationProductManageVariationsGridHandler(
+        VariationsGridObj = new EbayListingVariationProductManageVariationsGrid(
             'deletedMagentoVariationsGrid'
         );
 
         setTimeout(function() {
-            VariationsGridHandlerObj.afterInitPage();
+            VariationsGridObj.afterInitPage();
         }, 350);
     });
 
-    if (typeof VariationsGridHandlerObj != 'undefined') {
-        VariationsGridHandlerObj.afterInitPage();
+    if (typeof VariationsGridObj != 'undefined') {
+        VariationsGridObj.afterInitPage();
     }
 
 </script>

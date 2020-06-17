@@ -77,12 +77,12 @@ class Ess_M2ePro_Observer_Shipment_View_Before extends Ess_M2ePro_Observer_Abstr
 
         $block->getLayout()->getBlock('head')
             ->addJs('prototype/window.js')
-            ->addJs('M2ePro/General/CommonHandler.js')
-            ->addJs('M2ePro/ControlPanelHandler.js')
-            ->addJs('M2ePro/General/PhpHandler.js')
-            ->addJs('M2ePro/General/TranslatorHandler.js')
-            ->addJs('M2ePro/General/UrlHandler.js')
-            ->addJs('M2ePro/Amazon/Order/MerchantFulfillment/MagentoHandler.js')
+            ->addJs('M2ePro/General/Common.js')
+            ->addJs('M2ePro/ControlPanel.js')
+            ->addJs('M2ePro/General/Php.js')
+            ->addJs('M2ePro/General/Translator.js')
+            ->addJs('M2ePro/General/Url.js')
+            ->addJs('M2ePro/Amazon/Order/MerchantFulfillment/Magento.js')
             ->addItem('js_css', 'prototype/windows/themes/default.css');
     }
 

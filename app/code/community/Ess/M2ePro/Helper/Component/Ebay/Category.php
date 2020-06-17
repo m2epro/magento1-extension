@@ -8,14 +8,48 @@
 
 class Ess_M2ePro_Helper_Component_Ebay_Category extends Mage_Core_Helper_Abstract
 {
-    const TYPE_EBAY_MAIN = 0;
-    const TYPE_EBAY_SECONDARY = 1;
-    const TYPE_STORE_MAIN = 2;
+    const TYPE_EBAY_MAIN       = 0;
+    const TYPE_EBAY_SECONDARY  = 1;
+    const TYPE_STORE_MAIN      = 2;
     const TYPE_STORE_SECONDARY = 3;
 
     const RECENT_MAX_COUNT = 20;
 
     //########################################
+
+    public function isEbayCategoryType($type)
+    {
+        /*
+         * dirty hack because of integer constants: in_array('any-string', []) returns true
+         * in_array($type, [], true) CAN NOT be used!
+         */
+        if ((strlen($type) !== 1)) {
+            return false;
+        }
+
+        return in_array((int)$type, $this->getEbayCategoryTypes());
+    }
+
+    public function isStoreCategoryType($type)
+    {
+        /*
+        * dirty hack because of integer constants: in_array('any-string', []) returns true
+        * in_array($type, [], true) CAN NOT be used!
+        */
+        if ((strlen($type) !== 1)) {
+            return false;
+        }
+
+        return in_array((int)$type, $this->getStoreCategoryTypes());
+    }
+
+    public function getCategoriesTypes()
+    {
+        return array_merge(
+            $this->getEbayCategoryTypes(),
+            $this->getStoreCategoryTypes()
+        );
+    }
 
     public function getEbayCategoryTypes()
     {
@@ -37,9 +71,10 @@ class Ess_M2ePro_Helper_Component_Ebay_Category extends Mage_Core_Helper_Abstrac
 
     public function getRecent($marketplaceOrAccountId, $categoryType, $excludeCategory = null)
     {
+        /** @var $registryModel Ess_M2ePro_Model_Registry */
+        $registryModel = Mage::getModel('M2ePro/Registry')->loadByKey('/ebay/category/recent/');
+        $allRecentCategories = $registryModel->getValueFromJson();
         $configPath = $this->getRecentConfigPath($categoryType);
-        $allRecentCategories = Mage::getModel('M2ePro/Registry')->load('/ebay/category/recent/', 'key')
-                                                                ->getValueFromJson();
 
         if (!isset($allRecentCategories[$configPath]) ||
             !isset($allRecentCategories[$configPath][$marketplaceOrAccountId])) {
@@ -77,12 +112,10 @@ class Ess_M2ePro_Helper_Component_Ebay_Category extends Mage_Core_Helper_Abstrac
 
     public function addRecent($categoryId, $marketplaceOrAccountId, $categoryType)
     {
-        $key = '/ebay/category/recent/';
-        $configPath = $this->getRecentConfigPath($categoryType);
-
         /** @var $registryModel Ess_M2ePro_Model_Registry */
-        $registryModel = Mage::getModel('M2ePro/Registry')->load($key, 'key');
+        $registryModel = Mage::getModel('M2ePro/Registry')->loadByKey('/ebay/category/recent/');
         $allRecentCategories = $registryModel->getValueFromJson();
+        $configPath = $this->getRecentConfigPath($categoryType);
 
         $categories = array();
         if (isset($allRecentCategories[$configPath][$marketplaceOrAccountId])) {
@@ -97,12 +130,37 @@ class Ess_M2ePro_Helper_Component_Ebay_Category extends Mage_Core_Helper_Abstrac
         $categories = array_unique($categories);
 
         $allRecentCategories[$configPath][$marketplaceOrAccountId] = implode(',', $categories);
-        $registryModel->addData(
-            array(
-            'key' => $key,
-            'value' => Mage::helper('M2ePro')->jsonEncode($allRecentCategories)
-            )
-        )->save();
+
+        $registryModel->setValue($allRecentCategories);
+        $registryModel->save();
+    }
+
+    public function removeEbayRecent()
+    {
+        /** @var $registryModel Ess_M2ePro_Model_Registry */
+        $registryModel = Mage::getModel('M2ePro/Registry')->loadByKey('/ebay/category/recent/');
+        $allRecentCategories = $registryModel->getValueFromJson();
+
+        foreach ($this->getEbayCategoryTypes() as $categoryType) {
+            unset($allRecentCategories[$this->getRecentConfigPath($categoryType)]);
+        }
+
+        $registryModel->setValue($allRecentCategories);
+        $registryModel->save();
+    }
+
+    public function removeStoreRecent()
+    {
+        /** @var $registryModel Ess_M2ePro_Model_Registry */
+        $registryModel = Mage::getModel('M2ePro/Registry')->loadByKey('/ebay/category/recent/');
+        $allRecentCategories = $registryModel->getValueFromJson();
+
+        foreach ($this->getStoreCategoryTypes() as $categoryType) {
+            unset($allRecentCategories[$this->getRecentConfigPath($categoryType)]);
+        }
+
+        $registryModel->setValue($allRecentCategories);
+        $registryModel->save();
     }
 
     // ---------------------------------------
@@ -120,44 +178,6 @@ class Ess_M2ePro_Helper_Component_Ebay_Category extends Mage_Core_Helper_Abstrac
     }
 
     //########################################
-
-    public function getSameTemplatesData($ids, $table, $modes)
-    {
-        $fields = array();
-
-        foreach ($modes as $mode) {
-            $fields[] = $mode.'_id';
-            $fields[] = $mode.'_path';
-            $fields[] = $mode.'_mode';
-            $fields[] = $mode.'_attribute';
-        }
-
-        $select = Mage::getSingleton('core/resource')->getConnection('core_read')->select();
-        $select->from($table, $fields);
-        $select->where('id IN (?)', $ids);
-
-        $templatesData = $select->query()->fetchAll(PDO::FETCH_ASSOC);
-
-        $resultData = reset($templatesData);
-
-        if (!$resultData) {
-            return array();
-        }
-
-        foreach ($modes as $i => $mode) {
-            if (!Mage::helper('M2ePro')->theSameItemsInData($templatesData, array_slice($fields, $i*4, 4))) {
-                $resultData[$mode.'_id'] = 0;
-                $resultData[$mode.'_path'] = null;
-                $resultData[$mode.'_mode'] = Ess_M2ePro_Model_Ebay_Template_Category::CATEGORY_MODE_NONE;
-                $resultData[$mode.'_attribute'] = null;
-                $resultData[$mode.'_message'] = Mage::helper('M2ePro')->__(
-                    'Please, specify a value suitable for all chosen Products.'
-                );
-            }
-        }
-
-        return $resultData;
-    }
 
     public function fillCategoriesPaths(array &$data, Ess_M2ePro_Model_Listing $listing)
     {
@@ -191,6 +211,38 @@ class Ess_M2ePro_Helper_Component_Ebay_Category extends Mage_Core_Helper_Abstrac
                 $data[$key.'_path'] = 'Magento Attribute' . ' > ' . $attributeLabel;
             }
         }
+    }
+
+    //########################################
+
+    public function getCategoryTitles()
+    {
+        $titles = array();
+
+        $type = self::TYPE_EBAY_MAIN;
+        $titles[$type] = Mage::helper('M2ePro')->__('Primary Category');
+
+        $type = self::TYPE_EBAY_SECONDARY;
+        $titles[$type] = Mage::helper('M2ePro')->__('Secondary Category');
+
+        $type = self::TYPE_STORE_MAIN;
+        $titles[$type] = Mage::helper('M2ePro')->__('Store Primary Category');
+
+        $type = self::TYPE_STORE_SECONDARY;
+        $titles[$type] = Mage::helper('M2ePro')->__('Store Secondary Category');
+
+        return $titles;
+    }
+
+    public function getCategoryTitle($type)
+    {
+        $titles = $this->getCategoryTitles();
+
+        if (isset($titles[$type])) {
+            return $titles[$type];
+        }
+
+        return '';
     }
 
     //########################################

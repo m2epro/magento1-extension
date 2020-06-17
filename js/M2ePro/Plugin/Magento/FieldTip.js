@@ -1,5 +1,4 @@
-MagentoFieldTip = Class.create();
-MagentoFieldTip.prototype = {
+window.MagentoFieldTip = Class.create({
 
     // ---------------------------------------
 
@@ -128,4 +127,4 @@ MagentoFieldTip.prototype = {
     }
 
     // ---------------------------------------
-};
+});

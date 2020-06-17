@@ -15,6 +15,15 @@
 
     <tr>
         <td class="label">
+            <label><?php echo Mage::helper('M2ePro')->__('System | Current Time'); ?>: </label>
+        </td>
+        <td class="value">
+            <?php echo "{$this->systemName} | {$this->systemTime}"; ?>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="label">
             <label><?php echo Mage::helper('M2ePro')->__('Magento'); ?>: </label>
         </td>
         <td class="value">
@@ -51,13 +60,64 @@
 
     <tr>
         <td class="label">
+            <label><?php echo Mage::helper('M2ePro')->__('Maintenance'); ?>: </label>
+        </td>
+        <td class="value">
+            <table class="form-list" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td>
+                        <span style="<?php echo $this->maintenanceMode ? 'color: green;' : 'color: red;'; ?>"><?php echo $this->maintenanceMode ? Mage::helper('M2ePro')->__('enabled') : Mage::helper('M2ePro')->__('disabled'); ?></span>
+                    </td>
+                    <td>
+                        <span style="color: orange;">
+                            &nbsp;<a href="<?php echo $this->getUrl('*/adminhtml_controlPanel_inspection/changeMaintenanceMode'); ?>" onclick="return confirm('Are you sure?');">[<?php echo Mage::helper('M2ePro')->__('change'); ?>]</a>
+                        </span>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="label">
+            <label><?php echo Mage::helper('M2ePro')->__('Maintenance: can be ignored'); ?>: </label>
+        </td>
+        <td class="value">
+            <table class="form-list" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td>
+                        <span style="<?php echo $this->maintenanceCanBeIgnored ? 'color: green;' : 'color: red;'; ?>"><?php echo $this->maintenanceCanBeIgnored ? Mage::helper('M2ePro')->__('enabled') : Mage::helper('M2ePro')->__('disabled'); ?></span>
+                    </td>
+                    <td>
+                        <span style="color: orange;">
+                            &nbsp;<a href="<?php echo $this->getUrl('*/adminhtml_controlPanel_inspection/changeMaintenanceCanBeIgnored'); ?>" onclick="return confirm('Are you sure?');">[<?php echo Mage::helper('M2ePro')->__('change'); ?>]</a>
+                        </span>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="label">
             <label><?php echo Mage::helper('M2ePro')->__('Core Resource'); ?>: </label>
         </td>
         <td class="value">
-            <span <?php if ($this->setupVersion != $this->coreResourceVersion || $this->setupVersion != $this->coreResourceDataVersion) : echo ' style="color: red;" '; endif; ?>>
-                <?php echo ($this->coreResourceVersion ? $this->coreResourceVersion : 'N/A') .' / '.
-                           ($this->coreResourceDataVersion ? $this->coreResourceDataVersion : 'N/A') ?>
-            </span>
+            <table class="form-list" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td>
+                        <span <?php if ($this->setupVersion != $this->coreResourceVersion || $this->setupVersion != $this->coreResourceDataVersion) : echo ' style="color: red;" '; endif; ?>>
+                            <?php echo ($this->coreResourceVersion ? $this->coreResourceVersion : 'N/A') . ' / ' . ($this->coreResourceDataVersion ? $this->coreResourceDataVersion : 'N/A') ?>
+                        </span>
+                    </td>
+                    <td>
+                        <span style="color: orange;">
+                            &nbsp;<a href="javascript:void(0);" onclick="return handlerObj.askAdditionalParametersForAction('Please specify version to set:', '<?php echo $this->getUrl('*/adminhtml_controlPanel_inspection/setMagentoCoreSetupValue', array('_query' => array('version' => '#version#'))); ?>', 'version');">[<?php echo Mage::helper('M2ePro')->__('set'); ?>]</a>
+                            &nbsp;<a href="javascript:void(0);" onclick="return handlerObj.confirmImportantAction('This row will be DROPPED.', '<?php echo $this->getUrl('*/adminhtml_controlPanel_inspection/dropMagentoCoreSetupValue'); ?>');">[<?php echo Mage::helper('M2ePro')->__('drop'); ?>]</a>
+                        </span>
+                    </td>
+                </tr>
+            </table>
         </td>
     </tr>
 
@@ -67,6 +127,7 @@
         </td>
         <td class="value">
             <?php echo $this->phpVersion ?>
+            <a href="<?php echo $this->getUrl('*/adminhtml_controlPanel_inspection/phpInfo'); ?>" target="_blank" style="padding-left: 10px;">[info]</a>
         </td>
     </tr>
 
@@ -108,30 +169,11 @@
 
     <tr>
         <td class="label">
-            <label><?php echo Mage::helper('M2ePro')->__('Database'); ?>: </label>
+            <label><?php echo Mage::helper('M2ePro')->__('MySQL Database | Tables Prefix'); ?>: </label>
         </td>
         <td class="value">
-            <?php echo $this->mySqlDatabaseName ?>
+            <?php echo "{$this->mySqlDatabaseName} | {$this->mySqlPrefix}"; ?>
         </td>
     </tr>
 
-    <tr>
-        <td class="label">
-            <label><?php echo Mage::helper('M2ePro')->__('Cron'); ?> (<?php echo $this->cronCurrentRunner; ?>): </label>
-        </td>
-        <?php
-            $style = '';
-            if ($this->cronIsNotWorking) {
-                $style = ' style="color: red"';
-            }
-        ?>
-        <td class="value">
-            <span<?php echo $style; ?>><?php echo $this->cronLastRunTime; ?></span>
-            <?php
-            if ($this->cronIsNotWorking) {
-                echo ' (' . Mage::helper('M2ePro')->__('not working') . ')';
-            }
-            ?>
-        </td>
-    </tr>
 </table>

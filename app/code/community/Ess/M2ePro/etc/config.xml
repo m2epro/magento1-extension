@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Ess_M2ePro>
-            <version>6.6.0</version>
+            <version>6.7.0</version>
         </Ess_M2ePro>
     </modules>
     <default>
@@ -169,7 +169,7 @@
                     </walmart>
 
                     <help module="M2ePro">
-                        <title>Help</title>
+                        <title>Help Center</title>
                         <sort_order>10</sort_order>
                         <action>M2ePro/adminhtml_support/index</action>
                     </help>
@@ -276,7 +276,7 @@
                                 </walmart>
 
                                 <help>
-                                    <title>Help</title>
+                                    <title>Help Center</title>
                                     <sort_order>5</sort_order>
                                 </help>
 
@@ -801,15 +801,9 @@
 
                     <!-- GENERAL -->
 
-                    <Config_Primary>
-                        <table>m2epro_primary_config</table>
-                    </Config_Primary>
-                    <Config_Module>
+                    <Config>
                         <table>m2epro_config</table>
-                    </Config_Module>
-                    <Config_Cache>
-                        <table>m2epro_cache_config</table>
-                    </Config_Cache>
+                    </Config>
 
                     <Registry>
                         <table>m2epro_registry</table>
@@ -1168,9 +1162,9 @@
                     <Ebay_Template_Category_Specific>
                         <table>m2epro_ebay_template_category_specific</table>
                     </Ebay_Template_Category_Specific>
-                    <Ebay_Template_OtherCategory>
-                        <table>m2epro_ebay_template_other_category</table>
-                    </Ebay_Template_OtherCategory>
+                    <Ebay_Template_StoreCategory>
+                        <table>m2epro_ebay_template_store_category</table>
+                    </Ebay_Template_StoreCategory>
 
                     <Ebay_Motor_Filter>
                         <table>m2epro_ebay_motor_filter</table>

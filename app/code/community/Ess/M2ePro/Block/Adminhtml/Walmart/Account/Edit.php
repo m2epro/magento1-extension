@@ -66,7 +66,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Account_Edit extends Mage_Adminhtml_Blo
             $this->_addButton(
                 'save_and_continue', array(
                 'label'     => Mage::helper('M2ePro')->__('Save And Continue Edit'),
-                'onclick'   => 'WalmartAccountHandlerObj.save_and_edit_click(\'\',\'walmartAccountEditTabs\')',
+                'onclick'   => 'WalmartAccountObj.save_and_edit_click(\'\',\'walmartAccountEditTabs\')',
                 'class'     => 'save'
                 )
             );
@@ -88,7 +88,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Account_Edit extends Mage_Adminhtml_Blo
                 $this->_addButton(
                     'close', array(
                     'label'     => Mage::helper('M2ePro')->__('Complete This Step'),
-                    'onclick'   => 'WalmartAccountHandlerObj.completeStep();',
+                    'onclick'   => 'WalmartAccountObj.completeStep();',
                     'class'     => 'close'
                     )
                 );
@@ -100,7 +100,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Account_Edit extends Mage_Adminhtml_Blo
                     $this->_addButton(
                         'save', array(
                         'label'     => Mage::helper('M2ePro')->__('Save And Close'),
-                        'onclick'   => 'WalmartAccountHandlerObj.saveAndClose()',
+                        'onclick'   => 'WalmartAccountObj.saveAndClose()',
                         'class'     => 'save'
                         )
                     );
@@ -108,7 +108,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Account_Edit extends Mage_Adminhtml_Blo
                     $this->_addButton(
                         'save_and_continue', array(
                         'label'     => Mage::helper('M2ePro')->__('Save And Continue Edit'),
-                        'onclick'   => 'WalmartAccountHandlerObj.save_and_edit_click(\'\',\'walmartAccountEditTabs\')',
+                        'onclick'   => 'WalmartAccountObj.save_and_edit_click(\'\',\'walmartAccountEditTabs\')',
                         'class'     => 'save'
                         )
                     );
@@ -122,7 +122,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Account_Edit extends Mage_Adminhtml_Blo
             $this->_addButton(
                 'back', array(
                 'label'     => Mage::helper('M2ePro')->__('Back'),
-                'onclick'   => 'WalmartAccountHandlerObj.back_click(\''. $url .'\')',
+                'onclick'   => 'WalmartAccountObj.back_click(\''. $url .'\')',
                 'class'     => 'back'
                 )
             );
@@ -137,7 +137,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Account_Edit extends Mage_Adminhtml_Blo
                 $this->_addButton(
                     'delete', array(
                     'label'     => Mage::helper('M2ePro')->__('Delete'),
-                    'onclick'   => "WalmartAccountHandlerObj.delete_click({$accountId})",
+                    'onclick'   => "WalmartAccountObj.delete_click({$accountId})",
                     'class'     => 'delete M2ePro_delete_button'
                     )
                 );
@@ -148,7 +148,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Account_Edit extends Mage_Adminhtml_Blo
             $this->_addButton(
                 'save', array(
                 'label'     => Mage::helper('M2ePro')->__('Save'),
-                'onclick'   => 'WalmartAccountHandlerObj.save_click()',
+                'onclick'   => 'WalmartAccountObj.save_click()',
                 'class'     => 'save'
                 )
             );
@@ -158,7 +158,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Account_Edit extends Mage_Adminhtml_Blo
             $this->_addButton(
                 'save_and_continue', array(
                 'label'     => Mage::helper('M2ePro')->__('Save And Continue Edit'),
-                'onclick'   => 'WalmartAccountHandlerObj.save_and_edit_click(\'\',\'walmartAccountEditTabs\')',
+                'onclick'   => 'WalmartAccountObj.save_and_edit_click(\'\',\'walmartAccountEditTabs\')',
                 'class'     => 'save'
                 )
             );

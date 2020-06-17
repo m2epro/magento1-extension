@@ -106,7 +106,7 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion611_ConfigData
             $this->installer->run(
                 <<<SQL
 
-INSERT INTO `m2epro_config` (`group`,`key`,`value`,`notice`,`update_date`,`create_date`) VALUES
+INSERT INTO `{$tempTable}` (`group`,`key`,`value`,`notice`,`update_date`,`create_date`) VALUES
 ('/cron/', 'type', 'magento', NULL, '2014-01-01 00:00:00', '2014-01-01 00:00:00'),
 ('/cron/task/logs_cleaning/', 'last_run', NULL, 'date of last run', '2014-01-01 00:00:00', '2014-01-01 00:00:00'),
 ('/cron/task/processing/', 'last_run', NULL, 'date of last run', '2014-01-01 00:00:00', '2014-01-01 00:00:00'),
@@ -150,7 +150,7 @@ SQL
             $this->installer->run(
                 <<<SQL
 
-INSERT INTO `m2epro_synchronization_config` (`group`,`key`,`value`,`notice`,`update_date`,`create_date`) VALUES
+INSERT INTO `{$tempTable}` (`group`,`key`,`value`,`notice`,`update_date`,`create_date`) VALUES
 (NULL, 'last_access', NULL, NULL, '2014-01-01 00:00:00', '2014-01-01 00:00:00'),
 (NULL, 'last_run', NULL, NULL, '2014-01-01 00:00:00', '2014-01-01 00:00:00');
 

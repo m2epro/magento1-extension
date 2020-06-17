@@ -1203,6 +1203,48 @@ class Ess_M2ePro_Model_Walmart_Template_Description extends Ess_M2ePro_Model_Com
 
     //########################################
 
+    /**
+     * @return array
+     */
+    public function getUsedDetailsAttributes()
+    {
+        return array_unique(
+            array_merge(
+
+                $this->getTitleAttributes(),
+                $this->getBrandAttributes(),
+                $this->getMultipackQuantityAttributes(),
+                $this->getCountPerPackAttributes(),
+                $this->getModelNumberAttributes(),
+                $this->getTotalCountAttributes(),
+                $this->getDescriptionAttributes(),
+                $this->getOtherFeaturesAttributes(),
+                $this->getAttributesAttributes(),
+                $this->getKeyFeaturesAttributes(),
+                $this->getKeywordsAttributes(),
+                $this->getManufacturerAttributes(),
+                $this->getManufacturerPartNumberAttributes(),
+                $this->getMsrpRrpAttributes()
+            )
+        );
+    }
+
+    /**
+     * @return array
+     */
+    public function getUsedImagesAttributes()
+    {
+        return array_unique(
+            array_merge(
+                $this->getImageMainAttributes(),
+                $this->getImageVariationDifferenceAttributes(),
+                $this->getGalleryImagesAttributes()
+            )
+        );
+    }
+
+    //########################################
+
     public function save()
     {
         Mage::helper('M2ePro/Data_Cache_Permanent')->removeTagValues('walmart_template_description');

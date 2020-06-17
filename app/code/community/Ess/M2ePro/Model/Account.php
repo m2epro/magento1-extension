@@ -15,12 +15,16 @@ use Ess_M2ePro_Model_Walmart_Account as WalmartAccount;
  */
 class Ess_M2ePro_Model_Account extends Ess_M2ePro_Model_Component_Parent_Abstract
 {
+    /** @var Ess_M2ePro_Model_ActiveRecord_Factory */
+    protected $_activeRecordFactory;
+
     //########################################
 
     public function _construct()
     {
         parent::_construct();
         $this->_init('M2ePro/Account');
+        $this->_activeRecordFactory = Mage::getSingleton('M2ePro/ActiveRecord_Factory');
     }
 
     //########################################
@@ -52,20 +56,27 @@ class Ess_M2ePro_Model_Account extends Ess_M2ePro_Model_Component_Parent_Abstrac
             return false;
         }
 
-        $otherListings = $this->getOtherListings(true);
-        foreach ($otherListings as $otherListing) {
+        $otherListings = $this->_activeRecordFactory->getObjectCollection('Listing_Other');
+        $otherListings->addFieldToFilter('account_id', $this->getId());
+        foreach ($otherListings->getItems() as $otherListing) {
+            /** @var Ess_M2ePro_Model_Listing_Other $otherListing */
             $otherListing->deleteInstance();
         }
 
         if ($this->isComponentModeEbay() && $this->getChildObject()->isModeSandbox()) {
-            $listings = $this->getRelatedComponentItems('Listing', 'account_id', true);
-            foreach ($listings as $listing) {
+            $listings = $this->_activeRecordFactory->getObjectCollection('Listing');
+            $listings->addFieldToFilter('account_id', $this->getId());
+
+            foreach ($listings->getItems() as $listing) {
+                /** @var Ess_M2ePro_Model_Listing $listing */
                 $listing->deleteInstance();
             }
         }
 
-        $orders = $this->getOrders(true);
-        foreach ($orders as $order) {
+        $orders = $this->_activeRecordFactory->getObjectCollection('Order');
+        $orders->addFieldToFilter('account_id', $this->getId());
+        foreach ($orders->getItems() as $order) {
+            /** @var Ess_M2ePro_Model_Order $order */
             $order->deleteInstance();
         }
 
@@ -73,48 +84,6 @@ class Ess_M2ePro_Model_Account extends Ess_M2ePro_Model_Component_Parent_Abstrac
         $this->delete();
 
         return true;
-    }
-
-    //########################################
-
-    /**
-     * @param bool $asObjects
-     * @param array $filters
-     * @return array
-     * @throws Ess_M2ePro_Model_Exception_Logic
-     */
-    public function getOtherListings($asObjects = false, array $filters = array())
-    {
-        $otherListings = $this->getRelatedComponentItems('Listing_Other', 'account_id', $asObjects, $filters);
-
-        if ($asObjects) {
-            foreach ($otherListings as $otherListing) {
-                /** @var $otherListing Ess_M2ePro_Model_Listing_Other */
-                $otherListing->setAccount($this);
-            }
-        }
-
-        return $otherListings;
-    }
-
-    /**
-     * @param bool $asObjects
-     * @param array $filters
-     * @return array
-     * @throws Ess_M2ePro_Model_Exception_Logic
-     */
-    public function getOrders($asObjects = false, array $filters = array())
-    {
-        $orders = $this->getRelatedComponentItems('Order', 'account_id', $asObjects, $filters);
-
-        if ($asObjects) {
-            foreach ($orders as $order) {
-                /** @var $order Ess_M2ePro_Model_Order */
-                $order->setAccount($this);
-            }
-        }
-
-        return $orders;
     }
 
     //########################################

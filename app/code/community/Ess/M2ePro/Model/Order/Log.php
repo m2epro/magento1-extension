@@ -43,26 +43,6 @@ class Ess_M2ePro_Model_Order_Log extends Ess_M2ePro_Model_Log_Abstract
 
     public function addMessage($orderId, $description, $type, array $additionalData = array())
     {
-        $dataForAdd = $this->makeDataForAdd($orderId, $description, $type, $additionalData);
-        $this->createMessage($dataForAdd);
-    }
-
-    //########################################
-
-    protected function createMessage($dataForAdd)
-    {
-        $dataForAdd['initiator'] = $this->_initiator ? $this->_initiator : Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION;
-        $dataForAdd['component_mode'] = $this->getComponentMode();
-
-        $this->isObjectNew(true);
-
-        $this->setId(null)
-            ->setData($dataForAdd)
-            ->save();
-    }
-
-    protected function makeDataForAdd($orderId, $description, $type, array $additionalData = array())
-    {
         $order = Mage::getModel('M2ePro/Order')->load($orderId);
 
         $dataForAdd = array(
@@ -71,10 +51,15 @@ class Ess_M2ePro_Model_Order_Log extends Ess_M2ePro_Model_Log_Abstract
             'order_id'        => $orderId,
             'description'     => $description,
             'type'            => (int)$type,
-            'additional_data' => Mage::helper('M2ePro')->jsonEncode($additionalData)
+            'additional_data' => Mage::helper('M2ePro')->jsonEncode($additionalData),
+
+            'initiator'      => $this->_initiator ? $this->_initiator : Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION,
+            'component_mode' => $this->getComponentMode()
         );
 
-        return $dataForAdd;
+        Mage::getModel('M2ePro/Order_Log')
+            ->setData($dataForAdd)
+            ->save();
     }
 
     //########################################

@@ -1,5 +1,4 @@
-WalmartTemplateCategoryCategoriesSpecificRenderer = Class.create();
-WalmartTemplateCategoryCategoriesSpecificRenderer.prototype = {
+window.WalmartTemplateCategoryCategoriesSpecificRenderer = Class.create({
 
     // ---------------------------------------
 
@@ -279,4 +278,4 @@ WalmartTemplateCategoryCategoriesSpecificRenderer.prototype = {
     }
 
     // ---------------------------------------
-};
+});

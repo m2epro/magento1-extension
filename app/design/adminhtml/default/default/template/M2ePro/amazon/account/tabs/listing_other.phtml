@@ -18,13 +18,7 @@ if (isset($formData['other_listings_mapping_settings'])) {
     $formData['other_listings_mapping_settings'] = (array)json_decode($formData['other_listings_mapping_settings'],true);
 }
 
-$defaults = array(
-    'related_store_id' => 0,
-
-    'other_listings_synchronization' => 1,
-    'other_listings_mapping_mode' => 1,
-    'other_listings_mapping_settings' => array(),
-);
+$defaults = Mage::getModel('M2ePro/Amazon_Account_Builder')->getDefaultData();
 
 $formData = array_merge($defaults, $formData);
 $isEdit = !!$this->getRequest()->getParam('id');
@@ -44,20 +38,20 @@ $isEdit = !!$this->getRequest()->getParam('id');
         setTimeout(function() {
 
             $('other_listings_synchronization')
-                .observe('change', AmazonAccountHandlerObj.other_listings_synchronization_change)
+                .observe('change', AmazonAccountObj.other_listings_synchronization_change)
                 .simulate('change');
             $('other_listings_mapping_mode')
-                .observe('change', AmazonAccountHandlerObj.other_listings_mapping_mode_change)
+                .observe('change', AmazonAccountObj.other_listings_mapping_mode_change)
                 .simulate('change');
 
             $('mapping_general_id_mode')
-                .observe('change', AmazonAccountHandlerObj.mapping_general_id_mode_change)
+                .observe('change', AmazonAccountObj.mapping_general_id_mode_change)
                 .simulate('change');
             $('mapping_sku_mode')
-                .observe('change', AmazonAccountHandlerObj.mapping_sku_mode_change)
+                .observe('change', AmazonAccountObj.mapping_sku_mode_change)
                 .simulate('change');
             $('mapping_title_mode')
-                .observe('change', AmazonAccountHandlerObj.mapping_title_mode_change)
+                .observe('change', AmazonAccountObj.mapping_title_mode_change)
                 .simulate('change');
 
             $('amazonAccountEditTabs_listingOther').removeClassName('changed');

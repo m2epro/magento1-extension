@@ -110,7 +110,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_SellingFormat_TaxCodes_Grid ex
 
         return <<<HTML
 <a href="javascript:void(0)"
-onclick="WalmartTemplateSellingFormatHandlerObj.taxCodePopupSelectAndClose({$row->getData('tax_code')});">
+onclick="WalmartTemplateSellingFormatObj.taxCodePopupSelectAndClose({$row->getData('tax_code')});">
 {$select}
 </a>
 HTML;

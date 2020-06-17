@@ -48,7 +48,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Description_Edit_Form extends 
         // ---------------------------------------
         $data = array(
             'label'   => Mage::helper('M2ePro')->__('Insert'),
-            'onclick' => "AttributeHandlerObj.appendToText('select_attributes_for_title', 'title_template');",
+            'onclick' => "AttributeObj.appendToText('select_attributes_for_title', 'title_template');",
             'class'   => 'select_attributes_for_title_button'
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
@@ -58,7 +58,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Description_Edit_Form extends 
         // ---------------------------------------
         $data = array(
             'label'   => Mage::helper('M2ePro')->__('Insert'),
-            'onclick' => "AttributeHandlerObj.appendToTextarea('#' + $('select_attributes').value + '#');",
+            'onclick' => "AttributeObj.appendToTextarea('#' + $('select_attributes').value + '#');",
             'class'   => 'add_product_attribute_button',
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
@@ -102,8 +102,8 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Description_Edit_Form extends 
     protected function getMultiElementButton($type, $index)
     {
         $onClick = <<<JS
-        AttributeHandlerObj.appendToText('select_attributes_for_{$type}_{$index}', '{$type}_{$index}');
-        WalmartTemplateDescriptionHandlerObj.multi_element_keyup('{$type}', $('{$type}_{$index}'));
+        AttributeObj.appendToText('select_attributes_for_{$type}_{$index}', '{$type}_{$index}');
+        WalmartTemplateDescriptionObj.multi_element_keyup('{$type}', $('{$type}_{$index}'));
 JS;
         $data = array(
             'label'   => Mage::helper('M2ePro')->__('Insert'),
@@ -116,8 +116,8 @@ JS;
     protected function getNameValueMultiElementButton($type, $index)
     {
         $onClick = <<<JS
-        AttributeHandlerObj.appendToText('select_attributes_for_{$type}_{$index}', '{$type}_value_{$index}');
-        WalmartTemplateDescriptionHandlerObj.multi_element_keyup('{$type}', $('{$type}_value_{$index}'));
+        AttributeObj.appendToText('select_attributes_for_{$type}_{$index}', '{$type}_value_{$index}');
+        WalmartTemplateDescriptionObj.multi_element_keyup('{$type}', $('{$type}_value_{$index}'));
 JS;
         $data = array(
             'label'   => Mage::helper('M2ePro')->__('Insert'),

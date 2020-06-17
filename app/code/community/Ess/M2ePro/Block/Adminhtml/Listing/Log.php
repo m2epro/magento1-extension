@@ -136,26 +136,28 @@ abstract class Ess_M2ePro_Block_Adminhtml_Listing_Log extends Mage_Adminhtml_Blo
 
         $html = $viewModeSwitcherBlock->_toHtml();
 
+        $html .= '<div class="switcher-separator"></div>';
+
         if ($this->getListingId()) {
             $html .= '<div class="static-switcher-block">'
                 . $this->getStaticFilterHtml(
-                    Mage::helper('M2ePro')->__('Marketplace'),
-                    $this->getListing()->getMarketplace()->getTitle()
-                )
-                . $this->getStaticFilterHtml(
                     Mage::helper('M2ePro')->__('Account'),
                     $this->getListing()->getAccount()->getTitle()
+                )
+                . $this->getStaticFilterHtml(
+                    Mage::helper('M2ePro')->__('Marketplace'),
+                    $this->getListing()->getMarketplace()->getTitle()
                 )
                 . '</div>';
         } elseif ($this->getListingProductId()) {
             $html .= '<div class="static-switcher-block">'
                 . $this->getStaticFilterHtml(
-                    Mage::helper('M2ePro')->__('Marketplace'),
-                    $this->getListingProduct()->getListing()->getMarketplace()->getTitle()
-                )
-                . $this->getStaticFilterHtml(
                     Mage::helper('M2ePro')->__('Account'),
                     $this->getListingProduct()->getListing()->getAccount()->getTitle()
+                )
+                . $this->getStaticFilterHtml(
+                    Mage::helper('M2ePro')->__('Marketplace'),
+                    $this->getListingProduct()->getListing()->getMarketplace()->getTitle()
                 )
                 . '</div>';
         } else {
@@ -175,8 +177,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Listing_Log extends Mage_Adminhtml_Blo
             );
             $marketplaceFilterBlock->setUseConfirm(false);
 
-            $html .= '<div class="switcher-separator"></div>'
-                . $accountFilterBlock->_toHtml()
+            $html .= $accountFilterBlock->_toHtml()
                 . $marketplaceFilterBlock->_toHtml();
         }
 

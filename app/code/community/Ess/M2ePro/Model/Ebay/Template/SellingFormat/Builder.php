@@ -6,285 +6,261 @@
  * @license    Commercial use is forbidden
  */
 
-class Ess_M2ePro_Model_Ebay_Template_SellingFormat_Builder
-    extends Ess_M2ePro_Model_Ebay_Template_Builder_Abstract
+use Ess_M2ePro_Model_Ebay_Template_SellingFormat as SellingFormat;
+
+class Ess_M2EPro_Model_Ebay_Template_SellingFormat_Builder
+    extends Ess_M2ePro_Model_Ebay_Template_AbstractBuilder
 {
     //########################################
 
-    public function build(array $data)
+    protected function prepareData()
     {
-        if (empty($data)) {
-            return null;
+        $data = parent::prepareData();
+
+        $data = array_merge($this->getDefaultData(), $data);
+
+        if (isset($this->_rawData['listing_type'])) {
+            $data['listing_type'] = (int)$this->_rawData['listing_type'];
         }
 
-        $this->validate($data);
-
-        $data = $this->prepareData($data);
-
-        $template = Mage::helper('M2ePro/Component_Ebay')->getModel('Template_SellingFormat');
-
-        if (isset($data['id'])) {
-            $template->load($data['id']);
+        if (isset($this->_rawData['listing_is_private'])) {
+            $data['listing_is_private'] = (int)(bool)$this->_rawData['listing_is_private'];
         }
 
-        $template->addData($data);
-        $template->save();
-
-        return $template;
-    }
-
-    //########################################
-
-    protected function prepareData(array &$data)
-    {
-        $prepared = parent::prepareData($data);
-
-        $defaultData = Mage::getSingleton('M2ePro/Ebay_Template_SellingFormat')->getDefaultSettings();
-
-        $data = array_merge($defaultData, $data);
-
-        if (isset($data['listing_type'])) {
-            $prepared['listing_type'] = (int)$data['listing_type'];
+        if (isset($this->_rawData['listing_type_attribute'])) {
+            $data['listing_type_attribute'] = $this->_rawData['listing_type_attribute'];
         }
 
-        if (isset($data['listing_is_private'])) {
-            $prepared['listing_is_private'] = (int)(bool)$data['listing_is_private'];
+        if (isset($this->_rawData['duration_mode'])) {
+            $data['duration_mode'] = (int)$this->_rawData['duration_mode'];
         }
 
-        if (isset($data['listing_type_attribute'])) {
-            $prepared['listing_type_attribute'] = $data['listing_type_attribute'];
+        if (isset($this->_rawData['duration_attribute'])) {
+            $data['duration_attribute'] = $this->_rawData['duration_attribute'];
         }
 
-        if (isset($data['duration_mode'])) {
-            $prepared['duration_mode'] = (int)$data['duration_mode'];
+        if (isset($this->_rawData['qty_mode'])) {
+            $data['qty_mode'] = (int)$this->_rawData['qty_mode'];
         }
 
-        if (isset($data['duration_attribute'])) {
-            $prepared['duration_attribute'] = $data['duration_attribute'];
+        if (isset($this->_rawData['qty_custom_value'])) {
+            $data['qty_custom_value'] = (int)$this->_rawData['qty_custom_value'];
         }
 
-        if (isset($data['qty_mode'])) {
-            $prepared['qty_mode'] = (int)$data['qty_mode'];
+        if (isset($this->_rawData['qty_custom_attribute'])) {
+            $data['qty_custom_attribute'] = $this->_rawData['qty_custom_attribute'];
         }
 
-        if (isset($data['qty_custom_value'])) {
-            $prepared['qty_custom_value'] = (int)$data['qty_custom_value'];
+        if (isset($this->_rawData['qty_percentage'])) {
+            $data['qty_percentage'] = (int)$this->_rawData['qty_percentage'];
         }
 
-        if (isset($data['qty_custom_attribute'])) {
-            $prepared['qty_custom_attribute'] = $data['qty_custom_attribute'];
+        if (isset($this->_rawData['qty_modification_mode'])) {
+            $data['qty_modification_mode'] = (int)$this->_rawData['qty_modification_mode'];
         }
 
-        if (isset($data['qty_percentage'])) {
-            $prepared['qty_percentage'] = (int)$data['qty_percentage'];
+        if (isset($this->_rawData['qty_min_posted_value'])) {
+            $data['qty_min_posted_value'] = (int)$this->_rawData['qty_min_posted_value'];
         }
 
-        if (isset($data['qty_modification_mode'])) {
-            $prepared['qty_modification_mode'] = (int)$data['qty_modification_mode'];
+        if (isset($this->_rawData['qty_max_posted_value'])) {
+            $data['qty_max_posted_value'] = (int)$this->_rawData['qty_max_posted_value'];
         }
 
-        if (isset($data['qty_min_posted_value'])) {
-            $prepared['qty_min_posted_value'] = (int)$data['qty_min_posted_value'];
+        if (isset($this->_rawData['lot_size_mode'])) {
+            $data['lot_size_mode'] = (int)$this->_rawData['lot_size_mode'];
         }
 
-        if (isset($data['qty_max_posted_value'])) {
-            $prepared['qty_max_posted_value'] = (int)$data['qty_max_posted_value'];
+        if (isset($this->_rawData['lot_size_custom_value'])) {
+            $data['lot_size_custom_value'] = (int)$this->_rawData['lot_size_custom_value'];
         }
 
-        if (isset($data['lot_size_mode'])) {
-            $prepared['lot_size_mode'] = (int)$data['lot_size_mode'];
+        if (isset($this->_rawData['lot_size_attribute'])) {
+            $data['lot_size_attribute'] = $this->_rawData['lot_size_attribute'];
         }
 
-        if (isset($data['lot_size_custom_value'])) {
-            $prepared['lot_size_custom_value'] = (int)$data['lot_size_custom_value'];
+        if (isset($this->_rawData['vat_percent'])) {
+            $data['vat_percent'] = (float)$this->_rawData['vat_percent'];
         }
 
-        if (isset($data['lot_size_attribute'])) {
-            $prepared['lot_size_attribute'] = $data['lot_size_attribute'];
+        if (isset($this->_rawData['tax_table_mode'])) {
+            $data['tax_table_mode'] = (int)$this->_rawData['tax_table_mode'];
         }
 
-        if (isset($data['vat_percent'])) {
-            $prepared['vat_percent'] = (float)$data['vat_percent'];
+        if (isset($this->_rawData['tax_category_mode'])) {
+            $data['tax_category_mode'] = (int)$this->_rawData['tax_category_mode'];
         }
 
-        if (isset($data['tax_table_mode'])) {
-            $prepared['tax_table_mode'] = (int)$data['tax_table_mode'];
+        if (isset($this->_rawData['tax_category_value'])) {
+            $data['tax_category_value'] = $this->_rawData['tax_category_value'];
         }
 
-        if (isset($data['tax_category_mode'])) {
-            $prepared['tax_category_mode'] = (int)$data['tax_category_mode'];
+        if (isset($this->_rawData['tax_category_attribute'])) {
+            $data['tax_category_attribute'] = $this->_rawData['tax_category_attribute'];
         }
 
-        if (isset($data['tax_category_value'])) {
-            $prepared['tax_category_value'] = $data['tax_category_value'];
+        if (isset($this->_rawData['price_increase_vat_percent'])) {
+            $data['price_increase_vat_percent'] = (int)$this->_rawData['price_increase_vat_percent'];
         }
 
-        if (isset($data['tax_category_attribute'])) {
-            $prepared['tax_category_attribute'] = $data['tax_category_attribute'];
-        }
-
-        if (isset($data['price_increase_vat_percent'])) {
-            $prepared['price_increase_vat_percent'] = (int)$data['price_increase_vat_percent'];
-        }
-
-        if (isset($data['price_variation_mode'])) {
-            $prepared['price_variation_mode'] = (int)$data['price_variation_mode'];
+        if (isset($this->_rawData['price_variation_mode'])) {
+            $data['price_variation_mode'] = (int)$this->_rawData['price_variation_mode'];
         }
 
         // ---------------------------------------
 
-        if (isset($data['fixed_price_mode'])) {
-            $prepared['fixed_price_mode'] = (int)$data['fixed_price_mode'];
+        if (isset($this->_rawData['fixed_price_mode'])) {
+            $data['fixed_price_mode'] = (int)$this->_rawData['fixed_price_mode'];
         }
 
-        if (isset($data['fixed_price_coefficient'], $data['fixed_price_coefficient_mode'])) {
-            $prepared['fixed_price_coefficient'] = $this->getFormattedPriceCoefficient(
-                $data['fixed_price_coefficient'], $data['fixed_price_coefficient_mode']
+        if (isset($this->_rawData['fixed_price_coefficient'], $this->_rawData['fixed_price_coefficient_mode'])) {
+            $data['fixed_price_coefficient'] = $this->getFormattedPriceCoefficient(
+                $this->_rawData['fixed_price_coefficient'], $this->_rawData['fixed_price_coefficient_mode']
             );
         }
 
-        if (isset($data['fixed_price_custom_attribute'])) {
-            $prepared['fixed_price_custom_attribute'] = $data['fixed_price_custom_attribute'];
+        if (isset($this->_rawData['fixed_price_custom_attribute'])) {
+            $data['fixed_price_custom_attribute'] = $this->_rawData['fixed_price_custom_attribute'];
         }
 
         // ---------------------------------------
 
-        if (isset($data['start_price_mode'])) {
-            $prepared['start_price_mode'] = (int)$data['start_price_mode'];
+        if (isset($this->_rawData['start_price_mode'])) {
+            $data['start_price_mode'] = (int)$this->_rawData['start_price_mode'];
         }
 
-        if (isset($data['start_price_coefficient'], $data['start_price_coefficient_mode'])) {
-            $prepared['start_price_coefficient'] = $this->getFormattedPriceCoefficient(
-                $data['start_price_coefficient'], $data['start_price_coefficient_mode']
+        if (isset($this->_rawData['start_price_coefficient'], $this->_rawData['start_price_coefficient_mode'])) {
+            $data['start_price_coefficient'] = $this->getFormattedPriceCoefficient(
+                $this->_rawData['start_price_coefficient'], $this->_rawData['start_price_coefficient_mode']
             );
         }
 
-        if (isset($data['start_price_custom_attribute'])) {
-            $prepared['start_price_custom_attribute'] = $data['start_price_custom_attribute'];
+        if (isset($this->_rawData['start_price_custom_attribute'])) {
+            $data['start_price_custom_attribute'] = $this->_rawData['start_price_custom_attribute'];
         }
 
         // ---------------------------------------
 
-        if (isset($data['reserve_price_mode'])) {
-            $prepared['reserve_price_mode'] = (int)$data['reserve_price_mode'];
+        if (isset($this->_rawData['reserve_price_mode'])) {
+            $data['reserve_price_mode'] = (int)$this->_rawData['reserve_price_mode'];
         }
 
-        if (isset($data['reserve_price_coefficient'], $data['reserve_price_coefficient_mode'])) {
-            $prepared['reserve_price_coefficient'] = $this->getFormattedPriceCoefficient(
-                $data['reserve_price_coefficient'], $data['reserve_price_coefficient_mode']
+        if (isset($this->_rawData['reserve_price_coefficient'], $this->_rawData['reserve_price_coefficient_mode'])) {
+            $data['reserve_price_coefficient'] = $this->getFormattedPriceCoefficient(
+                $this->_rawData['reserve_price_coefficient'], $this->_rawData['reserve_price_coefficient_mode']
             );
         }
 
-        if (isset($data['reserve_price_custom_attribute'])) {
-            $prepared['reserve_price_custom_attribute'] = $data['reserve_price_custom_attribute'];
+        if (isset($this->_rawData['reserve_price_custom_attribute'])) {
+            $data['reserve_price_custom_attribute'] = $this->_rawData['reserve_price_custom_attribute'];
         }
 
         // ---------------------------------------
 
-        if (isset($data['buyitnow_price_mode'])) {
-            $prepared['buyitnow_price_mode'] = (int)$data['buyitnow_price_mode'];
+        if (isset($this->_rawData['buyitnow_price_mode'])) {
+            $data['buyitnow_price_mode'] = (int)$this->_rawData['buyitnow_price_mode'];
         }
 
-        if (isset($data['buyitnow_price_coefficient'], $data['buyitnow_price_coefficient_mode'])) {
-            $prepared['buyitnow_price_coefficient'] = $this->getFormattedPriceCoefficient(
-                $data['buyitnow_price_coefficient'], $data['buyitnow_price_coefficient_mode']
+        if (isset($this->_rawData['buyitnow_price_coefficient'], $this->_rawData['buyitnow_price_coefficient_mode'])) {
+            $data['buyitnow_price_coefficient'] = $this->getFormattedPriceCoefficient(
+                $this->_rawData['buyitnow_price_coefficient'], $this->_rawData['buyitnow_price_coefficient_mode']
             );
         }
 
-        if (isset($data['buyitnow_price_custom_attribute'])) {
-            $prepared['buyitnow_price_custom_attribute'] = $data['buyitnow_price_custom_attribute'];
+        if (isset($this->_rawData['buyitnow_price_custom_attribute'])) {
+            $data['buyitnow_price_custom_attribute'] = $this->_rawData['buyitnow_price_custom_attribute'];
         }
 
         // ---------------------------------------
 
-        if (isset($data['price_discount_stp_mode'])) {
-            $prepared['price_discount_stp_mode'] = (int)$data['price_discount_stp_mode'];
+        if (isset($this->_rawData['price_discount_stp_mode'])) {
+            $data['price_discount_stp_mode'] = (int)$this->_rawData['price_discount_stp_mode'];
         }
 
-        if (isset($data['price_discount_stp_attribute'])) {
-            $prepared['price_discount_stp_attribute'] = $data['price_discount_stp_attribute'];
+        if (isset($this->_rawData['price_discount_stp_attribute'])) {
+            $data['price_discount_stp_attribute'] = $this->_rawData['price_discount_stp_attribute'];
         }
 
-        if (isset($data['price_discount_stp_type'])) {
-            $prepared['price_discount_stp_type'] = (int)$data['price_discount_stp_type'];
-        }
-
-        // ---------------------------------------
-
-        if (isset($data['price_discount_map_mode'])) {
-            $prepared['price_discount_map_mode'] = (int)$data['price_discount_map_mode'];
-        }
-
-        if (isset($data['price_discount_map_attribute'])) {
-            $prepared['price_discount_map_attribute'] = $data['price_discount_map_attribute'];
-        }
-
-        if (isset($data['price_discount_map_exposure_type'])) {
-            $prepared['price_discount_map_exposure_type'] = (int)$data['price_discount_map_exposure_type'];
-        }
-
-        if (isset($data['restricted_to_business'])) {
-            $prepared['restricted_to_business'] = (int)$data['restricted_to_business'];
+        if (isset($this->_rawData['price_discount_stp_type'])) {
+            $data['price_discount_stp_type'] = (int)$this->_rawData['price_discount_stp_type'];
         }
 
         // ---------------------------------------
 
-        if (isset($data['best_offer_mode'])) {
-            $prepared['best_offer_mode'] = (int)$data['best_offer_mode'];
+        if (isset($this->_rawData['price_discount_map_mode'])) {
+            $data['price_discount_map_mode'] = (int)$this->_rawData['price_discount_map_mode'];
         }
 
-        if (isset($data['best_offer_accept_mode'])) {
-            $prepared['best_offer_accept_mode'] = (int)$data['best_offer_accept_mode'];
+        if (isset($this->_rawData['price_discount_map_attribute'])) {
+            $data['price_discount_map_attribute'] = $this->_rawData['price_discount_map_attribute'];
         }
 
-        if (isset($data['best_offer_accept_value'])) {
-            $prepared['best_offer_accept_value'] = $data['best_offer_accept_value'];
+        if (isset($this->_rawData['price_discount_map_exposure_type'])) {
+            $data['price_discount_map_exposure_type'] = (int)$this->_rawData['price_discount_map_exposure_type'];
         }
 
-        if (isset($data['best_offer_accept_attribute'])) {
-            $prepared['best_offer_accept_attribute'] = $data['best_offer_accept_attribute'];
+        if (isset($this->_rawData['restricted_to_business'])) {
+            $data['restricted_to_business'] = (int)$this->_rawData['restricted_to_business'];
         }
 
-        if (isset($data['best_offer_reject_mode'])) {
-            $prepared['best_offer_reject_mode'] = (int)$data['best_offer_reject_mode'];
+        // ---------------------------------------
+
+        if (isset($this->_rawData['best_offer_mode'])) {
+            $data['best_offer_mode'] = (int)$this->_rawData['best_offer_mode'];
         }
 
-        if (isset($data['best_offer_reject_value'])) {
-            $prepared['best_offer_reject_value'] = $data['best_offer_reject_value'];
+        if (isset($this->_rawData['best_offer_accept_mode'])) {
+            $data['best_offer_accept_mode'] = (int)$this->_rawData['best_offer_accept_mode'];
         }
 
-        if (isset($data['best_offer_reject_attribute'])) {
-            $prepared['best_offer_reject_attribute'] = $data['best_offer_reject_attribute'];
+        if (isset($this->_rawData['best_offer_accept_value'])) {
+            $data['best_offer_accept_value'] = $this->_rawData['best_offer_accept_value'];
         }
 
-        $prepared['charity'] = null;
+        if (isset($this->_rawData['best_offer_accept_attribute'])) {
+            $data['best_offer_accept_attribute'] = $this->_rawData['best_offer_accept_attribute'];
+        }
 
-        if (!empty($data['charity']) && !empty($data['charity']['marketplace_id'])) {
+        if (isset($this->_rawData['best_offer_reject_mode'])) {
+            $data['best_offer_reject_mode'] = (int)$this->_rawData['best_offer_reject_mode'];
+        }
+
+        if (isset($this->_rawData['best_offer_reject_value'])) {
+            $data['best_offer_reject_value'] = $this->_rawData['best_offer_reject_value'];
+        }
+
+        if (isset($this->_rawData['best_offer_reject_attribute'])) {
+            $data['best_offer_reject_attribute'] = $this->_rawData['best_offer_reject_attribute'];
+        }
+
+        $data['charity'] = null;
+
+        if (!empty($this->_rawData['charity']) && !empty($this->_rawData['charity']['marketplace_id'])) {
             $charities = array();
-            foreach ($data['charity']['marketplace_id'] as $key => $marketplaceId) {
-                if (empty($data['charity']['organization_id'][$key])) {
+            foreach ($this->_rawData['charity']['marketplace_id'] as $key => $marketplaceId) {
+                if (empty($this->_rawData['charity']['organization_id'][$key])) {
                     continue;
                 }
 
                 $charities[$marketplaceId] = array(
                     'marketplace_id' => (int)$marketplaceId,
-                    'organization_id' => (int)$data['charity']['organization_id'][$key],
-                    'organization_name' => $data['charity']['organization_name'][$key],
-                    'organization_custom' => (int)$data['charity']['organization_custom'][$key],
-                    'percentage' => (int)$data['charity']['percentage'][$key]
+                    'organization_id' => (int)$this->_rawData['charity']['organization_id'][$key],
+                    'organization_name' => $this->_rawData['charity']['organization_name'][$key],
+                    'organization_custom' => (int)$this->_rawData['charity']['organization_custom'][$key],
+                    'percentage' => (int)$this->_rawData['charity']['percentage'][$key]
                 );
             }
 
             if (!empty($charities)) {
-                $prepared['charity'] = Mage::helper('M2ePro')->jsonEncode($charities);
+                $data['charity'] = Mage::helper('M2ePro')->jsonEncode($charities);
             }
         }
 
-        if (isset($data['ignore_variations'])) {
-            $prepared['ignore_variations'] = (int)$data['ignore_variations'];
+        if (isset($this->_rawData['ignore_variations'])) {
+            $data['ignore_variations'] = (int)$this->_rawData['ignore_variations'];
         }
 
-        return $prepared;
+        return $data;
     }
 
     //########################################
@@ -307,6 +283,83 @@ class Ess_M2ePro_Model_Ebay_Template_SellingFormat_Builder
         $measuringSystem = $isCoefficientModePercentage ? '%' : '';
 
         return $sign . $priceCoeff . $measuringSystem;
+    }
+
+    //########################################
+
+    public function getDefaultData()
+    {
+        return array(
+
+            'listing_type' => SellingFormat::LISTING_TYPE_FIXED,
+            'listing_type_attribute' => '',
+
+            'listing_is_private' => SellingFormat::LISTING_IS_PRIVATE_NO,
+
+            'duration_mode' => 3,
+            'duration_attribute' => '',
+
+            'qty_mode' => Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_PRODUCT,
+            'qty_custom_value' => 1,
+            'qty_custom_attribute' => '',
+            'qty_percentage' => 100,
+            'qty_modification_mode' => SellingFormat::QTY_MODIFICATION_MODE_OFF,
+            'qty_min_posted_value' => SellingFormat::QTY_MIN_POSTED_DEFAULT_VALUE,
+            'qty_max_posted_value' => SellingFormat::QTY_MAX_POSTED_DEFAULT_VALUE,
+
+            'vat_percent'    => 0,
+            'tax_table_mode' => 0,
+
+            'restricted_to_business' => SellingFormat::RESTRICTED_TO_BUSINESS_DISABLED,
+
+            'tax_category_mode'      => 0,
+            'tax_category_value'     => '',
+            'tax_category_attribute' => '',
+
+            'price_increase_vat_percent' => 0,
+            'price_variation_mode' => SellingFormat::PRICE_VARIATION_MODE_PARENT,
+
+            'fixed_price_mode' => Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_PRODUCT,
+            'fixed_price_coefficient' => '',
+            'fixed_price_custom_attribute' => '',
+
+            'start_price_mode' => Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_PRODUCT,
+            'start_price_coefficient' => '',
+            'start_price_custom_attribute' => '',
+
+            'reserve_price_mode' => Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_NONE,
+            'reserve_price_coefficient' => '',
+            'reserve_price_custom_attribute' => '',
+
+            'buyitnow_price_mode' => Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_NONE,
+            'buyitnow_price_coefficient' => '',
+            'buyitnow_price_custom_attribute' => '',
+
+            'price_discount_stp_mode' => Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_NONE,
+            'price_discount_stp_attribute' => '',
+            'price_discount_stp_type' => SellingFormat::PRICE_DISCOUNT_STP_TYPE_RRP,
+
+            'price_discount_map_mode' => Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_NONE,
+            'price_discount_map_attribute' => '',
+            'price_discount_map_exposure_type' => SellingFormat::PRICE_DISCOUNT_MAP_EXPOSURE_NONE,
+
+            'best_offer_mode' => SellingFormat::BEST_OFFER_MODE_NO,
+
+            'best_offer_accept_mode' => SellingFormat::BEST_OFFER_ACCEPT_MODE_NO,
+            'best_offer_accept_value' => '',
+            'best_offer_accept_attribute' => '',
+
+            'best_offer_reject_mode' => SellingFormat::BEST_OFFER_REJECT_MODE_NO,
+            'best_offer_reject_value' => '',
+            'best_offer_reject_attribute' => '',
+
+            'charity' => '',
+            'ignore_variations' => 0,
+
+            'lot_size_mode' => 0,
+            'lot_size_custom_value' => '',
+            'lot_size_attribute' => ''
+        );
     }
 
     //########################################

@@ -17,13 +17,7 @@ if ($model) {
     $formData = $model->toArray();
 }
 
-$default = array(
-    'title'         => '',
-
-    'product_tax_code_mode' => '',
-    'product_tax_code_value' => '',
-    'product_tax_code_attribute' => '',
-);
+$default = Mage::getModel('M2ePro/Amazon_Template_ProductTaxCode_Builder')->getDefaultData();
 
 $formData = array_merge($default, $formData);
 
@@ -79,10 +73,10 @@ $attributesByInputTypes = array(
     M2ePro.formData.title = '<?php echo Mage::helper('M2ePro')->escapeJs(Mage::helper('M2ePro')->escapeHtml($formData['title'])); ?>';
 
     Event.observe(window, 'load', function() {
-        AmazonTemplateProductTaxCodeHandlerObj = new AmazonTemplateProductTaxCodeHandler();
+        AmazonTemplateProductTaxCodeObj = new AmazonTemplateProductTaxCode();
 
         $('product_tax_code_mode')
-            .observe('change', AmazonTemplateProductTaxCodeHandlerObj.productTaxCodeModeChange)
+            .observe('change', AmazonTemplateProductTaxCodeObj.productTaxCodeModeChange)
             .simulate('change');
 
         editForm = new varienForm('edit_form', '<?php echo $this->getValidationUrl(); ?>');

@@ -27,44 +27,45 @@ class Ess_M2ePro_Adminhtml_Amazon_ListingController
             ->addJs('M2ePro/Plugin/DropDown.js')
             ->addJs('M2ePro/Plugin/ProgressBar.js')
             ->addJs('M2ePro/Plugin/AreaWrapper.js')
-            ->addJs('M2ePro/Listing/ProductGridHandler.js')
-            ->addJs('M2ePro/Listing/Category/TreeHandler.js')
-            ->addJs('M2ePro/Listing/AutoActionHandler.js')
-            ->addJs('M2ePro/Amazon/Listing/AutoActionHandler.js')
+            ->addJs('M2ePro/Listing/ProductGrid.js')
+            ->addJs('M2ePro/Listing/Category/Tree.js')
+            ->addJs('M2ePro/Listing/AutoAction.js')
+            ->addJs('M2ePro/Amazon/Listing/AutoAction.js')
 
-            ->addJs('M2ePro/GridHandler.js')
+            ->addJs('M2ePro/Grid.js')
             ->addJs('M2ePro/Listing/EditListingTitle.js')
-            ->addJs('M2ePro/Listing/GridHandler.js')
-            ->addJs('M2ePro/Listing/Other/GridHandler.js')
+            ->addJs('M2ePro/Listing/Grid.js')
+            ->addJs('M2ePro/Listing/Other.js')
+            ->addJs('M2ePro/Listing/Other/Grid.js')
 
-            ->addJs('M2ePro/ActionHandler.js')
-            ->addJs('M2ePro/Listing/ActionHandler.js')
-            ->addJs('M2ePro/Listing/MovingHandler.js')
+            ->addJs('M2ePro/Action.js')
+            ->addJs('M2ePro/Listing/Action.js')
+            ->addJs('M2ePro/Listing/Moving.js')
             ->addJs('M2ePro/Amazon/Listing.js')
-            ->addJs('M2ePro/Amazon/Listing/GridHandler.js')
-            ->addJs('M2ePro/Amazon/Listing/ActionHandler.js')
-            ->addJs('M2ePro/Amazon/Listing/ProductSearchHandler.js')
-            ->addJs('M2ePro/Amazon/Listing/Template/DescriptionHandler.js')
-            ->addJs('M2ePro/Amazon/Listing/Template/ShippingHandler.js')
-            ->addJs('M2ePro/Amazon/Listing/Template/ProductTaxCodeHandler.js')
-            ->addJs('M2ePro/Amazon/Listing/VariationProductManageHandler.js')
-            ->addJs('M2ePro/Amazon/Listing/FulfillmentHandler.js')
-            ->addJs('M2ePro/Amazon/Listing/RepricingHandler.js')
-            ->addJs('M2ePro/Amazon/Listing/AfnQtyHandler.js')
-            ->addJs('M2ePro/Amazon/Listing/RepricingPriceHandler.js')
-            ->addJs('M2ePro/Amazon/Listing/Other/GridHandler.js')
+            ->addJs('M2ePro/Amazon/Listing/Grid.js')
+            ->addJs('M2ePro/Amazon/Listing/Action.js')
+            ->addJs('M2ePro/Amazon/Listing/ProductSearch.js')
+            ->addJs('M2ePro/Amazon/Listing/Template/Description.js')
+            ->addJs('M2ePro/Amazon/Listing/Template/Shipping.js')
+            ->addJs('M2ePro/Amazon/Listing/Template/ProductTaxCode.js')
+            ->addJs('M2ePro/Amazon/Listing/VariationProductManage.js')
+            ->addJs('M2ePro/Amazon/Listing/Fulfillment.js')
+            ->addJs('M2ePro/Amazon/Listing/Repricing.js')
+            ->addJs('M2ePro/Amazon/Listing/AfnQty.js')
+            ->addJs('M2ePro/Amazon/Listing/RepricingPrice.js')
+            ->addJs('M2ePro/Amazon/Listing/Other/Grid.js')
 
-            ->addJs('M2ePro/TemplateHandler.js')
-            ->addJs('M2ePro/Amazon/Listing/SettingsHandler.js')
-            ->addJs('M2ePro/Amazon/Listing/ChannelSettingsHandler.js')
-            ->addJs('M2ePro/Amazon/Listing/ProductsFilterHandler.js')
+            ->addJs('M2ePro/TemplateManager.js')
+            ->addJs('M2ePro/Amazon/Listing/Settings.js')
+            ->addJs('M2ePro/Amazon/Listing/ChannelSettings.js')
+            ->addJs('M2ePro/Amazon/Listing/ProductsFilter.js')
 
-            ->addJs('M2ePro/Amazon/Listing/Product/VariationHandler.js')
+            ->addJs('M2ePro/Amazon/Listing/Product/Variation.js')
 
-            ->addJs('M2ePro/Listing/Other/AutoMappingHandler.js')
-            ->addJs('M2ePro/Listing/Other/MappingHandler.js')
-            ->addJs('M2ePro/Listing/Other/RemovingHandler.js')
-            ->addJs('M2ePro/Listing/Other/UnmappingHandler.js');
+            ->addJs('M2ePro/Listing/Other/AutoMapping.js')
+            ->addJs('M2ePro/Listing/Other/Mapping.js')
+            ->addJs('M2ePro/Listing/Other/Removing.js')
+            ->addJs('M2ePro/Listing/Other/Unmapping.js');
 
         $this->_initPopUp();
 
@@ -211,8 +212,7 @@ class Ess_M2ePro_Adminhtml_Amazon_ListingController
 
         // ---------------------------------------
 
-        Mage::helper('M2ePro/Data_Global')->setValue('temp_data', $model->getData());
-        Mage::helper('M2ePro/Data_Global')->setValue('marketplace_id', $model->getMarketplaceId());
+        Mage::helper('M2ePro/Data_Global')->setValue('temp_data', $model);
 
         // Set rule model
         // ---------------------------------------
@@ -231,8 +231,7 @@ class Ess_M2ePro_Adminhtml_Amazon_ListingController
         $id = $this->getRequest()->getParam('id');
         $model = Mage::helper('M2ePro/Component_Amazon')->getCachedObject('Listing', $id);
 
-        Mage::helper('M2ePro/Data_Global')->setValue('temp_data', $model->getData());
-        Mage::helper('M2ePro/Data_Global')->setValue('marketplace_id', $model->getMarketplaceId());
+        Mage::helper('M2ePro/Data_Global')->setValue('temp_data', $model);
 
         // Set rule model
         // ---------------------------------------
@@ -256,7 +255,7 @@ class Ess_M2ePro_Adminhtml_Amazon_ListingController
             return $this->_redirect('*/adminhtml_amazon_listing/index');
         }
 
-        Mage::helper('M2ePro/Data_Global')->setValue('temp_data', $listing->getData());
+        Mage::helper('M2ePro/Data_Global')->setValue('temp_data', $listing);
 
         $this->_initAction();
         $this->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_amazon_listing_edit'));

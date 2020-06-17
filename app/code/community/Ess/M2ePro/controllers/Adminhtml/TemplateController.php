@@ -19,20 +19,14 @@ class Ess_M2ePro_Adminhtml_TemplateController extends Ess_M2ePro_Controller_Admi
 
     public function checkMessagesAction()
     {
-        // ---------------------------------------
         $id   = $this->getRequest()->getParam('id');
         $nick = $this->getRequest()->getParam('nick');
         $data = $this->getRequest()->getParam($nick);
         $component = $this->getRequest()->getParam('component_mode');
-        // ---------------------------------------
 
-        // ---------------------------------------
         $template = null;
         $templateData = $data ? $data : array();
-        $templateUsedAttributes = array();
-        // ---------------------------------------
 
-        // ---------------------------------------
         switch ($component) {
             case Ess_M2ePro_Helper_Component_Ebay::NICK:
                 $manager = Mage::getSingleton('M2ePro/Ebay_Template_Manager');
@@ -48,30 +42,22 @@ class Ess_M2ePro_Adminhtml_TemplateController extends Ess_M2ePro_Controller_Admi
                 break;
         }
 
-        // ---------------------------------------
-
         if ($template !== null && $template->getId()) {
             $templateData = $template->getData();
-            $templateUsedAttributes = $template->getUsedAttributes();
         }
 
-        // ---------------------------------------
         if ($template === null && empty($templateData)) {
             $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('messages' => '')));
             return;
         }
 
-        // ---------------------------------------
-
         $this->loadLayout();
 
         /** @var Ess_M2ePro_Block_Adminhtml_Template_Messages $messagesBlock */
-        $messagesBlock = $this->getLayout()
-            ->createBlock('M2ePro/adminhtml_template_messages')
+        $messagesBlock = $this->getLayout()->createBlock('M2ePro/adminhtml_template_messages')
             ->getResultBlock($nick, $component);
 
         $messagesBlock->setData('template_data', $templateData);
-        $messagesBlock->setData('used_attributes', $templateUsedAttributes);
         $messagesBlock->setData('marketplace_id', $this->getRequest()->getParam('marketplace_id'));
         $messagesBlock->setData('store_id', $this->getRequest()->getParam('store_id'));
 

@@ -154,8 +154,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Product_SourceCategories_Summary_G
         $helper = Mage::helper('M2ePro');
         return <<<HTML
 <a  href="javascript:"
-    onclick="EbayListingProductSourceCategoriesSummaryGridHandlerObj.selectByRowId('{$row->getId()}');
-             EbayListingProductSourceCategoriesSummaryGridHandlerObj.remove()"
+    onclick="EbayListingProductSourceCategoriesSummaryGridObj.selectByRowId('{$row->getId()}');
+             EbayListingProductSourceCategoriesSummaryGridObj.remove()"
    >{$helper->__('Remove')}</a>
 HTML;
     }
@@ -217,7 +217,10 @@ HTML;
         $urls = array();
 
         $path = 'adminhtml_ebay_listing_productAdd/removeSessionProductsByCategory';
-        $urls[$path] = $this->getUrl('*/' . $path);
+        $urls[$path] = $this->getUrl(
+            '*/' . $path,
+            array('listing_id' => $this->getRequest()->getParam('listing_id'))
+        );
 
         $urls = Mage::helper('M2ePro')->jsonEncode($urls);
 
@@ -228,7 +231,7 @@ HTML;
 
     M2ePro.url.add({$urls});
 
-    EbayListingProductSourceCategoriesSummaryGridHandlerObj = new EbayListingProductSourceCategoriesSummaryGridHandler(
+    EbayListingProductSourceCategoriesSummaryGridObj = new EbayListingProductSourceCategoriesSummaryGrid(
         '{$this->getId()}'
     );
 </script>
@@ -238,7 +241,7 @@ HTML;
         $js .= <<<HTML
 <script type="text/javascript">
     {$this->getCollection()->getSize()} || Windows.getFocusedWindow().close();
-    EbayListingProductSourceCategoriesSummaryGridHandlerObj.afterInitPage();
+    EbayListingProductSourceCategoriesSummaryGridObj.afterInitPage();
 </script>
 HTML;
 

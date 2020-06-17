@@ -7,50 +7,31 @@
  */
 
 abstract class Ess_M2ePro_Block_Adminhtml_Wizard_InstallationEbay_Installation
-    extends Ess_M2ePro_Block_Adminhtml_Wizard_Abstract
+    extends Ess_M2ePro_Block_Adminhtml_Wizard_Installation
 {
-    //########################################
-
-    abstract protected function getStep();
-
     //########################################
 
     protected function _beforeToHtml()
     {
-        // Initialization block
-        // ---------------------------------------
-        $this->setId('wizard' . $this->getNick() . $this->getStep());
-        // ---------------------------------------
+        parent::_beforeToHtml();
 
-        $this->setTemplate('widget/form/container.phtml');
-
-        // ---------------------------------------
-        return parent::_beforeToHtml();
+        $this->updateButton('continue', 'onclick', 'InstallationEbayWizardObj.continueStep();');
     }
 
-    //########################################
-
-    protected function _toHtml()
+    protected function getHeaderTextHtml()
     {
-        $urls = Mage::helper('M2ePro')->jsonEncode(
-            Mage::helper('M2ePro')->getControllerActions('adminhtml_wizard_installationEbay')
+        return Mage::helper('M2ePro')->__('Configuration of eBay Integration');
+    }
+
+    protected function _prepareLayout()
+    {
+        Mage::helper('M2ePro/View')->getJsRenderer()->addOnReadyJs(
+            <<<JS
+        InstallationEbayWizardObj = new WizardInstallationEbay();
+JS
         );
 
-        $additionalJs = <<<SCRIPT
-<script type="text/javascript">
-    M2ePro.url.add({$urls});
-    InstallationEbayWizardObj = new WizardInstallationEbay();
-</script>
-SCRIPT;
-
-        $contentBlock = Mage::helper('M2ePro/Module_Wizard')->createBlock(
-            'installation_' . $this->getStep() . '_content',
-            $this->getNick()
-        );
-
-        return parent::_toHtml() .
-               $additionalJs .
-               $contentBlock->toHtml();
+        return parent::_prepareLayout();
     }
 
     //########################################

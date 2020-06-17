@@ -49,7 +49,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Template_Description_Category_Chooser_Ed
             'id'      => 'category_edit_confirm_button',
             'class'   => '',
             'label'   => Mage::helper('M2ePro')->__('Confirm'),
-            'onclick' => 'AmazonTemplateDescriptionCategoryChooserHandlerObj.confirmCategory();',
+            'onclick' => 'AmazonTemplateDescriptionCategoryChooserObj.confirmCategory();',
         );
         $doneButton = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         // ---------------------------------------
@@ -59,7 +59,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Template_Description_Category_Chooser_Ed
         $buttonsContainer = <<< HTML
 <div id="chooser_buttons_container">
     <a href="javascript:void(0)"
-       onclick="AmazonTemplateDescriptionCategoryChooserHandlerObj.cancelPopUp()">{$cancelWord}</a>
+       onclick="AmazonTemplateDescriptionCategoryChooserObj.cancelPopUp()">{$cancelWord}</a>
     &nbsp;&nbsp;&nbsp;&nbsp;
     {$doneButton->toHtml()}
     <script type="text/javascript">amazonTemplateDescriptionCategoryChooserTabsJsTabs.moveTabContentInDest();</script>

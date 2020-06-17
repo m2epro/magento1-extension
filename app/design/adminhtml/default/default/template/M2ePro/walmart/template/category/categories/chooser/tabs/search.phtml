@@ -20,8 +20,8 @@
 </style>
 
 <div id="chooser_search_input_container">
-    <input id="query" type="text" placeholder="<?php echo Mage::helper('M2ePro')->__('Enter keyword(s) or browsenode ID...'); ?>" onkeypress="WalmartTemplateCategoryCategoriesChooserHandlerObj.keyPressQuery(event)">
-    <button onclick="WalmartTemplateCategoryCategoriesChooserHandlerObj.search()"><?php echo Mage::helper('M2ePro')->__('Search'); ?></button>&nbsp;&nbsp;&nbsp;&nbsp;<button onclick="WalmartTemplateCategoryCategoriesChooserHandlerObj.searchReset()"><?php echo Mage::helper('M2ePro')->__('Reset'); ?></button>
+    <input id="query" type="text" placeholder="<?php echo Mage::helper('M2ePro')->__('Enter keyword(s) or browsenode ID...'); ?>" onkeypress="WalmartTemplateCategoryCategoriesChooserObj.keyPressQuery(event)">
+    <button onclick="WalmartTemplateCategoryCategoriesChooserObj.search()"><?php echo Mage::helper('M2ePro')->__('Search'); ?></button>&nbsp;&nbsp;&nbsp;&nbsp;<button onclick="WalmartTemplateCategoryCategoriesChooserObj.searchReset()"><?php echo Mage::helper('M2ePro')->__('Reset'); ?></button>
 </div>
 
 <div id="chooser_search_results">
@@ -40,7 +40,7 @@
 
         <tr id="search_results_update_sites_data_tr" style="display: none;">
             <td colspan="2" style="text-align: center;">
-                <?php echo Mage::helper('M2ePro')->__('Try to <a href="javascript:void(0)" onclick="WalmartTemplateCategoryCategoriesChooserHandlerObj.refreshWalmartCategories()">Update Walmart Marketplaces data</a> and repeate the Search.'); ?>
+                <?php echo Mage::helper('M2ePro')->__('Try to <a href="javascript:void(0)" onclick="WalmartTemplateCategoryCategoriesChooserObj.refreshWalmartCategories()">Update Walmart Marketplaces data</a> and repeate the Search.'); ?>
             </td>
         </tr>
 

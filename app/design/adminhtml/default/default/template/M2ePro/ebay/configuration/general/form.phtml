@@ -27,7 +27,7 @@
 
     Event.observe(window, 'load', function() {
 
-        EbayConfigurationGeneralHandlerObj = new EbayConfigurationHandler();
+        EbayConfigurationObj = new EbayConfiguration();
 
         editForm = new varienForm('edit_form', '<?php echo $this->getValidationUrl(); ?>');
     });
@@ -100,26 +100,6 @@
                 <table class="form-list" cellspacing="0" cellpadding="0">
 
                     <tbody>
-
-                    <tr>
-                        <td class="label">
-                            <label><?php echo Mage::helper('M2ePro')->__('Item Specifics Step')?>: </label>
-                        </td>
-
-                        <td class="value">
-                            <select name="use_last_specifics_mode">
-                                <option value="0" <?php if (!$this->use_last_specifics_mode): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Show'); ?></option>
-                                <option value="1" <?php if ($this->use_last_specifics_mode): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Do Not Show'); ?></option>
-                            </select>
-                            <p class="note">
-                                <span><?php echo Mage::helper('M2ePro')->__(
-                                    'Choose <b>Do Not Show</b> if you don\'t need to edit Item specifics details every time you add Products.<br/>
-                                    You can view and change predefined Item specifics in %menu_root%.',
-                                    Mage::helper('M2ePro/View_Ebay')->getPageNavigationPath('configuration', 'Categories')
-                                ); ?></span>
-                            </p>
-                        </td>
-                    </tr>
 
                     <tr>
                         <td class="label">
@@ -282,7 +262,7 @@
                                     <span style="font-weight: bold; padding-right: 2px;"><?php echo $this->motors_epids_motor_dictionary_custom_count; ?></span>
 
                                     <span style="">
-                                        (<a href="javascript:void(0);" onclick="EbayConfigurationGeneralHandlerObj.manageMotorsRecords('<?php echo Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_EPID_MOTOR; ?>', '<?php echo Mage::helper('M2ePro')->__('Manage Custom Compatibility [ePIDs Motors]'); ?>');"><?php echo Mage::helper('M2ePro')->__('manage'); ?></a>)
+                                        (<a href="javascript:void(0);" onclick="EbayConfigurationObj.manageMotorsRecords('<?php echo Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_EPID_MOTOR; ?>', '<?php echo Mage::helper('M2ePro')->__('Manage Custom Compatibility [ePIDs Motors]'); ?>');"><?php echo Mage::helper('M2ePro')->__('manage'); ?></a>)
                                     </span>
                                 </td>
                             </tr>
@@ -372,7 +352,7 @@
                                 <span style="font-weight: bold; padding-right: 2px;"><?php echo $this->motors_epids_uk_dictionary_custom_count; ?></span>
 
                                 <span style="">
-                                    (<a href="javascript:void(0);" onclick="EbayConfigurationGeneralHandlerObj.manageMotorsRecords('<?php echo Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_EPID_UK; ?>', '<?php echo Mage::helper('M2ePro')->__('Manage Custom Compatibility [ePIDs UK]'); ?>');"><?php echo Mage::helper('M2ePro')->__('manage'); ?></a>)
+                                    (<a href="javascript:void(0);" onclick="EbayConfigurationObj.manageMotorsRecords('<?php echo Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_EPID_UK; ?>', '<?php echo Mage::helper('M2ePro')->__('Manage Custom Compatibility [ePIDs UK]'); ?>');"><?php echo Mage::helper('M2ePro')->__('manage'); ?></a>)
                                 </span>
                             </td>
                         </tr>
@@ -462,7 +442,7 @@
                                 <span style="font-weight: bold; padding-right: 2px;"><?php echo $this->motors_epids_de_dictionary_custom_count; ?></span>
 
                                 <span style="">
-                                    (<a href="javascript:void(0);" onclick="EbayConfigurationGeneralHandlerObj.manageMotorsRecords('<?php echo Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_EPID_DE; ?>', '<?php echo Mage::helper('M2ePro')->__('Manage Custom Compatibility [ePIDs DE]'); ?>');"><?php echo Mage::helper('M2ePro')->__('manage'); ?></a>)
+                                    (<a href="javascript:void(0);" onclick="EbayConfigurationObj.manageMotorsRecords('<?php echo Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_EPID_DE; ?>', '<?php echo Mage::helper('M2ePro')->__('Manage Custom Compatibility [ePIDs DE]'); ?>');"><?php echo Mage::helper('M2ePro')->__('manage'); ?></a>)
                                 </span>
                             </td>
                         </tr>
@@ -552,7 +532,7 @@
                                 <span style="font-weight: bold; padding-right: 2px;"><?php echo $this->motors_epids_au_dictionary_custom_count; ?></span>
 
                                 <span style="">
-                                    (<a href="javascript:void(0);" onclick="EbayConfigurationGeneralHandlerObj.manageMotorsRecords('<?php echo Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_EPID_AU; ?>', '<?php echo Mage::helper('M2ePro')->__('Manage Custom Compatibility [ePIDs AU]'); ?>');"><?php echo Mage::helper('M2ePro')->__('manage'); ?></a>)
+                                    (<a href="javascript:void(0);" onclick="EbayConfigurationObj.manageMotorsRecords('<?php echo Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_EPID_AU; ?>', '<?php echo Mage::helper('M2ePro')->__('Manage Custom Compatibility [ePIDs AU]'); ?>');"><?php echo Mage::helper('M2ePro')->__('manage'); ?></a>)
                                 </span>
                             </td>
                         </tr>
@@ -638,7 +618,7 @@
                                 <span style="font-weight: bold; padding-right: 2px;"><?php echo $this->motors_ktypes_dictionary_custom_count; ?></span>
 
                                 <span style="">
-                                        (<a href="javascript:void(0);" onclick="EbayConfigurationGeneralHandlerObj.manageMotorsRecords('<?php echo Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_KTYPE; ?>', '<?php echo Mage::helper('M2ePro')->__('Manage Custom Compatibility [kTypes]'); ?>');"><?php echo Mage::helper('M2ePro')->__('manage'); ?></a>)
+                                        (<a href="javascript:void(0);" onclick="EbayConfigurationObj.manageMotorsRecords('<?php echo Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_KTYPE; ?>', '<?php echo Mage::helper('M2ePro')->__('Manage Custom Compatibility [kTypes]'); ?>');"><?php echo Mage::helper('M2ePro')->__('manage'); ?></a>)
                                     </span>
                             </td>
                         </tr>
@@ -706,7 +686,7 @@
                                 <span id="database-statistic-popup-ktypes" class="database-statistic-popup" style="font-weight: bold;"><?php echo $this->motors_ktypes_dictionary_custom_count; ?></span>
                             </td>
                             <td class="value" style="width: 90px; text-align: right;">
-                                <button type="button" style="min-width: 55px;" onclick="EbayConfigurationGeneralHandlerObj.clearAddedMotorsRecords.bind(this)();"><?php echo Mage::helper('M2ePro')->__('Clear') ?></button>
+                                <button type="button" style="min-width: 55px;" onclick="EbayConfigurationObj.clearAddedMotorsRecords.bind(this)();"><?php echo Mage::helper('M2ePro')->__('Clear') ?></button>
                             </td>
                         </tr>
 
@@ -718,7 +698,7 @@
                                 <input name="source" id="source" type="file" accept=".csv" class="required-entry" />
                             </td>
                             <td class="value" style="text-align: right;">
-                                <button type="button" style="min-width: 55px;" onclick="EbayConfigurationGeneralHandlerObj.importMotorsRecords();"><?php echo Mage::helper('M2ePro')->__('Import') ?></button>
+                                <button type="button" style="min-width: 55px;" onclick="EbayConfigurationObj.importMotorsRecords();"><?php echo Mage::helper('M2ePro')->__('Import') ?></button>
                             </td>
                         </tr>
 

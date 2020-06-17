@@ -27,7 +27,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Log extends Ess_M2ePro_Model_Listing_Log
      * @param null $action
      * @param null $description
      * @param null $type
-     * @param null $priority
      * @param array $additionalData
      * @throws Ess_M2ePro_Model_Exception
      * @throws Ess_M2ePro_Model_Exception_Logic
@@ -41,7 +40,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Log extends Ess_M2ePro_Model_Listing_Log
         $action = null,
         $description = null,
         $type = null,
-        $priority = null,
         array $additionalData = array()
     ) {
         $dataForAdd = $this->makeDataForAdd(
@@ -53,7 +51,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Log extends Ess_M2ePro_Model_Listing_Log
             $action,
             $description,
             $type,
-            $priority,
             $additionalData
         );
 

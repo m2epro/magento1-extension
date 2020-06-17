@@ -149,28 +149,6 @@ class Ess_M2ePro_Helper_Module_Database_Repair extends Mage_Core_Helper_Abstract
 
     // ---------------------------------------
 
-    /**
-     * @param $tableName
-     * @return string <p> OK if repair was successfully or Error Message if not. </p>
-     */
-    public function repairCrashedTable($tableName)
-    {
-        /** @var $connWrite Varien_Db_Adapter_Pdo_Mysql */
-        $connWrite = Mage::getSingleton('core/resource')->getConnection('core_write');
-
-        $tableName = Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix($tableName);
-
-        try {
-            $result = $connWrite->query("REPAIR TABLE `{$tableName}`")->fetch();
-        } catch (Exception $e) {
-            return false;
-        }
-
-        return $result['Msg_type'] == 'error' ? false : true;
-    }
-
-    // ---------------------------------------
-
     public function fixColumnIndex($tableName, array $columnInfo)
     {
         if (!isset($columnInfo['name'], $columnInfo['key'])) {

@@ -21,15 +21,15 @@ class Ess_M2ePro_Sql_Upgrade_v6_4_7_1__v6_4_8_AllFeatures extends Ess_M2ePro_Mod
             ->changeColumn('is_repricing', 'TINYINT(2) UNSIGNED NOT NULL', 0);
 
         $this->_installer->run(<<<SQL
-TRUNCATE TABLE `m2epro_amazon_listing_product_repricing`;
+TRUNCATE TABLE `{$this->_installer->getTable('m2epro_amazon_listing_product_repricing')}`;
 
-UPDATE `m2epro_amazon_listing_product`
+UPDATE `{$this->_installer->getTable('m2epro_amazon_listing_product')}`
 SET `is_repricing` = 0;
 
-UPDATE `m2epro_amazon_listing_other`
+UPDATE `{$this->_installer->getTable('m2epro_amazon_listing_other')}`
 SET `is_repricing` = 0, `is_repricing_disabled` = 0;
 
-UPDATE `m2epro_amazon_account_repricing`
+UPDATE `{$this->_installer->getTable('m2epro_amazon_account_repricing')}`
 SET `total_products` = 0, `last_checked_listing_product_update_date` = NULL;
 SQL
         );

@@ -117,11 +117,11 @@ var add_category_products = function(callback) {
                 var ids = response['ids'].join(',');
 
                 if (ids == '') {
-                    alert(M2ePro.text.select_items_message);
+                    alert(M2ePro.translator.translate('Please select the Products you want to perform the Action on.'));
                     return false;
                 }
 
-                ProductGridHandlerObj.addListingHandlerObj.add(ids, 'view', '');
+                ProductGridObj.addProductObj.add(ids, 'view', '');
             }
         });
 

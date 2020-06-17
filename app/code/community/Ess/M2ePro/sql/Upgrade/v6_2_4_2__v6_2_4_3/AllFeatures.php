@@ -86,33 +86,33 @@ class Ess_M2ePro_Sql_Upgrade_v6_2_4_2__v6_2_4_3_AllFeatures extends Ess_M2ePro_M
 
         $installer->run(<<<SQL
 
-  UPDATE `m2epro_ebay_template_category_specific`
+  UPDATE `{$this->_installer->getTable('m2epro_ebay_template_category_specific')}`
   SET    `value_ebay_recommended` = '',
          `value_custom_value` = '',
          `value_custom_attribute` = ''
   WHERE `value_mode` = 0; -- NONE --
 
-  UPDATE `m2epro_ebay_template_category_specific`
+  UPDATE `{$this->_installer->getTable('m2epro_ebay_template_category_specific')}`
   SET    `value_custom_value` = '',
          `value_custom_attribute` = ''
   WHERE `value_mode` = 1; -- EBAY RECOMMENDED --
 
-  UPDATE `m2epro_ebay_template_category_specific`
+  UPDATE `{$this->_installer->getTable('m2epro_ebay_template_category_specific')}`
   SET    `value_ebay_recommended` = '',
          `value_custom_attribute` = ''
   WHERE `value_mode` = 2; -- CUSTOM VALUE --
 
-  UPDATE `m2epro_ebay_template_category_specific`
+  UPDATE `{$this->_installer->getTable('m2epro_ebay_template_category_specific')}`
   SET    `value_ebay_recommended` = '',
          `value_custom_value` = ''
   WHERE `value_mode` = 3; -- CUSTOM ATTRIBUTE --
 
-  UPDATE `m2epro_ebay_template_category_specific`
+  UPDATE `{$this->_installer->getTable('m2epro_ebay_template_category_specific')}`
   SET    `value_ebay_recommended` = '',
          `value_custom_value` = ''
   WHERE `value_mode` = 4; -- CUSTOM LABEL ATTRIBUTE --
 
-  UPDATE `m2epro_ebay_template_category_specific`
+  UPDATE `{$this->_installer->getTable('m2epro_ebay_template_category_specific')}`
   SET   `attribute_title` = ''
   WHERE `mode` = 3             -- CUSTOM ITEM SPECIFICS --
   AND   `value_mode` = 3;      -- CUSTOM ATTRIBUTE --
@@ -148,10 +148,10 @@ SQL
 
         $installer->run(<<<SQL
 
-  DELETE FROM `m2epro_ebay_template_category_specific`
+  DELETE FROM `{$this->_installer->getTable('m2epro_ebay_template_category_specific')}`
   WHERE `mode` = 2;
 
-  UPDATE `m2epro_ebay_dictionary_category`
+  UPDATE `{$this->_installer->getTable('m2epro_ebay_dictionary_category')}`
   SET `item_specifics` = NULL;
 
 SQL
@@ -179,7 +179,7 @@ SQL
 
             $installer->run(<<<SQL
 
-    UPDATE `m2epro_ebay_template_category_specific`
+    UPDATE `{$this->_installer->getTable('m2epro_ebay_template_category_specific')}`
     SET `value_ebay_recommended` = {$values}
     WHERE `id` = {$id};
 
@@ -191,14 +191,14 @@ SQL
 
         $installer->run(<<<SQL
 
-    DELETE FROM `m2epro_config`
+    DELETE FROM `{$this->_installer->getTable('m2epro_config')}`
     WHERE `group` = '/view/analytic/';
 
-    DELETE FROM `m2epro_synchronization_config`
+    DELETE FROM `{$this->_installer->getTable('m2epro_synchronization_config')}`
     WHERE `group` = '/ebay/marketplaces/motors_ktypes/'
     AND   `key`   = 'part_size';
 
-    DELETE FROM `m2epro_synchronization_config`
+    DELETE FROM `{$this->_installer->getTable('m2epro_synchronization_config')}`
     WHERE `group` = '/ebay/marketplaces/motors_specifics/'
     AND   `key`   = 'part_size';
 
@@ -219,7 +219,8 @@ SQL
 
             $installer->run(<<<SQL
 
-INSERT INTO `m2epro_config` (`group`,`key`,`value`,`notice`,`update_date`,`create_date`) VALUES
+INSERT INTO `{$this->_installer->getTable('m2epro_config')}` 
+(`group`,`key`,`value`,`notice`,`update_date`,`create_date`) VALUES
 ('/cron/magento/', 'disabled', '0', NULL, '2015-02-05 00:00:00', '2015-02-05 00:00:00');
 
 SQL
@@ -255,7 +256,8 @@ SQL
 
             $installer->run(<<<SQL
 
-INSERT INTO `m2epro_synchronization_config` (`group`,`key`,`value`,`notice`,`update_date`,`create_date`) VALUES
+INSERT INTO `{$this->_installer->getTable('m2epro_synchronization_config')}` 
+(`group`,`key`,`value`,`notice`,`update_date`,`create_date`) VALUES
 ('/ebay/other_listing/synchronization/', 'mode', '{$mode}',
  '0 - disable, \r\n1 - enable', '2015-02-05 00:00:00', '2015-02-05 00:00:00');
 
@@ -275,7 +277,7 @@ SQL
 
         $installer->run(<<<SQL
 
-  INSERT INTO `m2epro_registry`
+  INSERT INTO `{$this->_installer->getTable('m2epro_registry')}`
   SET `key` = 'wizard_migrationToV6_notes_html',
       `value` = (SELECT `data`
                  FROM `m2epro_migration_v6`

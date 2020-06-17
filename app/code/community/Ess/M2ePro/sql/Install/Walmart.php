@@ -50,12 +50,11 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_walmart_dictionary_category')
   INDEX `category_id` (`category_id`),
   INDEX `is_leaf` (`is_leaf`),
   INDEX `marketplace_id` (`marketplace_id`),
-  INDEX `path` (`path`(500)),
+  INDEX `path` (`path`(255)),
   INDEX `parent_category_id` (`parent_category_id`),
-  INDEX `title` (`title`),
-  INDEX `product_data_nicks` (`product_data_nicks`(500))
+  INDEX `title` (`title`)
 )
-ENGINE = MYISAM
+ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
@@ -70,7 +69,7 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_walmart_dictionary_marketplac
   PRIMARY KEY (`id`),
   INDEX `marketplace_id` (`marketplace_id`)
 )
-ENGINE = MYISAM
+ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
@@ -103,7 +102,7 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_walmart_dictionary_specific')
   INDEX `xpath` (`xpath`),
   INDEX `product_data_nick` (`product_data_nick`)
 )
-ENGINE = MYISAM
+ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
@@ -566,43 +565,29 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_walmart_template_synchronizat
   `list_mode` TINYINT(2) UNSIGNED NOT NULL,
   `list_status_enabled` TINYINT(2) UNSIGNED NOT NULL,
   `list_is_in_stock` TINYINT(2) UNSIGNED NOT NULL,
-  `list_qty_magento` TINYINT(2) UNSIGNED NOT NULL,
-  `list_qty_magento_value` INT(11) UNSIGNED NOT NULL,
-  `list_qty_magento_value_max` INT(11) UNSIGNED NOT NULL,
   `list_qty_calculated` TINYINT(2) UNSIGNED NOT NULL,
   `list_qty_calculated_value` INT(11) UNSIGNED NOT NULL,
-  `list_qty_calculated_value_max` INT(11) UNSIGNED NOT NULL,
   `list_advanced_rules_mode` TINYINT(2) UNSIGNED NOT NULL,
   `list_advanced_rules_filters` TEXT DEFAULT NULL,
   `revise_update_qty` TINYINT(2) UNSIGNED NOT NULL,
   `revise_update_qty_max_applied_value_mode` TINYINT(2) UNSIGNED NOT NULL,
   `revise_update_qty_max_applied_value` INT(11) UNSIGNED DEFAULT NULL,
   `revise_update_price` TINYINT(2) UNSIGNED NOT NULL,
-  `revise_update_price_max_allowed_deviation_mode` TINYINT(2) UNSIGNED NOT NULL,
-  `revise_update_price_max_allowed_deviation` INT(11) UNSIGNED DEFAULT NULL,
   `revise_update_promotions` TINYINT(2) UNSIGNED NOT NULL,
   `revise_update_details` TINYINT(2) UNSIGNED NOT NULL,
   `relist_mode` TINYINT(2) UNSIGNED NOT NULL,
   `relist_filter_user_lock` TINYINT(2) UNSIGNED NOT NULL,
   `relist_status_enabled` TINYINT(2) UNSIGNED NOT NULL,
   `relist_is_in_stock` TINYINT(2) UNSIGNED NOT NULL,
-  `relist_qty_magento` TINYINT(2) UNSIGNED NOT NULL,
-  `relist_qty_magento_value` INT(11) UNSIGNED NOT NULL,
-  `relist_qty_magento_value_max` INT(11) UNSIGNED NOT NULL,
   `relist_qty_calculated` TINYINT(2) UNSIGNED NOT NULL,
   `relist_qty_calculated_value` INT(11) UNSIGNED NOT NULL,
-  `relist_qty_calculated_value_max` INT(11) UNSIGNED NOT NULL,
   `relist_advanced_rules_mode` TINYINT(2) UNSIGNED NOT NULL,
   `relist_advanced_rules_filters` TEXT DEFAULT NULL,
   `stop_mode` TINYINT(2) UNSIGNED NOT NULL,
   `stop_status_disabled` TINYINT(2) UNSIGNED NOT NULL,
   `stop_out_off_stock` TINYINT(2) UNSIGNED NOT NULL,
-  `stop_qty_magento` TINYINT(2) UNSIGNED NOT NULL,
-  `stop_qty_magento_value` INT(11) UNSIGNED NOT NULL,
-  `stop_qty_magento_value_max` INT(11) UNSIGNED NOT NULL,
   `stop_qty_calculated` TINYINT(2) UNSIGNED NOT NULL,
   `stop_qty_calculated_value` INT(11) UNSIGNED NOT NULL,
-  `stop_qty_calculated_value_max` INT(11) UNSIGNED NOT NULL,
   `stop_advanced_rules_mode` TINYINT(2) UNSIGNED NOT NULL,
   `stop_advanced_rules_filters` TEXT DEFAULT NULL,
   PRIMARY KEY (`template_synchronization_id`)

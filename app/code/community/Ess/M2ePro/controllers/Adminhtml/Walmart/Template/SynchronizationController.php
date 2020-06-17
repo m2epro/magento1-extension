@@ -20,9 +20,9 @@ class Ess_M2ePro_Adminhtml_Walmart_Template_SynchronizationController
         $this->getLayout()->getBlock('head')
             ->setCanLoadExtJs(true)
             ->addJs('mage/adminhtml/rules.js')
-            ->addJs('M2ePro/Template/EditHandler.js')
-            ->addJs('M2ePro/Walmart/Template/EditHandler.js')
-            ->addJs('M2ePro/Walmart/Template/SynchronizationHandler.js');
+            ->addJs('M2ePro/Template/Edit.js')
+            ->addJs('M2ePro/Walmart/Template/Edit.js')
+            ->addJs('M2ePro/Walmart/Template/Synchronization.js');
 
         $this->_initPopUp();
 
@@ -81,117 +81,6 @@ class Ess_M2ePro_Adminhtml_Walmart_Template_SynchronizationController
 
         $id = $this->getRequest()->getParam('id');
 
-        // Base prepare
-        // ---------------------------------------
-        $data = array();
-        // ---------------------------------------
-
-        // tab: list
-        // ---------------------------------------
-        $keys = array(
-            'title',
-            'list_mode',
-            'list_status_enabled',
-            'list_is_in_stock',
-            'list_qty_magento',
-            'list_qty_magento_value',
-            'list_qty_magento_value_max',
-            'list_qty_calculated',
-            'list_qty_calculated_value',
-            'list_qty_calculated_value_max',
-            'list_advanced_rules_mode'
-        );
-        foreach ($keys as $key) {
-            if (isset($post[$key])) {
-                $data[$key] = $post[$key];
-            }
-        }
-
-        $data['list_advanced_rules_filters'] = $this->getRuleData(
-            Ess_M2ePro_Model_Walmart_Template_Synchronization::LIST_ADVANCED_RULES_PREFIX,
-            $post
-        );
-
-        $data['title'] = strip_tags($data['title']);
-        // ---------------------------------------
-
-        // tab: revise
-        // ---------------------------------------
-        $keys = array(
-            'revise_update_qty_max_applied_value_mode',
-            'revise_update_qty_max_applied_value',
-            'revise_update_price',
-            'revise_update_price_max_allowed_deviation_mode',
-            'revise_update_price_max_allowed_deviation',
-            'revise_update_promotions',
-            'revise_update_details',
-        );
-        foreach ($keys as $key) {
-            if (isset($post[$key])) {
-                $data[$key] = $post[$key];
-            }
-        }
-
-        $data['revise_update_qty'] = 1;
-        // ---------------------------------------
-
-        // tab: relist
-        // ---------------------------------------
-        $keys = array(
-            'relist_mode',
-            'relist_filter_user_lock',
-            'relist_status_enabled',
-            'relist_is_in_stock',
-            'relist_qty_magento',
-            'relist_qty_magento_value',
-            'relist_qty_magento_value_max',
-            'relist_qty_calculated',
-            'relist_qty_calculated_value',
-            'relist_qty_calculated_value_max',
-            'relist_advanced_rules_mode'
-        );
-        foreach ($keys as $key) {
-            if (isset($post[$key])) {
-                $data[$key] = $post[$key];
-            }
-        }
-
-        $data['relist_advanced_rules_filters'] = $this->getRuleData(
-            Ess_M2ePro_Model_Walmart_Template_Synchronization::RELIST_ADVANCED_RULES_PREFIX,
-            $post
-        );
-
-        // ---------------------------------------
-
-        // tab: stop
-        // ---------------------------------------
-        $keys = array(
-            'stop_mode',
-            'stop_status_disabled',
-            'stop_out_off_stock',
-            'stop_qty_magento',
-            'stop_qty_magento_value',
-            'stop_qty_magento_value_max',
-            'stop_qty_calculated',
-            'stop_qty_calculated_value',
-            'stop_qty_calculated_value_max',
-            'stop_advanced_rules_mode'
-        );
-        foreach ($keys as $key) {
-            if (isset($post[$key])) {
-                $data[$key] = $post[$key];
-            }
-        }
-
-        $data['stop_advanced_rules_filters'] = $this->getRuleData(
-            Ess_M2ePro_Model_Walmart_Template_Synchronization::STOP_ADVANCED_RULES_PREFIX,
-            $post
-        );
-
-        // ---------------------------------------
-
-        // Add or update model
-        // ---------------------------------------
         $model = Mage::helper('M2ePro/Component_Walmart')->getModel('Template_Synchronization');
         $model->load($id);
 
@@ -199,7 +88,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Template_SynchronizationController
         $snapshotBuilder->setModel($model);
         $oldData = $snapshotBuilder->getSnapshot();
 
-        $model->addData($data)->save();
+        Mage::getModel('M2ePro/Walmart_Template_Synchronization_Builder')->build($model, $post);
 
         $snapshotBuilder = Mage::getModel('M2ePro/Walmart_Template_Synchronization_SnapshotBuilder');
         $snapshotBuilder->setModel($model);

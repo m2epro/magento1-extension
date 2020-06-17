@@ -327,7 +327,7 @@ class Ess_M2ePro_Sql_Upgrade_v6_1_6__v6_1_7_AllFeatures extends Ess_M2ePro_Model
             $connection->tableColumnExists($tempTable, 'dispatch_time') !== false) {
 
             $installer->run(<<<SQL
-UPDATE m2epro_ebay_template_shipping
+UPDATE `{$this->_installer->getTable('m2epro_ebay_template_shipping')}`
 SET dispatch_time = 1
 WHERE dispatch_time_mode = 1
 OR dispatch_time = 0;
@@ -348,7 +348,7 @@ SQL
             $connection->tableColumnExists($tempTable, 'cash_on_delivery_cost') !== false) {
 
             $installer->run(<<<SQL
-UPDATE m2epro_ebay_template_shipping
+UPDATE `{$this->_installer->getTable('m2epro_ebay_template_shipping')}`
 SET cash_on_delivery_cost = NULL
 WHERE local_shipping_cash_on_delivery_cost_mode = 2
 OR cash_on_delivery_cost = '';
@@ -384,7 +384,7 @@ SQL
             $connection->tableColumnExists($tempTable, 'local_handling_cost') !== false) {
 
             $installer->run(<<<SQL
-UPDATE m2epro_ebay_template_shipping_calculated
+UPDATE `{$this->_installer->getTable('m2epro_ebay_template_shipping_calculated')}`
 SET local_handling_cost = NULL
 WHERE local_handling_cost_mode = 2
 OR local_handling_cost = '';
@@ -415,7 +415,7 @@ SQL
             $connection->tableColumnExists($tempTable, 'international_handling_cost') !== false) {
 
             $installer->run(<<<SQL
-UPDATE m2epro_ebay_template_shipping_calculated
+UPDATE `{$this->_installer->getTable('m2epro_ebay_template_shipping_calculated')}`
 SET international_handling_cost = NULL
 WHERE international_handling_cost_mode = 2
 OR international_handling_cost = '';
@@ -459,7 +459,7 @@ SQL
         if ($connection->tableColumnExists($tempTable, 'originating_postal_code') !== false) {
 
             $installer->run(<<<SQL
-UPDATE m2epro_ebay_template_shipping mets
+UPDATE `{$this->_installer->getTable('m2epro_ebay_template_shipping')}` mets
 JOIN m2epro_ebay_template_shipping_calculated metsc ON (mets.id = metsc.template_shipping_id)
 SET mets.postal_code = metsc.originating_postal_code
 WHERE mets.postal_code = '';
@@ -484,7 +484,8 @@ SQL
 
             $installer->run(<<<SQL
 
-INSERT INTO m2epro_config (`group`,`key`,`value`,`notice`,`update_date`,`create_date`) VALUES
+INSERT INTO `{$this->_installer->getTable('m2epro_config')}` 
+(`group`,`key`,`value`,`notice`,`update_date`,`create_date`) VALUES
 ('/qty/percentage/', 'rounding_greater', '0', NULL, '2013-05-08 00:00:00', '2013-05-08 00:00:00'),
 ('/cron/service/', 'hostname', 'cron.m2epro.com', NULL, '2013-05-08 00:00:00', '2013-05-08 00:00:00');
 

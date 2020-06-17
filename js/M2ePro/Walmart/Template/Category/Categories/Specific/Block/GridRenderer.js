@@ -1,4 +1,4 @@
-WalmartTemplateCategoryCategoriesSpecificBlockGridRenderer = Class.create(WalmartTemplateCategoryCategoriesSpecificRenderer, {
+window.WalmartTemplateCategoryCategoriesSpecificBlockGridRenderer = Class.create(WalmartTemplateCategoryCategoriesSpecificRenderer, {
 
     // ---------------------------------------
 

@@ -30,8 +30,45 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_SendInvoice_Responser
     {
         parent::failDetected($messageText);
 
-        $this->_order->getLog()->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION);
+        $orderChange = Mage::getModel('M2ePro/Order_Change')->load($this->_params['order']['change_id']);
+        $this->_order->getLog()->setInitiator($orderChange->getCreatorType());
         $this->_order->addErrorLog('Amazon Order invoice was not send. Reason: %msg%', array('msg' => $messageText));
+    }
+
+    /**
+     * @return bool
+     */
+    protected function isNeedProcessResponse()
+    {
+        if (!parent::isNeedProcessResponse()) {
+            return false;
+        }
+
+        if ($this->getResponse()->getMessages()->hasErrorEntities()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @param array $messages
+     * @return void
+     */
+    protected function processResponseMessages(array $messages = array())
+    {
+        parent::processResponseMessages();
+
+        $orderChange = Mage::getModel('M2ePro/Order_Change')->load($this->_params['order']['change_id']);
+        $this->_order->getLog()->setInitiator($orderChange->getCreatorType());
+
+        foreach ($this->getResponse()->getMessages()->getEntities() as $message) {
+            if ($message->isError()) {
+                $this->logErrorMessage($message);
+            } else {
+                $this->_order->addWarningLog($message->getText());
+            }
+        }
     }
 
     //########################################
@@ -59,25 +96,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_SendInvoice_Responser
         foreach ($messagesSet->getEntities() as $message) {
             if ($message->isError()) {
                 $isFailed = true;
-
-                if ($this->_params['order']['document_type'] == Ess_M2ePro_Model_Amazon_Order::DOCUMENT_TYPE_INVOICE) {
-                    $this->_order->addErrorLog(
-                        'Invoice #%document_number% was not sent. Reason: %msg%',
-                        array(
-                            'document_number' => $this->_params['order']['document_number'],
-                            'msg' => $message->getText()
-                        )
-                    );
-                } elseif ($this->_params['order']['document_type'] ==
-                    Ess_M2ePro_Model_Amazon_Order::DOCUMENT_TYPE_CREDIT_NOTE) {
-                    $this->_order->addErrorLog(
-                        'Credit Memo #%document_number% was not sent. Reason: %msg%',
-                        array(
-                            'document_number' => $this->_params['order']['document_number'],
-                            'msg' => $message->getText()
-                        )
-                    );
-                }
+                $this->logErrorMessage($message);
             } else {
                 $this->_order->addWarningLog($message->getText());
             }
@@ -102,6 +121,31 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_SendInvoice_Responser
                 'Credit Memo #%document_number% was sent.',
                 array(
                     'document_number' => $this->_params['order']['document_number'],
+                )
+            );
+        }
+    }
+
+    /**
+     * @param Ess_M2ePro_Model_Response_Message $message
+     */
+    protected function logErrorMessage(Ess_M2ePro_Model_Response_Message $message)
+    {
+        if ($this->_params['order']['document_type'] == Ess_M2ePro_Model_Amazon_Order::DOCUMENT_TYPE_INVOICE) {
+            $this->_order->addErrorLog(
+                'Invoice #%document_number% was not sent. Reason: %msg%',
+                array(
+                    'document_number' => $this->_params['order']['document_number'],
+                    'msg' => $message->getText()
+                )
+            );
+        } elseif ($this->_params['order']['document_type'] ==
+            Ess_M2ePro_Model_Amazon_Order::DOCUMENT_TYPE_CREDIT_NOTE) {
+            $this->_order->addErrorLog(
+                'Credit Memo #%document_number% was not sent. Reason: %msg%',
+                array(
+                    'document_number' => $this->_params['order']['document_number'],
+                    'msg' => $message->getText()
                 )
             );
         }

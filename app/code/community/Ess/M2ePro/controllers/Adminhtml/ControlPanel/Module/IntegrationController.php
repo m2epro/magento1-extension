@@ -380,17 +380,19 @@ HTML
             );
 
             $quote = $magentoQuote->getQuote();
+            $items = array();
+            foreach ($quote->getAllItems() as $item) {
+                $items[] = $item->getData();
+            }
 
-            $resultHtml = '';
-
-            $resultHtml .= '<pre><b>Grand Total:</b> ' .$quote->getGrandTotal(). '<br>';
-            $resultHtml .= '<pre><b>Shipping Amount:</b> ' .$quote->getShippingAddress()->getShippingAmount(). '<br>';
-
-            $resultHtml .= '<pre><b>Quote Data:</b> ' .print_r($quote->getData(), true). '<br>';
-            $resultHtml .= '<pre><b>Shipping Address Data:</b> ' .print_r($shippingAddressData, true). '<br>';
-            $resultHtml .= '<pre><b>Billing Address Data:</b> ' .print_r($billingAddressData, true). '<br>';
-
-            return $this->getResponse()->setBody($resultHtml);
+            return $this->getResponse()->setBody(print_r(json_decode(json_encode(array(
+                'Grand Total'           => $quote->getGrandTotal(),
+                'Shipping Amount'       => $quote->getShippingAddress()->getShippingAmount(),
+                'Quote Data'            => $quote->getData(),
+                'Shipping Address Data' => $shippingAddressData,
+                'Billing Address Data'  => $billingAddressData,
+                'Items'                 => $items
+            )), true), true));
         }
 
         $formKey = Mage::getSingleton('core/session')->getFormKey();

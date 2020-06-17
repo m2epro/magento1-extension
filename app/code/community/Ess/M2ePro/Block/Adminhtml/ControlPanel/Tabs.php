@@ -25,7 +25,6 @@ class Ess_M2ePro_Block_Adminhtml_ControlPanel_Tabs extends Ess_M2ePro_Block_Admi
         $activeTab = $this->getRequest()->getParam('tab');
         $allowedTabs = array(
             Ess_M2ePro_Helper_View_ControlPanel::TAB_SUMMARY,
-            Ess_M2ePro_Helper_View_ControlPanel::TAB_ABOUT,
             Ess_M2ePro_Helper_View_ControlPanel::TAB_INSPECTION,
             Ess_M2ePro_Helper_View_ControlPanel::TAB_DATABASE,
             Ess_M2ePro_Helper_View_ControlPanel::TAB_TOOLS,
@@ -45,19 +44,6 @@ class Ess_M2ePro_Block_Adminhtml_ControlPanel_Tabs extends Ess_M2ePro_Block_Admi
         }
 
         $this->addTab(Ess_M2ePro_Helper_View_ControlPanel::TAB_SUMMARY, $params);
-        // ---------------------------------------
-
-        // ---------------------------------------
-        $params = array('label' => Mage::helper('M2ePro')->__('About'));
-        if ($activeTab == Ess_M2ePro_Helper_View_ControlPanel::TAB_ABOUT) {
-            $params['content'] = $this->getLayout()
-                                      ->createBlock('M2ePro/adminhtml_controlPanel_tabs_about')->toHtml();
-        } else {
-            $params['url'] = $this->getUrl('*/adminhtml_controlPanel/aboutTab');
-            $params['class'] = 'ajax';
-        }
-
-        $this->addTab(Ess_M2ePro_Helper_View_ControlPanel::TAB_ABOUT, $params);
         // ---------------------------------------
 
         $this->addTab(

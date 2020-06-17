@@ -26,6 +26,7 @@ final class Ess_M2ePro_Model_Cron_Runner_Developer extends Ess_M2ePro_Model_Cron
 
     public function process()
     {
+        // @codingStandardsIgnoreLine
         session_write_close();
         parent::process();
     }
@@ -58,6 +59,8 @@ final class Ess_M2ePro_Model_Cron_Runner_Developer extends Ess_M2ePro_Model_Cron
         return $this;
     }
 
+    //########################################
+
     protected function isPossibleToRun()
     {
         return true;
@@ -66,6 +69,18 @@ final class Ess_M2ePro_Model_Cron_Runner_Developer extends Ess_M2ePro_Model_Cron
     protected function canProcessRunner()
     {
         return true;
+    }
+
+    //########################################
+
+    protected function updateLastRun()
+    {
+        return null;
+    }
+
+    protected function updateLastAccess()
+    {
+        return null;
     }
 
     //########################################

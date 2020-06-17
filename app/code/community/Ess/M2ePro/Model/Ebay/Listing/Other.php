@@ -113,6 +113,21 @@ class Ess_M2ePro_Model_Ebay_Listing_Other extends Ess_M2ePro_Model_Component_Chi
 
     // ---------------------------------------
 
+    public function getOnlineMainCategory()
+    {
+        return $this->getData('online_main_category');
+    }
+
+    /**
+     * @return array
+     */
+    public function getOnlineCategoriesData()
+    {
+        return $this->getSettings('online_categories_data');
+    }
+
+    // ---------------------------------------
+
     public function getStartDate()
     {
         return $this->getData('start_date');

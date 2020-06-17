@@ -23,19 +23,35 @@ class Ess_M2ePro_Helper_Module extends Mage_Core_Helper_Abstract
     //########################################
 
     /**
-     * @return Ess_M2ePro_Model_Config_Module
+     * @return Ess_M2ePro_Model_Config_Manager
      */
     public function getConfig()
     {
-        return Mage::getSingleton('M2ePro/Config_Module');
+        return Mage::getSingleton('M2ePro/Config_Manager');
     }
 
-    /**
-     * @return Ess_M2ePro_Model_Config_Cache
-     */
-    public function getCacheConfig()
+    //########################################
+
+    public function setRegistryValue($key, $value)
     {
-        return Mage::getSingleton('M2ePro/Config_Cache');
+        $registryModel = Mage::getModel('M2ePro/Registry')->loadByKey($key);
+        $registryModel->setValue($value);
+        $registryModel->save();
+    }
+
+    public function getRegistryValue($key)
+    {
+        return Mage::getModel('M2ePro/Registry')->loadByKey($key)->getValue();
+    }
+
+    public function deleteRegistryValue($key)
+    {
+        $registryModel = Mage::getModel('M2ePro/Registry');
+        $registryModel->load($key, 'key');
+
+        if ($registryModel->getId()) {
+            $registryModel->delete();
+        }
     }
 
     //########################################
@@ -74,7 +90,7 @@ class Ess_M2ePro_Helper_Module extends Mage_Core_Helper_Abstract
 
     public function getInstallationKey()
     {
-        return Mage::helper('M2ePro/Primary')->getConfig()->getGroupValue('/server/', 'installation_key');
+        return Mage::helper('M2ePro/Module')->getConfig()->getGroupValue('/', 'installation_key');
     }
 
     //########################################
@@ -215,11 +231,6 @@ class Ess_M2ePro_Helper_Module extends Mage_Core_Helper_Abstract
     }
 
     //########################################
-
-    public function clearConfigCache()
-    {
-        $this->getCacheConfig()->clear();
-    }
 
     public function clearCache()
     {

@@ -7,7 +7,7 @@
  */
 
 class Ess_M2ePro_Model_Ebay_Template_Synchronization_ChangeProcessor
-    extends Ess_M2ePro_Model_Template_Synchronization_ChangeProcessor_Abstract
+    extends Ess_M2ePro_Model_Template_Synchronization_ChangeProcessorAbstract
 {
     const INSTRUCTION_TYPE_REVISE_QTY_ENABLED            = 'template_synchronization_revise_qty_enabled';
     const INSTRUCTION_TYPE_REVISE_QTY_DISABLED           = 'template_synchronization_revise_qty_disabled';
@@ -15,7 +15,6 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization_ChangeProcessor
 
     const INSTRUCTION_TYPE_REVISE_PRICE_ENABLED          = 'template_synchronization_revise_price_enabled';
     const INSTRUCTION_TYPE_REVISE_PRICE_DISABLED         = 'template_synchronization_revise_price_disabled';
-    const INSTRUCTION_TYPE_REVISE_PRICE_SETTINGS_CHANGED = 'template_synchronization_revise_price_settings_changed';
 
     const INSTRUCTION_TYPE_REVISE_TITLE_ENABLED          = 'template_synchronization_revise_title_enabled';
     const INSTRUCTION_TYPE_REVISE_TITLE_DISABLED         = 'template_synchronization_revise_title_disabled';
@@ -46,7 +45,7 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization_ChangeProcessor
 
     //########################################
 
-    protected function getInstructionsData(Ess_M2ePro_Model_Template_Diff_Abstract $diff, $status)
+    protected function getInstructionsData(Ess_M2ePro_Model_ActiveRecord_Diff $diff, $status)
     {
         /** @var Ess_M2ePro_Model_Ebay_Template_Synchronization_Diff $diff */
 
@@ -80,11 +79,6 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization_ChangeProcessor
             $data[] = array(
                 'type'      => self::INSTRUCTION_TYPE_REVISE_PRICE_DISABLED,
                 'priority'  => 5,
-            );
-        } elseif ($diff->isRevisePriceSettingsChanged()) {
-            $data[] = array(
-                'type'      => self::INSTRUCTION_TYPE_REVISE_PRICE_SETTINGS_CHANGED,
-                'priority'  => $status === Ess_M2ePro_Model_Listing_Product::STATUS_LISTED ? 30 : 5,
             );
         }
 

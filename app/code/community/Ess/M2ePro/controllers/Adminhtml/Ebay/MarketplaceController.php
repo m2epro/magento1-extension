@@ -17,11 +17,10 @@ class Ess_M2ePro_Adminhtml_Ebay_MarketplaceController extends Ess_M2ePro_Control
 
         $this->getLayout()->getBlock('head')
             ->addJs('M2ePro/Plugin/ProgressBar.js')
-            ->addJs('M2ePro/SynchProgressHandler.js')
-            ->addJs('M2ePro/Ebay/MarketplaceSynchProgressHandler.js')
+            ->addJs('M2ePro/SynchProgress.js')
             ->addJs('M2ePro/Plugin/AreaWrapper.js')
-            ->addJs('M2ePro/MarketplaceHandler.js')
-            ->addJs('M2ePro/Ebay/Marketplace/SynchProgressHandler.js')
+            ->addJs('M2ePro/Marketplace.js')
+            ->addJs('M2ePro/Ebay/Marketplace/SynchProgress.js')
             ->addCss('M2ePro/css/Plugin/ProgressBar.css')
             ->addCss('M2ePro/css/Plugin/AreaWrapper.css');
 
@@ -73,6 +72,7 @@ class Ess_M2ePro_Adminhtml_Ebay_MarketplaceController extends Ess_M2ePro_Control
 
     public function runSynchNowAction()
     {
+        // @codingStandardsIgnoreLine
         session_write_close();
 
         /** @var Ess_M2ePro_Model_Marketplace $marketplace */
@@ -90,8 +90,7 @@ class Ess_M2ePro_Adminhtml_Ebay_MarketplaceController extends Ess_M2ePro_Control
                     'Marketplaces cannot be updated now. '
                     . 'Please wait until another marketplace synchronization is completed, then try again.'
                 ),
-                Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
-                Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH
+                Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR
             );
 
             return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('result' => 'error')));
@@ -100,13 +99,13 @@ class Ess_M2ePro_Adminhtml_Ebay_MarketplaceController extends Ess_M2ePro_Control
         try {
             $synchronization->process();
         } catch (Exception $e) {
-            $synchronization->getlog()->addMessage(
-                Mage::helper('M2ePro')->__($e->getMessage()),
-                Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
-                Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH
-            );
+            $synchronization->getlog()->addMessageFromException($e);
 
             $synchronization->getLockItemManager()->remove();
+
+            Mage::getModel('M2ePro/Servicing_Dispatcher')->processTask(
+                Mage::getModel('M2ePro/Servicing_Task_License')->getPublicNick()
+            );
 
             return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('result' => 'error')));
         }

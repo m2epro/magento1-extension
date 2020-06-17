@@ -440,13 +440,15 @@ class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
 
         if (!Mage::getStoreConfig('payment/m2epropayment/active', $store)) {
             throw new Ess_M2ePro_Model_Exception(
-                'Payment method "M2E Pro Payment" is disabled in Magento Configuration.'
+                'Payment method "M2E Pro Payment" is disabled under 
+                <i>System > Configuration > Sales > Payment Methods > M2E Pro Payment.</i>'
             );
         }
 
         if (!Mage::getStoreConfig('carriers/m2eproshipping/active', $store)) {
             throw new Ess_M2ePro_Model_Exception(
-                'Shipping method "M2E Pro Shipping" is disabled in Magento Configuration.'
+                'Shipping method "M2E Pro Shipping" is disabled under
+                <i>System > Configuration > Sales > Shipping Methods > M2E Pro Shipping.</i>'
             );
         }
     }
@@ -635,22 +637,21 @@ class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
 
             $this->addData(
                 array(
-                'magento_order_creation_failure'             => self::MAGENTO_ORDER_CREATION_FAILED_YES,
-                'magento_order_creation_fails_count'         => $this->getMagentoOrderCreationFailsCount() + 1,
-                'magento_order_creation_latest_attempt_date' => Mage::helper('M2ePro')->getCurrentGmtDate()
+                    'magento_order_creation_failure'             => self::MAGENTO_ORDER_CREATION_FAILED_YES,
+                    'magento_order_creation_fails_count'         => $this->getMagentoOrderCreationFailsCount() + 1,
+                    'magento_order_creation_latest_attempt_date' => Mage::helper('M2ePro')->getCurrentGmtDate()
                 )
             );
             $this->save();
 
-            $this->addErrorLog('Magento Order was not created. Reason: %msg%', array('msg' => $e->getMessage()));
-            Mage::helper('M2ePro/Module_Exception')->process($e, false);
+            $this->addErrorLog(
+                'Magento Order was not created. Reason: %msg%',
+                array('msg' => $e->getMessage())
+            );
 
-            // ---------------------------------------
             if ($this->isReservable()) {
                 $this->getReserve()->place();
             }
-
-            // ---------------------------------------
 
             throw $e;
         }

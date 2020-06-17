@@ -48,14 +48,9 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
         foreach ($accounts as $account) {
             try {
                 $this->processAccount($account);
-            } catch (Exception $exception) {
-                $this->_synchronizationLog->addMessage(
-                    Mage::helper('M2ePro')->__($exception->getMessage()),
-                    Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
-                    Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH
-                );
-
-                Mage::helper('M2ePro/Module_Exception')->process($exception);
+            } catch (Exception $e) {
+                Mage::helper('M2ePro/Module_Exception')->process($e);
+                $this->_synchronizationLog->addMessageFromException($e);
             }
         }
     }
@@ -280,8 +275,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
 
             $this->_synchronizationLog->addMessage(
                 Mage::helper('M2ePro')->__($message->getText()),
-                $logType,
-                Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH
+                $logType
             );
         }
     }
@@ -721,8 +715,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
             $this->getLogsActionId(),
             Ess_M2ePro_Model_Listing_Log::ACTION_CHANNEL_CHANGE,
             $logMessage,
-            Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS,
-            Ess_M2ePro_Model_Log_Abstract::PRIORITY_LOW
+            Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS
         );
     }
 

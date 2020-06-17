@@ -11,6 +11,11 @@ abstract class Ess_M2ePro_Controller_Adminhtml_ControlPanel_CommandController
 {
     //########################################
 
+    protected function _preDispatch()
+    {
+        return null;
+    }
+
     /**
      * Allows fill response by echo(), etc.
      */

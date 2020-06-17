@@ -200,7 +200,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Motor_Add_Filter_Grid extends Mage_Adminht
     ebayMotorsFiltersConditions[{$row->getId()}] = {$row->getConditions(false)};
 </script>
 {$itemsCount}
-(<a onclick="EbayMotorAddFilterGridHandlerObj.showFilterResult({$row->getId()})"
+(<a onclick="EbayMotorAddFilterGridObj.showFilterResult({$row->getId()})"
     href="javascript:void(0)">{$applyWord}</a>)
 HTML;
     }
@@ -309,13 +309,13 @@ HTML;
 
         if ($this->canDisplayContainer()) {
             $additionalHtml .= <<<JS
-EbayMotorAddFilterGridHandlerObj = new EbayMotorAddFilterGridHandler('{$this->getId()}');
+EbayMotorAddFilterGridObj = new EbayMotorAddFilterGrid('{$this->getId()}');
 JS;
         }
 
         $additionalHtml .= <<<JS
-EbayMotorAddFilterGridHandlerObj.afterInitPage();
-EbayMotorAddFilterGridHandlerObj.filtersConditions = typeof ebayMotorsFiltersConditions !== 'undefined' ?
+EbayMotorAddFilterGridObj.afterInitPage();
+EbayMotorAddFilterGridObj.filtersConditions = typeof ebayMotorsFiltersConditions !== 'undefined' ?
     ebayMotorsFiltersConditions : {};
 JS;
 

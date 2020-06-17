@@ -10,8 +10,6 @@ class Ess_M2ePro_Helper_Server_Maintenance extends Mage_Core_Helper_Abstract
 {
     protected $_dateEnabledFrom;
     protected $_dateEnabledTo;
-    protected $_dateRealFrom;
-    protected $_dateRealTo;
 
     //########################################
 
@@ -19,24 +17,13 @@ class Ess_M2ePro_Helper_Server_Maintenance extends Mage_Core_Helper_Abstract
     {
         $dateEnabledFrom = $this->getDateEnabledFrom();
         $dateEnabledTo = $this->getDateEnabledTo();
-        $dateRealFrom = $this->getDateRealFrom();
-        $dateRealTo = $this->getDateRealTo();
 
-        if ($dateEnabledFrom == false ||
-            $dateEnabledTo == false ||
-            $dateRealFrom == false ||
-            $dateRealTo == false
-        ) {
+        if ($dateEnabledFrom == false || $dateEnabledTo == false) {
             return false;
         }
 
-        $dateCurrent = $this->getDateCurrent();
-        if ($dateEnabledFrom < $dateRealFrom &&
-            $dateRealFrom < $dateRealTo &&
-            $dateRealTo <= $dateEnabledTo &&
-            $dateEnabledFrom > $dateCurrent
-        )
-        {
+        $dateCurrent = new DateTime('now', new DateTimeZone('UTC'));
+        if ($dateCurrent < $dateEnabledFrom && $dateCurrent < $dateEnabledTo) {
             return true;
         }
 
@@ -47,97 +34,88 @@ class Ess_M2ePro_Helper_Server_Maintenance extends Mage_Core_Helper_Abstract
     {
         $dateEnabledFrom = $this->getDateEnabledFrom();
         $dateEnabledTo = $this->getDateEnabledTo();
-        $dateRealFrom = $this->getDateRealFrom();
-        $dateRealTo = $this->getDateRealTo();
 
-        if ($dateEnabledFrom == false ||
-            $dateEnabledTo == false ||
-            $dateRealFrom == false ||
-            $dateRealTo == false
-        ) {
+        if ($dateEnabledFrom == false || $dateEnabledTo == false) {
             return false;
         }
 
-        $dateCurrent = $this->getDateCurrent();
-        if ($dateCurrent > $dateEnabledFrom &&
-            $dateCurrent < $dateEnabledTo
-        )
-        {
+        $dateCurrent = new DateTime('now', new DateTimeZone('UTC'));
+        if ($dateCurrent > $dateEnabledFrom && $dateCurrent < $dateEnabledTo) {
             return true;
         }
 
         return false;
     }
 
-    public function isInRealRange()
-    {
-        if (!$this->isNow()) {
-            return false;
-        }
-
-        $dateCurrent = $this->getDateCurrent();
-        $dateRealFrom = $this->getDateRealFrom();
-        $dateRealTo = $this->getDateRealTo();
-
-        return $dateCurrent >= $dateRealFrom && $dateCurrent <= $dateRealTo;
-    }
-
     //########################################
-
-    public function getDateCurrent()
-    {
-        return new DateTime('now', new DateTimeZone('UTC'));
-    }
 
     public function getDateEnabledFrom()
     {
         if ($this->_dateEnabledFrom === null) {
-            $this->_dateEnabledFrom = $this->getDateByKey('/server/maintenance/schedule/date/enabled/from/');
+            /**  @var $date Ess_M2ePro_Model_Registry */
+            $registry = Mage::getModel('M2ePro/Registry')->loadByKey('/server/maintenance/schedule/date/enabled/from/');
+
+            $this->_dateEnabledFrom = false;
+            if ($registry->getValue()) {
+                $this->_dateEnabledFrom = new DateTime($registry->getValue(), new DateTimeZone('UTC'));
+            }
         }
 
         return $this->_dateEnabledFrom;
     }
 
+    public function setDateEnabledFrom($date)
+    {
+        /**  @var $date Ess_M2ePro_Model_Registry */
+        $registry = Mage::getModel('M2ePro/Registry')->loadByKey('/server/maintenance/schedule/date/enabled/from/');
+        $registry->setValue($date);
+        $registry->save();
+
+        $this->_dateEnabledFrom = $date;
+        return $this;
+    }
+
     public function getDateEnabledTo()
     {
         if ($this->_dateEnabledTo === null) {
-            $this->_dateEnabledTo = $this->getDateByKey('/server/maintenance/schedule/date/enabled/to/');
+            /**  @var $date Ess_M2ePro_Model_Registry */
+            $registry = Mage::getModel('M2ePro/Registry')->loadByKey('/server/maintenance/schedule/date/enabled/to/');
+
+            $this->_dateEnabledTo = false;
+            if ($registry->getValue()) {
+                $this->_dateEnabledTo = new DateTime($registry->getValue(), new DateTimeZone('UTC'));
+            }
         }
 
         return $this->_dateEnabledTo;
     }
 
-    public function getDateRealFrom()
+    public function setDateEnabledTo($date)
     {
-        if ($this->_dateRealFrom === null) {
-            $this->_dateRealFrom = $this->getDateByKey('/server/maintenance/schedule/date/real/from/');
-        }
+        /**  @var $date Ess_M2ePro_Model_Registry */
+        $registry = Mage::getModel('M2ePro/Registry')->loadByKey('/server/maintenance/schedule/date/enabled/to/');
+        $registry->setValue($date);
+        $registry->save();
 
-        return $this->_dateRealFrom;
-    }
-
-    public function getDateRealTo()
-    {
-        if ($this->_dateRealTo === null) {
-            $this->_dateRealTo = $this->getDateByKey('/server/maintenance/schedule/date/real/to/');
-        }
-
-        return $this->_dateRealTo;
+        $this->_dateEnabledTo = $date;
+        return $this;
     }
 
     //########################################
 
-    protected function getDateByKey($key)
+    public function processUnexpectedMaintenance()
     {
-        /**  @var $date Ess_M2ePro_Model_Registry */
-        $date = Mage::getModel('M2ePro/Registry')->load($key, 'key');
-        $value = $date->getValue();
-
-        if (empty($value)) {
-            return false;
+        if ($this->isNow()) {
+            return;
         }
 
-        return new DateTime($date->getValue(), new DateTimeZone('UTC'));
+        $to = new \DateTime('now', new \DateTimeZone('UTC'));
+        $to->modify('+ 10 minutes');
+        // @codingStandardsIgnoreLine
+        $to->modify('+' . mt_rand(0, 300) . ' second');
+
+        $this->setDateEnabledFrom(Mage::helper('M2ePro')->getCurrentGmtDate());
+        $this->setDateEnabledTo($to->format('Y-m-d H:i:s'));
     }
 
     //########################################

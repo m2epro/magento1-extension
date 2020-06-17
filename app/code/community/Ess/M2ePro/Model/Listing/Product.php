@@ -66,12 +66,16 @@ class Ess_M2ePro_Model_Listing_Product extends Ess_M2ePro_Model_Component_Parent
      */
     protected $_magentoProductModel = null;
 
+    /** @var Ess_M2ePro_Model_ActiveRecord_Factory */
+    protected $_activeRecordFactory;
+
     //########################################
 
     public function _construct()
     {
         parent::_construct();
         $this->_init('M2ePro/Listing_Product');
+        $this->_activeRecordFactory = Mage::getSingleton('M2ePro/ActiveRecord_Factory');
     }
 
     //########################################
@@ -135,19 +139,17 @@ class Ess_M2ePro_Model_Listing_Product extends Ess_M2ePro_Model_Component_Parent
             $variation->deleteInstance();
         }
 
-        /** @var Ess_M2ePro_Model_Listing_Product_Instruction[] $instructions */
-        $instructions = $this->getRelatedSimpleItems(
-            'Listing_Product_Instruction', 'listing_product_id', true
-        );
-        foreach ($instructions as $instruction) {
+        $instructions = $this->_activeRecordFactory->getObjectCollection('Listing_Product_Instruction');
+        $instructions->addFieldToFilter('listing_product_id', $this->getId());
+        foreach ($instructions->getItems() as $instruction) {
+            /** @var Ess_M2ePro_Model_Listing_Product_Instruction $instruction */
             $instruction->deleteInstance();
         }
 
-        /** @var Ess_M2ePro_Model_Listing_Product_ScheduledAction[] $scheduledActions */
-        $scheduledActions = $this->getRelatedSimpleItems(
-            'Listing_Product_ScheduledAction', 'listing_product_id', true
-        );
-        foreach ($scheduledActions as $scheduledAction) {
+        $scheduledActions = $this->_activeRecordFactory->getObjectCollection('Listing_Product_ScheduledAction');
+        $scheduledActions->addFieldToFilter('listing_product_id', $this->getId());
+        foreach ($scheduledActions->getItems() as $scheduledAction) {
+            /** @var Ess_M2ePro_Model_Listing_Product_ScheduledAction $scheduledAction */
             $scheduledAction->deleteInstance();
         }
 
@@ -161,9 +163,8 @@ class Ess_M2ePro_Model_Listing_Product extends Ess_M2ePro_Model_Component_Parent
             Ess_M2ePro_Helper_Data::INITIATOR_UNKNOWN,
             $actionId,
             Ess_M2ePro_Model_Listing_Log::ACTION_DELETE_PRODUCT_FROM_LISTING,
-                                    'Item was successfully Deleted',
-            Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE,
-            Ess_M2ePro_Model_Log_Abstract::PRIORITY_MEDIUM
+            'Item was successfully Deleted',
+            Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE
         );
 
         $this->_listingModel        = null;
@@ -257,38 +258,50 @@ class Ess_M2ePro_Model_Listing_Product extends Ess_M2ePro_Model_Component_Parent
     /**
      * @param bool $asObjects
      * @param array $filters
-     * @param bool $tryToGetFromStorage
      * @return Ess_M2ePro_Model_Listing_Product_Variation[]
      */
-    public function getVariations($asObjects = false, array $filters = array(), $tryToGetFromStorage = true)
+    public function getVariations($asObjects = false, array $filters = array())
     {
         $storageKey = "listing_product_{$this->getId()}_variations_" .
                       sha1((string)$asObjects . Mage::helper('M2ePro')->jsonEncode($filters));
 
-        if ($tryToGetFromStorage && ($cacheData = Mage::helper('M2ePro/Data_Cache_Runtime')->getValue($storageKey))) {
+        if ($cacheData = Mage::helper('M2ePro/Data_Cache_Runtime')->getValue($storageKey)) {
             return $cacheData;
         }
 
-        $variations = $this->getRelatedComponentItems(
-            'Listing_Product_Variation', 'listing_product_id', $asObjects, $filters
+        /** @var Ess_M2ePro_Model_Resource_ActiveRecord_CollectionAbstract $collection */
+        $collection = Mage::helper('M2ePro/Component')->getComponentCollection(
+            $this->getComponentMode(), 'Listing_Product_Variation'
         );
+        $collection->addFieldToFilter('listing_product_id', $this->getId());
+
+        foreach ($filters as $filterName => $filterValue) {
+            $collection->addFieldToFilter($filterName, $filterValue);
+        }
+
+        foreach ($collection->getItems() as $variation) {
+            /** @var $variation Ess_M2ePro_Model_Listing_Product_Variation */
+            $variation->setListingProduct($this);
+        }
 
         if ($asObjects) {
-            foreach ($variations as $variation) {
-                /** @var $variation Ess_M2ePro_Model_Listing_Product_Variation */
-                $variation->setListingProduct($this);
-            }
+            $result = $collection->getItems();
+        } else {
+            $result = $collection->toArray();
+            $result = $result['items'];
         }
 
         Mage::helper('M2ePro/Data_Cache_Runtime')->setValue(
-            $storageKey, $variations, array(
-            'listing_product',
-            "listing_product_{$this->getId()}",
-            "listing_product_{$this->getId()}_variations"
+            $storageKey,
+            $result,
+            array(
+                'listing_product',
+                "listing_product_{$this->getId()}",
+                "listing_product_{$this->getId()}_variations"
             )
         );
 
-        return $variations;
+        return $result;
     }
 
     //########################################

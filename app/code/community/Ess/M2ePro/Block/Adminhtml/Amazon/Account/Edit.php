@@ -65,7 +65,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit extends Mage_Adminhtml_Bloc
                 'save_and_continue',
                 array(
                     'label'   => Mage::helper('M2ePro')->__('Save And Continue Edit'),
-                    'onclick' => 'AmazonAccountHandlerObj.save_and_edit_click(\'\',\'amazonAccountEditTabs\')',
+                    'onclick' => 'AmazonAccountObj.save_and_edit_click(\'\',\'amazonAccountEditTabs\')',
                     'class'   => 'save'
                 )
             );
@@ -89,7 +89,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit extends Mage_Adminhtml_Bloc
                     'close',
                     array(
                         'label'   => Mage::helper('M2ePro')->__('Complete This Step'),
-                        'onclick' => 'AmazonAccountHandlerObj.completeStep();',
+                        'onclick' => 'AmazonAccountObj.completeStep();',
                         'class'   => 'close'
                     )
                 );
@@ -102,7 +102,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit extends Mage_Adminhtml_Bloc
                         'save',
                         array(
                             'label'   => Mage::helper('M2ePro')->__('Save And Close'),
-                            'onclick' => 'AmazonAccountHandlerObj.saveAndClose()',
+                            'onclick' => 'AmazonAccountObj.saveAndClose()',
                             'class'   => 'save'
                         )
                     );
@@ -111,7 +111,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit extends Mage_Adminhtml_Bloc
                         'save_and_continue',
                         array(
                             'label'   => Mage::helper('M2ePro')->__('Save And Continue Edit'),
-                            'onclick' => 'AmazonAccountHandlerObj.save_and_edit_click(\'\',\'amazonAccountEditTabs\')',
+                            'onclick' => 'AmazonAccountObj.save_and_edit_click(\'\',\'amazonAccountEditTabs\')',
                             'class'   => 'save'
                         )
                     );
@@ -126,7 +126,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit extends Mage_Adminhtml_Bloc
                 'back',
                 array(
                     'label'   => Mage::helper('M2ePro')->__('Back'),
-                    'onclick' => 'AmazonAccountHandlerObj.back_click(\'' . $url . '\')',
+                    'onclick' => 'AmazonAccountObj.back_click(\'' . $url . '\')',
                     'class'   => 'back'
                 )
             );
@@ -140,7 +140,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit extends Mage_Adminhtml_Bloc
                     'delete',
                     array(
                         'label'   => Mage::helper('M2ePro')->__('Delete'),
-                        'onclick' => "AmazonAccountHandlerObj.delete_click({$accountId})",
+                        'onclick' => "AmazonAccountObj.delete_click({$accountId})",
                         'class'   => 'delete M2ePro_delete_button'
                     )
                 );
@@ -152,7 +152,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit extends Mage_Adminhtml_Bloc
                 'save',
                 array(
                     'label'   => Mage::helper('M2ePro')->__('Save'),
-                    'onclick' => 'AmazonAccountHandlerObj.save_click()',
+                    'onclick' => 'AmazonAccountObj.save_click()',
                     'class'   => 'save'
                 )
             );
@@ -163,7 +163,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit extends Mage_Adminhtml_Bloc
                 'save_and_continue',
                 array(
                     'label'   => Mage::helper('M2ePro')->__('Save And Continue Edit'),
-                    'onclick' => 'AmazonAccountHandlerObj.save_and_edit_click(\'\',\'amazonAccountEditTabs\')',
+                    'onclick' => 'AmazonAccountObj.save_and_edit_click(\'\',\'amazonAccountEditTabs\')',
                     'class'   => 'save'
                 )
             );

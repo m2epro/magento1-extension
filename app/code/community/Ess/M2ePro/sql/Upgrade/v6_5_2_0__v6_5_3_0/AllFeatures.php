@@ -93,10 +93,10 @@ class Ess_M2ePro_Sql_Upgrade_v6_5_2_0__v6_5_3_0_AllFeatures extends Ess_M2ePro_M
         if ($isCheckDateColumnExists) {
 
             $installer->run(<<<SQL
-UPDATE `m2epro_walmart_listing_product_action_processing_list`
+UPDATE `{$this->_installer->getTable('m2epro_walmart_listing_product_action_processing_list')}`
 SET `stage` = 1 WHERE `scheduled_check_date` IS NULL;
 
-UPDATE `m2epro_walmart_listing_product_action_processing_list`
+UPDATE `{$this->_installer->getTable('m2epro_walmart_listing_product_action_processing_list')}`
 SET `stage` = 2 WHERE `scheduled_check_date` IS NOT NULL;
 SQL
             );

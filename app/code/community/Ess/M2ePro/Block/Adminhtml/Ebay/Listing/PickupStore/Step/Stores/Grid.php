@@ -239,15 +239,15 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore_Step_Stores_Grid
         $javaScriptsMain = <<<HTML
         <script type="text/javascript">
 
-            EbayListingPickupStoreStepStoresGridHandlerObj = new EbayListingPickupStoreStepStoresGridHandler();
-            EbayListingPickupStoreStepStoresGridHandlerObj.gridId = '{$this->getId()}';
+            EbayListingPickupStoreStepStoresGridObj = new EbayListingPickupStoreStepStoresGrid();
+            EbayListingPickupStoreStepStoresGridObj.gridId = '{$this->getId()}';
 
-            ProductGridHandlerObj = new ListingProductGridHandler();
-            ProductGridHandlerObj.setGridId('{$this->getJsObjectName()}');
+            ProductGridObj = new ListingProductGrid();
+            ProductGridObj.setGridId('{$this->getJsObjectName()}');
 
             var init = function () {
-                {$this->getJsObjectName()}.doFilter = ProductGridHandlerObj.setFilter;
-                {$this->getJsObjectName()}.resetFilter = ProductGridHandlerObj.resetFilter;
+                {$this->getJsObjectName()}.doFilter = ProductGridObj.setFilter;
+                {$this->getJsObjectName()}.resetFilter = ProductGridObj.resetFilter;
             };
 
             {$this->isAjax} ? init()

@@ -23,7 +23,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Synchronization_Edit_Form_Tabs_Li
 
     public function getDefault()
     {
-        return Mage::getSingleton('M2ePro/Ebay_Template_Synchronization')->getListDefaultSettings();
+        return Mage::getModel('M2ePro/Ebay_Template_Synchronization_Builder')->getDefaultData();
     }
 
     public function getAdvancedRulesBlock()

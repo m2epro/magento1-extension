@@ -50,7 +50,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Order_Edit_ShippingAddress
             $this->_addButton(
                 'back', array(
                     'label'   => Mage::helper('M2ePro')->__('Back'),
-                    'onclick' => 'CommonHandlerObj.back_click(\'' . $url . '\')',
+                    'onclick' => 'CommonObj.back_click(\'' . $url . '\')',
                     'class'   => 'back'
                 )
             );
@@ -61,7 +61,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Order_Edit_ShippingAddress
             $this->_addButton(
                 'back', array(
                     'label'   => Mage::helper('M2ePro')->__('Back'),
-                    'onclick' => 'CommonHandlerObj.back_click(\'' . $url . '\')',
+                    'onclick' => 'CommonObj.back_click(\'' . $url . '\')',
                     'class'   => 'back'
                 )
             );
@@ -72,7 +72,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Order_Edit_ShippingAddress
         $this->_addButton(
             'save', array(
                 'label'   => Mage::helper('M2ePro')->__('Save Order Address'),
-                'onclick' => 'CommonHandlerObj.save_click()',
+                'onclick' => 'CommonObj.save_click()',
                 'class'   => 'save'
             )
         );

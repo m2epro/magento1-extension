@@ -40,7 +40,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Order_MerchantFulfillment_ShippingServic
             'class'   => 'next',
             'disabled'=> 'disabled',
             'label'   => Mage::helper('M2ePro')->__('Continue'),
-            'onclick' => "OrderMerchantFulfillmentHandlerObj.createShippingOfferAction()",
+            'onclick' => "AmazonOrderMerchantFulfillmentObj.createShippingOfferAction()",
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('continue_button', $buttonBlock);
@@ -50,7 +50,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Order_MerchantFulfillment_ShippingServic
         $data = array(
             'class'   => 'back',
             'label'   => Mage::helper('M2ePro')->__('Back'),
-            'onclick' => "OrderMerchantFulfillmentHandlerObj.getPopupAction()",
+            'onclick' => "AmazonOrderMerchantFulfillmentObj.getPopupAction()",
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('back_button', $buttonBlock);

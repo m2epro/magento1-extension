@@ -30,76 +30,7 @@
     $formData = array();
     $isEdit && $formData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data')->getData();
 
-    $default = array(
-        'id'             => '',
-        'title'          => '',
-
-        'title_mode'     => Ess_M2ePro_Model_Walmart_Template_Description::TITLE_MODE_PRODUCT,
-        'title_template' => '',
-
-        'brand_mode'             => Ess_M2ePro_Model_Walmart_Template_Description::BRAND_MODE_CUSTOM_VALUE,
-        'brand_custom_value'     => '',
-        'brand_custom_attribute' => '',
-
-        'manufacturer_mode'             => Ess_M2ePro_Model_Walmart_Template_Description::MANUFACTURER_MODE_NONE,
-        'manufacturer_custom_value'     => '',
-        'manufacturer_custom_attribute' => '',
-
-        'manufacturer_part_number_mode'             => Ess_M2ePro_Model_Walmart_Template_Description::MANUFACTURER_PART_NUMBER_MODE_NONE,
-        'manufacturer_part_number_custom_value'     => '',
-        'manufacturer_part_number_custom_attribute' => '',
-
-        // ---
-
-        'model_number_mode'             => Ess_M2ePro_Model_Walmart_Template_Description::MODEL_NUMBER_MODE_NONE,
-        'model_number_custom_value'     => '',
-        'model_number_custom_attribute' => '',
-
-        'total_count_mode'             => Ess_M2ePro_Model_Walmart_Template_Description::TOTAL_COUNT_MODE_NONE,
-        'total_count_custom_value'     => '',
-        'total_count_custom_attribute' => '',
-
-        'count_per_pack_mode'             => Ess_M2ePro_Model_Walmart_Template_Description::COUNT_PER_PACK_MODE_NONE,
-        'count_per_pack_custom_value'     => '',
-        'count_per_pack_custom_attribute' => '',
-
-        'multipack_quantity_mode'             => Ess_M2ePro_Model_Walmart_Template_Description::MULTIPACK_QUANTITY_MODE_NONE,
-        'multipack_quantity_custom_value'     => '',
-        'multipack_quantity_custom_attribute' => '',
-
-        // ---
-
-        'msrp_rrp_mode'             => Ess_M2ePro_Model_Walmart_Template_Description::MSRP_RRP_MODE_NONE,
-        'msrp_rrp_custom_attribute' => '',
-
-        // ---
-
-        'description_mode'     => '',
-        'description_template' => '',
-
-        'image_main_mode'      => Ess_M2ePro_Model_Walmart_Template_Description::IMAGE_MAIN_MODE_PRODUCT,
-        'image_main_attribute' => '',
-
-        'image_variation_difference_mode'      => Ess_M2ePro_Model_Walmart_Template_Description::IMAGE_VARIATION_DIFFERENCE_MODE_NONE,
-        'image_variation_difference_attribute' => '',
-
-        'gallery_images_mode'      => Ess_M2ePro_Model_Walmart_Template_Description::GALLERY_IMAGES_MODE_NONE,
-        'gallery_images_limit'     => 1,
-        'gallery_images_attribute' => '',
-
-        'key_features_mode' => Ess_M2ePro_Model_Walmart_Template_Description::KEY_FEATURES_MODE_NONE,
-        'key_features'      => json_encode(array()),
-
-        'other_features_mode' => Ess_M2ePro_Model_Walmart_Template_Description::OTHER_FEATURES_MODE_NONE,
-        'other_features'      => json_encode(array()),
-
-        'keywords_mode'             => Ess_M2ePro_Model_Walmart_Template_Description::KEYWORDS_MODE_NONE,
-        'keywords_custom_value'     => '',
-        'keywords_custom_attribute' => '',
-
-        'attributes_mode' => Ess_M2ePro_Model_Walmart_Template_Description::ATTRIBUTES_MODE_NONE,
-        'attributes'      => json_encode(array()),
-    );
+    $default = Mage::getModel('M2ePro/Walmart_Template_Description_Builder')->getDefaultData();
 
     $formData = Mage::helper('M2ePro')->arrayReplaceRecursive($default, $formData);
 
@@ -175,89 +106,89 @@
 
     Event.observe(window, 'load', function() {
 
-        AttributeHandlerObj = new AttributeHandler();
-        AttributeHandlerObj.setAvailableAttributes(<?php echo json_encode($this->getData('all_attributes')); ?>);
+        AttributeObj = new Attribute();
+        AttributeObj.setAvailableAttributes(<?php echo json_encode($this->getData('all_attributes')); ?>);
 
-        WalmartTemplateDescriptionHandlerObj = new WalmartTemplateDescriptionHandler();
+        WalmartTemplateDescriptionObj = new WalmartTemplateDescription();
 
         $('title_mode')
-            .observe('change', WalmartTemplateDescriptionHandlerObj.title_mode_change)
+            .observe('change', WalmartTemplateDescriptionObj.title_mode_change)
             .simulate('change');
 
         $('brand_mode')
-            .observe('change', WalmartTemplateDescriptionHandlerObj.brand_mode_change)
+            .observe('change', WalmartTemplateDescriptionObj.brand_mode_change)
             .simulate('change');
 
         $('manufacturer_mode')
-            .observe('change', WalmartTemplateDescriptionHandlerObj.manufacturer_mode_change)
+            .observe('change', WalmartTemplateDescriptionObj.manufacturer_mode_change)
             .simulate('change');
 
         $('manufacturer_part_number_mode')
-            .observe('change', WalmartTemplateDescriptionHandlerObj.manufacturer_part_number_mode_change)
+            .observe('change', WalmartTemplateDescriptionObj.manufacturer_part_number_mode_change)
             .simulate('change');
 
         $('model_number_mode')
-            .observe('change', WalmartTemplateDescriptionHandlerObj.model_number_mode_change)
+            .observe('change', WalmartTemplateDescriptionObj.model_number_mode_change)
             .simulate('change');
 
         $('total_count_mode')
-            .observe('change', WalmartTemplateDescriptionHandlerObj.total_count_mode_change)
+            .observe('change', WalmartTemplateDescriptionObj.total_count_mode_change)
             .simulate('change');
 
         $('keywords_mode')
-            .observe('change', WalmartTemplateDescriptionHandlerObj.keywords_mode_change)
+            .observe('change', WalmartTemplateDescriptionObj.keywords_mode_change)
             .simulate('change');
 
         // ---
 
         $('count_per_pack_mode')
-            .observe('change', WalmartTemplateDescriptionHandlerObj.onChangeCountPerPackMode)
+            .observe('change', WalmartTemplateDescriptionObj.onChangeCountPerPackMode)
             .simulate('change');
 
         $('multipack_quantity_mode')
-            .observe('change', WalmartTemplateDescriptionHandlerObj.onChangeMultipackQuantityMode)
+            .observe('change', WalmartTemplateDescriptionObj.onChangeMultipackQuantityMode)
             .simulate('change');
 
         // ---
 
         $('msrp_rrp_mode')
-            .observe('change', WalmartTemplateDescriptionHandlerObj.onChangeMsrpRrpMode)
+            .observe('change', WalmartTemplateDescriptionObj.onChangeMsrpRrpMode)
             .simulate('change');
 
         // ---
 
         $('key_features_mode')
             .observe('change', function () {
-                WalmartTemplateDescriptionHandlerObj.multi_element_mode_change.call(this,'key_features',5);
+                WalmartTemplateDescriptionObj.multi_element_mode_change.call(this,'key_features',5);
             })
             .simulate('change');
 
         $('other_features_mode')
             .observe('change', function () {
-                WalmartTemplateDescriptionHandlerObj.multi_element_mode_change.call(this,'other_features',5);
+                WalmartTemplateDescriptionObj.multi_element_mode_change.call(this,'other_features',5);
             })
             .simulate('change');
 
         $('attributes_mode')
             .observe('change', function () {
-                WalmartTemplateDescriptionHandlerObj.multi_element_mode_change.call(this,'attributes',5);
+                WalmartTemplateDescriptionObj.multi_element_mode_change.call(this,'attributes',5);
             })
             .simulate('change');
 
         $('description_mode')
-            .observe('change', WalmartTemplateDescriptionHandlerObj.description_mode_change)
+            .observe('change', WalmartTemplateDescriptionObj.description_mode_change)
             .simulate('change');
 
         $('image_main_mode')
-            .observe('change', WalmartTemplateDescriptionHandlerObj.image_main_mode_change)
+            .observe('change', WalmartTemplateDescriptionObj.image_main_mode_change)
             .simulate('change');
 
         $('image_variation_difference_mode')
-            .observe('change', WalmartTemplateDescriptionHandlerObj.image_variation_difference_mode_change)
+            .observe('change', WalmartTemplateDescriptionObj.image_variation_difference_mode_change)
             .simulate('change');
 
         $('gallery_images_mode')
-            .observe('change', WalmartTemplateDescriptionHandlerObj.gallery_images_mode_change)
+            .observe('change', WalmartTemplateDescriptionObj.gallery_images_mode_change)
             .simulate('change');
     });
 
@@ -966,7 +897,7 @@
                             <label><?php echo Mage::helper('M2ePro')->__('Key Features #%s', $i + 1); ?>: <span class="required">*</span></label>
                         </td>
                         <td class="value">
-                            <input id="key_features_<?php echo $i; ?>" onkeyup="WalmartTemplateDescriptionHandlerObj.multi_element_keyup('key_features',this)"
+                            <input id="key_features_<?php echo $i; ?>" onkeyup="WalmartTemplateDescriptionObj.multi_element_keyup('key_features',this)"
                                    name="key_features[]" type="text" class="input-text M2ePro-required-when-visible"
                                    value="<?php echo !empty($formData['key_features'][$i]) ? Mage::helper('M2ePro')->escapeHtml($formData['key_features'][$i]) : ''; ?>">
                         </td>
@@ -989,9 +920,9 @@
                 <tr id="key_features_actions_tr" style="display: none;">
                     <td></td>
                     <td class="value" style="padding-top: 0 !important;">
-                        <a id="show_key_features_action" href="javascript: void(0);" onclick="WalmartTemplateDescriptionHandlerObj.showElement('key_features');"><?php echo Mage::helper('M2ePro')->__('Add New') ?></a>
+                        <a id="show_key_features_action" href="javascript: void(0);" onclick="WalmartTemplateDescriptionObj.showElement('key_features');"><?php echo Mage::helper('M2ePro')->__('Add New') ?></a>
                         /
-                        <a id="hide_key_features_action" href="javascript: void(0);" onclick="WalmartTemplateDescriptionHandlerObj.hideElement('key_features');"><?php echo Mage::helper('M2ePro')->__('Remove') ?></a>
+                        <a id="hide_key_features_action" href="javascript: void(0);" onclick="WalmartTemplateDescriptionObj.hideElement('key_features');"><?php echo Mage::helper('M2ePro')->__('Remove') ?></a>
                     </td>
                 </tr>
 
@@ -1026,7 +957,7 @@
                             <label><?php echo Mage::helper('M2ePro')->__('Other Features #%s', $i + 1); ?>:&nbsp;<span class="required">*</span></label>
                         </td>
                         <td class="value">
-                            <input id="other_features_<?php echo $i; ?>" onkeyup="WalmartTemplateDescriptionHandlerObj.multi_element_keyup('other_features',this)"
+                            <input id="other_features_<?php echo $i; ?>" onkeyup="WalmartTemplateDescriptionObj.multi_element_keyup('other_features',this)"
                                    name="other_features[]" type="text" class="input-text M2ePro-required-when-visible"
                                    value="<?php echo !empty($formData['other_features'][$i]) ? Mage::helper('M2ePro')->escapeHtml($formData['other_features'][$i]) : ''; ?>">
                             <p class="note">
@@ -1051,9 +982,9 @@
                 <tr id="other_features_actions_tr" style="display: none;">
                     <td></td>
                     <td class="value" style="padding-top: 0 !important;">
-                        <a id="show_other_features_action" href="javascript: void(0);" onclick="WalmartTemplateDescriptionHandlerObj.showElement('other_features');"><?php echo Mage::helper('M2ePro')->__('Add New') ?></a>
+                        <a id="show_other_features_action" href="javascript: void(0);" onclick="WalmartTemplateDescriptionObj.showElement('other_features');"><?php echo Mage::helper('M2ePro')->__('Add New') ?></a>
                         /
-                        <a id="hide_other_features_action" href="javascript: void(0);" onclick="WalmartTemplateDescriptionHandlerObj.hideElement('other_features');"><?php echo Mage::helper('M2ePro')->__('Remove') ?></a>
+                        <a id="hide_other_features_action" href="javascript: void(0);" onclick="WalmartTemplateDescriptionObj.hideElement('other_features');"><?php echo Mage::helper('M2ePro')->__('Remove') ?></a>
                     </td>
                 </tr>
 
@@ -1135,13 +1066,13 @@
                             <label><?php echo Mage::helper('M2ePro')->__('Attributes (name / value) #%s', $i + 1); ?>: <span class="required">*</span></label>
                         </td>
                         <td class="value">
-                            <input id="attributes_name_<?php echo $i; ?>" onkeyup="WalmartTemplateDescriptionHandlerObj.multi_element_keyup('attributes',this)"
+                            <input id="attributes_name_<?php echo $i; ?>" onkeyup="WalmartTemplateDescriptionObj.multi_element_keyup('attributes',this)"
                                    name="attributes_name[]" type="text" class="input-text M2ePro-required-when-visible"
                                    value="<?php echo !empty($formData['attributes'][$i]['name']) ? Mage::helper('M2ePro')->escapeHtml($formData['attributes'][$i]['name']) : ''; ?>">
                         </td>
                         <td class="value">&nbsp;/</td>
                         <td class="value">
-                            <input id="attributes_value_<?php echo $i; ?>" onkeyup="WalmartTemplateDescriptionHandlerObj.multi_element_keyup('attributes',this)"
+                            <input id="attributes_value_<?php echo $i; ?>" onkeyup="WalmartTemplateDescriptionObj.multi_element_keyup('attributes',this)"
                                    name="attributes_value[]" type="text" class="input-text M2ePro-required-when-visible"
                                    value="<?php echo !empty($formData['attributes'][$i]['value']) ? Mage::helper('M2ePro')->escapeHtml($formData['attributes'][$i]['value']) : ''; ?>">
                             <p class="note">
@@ -1166,9 +1097,9 @@
                 <tr id="attributes_actions_tr" style="display: none;">
                     <td></td>
                     <td class="value" style="padding-top: 0 !important;">
-                        <a id="show_attributes_action" href="javascript: void(0);" onclick="WalmartTemplateDescriptionHandlerObj.showElement('attributes');"><?php echo Mage::helper('M2ePro')->__('Add New') ?></a>
+                        <a id="show_attributes_action" href="javascript: void(0);" onclick="WalmartTemplateDescriptionObj.showElement('attributes');"><?php echo Mage::helper('M2ePro')->__('Add New') ?></a>
                         /
-                        <a id="hide_attributes_action" href="javascript: void(0);" onclick="WalmartTemplateDescriptionHandlerObj.hideElement('attributes');"><?php echo Mage::helper('M2ePro')->__('Remove') ?></a>
+                        <a id="hide_attributes_action" href="javascript: void(0);" onclick="WalmartTemplateDescriptionObj.hideElement('attributes');"><?php echo Mage::helper('M2ePro')->__('Remove') ?></a>
                     </td>
                 </tr>
 

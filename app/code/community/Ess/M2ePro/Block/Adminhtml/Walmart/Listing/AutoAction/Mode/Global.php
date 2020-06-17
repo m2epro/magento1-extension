@@ -7,7 +7,7 @@
  */
 
 class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_AutoAction_Mode_Global
-    extends Ess_M2ePro_Block_Adminhtml_Listing_AutoAction_Mode_Global
+    extends Ess_M2ePro_Block_Adminhtml_Listing_AutoAction_Mode_GlobalAbstract
 {
     //########################################
 
@@ -15,6 +15,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_AutoAction_Mode_Global
     {
         parent::__construct();
 
+        $this->setId('walmartListingAutoActionModeGlobal');
         $this->setTemplate('M2ePro/walmart/listing/auto_action/mode/global.phtml');
     }
 

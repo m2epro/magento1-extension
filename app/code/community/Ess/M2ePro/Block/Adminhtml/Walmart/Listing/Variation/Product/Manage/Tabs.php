@@ -136,7 +136,7 @@ HTML;
         $data = array(
             'style' => 'float: right; margin-top: 7px; ',
             'label'   => Mage::helper('M2ePro')->__('Close'),
-            'onclick' => 'ListingGridHandlerObj.variationProductManageHandler.closeManageVariationsPopup()'
+            'onclick' => 'ListingGridObj.variationProductManageHandler.closeManageVariationsPopup()'
         );
         $closeBtn = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
 
@@ -144,7 +144,7 @@ HTML;
 <script type="text/javascript">
     walmartVariationProductManageTabsJsTabs.moveTabContentInDest();
 
-    ListingGridHandlerObj.variationProductManageHandler.loadVariationsGrid(true);
+    ListingGridObj.variationProductManageHandler.loadVariationsGrid(true);
 </script>
 HTML;
 

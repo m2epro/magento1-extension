@@ -6,11 +6,14 @@
  * @license    Commercial use is forbidden
  */
 
+use Ess_M2ePro_Helper_Component_Ebay_Category as eBayCategory;
+use Ess_M2ePro_Model_Ebay_Template_Category as TemplateCategory;
+
 class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Settings_Grid
     extends Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Settings_Grid_Abstract
 {
     /** @var Mage_Eav_Model_Entity_Attribute_Abstract */
-    protected $_motorsAttribute = null;
+    protected $_motorsAttribute;
 
     protected $_productsMotorsData = array();
 
@@ -20,17 +23,12 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Settings_Grid
     {
         parent::__construct();
 
-        // Initialization block
-        // ---------------------------------------
-        $this->setId('ebayListingViewSettingsGrid'.$this->getListing()->getId());
-        // ---------------------------------------
+        $this->setId('ebayListingViewSettingsGrid');
 
         if ($this->isMotorsAvailable()) {
-            $attributeCode = Mage::helper('M2ePro/Component_Ebay_Motors')
-                ->getAttribute($this->getMotorsType());
-
-            $this->_motorsAttribute = Mage::getModel('catalog/product')->getResource()
-                                          ->getAttribute($attributeCode);
+            $this->_motorsAttribute = Mage::getModel('catalog/product')->getResource()->getAttribute(
+                Mage::helper('M2ePro/Component_Ebay_Motors')->getAttribute($this->getMotorsType())
+            );
         }
     }
 
@@ -68,7 +66,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Settings_Grid
 
     protected function getGridHandlerJs()
     {
-        return 'EbayListingSettingsGridHandler';
+        return 'EbayListingSettingsGrid';
     }
 
     //########################################
@@ -113,9 +111,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Settings_Grid
             array(
                 'listing_product_id' => 'listing_product_id',
 
-                'template_category_id'  => 'template_category_id',
-                'template_other_category_id'  => 'template_other_category_id',
-
                 'template_payment_mode'       => 'template_payment_mode',
                 'template_shipping_mode'      => 'template_shipping_mode',
                 'template_return_policy_mode' => 'template_return_policy_mode',
@@ -136,6 +131,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Settings_Grid
                 'online_current_price'  => 'online_current_price',
                 'online_reserve_price'  => 'online_reserve_price',
                 'online_buyitnow_price' => 'online_buyitnow_price',
+
+                'template_category_id'                 => 'template_category_id',
+                'template_category_secondary_id'       => 'template_category_secondary_id',
+                'template_store_category_id'           => 'template_store_category_id',
+                'template_store_category_secondary_id' => 'template_store_category_secondary_id',
             )
         );
         $collection->joinTable(
@@ -148,35 +148,50 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Settings_Grid
             'left'
         );
         $collection->joinTable(
-            array('etc' => 'M2ePro/Ebay_Template_Category'),
+            array('etc1' => 'M2ePro/Ebay_Template_Category'),
             'id=template_category_id',
             array(
-                'category_main_mode'      => 'category_main_mode',
-                'category_main_id'        => 'category_main_id',
-                'category_main_path'      => 'category_main_path',
-                'category_main_attribute' => 'category_main_attribute',
+                'category_main_mode'               => 'category_mode',
+                'category_main_id'                 => 'category_id',
+                'category_main_path'               => 'category_path',
+                'category_main_attribute'          => 'category_attribute',
+                'category_main_is_custom_template' => 'is_custom_template'
             ),
             null,
             'left'
         );
         $collection->joinTable(
-            array('etoc' => 'M2ePro/Ebay_Template_OtherCategory'),
-            'id=template_other_category_id',
+            array('etc2' => 'M2ePro/Ebay_Template_Category'),
+            'id=template_category_secondary_id',
             array(
-                'category_secondary_mode'      => 'category_secondary_mode',
-                'category_secondary_id'        => 'category_secondary_id',
-                'category_secondary_path'      => 'category_secondary_path',
-                'category_secondary_attribute' => 'category_secondary_attribute',
-
-                'store_category_main_mode'      => 'store_category_main_mode',
-                'store_category_main_id'        => 'store_category_main_id',
-                'store_category_main_path'      => 'store_category_main_path',
-                'store_category_main_attribute' => 'store_category_main_attribute',
-
-                'store_category_secondary_mode'      => 'store_category_secondary_mode',
-                'store_category_secondary_id'        => 'store_category_secondary_id',
-                'store_category_secondary_path'      => 'store_category_secondary_path',
-                'store_category_secondary_attribute' => 'store_category_secondary_attribute',
+                'category_secondary_mode'      => 'category_mode',
+                'category_secondary_id'        => 'category_id',
+                'category_secondary_path'      => 'category_path',
+                'category_secondary_attribute' => 'category_attribute',
+            ),
+            null,
+            'left'
+        );
+        $collection->joinTable(
+            array('etsc1' => 'M2ePro/Ebay_Template_StoreCategory'),
+            'id=template_store_category_id',
+            array(
+                'store_category_main_mode'      => 'category_mode',
+                'store_category_main_id'        => 'category_id',
+                'store_category_main_path'      => 'category_path',
+                'store_category_main_attribute' => 'category_attribute',
+            ),
+            null,
+            'left'
+        );
+        $collection->joinTable(
+            array('etsc2' => 'M2ePro/Ebay_Template_StoreCategory'),
+            'id=template_store_category_secondary_id',
+            array(
+                'store_category_secondary_mode'      => 'category_mode',
+                'store_category_secondary_id'        => 'category_id',
+                'store_category_secondary_path'      => 'category_path',
+                'store_category_secondary_attribute' => 'category_attribute',
             ),
             null,
             'left'
@@ -225,33 +240,37 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Settings_Grid
         $this->addColumns();
 
         $this->addColumnAfter(
-            'name', array(
-            'header'    => Mage::helper('M2ePro')->__('Product Title / Product SKU / eBay Category'),
-            'align'     => 'left',
-            'type'      => 'text',
-            'index'     => 'name',
-            'filter'    => 'M2ePro/adminhtml_ebay_listing_view_settings_grid_column_filter_titleSkuCategory',
-            'frame_callback' => array($this, 'callbackColumnTitle'),
-            'filter_condition_callback' => array($this, 'callbackFilterTitle')
-            ), 'product_id'
+            'name',
+            array(
+                'header'    => Mage::helper('M2ePro')->__('Product Title / Product SKU / eBay Category'),
+                'align'     => 'left',
+                'type'      => 'text',
+                'index'     => 'name',
+                'filter'    => 'M2ePro/adminhtml_ebay_listing_view_settings_grid_column_filter_titleSkuCategory',
+                'frame_callback'            => array($this, 'callbackColumnTitle'),
+                'filter_condition_callback' => array($this, 'callbackFilterTitle')
+            ),
+            'product_id'
         );
 
         if ($this->isMotorsAvailable() && $this->_motorsAttribute) {
             $this->addColumnAfter(
-                'parts_motors_attribute_value', array(
-                'header'    => Mage::helper('M2ePro')->__('Compatibility'),
-                'align'     => 'left',
-                'width'     => '100px',
-                'type'      => 'options',
-                'index'     => $this->_motorsAttribute->getAttributeCode(),
-                'sortable'  => false,
-                'options'   => array(
-                    1 => Mage::helper('M2ePro')->__('Filled'),
-                    0 => Mage::helper('M2ePro')->__('Empty')
+                'parts_motors_attribute_value',
+                array(
+                    'header'    => Mage::helper('M2ePro')->__('Compatibility'),
+                    'align'     => 'left',
+                    'width'     => '100px',
+                    'type'      => 'options',
+                    'index'     => $this->_motorsAttribute->getAttributeCode(),
+                    'sortable'  => false,
+                    'options'   => array(
+                        1 => Mage::helper('M2ePro')->__('Filled'),
+                        0 => Mage::helper('M2ePro')->__('Empty')
+                    ),
+                    'frame_callback' => array($this, 'callbackColumnMotorsAttribute'),
+                    'filter_condition_callback' => array($this, 'callbackFilterMotorsAttribute'),
                 ),
-                'frame_callback' => array($this, 'callbackColumnMotorsAttribute'),
-                'filter_condition_callback' => array($this, 'callbackFilterMotorsAttribute'),
-                ), 'name'
+                'name'
             );
         }
 
@@ -264,9 +283,9 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Settings_Grid
     {
         $this->getMassactionBlock()->setGroups(
             array(
-            'edit_settings'            => Mage::helper('M2ePro')->__('Edit General Settings'),
-            'edit_categories_settings' => Mage::helper('M2ePro')->__('Edit Categories Settings'),
-            'other'                    => Mage::helper('M2ePro')->__('Other')
+                'edit_settings'            => Mage::helper('M2ePro')->__('Edit General Settings'),
+                'edit_categories_settings' => Mage::helper('M2ePro')->__('Edit Category Settings'),
+                'other'                    => Mage::helper('M2ePro')->__('Other')
             )
         );
 
@@ -277,26 +296,10 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Settings_Grid
     {
         $this->getMassactionBlock()->addItem(
             'editCategorySettings', array(
-            'label'    => Mage::helper('M2ePro')->__('All Categories'),
-            'url'      => '',
-            ), 'edit_categories_settings'
-        );
-
-        $this->getMassactionBlock()->addItem(
-            'editPrimaryCategorySettings', array(
-                'label'    => Mage::helper('M2ePro')->__('Primary Categories'),
+                'label'    => Mage::helper('M2ePro')->__('Categories & Specifics'),
                 'url'      => '',
             ), 'edit_categories_settings'
         );
-
-        if ($this->getListing()->getAccount()->getChildObject()->getEbayStoreCategories()) {
-            $this->getMassactionBlock()->addItem(
-                'editStorePrimaryCategorySettings', array(
-                'label'    => Mage::helper('M2ePro')->__('Store Primary Categories'),
-                'url'      => '',
-                ), 'edit_categories_settings'
-            );
-        }
 
         parent::_prepareMassactionItems();
 
@@ -331,8 +334,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Settings_Grid
 
     public function callbackColumnTitle($value, $row, $column, $isExport)
     {
-        $helper = Mage::helper('M2ePro');
-
         $value = parent::callbackColumnTitle($value, $row, $column, $isExport);
 
         /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
@@ -350,30 +351,49 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Settings_Grid
             $value .= '</div>';
         }
 
-        $value .= '<br/><br/>';
-
-        if ($row->getData('category_main_mode') == Ess_M2ePro_Model_Ebay_Template_Category::CATEGORY_MODE_NONE) {
-            $value .= $this->getCategoryInfoHtml(
-                $helper->__('eBay Primary Category'),
-                '<span style="color: red">'.$helper->__('Not Set').'</span>'
-            );
-        } else {
-            $value .= $this->getEbayCategoryInfoHtml($row, 'category_main', $helper->__('eBay Primary Category'));
-        }
-
-        $value .= $this->getEbayCategoryInfoHtml($row, 'category_secondary', $helper->__('eBay Secondary Category'));
-
-        $value .= $this->getStoreCategoryInfoHtml(
-            $row, 'category_main',
-            $helper->__('eBay Store Primary Category')
+        $categoriesData = array(
+            eBayCategory::TYPE_EBAY_MAIN => array(
+                'mode'  => $row->getData('category_main_mode'),
+                'value' => $row->getData('category_main_mode') == TemplateCategory::CATEGORY_MODE_EBAY
+                              ? $row->getData('category_main_id')
+                              : $row->getData('category_main_attribute'),
+                'path'  => $row->getData('category_main_path'),
+                'is_custom_template' => $row->getData('category_main_is_custom_template')
+            ),
+            eBayCategory::TYPE_EBAY_SECONDARY => array(
+                'mode'  => $row->getData('category_secondary_mode'),
+                'value' => $row->getData('category_secondary_mode') == TemplateCategory::CATEGORY_MODE_EBAY
+                              ? $row->getData('category_secondary_id')
+                              : $row->getData('category_secondary_attribute'),
+                'path'  => $row->getData('category_secondary_path'),
+            ),
+            eBayCategory::TYPE_STORE_MAIN => array(
+                'mode'  => $row->getData('store_category_main_mode'),
+                'value' => $row->getData('store_category_main_mode') == TemplateCategory::CATEGORY_MODE_EBAY
+                              ? $row->getData('store_category_main_id')
+                              : $row->getData('store_category_main_attribute'),
+                'path'  => $row->getData('store_category_main_path'),
+            ),
+            eBayCategory::TYPE_STORE_SECONDARY => array(
+                'mode'  => $row->getData('store_category_secondary_mode'),
+                'value' => $row->getData('store_category_secondary_mode') == TemplateCategory::CATEGORY_MODE_EBAY
+                              ? $row->getData('store_category_secondary_id')
+                              : $row->getData('store_category_secondary_attribute'),
+                'path'  => $row->getData('store_category_secondary_path'),
+            ),
         );
-        $value .= $this->getStoreCategoryInfoHtml(
-            $row, 'category_secondary',
-            $helper->__('eBay Store Secondary Category')
-        );
-        $value .= '<br/>';
 
-        return $value;
+        /** @var Ess_M2ePro_Block_Adminhtml_Ebay_Grid_Column_Renderer_CategoryInfo $renderer */
+        $renderer = Mage::getBlockSingleton('M2ePro/adminhtml_ebay_grid_column_renderer_categoryInfo');
+        $renderer->setColumn($column);
+        $renderer->setEntityIdField('listing_product_id');
+        $renderer->setListing($this->_listing);
+        $renderer->setHideSpecificsRequiredMark(true);
+        $renderer->setCategoriesData(
+            array($row->getData('listing_product_id') => $categoriesData)
+        );
+
+        return $value . '<br/><br/>' . $renderer->render($row) . '<br/>';
     }
 
     public function callbackColumnMotorsAttribute($value, $row, $column, $isExport)
@@ -425,9 +445,9 @@ HTML;
             if ($countOfItems) {
                 $html .= <<<HTML
 [<a href="javascript:void(0);"
-    onclick="EbayMotorsHandlerObj.openViewItemPopup(
+    onclick="EbayMotorsObj.openViewItemPopup(
         {$row->getData('id')},
-        EbayListingSettingsGridHandlerObj
+        EbayListingSettingsGridObj
     );">{$label}</a>]<br/>
 HTML;
             }
@@ -442,9 +462,9 @@ HTML;
             if ($countOfFilters) {
                 $html .= <<<HTML
 [<a href="javascript:void(0);"
-    onclick="EbayMotorsHandlerObj.openViewFilterPopup(
+    onclick="EbayMotorsObj.openViewFilterPopup(
         {$row->getData('id')},
-        EbayListingSettingsGridHandlerObj
+        EbayListingSettingsGridObj
     );">{$label}</a>]<br/>
 HTML;
             }
@@ -459,9 +479,9 @@ HTML;
             if ($countOfGroups) {
                 $html .= <<<HTML
 [<a href="javascript:void(0);"
-    onclick="EbayMotorsHandlerObj.openViewGroupPopup(
+    onclick="EbayMotorsObj.openViewGroupPopup(
         {$row->getData('id')},
-        EbayListingSettingsGridHandlerObj
+        EbayListingSettingsGridObj
     );">{$label}</a>]
 HTML;
             }
@@ -549,103 +569,25 @@ HTML;
 
     //########################################
 
-    protected function getEbayCategoryInfoHtml($row, $modeNick, $modeTitle)
-    {
-        $helper = Mage::helper('M2ePro');
-        $mode = $row->getData($modeNick.'_mode');
-
-        if ($mode === null || $mode == Ess_M2ePro_Model_Ebay_Template_Category::CATEGORY_MODE_NONE) {
-            return '';
-        }
-
-        if ($mode == Ess_M2ePro_Model_Ebay_Template_Category::CATEGORY_MODE_ATTRIBUTE) {
-            $category = $helper->__('Magento Attribute'). ' > ';
-            $category.= $helper->escapeHtml(
-                Mage::helper('M2ePro/Magento_Attribute')->getAttributeLabel(
-                    $row->getData($modeNick.'_attribute'),
-                    $this->getListing()->getStoreId()
-                )
-            );
-        } else {
-            $category = $helper->escapeHtml($row->getData($modeNick.'_path')).' ('.$row->getData($modeNick.'_id').')';
-        }
-
-        return $this->getCategoryInfoHtml($modeTitle, $category);
-    }
-
-    protected function getStoreCategoryInfoHtml($row, $modeNick, $modeTitle)
-    {
-        $helper = Mage::helper('M2ePro');
-        $mode = $row->getData('store_'.$modeNick.'_mode');
-
-        if ($mode == Ess_M2ePro_Model_Ebay_Template_Category::CATEGORY_MODE_NONE) {
-            return '';
-        }
-
-        if ($mode == Ess_M2ePro_Model_Ebay_Template_Category::CATEGORY_MODE_ATTRIBUTE) {
-            $category = $helper->__('Magento Attribute'). ' > ';
-            $category .= $helper->escapeHtml(
-                Mage::helper('M2ePro/Magento_Attribute')->getAttributeLabel(
-                    $row->getData('store_'.$modeNick.'_attribute'),
-                    $this->getListing()->getStoreId()
-                )
-            );
-        } else {
-            $category = $helper->escapeHtml($row->getData('store_'.$modeNick.'_path')).
-                        ' ('.$row->getData('store_'.$modeNick.'_id').')';
-        }
-
-        return $this->getCategoryInfoHtml($modeTitle, $category);
-    }
-
-    protected function getCategoryInfoHtml($modeTitle, $category)
-    {
-        return <<<HTML
-    <div>
-        <span style="text-decoration: underline">{$modeTitle}:</span>
-        <p style="padding: 2px 0 0 10px">{$category}</p>
-    </div>
-HTML;
-    }
-
-    //########################################
-
     protected function getColumnActionsItems()
     {
         $helper = Mage::helper('M2ePro');
 
         $actions = array(
             'editCategories' => array(
-                'caption' => $helper->__('All Categories'),
+                'caption' => $helper->__('Categories & Specifics'),
                 'group'   => 'edit_categories_settings',
                 'field'   => 'id',
-                'onclick_action' => 'EbayListingSettingsGridHandlerObj.actions[\'editCategorySettingsAction\']'
-            ),
-
-            'editPrimaryCategories' => array(
-                'caption' => $helper->__('Primary Category'),
-                'group'   => 'edit_categories_settings',
-                'field'   => 'id',
-                'onclick_action' => 'EbayListingSettingsGridHandlerObj.actions[\'editPrimaryCategorySettingsAction\']'
-            ),
+                'onclick_action' => "EbayListingSettingsGridObj.actions['editCategorySettingsAction']"
+            )
         );
-
-        if ($this->getListing()->getAccount()->getChildObject()->getEbayStoreCategories()) {
-            $actions['editStorePrimaryCategories'] =  array(
-                'caption' => $helper->__('Store Primary Category'),
-                'group'   => 'edit_categories_settings',
-                'field'   => 'id',
-                'onclick_action' => 'EbayListingSettingsGridHandlerObj.'
-                                    .'actions[\'editStorePrimaryCategorySettingsAction\']'
-            );
-        }
 
         if ($this->isMotorsAvailable() && $this->_motorsAttribute) {
             $actions['addCompatibleVehicles'] =  array(
                 'caption' => $helper->__('Add Compatible Vehicles'),
                 'group'   => 'other',
                 'field'   => 'id',
-                'onclick_action' => 'EbayListingSettingsGridHandlerObj.actions[\'editMotorsAction\']'
+                'onclick_action' => 'EbayListingSettingsGridObj.actions[\'editMotorsAction\']'
             );
         }
 
@@ -659,41 +601,24 @@ HTML;
         /** @var $helper Ess_M2ePro_Helper_Data */
         $helper = Mage::helper('M2ePro');
 
-        // ---------------------------------------
-        $urls = $helper->getControllerActions('adminhtml_ebay_listing', array('_current' => true));
-
-        $path = 'adminhtml_ebay_listing/getCategoryChooserHtml';
-        $urls[$path] = $this->getUrl(
-            '*/' . $path, array(
-            'listing_id' => $this->getListing()->getId()
-            )
-        );
-
-        $path = 'adminhtml_ebay_listing/getCategorySpecificHtml';
-        $urls[$path] = $this->getUrl(
-            '*/' . $path, array(
-            'listing_id' => $this->getListing()->getId()
-            )
+        $urls = array_merge(
+            $helper->getControllerActions('adminhtml_ebay_motor')
         );
 
         $path = 'adminhtml_ebay_listing/saveCategoryTemplate';
-        $urls[$path] = $this->getUrl(
-            '*/' . $path, array(
-            'listing_id' => $this->getListing()->getId()
-            )
-        );
+        $urls[$path] = $this->getUrl('*/' . $path);
 
         $path = 'adminhtml_ebay_listing/runTransferring';
         $urls[$path] = $this->getUrl(
             '*/' . $path, array(
-            'listing_id' => $this->getListing()->getId()
+                'listing_id' => $this->getListing()->getId()
             )
         );
 
         $path = 'adminhtml_ebay_log/listing';
         $urls[$path] = $this->getUrl(
             '*/adminhtml_ebay_log/listing', array(
-            'id' => $this->getListing()->getId()
+                'id' => $this->getListing()->getId()
             )
         );
 
@@ -706,15 +631,13 @@ HTML;
 
         $urls['adminhtml_ebay_listing/getTransferringUrl'] = $this->getUrl('*/adminhtml_ebay_listing/view');
 
-        $urls = array_merge(
-            $urls,
-            $helper->getControllerActions('adminhtml_ebay_motor')
-        );
+        $path = 'adminhtml_ebay_listing/getCategoryChooserHtml';
+        $urls[$path] = $this->getUrl('*/' . $path);
 
         $urls = Mage::helper('M2ePro')->jsonEncode($urls);
         // ---------------------------------------
 
-        if (Mage::helper('M2ePro/Component_Ebay_Motors')->isTypeBasedOnEpids($this->getMotorsType())){
+        if (Mage::helper('M2ePro/Component_Ebay_Motors')->isTypeBasedOnEpids($this->getMotorsType())) {
             $motorsTypeTitle = 'ePID';
         } else {
             $motorsTypeTitle = 'kType';
@@ -723,8 +646,7 @@ HTML;
         //------------------------------
         $translations = Mage::helper('M2ePro')->jsonEncode(
             array(
-            'eBay Categories' => $helper->__('eBay Categories'),
-            'of Product' => Mage::helper('M2ePro')->__('of Product'),
+            'Category Settings' => $helper->__('Category Settings'),
             'Specifics' => $helper->__('Specifics'),
             'Compatibility Attribute ePIDs' => $helper->__('Compatibility Attribute ePIDs'),
             'Confirm' => $helper->__('Confirm'),
@@ -775,22 +697,6 @@ HTML;
         );
         $getErrorsSummary = $this->getUrl('*/adminhtml_listing/getErrorsSummary');
 
-        $taskCompletedMessage = $helper->escapeJs($helper->__('Task completed. Please wait ...'));
-        $taskCompletedSuccessMessage = $helper->escapeJs(
-            $helper->__('"%task_title%" Task was successfully submitted to be processed.')
-        );
-        $taskRealtimeCompletedSuccessMessage = $helper->escapeJs(
-            $helper->__('"%task_title%" Task was completed successfully.')
-        );
-
-        $tempString = '"%task_title%" Task was completed with warnings.'
-                     .' <a target="_blank" href="%url%">View Log</a> for the details.';
-        $taskCompletedWarningMessage = $helper->escapeJs($helper->__($tempString));
-
-        $tempString = '"%task_title%" Task was completed with errors. '
-                     .' <a target="_blank" href="%url%">View Log</a> for the details.';
-        $taskCompletedErrorMessage = $helper->escapeJs($helper->__($tempString));
-
         $sendingDataToEbayMessage = $helper->escapeJs($helper->__('Sending %product_title% Product(s) data on eBay.'));
         $viewAllProductLogMessage = $helper->escapeJs($helper->__('View All Product Log.'));
 
@@ -800,15 +706,6 @@ HTML;
         $listingEmptyMessage = $helper->escapeJs(
             $helper->__('Listing is empty.')
         );
-
-        $selectItemsMessage = $helper->escapeJs($helper->__('Please select Items.'));
-        $selectActionMessage = $helper->escapeJs($helper->__('Please select Action.'));
-
-        $successWord = $helper->escapeJs($helper->__('Success'));
-        $noticeWord = $helper->escapeJs($helper->__('Notice'));
-        $warningWord = $helper->escapeJs($helper->__('Warning'));
-        $errorWord = $helper->escapeJs($helper->__('Error'));
-        $closeWord = $helper->escapeJs($helper->__('Close'));
 
         $prepareData = $this->getUrl('*/adminhtml_listing_moving/prepareMoveToListing');
         $getMoveToListingGridHtml = $this->getUrl('*/adminhtml_listing_moving/moveToListingGrid');
@@ -839,36 +736,21 @@ HTML;
 
     M2ePro.text.popup_title = '{$popupTitle}';
 
-    M2ePro.text.task_completed_message = '{$taskCompletedMessage}';
-    M2ePro.text.task_completed_success_message = '{$taskCompletedSuccessMessage}';
-    M2ePro.text.task_realtime_completed_success_message = '{$taskRealtimeCompletedSuccessMessage}';
-    M2ePro.text.task_completed_warning_message = '{$taskCompletedWarningMessage}';
-    M2ePro.text.task_completed_error_message = '{$taskCompletedErrorMessage}';
-
     M2ePro.text.sending_data_message = '{$sendingDataToEbayMessage}';
     M2ePro.text.view_all_product_log_message = '{$viewAllProductLogMessage}';
 
     M2ePro.text.listing_locked_message = '{$listingLockedMessage}';
     M2ePro.text.listing_empty_message = '{$listingEmptyMessage}';
 
-    M2ePro.text.select_items_message = '{$selectItemsMessage}';
-    M2ePro.text.select_action_message = '{$selectActionMessage}';
-
-    M2ePro.text.success_word = '{$successWord}';
-    M2ePro.text.notice_word = '{$noticeWord}';
-    M2ePro.text.warning_word = '{$warningWord}';
-    M2ePro.text.error_word = '{$errorWord}';
-    M2ePro.text.close_word = '{$closeWord}';
-
     M2ePro.customData.componentMode = '{$component}';
     M2ePro.customData.gridId = '{$gridId}';
     M2ePro.customData.ignoreListings = '{$ignoreListings}';
 
     Event.observe(window, 'load', function() {
-        EbayListingTransferringHandlerObj = new EbayListingTransferringHandler();
-        EbayListingTransferringPaymentHandlerObj = new EbayListingTransferringPaymentHandler();
+        EbayListingTransferringObj = new EbayListingTransferring();
+        EbayListingTransferringPaymentObj = new EbayListingTransferringPayment();
 
-        EbayMotorsHandlerObj = new EbayMotorsHandler({$this->getListing()->getId()}, '{$motorsType}');
+        EbayMotorsObj = new EbayMotors({$this->getListing()->getId()}, '{$motorsType}');
     });
 
 </script>
@@ -879,7 +761,7 @@ HTML;
             $html .= <<<HTML
 <script type="text/javascript">
     Event.observe(window, 'load', function() {
-        ListingAutoActionHandlerObj.loadAutoActionHtml();
+        ListingAutoActionObj.loadAutoActionHtml();
     });
 </script>
 HTML;

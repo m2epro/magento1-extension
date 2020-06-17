@@ -84,11 +84,12 @@ SQL;
 
             $installer->run(<<<SQL
 
-INSERT INTO m2epro_primary_config (`group`,`key`,`value`,`notice`,`update_date`,`create_date`) VALUES
-  ('/M2ePro/license/valid/', 'domain', NULL, '0 - Not valid\r\n1 - Valid', '2013-05-08 00:00:00','2013-05-08 00:00:00'),
-  ('/M2ePro/license/valid/', 'ip', NULL, '0 - Not valid\r\n1 - Valid', '2013-05-08 00:00:00', '2013-05-08 00:00:00'),
-  ('/M2ePro/license/valid/', 'directory', NULL, '0 - Not valid\r\n1 - Valid',
-   '2013-05-08 00:00:00', '2013-05-08 00:00:00');
+INSERT INTO `{$this->_installer->getTable('m2epro_primary_config')}` 
+(`group`,`key`,`value`,`notice`,`update_date`,`create_date`) VALUES
+('/M2ePro/license/valid/', 'domain', NULL, '0 - Not valid\r\n1 - Valid', '2013-05-08 00:00:00','2013-05-08 00:00:00'),
+('/M2ePro/license/valid/', 'ip', NULL, '0 - Not valid\r\n1 - Valid', '2013-05-08 00:00:00', '2013-05-08 00:00:00'),
+('/M2ePro/license/valid/', 'directory', NULL, '0 - Not valid\r\n1 - Valid',
+'2013-05-08 00:00:00', '2013-05-08 00:00:00');
 
 SQL
             );
@@ -96,7 +97,7 @@ SQL
 
         $installer->run(<<<SQL
 
-DELETE FROM `m2epro_config`
+DELETE FROM `{$this->_installer->getTable('m2epro_config')}`
 WHERE `group` = '/license/validation/directory/notification/' OR
       `group` = '/license/validation/domain/notification/' OR
       `group` = '/license/validation/ip/notification/';
@@ -108,15 +109,15 @@ SQL
 
         $installer->run(<<<SQL
 
-UPDATE `m2epro_ebay_marketplace`
+UPDATE `{$this->_installer->getTable('m2epro_ebay_marketplace')}`
 SET `is_charity` = 1
 WHERE `marketplace_id` IN (2, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23);
 
-UPDATE `m2epro_ebay_marketplace`
+UPDATE `{$this->_installer->getTable('m2epro_ebay_marketplace')}`
 SET `is_stp` = 1
 WHERE `marketplace_id` = 4;
 
-UPDATE `m2epro_ebay_marketplace`
+UPDATE `{$this->_installer->getTable('m2epro_ebay_marketplace')}`
 SET `is_map` = 1
 WHERE `marketplace_id` = 1;
 

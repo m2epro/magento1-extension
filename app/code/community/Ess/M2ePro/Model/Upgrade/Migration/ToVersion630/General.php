@@ -95,7 +95,7 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630_General
 
     protected function processAttributeSet()
     {
-        $this->getInstaller()->run("DROP TABLE IF EXISTS m2epro_attribute_set;");
+        $this->getInstaller()->run("DROP TABLE IF EXISTS {$this->_installer->getTable('m2epro_attribute_set')};");
     }
 
     protected function processRegistry()
@@ -245,7 +245,7 @@ SQL
         $this->getInstaller()->run(
             <<<SQL
 
-    UPDATE `m2epro_amazon_template_selling_format`
+    UPDATE `{$this->_installer->getTable('m2epro_amazon_template_selling_format')}`
     SET `sale_price_mode` = 0
     WHERE `sale_price_mode` = 4;
 
@@ -269,7 +269,7 @@ SQL
         $this->getInstaller()->run(
             <<<SQL
 
-    INSERT INTO `m2epro_wizard` (`nick`, `view`, `status`, `step`, `type`, `priority`)
+    INSERT INTO `{$this->_installer->getTable('m2epro_wizard')}` (`nick`, `view`, `status`, `step`, `type`, `priority`)
     VALUES ('migrationNewAmazon', 'common', 0, NULL, 0, 6);
 
 SQL

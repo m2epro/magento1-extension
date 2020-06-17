@@ -11,16 +11,7 @@
 
 $translations = array();
 
-// ->__('Synchronization Settings have been saved.')
 $text = 'Synchronization Settings have been saved.';
-$translations[$text] = Mage::helper('M2ePro')->__($text);
-
-// ->__('Running All Enabled Tasks')
-$text = 'Running All Enabled Tasks';
-$translations[$text] = Mage::helper('M2ePro')->__($text);
-
-// ->__('Revise All')
-$text = 'Revise All';
 $translations[$text] = Mage::helper('M2ePro')->__($text);
 
 $translations = json_encode($translations);
@@ -30,27 +21,15 @@ $translations = json_encode($translations);
     <script type="text/javascript">
 
         M2ePro.url.add(<?php echo json_encode(array(
-            'formSubmit' => $this->getUrl('M2ePro/adminhtml_walmart_synchronization/save'),
-            'logViewUrl' => $this->getUrl('M2ePro/adminhtml_walmart_log/synchronization',array('back'=>Mage::helper('M2ePro')->makeBackUrlParam('*/adminhtml_walmart_synchronization/index'))),
+            'formSubmit' => $this->getUrl('M2ePro/adminhtml_walmart_synchronization/save')
         )); ?>);
 
         M2ePro.translator.add(<?php echo $translations; ?>);
 
         Event.observe(window, 'load', function() {
             setTimeout(function() {
-                SynchronizationProgressHandlerObj = new SynchProgressHandler(SynchProgressBarObj, SynchWrapperObj );
-                SynchronizationHandlerObj = new SynchronizationHandler(SynchronizationProgressHandlerObj);
-
+                SynchronizationObj = new Synchronization();
                 editForm = new varienForm('edit_form', '<?php echo $this->getValidationUrl(); ?>');
-
-                <?php if ($this->getChildBlockId() !== null) { ?>
-                <?php
-                $childBlockId = Mage::helper('M2ePro')->escapeJs($this->getChildBlockId());
-                $destinationBlockId = Mage::helper('M2ePro')->escapeJs($this->getForm()->getId());
-                ?>
-                SynchronizationHandlerObj.moveChildBlockContent('<?php echo $childBlockId; ?>', '<?php echo $destinationBlockId; ?>');
-                <?php } ?>
-
             }, 350);
         });
 

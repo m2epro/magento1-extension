@@ -10,8 +10,9 @@ class Ess_M2ePro_Helper_Component_Ebay_Category_Store extends Mage_Core_Helper_A
 {
     //########################################
 
-    public function getPath($categoryId, $accountId, $delimiter = ' > ')
+    public function getPath($categoryId, $accountId, $delimiter = '>')
     {
+        /** @var Ess_M2ePro_Model_Account $account */
         $account = Mage::helper('M2ePro/Component_Ebay')->getCachedObject('Account', $accountId);
         $categories = $account->getChildObject()->getEbayStoreCategories();
 
@@ -46,76 +47,35 @@ class Ess_M2ePro_Helper_Component_Ebay_Category_Store extends Mage_Core_Helper_A
 
     //########################################
 
-    public function getSameTemplatesData($ids)
-    {
-        return Mage::helper('M2ePro/Component_Ebay_Category')->getSameTemplatesData(
-            $ids, Mage::getResourceModel('M2ePro/Ebay_Template_OtherCategory')->getMainTable(),
-            array('category_secondary','store_category_main','store_category_secondary')
-        );
-    }
-
     public function isExistDeletedCategories()
     {
-        /** @var $connRead Varien_Db_Adapter_Pdo_Mysql */
-        $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
-
-        $etocTable = Mage::getModel('M2ePro/Ebay_Template_OtherCategory')->getResource()->getMainTable();
-        $eascTable = Mage::helper('M2ePro/Module_Database_Structure')
-            ->getTableNameWithPrefix('m2epro_ebay_account_store_category');
-
-        // prepare category main select
-        // ---------------------------------------
-        $primarySelect = $connRead->select();
-        $primarySelect->from(
-            array('primary_table' => $etocTable)
-        )
-            ->reset(Zend_Db_Select::COLUMNS)
-            ->columns(
-                array(
-                'store_category_main_id as category_id',
-                'account_id',
-                )
+        $stmt = Mage::getSingleton('core/resource')->getConnection('core_read')
+            ->select()
+            ->from(
+                array('etsc' => Mage::getModel('M2ePro/Ebay_Template_StoreCategory')->getResource()->getMainTable())
             )
-            ->where('store_category_main_mode = ?', Ess_M2ePro_Model_Ebay_Template_Category::CATEGORY_MODE_EBAY)
-            ->group(array('category_id', 'account_id'));
-        // ---------------------------------------
-
-        // prepare category secondary select
-        // ---------------------------------------
-        $secondarySelect = $connRead->select();
-        $secondarySelect->from(
-            array('secondary_table' => $etocTable)
-        )
-            ->reset(Zend_Db_Select::COLUMNS)
-            ->columns(
-                array(
-                'store_category_secondary_id as category_id',
-                'account_id',
-                )
-            )
-            ->where('store_category_secondary_mode = ?', Ess_M2ePro_Model_Ebay_Template_Category::CATEGORY_MODE_EBAY)
-            ->group(array('category_id', 'account_id'));
-        // ---------------------------------------
-
-        $unionSelect = $connRead->select();
-        $unionSelect->union(
-            array(
-            $primarySelect,
-            $secondarySelect,
-            )
-        );
-
-        $mainSelect = $connRead->select();
-        $mainSelect->reset()
-            ->from(array('main_table' => $unionSelect))
             ->joinLeft(
-                array('easc' => $eascTable),
-                'easc.account_id = main_table.account_id
-                    AND easc.category_id = main_table.category_id'
+                array(
+                    'edc' => Mage::helper('M2ePro/Module_Database_Structure')
+                                    ->getTableNameWithPrefix('m2epro_ebay_account_store_category')
+                ),
+                'edc.account_id = etsc.account_id AND edc.category_id = etsc.category_id'
             )
-            ->where('easc.category_id IS NULL');
+            ->reset(Zend_Db_Select::COLUMNS)
+            ->columns(
+                array(
+                    'category_id',
+                    'account_id',
+                )
+            )
+            ->where('etsc.category_mode = ?', Ess_M2ePro_Model_Ebay_Template_Category::CATEGORY_MODE_EBAY)
+            ->where('edc.category_id IS NULL')
+            ->group(
+                array('etsc.category_id', 'etsc.account_id')
+            )
+            ->query();
 
-        return $connRead->query($mainSelect)->fetchColumn() !== false;
+        return $stmt->fetchColumn() !== false;
     }
 
     //########################################

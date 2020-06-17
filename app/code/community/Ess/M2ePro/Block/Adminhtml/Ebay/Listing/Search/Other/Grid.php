@@ -48,6 +48,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Search_Other_Grid
         $listingOtherCollection->getSelect()->reset(Zend_Db_Select::COLUMNS);
         $listingOtherCollection->getSelect()->columns(
             array(
+                'id'                    =>'main_table.id',
                 'store_id'              => new Zend_Db_Expr(0),
                 'account_id'            => 'main_table.account_id',
                 'marketplace_id'        => 'main_table.marketplace_id',
@@ -150,13 +151,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Search_Other_Grid
     <a title="{$altTitle}" target="_blank" href="{$manageUrl}"><img src="{$iconSrc}" /></a>
 </div>
 HTML;
-    }
-
-    protected function getProcessingLocks($row)
-    {
-        $objectId = $row->getData('listing_other_id');
-        $object   = Mage::helper('M2ePro/Component_Ebay')->getObject('Listing_Other', $objectId);
-        return $object->getProcessingLocks();
     }
 
     //########################################

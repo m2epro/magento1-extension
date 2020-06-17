@@ -26,22 +26,24 @@ class Ess_M2ePro_Block_Adminhtml_Grid_Column_Renderer_Action
             }
         }
 
-        $itemId     = $row->getId();
+        $itemParam  = $row->getId();
         $field      = $this->getColumn()->getData('field');
         $groupOrder = $this->getColumn()->getGroupOrder();
 
         if (!empty($field)) {
-            $itemId = $row->getData($field);
+            $itemParam = $row->getData($field);
         }
 
         if (!empty($groupOrder) && is_array($groupOrder)) {
             $actions = $this->sortActionsByGroupsOrder($groupOrder, $actions);
         }
 
-        return ' <select class="action-select" onchange="ActionColumnObj.callAction(this, ' . (int)$itemId . ');">'
-               . '<option value=""></option>'
-               . $this->renderOptions($actions, $row)
-               . '</select>';
+        return <<<HTML
+<select class="action-select" onchange="ActionColumnObj.callAction(this, '{$itemParam}');">
+    <option value=""></option>
+    {$this->renderOptions($actions, $row)}
+</select>
+HTML;
     }
 
     protected function sortActionsByGroupsOrder(array $groupOrder, array $actions)

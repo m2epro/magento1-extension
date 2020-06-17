@@ -6,25 +6,30 @@
  * @license    Commercial use is forbidden
  */
 
+/**
+ * @method Ess_M2ePro_Model_Resource_Synchronization_Log getResource()
+ */
 class Ess_M2ePro_Model_Synchronization_Log extends Ess_M2ePro_Model_Log_Abstract
 {
+    const TYPE_FATAL_ERROR = 100;
+
     const TASK_OTHER  = 0;
-    const _TASK_OTHER = 'Other Synchronization';
+    const _TASK_OTHER = 'Other';
 
     const TASK_LISTINGS  = 2;
-    const _TASK_LISTINGS = 'M2E Pro Listings Synchronization';
-
-    const TASK_ORDERS  = 3;
-    const _TASK_ORDERS = 'Orders Synchronization';
-
-    const TASK_MARKETPLACES  = 4;
-    const _TASK_MARKETPLACES = 'Marketplaces Synchronization';
+    const _TASK_LISTINGS = 'M2E Pro Listings';
 
     const TASK_OTHER_LISTINGS  = 5;
-    const _TASK_OTHER_LISTINGS = '3rd Party Listings Synchronization';
+    const _TASK_OTHER_LISTINGS = '3rd Party Listings';
+
+    const TASK_ORDERS  = 3;
+    const _TASK_ORDERS = 'Orders';
+
+    const TASK_MARKETPLACES  = 4;
+    const _TASK_MARKETPLACES = 'Marketplaces';
 
     const TASK_REPRICING  = 6;
-    const _TASK_REPRICING = 'Repricing Synchronization';
+    const _TASK_REPRICING = 'Repricing';
 
     /**
      * @var null|int
@@ -77,19 +82,39 @@ class Ess_M2ePro_Model_Synchronization_Log extends Ess_M2ePro_Model_Log_Abstract
 
     //########################################
 
-    public function addMessage($description = null, $type = null, $priority = null, array $additionalData = array())
+    public function addMessageFromException(Exception $exception)
     {
-        $dataForAdd = $this->makeDataForAdd(
-            $description,
-            $type,
-            $priority,
-            $additionalData
+        return $this->addMessage(
+            $exception->getMessage(),
+            Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
+            array(),
+            Mage::helper('M2ePro/Module_Exception')->getExceptionDetailedInfo($exception)
         );
-
-        $this->createMessage($dataForAdd);
     }
 
-    //########################################
+    public function addMessage(
+        $description = null,
+        $type = null,
+        array $additionalData = array(),
+        $detailedDescription = null
+    ) {
+        $dataForAdd = array(
+            'description'          => $description,
+            'detailed_description' => $detailedDescription,
+            'type'                 => (int)$type,
+            'additional_data'      => Mage::helper('M2ePro')->jsonEncode($additionalData),
+
+            'operation_history_id' => $this->_operationHistoryId,
+            'task'                 => $this->_task,
+            'initiator'            => $this->_initiator,
+            'component_mode'       => $this->_componentMode,
+        );
+
+        Mage::getModel('M2ePro/Synchronization_Log')
+            ->setData($dataForAdd)
+            ->save()
+            ->getId();
+    }
 
     public function clearMessages($task = null)
     {
@@ -108,48 +133,40 @@ class Ess_M2ePro_Model_Synchronization_Log extends Ess_M2ePro_Model_Log_Abstract
 
     //########################################
 
-    protected function createMessage($dataForAdd)
+    public function setFatalErrorHandler()
     {
-        $dataForAdd['operation_history_id'] = $this->_operationHistoryId;
-        $dataForAdd['task'] = $this->_task;
-        $dataForAdd['initiator'] = $this->_initiator;
-        $dataForAdd['component_mode'] = $this->_componentMode;
-
-        Mage::getModel('M2ePro/Synchronization_Log')
-                 ->setData($dataForAdd)
-                 ->save()
-                 ->getId();
-    }
-
-    protected function makeDataForAdd(
-        $description = null,
-        $type = null,
-        $priority = null,
-        array $additionalData = array()
-    ) {
-        $dataForAdd = array();
-
-        if ($description !== null) {
-            $dataForAdd['description'] = Mage::helper('M2ePro')->__($description);
-        } else {
-            $dataForAdd['description'] = null;
+        $temp = Mage::helper('M2ePro/Data_Global')->getValue(__CLASS__.'-'.__METHOD__);
+        if (!empty($temp)) {
+            return;
         }
 
-        if ($type !== null) {
-            $dataForAdd['type'] = (int)$type;
-        } else {
-            $dataForAdd['type'] = self::TYPE_NOTICE;
-        }
+        Mage::helper('M2ePro/Data_Global')->setValue(__CLASS__.'-'.__METHOD__, true);
 
-        if ($priority !== null) {
-            $dataForAdd['priority'] = (int)$priority;
-        } else {
-            $dataForAdd['priority'] = self::PRIORITY_LOW;
-        }
+        $object = $this;
+        // @codingStandardsIgnoreLine
+        register_shutdown_function(
+            function() use ($object) {
+                $error = error_get_last();
+                if ($error === null) {
+                    return;
+                }
 
-        $dataForAdd['additional_data'] = Mage::helper('M2ePro')->jsonEncode($additionalData);
+                if (!in_array((int)$error['type'], array(E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR))) {
+                    return;
+                }
 
-        return $dataForAdd;
+                // @codingStandardsIgnoreLine
+                $trace = @debug_backtrace(false);
+                $traceInfo = Mage::helper('M2ePro/Module_Exception')->getFatalStackTraceInfo($trace);
+
+                $object->addMessage(
+                    $error['message'],
+                    $object::TYPE_FATAL_ERROR,
+                    array(),
+                    Mage::helper('M2ePro/Module_Exception')->getFatalErrorDetailedInfo($error, $traceInfo)
+                );
+            }
+        );
     }
 
     //########################################

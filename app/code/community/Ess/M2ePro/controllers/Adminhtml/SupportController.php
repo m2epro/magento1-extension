@@ -15,12 +15,14 @@ class Ess_M2ePro_Adminhtml_SupportController
     {
         $this->loadLayout()
              ->_title(Mage::helper('M2ePro')->__('M2E Pro'))
-             ->_title(Mage::helper('M2ePro')->__('Support'));
+             ->_title(Mage::helper('M2ePro')->__('Help Center'));
 
         $this->getLayout()->getBlock('head')
-            ->addJs('M2ePro/SupportHandler.js')
+            ->addJs('M2ePro/Support.js')
             ->addJs('M2ePro/Plugin/DropDown.js')
             ->addCss('M2ePro/css/Plugin/DropDown.css');
+
+        $this->_initPopUp();
 
         return $this;
     }
@@ -62,29 +64,6 @@ class Ess_M2ePro_Adminhtml_SupportController
                           ->toHtml();
 
         $this->getResponse()->setBody($blockHtml);
-    }
-
-    // ---------------------------------------
-
-    public function documentationAction()
-    {
-        $url = Mage::helper('M2ePro/Module_Support')->getDocumentationUrl();
-
-        $html = '<iframe src="' .$url . '" width="100%" height="650"></iframe>';
-        $this->getResponse()->setBody($html);
-    }
-
-    public function knowledgeBaseAction()
-    {
-        $url = $this->getRequest()->getParam('url');
-        if ($url === null) {
-            $url = Mage::helper('M2ePro/Module_Support')->getKnowledgeBaseUrl();
-        } else {
-            $url = base64_decode($url);
-        }
-
-        $html = '<iframe src="' . $url . '" width="100%" height="650"></iframe>';
-        $this->getResponse()->setBody($html);
     }
 
     //########################################
@@ -129,6 +108,40 @@ class Ess_M2ePro_Adminhtml_SupportController
 
         $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Your message has been successfully sent.'));
         $this->_redirect('*/*/index');
+    }
+
+    //########################################
+
+    public function testExecutionTimeAction()
+    {
+        Mage::helper('M2ePro/Client')->testExecutionTime((int)$this->getRequest()->getParam('seconds'));
+        return $this->_addJsonContent(array('result' => true));
+    }
+
+    public function testExecutionTimeResultAction()
+    {
+        return $this->_addJsonContent(
+            array(
+                'result' => Mage::helper('M2ePro/Client')->getTestedExecutionTime()
+            )
+        );
+    }
+
+    //----------------------------------------
+
+    public function testMemoryLimitAction()
+    {
+        Mage::helper('M2ePro/Client')->testMemoryLimit(null);
+        return $this->_addJsonContent(array('result' => true));
+    }
+
+    public function testMemoryLimitResultAction()
+    {
+        return $this->_addJsonContent(
+            array(
+                'result' => (int)(Mage::helper('M2ePro/Client')->getTestedMemoryLimit() / 1024 / 1024)
+            )
+        );
     }
 
     //########################################

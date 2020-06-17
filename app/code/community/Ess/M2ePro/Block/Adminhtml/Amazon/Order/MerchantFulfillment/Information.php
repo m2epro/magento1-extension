@@ -41,7 +41,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Order_MerchantFulfillment_Information
         $data = array(
             'class'   => 'delete',
             'label'   => Mage::helper('M2ePro')->__('Cancel'),
-            'onclick' => "OrderMerchantFulfillmentHandlerObj.cancelShippingOfferAction()",
+            'onclick' => "AmazonOrderMerchantFulfillmentObj.cancelShippingOfferAction()",
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('cancel_button', $buttonBlock);
@@ -51,7 +51,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Order_MerchantFulfillment_Information
         $data = array(
             'class'   => 'go',
             'label'   => Mage::helper('M2ePro')->__('Print'),
-            'onclick' => 'OrderMerchantFulfillmentHandlerObj.getShippingLabelAction()',
+            'onclick' => 'AmazonOrderMerchantFulfillmentObj.getShippingLabelAction()',
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('print_button', $buttonBlock);
@@ -60,7 +60,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Order_MerchantFulfillment_Information
         // ---------------------------------------
         $data = array(
             'label'   => Mage::helper('M2ePro')->__('Refresh'),
-            'onclick' => "OrderMerchantFulfillmentHandlerObj.refreshDataAction()",
+            'onclick' => "AmazonOrderMerchantFulfillmentObj.refreshDataAction()",
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('refresh_button', $buttonBlock);
@@ -69,7 +69,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Order_MerchantFulfillment_Information
         // ---------------------------------------
         $data = array(
             'label'   => Mage::helper('M2ePro')->__('Use Amazon\'s Shipping Services'),
-            'onclick' => "OrderMerchantFulfillmentHandlerObj.resetDataAction()",
+            'onclick' => "AmazonOrderMerchantFulfillmentObj.resetDataAction()",
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('try_again_button', $buttonBlock);
@@ -79,7 +79,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Order_MerchantFulfillment_Information
         $data = array(
             'class'   => 'close',
             'label'   => Mage::helper('M2ePro')->__('Close'),
-            'onclick' => "OrderMerchantFulfillmentHandlerObj.closePopUp()",
+            'onclick' => "AmazonOrderMerchantFulfillmentObj.closePopUp()",
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('close_button', $buttonBlock);

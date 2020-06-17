@@ -16,19 +16,23 @@ $manager = Mage::getModel('M2ePro/Requirements_Manager');
 
 <table class="form-list" cellspacing="0" cellpadding="0">
 
-    <tr>
+    <tr style="height: 37px;">
         <td class="label" style="width:200px;">
             <strong><?php echo Mage::helper('M2ePro')->__('Properties'); ?></strong>
         </td>
         <td class="value" style="width:250px;">
             <strong><?php echo Mage::helper('M2ePro')->__('Minimum / Recommended Value'); ?></strong>
         </td>
-        <td class="value" style="width:250px;">
-            <strong><?php echo Mage::helper('M2ePro')->__('Current Value'); ?></strong>
+        <td class="value" style="width:150px;">
+            <strong><?php echo Mage::helper('M2ePro')->__('Configuration Value'); ?></strong>
+        </td>
+        <td class="value" style="width:150px;">
         </td>
     </tr>
 
     <?php foreach($manager->getChecks() as $check) { ?>
+        <?php if ($check->getRenderer()->getHideIfMeet() && $check->isMeet()) : continue; endif; ?>
+
         <tr>
             <td class="label">
                 <label><?php echo $check->getRenderer()->getTitle(); ?></label>
@@ -38,6 +42,9 @@ $manager = Mage::getModel('M2ePro/Requirements_Manager');
             </td>
             <td class="value">
                 <?php echo $check->getRenderer()->getReal(); ?>
+            </td>
+            <td class="value">
+                <?php echo $check->getRenderer()->getAdditional(); ?>
             </td>
         </tr>
     <?php } ?>

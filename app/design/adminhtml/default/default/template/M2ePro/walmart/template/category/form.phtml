@@ -21,14 +21,11 @@
     $formData = $model ? $model->toArray() : array();
     $isEdit && $formData['specifics'] = $model->getSpecifics();
 
-    $default = array(
-        'id'                => '',
-        'title'             => '',
-        'marketplace_id'    => $this->getRequest()->getParam('marketplace_id', ''),
-        'category_path'     => '',
-        'browsenode_id'     => '',
-        'product_data_nick' => '',
-        'specifics'         => array()
+    $default = array_merge(
+        Mage::getModel('M2ePro/Walmart_Template_Category_Builder')->getDefaultData(),
+        array(
+            'marketplace_id'    => $this->getRequest()->getParam('marketplace_id', ''),
+        )
     );
 
     $formData = Mage::helper('M2ePro')->arrayReplaceRecursive($default, $formData);
@@ -152,24 +149,24 @@
     M2ePro.customData.marketplace_force_set       = <?php echo json_encode((bool)(int)$this->getRequest()->getParam('marketplace_id')); ?>;
 
     Event.observe(window, 'load', function() {
-        AttributeHandlerObj = new AttributeHandler();
-        AttributeHandlerObj.setAvailableAttributes(<?php echo json_encode($this->getData('all_attributes')); ?>);
+        AttributeObj = new Attribute();
+        AttributeObj.setAvailableAttributes(<?php echo json_encode($this->getData('all_attributes')); ?>);
 
-        WalmartTemplateCategoryHandlerObj                   = new WalmartTemplateCategoryHandler();
-        WalmartTemplateCategoryCategoriesChooserHandlerObj  = new WalmartTemplateCategoryCategoriesChooserHandler();
-        WalmartTemplateCategoryCategoriesSpecificHandlerObj = new WalmartTemplateCategoryCategoriesSpecificHandler();
+        WalmartTemplateCategoryObj                   = new WalmartTemplateCategory();
+        WalmartTemplateCategoryCategoriesChooserObj  = new WalmartTemplateCategoryCategoriesChooser();
+        WalmartTemplateCategoryCategoriesSpecificObj = new WalmartTemplateCategoryCategoriesSpecific();
 
-        WalmartTemplateCategoryHandlerObj.setSpecificHandler(WalmartTemplateCategoryCategoriesSpecificHandlerObj);
-        WalmartTemplateCategoryCategoriesChooserHandlerObj.setSpecificHandler(WalmartTemplateCategoryCategoriesSpecificHandlerObj);
+        WalmartTemplateCategoryObj.setSpecificHandler(WalmartTemplateCategoryCategoriesSpecificObj);
+        WalmartTemplateCategoryCategoriesChooserObj.setSpecificHandler(WalmartTemplateCategoryCategoriesSpecificObj);
 
-        $('marketplace_id').observe('change', WalmartTemplateCategoryHandlerObj.onChangeMarketplace);
+        $('marketplace_id').observe('change', WalmartTemplateCategoryObj.onChangeMarketplace);
 
-        $('edit_category_link').observe('click', WalmartTemplateCategoryHandlerObj.onClickEditCategory);
+        $('edit_category_link').observe('click', WalmartTemplateCategoryObj.onClickEditCategory);
 
-        WalmartTemplateCategoryCategoriesSpecificHandlerObj.setFormDataSpecifics(<?php echo json_encode($formData['specifics']); ?>);
+        WalmartTemplateCategoryCategoriesSpecificObj.setFormDataSpecifics(<?php echo json_encode($formData['specifics']); ?>);
 
         <?php if ($isEdit) { ?>
-            WalmartTemplateCategoryHandlerObj.prepareEditMode();
+            WalmartTemplateCategoryObj.prepareEditMode();
         <?php } ?>
 
         editForm = new varienForm('edit_form', '<?php echo $this->getValidationUrl(); ?>');

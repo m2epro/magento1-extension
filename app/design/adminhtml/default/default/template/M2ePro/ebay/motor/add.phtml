@@ -31,11 +31,11 @@
         'The specified Title is already used for other Group. Group Title must be unique.' => Mage::helper('M2ePro')->__('The specified Title is already used for other Group. Group Title must be unique.')
     )) ?>);
 
-    CommonHandlerObj.setValidationCheckRepetitionValue('M2ePro-filter-title',
+    CommonObj.setValidationCheckRepetitionValue('M2ePro-filter-title',
         M2ePro.translator.translate('The specified Title is already used for other Filter. Filter Title must be unique.'),
         'Ebay_Motor_Filter', 'title', 'id', null, null, 'type', <?php echo $this->getMotorsType() ?>);
 
-    CommonHandlerObj.setValidationCheckRepetitionValue('M2ePro-group-title',
+    CommonObj.setValidationCheckRepetitionValue('M2ePro-group-title',
         M2ePro.translator.translate('The specified Title is already used for other Group. Group Title must be unique.'),
         'Ebay_Motor_Group', 'title', 'id', null, null, 'type', <?php echo $this->getMotorsType() ?>);
 
@@ -126,11 +126,11 @@
                 </td>
                 <td class="value" style="width: 100%; padding-right: 10px;">
                     <div id="selected_motors_data" style="width: 640px; float: left;">
-                        <span class="items" style="margin-left: 16%;display: none"><a href="javascript:void(0)" onclick="EbayMotorsHandlerObj.viewSelectedItemPopup()"><span class="count"></span> <?php echo $idTitle ?></a></span>
+                        <span class="items" style="margin-left: 16%;display: none"><a href="javascript:void(0)" onclick="EbayMotorsObj.viewSelectedItemPopup()"><span class="count"></span> <?php echo $idTitle ?></a></span>
                         &nbsp;&nbsp;
-                        <span class="filters" style="margin-left: 20%;display: none"><a href="javascript:void(0)" onclick="EbayMotorsHandlerObj.viewSelectedFilterPopup()"><span class="count"></span> <?php echo Mage::helper('M2ePro')->__('Filter(s)') ?></a></span>
+                        <span class="filters" style="margin-left: 20%;display: none"><a href="javascript:void(0)" onclick="EbayMotorsObj.viewSelectedFilterPopup()"><span class="count"></span> <?php echo Mage::helper('M2ePro')->__('Filter(s)') ?></a></span>
                         &nbsp;&nbsp;
-                        <span class="groups" style="margin-left: 20%;display: none"><a href="javascript:void(0)" onclick="EbayMotorsHandlerObj.viewSelectedGroupPopup()"><span class="count"></span> <?php echo Mage::helper('M2ePro')->__('Group(s)') ?></a></span>
+                        <span class="groups" style="margin-left: 20%;display: none"><a href="javascript:void(0)" onclick="EbayMotorsObj.viewSelectedGroupPopup()"><span class="count"></span> <?php echo Mage::helper('M2ePro')->__('Group(s)') ?></a></span>
                     </div>
                     <div style="float: right">
                         <?php echo $this->getChildHtml('motor_add_btn'); ?>

@@ -58,7 +58,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_ProductSearch_Main
                 'id'      => 'productSearch_cleanSuggest_button',
                 'label'   => Mage::helper('M2ePro')->__('Clear Search Results'),
                 'class'   => 'productSearch_cleanSuggest_button',
-                'onclick' =>  'ListingGridHandlerObj.productSearchHandler.clearSearchResultsAndOpenSearchMenu()'
+                'onclick' =>  'ListingGridObj.productSearchHandler.clearSearchResultsAndOpenSearchMenu()'
             );
             $buttonResetBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
             $this->setChild('productSearch_cleanSuggest_button', $buttonResetBlock);

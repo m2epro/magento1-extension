@@ -28,21 +28,11 @@
     Event.observe(window, 'load', function() {
         editForm = new varienForm('<?php echo $this->getForm()->getId(); ?>', '<?php echo $this->getValidationUrl(); ?>');
 
-        MarketplaceProgressBarObj = new ProgressBar('marketplaces_progress_bar');
-        MarketplaceWrapperObj = new AreaWrapper('marketplaces_content_container');
-
-        MarketplaceProgressHandlerObj = new AmazonMarketplaceSynchProgressHandler(MarketplaceProgressBarObj, MarketplaceWrapperObj );
-        MarketplaceHandlerObj = new MarketplaceHandler(MarketplaceProgressHandlerObj, storedStatuses);
-
-        <?php if ($this->getChildBlockId() !== null) { ?>
-        <?php
-        $childBlockId = Mage::helper('M2ePro')->escapeJs($this->getChildBlockId());
-        $destinationBlockId = Mage::helper('M2ePro')->escapeJs($this->getForm()->getId());
-        ?>
-        MarketplaceHandlerObj.moveChildBlockContent('<?php echo $childBlockId; ?>', '<?php echo $destinationBlockId; ?>');
-        <?php } ?>
-
-        varienGlobalEvents && varienGlobalEvents.fireEvent('initReady');
+        MarketplaceProgressObj = new SynchProgress(
+            new ProgressBar('marketplaces_progress_bar'),
+            new AreaWrapper('marketplaces_content_container')
+        );
+        MarketplaceObj = new Marketplace(MarketplaceProgressObj, storedStatuses);
     });
 
 </script>
@@ -74,10 +64,8 @@
                     <table class="form-list" cellspacing="0" cellpadding="0">
 
                         <?php
-                            $componentName = '';
-                            if (count(Mage::helper('M2ePro/Component')->getEnabledComponents()) > 1) {
-                                $componentName = Mage::helper('M2ePro/Component_Amazon')->getTitle();
-                            }
+                            $componentName = Ess_M2ePro_Helper_Component_Amazon::NICK;
+                            $componentTitle = Mage::helper('M2ePro/Component_Amazon')->getTitle();
                         ?>
 
                         <?php foreach($group['marketplaces'] as $marketplace) { ?>
@@ -98,15 +86,15 @@
                                 </td>
                                 <td class="value">
                                     <?php if ($marketplace['params']['locked']) { ?>
-                                        <select disabled="disabled" id="status_<?php echo $marketplace['instance']->getId(); ?>" name="status_<?php echo $marketplace['instance']->getId(); ?>" marketplace_id="<?php echo $marketplace['instance']->getId(); ?>" markeptlace_component_name="<?php echo $componentName; ?>" class="locked_selected marketplace_status_select">
+                                        <select disabled="disabled" id="status_<?php echo $marketplace['instance']->getId(); ?>" name="status_<?php echo $marketplace['instance']->getId(); ?>" marketplace_id="<?php echo $marketplace['instance']->getId(); ?>" component_title="<?php echo $componentTitle; ?>" component_name="<?php echo $componentName; ?>" class="locked_selected marketplace_status_select">
                                             <option value="<?php echo Ess_M2ePro_Model_Marketplace::STATUS_ENABLE; ?>" selected="selected"><?php echo Mage::helper('M2ePro')->__('Enabled'); echo ' - '.Mage::helper('M2ePro')->__('Used in Account(s)'); ?></option>
                                         </select>
                                     <?php } elseif ($marketplace['instance']->getData('developer_key') === null) { ?>
-                                        <select disabled="disabled" id="status_<?php echo $marketplace['instance']->getId(); ?>" name="status_<?php echo $marketplace['instance']->getId(); ?>" marketplace_id="<?php echo $marketplace['instance']->getId(); ?>" markeptlace_component_name="<?php echo $componentName; ?>" class="locked_selected marketplace_status_select">
+                                        <select disabled="disabled" id="status_<?php echo $marketplace['instance']->getId(); ?>" name="status_<?php echo $marketplace['instance']->getId(); ?>" marketplace_id="<?php echo $marketplace['instance']->getId(); ?>" component_title="<?php echo $componentTitle; ?>" component_name="<?php echo $componentName; ?>" class="locked_selected marketplace_status_select">
                                             <option value="<?php echo Ess_M2ePro_Model_Marketplace::STATUS_DISABLE; ?>" selected="selected"><?php echo Mage::helper('M2ePro')->__('Disabled'); echo ' - '.Mage::helper('M2ePro')->__('Coming Soon'); ?></option>
                                         </select>
                                     <?php } else { ?>
-                                        <select id="status_<?php echo $marketplace['instance']->getId(); ?>" name="status_<?php echo $marketplace['instance']->getId(); ?>" marketplace_id="<?php echo $marketplace['instance']->getId(); ?>" markeptlace_component_name="<?php echo $componentName; ?>" onchange="MarketplaceHandlerObj.changeStatus(this);" <?php if (Ess_M2ePro_Model_Marketplace::STATUS_ENABLE == $marketplace['instance']->getStatus()) echo ' class="hightlight_selected marketplace_status_select"'; else echo ' class="lacklustre_selected marketplace_status_select"'; ?>>
+                                        <select id="status_<?php echo $marketplace['instance']->getId(); ?>" name="status_<?php echo $marketplace['instance']->getId(); ?>" marketplace_id="<?php echo $marketplace['instance']->getId(); ?>" component_title="<?php echo $componentTitle; ?>" component_name="<?php echo $componentName; ?>" onchange="MarketplaceObj.changeStatus(this);" <?php if (Ess_M2ePro_Model_Marketplace::STATUS_ENABLE == $marketplace['instance']->getStatus()) echo ' class="hightlight_selected marketplace_status_select"'; else echo ' class="lacklustre_selected marketplace_status_select"'; ?>>
                                             <option value="<?php echo Ess_M2ePro_Model_Marketplace::STATUS_DISABLE; ?>"<?php if (Ess_M2ePro_Model_Marketplace::STATUS_DISABLE == $marketplace['instance']->getStatus()) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Disabled'); ?></option>
                                             <option value="<?php echo Ess_M2ePro_Model_Marketplace::STATUS_ENABLE; ?>"<?php if (Ess_M2ePro_Model_Marketplace::STATUS_ENABLE == $marketplace['instance']->getStatus()) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Enabled'); ?></option>
                                         </select>
@@ -129,6 +117,12 @@
                                 </td>
                                 <td id="synch_info_complete_<?php echo $marketplace['instance']->getId(); ?>" class="value" style="display: none; color: green;">
                                     &nbsp; <?php echo Mage::helper('M2ePro')->__('Completed'); ?>
+                                </td>
+                                <td id="synch_info_error_<?php echo $marketplace['instance']->getId(); ?>" class="value" style="display: none; color: red;">
+                                    &nbsp; <?php echo Mage::helper('M2ePro')->__('Error'); ?>
+                                </td>
+                                <td id="synch_info_skip_<?php echo $marketplace['instance']->getId(); ?>" class="value" style="display: none; color: grey;">
+                                    &nbsp; <?php echo Mage::helper('M2ePro')->__('Skipped'); ?>
                                 </td>
                                 <td id="marketplace_title_<?php echo $marketplace['instance']->getId(); ?>" class="value" style="display: none;"><?php echo Mage::helper('M2ePro')->__($marketplace['instance']->getTitle()); ?></td>
                             </tr>

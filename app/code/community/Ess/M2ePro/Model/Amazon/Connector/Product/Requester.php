@@ -470,7 +470,7 @@ abstract class Ess_M2ePro_Model_Amazon_Connector_Product_Requester
     {
         foreach ($this->getStoredLogMessages() as $message) {
             $this->getLogger()->logListingProductMessage(
-                $this->_listingProduct, $message, Ess_M2ePro_Model_Log_Abstract::PRIORITY_MEDIUM
+                $this->_listingProduct, $message
             );
         }
     }

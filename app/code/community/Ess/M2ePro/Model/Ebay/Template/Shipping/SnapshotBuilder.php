@@ -6,20 +6,23 @@
  * @license    Commercial use is forbidden
  */
 
-class Ess_M2ePro_Model_Ebay_Template_Shipping_SnapshotBuilder extends Ess_M2ePro_Model_Template_SnapshotBuilder_Abstract
+/**
+ * @method Ess_M2ePro_Model_Ebay_Template_Shipping getModel()
+ */
+class Ess_M2ePro_Model_Ebay_Template_Shipping_SnapshotBuilder extends Ess_M2ePro_Model_ActiveRecord_SnapshotBuilder
 {
     //########################################
 
     public function getSnapshot()
     {
-        $data = $this->_model->getData();
+        $data = $this->getModel()->getData();
         if (empty($data)) {
             return array();
         }
 
-        $data['services'] = $this->_model->getServices();
-        $data['calculated_shipping'] = $this->_model->getCalculatedShipping()
-            ? $this->_model->getCalculatedShipping()->getData()
+        $data['services'] = $this->getModel()->getServices();
+        $data['calculated_shipping'] = $this->getModel()->getCalculatedShipping()
+            ? $this->getModel()->getCalculatedShipping()->getData()
             : array();
 
         $ignoredKeys = array(
@@ -36,9 +39,11 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_SnapshotBuilder extends Ess_M2ePro
 
                 $value !== null && !is_array($value) && $value = (string)$value;
             }
+
+            unset($value);
         }
 
-        unset($value);
+        unset($serviceData);
 
         foreach ($data['calculated_shipping'] as $key => &$value) {
             if (in_array($key, $ignoredKeys)) {

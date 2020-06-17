@@ -40,7 +40,8 @@ class Ess_M2ePro_Sql_Upgrade_v6_3_1__v6_3_2_AllFeatures extends Ess_M2ePro_Model
 
             $installer->run(<<<SQL
 
-INSERT INTO `m2epro_synchronization_config` (`group`,`key`,`value`,`notice`,`update_date`,`create_date`) VALUES
+INSERT INTO `{$this->_installer->getTable('m2epro_synchronization_config')}` 
+(`group`,`key`,`value`,`notice`,`update_date`,`create_date`) VALUES
 ('/amazon/defaults/run_parent_processors/', 'interval', '300', 'in seconds',
  '2013-05-08 00:00:00', '2013-05-08 00:00:00'),
 ('/amazon/defaults/run_parent_processors/', 'mode', '1', '0-disable, \r\n1-enable',
@@ -66,7 +67,8 @@ SQL
 
             $installer->run(<<<SQL
 
-INSERT INTO `m2epro_primary_config` (`group`,`key`,`value`,`notice`,`update_date`,`create_date`) VALUES
+INSERT INTO `{$this->_installer->getTable('m2epro_primary_config')}` 
+(`group`,`key`,`value`,`notice`,`update_date`,`create_date`) VALUES
 ('/M2ePro/license/info/', 'email', NULL, 'Associated Email', '2013-05-08 00:00:00', '2013-05-08 00:00:00');
 
 SQL
@@ -77,7 +79,7 @@ SQL
 
         $installer->run(<<<SQL
 
-UPDATE `m2epro_config`
+UPDATE `{$this->_installer->getTable('m2epro_config')}`
 SET `value` = 'https://clients.m2epro.com/'
 WHERE `group` = '/support/' AND `key` = 'clients_portal_url';
 

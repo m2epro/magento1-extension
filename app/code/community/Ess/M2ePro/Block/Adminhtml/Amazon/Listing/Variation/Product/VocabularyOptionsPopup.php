@@ -28,7 +28,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Variation_Product_VocabularyOpti
         $data = array(
             'class'   => 'switch-to-individual-btn',
             'label'   => Mage::helper('M2ePro')->__('Yes'),
-            'onclick' => 'AmazonListingVariationProductManageHandlerObj.addOptionsToVocabulary(true)',
+            'onclick' => 'AmazonListingVariationProductManageObj.addOptionsToVocabulary(true)',
         );
         $this->setChild(
             'yes_btn',
@@ -38,7 +38,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Variation_Product_VocabularyOpti
         $data = array(
             'class'   => 'switch-to-individual-popup-close',
             'label'   => Mage::helper('M2ePro')->__('No'),
-            'onclick' => 'AmazonListingVariationProductManageHandlerObj.addOptionsToVocabulary(false)',
+            'onclick' => 'AmazonListingVariationProductManageObj.addOptionsToVocabulary(false)',
         );
         $this->setChild(
             'no_btn',

@@ -50,8 +50,6 @@ final class Ess_M2ePro_Model_Cron_Runner_Service extends Ess_M2ePro_Model_Cron_R
     public function resetTasksStartFrom()
     {
         $this->resetTaskStartFrom(Ess_M2ePro_Model_Cron_Task_System_Servicing_Synchronize::NICK);
-        $this->resetTaskStartFrom(Ess_M2ePro_Model_Cron_Task_Amazon_Order_Receive::NICK);
-        $this->resetTaskStartFrom(Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges::NICK);
     }
 
     //########################################

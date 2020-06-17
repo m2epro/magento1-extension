@@ -51,13 +51,13 @@ $translations = json_encode(array(
 
 <script type="text/javascript">
 
-    EbayTemplateEditHandlerObj = new EbayTemplateEditHandler();
-    EbayTemplateEditHandlerObj.templateNick = '<?php echo $this->getTemplateNick() ?>';
+    EbayTemplateEditObj = new EbayTemplateEdit();
+    EbayTemplateEditObj.templateNick = '<?php echo $this->getTemplateNick() ?>';
 
     Event.observe(window, 'load', function() {
         if ($('marketplace_id')) {
             $('marketplace_id').observe('change', function() {
-                EbayTemplateEditHandlerObj.loadTemplateData();
+                EbayTemplateEditObj.loadTemplateData();
 
                 var emptyOption = $('marketplace_id').down('.empty-option');
                 emptyOption && emptyOption.remove();
@@ -68,7 +68,7 @@ $translations = json_encode(array(
             }
 
         } else {
-            EbayTemplateEditHandlerObj.loadTemplateData();
+            EbayTemplateEditObj.loadTemplateData();
         }
     });
 </script>

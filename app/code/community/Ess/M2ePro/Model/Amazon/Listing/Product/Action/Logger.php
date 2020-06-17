@@ -79,14 +79,11 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Logger
 
     /**
      * @param Ess_M2ePro_Model_Listing_Product $listingProduct
-     * @param string $message
-     * @param int $type
-     * @param int $priority
+     * @param Ess_M2ePro_Model_Connector_Connection_Response_Message $message
      */
     public function logListingProductMessage(
         Ess_M2ePro_Model_Listing_Product $listingProduct,
-        Ess_M2ePro_Model_Connector_Connection_Response_Message $message,
-        $priority = Ess_M2ePro_Model_Log_Abstract::PRIORITY_MEDIUM
+        Ess_M2ePro_Model_Connector_Connection_Response_Message $message
     ) {
         $this->getListingLog()->addProductMessage(
             $listingProduct->getListingId(),
@@ -96,8 +93,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Logger
             $this->_actionId,
             $this->_action,
             $message->getText(),
-            $this->initLogType($message),
-            $priority
+            $this->initLogType($message)
         );
     }
 

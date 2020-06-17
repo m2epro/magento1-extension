@@ -50,9 +50,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_General_Form extends Mage_Ad
 
         $this->is_ebay_feedbacks_enabled = Mage::helper('M2ePro/View_Ebay')->isFeedbacksShouldBeShown();
 
-        $this->use_last_specifics_mode = (bool)(int)$configModel->getGroupValue(
-            '/view/ebay/template/category/', 'use_last_specifics'
-        );
         $this->check_the_same_product_already_listed_mode = (bool)(int)$configModel->getGroupValue(
             '/ebay/connector/listing/', 'check_the_same_product_already_listed'
         );

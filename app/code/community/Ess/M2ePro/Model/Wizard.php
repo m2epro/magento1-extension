@@ -21,9 +21,10 @@ class Ess_M2ePro_Model_Wizard extends Ess_M2ePro_Model_Abstract
     //########################################
 
     /**
+     * @param string|null $view
      * @return bool
      */
-    public function isActive()
+    public function isActive($view)
     {
         return true;
     }

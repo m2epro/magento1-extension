@@ -54,11 +54,11 @@ class Ess_M2ePro_Sql_Upgrade_v6_2_0__v6_2_1_AllFeatures extends Ess_M2ePro_Model
 
         $installer->run(<<<SQL
 
-UPDATE `m2epro_ebay_marketplace`
+UPDATE `{$this->_installer->getTable('m2epro_ebay_marketplace')}`
 SET `is_stp` = 1
 WHERE `marketplace_id` = 9; -- Motor --
 
-UPDATE `m2epro_ebay_marketplace`
+UPDATE `{$this->_installer->getTable('m2epro_ebay_marketplace')}`
 SET `is_holiday_return` = 1
 WHERE `marketplace_id` = 1 OR -- US --
       `marketplace_id` = 2 OR -- CA --

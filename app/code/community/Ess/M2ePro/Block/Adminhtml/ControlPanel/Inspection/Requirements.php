@@ -15,11 +15,7 @@ class Ess_M2ePro_Block_Adminhtml_ControlPanel_Inspection_Requirements
     {
         parent::__construct();
 
-        // Initialization block
-        // ---------------------------------------
         $this->setId('controlPanelInspectionRequirements');
-        // ---------------------------------------
-
         $this->setTemplate('M2ePro/controlPanel/inspection/requirements.phtml');
     }
 

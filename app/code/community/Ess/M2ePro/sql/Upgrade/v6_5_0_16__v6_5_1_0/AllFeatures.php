@@ -35,15 +35,15 @@ class Ess_M2ePro_Sql_Upgrade_v6_5_0_16__v6_5_1_0_AllFeatures extends Ess_M2ePro_
             ->dropColumn('other_listings_move_mode');
 
         $installer->run("
-UPDATE `m2epro_registry`
+UPDATE `{$this->_installer->getTable('m2epro_registry')}`
 SET `key` = '/product/variation/vocabulary/server/'
 WHERE `key` = 'amazon_vocabulary_server';
 
-UPDATE `m2epro_registry`
+UPDATE `{$this->_installer->getTable('m2epro_registry')}`
 SET `key` = '/product/variation/vocabulary/local/'
 WHERE `key` = 'amazon_vocabulary_local';
 
-DELETE FROM `m2epro_registry`
+DELETE FROM `{$this->_installer->getTable('m2epro_registry')}`
 WHERE `key` IN ('walmart_vocabulary_server', 'walmart_vocabulary_local');
 ");
 
@@ -792,12 +792,12 @@ SQL
         if (empty($rows)) {
 
             $installer->run(<<<SQL
-INSERT INTO `m2epro_marketplace` VALUES
+INSERT INTO `{$this->_installer->getTable('m2epro_marketplace')}` VALUES
   (37, 1, 'United States', 'US', 'walmart.com', 0, 3, 'America', 'walmart',
   '2013-05-08 00:00:00', '2013-05-08 00:00:00'),
   (38, 2, 'Canada', 'CA', 'walmart.ca', 0, 4, 'America', 'walmart', '2013-05-08 00:00:00', '2013-05-08 00:00:00');
 
-INSERT INTO `m2epro_walmart_marketplace` VALUES
+INSERT INTO `{$this->_installer->getTable('m2epro_walmart_marketplace')}` VALUES
   (37, '8636-1433-4377', 'USD'),
   (38, '7078-7205-1944', 'CAD');
 SQL
@@ -812,7 +812,7 @@ SQL
         if ($tempRow === false) {
 
             $installer->run(<<<SQL
-INSERT INTO `m2epro_wizard`
+INSERT INTO `{$this->_installer->getTable('m2epro_wizard')}`
 SELECT 10, 'installationWalmart', 'walmart', 0, NULL, 1, MAX(`priority`)+1
 FROM `m2epro_wizard`;
 SQL

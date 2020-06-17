@@ -1,0 +1,54 @@
+<?php
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
+ */
+
+// @codingStandardsIgnoreFile
+
+/** @var $this Ess_M2ePro_Block_Adminhtml_ControlPanel_Inspection_VersionInfo */
+
+?>
+
+<table class="form-list" cellspacing="0" cellpadding="0">
+
+    <tr>
+        <td class="value" style="min-width: 200px;">
+            <label style="padding-right: 10px;"><?php echo Mage::helper('M2ePro')->__('Current Version'); ?>: </label>
+            <?php echo $this->currentVersion; ?>
+        </td>
+
+        <?php if ($this->latestPublicVersion) : ?>
+            <td class="value">
+                <label style="padding-right: 10px;"><?php echo Mage::helper('M2ePro')->__('Latest Public Version'); ?>: </label>
+                <?php echo $this->latestPublicVersion; ?>
+                <a href="<?php echo Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, "ReleaseNotes/M2E+Pro+Version+-+{$this->latestPublicVersion}"); ?>" target="_blank"><?php echo Mage::helper('M2ePro')->__('[release notes]'); ?></a>
+            </td>
+        <?php endif; ?>
+    </tr>
+
+    <?php if (!$this->getData('is_support_mode') && $this->latestVersion) : ?>
+    <tr>
+        <td class="label">
+            <label><?php echo Mage::helper('M2ePro')->__('Latest Available Version'); ?>: </label>
+        </td>
+        <td class="value">
+            <?php echo $this->latestVersion; ?>
+            <a href="<?php echo Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, "ReleaseNotes/M2E+Pro+Version+-+{$this->latestVersion}"); ?>" target="_blank"><?php echo Mage::helper('M2ePro')->__('[release notes]'); ?></a>
+        </td>
+    </tr>
+    <?php endif; ?>
+
+    <?php if (!$this->getData('is_support_mode')) : ?>
+        <tr>
+            <td class="label">
+                <label><?php echo Mage::helper('M2ePro')->__('History'); ?>: </label>
+            </td>
+            <td class="value">
+                <a target="_blank" href="<?php echo $this->getUrl('*/adminhtml_controlPanel_database/manageTable', array('table' => 'm2epro_setup')); ?>">show</a>
+            </td>
+        </tr>
+    <?php endif; ?>
+
+</table>

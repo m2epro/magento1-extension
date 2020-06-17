@@ -11,6 +11,17 @@ abstract class Ess_M2ePro_Controller_Adminhtml_Amazon_WizardController
 {
     //########################################
 
+    public function indexAction()
+    {
+        if ($this->isSkipped()) {
+            return $this->_redirect('*/adminhtml_amazon_listing/index/');
+        }
+
+        return parent::indexAction();
+    }
+
+    //########################################
+
     protected function getCustomViewNick()
     {
         return Ess_M2ePro_Helper_View_Amazon::NICK;

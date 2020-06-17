@@ -37,7 +37,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Motor_Add extends Ess_M2ePro_Block_Adminht
         $data = array(
             'style' => 'float: right;',
             'label'   => Mage::helper('M2ePro')->__('Confirm'),
-            'onclick' => 'EbayMotorsHandlerObj.closeInstruction();'
+            'onclick' => 'EbayMotorsObj.closeInstruction();'
         );
         $confirmBtn = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('motor_confirm_btn', $confirmBtn);
@@ -47,7 +47,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Motor_Add extends Ess_M2ePro_Block_Adminht
         $data = array(
             'style' => 'margin-right: 5px',
             'label'   => Mage::helper('M2ePro')->__('Add'),
-            'onclick' => 'EbayMotorsHandlerObj.updateMotorsData(0);'
+            'onclick' => 'EbayMotorsObj.updateMotorsData(0);'
         );
         $closeBtn = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('motor_add_btn', $closeBtn);
@@ -56,7 +56,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Motor_Add extends Ess_M2ePro_Block_Adminht
         //------------------------------
         $data = array(
             'label'   => Mage::helper('M2ePro')->__('Override'),
-            'onclick' => 'EbayMotorsHandlerObj.updateMotorsData(1);'
+            'onclick' => 'EbayMotorsObj.updateMotorsData(1);'
         );
         $closeBtn = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('motor_override_btn', $closeBtn);
@@ -79,8 +79,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Motor_Add extends Ess_M2ePro_Block_Adminht
 
     public function wasInstructionShown()
     {
-        return Mage::helper('M2ePro/Module')->getCacheConfig()
-                    ->getGroupValue('/ebay/motors/', 'was_instruction_shown') != false;
+        return Mage::helper('M2ePro/Module')->getRegistryValue('/ebay/motors/instruction/is_shown/');
     }
 
     //########################################

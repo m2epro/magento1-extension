@@ -15,16 +15,11 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Synchronization_Edit
     {
         parent::__construct();
 
-        // Initialization block
-        // ---------------------------------------
         $this->setId('walmartTemplateSynchronizationEdit');
         $this->_blockGroup = 'M2ePro';
         $this->_controller = 'adminhtml_walmart_template_synchronization';
         $this->_mode = 'edit';
-        // ---------------------------------------
 
-        // Set header text
-        // ---------------------------------------
         if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
             $componentName = Mage::helper('M2ePro/Component_Walmart')->getTitle();
 
@@ -50,82 +45,83 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Synchronization_Edit
             }
         }
 
-        // ---------------------------------------
-
-        // Set buttons actions
-        // ---------------------------------------
         $this->removeButton('back');
         $this->removeButton('reset');
         $this->removeButton('delete');
         $this->removeButton('add');
         $this->removeButton('save');
         $this->removeButton('edit');
-        // ---------------------------------------
 
-        // ---------------------------------------
         $url = Mage::helper('M2ePro')->getBackUrl('list');
         $this->_addButton(
             'back', array(
-            'label'     => Mage::helper('M2ePro')->__('Back'),
-            'onclick'   => 'WalmartTemplateSynchronizationHandlerObj.back_click(\'' . $url . '\')',
-            'class'     => 'back'
+            'label'   => Mage::helper('M2ePro')->__('Back'),
+            'onclick' => 'WalmartTemplateSynchronizationObj.back_click(\'' . $url . '\')',
+            'class'   => 'back'
             )
         );
-        // ---------------------------------------
 
-        if (Mage::helper('M2ePro/Data_Global')->getValue('temp_data')
-            && Mage::helper('M2ePro/Data_Global')->getValue('temp_data')->getId()
-        ) {
-            // ---------------------------------------
+        $isSaveAndClose = (bool)$this->getRequest()->getParam('close_on_save', false);
+
+        if (!$isSaveAndClose && Mage::helper('M2ePro/Data_Global')->getValue('temp_data')
+            && Mage::helper('M2ePro/Data_Global')->getValue('temp_data')->getId()) {
             $this->_addButton(
                 'duplicate', array(
-                'label'     => Mage::helper('M2ePro')->__('Duplicate'),
-                'onclick'   => 'WalmartTemplateSynchronizationHandlerObj.duplicate_click'
+                'label'   => Mage::helper('M2ePro')->__('Duplicate'),
+                'onclick' => 'WalmartTemplateSynchronizationObj.duplicate_click'
                                .'(\'walmart-template-synchronization\')',
-                'class'     => 'add M2ePro_duplicate_button'
+                'class'   => 'add M2ePro_duplicate_button'
                 )
             );
-            // ---------------------------------------
 
-            // ---------------------------------------
             $this->_addButton(
                 'delete', array(
-                'label'     => Mage::helper('M2ePro')->__('Delete'),
-                'onclick'   => 'WalmartTemplateSynchronizationHandlerObj.delete_click()',
-                'class'     => 'delete M2ePro_delete_button'
+                'label'   => Mage::helper('M2ePro')->__('Delete'),
+                'onclick' => 'WalmartTemplateSynchronizationObj.delete_click()',
+                'class'   => 'delete M2ePro_delete_button'
                 )
             );
-            // ---------------------------------------
         }
 
-        // ---------------------------------------
-        $this->_addButton(
-            'save', array(
-            'label'     => Mage::helper('M2ePro')->__('Save'),
-            'onclick'   => 'WalmartTemplateSynchronizationHandlerObj.save_click('
-                . '\'\','
-                . '\'' . $this->getSaveConfirmationText() . '\','
-                . '\'' . Ess_M2ePro_Block_Adminhtml_Walmart_Template_Grid::TEMPLATE_SYNCHRONIZATION . '\''
-            . ')',
-            'class'     => 'save'
-            )
-        );
-        // ---------------------------------------
+        if ($isSaveAndClose) {
+            $this->removeButton('back');
 
-        // ---------------------------------------
-        $this->_addButton(
-            'save_and_continue', array(
-            'label'     => Mage::helper('M2ePro')->__('Save And Continue Edit'),
-            'onclick'   => 'WalmartTemplateSynchronizationHandlerObj.save_and_edit_click('
-                . '\'\','
-                . 'undefined,'
-                . '\'' . $this->getSaveConfirmationText() . '\','
-                . '\'' . Ess_M2ePro_Block_Adminhtml_Walmart_Template_Grid::TEMPLATE_SYNCHRONIZATION . '\''
-            . ')',
-            'class'     => 'save'
-            )
-        );
-        // ---------------------------------------
+            $this->_addButton(
+                'save',
+                array(
+                    'label'   => Mage::helper('M2ePro')->__('Save And Close'),
+                    'onclick' => 'WalmartTemplateSynchronizationObj.saveAndClose('
+                        . '\'' . $this->getUrl('*/*/save', array('_current' => true)) . '\','
+                        . ')',
+                    'class'   => 'save'
+                )
+            );
+        } else {
+            $this->_addButton(
+                'save', array(
+                    'label'   => Mage::helper('M2ePro')->__('Save'),
+                    'onclick' => 'WalmartTemplateSynchronizationObj.save_click('
+                        . '\'\','
+                        . '\'' . $this->getSaveConfirmationText() . '\','
+                        . '\'' . Ess_M2ePro_Block_Adminhtml_Walmart_Template_Grid::TEMPLATE_SYNCHRONIZATION . '\''
+                        . ')',
+                    'class'   => 'save'
+                )
+            );
+
+            $this->_addButton(
+                'save_and_continue', array(
+                    'label'   => Mage::helper('M2ePro')->__('Save And Continue Edit'),
+                    'onclick' => 'WalmartTemplateSynchronizationObj.save_and_edit_click('
+                        . '\'\','
+                        . 'undefined,'
+                        . '\'' . $this->getSaveConfirmationText() . '\','
+                        . '\'' . Ess_M2ePro_Block_Adminhtml_Walmart_Template_Grid::TEMPLATE_SYNCHRONIZATION . '\''
+                        . ')',
+                    'class'   => 'save'
+                )
+            );
+        }
     }
 
     //########################################

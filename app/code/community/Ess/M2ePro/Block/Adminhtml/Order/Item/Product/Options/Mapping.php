@@ -143,7 +143,7 @@ class Ess_M2ePro_Block_Adminhtml_Order_Item_Product_Options_Mapping extends Ess_
             'id'      => 'product_options_mapping_submit_button',
             'label'   => Mage::helper('M2ePro')->__('Confirm'),
             'class'   => 'product_options_mapping_submit_button submit',
-            'onclick' => 'OrderEditItemHandlerObj.assignProductDetails();'
+            'onclick' => 'OrderEditItemObj.assignProductDetails();'
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('product_options_mapping_submit_button', $buttonBlock);

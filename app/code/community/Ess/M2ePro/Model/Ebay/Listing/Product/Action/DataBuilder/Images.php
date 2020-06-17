@@ -69,6 +69,10 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Images
             $attributeLabels = array(Ess_M2ePro_Model_Magento_Product_Variation::GROUPED_PRODUCT_ATTRIBUTE_LABEL);
         }
 
+        if ($this->getMagentoProduct()->isBundleType()) {
+            $attributeLabels = $this->getBundleImagesAttributeLabels();
+        }
+
         if (empty($attributeLabels)) {
             return array();
         }
@@ -142,6 +146,16 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Images
         }
 
         return $attributeLabels;
+    }
+
+    protected function getBundleImagesAttributeLabels()
+    {
+        $variations = $this->getMagentoProduct()->getVariationInstance()->getVariationsTypeStandard();
+        if (!empty($variations['set'])) {
+            return array((string)key($variations['set']));
+        }
+
+        return array();
     }
 
     protected function getImagesDataByAttributeLabels(array $attributeLabels)

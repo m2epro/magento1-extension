@@ -37,8 +37,7 @@ class Ess_M2ePro_Model_Amazon_Search_Settings_ByIdentifier_Responser
             $actionId,
             Ess_M2ePro_Model_Listing_Log::ACTION_UNKNOWN,
             $messageText,
-            Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
-            Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH
+            Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR
         );
 
         $this->getListingProduct()->setData('search_settings_status', null);

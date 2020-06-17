@@ -31,68 +31,9 @@
     $formData = $account ? $account->toArray() : array();
     $formData['magento_orders_settings'] = !empty($formData['magento_orders_settings']) ? json_decode($formData['magento_orders_settings'], true) : array();
 
-    $defaults = array(
-        'magento_orders_settings' => array(
-            'listing' => array(
-                'mode' => 1,
-                'store_mode' => Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_LISTINGS_STORE_MODE_DEFAULT,
-                'store_id' => null
-            ),
-            'listing_other' => array(
-                'mode' => 1,
-                'product_mode' => Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_LISTINGS_OTHER_PRODUCT_MODE_IMPORT,
-                'product_tax_class_id' => Ess_M2ePro_Model_Magento_Product::TAX_CLASS_ID_NONE,
-                'store_id' => null,
-            ),
-            'number' => array(
-                'source' => Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_NUMBER_SOURCE_MAGENTO,
-                'prefix' => array(
-                    'mode'         => 0,
-                    'prefix'       => '',
-                    'afn-prefix'   => '',
-                    'prime-prefix' => '',
-                    'b2b-prefix'   => '',
-                ),
-                'apply_to_amazon' => 0
-            ),
-            'tax' => array(
-                'mode' => Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_TAX_MODE_MIXED
-            ),
-            'customer' => array(
-                'mode' => Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_CUSTOMER_MODE_GUEST,
-                'id' => null,
-                'website_id' => null,
-                'group_id' => null,
-//                'subscription_mode' => 0,
-                'notifications' => array(
-//                    'customer_created' => false,
-                    'invoice_created' => false,
-                    'order_created' => false
-                ),
-                'billing_address_mode' => Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_BILLING_ADDRESS_MODE_SHIPPING_IF_SAME_CUSTOMER_AND_RECIPIENT
-            ),
-            'status_mapping' => array(
-                'mode' => Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_STATUS_MAPPING_MODE_DEFAULT,
-                'processing' => Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_STATUS_MAPPING_PROCESSING,
-                'shipped' => Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_STATUS_MAPPING_SHIPPED,
-            ),
-            'qty_reservation' => array(
-                'days' => 1
-            ),
-            'refund_and_cancellation' => array(
-                'refund_mode' => 1,
-            ),
-            'fba' => array(
-                'mode'       => 1,
-                'stock_mode' => 0
-            ),
-            'invoice_mode'  => 1,
-            'shipment_mode' => 1
-        )
-    );
+    $defaults = Mage::getModel('M2ePro/Amazon_Account_Builder')->getDefaultData();
 
     $isEdit = !!$this->getRequest()->getParam('id');
-
     $isEdit && $defaults['magento_orders_settings']['refund_and_cancellation']['refund_mode'] = 0;
 
     $formData = Mage::helper('M2ePro')->arrayReplaceRecursive($defaults, $formData);
@@ -109,24 +50,24 @@
 
     Event.observe(window, 'load', function() {
 
-        $('magento_orders_listings_mode').observe('change', AmazonAccountHandlerObj.magentoOrdersListingsModeChange);
-        $('magento_orders_listings_store_mode').observe('change', AmazonAccountHandlerObj.magentoOrdersListingsStoreModeChange);
+        $('magento_orders_listings_mode').observe('change', AmazonAccountObj.magentoOrdersListingsModeChange);
+        $('magento_orders_listings_store_mode').observe('change', AmazonAccountObj.magentoOrdersListingsStoreModeChange);
 
-        $('magento_orders_listings_other_mode').observe('change', AmazonAccountHandlerObj.magentoOrdersListingsOtherModeChange);
-        $('magento_orders_listings_other_product_mode').observe('change', AmazonAccountHandlerObj.magentoOrdersListingsOtherProductModeChange);
+        $('magento_orders_listings_other_mode').observe('change', AmazonAccountObj.magentoOrdersListingsOtherModeChange);
+        $('magento_orders_listings_other_product_mode').observe('change', AmazonAccountObj.magentoOrdersListingsOtherProductModeChange);
 
-        $('magento_orders_number_source').observe('change', AmazonAccountHandlerObj.magentoOrdersNumberSourceChange);
+        $('magento_orders_number_source').observe('change', AmazonAccountObj.magentoOrdersNumberSourceChange);
 
-        $('magento_orders_number_prefix_prefix').observe('keyup', AmazonAccountHandlerObj.magentoOrdersNumberPrefixPrefixChange);
-        $('magento_orders_number_prefix_afn').observe('keyup', AmazonAccountHandlerObj.magentoOrdersNumberPrefixPrefixChange);
-        $('magento_orders_number_prefix_prime').observe('keyup', AmazonAccountHandlerObj.magentoOrdersNumberPrefixPrefixChange);
-        $('magento_orders_number_prefix_b2b').observe('keyup', AmazonAccountHandlerObj.magentoOrdersNumberPrefixPrefixChange);
-        AmazonAccountHandlerObj.renderOrderNumberExample();
+        $('magento_orders_number_prefix_prefix').observe('keyup', AmazonAccountObj.magentoOrdersNumberPrefixPrefixChange);
+        $('magento_orders_number_prefix_afn').observe('keyup', AmazonAccountObj.magentoOrdersNumberPrefixPrefixChange);
+        $('magento_orders_number_prefix_prime').observe('keyup', AmazonAccountObj.magentoOrdersNumberPrefixPrefixChange);
+        $('magento_orders_number_prefix_b2b').observe('keyup', AmazonAccountObj.magentoOrdersNumberPrefixPrefixChange);
+        AmazonAccountObj.renderOrderNumberExample();
 
-        $('magento_orders_fba_mode').observe('change', AmazonAccountHandlerObj.magentoOrdersFbaModeChange);
+        $('magento_orders_fba_mode').observe('change', AmazonAccountObj.magentoOrdersFbaModeChange);
 
-        $('magento_orders_customer_mode').observe('change', AmazonAccountHandlerObj.magentoOrdersCustomerModeChange);
-        $('magento_orders_status_mapping_mode').observe('change', AmazonAccountHandlerObj.magentoOrdersStatusMappingModeChange);
+        $('magento_orders_customer_mode').observe('change', AmazonAccountObj.magentoOrdersCustomerModeChange);
+        $('magento_orders_status_mapping_mode').observe('change', AmazonAccountObj.magentoOrdersStatusMappingModeChange);
     });
     //-----------------------------
 

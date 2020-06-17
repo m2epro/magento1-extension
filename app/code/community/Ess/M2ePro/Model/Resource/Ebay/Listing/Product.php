@@ -21,34 +21,27 @@ class Ess_M2ePro_Model_Resource_Ebay_Listing_Product
 
     //########################################
 
-    public function getTemplateCategoryIds(array $listingProductIds)
+    public function getTemplateCategoryIds(array $listingProductIds, $columnName, $returnNull = false)
     {
-        $select = $this->_getReadAdapter()
-                       ->select()
-                       ->from(array('elp' => $this->getMainTable()))
-                       ->reset(Zend_Db_Select::COLUMNS)
-                       ->columns(array('template_category_id'))
-                       ->where('listing_product_id IN (?)', $listingProductIds)
-                       ->where('template_category_id IS NOT NULL');
+        $stmt = $this->_getReadAdapter()
+            ->select()
+            ->from(array('elp' => $this->getMainTable()))
+            ->reset(Zend_Db_Select::COLUMNS)
+            ->columns(array($columnName))
+            ->where('listing_product_id IN (?)', $listingProductIds);
 
-        $ids = $select->query()->fetchAll(PDO::FETCH_COLUMN);
+        !$returnNull && $stmt->where("{$columnName} IS NOT NULL");
 
-        return array_unique($ids);
-    }
+        foreach($stmt->query()->fetchAll() as $row) {
+            $id = $row[$columnName] !== null ? (int)$row[$columnName] : null;
+            if (!$returnNull) {
+                continue;
+            }
 
-    public function getTemplateOtherCategoryIds(array $listingProductIds)
-    {
-        $select = $this->_getReadAdapter()
-                       ->select()
-                       ->from(array('elp' => $this->getMainTable()))
-                       ->reset(Zend_Db_Select::COLUMNS)
-                       ->columns(array('template_other_category_id'))
-                       ->where('listing_product_id IN (?)', $listingProductIds)
-                       ->where('template_other_category_id IS NOT NULL');
+            $ids[$id] = $id;
+        }
 
-        $ids = $select->query()->fetchAll(PDO::FETCH_COLUMN);
-
-        return array_unique($ids);
+        return array_values($ids);
     }
 
     //########################################

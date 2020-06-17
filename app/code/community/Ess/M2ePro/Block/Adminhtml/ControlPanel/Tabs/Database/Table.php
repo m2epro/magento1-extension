@@ -80,7 +80,7 @@ class Ess_M2ePro_Block_Adminhtml_ControlPanel_Tabs_Database_Table extends Mage_A
         $this->_addButton(
             'add_row', array(
             'label'     => Mage::helper('M2ePro')->__('Append Row'),
-            'onclick'   => 'ControlPanelDatabaseGridHandlerObj.openTableCellsPopup(\'add\')',
+            'onclick'   => 'ControlPanelDatabaseGridObj.openTableCellsPopup(\'add\')',
             'class'     => 'success'
             )
         );
@@ -96,7 +96,7 @@ class Ess_M2ePro_Block_Adminhtml_ControlPanel_Tabs_Database_Table extends Mage_A
             $this->_addButton(
                 'merge_mode', array(
                 'label'     => Mage::helper('M2ePro')->__("Join Full Collection [{$labelAdd}]"),
-                'onclick'   => 'ControlPanelDatabaseGridHandlerObj.switchMergeMode()',
+                'onclick'   => 'ControlPanelDatabaseGridObj.switchMergeMode()',
                 'class'     => !$this->isMergeModeEnabled() ? 'success' : 'fail'
                 )
             );

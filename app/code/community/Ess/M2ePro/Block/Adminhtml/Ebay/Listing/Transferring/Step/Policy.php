@@ -52,7 +52,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Transferring_Step_Policy extends M
             'id'      => 'back_button_policy',
             'class'   => 'back back_button',
             'label'   => Mage::helper('M2ePro')->__('Back'),
-            'onclick' => 'EbayListingTransferringHandlerObj.back();',
+            'onclick' => 'EbayListingTransferringObj.back();',
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('back_button', $buttonBlock);
@@ -73,7 +73,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Transferring_Step_Policy extends M
             'id'      => 'confirm_button_policy',
             'class'   => 'confirm_button',
             'label'   => Mage::helper('M2ePro')->__('Confirm'),
-            'onclick' => 'EbayListingTransferringHandlerObj.confirm();',
+            'onclick' => 'EbayListingTransferringObj.confirm();',
             'style'   => 'display: none;'
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);

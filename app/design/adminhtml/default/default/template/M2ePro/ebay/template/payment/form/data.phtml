@@ -28,7 +28,7 @@ $marketplaceData = $this->getMarketplaceData();
 </script>
 
 <script type="text/javascript">
-    EbayTemplatePaymentHandlerObj = new EbayTemplatePaymentHandler();
+    EbayTemplatePaymentObj = new EbayTemplatePayment();
 
     var init = function() {
 
@@ -47,10 +47,10 @@ $marketplaceData = $this->getMarketplaceData();
         });
 
         $('pay_pal_mode')
-            .observe('change', EbayTemplatePaymentHandlerObj.payPalModeChange)
+            .observe('change', EbayTemplatePaymentObj.payPalModeChange)
             .simulate('change');
         $('pay_pal_immediate_payment')
-            .observe('change', EbayTemplatePaymentHandlerObj.immediatePaymentChange)
+            .observe('change', EbayTemplatePaymentObj.immediatePaymentChange)
             .simulate('change');
     };
 

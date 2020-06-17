@@ -221,6 +221,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_TransferringController
         $ids = array();
         $errorsCount = 0;
         foreach ($collection->getItems() as $sourceListingProduct) {
+            /** @var Ess_M2ePro_Model_Listing_Product $sourceListingProduct */
             $listingProduct = $targetListing->getChildObject()->addProductFromAnotherEbaySite(
                 $sourceListingProduct, $this->getSourceListingFromRequest()
             );
@@ -235,8 +236,22 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_TransferringController
 
                 if (!$isDifferentMarketplace) {
                     $listingProduct
-                        ->setData('template_category_id', $sourceListingProduct->getTemplateCategoryId())
-                        ->setData('template_other_category_id', $sourceListingProduct->getTemplateOtherCategoryId());
+                        ->setData(
+                            'template_category_id',
+                            $sourceListingProduct->getChildObject()->getTemplateCategoryId()
+                        )
+                        ->setData(
+                            'template_category_secondary_id',
+                            $sourceListingProduct->getChildObject()->getTemplateCategorySecondaryId()
+                        )
+                        ->setData(
+                            'template_store_category_id',
+                            $sourceListingProduct->getChildObject()->getTemplateStoreCategoryId()
+                        )
+                        ->setData(
+                            'template_store_category_secondary_id',
+                            $sourceListingProduct->getChildObject()->getTemplateStoreCategorySecondaryId()
+                        );
                 } else {
                     $matchingListingProducts = $this->getSessionValue('matching_listing_products');
                     $matchingListingProducts[$listingProduct->getId()] = $sourceListingProduct->getId();
@@ -506,14 +521,23 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_TransferringController
                 $sourceListing->getAutoGlobalAddingMode(),
             'auto_global_adding_template_category_id' =>
                 $sourceEbayListing->getAutoGlobalAddingTemplateCategoryId(),
-            'auto_global_adding_template_other_category_id' =>
-                $sourceEbayListing->getAutoGlobalAddingTemplateOtherCategoryId(),
+            'auto_global_adding_template_category_secondary_id' =>
+                $sourceEbayListing->getAutoGlobalAddingTemplateCategorySecondaryId(),
+            'auto_global_adding_template_store_category_id' =>
+                $sourceEbayListing->getAutoGlobalAddingTemplateStoreCategoryId(),
+            'auto_global_adding_template_store_category_secondary_id' =>
+                $sourceEbayListing->getAutoGlobalAddingTemplateStoreCategorySecondaryId(),
+
             'auto_website_adding_mode' =>
                 $sourceListing->getAutoWebsiteAddingMode(),
             'auto_website_adding_template_category_id' =>
                 $sourceEbayListing->getAutoWebsiteAddingTemplateCategoryId(),
-            'auto_website_adding_template_other_category_id' =>
-                $sourceEbayListing->getAutoWebsiteAddingTemplateOtherCategoryId(),
+            'auto_website_adding_template_category_secondary_id' =>
+                $sourceEbayListing->getAutoWebsiteAddingTemplateCategorySecondaryId(),
+            'auto_website_adding_template_store_category_id' =>
+                $sourceEbayListing->getAutoWebsiteAddingTemplateStoreCategoryId(),
+            'auto_website_adding_template_store_category_secondary_id' =>
+                $sourceEbayListing->getAutoWebsiteAddingTemplateStoreCategorySecondaryId(),
             'auto_website_deleting_mode' =>
                 $sourceListing->getAutoWebsiteDeletingMode()
         );
@@ -521,14 +545,18 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_TransferringController
         if ($isDifferentMarketplace) {
             if ($sourceEbayListing->isAutoGlobalAddingModeAddAndAssignCategory()) {
                 $listingData['auto_global_adding_mode'] = Ess_M2ePro_Model_Listing::ADDING_MODE_NONE;
-                $listingData['auto_global_adding_template_category_id']       = null;
-                $listingData['auto_global_adding_template_other_category_id'] = null;
+                $listingData['auto_global_adding_template_category_id']                 = null;
+                $listingData['auto_global_adding_template_category_secondary_id']       = null;
+                $listingData['auto_global_adding_template_store_category_id']           = null;
+                $listingData['auto_global_adding_template_store_category_secondary_id'] = null;
             }
 
             if ($sourceEbayListing->isAutoWebsiteAddingModeAddAndAssignCategory()) {
                 $listingData['auto_website_adding_mode'] = Ess_M2ePro_Model_Listing::ADDING_MODE_NONE;
-                $listingData['auto_website_adding_template_category_id']       = null;
-                $listingData['auto_website_adding_template_other_category_id'] = null;
+                $listingData['auto_website_adding_template_category_id']                 = null;
+                $listingData['auto_website_adding_template_category_secondary_id']       = null;
+                $listingData['auto_website_adding_template_store_category_id']           = null;
+                $listingData['auto_website_adding_template_store_category_secondary_id'] = null;
             }
         }
 
@@ -560,7 +588,9 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_TransferringController
             if ($isDifferentMarketplace && $ebaySourceGroup->isAddingModeAddAndAssignCategory()) {
                 $group->setData('adding_mode', Ess_M2ePro_Model_Listing::ADDING_MODE_NONE);
                 $group->setData('adding_template_category_id', null);
-                $group->setData('adding_template_other_category_id', null);
+                $group->setData('adding_template_category_secondary_id', null);
+                $group->setData('adding_template_store_category_id', null);
+                $group->setData('adding_template_store_category_secondary_id', null);
             }
 
             $group->save();

@@ -36,29 +36,29 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion651_EbayTables extends Ess_M2e
         $this->_installer->run(
             <<<SQL
 
-UPDATE `m2epro_ebay_marketplace`
+UPDATE `{$this->_installer->getTable('m2epro_ebay_marketplace')}`
 SET `is_in_store_pickup` = 1
 WHERE `marketplace_id` = 1 AND `origin_country` = 'us'
 OR    `marketplace_id` = 4 AND `origin_country` = 'au'
 OR    `marketplace_id` = 3 AND `origin_country` = 'gb';
 
-UPDATE `m2epro_ebay_marketplace`
+UPDATE `{$this->_installer->getTable('m2epro_ebay_marketplace')}`
 SET `is_epid` = 1
 WHERE `marketplace_id` IN (3, 8, 9);
 
-UPDATE `m2epro_ebay_marketplace`
+UPDATE `{$this->_installer->getTable('m2epro_ebay_marketplace')}`
 SET `is_ktype` = 1
 WHERE `marketplace_id` IN (3, 4, 7, 8, 10, 13);
 
-UPDATE `m2epro_marketplace`
+UPDATE `{$this->_installer->getTable('m2epro_marketplace')}`
 SET `url` = 'ebay.com/motors'
 WHERE `id` = 9;
 
-UPDATE `m2epro_ebay_marketplace`
+UPDATE `{$this->_installer->getTable('m2epro_ebay_marketplace')}`
 SET `currency` = 'CAD'
 WHERE `marketplace_id` IN (2, 19);
 
-UPDATE `m2epro_marketplace`
+UPDATE `{$this->_installer->getTable('m2epro_marketplace')}`
 SET `group_title` = 'Australia Region'
 WHERE `id` IN (4);
 
@@ -70,7 +70,7 @@ SQL
 
         $this->_installer->run(
             <<<SQL
-UPDATE `m2epro_ebay_dictionary_motor_epid`
+UPDATE `{$this->_installer->getTable('m2epro_ebay_dictionary_motor_epid')}`
 SET `scope` = 1;
 SQL
         );
@@ -116,11 +116,11 @@ SQL
         $this->_installer->run(
             <<<SQL
 
-UPDATE `m2epro_listing_other`
+UPDATE `{$this->_installer->getTable('m2epro_listing_other')}`
 SET `status` = 3
 WHERE `component_mode` = 'ebay' AND `status` = 6;
 
-UPDATE `m2epro_amazon_listing_other`
+UPDATE `{$this->_installer->getTable('m2epro_amazon_listing_other')}`
 SET `title` = '--'
 WHERE `title` = '' OR `title` = 'Unknown (can\'t be received)' OR `title` IS NULL;
 
@@ -172,8 +172,8 @@ SELECT * FROM {$listingTable} WHERE `additional_data` LIKE '%mode_same_category_
 
         $this->_installer->run(
             <<<SQL
-UPDATE `m2epro_ebay_listing` mel
-INNER JOIN `m2epro_listing` ml ON ml.id = mel.listing_id
+UPDATE `{$this->_installer->getTable('m2epro_ebay_listing')}` mel
+INNER JOIN `{$this->_installer->getTable('m2epro_listing')}` ml ON ml.id = mel.listing_id
 SET `parts_compatibility_mode` = 'ktypes'
 WHERE ml.marketplace_id IN (3, 8);
 SQL
@@ -470,7 +470,7 @@ SELECT `account_id` FROM {$this->getFullTableName('ebay_account')}
 
         $this->_installer->run(
             <<<SQL
-UPDATE `m2epro_ebay_template_synchronization`
+UPDATE `{$this->_installer->getTable('m2epro_ebay_template_synchronization')}`
 SET `stop_mode` = 1
 WHERE (`stop_status_disabled`+`stop_out_off_stock`+`stop_qty_magento`+`stop_qty_calculated`) > 0;
 SQL

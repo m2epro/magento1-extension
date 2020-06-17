@@ -438,8 +438,7 @@ class Ess_M2ePro_Model_Amazon_Order_Builder extends Mage_Core_Model_Abstract
                         $logsActionId,
                         Ess_M2ePro_Model_Listing_Log::ACTION_CHANNEL_CHANGE,
                         $tempLogMessage,
-                        Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS,
-                        Ess_M2ePro_Model_Log_Abstract::PRIORITY_LOW
+                        Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS
                     );
 
                     $listingProduct->save();
@@ -483,8 +482,7 @@ class Ess_M2ePro_Model_Amazon_Order_Builder extends Mage_Core_Model_Abstract
                         $logsActionId,
                         Ess_M2ePro_Model_Listing_Log::ACTION_CHANNEL_CHANGE,
                         $tempLogMessage,
-                        Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS,
-                        Ess_M2ePro_Model_Log_Abstract::PRIORITY_LOW
+                        Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS
                     );
                 }
 

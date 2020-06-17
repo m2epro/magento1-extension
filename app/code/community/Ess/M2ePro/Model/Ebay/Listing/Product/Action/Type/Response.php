@@ -555,7 +555,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Response
             return $data;
         }
 
-        $data['online_images'] = json_encode($requestMetadata['images_data']);
+        $data['online_images'] = Mage::helper('M2ePro')->jsonEncode($requestMetadata['images_data']);
 
         return $data;
     }
@@ -567,7 +567,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Response
             return $data;
         }
 
-        $data['online_categories_data'] = json_encode($requestMetadata['categories_data']);
+        $data['online_categories_data'] = Mage::helper('M2ePro')->jsonEncode($requestMetadata['categories_data']);
 
         return $data;
     }
@@ -579,7 +579,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Response
             return $data;
         }
 
-        $data['online_payment_data'] = json_encode($requestMetadata['payment_data']);
+        $data['online_payment_data'] = Mage::helper('M2ePro')->jsonEncode($requestMetadata['payment_data']);
 
         return $data;
     }
@@ -591,7 +591,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Response
             return $data;
         }
 
-        $data['online_shipping_data'] = json_encode($requestMetadata['shipping_data']);
+        $data['online_shipping_data'] = Mage::helper('M2ePro')->jsonEncode($requestMetadata['shipping_data']);
 
         return $data;
     }
@@ -603,7 +603,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Response
             return $data;
         }
 
-        $data['online_return_data'] = json_encode($requestMetadata['return_data']);
+        $data['online_return_data'] = Mage::helper('M2ePro')->jsonEncode($requestMetadata['return_data']);
 
         return $data;
     }
@@ -615,7 +615,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Response
             return $data;
         }
 
-        $data['online_other_data'] = json_encode($requestMetadata['other_data']);
+        $data['online_other_data'] = Mage::helper('M2ePro')->jsonEncode($requestMetadata['other_data']);
 
         return $data;
     }

@@ -64,7 +64,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit_Tabs_Repricing extends Mage
 
         $data = array(
             'label'   => Mage::helper('M2ePro')->__('Refresh'),
-            'onclick' => 'AmazonAccountHandlerObj.repricing_refresh();',
+            'onclick' => 'AmazonAccountObj.repricing_refresh();',
             'class'   => 'repricing_refresh'
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);

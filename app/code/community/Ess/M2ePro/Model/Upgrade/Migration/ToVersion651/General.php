@@ -119,7 +119,7 @@ SQL
 
         $this->_installer->run(
             <<<SQL
-INSERT INTO `m2epro_wizard` (`nick`, `view`, `status`, `step`, `type`, `priority`)
+INSERT INTO `{$this->_installer->getTable('m2epro_wizard')}` (`nick`, `view`, `status`, `step`, `type`, `priority`)
 SELECT 'removedEbay3rdParty', 'ebay', {$wizardStatus}, NULL, 0, MAX( `priority` )+1 FROM `m2epro_wizard`;
 SQL
         );
@@ -220,7 +220,7 @@ SQL
 
     $this->_installer->run(
         <<<SQL
-TRUNCATE TABLE `m2epro_wizard`;
+TRUNCATE TABLE `{$this->_installer->getTable('m2epro_wizard')}`;
 SQL
     );
 

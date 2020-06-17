@@ -15,9 +15,10 @@ class Ess_M2ePro_Helper_Server_Request extends Mage_Core_Helper_Abstract
         $serverBaseUrl = null,
         $serverHostName = null,
         $tryToResendOnError = true,
-        $tryToSwitchEndpointOnError = true
+        $tryToSwitchEndpointOnError = true,
+        $canIgnoreMaintenance = false
     ) {
-        if (Mage::helper('M2ePro/Server_Maintenance')->isInRealRange()) {
+        if (!$canIgnoreMaintenance && Mage::helper('M2ePro/Server_Maintenance')->isNow()) {
             throw new Ess_M2ePro_Model_Exception_Connection(
                 'The action is temporarily unavailable. M2E Pro server is currently under the planned maintenance.
                 Please try again later.'
@@ -45,10 +46,12 @@ class Ess_M2ePro_Helper_Server_Request extends Mage_Core_Helper_Abstract
 
             Mage::helper('M2ePro/Module_Logger')->process(
                 array(
-                'curl_error_number' => $response['curl_error_number'],
-                'curl_error_message' => $response['curl_error_message'],
-                'curl_info' => $response['curl_info']
-                ), 'Curl Empty Response', false
+                    'curl_error_number' => $response['curl_error_number'],
+                    'curl_error_message' => $response['curl_error_message'],
+                    'curl_info' => $response['curl_info']
+                ),
+                'Curl Empty Response',
+                false
             );
 
             if ($this->canRepeatRequest(
@@ -62,7 +65,8 @@ class Ess_M2ePro_Helper_Server_Request extends Mage_Core_Helper_Abstract
                     $tryToSwitchEndpointOnError ? $this->getServerHelper()->getEndpoint() : $serverBaseUrl,
                     $tryToSwitchEndpointOnError ? $this->getServerHelper()->getCurrentHostName() : $serverHostName,
                     false,
-                    $tryToSwitchEndpointOnError
+                    $tryToSwitchEndpointOnError,
+                    $canIgnoreMaintenance
                 );
             }
 
@@ -78,9 +82,11 @@ class Ess_M2ePro_Helper_Server_Request extends Mage_Core_Helper_Abstract
 
             throw new Ess_M2ePro_Model_Exception_Connection(
                 $errorMsg,
-                array('curl_error_number'  => $response['curl_error_number'],
-                      'curl_error_message' => $response['curl_error_message'],
-                'curl_info'          => $response['curl_info'])
+                array(
+                    'curl_error_number'  => $response['curl_error_number'],
+                    'curl_error_message' => $response['curl_error_message'],
+                    'curl_info'          => $response['curl_info']
+                )
             );
         }
 
@@ -93,9 +99,10 @@ class Ess_M2ePro_Helper_Server_Request extends Mage_Core_Helper_Abstract
         $serverHostName = null,
         $tryToResendOnError = true,
         $tryToSwitchEndpointOnError = true,
-        $asynchronous = false
+        $asynchronous = false,
+        $canIgnoreMaintenance = false
     ) {
-        if (Mage::helper('M2ePro/Server_Maintenance')->isInRealRange()) {
+        if (!$canIgnoreMaintenance && Mage::helper('M2ePro/Server_Maintenance')->isNow()) {
             throw new Ess_M2ePro_Model_Exception_Connection(
                 'The action is temporarily unavailable. M2E Pro server is currently under the planned maintenance.
                 Please try again later.'
@@ -167,10 +174,12 @@ class Ess_M2ePro_Helper_Server_Request extends Mage_Core_Helper_Abstract
 
                 Mage::helper('M2ePro/Module_Logger')->process(
                     array(
-                    'curl_error_number' => $response['curl_error_number'],
-                    'curl_error_message' => $response['curl_error_message'],
-                    'curl_info' => $response['curl_info']
-                    ), 'Curl Empty Response', false
+                        'curl_error_number'  => $response['curl_error_number'],
+                        'curl_error_message' => $response['curl_error_message'],
+                        'curl_info'          => $response['curl_info']
+                    ),
+                    'Curl Empty Response',
+                    false
                 );
                 break;
             }
@@ -199,7 +208,8 @@ class Ess_M2ePro_Helper_Server_Request extends Mage_Core_Helper_Abstract
                     $tryToSwitchEndpointOnError ? $this->getServerHelper()->getCurrentHostName() : $serverHostName,
                     false,
                     $tryToSwitchEndpointOnError,
-                    $asynchronous
+                    $asynchronous,
+                    $canIgnoreMaintenance
                 );
 
                 $responses = array_merge($responses, $secondAttemptResponses);

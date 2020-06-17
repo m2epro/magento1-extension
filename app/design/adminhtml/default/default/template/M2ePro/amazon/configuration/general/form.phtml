@@ -20,8 +20,6 @@ $businessMode = Mage::helper('M2ePro/Component_Amazon_Business')->isEnabled();
 
     Event.observe(window, 'load', function() {
         editForm = new varienForm('<?php echo $this->getForm()->getId(); ?>', '<?php echo $this->getValidationUrl(); ?>');
-
-        varienGlobalEvents && varienGlobalEvents.fireEvent('initReady');
     });
 
 </script>

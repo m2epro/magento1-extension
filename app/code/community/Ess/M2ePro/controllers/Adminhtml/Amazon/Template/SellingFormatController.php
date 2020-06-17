@@ -18,9 +18,9 @@ class Ess_M2ePro_Adminhtml_Amazon_Template_SellingFormatController
              ->_title(Mage::helper('M2ePro')->__('Selling Policies'));
 
         $this->getLayout()->getBlock('head')
-            ->addJs('M2ePro/Template/EditHandler.js')
-            ->addJs('M2ePro/Amazon/Template/EditHandler.js')
-            ->addJs('M2ePro/Amazon/Template/SellingFormatHandler.js');
+            ->addJs('M2ePro/Template/Edit.js')
+            ->addJs('M2ePro/Amazon/Template/Edit.js')
+            ->addJs('M2ePro/Amazon/Template/SellingFormat.js');
 
         $this->_initPopUp();
 
@@ -79,110 +79,13 @@ class Ess_M2ePro_Adminhtml_Amazon_Template_SellingFormatController
 
         $id = $this->getRequest()->getParam('id');
 
-        // Base prepare
-        // ---------------------------------------
-        $data = array();
-
-        $keys = array(
-            'title',
-
-            'is_regular_customer_allowed',
-            'is_business_customer_allowed',
-
-            'qty_mode',
-            'qty_custom_value',
-            'qty_custom_attribute',
-            'qty_percentage',
-            'qty_modification_mode',
-            'qty_min_posted_value',
-            'qty_max_posted_value',
-
-            'regular_price_mode',
-            'regular_price_coefficient',
-            'regular_price_custom_attribute',
-
-            'regular_map_price_mode',
-            'regular_map_price_custom_attribute',
-
-            'regular_sale_price_mode',
-            'regular_sale_price_coefficient',
-            'regular_sale_price_custom_attribute',
-
-            'regular_price_variation_mode',
-
-            'regular_sale_price_start_date_mode',
-            'regular_sale_price_end_date_mode',
-
-            'regular_sale_price_start_date_value',
-            'regular_sale_price_end_date_value',
-
-            'regular_sale_price_start_date_custom_attribute',
-            'regular_sale_price_end_date_custom_attribute',
-
-            'regular_price_vat_percent',
-
-            'business_price_mode',
-            'business_price_coefficient',
-            'business_price_custom_attribute',
-
-            'business_price_variation_mode',
-
-            'business_price_vat_percent',
-
-            'business_discounts_mode',
-            'business_discounts_tier_coefficient',
-            'business_discounts_tier_customer_group_id',
-        );
-
-        foreach ($keys as $key) {
-            if (isset($post[$key])) {
-                $data[$key] = $post[$key];
-            }
-        }
-
-        if ($data['regular_sale_price_start_date_value'] === '') {
-            $data['regular_sale_price_start_date_value'] = Mage::helper('M2ePro')->getCurrentGmtDate(
-                false, 'Y-m-d 00:00:00'
-            );
-        } else {
-            $data['regular_sale_price_start_date_value'] = Mage::helper('M2ePro')->getDate(
-                $data['regular_sale_price_start_date_value'], false, 'Y-m-d 00:00:00'
-            );
-        }
-
-        if ($data['regular_sale_price_end_date_value'] === '') {
-            $data['regular_sale_price_end_date_value'] = Mage::helper('M2ePro')->getCurrentGmtDate(
-                false, 'Y-m-d 00:00:00'
-            );
-        } else {
-            $data['regular_sale_price_end_date_value'] = Mage::helper('M2ePro')->getDate(
-                $data['regular_sale_price_end_date_value'], false, 'Y-m-d 00:00:00'
-            );
-        }
-
-        if (empty($data['is_business_customer_allowed'])) {
-            unset($data['business_price_mode']);
-            unset($data['business_price_coefficient']);
-            unset($data['business_price_custom_attribute']);
-            unset($data['business_price_variation_mode']);
-            unset($data['business_price_vat_percent']);
-            unset($data['business_discounts_mode']);
-            unset($data['business_discounts_tier_coefficient']);
-            unset($data['business_discounts_tier_customer_group_id']);
-        }
-
-        $data['title'] = strip_tags($data['title']);
-        // ---------------------------------------
-
-        // Add or update model
-        // ---------------------------------------
         $model = Mage::helper('M2ePro/Component_Amazon')->getModel('Template_SellingFormat')->load($id);
 
         $snapshotBuilder = Mage::getModel('M2ePro/Amazon_Template_SellingFormat_SnapshotBuilder');
         $snapshotBuilder->setModel($model);
         $oldData = $snapshotBuilder->getSnapshot();
 
-        $model->addData($data)->save();
+        Mage::getModel('M2ePro/Amazon_Template_SellingFormat_Builder')->build($model, $post);
         if (Mage::helper('M2ePro/Component_Amazon_Business')->isEnabled()) {
             $this->saveDiscounts($model->getId(), $post);
         }

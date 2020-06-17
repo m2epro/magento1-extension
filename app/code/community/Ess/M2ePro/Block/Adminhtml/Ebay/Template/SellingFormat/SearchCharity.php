@@ -43,7 +43,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_SellingFormat_SearchCharity
             'id'    => 'searchCharity_submit',
             'class' => 'submit_button',
             'label' => Mage::helper('M2ePro')->__('Search'),
-            'onclick' => 'EbayTemplateSellingFormatHandlerObj.searchCharity()'
+            'onclick' => 'EbayTemplateSellingFormatObj.searchCharity()'
         );
         $buttonSubmitBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($dataSubmit);
         $this->setChild('submit_button', $buttonSubmitBlock);

@@ -478,57 +478,57 @@ SQL
         $this->_installer->run(
             <<<SQL
 
-DROP TABLE IF EXISTS `m2epro_buy_dictionary_category`;
-DROP TABLE IF EXISTS `m2epro_buy_template_new_product`;
-DROP TABLE IF EXISTS `m2epro_buy_template_new_product_core`;
-DROP TABLE IF EXISTS `m2epro_buy_template_new_product_attribute`;
-DROP TABLE IF EXISTS `m2epro_buy_account`;
-DROP TABLE IF EXISTS `m2epro_buy_item`;
-DROP TABLE IF EXISTS `m2epro_buy_listing`;
-DROP TABLE IF EXISTS `m2epro_buy_listing_auto_category_group`;
-DROP TABLE IF EXISTS `m2epro_buy_listing_other`;
-DROP TABLE IF EXISTS `m2epro_buy_listing_product`;
-DROP TABLE IF EXISTS `m2epro_buy_listing_product_variation`;
-DROP TABLE IF EXISTS `m2epro_buy_listing_product_variation_option`;
-DROP TABLE IF EXISTS `m2epro_buy_marketplace`;
-DROP TABLE IF EXISTS `m2epro_buy_order`;
-DROP TABLE IF EXISTS `m2epro_buy_order_item`;
-DROP TABLE IF EXISTS `m2epro_buy_template_selling_format`;
-DROP TABLE IF EXISTS `m2epro_buy_template_synchronization`;
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_buy_dictionary_category')}`;
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_buy_template_new_product')}`;
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_buy_template_new_product_core')}`;
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_buy_template_new_product_attribute')}`;
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_buy_account')}`;
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_buy_item')}`;
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_buy_listing')}`;
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_buy_listing_auto_category_group')}`;
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_buy_listing_other')}`;
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_buy_listing_product')}`;
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_buy_listing_product_variation')}`;
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_buy_listing_product_variation_option')}`;
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_buy_marketplace')}`;
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_buy_order')}`;
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_buy_order_item')}`;
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_buy_template_selling_format')}`;
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_buy_template_synchronization')}`;
 
-DROP TABLE IF EXISTS `m2epro_amazon_dictionary_shipping_override`;
-DROP TABLE IF EXISTS `m2epro_amazon_template_shipping_override`;
-DROP TABLE IF EXISTS `m2epro_amazon_template_shipping_override_service`;
-DROP TABLE IF EXISTS `m2epro_amazon_processed_inventory`;
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_amazon_dictionary_shipping_override')}`;
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_amazon_template_shipping_override')}`;
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_amazon_template_shipping_override_service')}`;
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_amazon_processed_inventory')}`;
 
-TRUNCATE TABLE `m2epro_synchronization_log`;
-TRUNCATE TABLE `m2epro_operation_history`;
+TRUNCATE TABLE `{$this->_installer->getTable('m2epro_synchronization_log')}`;
+TRUNCATE TABLE `{$this->_installer->getTable('m2epro_operation_history')}`;
 
-DELETE FROM `m2epro_listing_other_log` WHERE `action` IN (2, 3, 9, 10, 11, 12, 13, 14, 15, 16, 17);
+DELETE FROM `{$this->_installer->getTable('m2epro_listing_other_log')}` WHERE `action` IN (2, 3, 9, 10, 11, 12, 13, 14, 15, 16, 17);
 
-DELETE FROM `m2epro_account` WHERE `component_mode` = 'buy';
-DELETE FROM `m2epro_marketplace` WHERE `component_mode` = 'buy';
+DELETE FROM `{$this->_installer->getTable('m2epro_account')}` WHERE `component_mode` = 'buy';
+DELETE FROM `{$this->_installer->getTable('m2epro_marketplace')}` WHERE `component_mode` = 'buy';
 
-DELETE FROM `m2epro_listing` WHERE `component_mode` = 'buy';
-DELETE FROM `m2epro_listing_auto_category_group` WHERE `component_mode` = 'buy';
-DELETE FROM `m2epro_listing_other` WHERE `component_mode` = 'buy';
-DELETE FROM `m2epro_listing_product` WHERE `component_mode` = 'buy';
-DELETE FROM `m2epro_listing_product_variation` WHERE `component_mode` = 'buy';
-DELETE FROM `m2epro_listing_product_variation_option` WHERE `component_mode` = 'buy';
-DELETE FROM `m2epro_listing_log` WHERE `component_mode` = 'buy';
-DELETE FROM `m2epro_listing_other_log` WHERE `component_mode` = 'buy';
+DELETE FROM `{$this->_installer->getTable('m2epro_listing')}` WHERE `component_mode` = 'buy';
+DELETE FROM `{$this->_installer->getTable('m2epro_listing_auto_category_group')}` WHERE `component_mode` = 'buy';
+DELETE FROM `{$this->_installer->getTable('m2epro_listing_other')}` WHERE `component_mode` = 'buy';
+DELETE FROM `{$this->_installer->getTable('m2epro_listing_product')}` WHERE `component_mode` = 'buy';
+DELETE FROM `{$this->_installer->getTable('m2epro_listing_product_variation')}` WHERE `component_mode` = 'buy';
+DELETE FROM `{$this->_installer->getTable('m2epro_listing_product_variation_option')}` WHERE `component_mode` = 'buy';
+DELETE FROM `{$this->_installer->getTable('m2epro_listing_log')}` WHERE `component_mode` = 'buy';
+DELETE FROM `{$this->_installer->getTable('m2epro_listing_other_log')}` WHERE `component_mode` = 'buy';
 
-DELETE FROM `m2epro_template_selling_format` WHERE `component_mode` = 'buy';
-DELETE FROM `m2epro_template_synchronization` WHERE `component_mode` = 'buy';
+DELETE FROM `{$this->_installer->getTable('m2epro_template_selling_format')}` WHERE `component_mode` = 'buy';
+DELETE FROM `{$this->_installer->getTable('m2epro_template_synchronization')}` WHERE `component_mode` = 'buy';
 
-DELETE FROM `m2epro_order` WHERE `component_mode` = 'buy';
-DELETE FROM `m2epro_order_item` WHERE `component_mode` = 'buy';
-DELETE FROM `m2epro_order_log` WHERE `component_mode` = 'buy';
+DELETE FROM `{$this->_installer->getTable('m2epro_order')}` WHERE `component_mode` = 'buy';
+DELETE FROM `{$this->_installer->getTable('m2epro_order_item')}` WHERE `component_mode` = 'buy';
+DELETE FROM `{$this->_installer->getTable('m2epro_order_log')}` WHERE `component_mode` = 'buy';
 
-DELETE FROM `m2epro_stop_queue` WHERE `component_mode` = 'buy';
-DELETE FROM `m2epro_synchronization_log` WHERE `component_mode` = 'buy';
+DELETE FROM `{$this->_installer->getTable('m2epro_stop_queue')}` WHERE `component_mode` = 'buy';
+DELETE FROM `{$this->_installer->getTable('m2epro_synchronization_log')}` WHERE `component_mode` = 'buy';
 
-DROP TABLE IF EXISTS m2epro_synchronization_config;
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_synchronization_config')}`;
 SQL
         );
     }

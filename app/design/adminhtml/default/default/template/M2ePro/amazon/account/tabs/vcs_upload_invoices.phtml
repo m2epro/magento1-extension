@@ -28,10 +28,7 @@ Switch <i>Disable Magento Invoice Creation</i> option to “Yes” to prevent In
 
     $formData = $account ? $account->toArray() : array();
 
-    $defaults = array(
-        'auto_invoicing' => 0,
-        'is_magento_invoice_creation_disabled' => 0,
-    );
+    $defaults = Mage::getModel('M2ePro/Amazon_Account_Builder')->getDefaultData();
 
     $formData = array_merge($defaults, $formData);
     $isEdit = !!$this->getRequest()->getParam('id');
@@ -40,7 +37,7 @@ Switch <i>Disable Magento Invoice Creation</i> option to “Yes” to prevent In
 <script type="text/javascript">
     Event.observe(window, 'load', function() {
         $('auto_invoicing')
-            .observe('change', AmazonAccountHandlerObj.autoInvoicingModeChange)
+            .observe('change', AmazonAccountObj.autoInvoicingModeChange)
             .simulate('change');
     });
 </script>

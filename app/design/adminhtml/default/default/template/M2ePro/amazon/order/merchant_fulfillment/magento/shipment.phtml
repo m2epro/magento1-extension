@@ -25,17 +25,17 @@
     )); ?>);
 
     Event.observe(window, 'load', function() {
-        orderMerchantFulfillmentMagentoHandlerObj = new OrderMerchantFulfillmentMagentoHandler;
+        AmazonOrderMerchantFulfillmentMagentoObj = new AmazonOrderMerchantFulfillmentMagento;
 
         <?php if ($this->getAmazonOrder()->isPrime()): ?>
 
-        orderMerchantFulfillmentMagentoHandlerObj.openMagentoShipmentPrimePopup(
+        AmazonOrderMerchantFulfillmentMagentoObj.openMagentoShipmentPrimePopup(
             $('m2epro_magento_shipment_amazon_merchant_fulfillment_prime_popup_content').innerHTML
         );
 
         <?php else: ?>
 
-        orderMerchantFulfillmentMagentoHandlerObj.openMagentoShipmentNotificationPopup(
+        AmazonOrderMerchantFulfillmentMagentoObj.openMagentoShipmentNotificationPopup(
             $('m2epro_magento_shipment_amazon_merchant_fulfillment_notification_popup_content').innerHTML
         );
 
@@ -82,7 +82,7 @@
         ') ?>
     </div>
     <div style="margin: 10px 0;">
-        <a href="javascript:void(0)" onclick="orderMerchantFulfillmentMagentoHandlerObj.discardNotificationPopup()"><?php echo Mage::helper('M2ePro')->__('Don\'t show anymore'); ?></a>
+        <a href="javascript:void(0)" onclick="AmazonOrderMerchantFulfillmentMagentoObj.discardNotificationPopup()"><?php echo Mage::helper('M2ePro')->__('Don\'t show anymore'); ?></a>
         <button style="float: right;" onclick="setLocation('<?php echo $this->getUrl('M2ePro/adminhtml_amazon_order/view', array('id' => $this->getOrder()->getId(), 'show_merchant_fulfillment' => 1)) ?>')">
             <?php echo Mage::helper('M2ePro')->__('Amazon\'s Shipping Services'); ?>
         </button>

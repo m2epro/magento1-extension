@@ -151,7 +151,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Listing_Log_View_Grouped_Grid
                 $createDate = $this->formatDate($log->getCreateDate(), IntlDateFormatter::MEDIUM, true);
             }
 
-            $logDescription = parent::callbackDescription($value, $log, $column, $isExport);
+            $logDescription = parent::callbackDescription($log->getData($column->getIndex()), $log, $column, $isExport);
 
             $description .= <<<HTML
 <div class="log-description-group">

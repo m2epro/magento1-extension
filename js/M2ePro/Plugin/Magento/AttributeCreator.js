@@ -1,5 +1,4 @@
-AttributeCreator = Class.create();
-AttributeCreator.prototype = {
+window.AttributeCreator = Class.create({
 
     id: null,
 
@@ -116,7 +115,7 @@ AttributeCreator.prototype = {
     {
         var self = this;
 
-        MagentoMessageObj.clearAll();
+        MessageObj.clearAll();
 
         new Ajax.Request(M2ePro.url.get('adminhtml_general/createAttribute'), {
             method: 'post',
@@ -145,13 +144,13 @@ AttributeCreator.prototype = {
 
     defaultOnSuccessCallback: function(attributeParams, result)
     {
-        MagentoMessageObj.addSuccess(M2ePro.translator.translate('Attribute has been created.'));
+        MessageObj.addSuccess(M2ePro.translator.translate('Attribute has been created.'));
         this.chooseNewlyCreatedAttribute(attributeParams, result);
     },
 
     defaultOnFailedCallback: function(attributeParams, result)
     {
-        MagentoMessageObj.addError(result['error']);
+        MessageObj.addError(result['error']);
         this.onCancelPopupCallback();
     },
 
@@ -198,7 +197,6 @@ AttributeCreator.prototype = {
         var newOption = new Element('option');
 
         if (this.haveOptgroup()) {
-            newOption.addClassName('simple_mode_disallowed');
             newOption.setAttribute('attribute_code', attributeParams['code']);
         }
 
@@ -403,4 +401,4 @@ AttributeCreator.prototype = {
     }
 
     // ---------------------------------------
-};
+});

@@ -65,7 +65,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_SellingFormat_Edit_Form extend
             ->createBlock('adminhtml/widget_button')
             ->setData(
                 array(
-                'onclick' => 'WalmartTemplateSellingFormatHandlerObj.addRow(\'fixed\');',
+                'onclick' => 'WalmartTemplateSellingFormatObj.addRow(\'fixed\');',
                 'class' => 'add add_discount_rule_button'
                 )
             );
@@ -78,7 +78,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_SellingFormat_Edit_Form extend
             ->setData(
                 array(
                 'label'   => Mage::helper('M2ePro')->__('Remove'),
-                'onclick' => 'WalmartTemplateSellingFormatHandlerObj.removeRow(this);',
+                'onclick' => 'WalmartTemplateSellingFormatObj.removeRow(this);',
                 'class' => 'delete icon-btn remove_discount_rule_button'
                 )
             );
@@ -98,7 +98,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_SellingFormat_Edit_Form extend
             ->createBlock('adminhtml/widget_button')
             ->setData(
                 array(
-                'onclick' => 'WalmartTemplateSellingFormatHandlerObj.addPromotionsPriceRow();',
+                'onclick' => 'WalmartTemplateSellingFormatObj.addPromotionsPriceRow();',
                 'class' => 'add add_promotion_price_button'
                 )
             );
@@ -111,7 +111,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_SellingFormat_Edit_Form extend
             ->setData(
                 array(
                 'label'   => Mage::helper('M2ePro')->__('Remove'),
-                'onclick' => 'WalmartTemplateSellingFormatHandlerObj.removePromotionsPriceRow(this);',
+                'onclick' => 'WalmartTemplateSellingFormatObj.removePromotionsPriceRow(this);',
                 'class' => 'delete icon-btn remove_promotion_price_button'
                 )
             );
@@ -123,7 +123,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_SellingFormat_Edit_Form extend
             ->createBlock('adminhtml/widget_button')
             ->setData(
                 array(
-                'onclick' => 'WalmartTemplateSellingFormatHandlerObj.addRow();',
+                'onclick' => 'WalmartTemplateSellingFormatObj.addRow();',
                 'class' => 'add add_shipping_override_rule_button'
                 )
             );
@@ -136,7 +136,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_SellingFormat_Edit_Form extend
             ->setData(
                 array(
                 'label'   => Mage::helper('M2ePro')->__('Remove'),
-                'onclick' => 'WalmartTemplateSellingFormatHandlerObj.removeRow(this);',
+                'onclick' => 'WalmartTemplateSellingFormatObj.removeRow(this);',
                 'class' => 'delete icon-btn remove_shipping_override_rule_button'
                 )
             );
@@ -150,7 +150,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_SellingFormat_Edit_Form extend
             ->setData(
                 array(
                 'label'   => Mage::helper('M2ePro')->__('Show Sales Tax Codes'),
-                'onclick' => 'WalmartTemplateSellingFormatHandlerObj.openTaxCodePopup(false)',
+                'onclick' => 'WalmartTemplateSellingFormatObj.openTaxCodePopup(false)',
                 'class' => 'bt_tax_codes',
                 )
             );
@@ -164,8 +164,8 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_SellingFormat_Edit_Form extend
     protected function getMultiElementButton($type, $index)
     {
         $onClick = <<<JS
-        AttributeHandlerObj.appendToText('select_attributes_for_{$type}_{$index}', '{$type}_value_{$index}');
-        WalmartTemplateSellingFormatHandlerObj.multi_element_keyup('{$type}', $('{$type}_value_{$index}'));
+        AttributeObj.appendToText('select_attributes_for_{$type}_{$index}', '{$type}_value_{$index}');
+        WalmartTemplateSellingFormatObj.multi_element_keyup('{$type}', $('{$type}_value_{$index}'));
 JS;
         $data = array(
             'label'   => Mage::helper('M2ePro')->__('Insert'),

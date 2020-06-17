@@ -224,92 +224,50 @@ class Ess_M2ePro_Helper_Component_Ebay_Category_Ebay extends Mage_Core_Helper_Ab
 
     //########################################
 
-    public function getSameTemplatesData($ids)
-    {
-        return Mage::helper('M2ePro/Component_Ebay_Category')->getSameTemplatesData(
-            $ids, Mage::getResourceModel('M2ePro/Ebay_Template_Category')->getMainTable(),
-            array('category_main')
-        );
-    }
-
     public function exists($categoryId, $marketplaceId)
     {
-        /** @var $connRead Varien_Db_Adapter_Pdo_Mysql */
-        $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
-        $tableDictCategories = Mage::helper('M2ePro/Module_Database_Structure')
-            ->getTableNameWithPrefix('m2epro_ebay_dictionary_category');
+        $select = Mage::getSingleton('core/resource')->getConnection('core_read')
+            ->select()
+            ->from(
+                Mage::helper('M2ePro/Module_Database_Structure')
+                            ->getTableNameWithPrefix('m2epro_ebay_dictionary_category'),
+                'COUNT(*)'
+            )
+            ->where('marketplace_id = ?', (int)$marketplaceId)
+            ->where('category_id = ?', (int)$categoryId);
 
-        $dbSelect = $connRead->select()
-                             ->from($tableDictCategories, 'COUNT(*)')
-                             ->where('`marketplace_id` = ?', (int)$marketplaceId)
-                             ->where('`category_id` = ?', (int)$categoryId);
-
-        return $dbSelect->query()->fetchColumn() == 1;
+        return $select->query()->fetchColumn() == 1;
     }
 
     public function isExistDeletedCategories()
     {
-        /** @var $connRead Varien_Db_Adapter_Pdo_Mysql */
-        $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
-
-        $etcTable = Mage::getModel('M2ePro/Ebay_Template_Category')->getResource()->getMainTable();
-        $etocTable = Mage::getModel('M2ePro/Ebay_Template_OtherCategory')->getResource()->getMainTable();
-        $edcTable = Mage::helper('M2ePro/Module_Database_Structure')
-            ->getTableNameWithPrefix('m2epro_ebay_dictionary_category');
-
-        // prepare category main select
-        // ---------------------------------------
-        $etcSelect = $connRead->select();
-        $etcSelect->from(
-            array('etc' => $etcTable)
-        )
-            ->reset(Zend_Db_Select::COLUMNS)
-            ->columns(
-                array(
-                'category_main_id as category_id',
-                'marketplace_id',
-                )
+        $stmt = Mage::getSingleton('core/resource')->getConnection('core_read')
+            ->select()
+            ->from(
+                array('etc' => Mage::getModel('M2ePro/Ebay_Template_Category')->getResource()->getMainTable())
             )
-            ->where('category_main_mode = ?', Ess_M2ePro_Model_Ebay_Template_Category::CATEGORY_MODE_EBAY)
-            ->group(array('category_id', 'marketplace_id'));
-        // ---------------------------------------
-
-        // prepare category secondary select
-        // ---------------------------------------
-        $etocSelect = $connRead->select();
-        $etocSelect->from(
-            array('etc' => $etocTable)
-        )
-            ->reset(Zend_Db_Select::COLUMNS)
-            ->columns(
-                array(
-                'category_secondary_id as category_id',
-                'marketplace_id',
-                )
-            )
-            ->where('category_secondary_mode = ?', Ess_M2ePro_Model_Ebay_Template_Category::CATEGORY_MODE_EBAY)
-            ->group(array('category_id', 'marketplace_id'));
-        // ---------------------------------------
-
-        $unionSelect = $connRead->select();
-        $unionSelect->union(
-            array(
-            $etcSelect,
-            $etocSelect,
-            )
-        );
-
-        $mainSelect = $connRead->select();
-        $mainSelect->reset()
-            ->from(array('main_table' => $unionSelect))
             ->joinLeft(
-                array('edc' => $edcTable),
-                'edc.marketplace_id = main_table.marketplace_id
-                 AND edc.category_id = main_table.category_id'
+                array(
+                    'edc' => Mage::helper('M2ePro/Module_Database_Structure')
+                                    ->getTableNameWithPrefix('m2epro_ebay_dictionary_category')
+                ),
+                'edc.marketplace_id = etc.marketplace_id AND edc.category_id = etc.category_id'
             )
-            ->where('edc.category_id IS NULL');
+            ->reset(Zend_Db_Select::COLUMNS)
+            ->columns(
+                array(
+                    'etc.category_id',
+                    'etc.marketplace_id',
+                )
+            )
+            ->where('etc.category_mode = ?', Ess_M2ePro_Model_Ebay_Template_Category::CATEGORY_MODE_EBAY)
+            ->where('edc.category_id IS NULL')
+            ->group(
+                array('etc.category_id', 'etc.marketplace_id')
+            )
+            ->query();
 
-        return $connRead->query($mainSelect)->fetchColumn() !== false;
+        return $stmt->fetchColumn() !== false;
     }
 
     //########################################

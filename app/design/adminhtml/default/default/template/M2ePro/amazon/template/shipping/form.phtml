@@ -17,13 +17,7 @@ if ($model) {
     $formData = $model->toArray();
 }
 
-$default = array(
-    'title'         => '',
-
-    'template_name_mode' => '',
-    'template_name_value' => '',
-    'template_name_attribute' => '',
-);
+$default = Mage::getModel('M2ePro/Amazon_Template_Shipping_Builder')->getDefaultData();
 
 $formData = array_merge($default, $formData);
 
@@ -79,10 +73,10 @@ $attributesByInputTypes = array(
     M2ePro.formData.title = '<?php echo Mage::helper('M2ePro')->escapeJs(Mage::helper('M2ePro')->escapeHtml($formData['title'])); ?>';
 
     Event.observe(window, 'load', function() {
-        AmazonTemplateShippingHandlerObj = new AmazonTemplateShippingHandler();
+        AmazonTemplateShippingObj = new AmazonTemplateShipping();
 
         $('template_name_mode')
-            .observe('change', AmazonTemplateShippingHandlerObj.templateNameModeChange)
+            .observe('change', AmazonTemplateShippingObj.templateNameModeChange)
             .simulate('change');
 
         editForm = new varienForm('edit_form', '<?php echo $this->getValidationUrl(); ?>');

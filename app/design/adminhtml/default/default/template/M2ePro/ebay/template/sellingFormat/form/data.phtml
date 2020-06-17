@@ -94,76 +94,76 @@ $taxCategories = $this->getTaxCategoriesInfo();
 
     var init = function() {
 
-        EbayTemplateSellingFormatHandlerObj = new EbayTemplateSellingFormatHandler();
+        EbayTemplateSellingFormatObj = new EbayTemplateSellingFormat();
 
         $('listing_type')
-            .observe('change', EbayTemplateSellingFormatHandlerObj.listing_type_change)
+            .observe('change', EbayTemplateSellingFormatObj.listing_type_change)
             .simulate('change');
 
         $('duration_attribute')
-            .observe('change', EbayTemplateSellingFormatHandlerObj.duration_attribute_change)
+            .observe('change', EbayTemplateSellingFormatObj.duration_attribute_change)
             .simulate('change');
 
         $('qty_mode')
-            .observe('change', EbayTemplateSellingFormatHandlerObj.qty_mode_change)
+            .observe('change', EbayTemplateSellingFormatObj.qty_mode_change)
             .simulate('change');
 
         $('qty_modification_mode')
-            .observe('change', EbayTemplateSellingFormatHandlerObj.qtyPostedMode_change)
+            .observe('change', EbayTemplateSellingFormatObj.qtyPostedMode_change)
             .simulate('change');
 
         $('lot_size_mode')
-            .observe('change', EbayTemplateSellingFormatHandlerObj.lotSizeMode_change)
+            .observe('change', EbayTemplateSellingFormatObj.lotSizeMode_change)
             .simulate('change');
 
         if ($('tax_category_mode')) {
             $('tax_category_mode')
-                .observe('change', EbayTemplateSellingFormatHandlerObj.taxCategoryChange)
+                .observe('change', EbayTemplateSellingFormatObj.taxCategoryChange)
                 .simulate('change');
         }
 
         $('fixed_price_mode')
-            .observe('change', EbayTemplateSellingFormatHandlerObj.fixed_price_mode_change)
+            .observe('change', EbayTemplateSellingFormatObj.fixed_price_mode_change)
             .simulate('change');
 
         $('start_price_mode')
-            .observe('change', EbayTemplateSellingFormatHandlerObj.start_price_mode_change)
+            .observe('change', EbayTemplateSellingFormatObj.start_price_mode_change)
             .simulate('change');
 
         $('reserve_price_mode')
-            .observe('change', EbayTemplateSellingFormatHandlerObj.reserve_price_mode_change)
+            .observe('change', EbayTemplateSellingFormatObj.reserve_price_mode_change)
             .simulate('change');
 
         $('buyitnow_price_mode')
-            .observe('change', EbayTemplateSellingFormatHandlerObj.buyitnow_price_mode_change)
+            .observe('change', EbayTemplateSellingFormatObj.buyitnow_price_mode_change)
             .simulate('change');
 
         $('price_discount_stp_mode')
-            .observe('change', EbayTemplateSellingFormatHandlerObj.price_discount_stp_mode_change)
+            .observe('change', EbayTemplateSellingFormatObj.price_discount_stp_mode_change)
             .simulate('change');
 
         $('price_discount_map_mode')
-            .observe('change', EbayTemplateSellingFormatHandlerObj.price_discount_map_mode_change)
+            .observe('change', EbayTemplateSellingFormatObj.price_discount_map_mode_change)
             .simulate('change');
 
         $$('.price_coefficient_mode').each(function(element){
-            element.observe('change', EbayTemplateSellingFormatHandlerObj.price_coefficient_mode_change)
+            element.observe('change', EbayTemplateSellingFormatObj.price_coefficient_mode_change)
                    .simulate('change');
         });
 
         $('best_offer_mode')
-            .observe('change', EbayTemplateSellingFormatHandlerObj.best_offer_mode_change)
+            .observe('change', EbayTemplateSellingFormatObj.best_offer_mode_change)
             .simulate('change');
 
         $('best_offer_accept_mode')
-            .observe('change', EbayTemplateSellingFormatHandlerObj.best_offer_accept_mode_change)
+            .observe('change', EbayTemplateSellingFormatObj.best_offer_accept_mode_change)
             .simulate('change');
 
         $('best_offer_reject_mode')
-            .observe('change', EbayTemplateSellingFormatHandlerObj.best_offer_reject_mode_change)
+            .observe('change', EbayTemplateSellingFormatObj.best_offer_reject_mode_change)
             .simulate('change');
 
-        EbayTemplateSellingFormatHandlerObj.checkPriceMessages();
+        EbayTemplateSellingFormatObj.checkPriceMessages();
         $(
             'fixed_price_mode',
             'start_price_mode',
@@ -172,17 +172,17 @@ $taxCategories = $this->getTaxCategoriesInfo();
             'price_discount_stp_mode',
             'price_discount_map_mode'
         ).invoke('observe', 'change', function() {
-                EbayTemplateSellingFormatHandlerObj.checkPriceMessages();
+                EbayTemplateSellingFormatObj.checkPriceMessages();
         });
 
-        EbayTemplateSellingFormatHandlerObj.checkBestOfferMessages();
+        EbayTemplateSellingFormatObj.checkBestOfferMessages();
         $('best_offer_accept_mode', 'best_offer_reject_mode').invoke('observe', 'change', function () {
-            EbayTemplateSellingFormatHandlerObj.checkBestOfferMessages();
+            EbayTemplateSellingFormatObj.checkBestOfferMessages();
         });
 
-        EbayTemplateSellingFormatHandlerObj.charityDictionary = <?php echo json_encode($charityDictionary); ?>;
+        EbayTemplateSellingFormatObj.charityDictionary = <?php echo json_encode($charityDictionary); ?>;
         <?php if (!empty($formData['charity'])) : ?>
-        EbayTemplateSellingFormatHandlerObj.renderCharities(<?php echo json_encode($formData['charity']); ?>);
+        EbayTemplateSellingFormatObj.renderCharities(<?php echo json_encode($formData['charity']); ?>);
         <?php endif; ?>
     };
 
@@ -259,7 +259,7 @@ $taxCategories = $this->getTaxCategoriesInfo();
 <input type="hidden" name="selling_format[title]" value="<?php echo Mage::helper('M2ePro')->escapeHtml($this->getTitle()); ?>" />
 <input type="hidden" name="selling_format[is_custom_template]" value="<?php echo $this->isCustom() ? 1 : 0; ?>" />
 
-<div class="entry-edit simple_mode_disallowed" id="magento_block_ebay_template_selling_format_edit_form_general">
+<div class="entry-edit" id="magento_block_ebay_template_selling_format_edit_form_general">
 
     <div class="entry-edit-head">
         <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('How You Want To Sell Your Item'); ?></h4>
@@ -276,19 +276,19 @@ $taxCategories = $this->getTaxCategoriesInfo();
                     </td>
                     <td class="value">
 
-                        <select id="listing_type" name="selling_format[listing_type]" class="required-entry simple_mode_disallowed M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,select">
+                        <select id="listing_type" name="selling_format[listing_type]" class="required-entry M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,select">
 
                             <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_SellingFormat::LISTING_TYPE_AUCTION; ?>" <?php if (Ess_M2ePro_Model_Ebay_Template_SellingFormat::LISTING_TYPE_AUCTION == $formData['listing_type']): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Auction'); ?></option>
                             <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_SellingFormat::LISTING_TYPE_FIXED; ?>" <?php if (Ess_M2ePro_Model_Ebay_Template_SellingFormat::LISTING_TYPE_FIXED == $formData['listing_type']): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Fixed Price'); ?></option>
 
-                            <optgroup class="simple_mode_disallowed M2ePro-custom-attribute-optgroup" label="Magento Attribute">
+                            <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
                                 <?php if ($formData['listing_type'] == Ess_M2ePro_Model_Ebay_Template_SellingFormat::LISTING_TYPE_ATTRIBUTE && !$magentoAttributeHelper->isExistInAttributesArray($formData['listing_type_attribute'], $this->attributes) && $formData['listing_type_attribute'] != '') : ?>
                                     <option attribute_code="<?php echo Mage::helper('M2ePro')->escapeHtml($formData['listing_type_attribute']) ?>" selected="selected" value="<?php echo Ess_M2ePro_Model_Ebay_Template_SellingFormat::LISTING_TYPE_ATTRIBUTE ?>">
                                         <?php echo Mage::helper('M2ePro')->escapeHtml($magentoAttributeHelper->getAttributeLabel($formData['listing_type_attribute'])) ?>
                                     </option>
                                 <?php endif; ?>
                                 <?php foreach($attributesByInputTypes['text_select'] as $attribute) : ?>
-                                    <option class="simple_mode_disallowed" attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Ebay_Template_SellingFormat::LISTING_TYPE_ATTRIBUTE; ?>" <?php if ($formData['listing_type'] == Ess_M2ePro_Model_Ebay_Template_SellingFormat::LISTING_TYPE_ATTRIBUTE && $attribute['code'] == $formData['listing_type_attribute']): ?>selected="selected"<?php endif; ?>>
+                                    <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Ebay_Template_SellingFormat::LISTING_TYPE_ATTRIBUTE; ?>" <?php if ($formData['listing_type'] == Ess_M2ePro_Model_Ebay_Template_SellingFormat::LISTING_TYPE_ATTRIBUTE && $attribute['code'] == $formData['listing_type_attribute']): ?>selected="selected"<?php endif; ?>>
                                         <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
                                     </option>
                                 <?php endforeach; ?>
@@ -312,7 +312,7 @@ $taxCategories = $this->getTaxCategoriesInfo();
                     </td>
                 </tr>
 
-                <tr class="simple_mode_disallowed">
+                <tr>
                     <td class="label">
                         <label for="listing_is_private"><?php echo Mage::helper('M2ePro')->__('Private Listing'); ?>:</label>
                     </td>
@@ -395,7 +395,7 @@ $taxCategories = $this->getTaxCategoriesInfo();
                                 <?php if ($formData['duration_attribute'] == ''): ?>
                                     <option style="display: none;"></option>
                                 <?php endif; ?>
-                                <optgroup class="simple_mode_disallowed duration_attribute M2ePro-custom-attribute-optgroup" label="Magento Attribute">
+                                <optgroup class="duration_attribute M2ePro-custom-attribute-optgroup" label="Magento Attribute">
                                     <?php if ($formData['listing_type'] == Ess_M2ePro_Model_Ebay_Template_SellingFormat::LISTING_TYPE_ATTRIBUTE && !$magentoAttributeHelper->isExistInAttributesArray($formData['duration_attribute'], $this->attributes) && $formData['duration_attribute'] != ''): ?>
                                         <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_SellingFormat::LISTING_TYPE_ATTRIBUTE; ?>" attribute_code="<?php echo Mage::helper('M2ePro')->escapeHtml($formData['duration_attribute']) ?>" selected="selected">
                                             <?php echo Mage::helper('M2ePro')->escapeHtml($magentoAttributeHelper->getAttributeLabel($formData['duration_attribute'])) ?>
@@ -426,7 +426,7 @@ $taxCategories = $this->getTaxCategoriesInfo();
                     </td>
                 </tr>
 
-                <tr class="simple_mode_disallowed" id="qty_mode_tr">
+                <tr id="qty_mode_tr">
                     <td class="label">
                         <label for="qty_mode"><?php echo Mage::helper('M2ePro')->__('Quantity'); ?>: </label>
                     </td>
@@ -436,7 +436,7 @@ $taxCategories = $this->getTaxCategoriesInfo();
                             <option value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_SINGLE; ?>" <?php if (Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_SINGLE == $formData['qty_mode']): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Single Item'); ?></option>
                             <option value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_NUMBER; ?>" <?php if (Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_NUMBER == $formData['qty_mode']): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Custom Value'); ?></option>
 
-                            <optgroup class="simple_mode_disallowed M2ePro-custom-attribute-optgroup" label="Magento Attribute" new_option_value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_ATTRIBUTE; ?>">
+                            <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute" new_option_value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_ATTRIBUTE; ?>">
                                 <option value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_PRODUCT_FIXED; ?>" <?php if (Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_PRODUCT_FIXED == $formData['qty_mode']): echo ' selected="selected"'; endif; ?>>QTY</option>
                                 <?php if ($formData['qty_mode'] == Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_ATTRIBUTE && !$magentoAttributeHelper->isExistInAttributesArray($formData['qty_custom_attribute'], $this->attributes) && $formData['qty_custom_attribute'] != ''): ?>
                                     <option attribute_code="<?php echo Mage::helper('M2ePro')->escapeHtml($formData['qty_custom_attribute']) ?>" selected="selected" value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_ATTRIBUTE; ?>">
@@ -444,7 +444,7 @@ $taxCategories = $this->getTaxCategoriesInfo();
                                     </option>
                                 <?php endif; ?>
                                 <?php foreach($attributesByInputTypes['text'] as $attribute) : ?>
-                                    <option class="simple_mode_disallowed" attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_ATTRIBUTE; ?>" <?php if ($formData['qty_mode'] == Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_ATTRIBUTE && $attribute['code'] == $formData['qty_custom_attribute']): ?>selected="selected"<?php endif; ?>>
+                                    <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_ATTRIBUTE; ?>" <?php if ($formData['qty_mode'] == Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_ATTRIBUTE && $attribute['code'] == $formData['qty_custom_attribute']): ?>selected="selected"<?php endif; ?>>
                                         <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
                                     </option>
                                 <?php endforeach; ?>
@@ -475,7 +475,7 @@ $taxCategories = $this->getTaxCategoriesInfo();
                     </td>
                 </tr>
 
-                <tr id="qty_percentage_tr" class="simple_mode_disallowed">
+                <tr id="qty_percentage_tr">
                     <td class="label">
                         <label for="qty_percentage"><?php echo Mage::helper('M2ePro')->__('Quantity Percentage'); ?>: </label>
                     </td>
@@ -492,7 +492,7 @@ $taxCategories = $this->getTaxCategoriesInfo();
                 </tr>
 
                 <!-- Max Posted QTY-->
-                <tr id="qty_modification_mode_tr" class="simple_mode_disallowed" style="display: none;">
+                <tr id="qty_modification_mode_tr" style="display: none;">
                     <td class="label">
                         <label><?php echo Mage::helper('M2ePro')->__('Conditional Quantity'); ?>:</label>
                     </td>
@@ -511,7 +511,7 @@ $taxCategories = $this->getTaxCategoriesInfo();
                     </td>
                 </tr>
 
-                <tr id="qty_min_posted_value_tr" class="simple_mode_disallowed" style="display: none;">
+                <tr id="qty_min_posted_value_tr" style="display: none;">
                     <td class="label">
                         <label><?php echo Mage::helper('M2ePro')->__('Minimum Quantity to Be Listed'); ?>: <span class="required">*</span></label>
                     </td>
@@ -525,7 +525,7 @@ Otherwise, the Item will be Listed with Quantity according to the Settings in th
                     </td>
                 </tr>
 
-                <tr id="qty_max_posted_value_tr" class="simple_mode_disallowed" style="display: none;">
+                <tr id="qty_max_posted_value_tr" style="display: none;">
                     <td class="label">
                         <label><?php echo Mage::helper('M2ePro')->__('Maximum Quantity to Be Listed'); ?>: <span class="required">*</span></label>
                     </td>
@@ -538,7 +538,7 @@ Otherwise, the Item will be Listed with Quantity according to the Settings in th
                     </td>
                 </tr>
 
-                <tr id="lot_size_mode_tr" class="simple_mode_disallowed">
+                <tr id="lot_size_mode_tr">
                     <td class="label">
                         <label><?php echo Mage::helper('M2ePro')->__('Specify Lot Size')?>:</label>
                     </td>
@@ -547,14 +547,14 @@ Otherwise, the Item will be Listed with Quantity according to the Settings in th
                             <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_SellingFormat::LOT_SIZE_MODE_DISABLED; ?>" <?php if (Ess_M2ePro_Model_Ebay_Template_SellingFormat::LOT_SIZE_MODE_DISABLED == $formData['lot_size_mode']) : echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('No')?></option>
                             <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_SellingFormat::LOT_SIZE_MODE_CUSTOM_VALUE; ?>" <?php if (Ess_M2ePro_Model_Ebay_Template_SellingFormat::LOT_SIZE_MODE_CUSTOM_VALUE == $formData['lot_size_mode']) : echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Custom Value')?></option>
 
-                            <optgroup class="simple_mode_disallowed M2ePro-custom-attribute-optgroup" label="Magento Attribute" new_option_value="<?php echo Ess_M2ePro_Model_Ebay_Template_SellingFormat::LOT_SIZE_MODE_ATTRIBUTE; ?>">
+                            <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute" new_option_value="<?php echo Ess_M2ePro_Model_Ebay_Template_SellingFormat::LOT_SIZE_MODE_ATTRIBUTE; ?>">
                                 <?php if ($formData['lot_size_mode'] == Ess_M2ePro_Model_Ebay_Template_SellingFormat::LOT_SIZE_MODE_ATTRIBUTE && !$magentoAttributeHelper->isExistInAttributesArray($formData['lot_size_attribute'], $this->attributes) && $formData['lot_size_attribute'] != ''): ?>
                                     <option attribute_code="<?php echo Mage::helper('M2ePro')->escapeHtml($formData['lot_size_attribute']) ?>" selected="selected" value="<?php echo Ess_M2ePro_Model_Ebay_Template_SellingFormat::LOT_SIZE_MODE_ATTRIBUTE; ?>">
                                         <?php echo Mage::helper('M2ePro')->escapeHtml($magentoAttributeHelper->getAttributeLabel($formData['lot_size_attribute'])) ?>
                                     </option>
                                 <?php endif; ?>
                                 <?php foreach($attributesByInputTypes['text'] as $attribute) : ?>
-                                    <option class="simple_mode_disallowed" attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Ebay_Template_SellingFormat::LOT_SIZE_MODE_ATTRIBUTE; ?>" <?php if ($formData['lot_size_mode'] == Ess_M2ePro_Model_Ebay_Template_SellingFormat::LOT_SIZE_MODE_ATTRIBUTE && $attribute['code'] == $formData['lot_size_attribute']): ?>selected="selected"<?php endif; ?>>
+                                    <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Ebay_Template_SellingFormat::LOT_SIZE_MODE_ATTRIBUTE; ?>" <?php if ($formData['lot_size_mode'] == Ess_M2ePro_Model_Ebay_Template_SellingFormat::LOT_SIZE_MODE_ATTRIBUTE && $attribute['code'] == $formData['lot_size_attribute']): ?>selected="selected"<?php endif; ?>>
                                         <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
                                     </option>
                                 <?php endforeach; ?>
@@ -568,7 +568,7 @@ Otherwise, the Item will be Listed with Quantity according to the Settings in th
                     </td>
                 </tr>
 
-                <tr id="lot_size_cv_tr" class="simple_mode_disallowed" style="display: none;">
+                <tr id="lot_size_cv_tr" style="display: none;">
                     <td class="label">
                         <label for="lot_size_custom_value"><?php echo Mage::helper('M2ePro')->__('Items in Lot'); ?>: <span class="required">*</span></label>
                     </td>
@@ -577,7 +577,7 @@ Otherwise, the Item will be Listed with Quantity according to the Settings in th
                     </td>
                 </tr>
 
-                <tr id="ignore_variations_value_tr" class="simple_mode_disallowed" style="display: none;">
+                <tr id="ignore_variations_value_tr" style="display: none;">
                     <td class="label">
                         <label><?php echo Mage::helper('M2ePro')->__('Ignore Variations')?>:</label>
                     </td>
@@ -677,11 +677,9 @@ Otherwise, the Item will be Listed with Quantity according to the Settings in th
                                 <?php endif; ?>
 
                                 <?php if (!empty($attributesByInputTypes['text'])) : ?>
-                                    <optgroup label="Magento Attributes" class="simple_mode_disallowed M2ePro-custom-attribute-optgroup">
+                                    <optgroup label="Magento Attributes" M2ePro-custom-attribute-optgroup">
                                         <?php foreach ($attributesByInputTypes['text'] as $attribute): ?>
-                                            <option class="simple_mode_disallowed"
-                                                    attribute_code="<?php echo $attribute['code']; ?>"
-                                                    value="<?php echo Ess_M2ePro_Model_Ebay_Template_SellingFormat::TAX_CATEGORY_MODE_ATTRIBUTE; ?>"
+                                            <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Ebay_Template_SellingFormat::TAX_CATEGORY_MODE_ATTRIBUTE; ?>"
                                                 <?php if ($formData['tax_category_mode'] == Ess_M2ePro_Model_Ebay_Template_SellingFormat::TAX_CATEGORY_MODE_ATTRIBUTE && $formData['tax_category_attribute'] == $attribute['code']) : echo 'selected="selected"'; endif; ?>>
                                                 <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
                                             </option>
@@ -717,7 +715,7 @@ Otherwise, the Item will be Listed with Quantity according to the Settings in th
 
             <table class="form-list" cellspacing="0" cellpadding="0">
 
-                <tr class="simple_mode_disallowed">
+                <tr>
                     <td class="label">
                         <label><?php echo Mage::helper('M2ePro')->__('Add VAT Percentage'); ?>:</label>
                     </td>
@@ -813,14 +811,14 @@ Otherwise, the Item will be Listed with Quantity according to the Settings in th
                                         <option value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_PRODUCT; ?>" <?php if (Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_PRODUCT == $formData['fixed_price_mode']): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Product Price'); ?></option>
                                         <option value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_SPECIAL; ?>" <?php if (Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_SPECIAL == $formData['fixed_price_mode']): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Special Price'); ?></option>
 
-                                        <optgroup class="simple_mode_disallowed M2ePro-custom-attribute-optgroup" label="Magento Attribute">
+                                        <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
                                             <?php if ($formData['fixed_price_mode'] == Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_ATTRIBUTE && !$magentoAttributeHelper->isExistInAttributesArray($formData['fixed_price_custom_attribute'], $this->attributes) && $formData['fixed_price_custom_attribute'] != ''): ?>
                                                 <option attribute_code="<?php echo Mage::helper('M2ePro')->escapeHtml($formData['fixed_price_custom_attribute']) ?>" selected="selected" value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_ATTRIBUTE ?>">
                                                     <?php echo Mage::helper('M2ePro')->escapeHtml($magentoAttributeHelper->getAttributeLabel($formData['fixed_price_custom_attribute'])) ?>
                                                 </option>
                                             <?php endif; ?>
                                             <?php foreach($attributesByInputTypes['text_price'] as $attribute): ?>
-                                                <option class="simple_mode_disallowed" attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_ATTRIBUTE; ?>" <?php if ($formData['fixed_price_mode'] == Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_ATTRIBUTE && $attribute['code'] == $formData['fixed_price_custom_attribute']): ?>selected="selected"<?php endif; ?>>
+                                                <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_ATTRIBUTE; ?>" <?php if ($formData['fixed_price_mode'] == Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_ATTRIBUTE && $attribute['code'] == $formData['fixed_price_custom_attribute']): ?>selected="selected"<?php endif; ?>>
                                                     <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
                                                 </option>
                                             <?php endforeach; ?>
@@ -926,14 +924,14 @@ Otherwise, the Item will be Listed with Quantity according to the Settings in th
                                         </option>
                                         <option value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_SPECIAL; ?>" <?php if (Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_SPECIAL == $formData['start_price_mode']): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Special Price'); ?></option>
 
-                                        <optgroup class="simple_mode_disallowed M2ePro-custom-attribute-optgroup" label="Magento Attribute">
+                                        <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
                                             <?php if ($formData['start_price_mode'] == Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_ATTRIBUTE && !$magentoAttributeHelper->isExistInAttributesArray($formData['start_price_custom_attribute'], $this->attributes) && $formData['start_price_custom_attribute'] != ''): ?>
                                                 <option attribute_code="<?php echo Mage::helper('M2ePro')->escapeHtml($formData['start_price_custom_attribute']) ?>" selected="selected" value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_ATTRIBUTE; ?>">
                                                     <?php echo Mage::helper('M2ePro')->escapeHtml($magentoAttributeHelper->getAttributeLabel($formData['start_price_custom_attribute'])) ?>
                                                 </option>
                                             <?php endif; ?>
                                             <?php foreach($attributesByInputTypes['text_price'] as $attribute) : ?>
-                                                <option class="simple_mode_disallowed" attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_ATTRIBUTE; ?>" <?php if ($formData['start_price_mode'] == Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_ATTRIBUTE && $attribute['code'] == $formData['start_price_custom_attribute']): ?>selected="selected"<?php endif; ?>>
+                                                <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_ATTRIBUTE; ?>" <?php if ($formData['start_price_mode'] == Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_ATTRIBUTE && $attribute['code'] == $formData['start_price_custom_attribute']): ?>selected="selected"<?php endif; ?>>
                                                     <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
                                                 </option>
                                             <?php endforeach; ?>
@@ -1016,14 +1014,14 @@ Otherwise, the Item will be Listed with Quantity according to the Settings in th
                                         <option value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_PRODUCT; ?>" <?php if (Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_PRODUCT == $formData['reserve_price_mode']): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Product Price'); ?></option>
                                         <option value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_SPECIAL; ?>" <?php if (Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_SPECIAL == $formData['reserve_price_mode']): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Special Price'); ?></option>
 
-                                        <optgroup class="simple_mode_disallowed M2ePro-custom-attribute-optgroup" label="Magento Attribute">
+                                        <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
                                             <?php if ($formData['reserve_price_mode'] == Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_ATTRIBUTE && !$magentoAttributeHelper->isExistInAttributesArray($formData['reserve_price_custom_attribute'], $this->attributes) && $formData['reserve_price_custom_attribute'] != '') : ?>
                                                 <option attribute_code="<?php echo Mage::helper('M2ePro')->escapeHtml($formData['reserve_price_custom_attribute']) ?>" selected="selected" value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_ATTRIBUTE ?>">
                                                     <?php echo Mage::helper('M2ePro')->escapeHtml($magentoAttributeHelper->getAttributeLabel($formData['reserve_price_custom_attribute'])) ?>
                                                 </option>
                                             <?php endif; ?>
                                             <?php foreach($attributesByInputTypes['text_price'] as $attribute) : ?>
-                                                <option class="simple_mode_disallowed" attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_ATTRIBUTE; ?>" <?php if ($formData['reserve_price_mode'] == Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_ATTRIBUTE && $attribute['code'] == $formData['reserve_price_custom_attribute']): ?>selected="selected"<?php endif; ?>>
+                                                <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_ATTRIBUTE; ?>" <?php if ($formData['reserve_price_mode'] == Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_ATTRIBUTE && $attribute['code'] == $formData['reserve_price_custom_attribute']): ?>selected="selected"<?php endif; ?>>
                                                     <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
                                                 </option>
                                             <?php endforeach; ?>
@@ -1106,14 +1104,14 @@ Otherwise, the Item will be Listed with Quantity according to the Settings in th
                                         <option value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_PRODUCT; ?>" <?php if (Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_PRODUCT == $formData['buyitnow_price_mode']): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Product Price'); ?></option>
                                         <option value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_SPECIAL; ?>" <?php if (Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_SPECIAL == $formData['buyitnow_price_mode']): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Special Price'); ?></option>
 
-                                        <optgroup class="simple_mode_disallowed M2ePro-custom-attribute-optgroup" label="Magento Attribute">
+                                        <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
                                             <?php if ($formData['buyitnow_price_mode'] == Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_ATTRIBUTE && !$magentoAttributeHelper->isExistInAttributesArray($formData['buyitnow_price_custom_attribute'], $this->attributes) && $formData['buyitnow_price_custom_attribute'] != ''): ?>
                                                 <option attribute_code="<?php echo Mage::helper('M2ePro')->escapeHtml($formData['buyitnow_price_custom_attribute']) ?>" selected="selected" value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_ATTRIBUTE ?>">
                                                     <?php echo Mage::helper('M2ePro')->escapeHtml($magentoAttributeHelper->getAttributeLabel($formData['buyitnow_price_custom_attribute'])) ?>
                                                 </option>
                                             <?php endif; ?>
                                             <?php foreach($attributesByInputTypes['text_price'] as $attribute): ?>
-                                                <option class="simple_mode_disallowed" attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_ATTRIBUTE; ?>" <?php if ($formData['buyitnow_price_mode'] == Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_ATTRIBUTE && $attribute['code'] == $formData['buyitnow_price_custom_attribute']): ?>selected="selected"<?php endif; ?>>
+                                                <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_ATTRIBUTE; ?>" <?php if ($formData['buyitnow_price_mode'] == Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_ATTRIBUTE && $attribute['code'] == $formData['buyitnow_price_custom_attribute']): ?>selected="selected"<?php endif; ?>>
                                                     <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
                                                 </option>
                                             <?php endforeach; ?>
@@ -1176,7 +1174,7 @@ Otherwise, the Item will be Listed with Quantity according to the Settings in th
 
                             </tr>
 
-                            <tr id="price_discount_stp_tr" class="simple_mode_disallowed">
+                            <tr id="price_discount_stp_tr">
 
                                 <td class="value remove_bottom_border">
                                     <label><?php echo Mage::helper('M2ePro')->__('Strike-Through Price'); ?>:</label>
@@ -1196,14 +1194,14 @@ Otherwise, the Item will be Listed with Quantity according to the Settings in th
                                         <option value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_PRODUCT; ?>" <?php if (Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_PRODUCT == $formData['price_discount_stp_mode']): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Product Price'); ?></option>
                                         <option value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_SPECIAL; ?>" <?php if (Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_SPECIAL == $formData['price_discount_stp_mode']): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Special Price'); ?></option>
 
-                                        <optgroup class="simple_mode_disallowed M2ePro-custom-attribute-optgroup" label="Magento Attribute">
+                                        <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
                                             <?php if ($formData['price_discount_stp_mode'] == Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_ATTRIBUTE && !$magentoAttributeHelper->isExistInAttributesArray($formData['price_discount_stp_attribute'], $this->attributes) && $formData['price_discount_stp_attribute'] != ''): ?>
                                                 <option attribute_code="<?php echo Mage::helper('M2ePro')->escapeHtml($formData['price_discount_stp_attribute']) ?>" selected="selected" value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_ATTRIBUTE ?>">
                                                     <?php echo Mage::helper('M2ePro')->escapeHtml($magentoAttributeHelper->getAttributeLabel($formData['price_discount_stp_attribute'])) ?>
                                                 </option>
                                             <?php endif; ?>
                                             <?php foreach($attributesByInputTypes['text_price'] as $attribute): ?>
-                                                <option class="simple_mode_disallowed" attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_ATTRIBUTE; ?>" <?php if ($formData['price_discount_stp_mode'] == Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_ATTRIBUTE && $attribute['code'] == $formData['price_discount_stp_attribute']): ?>selected="selected"<?php endif; ?>>
+                                                <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_ATTRIBUTE; ?>" <?php if ($formData['price_discount_stp_mode'] == Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_ATTRIBUTE && $attribute['code'] == $formData['price_discount_stp_attribute']): ?>selected="selected"<?php endif; ?>>
                                                     <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
                                                 </option>
                                             <?php endforeach; ?>
@@ -1233,7 +1231,7 @@ Otherwise, the Item will be Listed with Quantity according to the Settings in th
 
                             </tr>
 
-                            <tr id="price_discount_stp_reason_tr" class="simple_mode_disallowed">
+                            <tr id="price_discount_stp_reason_tr">
 
                                 <td class="value" style="padding-left: 15px !important;">
                                     <label><?php echo Mage::helper('M2ePro')->__('Reason (UK, DE only)'); ?>: </label>
@@ -1272,7 +1270,7 @@ Otherwise, the Item will be Listed with Quantity according to the Settings in th
 
                             </tr>
                             <tr></tr>
-                            <tr id="price_discount_map_tr" class="simple_mode_disallowed">
+                            <tr id="price_discount_map_tr">
 
                                 <td class="value remove_bottom_border bottom_border_disabled">
                                     <label><?php echo Mage::helper('M2ePro')->__('Minimum Advertised Price'); ?>: </label>
@@ -1292,14 +1290,14 @@ Otherwise, the Item will be Listed with Quantity according to the Settings in th
                                         <option value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_PRODUCT; ?>" <?php if (Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_PRODUCT == $formData['price_discount_map_mode']): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Product Price'); ?></option>
                                         <option value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_SPECIAL; ?>" <?php if (Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_SPECIAL == $formData['price_discount_map_mode']): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Special Price'); ?></option>
 
-                                        <optgroup class="simple_mode_disallowed M2ePro-custom-attribute-optgroup" label="Magento Attribute">
+                                        <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
                                             <?php if ($formData['price_discount_map_mode'] == Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_ATTRIBUTE && !$magentoAttributeHelper->isExistInAttributesArray($formData['price_discount_map_attribute'], $this->attributes) && $formData['price_discount_map_attribute'] != ''): ?>
                                                 <option attribute_code="<?php echo Mage::helper('M2ePro')->escapeHtml($formData['price_discount_map_attribute']) ?>" selected="selected" value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_ATTRIBUTE ?>">
                                                     <?php echo Mage::helper('M2ePro')->escapeHtml($magentoAttributeHelper->getAttributeLabel($formData['price_discount_map_attribute'])) ?>
                                                 </option>
                                             <?php endif; ?>
                                             <?php foreach($attributesByInputTypes['text_price'] as $attribute): ?>
-                                                <option class="simple_mode_disallowed" attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_ATTRIBUTE; ?>" <?php if ($formData['price_discount_map_mode'] == Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_ATTRIBUTE && $attribute['code'] == $formData['price_discount_map_attribute']): ?>selected="selected"<?php endif; ?>>
+                                                <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_ATTRIBUTE; ?>" <?php if ($formData['price_discount_map_mode'] == Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_ATTRIBUTE && $attribute['code'] == $formData['price_discount_map_attribute']): ?>selected="selected"<?php endif; ?>>
                                                     <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
                                                 </option>
                                             <?php endforeach; ?>
@@ -1327,7 +1325,7 @@ Otherwise, the Item will be Listed with Quantity according to the Settings in th
 
                             </tr>
 
-                            <tr id="price_discount_map_exposure_tr" class="simple_mode_disallowed">
+                            <tr id="price_discount_map_exposure_tr">
 
                                 <td class="value" style="padding-left: 15px !important;">
                                     <label><?php echo Mage::helper('M2ePro')->__('Exposure'); ?>: </label>
@@ -1380,7 +1378,7 @@ Otherwise, the Item will be Listed with Quantity according to the Settings in th
 </div>
 
 <?php if ($this->isCharity()) : ?>
-    <div class="entry-edit simple_mode_disallowed" id="magento_block_ebay_template_selling_format_edit_form_charity">
+    <div class="entry-edit" id="magento_block_ebay_template_selling_format_edit_form_charity">
 
         <div class="entry-edit-head">
             <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Donations')?></h4>
@@ -1431,7 +1429,7 @@ Otherwise, the Item will be Listed with Quantity according to the Settings in th
                                 <tbody>
                                 <tr id="charity_row_%i%_tr" class="charity-row">
                                     <td class="value">
-                                        <select name="selling_format[charity][marketplace_id][%i%]" class="admin__control-select required-entry charity-marketplace_id" onchange="EbayTemplateSellingFormatHandlerObj.charityMarketplaceChange(this)">
+                                        <select name="selling_format[charity][marketplace_id][%i%]" class="admin__control-select required-entry charity-marketplace_id" onchange="EbayTemplateSellingFormatObj.charityMarketplaceChange(this)">
                                             <option class="empty"></option>
                                             <?php foreach ($this->getEnabledMarketplaces() as $marketplace) : ?>
                                                 <option value="<?php echo $marketplace->getId() ?>"><?php echo Mage::helper('M2ePro')->escapeHtml($marketplace->getTitle()) ?></option>
@@ -1439,7 +1437,7 @@ Otherwise, the Item will be Listed with Quantity according to the Settings in th
                                         </select>
                                     </td>
                                     <td class="value">
-                                        <select name="selling_format[charity][organization_id][%i%]" class="admin__control-select required-entry charity-organization" disabled="disabled" style="display: none" onchange="EbayTemplateSellingFormatHandlerObj.charityOrganizationChange(this)"></select>
+                                        <select name="selling_format[charity][organization_id][%i%]" class="admin__control-select required-entry charity-organization" disabled="disabled" style="display: none" onchange="EbayTemplateSellingFormatObj.charityOrganizationChange(this)"></select>
                                         <input type="hidden" class="organization_name" name="selling_format[charity][organization_name][%i%]">
                                         <input type="hidden" class="organization_custom" name="selling_format[charity][organization_custom][%i%]" value="0">
                                     </td>
@@ -1463,7 +1461,7 @@ Otherwise, the Item will be Listed with Quantity according to the Settings in th
     </div>
 <?php endif; ?>
 
-<div class="entry-edit simple_mode_disallowed" id="magento_block_ebay_template_selling_format_edit_form_best_offer">
+<div class="entry-edit" id="magento_block_ebay_template_selling_format_edit_form_best_offer">
 
     <div class="entry-edit-head">
         <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Best Offer'); ?></h4>
@@ -1535,14 +1533,14 @@ Otherwise, the Item will be Listed with Quantity according to the Settings in th
                                         <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_SellingFormat::BEST_OFFER_ACCEPT_MODE_NO; ?>" <?php if ($formData['best_offer_accept_mode'] == Ess_M2ePro_Model_Ebay_Template_SellingFormat::BEST_OFFER_ACCEPT_MODE_NO): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
                                         <option id="best_offer_accept_percentage_option" value="<?php echo Ess_M2ePro_Model_Ebay_Template_SellingFormat::BEST_OFFER_ACCEPT_MODE_PERCENTAGE; ?>" <?php if ($formData['best_offer_accept_mode'] == Ess_M2ePro_Model_Ebay_Template_SellingFormat::BEST_OFFER_ACCEPT_MODE_PERCENTAGE): echo ' selected="selected"'; endif; ?>></option>
 
-                                        <optgroup class="simple_mode_disallowed M2ePro-custom-attribute-optgroup" label="Magento Attribute">
+                                        <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
                                             <?php if ($formData['best_offer_accept_mode'] == Ess_M2ePro_Model_Ebay_Template_SellingFormat::BEST_OFFER_ACCEPT_MODE_ATTRIBUTE && !$magentoAttributeHelper->isExistInAttributesArray($formData['best_offer_accept_attribute'], $this->attributes) && $formData['best_offer_accept_attribute'] != '') : ?>
                                                 <option attribute_code="<?php echo Mage::helper('M2ePro')->escapeHtml($formData['best_offer_accept_attribute']) ?>" selected="selected" value="<?php echo Ess_M2ePro_Model_Ebay_Template_SellingFormat::BEST_OFFER_ACCEPT_MODE_ATTRIBUTE ?>">
                                                     <?php echo Mage::helper('M2ePro')->escapeHtml($magentoAttributeHelper->getAttributeLabel($formData['best_offer_accept_attribute'])) ?>
                                                 </option>
                                             <?php endif; ?>
                                             <?php foreach($attributesByInputTypes['text_price'] as $attribute) : ?>
-                                                <option class="simple_mode_disallowed" attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Ebay_Template_SellingFormat::BEST_OFFER_ACCEPT_MODE_ATTRIBUTE; ?>" <?php if ($formData['best_offer_accept_mode'] == Ess_M2ePro_Model_Ebay_Template_SellingFormat::BEST_OFFER_ACCEPT_MODE_ATTRIBUTE && $attribute['code'] == $formData['best_offer_accept_attribute']): ?>selected="selected"<?php endif; ?>>
+                                                <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Ebay_Template_SellingFormat::BEST_OFFER_ACCEPT_MODE_ATTRIBUTE; ?>" <?php if ($formData['best_offer_accept_mode'] == Ess_M2ePro_Model_Ebay_Template_SellingFormat::BEST_OFFER_ACCEPT_MODE_ATTRIBUTE && $attribute['code'] == $formData['best_offer_accept_attribute']): ?>selected="selected"<?php endif; ?>>
                                                     <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
                                                 </option>
                                             <?php endforeach; ?>
@@ -1582,14 +1580,14 @@ Otherwise, the Item will be Listed with Quantity according to the Settings in th
                                         <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_SellingFormat::BEST_OFFER_ACCEPT_MODE_NO; ?>" <?php if ($formData['best_offer_reject_mode'] == Ess_M2ePro_Model_Ebay_Template_SellingFormat::BEST_OFFER_REJECT_MODE_NO): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
                                         <option id="best_offer_reject_percentage_option" value="<?php echo Ess_M2ePro_Model_Ebay_Template_SellingFormat::BEST_OFFER_REJECT_MODE_PERCENTAGE; ?>" <?php if ($formData['best_offer_reject_mode'] == Ess_M2ePro_Model_Ebay_Template_SellingFormat::BEST_OFFER_REJECT_MODE_PERCENTAGE): echo ' selected="selected"'; endif; ?>></option>
 
-                                        <optgroup class="simple_mode_disallowed M2ePro-custom-attribute-optgroup" label="Magento Attribute">
+                                        <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
                                             <?php if ($formData['best_offer_reject_mode'] == Ess_M2ePro_Model_Ebay_Template_SellingFormat::BEST_OFFER_REJECT_MODE_ATTRIBUTE && !$magentoAttributeHelper->isExistInAttributesArray($formData['best_offer_reject_attribute'], $this->attributes) && $formData['best_offer_reject_attribute'] != '') : ?>
                                                 <option attribute_code="<?php echo Mage::helper('M2ePro')->escapeHtml($formData['best_offer_reject_attribute']) ?>" selected="selected" value="<?php echo Ess_M2ePro_Model_Ebay_Template_SellingFormat::BEST_OFFER_ACCEPT_MODE_ATTRIBUTE ?>">
                                                     <?php echo Mage::helper('M2ePro')->escapeHtml($magentoAttributeHelper->getAttributeLabel($formData['best_offer_reject_attribute'])) ?>
                                                 </option>
                                             <?php endif; ?>
                                             <?php foreach($attributesByInputTypes['text_price'] as $attribute) : ?>
-                                                <option class="simple_mode_disallowed" attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Ebay_Template_SellingFormat::BEST_OFFER_REJECT_MODE_ATTRIBUTE; ?>" <?php if ($formData['best_offer_reject_mode'] == Ess_M2ePro_Model_Ebay_Template_SellingFormat::BEST_OFFER_REJECT_MODE_ATTRIBUTE && $attribute['code'] == $formData['best_offer_reject_attribute']): ?>selected="selected"<?php endif; ?>>
+                                                <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Ebay_Template_SellingFormat::BEST_OFFER_REJECT_MODE_ATTRIBUTE; ?>" <?php if ($formData['best_offer_reject_mode'] == Ess_M2ePro_Model_Ebay_Template_SellingFormat::BEST_OFFER_REJECT_MODE_ATTRIBUTE && $attribute['code'] == $formData['best_offer_reject_attribute']): ?>selected="selected"<?php endif; ?>>
                                                     <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
                                                 </option>
                                             <?php endforeach; ?>

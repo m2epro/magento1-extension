@@ -29,7 +29,7 @@ class Ess_M2ePro_Adminhtml_Listing_Other_MovingController
         );
 
         $component = ucfirst(strtolower($this->getRequest()->getParam('componentMode')));
-        $movingHandlerJs = $component.'ListingOtherGridHandlerObj.movingHandler';
+        $movingHandlerJs = $component.'ListingOtherGridObj.movingHandler';
 
         $block = $this->loadLayout()->getLayout()->createBlock(
             'M2ePro/adminhtml_listing_moving_grid', '',

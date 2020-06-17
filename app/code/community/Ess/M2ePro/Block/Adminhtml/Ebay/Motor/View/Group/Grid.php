@@ -116,7 +116,7 @@ HTML;
 
         if ($this->canDisplayContainer()) {
             $additionalHtml .= <<<JS
-EbayMotorViewGroupGridHandlerObj = new EbayMotorViewGroupGridHandler(
+EbayMotorViewGroupGridObj = new EbayMotorViewGroupGrid(
     '{$this->getId()}',
     '{$this->getListingProductId()}'
 );
@@ -124,7 +124,7 @@ JS;
         }
 
         $additionalHtml .= <<<JS
-EbayMotorViewGroupGridHandlerObj.afterInitPage();
+EbayMotorViewGroupGridObj.afterInitPage();
 JS;
 
         $additionalHtml .= '</script>';

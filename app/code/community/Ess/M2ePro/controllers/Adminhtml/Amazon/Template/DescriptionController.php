@@ -20,12 +20,12 @@ class Ess_M2ePro_Adminhtml_Amazon_Template_DescriptionController
              ->_title(Mage::helper('M2ePro')->__('Description Policies'));
 
         $this->getLayout()->getBlock('head')
-                ->addJs('M2ePro/Template/EditHandler.js')
-                ->addJs('M2ePro/Amazon/Template/EditHandler.js')
-                ->addJs('M2ePro/Amazon/Template/Description/Handler.js')
-                ->addJs('M2ePro/Amazon/Template/Description/DefinitionHandler.js')
-                ->addJs('M2ePro/Amazon/Template/Description/Category/ChooserHandler.js')
-                ->addJs('M2ePro/Amazon/Template/Description/Category/SpecificHandler.js')
+                ->addJs('M2ePro/Template/Edit.js')
+                ->addJs('M2ePro/Amazon/Template/Edit.js')
+                ->addJs('M2ePro/Amazon/Template/Description.js')
+                ->addJs('M2ePro/Amazon/Template/Description/Definition.js')
+                ->addJs('M2ePro/Amazon/Template/Description/Category/Chooser.js')
+                ->addJs('M2ePro/Amazon/Template/Description/Category/Specific.js')
                 ->addJs('M2ePro/Amazon/Template/Description/Category/Specific/Renderer.js')
                 ->addJs('M2ePro/Amazon/Template/Description/Category/Specific/Dictionary.js')
                 ->addJs('M2ePro/Amazon/Template/Description/Category/Specific/BlockRenderer.js')
@@ -34,7 +34,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Template_DescriptionController
                 ->addJs('M2ePro/Amazon/Template/Description/Category/Specific/Grid/RowRenderer.js')
                 ->addJs('M2ePro/Amazon/Template/Description/Category/Specific/Grid/RowAttributeRenderer.js')
 
-                ->addJs('M2ePro/AttributeHandler.js');
+                ->addJs('M2ePro/Attribute.js');
 
         $this->_initPopUp();
 
@@ -104,34 +104,12 @@ class Ess_M2ePro_Adminhtml_Amazon_Template_DescriptionController
             return $this->_redirect('*/*/index');
         }
 
-        $id = $this->getRequest()->getParam('id');
-
         // Saving general data
         // ---------------------------------------
-        $keys = array(
-            'title',
-            'marketplace_id',
-            'is_new_asin_accepted',
-
-            'category_path',
-            'product_data_nick',
-            'browsenode_id',
-
-            'registered_parameter',
-
-            'worldwide_id_mode',
-            'worldwide_id_custom_attribute'
-        );
-
-        $dataForAdd = array();
-        foreach ($keys as $key) {
-            isset($post['general'][$key]) && $dataForAdd[$key] = $post['general'][$key];
-        }
-
-        $dataForAdd['title'] = strip_tags($dataForAdd['title']);
-
         /** @var Ess_M2ePro_Model_Template_Description $descriptionTemplate */
-        $descriptionTemplate = Mage::helper('M2ePro/Component_Amazon')->getModel('Template_Description')->load($id);
+        $descriptionTemplate = Mage::helper('M2ePro/Component_Amazon')->getModel(
+            'Template_Description'
+        )->load($this->getRequest()->getParam('id'));
 
         $oldData = array();
         if ($descriptionTemplate->getId()) {
@@ -141,123 +119,20 @@ class Ess_M2ePro_Adminhtml_Amazon_Template_DescriptionController
             $oldData = $snapshotBuilder->getSnapshot();
         }
 
-        $descriptionTemplate->addData($dataForAdd)->save();
-        // ---------------------------------------
+        Mage::getModel('M2ePro/Amazon_Template_Description_Builder')->build($descriptionTemplate, $post['general']);
 
         $id = $descriptionTemplate->getId();
 
         // Saving definition info
         // ---------------------------------------
-        $keys = array(
-            'title_mode',
-            'title_template',
-
-            'brand_mode',
-            'brand_custom_value',
-            'brand_custom_attribute',
-
-            'manufacturer_mode',
-            'manufacturer_custom_value',
-            'manufacturer_custom_attribute',
-
-            'manufacturer_part_number_mode',
-            'manufacturer_part_number_custom_value',
-            'manufacturer_part_number_custom_attribute',
-
-            'item_package_quantity_mode',
-            'item_package_quantity_custom_value',
-            'item_package_quantity_custom_attribute',
-
-            'number_of_items_mode',
-            'number_of_items_custom_value',
-            'number_of_items_custom_attribute',
-
-            'msrp_rrp_mode',
-            'msrp_rrp_custom_attribute',
-
-            'item_dimensions_volume_mode',
-            'item_dimensions_volume_length_custom_value',
-            'item_dimensions_volume_width_custom_value',
-            'item_dimensions_volume_height_custom_value',
-            'item_dimensions_volume_length_custom_attribute',
-            'item_dimensions_volume_width_custom_attribute',
-            'item_dimensions_volume_height_custom_attribute',
-            'item_dimensions_volume_unit_of_measure_mode',
-            'item_dimensions_volume_unit_of_measure_custom_value',
-            'item_dimensions_volume_unit_of_measure_custom_attribute',
-
-            'item_dimensions_weight_mode',
-            'item_dimensions_weight_custom_value',
-            'item_dimensions_weight_custom_attribute',
-            'item_dimensions_weight_unit_of_measure_mode',
-            'item_dimensions_weight_unit_of_measure_custom_value',
-            'item_dimensions_weight_unit_of_measure_custom_attribute',
-
-            'package_dimensions_volume_mode',
-            'package_dimensions_volume_length_custom_value',
-            'package_dimensions_volume_width_custom_value',
-            'package_dimensions_volume_height_custom_value',
-            'package_dimensions_volume_length_custom_attribute',
-            'package_dimensions_volume_width_custom_attribute',
-            'package_dimensions_volume_height_custom_attribute',
-            'package_dimensions_volume_unit_of_measure_mode',
-            'package_dimensions_volume_unit_of_measure_custom_value',
-            'package_dimensions_volume_unit_of_measure_custom_attribute',
-
-            'package_weight_mode',
-            'package_weight_custom_value',
-            'package_weight_custom_attribute',
-            'package_weight_unit_of_measure_mode',
-            'package_weight_unit_of_measure_custom_value',
-            'package_weight_unit_of_measure_custom_attribute',
-
-            'shipping_weight_mode',
-            'shipping_weight_custom_value',
-            'shipping_weight_custom_attribute',
-            'shipping_weight_unit_of_measure_mode',
-            'shipping_weight_unit_of_measure_custom_value',
-            'shipping_weight_unit_of_measure_custom_attribute',
-
-            'target_audience_mode',
-            'target_audience',
-
-            'search_terms_mode',
-            'search_terms',
-
-            'image_main_mode',
-            'image_main_attribute',
-
-            'image_variation_difference_mode',
-            'image_variation_difference_attribute',
-
-            'gallery_images_mode',
-            'gallery_images_attribute',
-            'gallery_images_limit',
-
-            'bullet_points_mode',
-            'bullet_points',
-
-            'description_mode',
-            'description_template',
-        );
-
-        $dataForAdd = array();
-        foreach ($keys as $key) {
-            isset($post['definition'][$key]) && $dataForAdd[$key] = $post['definition'][$key];
-        }
-
-        $dataForAdd['template_description_id'] = $id;
-
-        $helper = Mage::helper('M2ePro');
-        $dataForAdd['target_audience'] = $helper->jsonEncode(array_filter($dataForAdd['target_audience']));
-        $dataForAdd['search_terms']    = $helper->jsonEncode(array_filter($dataForAdd['search_terms']));
-        $dataForAdd['bullet_points']   = $helper->jsonEncode(array_filter($dataForAdd['bullet_points']));
-
         /** @var $descriptionDefinition Ess_M2ePro_Model_Amazon_Template_Description_Definition */
         $descriptionDefinition = Mage::getModel('M2ePro/Amazon_Template_Description_Definition');
         $descriptionDefinition->load($id);
-        $descriptionDefinition->addData($dataForAdd)->save();
-        // ---------------------------------------
+
+        /** @var Ess_M2ePro_Model_Amazon_Template_Description_Definition_Builder $descriptionDefinitionBuilder */
+        $descriptionDefinitionBuilder = Mage::getModel('M2ePro/Amazon_Template_Description_Definition_Builder');
+        $descriptionDefinitionBuilder->setTemplateDescriptionId($id);
+        $descriptionDefinitionBuilder->build($descriptionDefinition, $post['definition']);
 
         /** @var Ess_M2ePro_Model_Amazon_Template_Description $amazonDescriptionTemplate */
         $amazonDescriptionTemplate = $descriptionTemplate->getChildObject();
@@ -274,44 +149,21 @@ class Ess_M2ePro_Adminhtml_Amazon_Template_DescriptionController
 
         $this->sortSpecifics($specifics, $post['general']['product_data_nick'], $post['general']['marketplace_id']);
 
+        /** @var Ess_M2ePro_Model_Amazon_Template_Description_Specific_Builder $descriptionSpecificBuilder */
+        $descriptionSpecificBuilder = Mage::getModel('M2ePro/Amazon_Template_Description_Specific_Builder');
+
         foreach ($specifics as $xpath => $specificData) {
             if (!$this->validateSpecificData($specificData)) {
                 continue;
             }
 
+            $specificData['xpath'] = $xpath;
+
+            /** @var Ess_M2ePro_Model_Amazon_Template_Description_Specific $specificInstance */
             $specificInstance = Mage::getModel('M2ePro/Amazon_Template_Description_Specific');
-
-            $type       = isset($specificData['type']) ? $specificData['type'] : '';
-            $isRequired = isset($specificData['is_required']) ? $specificData['is_required'] : 0;
-            $attributes = isset($specificData['attributes'])
-                ? Mage::helper('M2ePro')->jsonEncode($specificData['attributes']) : '[]';
-
-            $recommendedValue = $specificData['mode'] == $specificInstance::DICTIONARY_MODE_RECOMMENDED_VALUE
-                ? $specificData['recommended_value'] : '';
-
-            $customValue      = $specificData['mode'] == $specificInstance::DICTIONARY_MODE_CUSTOM_VALUE
-                ? $specificData['custom_value'] : '';
-
-            $customAttribute  = $specificData['mode'] == $specificInstance::DICTIONARY_MODE_CUSTOM_ATTRIBUTE
-                ? $specificData['custom_attribute'] : '';
-
-            $specificInstance->addData(
-                array(
-                'template_description_id' => $id,
-                'xpath'                   => $xpath,
-                'mode'                    => $specificData['mode'],
-                'is_required'             => $isRequired,
-                'recommended_value'       => $recommendedValue,
-                'custom_value'            => $customValue,
-                'custom_attribute'        => $customAttribute,
-                'type'                    => $type,
-                'attributes'              => $attributes
-                )
-            );
-            $specificInstance->save();
+            $descriptionSpecificBuilder->setTemplateDescriptionId($id);
+            $descriptionSpecificBuilder->build($specificInstance, $specificData);
         }
-
-        // ---------------------------------------
 
         // Is Need Synchronize
         // ---------------------------------------
@@ -330,7 +182,6 @@ class Ess_M2ePro_Adminhtml_Amazon_Template_DescriptionController
         $changeProcessor->process(
             $diff, $affectedListingsProducts->getData(array('id', 'status'))
         );
-        // ---------------------------------------
 
         // Run Processor for Variation Relation Parents
         // ---------------------------------------
@@ -370,20 +221,20 @@ class Ess_M2ePro_Adminhtml_Amazon_Template_DescriptionController
         }
 
         if ($specificData['mode'] == Description_Specific::DICTIONARY_MODE_RECOMMENDED_VALUE &&
-            (!isset($specificData['recommended_value']) || $specificData['recommended_value'] == ''))
-        {
+            (!isset($specificData['recommended_value']) || $specificData['recommended_value'] == '')
+        ) {
             return false;
         }
 
         if ($specificData['mode'] == Description_Specific::DICTIONARY_MODE_CUSTOM_ATTRIBUTE &&
-            (!isset($specificData['custom_attribute']) || $specificData['custom_attribute'] == ''))
-        {
+            (!isset($specificData['custom_attribute']) || $specificData['custom_attribute'] == '')
+        ) {
             return false;
         }
 
         if ($specificData['mode'] == Description_Specific::DICTIONARY_MODE_CUSTOM_VALUE &&
-            (!isset($specificData['custom_value']) || $specificData['custom_value'] == ''))
-        {
+            (!isset($specificData['custom_value']) || $specificData['custom_value'] == '')
+        ) {
             return false;
         }
 

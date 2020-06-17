@@ -361,8 +361,8 @@ HTML;
             'rows' => $logRows,
             'tips' => $tips,
             'icons' => $icons,
-            'view_help_handler' => 'OrderHandlerObj.viewOrderHelp',
-            'hide_help_handler' => 'OrderHandlerObj.hideOrderHelp',
+            'view_help_handler' => 'OrderObj.viewOrderHelp',
+            'hide_help_handler' => 'OrderObj.hideOrderHelp',
             )
         );
 
@@ -427,7 +427,7 @@ HTML;
                 $orderItemId = $item->getId();
                 $orderItemEditLabel = Mage::helper('M2ePro')->__('edit');
 
-                $js = "{OrderEditItemHandlerObj.edit('{$gridId}', {$orderItemId});}";
+                $js = "{OrderEditItemObj.edit('{$gridId}', {$orderItemId});}";
 
                 $editItemHtml = <<<HTML
 <span>&nbsp;<a href="javascript:void(0);" onclick="{$js}">[{$orderItemEditLabel}]</a></span>

@@ -24,17 +24,14 @@ abstract class Ess_M2ePro_Controller_Adminhtml_MainController
             }
 
             try {
-                Mage::helper('M2ePro/Client')->updateBackupConnectionData(false);
+                Mage::helper('M2ePro/Client')->updateLocationData(false);
             } catch (Exception $exception) {
                 Mage::helper('M2ePro/Module_Exception')->process($exception);
             }
 
             try {
                 $dispatcher = Mage::getModel('M2ePro/Servicing_Dispatcher');
-                $dispatcher->process(
-                    Ess_M2ePro_Model_Servicing_Dispatcher::DEFAULT_INTERVAL,
-                    $dispatcher->getFastTasks()
-                );
+                $dispatcher->process($dispatcher->getFastTasks());
             } catch (Exception $exception) {
                 Mage::helper('M2ePro/Module_Exception')->process($exception);
             }
@@ -114,38 +111,16 @@ abstract class Ess_M2ePro_Controller_Adminhtml_MainController
     {
         if ($this->getRequest()->isGet() &&
             !$this->getRequest()->isPost() &&
-            !$this->getRequest()->isXmlHttpRequest()) {
-            $muteMessages = $this->addBrowserNotifications();
+            !$this->getRequest()->isXmlHttpRequest()
+        ) {
 
-            if (!$muteMessages) {
-                $this->addLicenseNotifications();
-            }
-
+            $this->addLicenseNotifications();
             $this->addServerNotifications();
             $this->addServerMaintenanceInfo();
 
-            if (!$muteMessages) {
-                $this->getCustomViewControllerHelper()->addMessages();
-                $this->addCronErrorMessage();
-            }
+            $this->getCustomViewControllerHelper()->addMessages();
+            $this->addCronErrorMessage();
         }
-    }
-
-    // ---------------------------------------
-
-    protected function addBrowserNotifications()
-    {
-        if (Mage::helper('M2ePro/Client')->isBrowserIE()) {
-            $this->_getSession()->addError(
-                Mage::helper('M2ePro')->__(
-                    'We are sorry, Internet Explorer browser is not supported. Please, use'.
-                    ' another browser (Mozilla Firefox, Google Chrome, etc.).'
-                )
-            );
-            return true;
-        }
-
-        return false;
     }
 
     // ---------------------------------------
@@ -265,6 +240,11 @@ abstract class Ess_M2ePro_Controller_Adminhtml_MainController
             return false;
         }
 
+        $params = array();
+        if (Mage::helper('M2ePro/Module_Wizard')->getActiveBlockerWizard($this->getCustomViewNick())) {
+            $params['wizard'] = '1';
+        }
+
         $message = Mage::helper('M2ePro')->__(
 <<<HTML
 To start working with M2E Pro, you need to associate your current IP/Domain with a new Extension Key.
@@ -273,7 +253,7 @@ To start working with M2E Pro, you need to associate your current IP/Domain with
  More details can be found <a href="%url2%" target="_blank">here</a>.
 HTML
             ,
-            Mage::helper('M2ePro/View_Configuration')->getLicenseUrl(),
+            Mage::helper('M2ePro/View_Configuration')->getLicenseUrl($params),
             Mage::helper('M2ePro/Module_Support')->getKnowledgeBaseUrl('1561756')
         );
 
@@ -307,7 +287,6 @@ HTML
         $wizardHelper = Mage::helper('M2ePro/Module_Wizard');
 
         $activeWizard = $wizardHelper->getActiveWizard($this->getCustomViewNick());
-
         if (!$activeWizard) {
             return;
         }
@@ -319,26 +298,19 @@ HTML
             return;
         }
 
-        $wizardHelper->addWizardHandlerJs();
-
-        // Video tutorial
-        // ---------------------------------------
-        $this->_initPopUp();
-        $this->getLayout()->getBlock('head')->addJs('M2ePro/VideoTutorialHandler.js');
-        // ---------------------------------------
-
-        $this->getLayout()->getBlock('content')->append(
-            $wizardHelper->createBlock('notification', $activeWizardNick)
-        );
+        $notificationBlock =  $wizardHelper->createBlock('notification', $activeWizardNick);
+        if ($notificationBlock) {
+            $this->getLayout()->getBlock('content')->append($notificationBlock);
+        }
     }
 
     //########################################
 
     protected function addRequirementsErrorMessage()
     {
-        if (Mage::helper('M2ePro/Module')->getCacheConfig()->getGroupValue('/view/requirements/popup/', 'closed')) {
+        if (Mage::helper('M2ePro/Module')->getRegistryValue('/view/requirements/popup/closed/')) {
             return;
-        };
+        }
 
         /** @var Ess_M2ePro_Model_Requirements_Manager $manager */
         $manager = Mage::getModel('M2ePro/Requirements_Manager');
@@ -357,8 +329,7 @@ HTML
     protected function isContentLocked()
     {
         return Mage::helper('M2ePro/Module')->isDisabled() ||
-               $this->isContentLockedByWizard() ||
-               Mage::helper('M2ePro/Client')->isBrowserIE();
+               $this->isContentLockedByWizard();
     }
 
     protected function isContentLockedByWizard()

@@ -27,21 +27,7 @@
 
 <?php
     $formData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data') ? Mage::helper('M2ePro/Data_Global')->getValue('temp_data')->toArray() : array();
-    $defaults = array(
-        'list_mode'           => 1,
-        'list_status_enabled' => 1,
-        'list_is_in_stock'    => 1,
-
-        'list_qty_magento'           => Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_NONE,
-        'list_qty_magento_value'     => '1',
-        'list_qty_magento_value_max' => '10',
-
-        'list_qty_calculated'           => Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_NONE,
-        'list_qty_calculated_value'     => '1',
-        'list_qty_calculated_value_max' => '10',
-
-        'list_advanced_rules_mode' => 0,
-    );
+    $defaults = Mage::getModel('M2ePro/Amazon_Template_Synchronization_Builder')->getDefaultData();
     $formData = array_merge($defaults, $formData);
 
     $isEdit = (bool)$this->getRequest()->getParam('id');
@@ -51,14 +37,15 @@
 
     Event.observe(window, 'load', function() {
         $('list_mode')
-            .observe('change', AmazonTemplateSynchronizationHandlerObj.listMode_change)
+            .observe('change', AmazonTemplateSynchronizationObj.listMode_change)
             .simulate('change');
 
-        $('list_qty_magento').observe('change', AmazonTemplateSynchronizationHandlerObj.listQty_change);
-        $('list_qty_calculated').observe('change', AmazonTemplateSynchronizationHandlerObj.listQty_change);
+        $('list_qty_calculated')
+            .observe('change', AmazonTemplateSynchronizationObj.listQty_change)
+            .simulate('change');
 
         $('list_advanced_rules_mode')
-            .observe('change', AmazonTemplateSynchronizationHandlerObj.listAdvancedRules_change)
+            .observe('change', AmazonTemplateSynchronizationObj.listAdvancedRules_change)
             .simulate('change');
     });
 
@@ -140,77 +127,17 @@
 
                 <tr>
                     <td class="label">
-                        <label><?php echo Mage::helper('M2ePro')->__('Magento Quantity'); ?>: </label>
+                        <label><?php echo Mage::helper('M2ePro')->__('Quantity'); ?>: </label>
                     </td>
                     <td class="value" style="width: auto;">
-                        <select id="list_qty_magento" name="list_qty_magento" class="required-entry" qty_type="magento">
-                            <option value="<?php echo Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_NONE; ?>" <?php if ($formData['list_qty_magento'] == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_NONE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Any'); ?></option>
-                            <!-- <option value="<?php echo Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_LESS; ?>" <?php if ($formData['list_qty_magento'] == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_LESS): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Less'); ?></option> -->
-                            <option value="<?php echo Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_MORE; ?>" <?php if ($formData['list_qty_magento'] == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_MORE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('More or Equal'); ?></option>
-                            <option value="<?php echo Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_BETWEEN; ?>" <?php if ($formData['list_qty_magento'] == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_BETWEEN): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Between'); ?></option>
-                        </select>
-                        <p class="note">
-                            <span><?php echo Mage::helper('M2ePro')->__('Magento Product(s) Quantity at which the Item(s) have to be Listed.'); ?></span>
-                        </p>
-                    </td>
-                </tr>
-
-                <tr id="list_qty_magento_value_container" <?php if ($formData['list_qty_magento'] == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_NONE) echo ' style="display: none;"'; ?>>
-                    <td class="label">
-                        <label for="list_qty_magento_value">
-                            <span id="list_qty_magento_item" <?php if ($formData['list_qty_magento'] == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_BETWEEN) echo ' style="display: none;"'; ?>><?php echo Mage::helper('M2ePro')->__('Quantity'); ?>: <span class="required">*</span></span>
-                            <span id="list_qty_magento_item_min" <?php if ($formData['list_qty_magento'] != Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_BETWEEN) echo ' style="display: none;"'; ?>><?php echo Mage::helper('M2ePro')->__('Min Quantity'); ?>: <span class="required">*</span></span>
-                        </label>
-                    </td>
-                    <td class="value" style="width: auto;">
-                        <input id="list_qty_magento_value" name="list_qty_magento_value" value="<?php echo $this->escapeHtml($formData['list_qty_magento_value']); ?>" type="text" class="M2ePro-required-when-visible input-text validate-digits" />
-                    </td>
-                </tr>
-
-                <tr id="list_qty_magento_value_max_container" <?php if ($formData['list_qty_magento'] != Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_BETWEEN) echo ' style="display: none;"'; ?>>
-                    <td class="label">
-                        <label for="list_qty_magento_value_max"><?php echo Mage::helper('M2ePro')->__('Max Quantity'); ?>: <span class="required">*</span></label>
-                    </td>
-                    <td class="value" style="width: auto;">
-                        <input id="list_qty_magento_value_max" name="list_qty_magento_value_max" value="<?php echo $this->escapeHtml($formData['list_qty_magento_value_max']); ?>" type="text" class="M2ePro-required-when-visible input-text validate-digits M2ePro-validate-conditions-between" />
-                    </td>
-                </tr>
-
-                <tr>
-                    <td class="label">
-                        <label><?php echo Mage::helper('M2ePro')->__('Calculated Quantity'); ?>: </label>
-                    </td>
-                    <td class="value" style="width: auto;">
-                        <select id="list_qty_calculated" name="list_qty_calculated" class="required-entry" qty_type="calculated">
+                        <select id="list_qty_calculated" name="list_qty_calculated" class="required-entry">
                             <option value="<?php echo Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_NONE; ?>" <?php if ($formData['list_qty_calculated'] == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_NONE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Any'); ?></option>
-                            <!-- <option value="<?php echo Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_LESS; ?>" <?php if ($formData['list_qty_calculated'] == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_LESS): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Less'); ?></option> -->
-                            <option value="<?php echo Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_MORE; ?>" <?php if ($formData['list_qty_calculated'] == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_MORE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('More or Equal'); ?></option>
-                            <option value="<?php echo Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_BETWEEN; ?>" <?php if ($formData['list_qty_calculated'] == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_BETWEEN): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Between'); ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_YES; ?>" <?php if ($formData['list_qty_calculated'] == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_YES): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('More or Equal'); ?></option>
                         </select>
+                        <input id="list_qty_calculated_value" name="list_qty_calculated_value" value="<?php echo $this->escapeHtml($formData['list_qty_calculated_value']); ?>" type="text" class="M2ePro-required-when-visible input-text validate-digits" style="width: 72px;" />
                         <p class="note">
-                            <span><?php echo Mage::helper('M2ePro')->__('Calculated Quantity according to the Selling Policy at which the Item(s) have to be Listed. <br/> This Option will be ignored for Magento Variational Product Listed as Amazon Parent/Child Product.'); ?></span>
+                            <span><?php echo Mage::helper('M2ePro')->__('Quantity according to the Selling Policy at which the Item(s) have to be Listed. <br/> This Option will be ignored for Magento Variational Product Listed as Amazon Parent/Child Product.'); ?></span>
                         </p>
-                    </td>
-                </tr>
-
-                <tr id="list_qty_calculated_value_container" <?php if ($formData['list_qty_calculated'] == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_NONE) echo ' style="display: none;"'; ?>>
-                    <td class="label">
-                        <label for="list_qty_calculated_value">
-                            <span id="list_qty_calculated_item" <?php if ($formData['list_qty_calculated'] == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_BETWEEN) echo ' style="display: none;"'; ?>><?php echo Mage::helper('M2ePro')->__('Quantity'); ?>: <span class="required">*</span></span>
-                            <span id="list_qty_calculated_item_min" <?php if ($formData['list_qty_calculated'] != Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_BETWEEN) echo ' style="display: none;"'; ?>><?php echo Mage::helper('M2ePro')->__('Min Quantity'); ?>: <span class="required">*</span></span>
-                        </label>
-                    </td>
-                    <td class="value" style="width: auto;">
-                        <input id="list_qty_calculated_value" name="list_qty_calculated_value" value="<?php echo $this->escapeHtml($formData['list_qty_calculated_value']); ?>" type="text" class="M2ePro-required-when-visible input-text validate-digits" />
-                    </td>
-                </tr>
-
-                <tr id="list_qty_calculated_value_max_container" <?php if ($formData['list_qty_calculated'] != Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_BETWEEN) echo ' style="display: none;"'; ?>>
-                    <td class="label">
-                        <label for="list_qty_calculated_value_max"><?php echo Mage::helper('M2ePro')->__('Max Quantity'); ?>: <span class="required">*</span></label>
-                    </td>
-                    <td class="value" style="width: auto;">
-                        <input id="list_qty_calculated_value_max" name="list_qty_calculated_value_max" value="<?php echo $this->escapeHtml($formData['list_qty_calculated_value_max']); ?>" type="text" class="M2ePro-required-when-visible input-text validate-digits M2ePro-validate-conditions-between" />
                     </td>
                 </tr>
 

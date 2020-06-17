@@ -19,16 +19,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_SourceMode
     {
         parent::__construct();
 
-        // Initialization block
-        // ---------------------------------------
         $this->setId('ebayListingSourceMode');
         $this->_blockGroup = 'M2ePro';
         $this->_controller = 'adminhtml_ebay_listing';
         $this->_mode = 'sourceMode';
-        // ---------------------------------------
 
-        // Set header text
-        // ---------------------------------------
         if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
             $componentName = Mage::helper('M2ePro/Component_Ebay')->getTitle();
             $this->_headerText = Mage::helper('M2ePro')->__('%component_name% / Add Products', $componentName);
@@ -36,35 +31,29 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_SourceMode
             $this->_headerText = Mage::helper('M2ePro')->__('Add Products');
         }
 
-        // ---------------------------------------
-
-        // Set buttons actions
-        // ---------------------------------------
         $this->removeButton('back');
         $this->removeButton('reset');
         $this->removeButton('delete');
         $this->removeButton('add');
         $this->removeButton('save');
         $this->removeButton('edit');
-        // ---------------------------------------
 
-        // ---------------------------------------
         $backUrl = Mage::helper('M2ePro')->makeBackUrlParam(
             '*/adminhtml_ebay_listing_productAdd/sourceMode', array(
-            'listing_id' => $this->getRequest()->getParam('listing_id'),
-            'listing_creation' => $this->getRequest()->getParam('listing_creation')
+                'wizard'           => $this->getRequest()->getParam('wizard', false),
+                'listing_id'       => $this->getRequest()->getParam('listing_id'),
+                'listing_creation' => $this->getRequest()->getParam('listing_creation')
             )
         );
 
         $url = $this->getUrl('*/*/index', array('_current' => true, 'step' => 1, 'back' => $backUrl));
         $this->_addButton(
             'next', array(
-            'label'     => Mage::helper('M2ePro')->__('Continue'),
-            'onclick'   => 'CommonHandlerObj.submitForm(\''.$url.'\');',
-            'class'     => 'scalable next'
+            'label'   => Mage::helper('M2ePro')->__('Continue'),
+            'onclick' => 'CommonObj.submitForm(\''.$url.'\');',
+            'class'   => 'scalable next'
             )
         );
-        // ---------------------------------------
     }
 
     protected function _toHtml()

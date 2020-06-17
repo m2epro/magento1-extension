@@ -72,64 +72,65 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Other_View_Grid extends Mage_Ad
     {
         $this->addColumn(
             'product_id', array(
-            'header' => Mage::helper('M2ePro')->__('Product ID'),
-            'align'  => 'left',
-            'width'  => '80px',
-            'type'   => 'number',
-            'index'  => 'product_id',
-            'filter_index' => 'product_id',
-            'frame_callback' => array($this, 'callbackColumnProductId'),
-            'filter'   => 'M2ePro/adminhtml_grid_column_filter_productId',
-            'filter_condition_callback' => array($this, 'callbackFilterProductId')
+                'header'                    => Mage::helper('M2ePro')->__('Product ID'),
+                'align'                     => 'left',
+                'width'                     => '80px',
+                'type'                      => 'number',
+                'index'                     => 'product_id',
+                'filter_index'              => 'product_id',
+                'frame_callback'            => array($this, 'callbackColumnProductId'),
+                'filter'                    => 'M2ePro/adminhtml_grid_column_filter_productId',
+                'filter_condition_callback' => array($this, 'callbackFilterProductId')
             )
         );
 
         $this->addColumn(
             'title', array(
-            'header'    => Mage::helper('M2ePro')->__('Title / SKU'),
-            'align' => 'left',
-            'type' => 'text',
-            'index' => 'title',
-            'filter_index' => 'second_table.title',
-            'frame_callback' => array($this, 'callbackColumnProductTitle'),
-            'filter_condition_callback' => array($this, 'callbackFilterTitle')
+                'header'                    => Mage::helper('M2ePro')->__('Title / SKU'),
+                'align'                     => 'left',
+                'type'                      => 'text',
+                'index'                     => 'title',
+                'filter_index'              => 'second_table.title',
+                'frame_callback'            => array($this, 'callbackColumnProductTitle'),
+                'filter_condition_callback' => array($this, 'callbackFilterTitle')
             )
         );
 
         $this->addColumn(
             'gtin', array(
-            'header' => Mage::helper('M2ePro')->__('GTIN'),
-            'align' => 'left',
-            'width' => '160px',
-            'type' => 'text',
-            'index' => 'gtin',
-            'filter_index' => 'gtin',
-            'frame_callback' => array($this, 'callbackColumnGtin'),
-            'filter_condition_callback' => array($this, 'callbackFilterGtin')
+                'header'                    => Mage::helper('M2ePro')->__('GTIN'),
+                'align'                     => 'left',
+                'width'                     => '160px',
+                'type'                      => 'text',
+                'index'                     => 'gtin',
+                'filter_index'              => 'gtin',
+                'show_edit_identifier'      => false,
+                'renderer'                  => 'M2ePro/adminhtml_walmart_grid_column_renderer_gtin',
+                'filter_condition_callback' => array($this, 'callbackFilterGtin')
             )
         );
 
         $this->addColumn(
             'online_qty', array(
-            'header' => Mage::helper('M2ePro')->__('QTY'),
-            'align' => 'right',
-            'width' => '160px',
-            'type' => 'number',
-            'index' => 'online_qty',
-            'filter_index' => 'online_qty',
-            'frame_callback' => array($this, 'callbackColumnAvailableQty'),
-            'filter_condition_callback' => array($this, 'callbackFilterQty')
+                'header'                    => Mage::helper('M2ePro')->__('QTY'),
+                'align'                     => 'right',
+                'width'                     => '160px',
+                'type'                      => 'number',
+                'index'                     => 'online_qty',
+                'filter_index'              => 'online_qty',
+                'renderer'                  => 'M2ePro/adminhtml_walmart_grid_column_renderer_qty',
+                'filter_condition_callback' => array($this, 'callbackFilterQty')
             )
         );
 
         $priceColumn = array(
-            'header' => Mage::helper('M2ePro')->__('Price'),
-            'align' => 'right',
-            'width' => '160px',
-            'type' => 'number',
-            'index' => 'online_price',
-            'filter_index' => 'online_price',
-            'frame_callback' => array($this, 'callbackColumnPrice'),
+            'header'                    => Mage::helper('M2ePro')->__('Price'),
+            'align'                     => 'right',
+            'width'                     => '160px',
+            'type'                      => 'number',
+            'index'                     => 'online_price',
+            'filter_index'              => 'online_price',
+            'frame_callback'            => array($this, 'callbackColumnPrice'),
             'filter_condition_callback' => array($this, 'callbackFilterPrice')
         );
 
@@ -137,18 +138,18 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Other_View_Grid extends Mage_Ad
 
         $this->addColumn(
             'status', array(
-            'header' => Mage::helper('M2ePro')->__('Status'),
-            'width' => '170px',
-            'index' => 'status',
-            'filter_index' => 'main_table.status',
-            'type' => 'options',
-            'sortable' => false,
-            'options' => array(
-                Ess_M2ePro_Model_Listing_Product::STATUS_LISTED => Mage::helper('M2ePro')->__('Active'),
-                Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED => Mage::helper('M2ePro')->__('Inactive'),
-                Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED => Mage::helper('M2ePro')->__('Inactive (Blocked)')
-            ),
-            'frame_callback' => array($this, 'callbackColumnStatus')
+                'header'       => Mage::helper('M2ePro')->__('Status'),
+                'width'        => '170px',
+                'index'        => 'status',
+                'filter_index' => 'main_table.status',
+                'type'         => 'options',
+                'sortable'     => false,
+                'options'      => array(
+                    Ess_M2ePro_Model_Listing_Product::STATUS_LISTED => Mage::helper('M2ePro')->__('Active'),
+                    Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED => Mage::helper('M2ePro')->__('Inactive'),
+                    Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED => Mage::helper('M2ePro')->__('Inactive (Blocked)')
+                ),
+                'frame_callback' => array($this, 'callbackColumnStatus')
             )
         );
 
@@ -217,7 +218,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Other_View_Grid extends Mage_Ad
             }
 
             $htmlValue = '&nbsp;<a href="javascript:void(0);"
-                                    onclick="WalmartListingOtherMappingHandlerObj.openPopUp(\''.
+                                    onclick="WalmartListingOtherMappingObj.openPopUp(\''.
                                         $productTitle.
                                         '\','.
                                         (int)$row->getId().
@@ -236,7 +237,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Other_View_Grid extends Mage_Ad
                      .'</a>';
 
         $htmlValue .= '&nbsp&nbsp&nbsp<a href="javascript:void(0);"'
-                      .' onclick="WalmartListingOtherGridHandlerObj.movingHandler.getGridHtml('
+                      .' onclick="WalmartListingOtherGridObj.movingHandler.getGridHtml('
                       .Mage::helper('M2ePro')->jsonEncode(array((int)$row->getData('id')))
                       .')">'
                       .Mage::helper('M2ePro')->__('Move')
@@ -260,101 +261,6 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Other_View_Grid extends Mage_Ad
                   .Mage::helper('M2ePro')->__('SKU')
                   .':</strong> '
                   .Mage::helper('M2ePro')->escapeHtml($tempSku);
-
-        return $value;
-    }
-
-    public function callbackColumnGtin($gtin, $row, $column, $isExport)
-    {
-        if (empty($gtin)) {
-            return Mage::helper('M2ePro')->__('N/A');
-        }
-
-        $gtinHtml = Mage::helper('M2ePro')->escapeHtml($gtin);
-
-        $walmartHelper = Mage::helper('M2ePro/Component_Walmart');
-        $marketplaceId = $row->getData('marketplace_id');
-        $channelUrl = $walmartHelper->getItemUrl(
-            $row->getData($walmartHelper->getIdentifierForItemUrl($marketplaceId)),
-            $marketplaceId
-        );
-
-        if (!empty($channelUrl)) {
-            $gtinHtml = <<<HTML
-<a href="{$channelUrl}" target="_blank">{$gtin}</a>
-HTML;
-        }
-
-        $html = <<<HTML
-<div class="walmart-identifiers-gtin">{$gtinHtml}</div>
-HTML;
-
-        $identifiers = array(
-            'UPC'        => $row->getData('upc'),
-            'EAN'        => $row->getData('ean'),
-            'ISBN'       => $row->getData('isbn'),
-            'Walmart ID' => $row->getData('wpid'),
-            'Item ID'    => $row->getData('item_id')
-        );
-
-        $htmlAdditional = '';
-        foreach ($identifiers as $title => $value) {
-            if (empty($value)) {
-                continue;
-            }
-
-            if (($row->getData('upc') || $row->getData('ean') || $row->getData('isbn')) &&
-                ($row->getData('wpid') || $row->getData('item_id')) && $title == 'Walmart ID')
-            {
-                $htmlAdditional .= "<div class='separator-line'></div>";
-            }
-
-            $identifierCode  = Mage::helper('M2ePro')->__($title);
-            $identifierValue = Mage::helper('M2ePro')->escapeHtml($value);
-
-            $htmlAdditional .= <<<HTML
-<div>
-    <span style="display: inline-block; float: left;">
-        <strong>{$identifierCode}:</strong>&nbsp;&nbsp;&nbsp;&nbsp;
-    </span>
-    <span style="display: inline-block; float: right;">
-        {$identifierValue}
-    </span>
-    <div style="clear: both;"></div>
-</div>
-HTML;
-        }
-
-        if ($htmlAdditional != '') {
-            $html .= <<<HTML
-<div style="float:right; width: 16px;">
-    <img class="tool-tip-image"
-         style="vertical-align: middle;"
-         src="{$this->getSkinUrl('M2ePro/images/i_icon.png')}">
-    <span class="tool-tip-message tool-tip-message tip-left" style="display:none;">
-        <img src="{$this->getSkinUrl('M2ePro/images/i_logo.png')}">
-        <div class="walmart-identifiers">
-            {$htmlAdditional}
-        </div>
-    </span>
-</div>
-HTML;
-        }
-
-        return $html;
-    }
-
-    public function callbackColumnAvailableQty($value, $row, $column, $isExport)
-    {
-        if ($value === null || $value === '' ||
-            ($row->getData('status') == Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED &&
-             !$row->getData('is_online_price_invalid'))) {
-            return Mage::helper('M2ePro')->__('N/A');
-        }
-
-        if ($value <= 0) {
-            return '<span style="color: red;">0</span>';
-        }
 
         return $value;
     }
@@ -555,13 +461,13 @@ HTML;
         $javascriptsMain = <<<HTML
 <script type="text/javascript">
 
-    if (typeof WalmartListingOtherGridHandlerObj != 'undefined') {
-        WalmartListingOtherGridHandlerObj.afterInitPage();
+    if (typeof WalmartListingOtherGridObj != 'undefined') {
+        WalmartListingOtherGridObj.afterInitPage();
     }
 
     Event.observe(window, 'load', function() {
         setTimeout(function() {
-            WalmartListingOtherGridHandlerObj.afterInitPage();
+            WalmartListingOtherGridObj.afterInitPage();
         }, 350);
     });
 

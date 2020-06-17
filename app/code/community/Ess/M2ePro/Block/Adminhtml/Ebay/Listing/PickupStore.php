@@ -101,7 +101,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore extends Mage_Adminhtml
             $this->_addButton(
                 'add_products_to_stores', array(
                     'label'     => Mage::helper('M2ePro')->__('Assign Products to Stores'),
-                    'onclick'   => 'EbayListingPickupStoreGridHandlerObj.pickupStoreStepProducts('
+                    'onclick'   => 'EbayListingPickupStoreGridObj.pickupStoreStepProducts('
                     .$this->_listing->getId() . ')',
                     'class'     => 'add'
                 )

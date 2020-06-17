@@ -39,7 +39,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Order_MerchantFulfillment_Configuration
         $data = array(
             'class'   => 'next',
             'label'   => Mage::helper('M2ePro')->__('Continue'),
-            'onclick' => "OrderMerchantFulfillmentHandlerObj.getShippingServicesAction()",
+            'onclick' => "AmazonOrderMerchantFulfillmentObj.getShippingServicesAction()",
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('continue_button', $buttonBlock);

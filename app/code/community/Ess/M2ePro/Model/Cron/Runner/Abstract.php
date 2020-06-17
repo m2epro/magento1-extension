@@ -33,8 +33,6 @@ abstract class Ess_M2ePro_Model_Cron_Runner_Abstract
         $runnerSwitcher = Mage::getModel('M2ePro/Cron_Runner_Switcher');
         $runnerSwitcher->check($this);
 
-        Mage::getModel('M2ePro/Cron_Checker_Dispatcher')->process();
-
         /** @var Ess_M2ePro_Model_Lock_Transactional_Manager $transactionalManager */
         $transactionalManager = Mage::getModel(
             'M2ePro/Lock_Transactional_Manager', array(

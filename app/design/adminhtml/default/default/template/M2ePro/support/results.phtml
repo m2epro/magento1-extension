@@ -112,7 +112,7 @@ $data = $this->getData('results_data');
 
                     <span class="icon"></span>
                     <div class="container">
-                        <a href="javascript:void(0)" onclick="SupportHandlerObj.toggleArticle('<?php echo $article['id']; ?>')">
+                        <a href="javascript:void(0)" onclick="SupportObj.toggleArticle('<?php echo $article['id']; ?>')">
                             <?php echo $article['title']; ?>
                         </a>
 
@@ -128,7 +128,7 @@ $data = $this->getData('results_data');
                         <div style="display: none;" id="article_answer_<?php echo $article['id']; ?>" class="answer">
                             <?php echo $article['description']; ?>
                             <div class="resource_link">
-                                <a href="javascript:void(0)" onclick="SupportHandlerObj.goToArticle('<?php echo $article['url']; ?>')"><?php echo Mage::helper('M2ePro')->__('Go To Article →'); ?></a>
+                                <a href="javascript:void(0)" onclick="SupportObj.goToArticle('<?php echo $article['url']; ?>')"><?php echo Mage::helper('M2ePro')->__('Go To Article →'); ?></a>
                             </div>
                         </div>
                     </div>
@@ -156,7 +156,7 @@ $data = $this->getData('results_data');
 
                     <span class="icon"></span>
                     <div class="container">
-                        <a href="javascript:void(0)" onclick="SupportHandlerObj.toggleSuggestion('<?php echo $suggestion['id']; ?>')">
+                        <a href="javascript:void(0)" onclick="SupportObj.toggleSuggestion('<?php echo $suggestion['id']; ?>')">
                             <?php echo $suggestion['title']; ?>
                         </a>
 
@@ -167,7 +167,7 @@ $data = $this->getData('results_data');
                         <div style="display: none;" id="suggestion_text_<?php echo $suggestion['id']; ?>" class="answer">
                             <?php echo $suggestion['description']; ?>
                             <div class="resource_link">
-                                <a href="javascript:void(0)" onclick="SupportHandlerObj.goToArticle('<?php echo $suggestion['url']; ?>')"><?php echo Mage::helper('M2ePro')->__('Go To Idea →'); ?></a>
+                                <a href="javascript:void(0)" onclick="SupportObj.goToArticle('<?php echo $suggestion['url']; ?>')"><?php echo Mage::helper('M2ePro')->__('Go To Idea →'); ?></a>
                             </div>
                         </div>
                     </div>

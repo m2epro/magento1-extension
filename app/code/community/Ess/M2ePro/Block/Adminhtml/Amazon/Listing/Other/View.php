@@ -37,7 +37,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_View extends Mage_Adminhtm
             $this->_addButton(
                 'back', array(
                     'label'   => Mage::helper('M2ePro')->__('Back'),
-                    'onclick' => 'CommonHandlerObj.back_click(\'' . $url . '\')',
+                    'onclick' => 'CommonObj.back_click(\'' . $url . '\')',
                     'class'   => 'back'
                 )
             );
@@ -101,26 +101,13 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_View extends Mage_Adminhtm
         $createListing .= $helper->escapeJs($helper->__('Would you like to create one with Default Settings ?'));
         $popupTitle = $helper->escapeJs($helper->__('Moving Amazon Items'));
 
-        $confirmMessage = $helper->escapeJs($helper->__('Are you sure?'));
-
         $notEnoughDataMessage = $helper->escapeJs($helper->__('Not enough data'));
         $successfullyUnmappedMessage = $helper->escapeJs($helper->__('Product(s) was successfully Unmapped.'));
         $successfullyRemovedMessage = $helper->escapeJs($helper->__('Product(s) was successfully Removed.'));
 
-        $selectItemsMessage = $helper->escapeJs(
-            $helper->__('Please select the Products you want to perform the Action on.')
-        );
-        $selectActionMessage = $helper->escapeJs($helper->__('Please select Action.'));
-
         $processingDataMessage = $helper->escapeJs($helper->__('Processing %product_title% Product(s).'));
 
         $autoMapProgressTitle = $helper->escapeJs($helper->__('Map Item(s) to Products'));
-
-        $successWord = $helper->escapeJs($helper->__('Success'));
-        $noticeWord = $helper->escapeJs($helper->__('Notice'));
-        $warningWord = $helper->escapeJs($helper->__('Warning'));
-        $errorWord = $helper->escapeJs($helper->__('Error'));
-        $closeWord = $helper->escapeJs($helper->__('Close'));
 
         $translations = Mage::helper('M2ePro')->jsonEncode(
             array(
@@ -168,25 +155,15 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_View extends Mage_Adminhtm
 
     M2ePro.text.create_listing = '{$createListing}';
     M2ePro.text.popup_title = '{$popupTitle}';
-    M2ePro.text.confirm = '{$confirmMessage}';
 
     M2ePro.text.not_enough_data = '{$notEnoughDataMessage}';
     M2ePro.text.successfully_unmapped = '{$successfullyUnmappedMessage}';
     M2ePro.text.successfully_removed = '{$successfullyRemovedMessage}';
 
-    M2ePro.text.select_items_message = '{$selectItemsMessage}';
-    M2ePro.text.select_action_message = '{$selectActionMessage}';
-
     M2ePro.text.automap_progress_title = '{$autoMapProgressTitle}';
     M2ePro.text.processing_data_message = '{$processingDataMessage}';
     M2ePro.text.successfully_mapped = '{$successfullyMappedMessage}';
     M2ePro.text.failed_mapped = '{$someProductsWereNotMappedMessage}';
-
-    M2ePro.text.success_word = '{$successWord}';
-    M2ePro.text.notice_word = '{$noticeWord}';
-    M2ePro.text.warning_word = '{$warningWord}';
-    M2ePro.text.error_word = '{$errorWord}';
-    M2ePro.text.close_word = '{$closeWord}';
 
     M2ePro.customData.componentMode = '{$componentMode}';
     M2ePro.customData.gridId = 'amazonListingOtherGrid';
@@ -195,14 +172,14 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_View extends Mage_Adminhtm
         ListingProgressBarObj = new ProgressBar('listing_other_progress_bar');
         GridWrapperObj = new AreaWrapper('listing_other_content_container');
 
-        AmazonListingOtherGridHandlerObj    = new AmazonListingOtherGridHandler('amazonListingOtherGrid');
-        AmazonListingOtherMappingHandlerObj = new ListingOtherMappingHandler(
-            AmazonListingOtherGridHandlerObj,
+        AmazonListingOtherGridObj    = new AmazonListingOtherGrid('amazonListingOtherGrid');
+        AmazonListingOtherMappingObj = new ListingOtherMapping(
+            AmazonListingOtherGridObj,
             'amazon'
         );
 
-        AmazonListingAfnQtyHandlerObj = new AmazonListingAfnQtyHandler();
-        AmazonListingRepricingPriceHandlerObj = new AmazonListingRepricingPriceHandler();
+        AmazonListingAfnQtyObj = new AmazonListingAfnQty();
+        AmazonListingRepricingPriceObj = new AmazonListingRepricingPrice();
     });
 
 </script>

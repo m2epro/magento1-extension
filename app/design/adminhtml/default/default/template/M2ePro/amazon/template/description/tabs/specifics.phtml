@@ -90,9 +90,9 @@ $formData = Mage::helper('M2ePro')->arrayReplaceRecursive($default, $formData);
 
     Event.observe(window, 'load', function() {
 
-        $('amazonTemplateDescriptionEditTabs_specifics').observe('click', AmazonTemplateDescriptionHandlerObj.checkSpecificsReady);
+        $('amazonTemplateDescriptionEditTabs_specifics').observe('click', AmazonTemplateDescriptionObj.checkSpecificsReady);
 
-        AmazonTemplateDescriptionCategorySpecificHandlerObj.setFormDataSpecifics(<?php echo json_encode($formData['specifics']); ?>);
+        AmazonTemplateDescriptionCategorySpecificObj.setFormDataSpecifics(<?php echo json_encode($formData['specifics']); ?>);
     });
 
 </script>

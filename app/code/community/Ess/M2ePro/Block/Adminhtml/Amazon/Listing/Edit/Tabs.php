@@ -30,7 +30,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Edit_Tabs extends Ess_M2ePro_Blo
                 'label'   => Mage::helper('M2ePro')->__('Selling Settings'),
                 'title'   => Mage::helper('M2ePro')->__('Selling Settings'),
                 'content' => $this->getLayout()
-                                  ->createBlock('M2ePro/adminhtml_amazon_listing_add_tabs_selling')
+                                  ->createBlock('M2ePro/adminhtml_amazon_listing_edit_tabs_selling')
                                   ->toHtml(),
             )
         );
@@ -40,7 +40,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Edit_Tabs extends Ess_M2ePro_Blo
                 'label'   => Mage::helper('M2ePro')->__('Search Settings'),
                 'title'   => Mage::helper('M2ePro')->__('Search Settings'),
                 'content' => $this->getLayout()
-                                  ->createBlock('M2ePro/adminhtml_amazon_listing_add_tabs_search')
+                                  ->createBlock('M2ePro/adminhtml_amazon_listing_edit_tabs_search')
                                   ->toHtml(),
             )
         );

@@ -10,7 +10,7 @@
 /** @var $this Ess_M2ePro_Block_Adminhtml_Amazon_Template_Synchronization_Edit_Form */
 
 $formData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data') ? Mage::helper('M2ePro/Data_Global')->getValue('temp_data')->toArray() : array();
-$defaults = array('title' => '');
+$defaults = Mage::getModel('M2ePro/Amazon_Template_Synchronization_Builder')->getDefaultData();
 $formData = array_merge($defaults, $formData);
 
 if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
@@ -60,23 +60,23 @@ $isEdit = (bool)$this->getRequest()->getParam('id');
 
     Event.observe(window, 'load', function() {
 
-        AmazonTemplateSynchronizationHandlerObj = new AmazonTemplateSynchronizationHandler();
+        AmazonTemplateSynchronizationObj = new AmazonTemplateSynchronization();
         editForm = new varienForm('edit_form', '<?php echo $this->getValidationUrl(); ?>');
 
         $$('.navigation_bar').each(function(el) {
-            el.observe('click', AmazonTemplateSynchronizationHandlerObj.setVirtualTabAsActive);
+            el.observe('click', AmazonTemplateSynchronizationObj.setVirtualTabAsActive);
         });
 
         setTimeout(function() {
             $$('#amazon_template_synchronization_edit_form_container select').each(function(el) {
-                el.observe('change', AmazonTemplateSynchronizationHandlerObj.setVirtualTabAsChanged);
+                el.observe('change', AmazonTemplateSynchronizationObj.setVirtualTabAsChanged);
             });
         }, 350);
 
         <?php if ($this->getRequest()->isXmlHttpRequest()): ?>
-            AmazonTemplateSynchronizationHandlerObj.initialize();
+            AmazonTemplateSynchronizationObj.initialize();
         <?php else: ?>
-            Event.observe(window, 'load', AmazonTemplateSynchronizationHandlerObj.initialize);
+            Event.observe(window, 'load', AmazonTemplateSynchronizationObj.initialize);
         <?php endif; ?>
 
     });

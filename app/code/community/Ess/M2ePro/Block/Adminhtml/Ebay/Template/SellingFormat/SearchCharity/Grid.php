@@ -108,7 +108,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_SellingFormat_SearchCharity_Grid
 
         $label = $actions['label'];
         $method = $actions['value'];
-        $onclick = "EbayTemplateSellingFormatHandlerObj['{$method}']({$id}, '{$name}')";
+        $onclick = "EbayTemplateSellingFormatObj['{$method}']({$id}, '{$name}')";
 
         return <<<HTML
 <div style="padding: 5px;">

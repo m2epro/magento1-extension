@@ -7,7 +7,7 @@
  */
 
 use Ess_M2ePro_Helper_Component_Walmart as ComponentWalmart;
-use Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Add_SourceMode as SourceModeBlock;
+use Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Product_Add_SourceMode as SourceModeBlock;
 
 class Ess_M2ePro_Adminhtml_Walmart_Listing_OtherController
     extends Ess_M2ePro_Controller_Adminhtml_Walmart_MainController
@@ -26,19 +26,19 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_OtherController
             ->addJs('M2ePro/Plugin/AreaWrapper.js')
             ->addCss('M2ePro/css/Plugin/AreaWrapper.css')
 
-            ->addJs('M2ePro/GridHandler.js')
-            ->addJs('M2ePro/Listing/Other/GridHandler.js')
-            ->addJs('M2ePro/Walmart/Listing/Other/GridHandler.js')
-            ->addJs('M2ePro/Walmart/Listing/Other/GridHandler.js')
+            ->addJs('M2ePro/Grid.js')
+            ->addJs('M2ePro/Listing/Other/Grid.js')
+            ->addJs('M2ePro/Walmart/Listing/Other/Grid.js')
+            ->addJs('M2ePro/Walmart/Listing/Other/Grid.js')
 
-            ->addJs('M2ePro/ActionHandler.js')
-            ->addJs('M2ePro/Listing/MovingHandler.js')
-            ->addJs('M2ePro/Listing/Other/AutoMappingHandler.js')
+            ->addJs('M2ePro/Action.js')
+            ->addJs('M2ePro/Listing/Moving.js')
+            ->addJs('M2ePro/Listing/Other/AutoMapping.js')
 
-            ->addJs('M2ePro/Listing/Other/MappingHandler.js')
+            ->addJs('M2ePro/Listing/Other/Mapping.js')
 
-            ->addJs('M2ePro/Listing/Other/RemovingHandler.js')
-            ->addJs('M2ePro/Listing/Other/UnmappingHandler.js');
+            ->addJs('M2ePro/Listing/Other/Removing.js')
+            ->addJs('M2ePro/Listing/Other/Unmapping.js');
 
         $this->_initPopUp();
 
@@ -195,6 +195,23 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_OtherController
                 array(
                 'result' => true
                 )
+            )
+        );
+    }
+
+    //########################################
+
+    public function resetAction()
+    {
+        Mage::getResourceModel('M2ePro/Walmart_Listing_Other')->resetEntities();
+
+        $this->getSession()->addSuccess(
+            Mage::helper('M2ePro')->__('Walmart 3rd Party Listings were reset.')
+        );
+
+        $this->_redirect(
+            '*/adminhtml_walmart_listing/index', array(
+                'tab' => Ess_M2ePro_Block_Adminhtml_Walmart_ManageListings::TAB_ID_LISTING_OTHER
             )
         );
     }

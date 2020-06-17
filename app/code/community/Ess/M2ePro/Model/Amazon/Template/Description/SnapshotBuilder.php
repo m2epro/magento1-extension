@@ -6,21 +6,24 @@
  * @license    Commercial use is forbidden
  */
 
+/**
+ * @method Ess_M2ePro_Model_Template_Description getModel()
+ */
 class Ess_M2ePro_Model_Amazon_Template_Description_SnapshotBuilder
-    extends Ess_M2ePro_Model_Template_SnapshotBuilder_Abstract
+    extends Ess_M2ePro_Model_ActiveRecord_SnapshotBuilder
 {
     //########################################
 
     public function getSnapshot()
     {
-        $data = $this->_model->getData();
+        $data = $this->getModel()->getData();
         if (empty($data)) {
             return array();
         }
 
-        $data['specifics'] = $this->_model->getChildObject()->getSpecifics();
-        $data['definition'] = $this->_model->getChildObject()->getDefinitionTemplate()
-            ? $this->_model->getChildObject()->getDefinitionTemplate()->getData() : array();
+        $data['specifics'] = $this->getModel()->getChildObject()->getSpecifics();
+        $data['definition'] = $this->getModel()->getChildObject()->getDefinitionTemplate()
+            ? $this->getModel()->getChildObject()->getDefinitionTemplate()->getData() : array();
 
         $ignoredKeys = array(
             'id', 'template_description_id',
@@ -36,9 +39,11 @@ class Ess_M2ePro_Model_Amazon_Template_Description_SnapshotBuilder
 
                 $value !== null && !is_array($value) && $value = (string)$value;
             }
+
+            unset($value);
         }
 
-        unset($value);
+        unset($specificsData);
 
         foreach ($data['definition'] as $key => &$value) {
             if (in_array($key, $ignoredKeys)) {
@@ -50,6 +55,8 @@ class Ess_M2ePro_Model_Amazon_Template_Description_SnapshotBuilder
                 $value = (float)$value;
             }
         }
+
+        unset($value);
 
         return $data;
     }

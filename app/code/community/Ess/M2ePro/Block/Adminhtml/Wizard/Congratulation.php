@@ -6,31 +6,24 @@
  * @license    Commercial use is forbidden
  */
 
-abstract class Ess_M2ePro_Block_Adminhtml_Wizard_Congratulation extends Ess_M2ePro_Block_Adminhtml_Wizard_MainAbstract
+class Ess_M2ePro_Block_Adminhtml_Wizard_Congratulation extends Mage_Adminhtml_Block_Template
 {
-    //########################################
-
-    protected function getHeaderTextHtml()
-    {
-        return 'Congratulations!';
-    }
-
-    //########################################
-
-    protected function isNeedSkipButton()
-    {
-        return false;
-    }
-
     //########################################
 
     protected function _toHtml()
     {
-        /** @var Ess_M2ePro_Helper_Module_Wizard $wizardHelper */
-        $wizardHelper = $this->helper('M2ePro/Module_Wizard');
+        $content = Mage::helper('M2ePro')->__(
+            'This wizard was already finished.
+            Please <a href="%1%">Contact Us</a>, if it is need.',
+            Mage::helper('M2ePro/Module_Support')->getSupportUrl()
+        );
 
-        return parent::_toHtml() .
-               $wizardHelper->createBlock('congratulation_content', $this->getNick())->toHtml();
+        return <<<HTML
+<h2>
+    {$content}
+</h2>
+
+HTML;
     }
 
     //########################################

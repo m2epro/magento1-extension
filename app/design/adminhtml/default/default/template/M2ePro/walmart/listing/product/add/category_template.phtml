@@ -1,0 +1,219 @@
+<?php
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
+ */
+
+// @codingStandardsIgnoreFile
+
+/** @var $this Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Product_Add_CategoryTemplate */
+
+?>
+
+<script type="text/javascript">
+    M2ePro.php.setConstants(<?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Product_Add_CategoryTemplate'); ?>, 'Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Product_Add_CategoryTemplate');
+</script>
+
+<div class="content-header">
+    <table cellspacing="0">
+        <tr>
+            <td style="<?php echo $this->getHeaderWidth() ?>"><?php echo $this->getHeaderHtml() ?></td>
+            <td class="form-buttons"><?php echo $this->getButtonsHtml() ?></td>
+        </tr>
+    </table>
+</div>
+
+<?php echo $this->getChildHtml('view_header'); ?>
+
+<div class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Set Category Policy.'); ?>" subtitle="" collapseable="no" hideblock="no" always_show="yes">
+
+    <div style="padding: 2px"></div>
+
+    <span>
+        <?php echo Mage::helper('M2ePro')->__(
+            'On this page, you can assign the relevant Category Policy to the Products you are currently adding to M2E Pro Listing.<br/>
+            Select the most convenient way to set the Category Policy below:'
+        );?>
+    </span>
+
+    <form id="category_template_mode_form" method="post" action="<?php echo $this->getUrl('*/*/categoryTemplateAssignType', array('_current' => true)); ?>">
+
+        <input name="form_key" value="<?php echo $this->getFormKey(); ?>" type="hidden" />
+
+        <div style="margin:15px 0 0 10px">
+
+            <input id="same" name="mode" type="radio" value="<?php echo Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Product_Add_CategoryTemplate::MODE_SAME; ?>">&nbsp;&nbsp;
+            <label style="font-weight: bold" for="same"><?php echo Mage::helper('M2ePro')->__('All Products same Category Policy'); ?></label>
+
+            <div style="margin-left: 22px">
+                <div style="margin: 7px 0">
+                    <?php echo Mage::helper('M2ePro')->__('All Products will have the same Category Policy.'); ?>
+                </div>
+                <div style="margin: 7px 28px">
+                    <b><?php echo Mage::helper('M2ePro')->__('Category Policy') ?></b>:
+                    <span id="category_template_title" style="font-style: italic; color: #808080"><?php echo Mage::helper('M2ePro')->__('Not selected'); ?></span>
+                    &nbsp;<a href="javascript:void(0);" id="edit_category_template"><?php echo Mage::helper('M2ePro')->__('Edit'); ?></a>
+                    <input id="category_template_id" name="category_template_id" value="" type="hidden" />
+                    <input id="products_ids" name="products_ids" type="hidden" value="">
+                </div>
+                <div style="margin: 7px 28px; display: none;" class="validation-advice" id="same_category_template_error" >
+                    <?php echo Mage::helper('M2ePro')->__('Please select Category Policy.'); ?>
+                </div>
+            </div>
+
+            <input id="category" name="mode" type="radio" value="<?php echo Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Product_Add_CategoryTemplate::MODE_CATEGORY; ?>">&nbsp;&nbsp;
+            <label style="font-weight: bold" for="category"><?php echo Mage::helper('M2ePro')->__('Based on Magento Categories'); ?></label>
+
+            <div style="margin: 10px 22px">
+                <?php echo Mage::helper('M2ePro')->__('Category Policy will be set for Products based on their Magento Categories.'); ?>
+            </div>
+
+            <input id="manually" name="mode" type="radio" value="<?php echo Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Product_Add_CategoryTemplate::MODE_MANUALLY; ?>">&nbsp;&nbsp;
+            <label style="font-weight: bold" for="manually"><?php echo Mage::helper('M2ePro')->__('Set Manually for each Product'); ?></label>
+
+            <div style="margin: 10px 22px">
+                <?php echo Mage::helper('M2ePro')->__('Allows you to set Category Policy for each Product or a group of Products manually.'); ?>
+            </div>
+
+        </div>
+    </form>
+
+    <div style="padding: 2px"></div>
+
+    <span>
+        <?php echo Mage::helper('M2ePro')->__(
+            '<strong>Note:</strong> Category Policy is required when you create a new offer on Walmart.<br/><br/>
+
+            The detailed information can be found <a href="%url%" target="_blank">here</a>.',
+
+            Mage::helper("M2ePro/Module_Support")->getDocumentationUrl(null, null, "x/L4taAQ")
+        );?>
+    </span>
+
+</div>
+
+<script type="text/javascript">
+
+    var init = function() {
+
+        $('same').observe('change', function (e) {
+            $('edit_category_template').show();
+        });
+
+        $('category_template_mode_form').observe('change', function(e) {
+            if (e.target.tagName != 'INPUT') {
+                return;
+            }
+
+            if (e.target.value != M2ePro.php.constant('Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Product_Add_CategoryTemplate::MODE_SAME')) {
+                $('edit_category_template').hide();
+            } else {
+                $('edit_category_template').show();
+            }
+        });
+
+        newCategoryTemplateUrl = '<?php echo $this->getUrl('*/adminhtml_walmart_template_category/new', array(
+            'marketplace_id'        => $this->getListing()->getMarketplaceId()
+        )); ?>';
+
+        createTemplateCategoryInNewTab = function(stepWindowUrl) {
+            var win = window.open(stepWindowUrl);
+
+            var intervalId = setInterval(function(){
+                if (!win.closed) {
+                    return;
+                }
+
+                clearInterval(intervalId);
+
+                loadTemplateCategoryGrid();
+            }, 1000);
+        };
+
+        loadTemplateCategoryGrid = function() {
+
+            new Ajax.Request('<?php echo $this->getUrl('*/*/viewTemplateCategoriesGrid'); ?>', {
+                method: 'post',
+                parameters: {
+                    products_ids : '<?php echo implode(',', $this->getProductsIds()); ?>',
+                    create_new_template_js_function: 'createTemplateCategoryInNewTab'
+                },
+                onSuccess: function (transport) {
+                    $('template_category_grid').update(transport.responseText);
+                    $('template_category_grid').show();
+                }
+            })
+        };
+
+        categoryTemplateModeFormSubmit = function()
+        {
+            if ($('same').checked && $('category_template_id').value == '') {
+                $('same_category_template_error').show();
+                return;
+            }
+            $('category_template_mode_form').submit();
+        };
+
+        selectTemplateCategory = function(el, templateId)
+        {
+            $('category_template_id').value = templateId;
+            $('products_ids').value = '<?php echo implode(',', $this->getProductsIds()); ?>';
+            $('category_template_title').innerHTML = el.up('tr').down('td').down('a').innerHTML;
+            $('same_category_template_error').hide();
+            templateCategoryPopup.close();
+        };
+
+        var modeElement = $$('input[value="<?php echo $this->getCategoryTemplateMode(); ?>"]').shift();
+
+        modeElement.checked = true;
+        if (modeElement.value != M2ePro.php.constant('Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Product_Add_CategoryTemplate::MODE_SAME')) {
+            $('edit_category_template').hide();
+        } else {
+            $('edit_category_template').show();
+        }
+
+        $('edit_category_template').observe('click', function(event) {
+
+            var popupContent = '';
+            new Ajax.Request('<?php echo $this->getUrl('*/*/viewTemplateCategoryPopup'); ?>', {
+                method: 'post',
+                asynchronous: false,
+                parameters: {
+                    products_ids : '<?php echo implode(',', $this->getProductsIds()); ?>'
+                },
+                onSuccess: function (transport) {
+                    popupContent = transport.responseText;
+                }
+            });
+
+            templateCategoryPopup = Dialog.info(null, {
+                draggable: true,
+                resizable: true,
+                closable: true,
+                className: "magento",
+                windowClassName: "popup-window",
+                title: '<?php echo Mage::helper('M2ePro')->__('Assign Category Policy'); ?>',
+                top: 70,
+                width: 800,
+                height: 550,
+                zIndex: 100,
+                recenterAuto: false,
+                hideEffect: Element.hide,
+                showEffect: Element.show
+            });
+            templateCategoryPopup.options.destroyOnClose = true;
+
+            $('modal_dialog_message').insert(popupContent);
+
+            loadTemplateCategoryGrid();
+
+            setTimeout(function() {
+                Windows.getFocusedWindow().content.style.height = '';
+                Windows.getFocusedWindow().content.style.maxHeight = '600px';
+            }, 50);
+        });
+    };
+
+    Event.observe(window,'load',init);
+</script>

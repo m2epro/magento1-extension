@@ -33,30 +33,23 @@ class Ess_M2ePro_Model_Ebay_Account_PickupStore_Log extends Ess_M2ePro_Model_Log
     public function addMessage(
         $accountPickupStoreStateId,
         $actionId = null,
-        $action = null,
+        $action = self::ACTION_UNKNOWN,
         $description = null,
-        $type = null,
-        $priority = null
+        $type = self::TYPE_NOTICE,
+        array $additionalData = array()
     ) {
-        $dataForAdd = $this->makeDataForAdd(
-            $accountPickupStoreStateId,
-            $actionId,
-            $action,
-            $description,
-            $type,
-            $priority
+        $dataForAdd = array(
+            'account_pickup_store_state_id' => (int)$accountPickupStoreStateId,
+            'action_id'                     => $actionId,
+            'action'                        => $action,
+            'description'                   => $description,
+            'type'                          => $type,
+            'additional_data'               => Mage::helper('M2ePro')->jsonEncode($additionalData)
         );
 
-        $this->createMessage($dataForAdd);
-    }
-
-    //########################################
-
-    protected function createMessage($dataForAdd)
-    {
         /** @var Ess_M2ePro_Model_Ebay_Account_PickupStore_State $accountPickupStoreState */
         $accountPickupStoreState = Mage::getModel('M2ePro/Ebay_Account_PickupStore_State')->loadInstance(
-            $dataForAdd['account_pickup_store_state_id']
+            $accountPickupStoreStateId
         );
 
         $accountPickupStore = $accountPickupStoreState->getAccountPickupStore();
@@ -67,54 +60,6 @@ class Ess_M2ePro_Model_Ebay_Account_PickupStore_Log extends Ess_M2ePro_Model_Log
         Mage::getModel('M2ePro/Ebay_Account_PickupStore_Log')
             ->setData($dataForAdd)
             ->save();
-    }
-
-    protected function makeDataForAdd(
-        $accountPickupStoreStateId,
-        $actionId = null,
-        $action = null,
-        $description = null,
-        $type = null,
-        $priority = null,
-        array $additionalData = array()
-    ) {
-        $dataForAdd = array();
-
-        $dataForAdd['account_pickup_store_state_id'] = (int)$accountPickupStoreStateId;
-
-        if ($actionId !== null) {
-            $dataForAdd['action_id'] = (int)$actionId;
-        } else {
-            $dataForAdd['action_id'] = null;
-        }
-
-        if ($action !== null) {
-            $dataForAdd['action'] = (int)$action;
-        } else {
-            $dataForAdd['action'] = self::ACTION_UNKNOWN;
-        }
-
-        if ($description !== null) {
-            $dataForAdd['description'] = $description;
-        } else {
-            $dataForAdd['description'] = null;
-        }
-
-        if ($type !== null) {
-            $dataForAdd['type'] = (int)$type;
-        } else {
-            $dataForAdd['type'] = self::TYPE_NOTICE;
-        }
-
-        if ($priority !== null) {
-            $dataForAdd['priority'] = (int)$priority;
-        } else {
-            $dataForAdd['priority'] = self::PRIORITY_LOW;
-        }
-
-        $dataForAdd['additional_data'] = Mage::helper('M2ePro')->jsonEncode($additionalData);
-
-        return $dataForAdd;
     }
 
     //########################################

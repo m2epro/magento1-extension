@@ -53,12 +53,16 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
      */
     protected $_shippingSourceModels = array();
 
+    /** @var Ess_M2ePro_Model_ActiveRecord_Factory */
+    protected $_activeRecordFactory;
+
     //########################################
 
     public function _construct()
     {
         parent::_construct();
         $this->_init('M2ePro/Ebay_Template_Shipping');
+        $this->_activeRecordFactory = Mage::getSingleton('M2ePro/ActiveRecord_Factory');
     }
 
     /**
@@ -202,29 +206,26 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
 
     /**
      * @param bool $asObjects
-     * @param array $filters
-     * @param array $sort
      * @return array|Ess_M2ePro_Model_Abstract[]
      * @throws Ess_M2ePro_Model_Exception_Logic
      */
-    public function getServices(
-        $asObjects = false,
-        array $filters = array(),
-        array $sort = array('priority' => Varien_Data_Collection::SORT_ORDER_ASC)
-    ) {
-        $services = $this->getRelatedSimpleItems(
-            'Ebay_Template_Shipping_Service', 'template_shipping_id',
-            $asObjects, $filters, $sort
-        );
+    public function getServices($asObjects = false)
+    {
+        $collection = $this->_activeRecordFactory->getObjectCollection('Ebay_Template_Shipping_Service');
+        $collection->addFieldToFilter('template_shipping_id', $this->getId());
+        $collection->setOrder('priority', Varien_Data_Collection::SORT_ORDER_ASC);
 
-        if ($asObjects) {
-            /** @var $service Ess_M2ePro_Model_Ebay_Template_Shipping_Service */
-            foreach ($services as $service) {
-                $service->setShippingTemplate($this);
-            }
+        /** @var $service Ess_M2ePro_Model_Ebay_Template_Shipping_Service */
+        foreach ($collection->getItems() as $service) {
+            $service->setShippingTemplate($this);
         }
 
-        return $services;
+        if (!$asObjects) {
+            $result = $collection->toArray();
+            return $result['items'];
+        }
+
+        return $collection->getItems();
     }
 
     //########################################
@@ -793,74 +794,6 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
         }
 
         return $returns;
-    }
-
-    //########################################
-
-    /**
-     * @return array
-     */
-    public function getDefaultSettings()
-    {
-        return array(
-            'country_mode' => self::COUNTRY_MODE_CUSTOM_VALUE,
-            'country_custom_value' => 'US',
-            'country_custom_attribute' => '',
-            'postal_code_mode' => self::POSTAL_CODE_MODE_NONE,
-            'postal_code_custom_value' => '',
-            'postal_code_custom_attribute' => '',
-            'address_mode' => self::ADDRESS_MODE_NONE,
-            'address_custom_value' => '',
-            'address_custom_attribute' => '',
-
-            'dispatch_time_mode' => self::DISPATCH_TIME_MODE_VALUE,
-            'dispatch_time_value' => 1,
-            'dispatch_time_attribute' => '',
-            'cash_on_delivery_cost' => null,
-            'global_shipping_program' => 0,
-            'cross_border_trade' => self::CROSS_BORDER_TRADE_NONE,
-            'excluded_locations' => Mage::helper('M2ePro')->jsonEncode(array()),
-
-            'local_shipping_mode' =>  self::SHIPPING_TYPE_FLAT,
-            'local_shipping_discount_promotional_mode' => 0,
-            'local_shipping_discount_combined_profile_id' => Mage::helper('M2ePro')->jsonEncode(array()),
-            'local_shipping_rate_table_mode' => 0,
-            'local_shipping_rate_table' => null,
-            'click_and_collect_mode' => 1,
-
-            'international_shipping_mode' => self::SHIPPING_TYPE_NO_INTERNATIONAL,
-            'international_shipping_discount_promotional_mode' => 0,
-            'international_shipping_discount_combined_profile_id' => Mage::helper('M2ePro')->jsonEncode(array()),
-            'international_shipping_rate_table_mode' => 0,
-            'international_shipping_rate_table' => null,
-
-            // CALCULATED SHIPPING
-            // ---------------------------------------
-            'measurement_system' => Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated::MEASUREMENT_SYSTEM_ENGLISH,
-
-            'package_size_mode' => Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated::PACKAGE_SIZE_CUSTOM_VALUE,
-            'package_size_value' => 'None',
-            'package_size_attribute' => '',
-
-            'dimension_mode'   => Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated::DIMENSION_NONE,
-            'dimension_width_value'  => '',
-            'dimension_length_value' => '',
-            'dimension_depth_value'  => '',
-            'dimension_width_attribute'  => '',
-            'dimension_length_attribute' => '',
-            'dimension_depth_attribute'  => '',
-
-            'weight_mode' => Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated::WEIGHT_NONE,
-            'weight_minor' => '',
-            'weight_major' => '',
-            'weight_attribute' => '',
-
-            'local_handling_cost' => null,
-            'international_handling_cost' => null,
-            // ---------------------------------------
-
-            'services' => array()
-        );
     }
 
     //########################################

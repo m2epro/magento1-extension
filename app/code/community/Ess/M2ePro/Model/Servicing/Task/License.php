@@ -55,64 +55,55 @@ class Ess_M2ePro_Model_Servicing_Task_License extends Ess_M2ePro_Model_Servicing
 
     protected function updateInfoData(array $infoData)
     {
+        $config = Mage::helper('M2ePro/Module')->getConfig();
+
         if (array_key_exists('email', $infoData)) {
-            Mage::helper('M2ePro/Primary')->getConfig()->setGroupValue(
-                '/license/info/', 'email', $infoData['email']
-            );
+            $config->setGroupValue('/license/info/', 'email', $infoData['email']);
         }
     }
 
     protected function updateValidationMainData(array $validationData)
     {
+        $config = Mage::helper('M2ePro/Module')->getConfig();
 
         if (array_key_exists('domain', $validationData)) {
-            Mage::helper('M2ePro/Primary')->getConfig()->setGroupValue(
-                '/license/', 'domain', $validationData['domain']
-            );
+            $config->setGroupValue('/license/domain/', 'valid', $validationData['domain']);
         }
 
         if (array_key_exists('ip', $validationData)) {
-            Mage::helper('M2ePro/Primary')->getConfig()->setGroupValue(
-                '/license/', 'ip', $validationData['ip']
-            );
+            $config->setGroupValue('/license/ip/', 'valid', $validationData['ip']);
         }
     }
 
     protected function updateValidationValidData(array $isValidData)
     {
+        $config = Mage::helper('M2ePro/Module')->getConfig();
         if (array_key_exists('domain', $isValidData)) {
-            Mage::helper('M2ePro/Primary')->getConfig()->setGroupValue(
-                '/license/valid/', 'domain', (int)$isValidData['domain']
-            );
+            $config->setGroupValue('/license/domain/', 'is_valid', (int)$isValidData['domain']);
         }
 
         if (array_key_exists('ip', $isValidData)) {
-            Mage::helper('M2ePro/Primary')->getConfig()->setGroupValue(
-                '/license/valid/', 'ip', (int)$isValidData['ip']
-            );
+            $config->setGroupValue('/license/ip/', 'is_valid', (int)$isValidData['ip']);
         }
     }
 
     protected function updateConnectionData(array $data)
     {
-        $cacheConfig = Mage::helper('M2ePro/Module')->getCacheConfig();
+        $config = Mage::helper('M2ePro/Module')->getConfig();
 
         if (array_key_exists('domain', $data)) {
-            $cacheConfig->setGroupValue('/license/connection/', 'domain', $data['domain']);
+            $config->setGroupValue('/license/domain/', 'real', $data['domain']);
         }
 
         if (array_key_exists('ip', $data)) {
-            $cacheConfig->setGroupValue('/license/connection/', 'ip', $data['ip']);
-        }
-
-        if (array_key_exists('directory', $data)) {
-            $cacheConfig->setGroupValue('/license/connection/', 'directory', $data['directory']);
+            $config->setGroupValue('/license/ip/', 'real', $data['ip']);
         }
     }
 
     protected function updateStatus($status)
     {
-        Mage::helper('M2ePro/Primary')->getConfig()->setGroupValue('/license/', 'status', (int)$status);
+        $config = Mage::helper('M2ePro/Module')->getConfig();
+        $config->setGroupValue('/license/', 'status', (int)$status);
     }
 
     //########################################

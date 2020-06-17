@@ -1,199 +1,117 @@
-WizardInstallationAmazon = Class.create(CommonHandler, {
+window.WizardInstallationAmazon = Class.create(Common, {
 
     // ---------------------------------------
 
-    popupObj : null,
-
-    licenseForm      : null,
-    popupLicenseForm : null,
-    settingsForm     : null,
-
-    userInfoEditMode : false,
-
-    // ---------------------------------------
-
-    initLicense: function()
+    continueStep: function ()
     {
-        this.licenseForm      = new varienForm('license_form');
-        this.popupLicenseForm = new varienForm('popup_license_form');
+        if (WizardObj.steps.current.length) {
+            this[WizardObj.steps.current + 'Step']();
+        }
     },
 
-    // ---------------------------------------
-
-    openPopupAction: function()
+    registrationStep: function ()
     {
-        this.licensePopUp = Dialog.info(null, {
-            draggable: true,
-            resizable: true,
-            closable: true,
-            className: "magento",
-            windowClassName: "popup-window",
-            title: M2ePro.translator.translate('Register Your M2E Pro Extension'),
-            width: 640,
-            height: 360,
-            zIndex: 100,
-            hideEffect: Element.hide,
-            showEffect: Element.show
-        });
-
-        this.copyValuesToPopup();
-        this.licensePopUp.options.destroyOnClose = false;
-
-        $('modal_dialog_message').insert($('license_popup_content').show());
+        WizardObj.registrationStep(M2ePro.url.get('adminhtml_wizard_installationAmazon/createLicense'));
     },
 
-    closePopupAction: function()
+    marketplaceChange: function()
     {
-        this.licensePopUp.close();
-    },
+        var marketplaceId = $('marketplace_id').value;
 
-    confirmPopupAction: function()
-    {
-        if (!this.popupLicenseForm.validate()) {
+        if (!marketplaceId || !$('manual_authorization_marketplace_developer_key_container_'+marketplaceId)) {
+            $$('.manual-authorization').each(function (el) {
+                el.hide();
+            });
             return;
         }
 
-        this.copyValuesFromPopup();
-        this.closePopupAction();
+        $('manual_authorization_marketplace').show();
+        $('amazon_wizard_installation_account_manual_authorization').show();
+        $('manual_authorization_marketplace_application_name_container').show();
+        $('manual_authorization_marketplace_developer_key_container_'+marketplaceId).show();
+        $('manual_authorization_marketplace_register_url_container_'+marketplaceId).show();
+        $('manual_authorization_marketplace_merchant_id_container_'+marketplaceId).show();
+        $('manual_authorization_marketplace_token_container_'+marketplaceId).show();
+    },
 
-        if (this.userInfoEditMode) {
-            var formData = {};
+    accountStep: function ()
+    {
+        MessageObj.clearAll();
 
-            Form.getElements($(this.popupLicenseForm.formId)).each(function(element) {
-                var attribute = element.readAttribute('name');
-                element.value && (formData[attribute] = element.value);
-            });
+        var marketplaceId = $('marketplace_id').value;
 
-            MagentoMessageObj.clearAll();
+        if (!marketplaceId) {
+            MessageObj.addError(M2ePro.translator.translate('Please select Marketplace first.'));
+            return CommonObj.scroll_page_to_top();
+        }
 
-            new Ajax.Request(M2ePro.url.get('adminhtml_wizard_installationAmazon/updateLicenseUserInfo'), {
-                method       : 'post',
-                asynchronous : true,
-                parameters   : formData,
+        if ($('manual_authorization_marketplace_developer_key_container_'+marketplaceId)) {
+
+            var merchantId = $('manual_authorization_marketplace_merchant_id_'+marketplaceId).value;
+            var token      = $('manual_authorization_marketplace_token_'+marketplaceId).value;
+
+            if (!merchantId || !token) {
+                MessageObj.addError(M2ePro.translator.translate('Please fill Merchant ID and MWS Auth Token fields.'));
+                return CommonObj.scroll_page_to_top();
+            }
+
+            var checkResult = false;
+            var checkReason = null;
+
+            new Ajax.Request(M2ePro.url.get('adminhtml_amazon_account/checkAuth'), {
+                method: 'post',
+                asynchronous: false,
+                parameters: {
+                    merchant_id    : merchantId,
+                    token          : token,
+                    marketplace_id : marketplaceId
+                },
                 onSuccess: function(transport) {
-
                     var response = transport.responseText.evalJSON();
-
-                    if (!response['result'] && response['message']) {
-                        MagentoMessageObj.addError(response['message']);
-                        return CommonHandlerObj.scroll_page_to_top();
-                    }
-
-                    if (!response['result']) {
-                        MagentoMessageObj.addError(M2ePro.translator.translate('Error update Extension Key.'));
-                        return CommonHandlerObj.scroll_page_to_top();
-                    }
-
-                    $('edit_license').hide();
+                    checkResult = response['result'];
+                    checkReason = response['reason'];
                 }
             });
+
+            if (!checkResult) {
+                if (checkReason) {
+                    MessageObj.addError(M2ePro.translator.translate('M2E Pro was not able to get access to the Amazon Account. Reason: %error_message%').replace('%error_message%', checkReason));
+                    return CommonObj.scroll_page_to_top();
+                }
+
+                MessageObj.addError(M2ePro.translator.translate('M2E Pro was not able to get access to the Amazon Account. Please, make sure, that you choose correct Option on MWS Authorization Page and enter correct Merchant ID.'));
+                return CommonObj.scroll_page_to_top();
+            }
+
+            return setLocation(M2ePro.url.get('adminhtml_wizard_installationAmazon/afterGetTokenManual', {"merchant_id": merchantId, "token": token, "marketplace_id": marketplaceId}));
         }
 
-        this.licenseForm.validate();
-    },
-
-    // ---------------------------------------
-
-    copyValuesFromPopup: function()
-    {
-        Form.getElements($(this.popupLicenseForm.formId)).each(function(element) {
-            var td = $(element.readAttribute('name'));
-            td.down('span').update(element.value.escapeHTML());
-            td.down('input').value = element.value.escapeHTML();
-        });
-    },
-
-    copyValuesToPopup: function()
-    {
-        Form.getElements($(this.popupLicenseForm.formId)).each(function(element) {
-            var tempValue = $(element.name).down('input').value.trim();
-            element.setValue(tempValue);
-        });
-    },
-
-    // ---------------------------------------
-
-    proceedLicenseStep: function()
-    {
-        if (!this.licenseForm.validate()) {
-            return false;
-        }
-
-        this.createLicense();
-    },
-
-    createLicense: function()
-    {
-        var self     = this,
-            formData = {};
-
-        Form.getElements($(this.popupLicenseForm.formId)).each(function(element) {
-            var attribute = element.readAttribute('name');
-            element.value && (formData[attribute] = element.value);
-        });
-
-        MagentoMessageObj.clearAll();
-
-        new Ajax.Request(M2ePro.url.get('adminhtml_wizard_installationAmazon/createLicense'), {
+        new Ajax.Request(M2ePro.url.get('adminhtml_wizard_installationAmazon/beforeToken'), {
             method       : 'post',
             asynchronous : true,
-            parameters   : formData,
+            parameters   : $('edit_form').serialize(),
             onSuccess: function(transport) {
 
                 var response = transport.responseText.evalJSON();
 
-                if (!response['result'] && response['message']) {
-                    MagentoMessageObj.addError(response['message']);
-                    return CommonHandlerObj.scroll_page_to_top();
+                if (response && response['message']) {
+                    MessageObj.addError(response['message']);
+                    return CommonObj.scroll_page_to_top();
                 }
 
-                if (!response['result']) {
-                    MagentoMessageObj.addError(M2ePro.translator.translate('Error create Extension Key.'));
-                    return CommonHandlerObj.scroll_page_to_top();
+                if (!response['url']) {
+                    MessageObj.addError(M2ePro.translator.translate('An error during of account creation.'));
+                    return CommonObj.scroll_page_to_top();
                 }
 
-                $('block_private_policy_agreement').hide();
-                $('edit_license').hide();
-                self.doStep('license');
+                window.location.href = response['url'];
             }
         });
     },
 
-    // ---------------------------------------
-
-    doStep: function(currentStep)
+    listingTutorialStep: function ()
     {
-        var nextStep = WizardHandlerObj.getNextStepByNick(currentStep);
-
-        if (nextStep) {
-            return WizardHandlerObj.setStep(nextStep, function() {
-                WizardHandlerObj.renderStep(currentStep);
-            });
-        }
-
-        WizardHandlerObj.setStatus(M2ePro.php.constant('Ess_M2ePro_Helper_Module_Wizard::STATUS_COMPLETED'), function() {
-            WizardHandlerObj.renderStep(currentStep);
-            WizardHandlerObj.setStep(null);
-            window.location = M2ePro.url.get('adminhtml_wizard_installationAmazon/congratulation');
-        })
-    },
-
-    // ---------------------------------------
-
-    checkFormFilling: function()
-    {
-        this.copyValuesToPopup();
-
-        if (this.licenseForm.validate()) {
-            return true;
-        }
-
-        $('edit_license').show();
-
-        $('edit_license').simulate('click');
-        $('license_popup_confirm_button').click();
-
-        return false;
+        WizardObj.setStep(WizardObj.getNextStep(), setLocation.bind(window, location.href));
     }
 
     // ---------------------------------------

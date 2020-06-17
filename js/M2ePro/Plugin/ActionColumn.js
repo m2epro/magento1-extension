@@ -1,5 +1,4 @@
-ActionColumn = Class.create();
-ActionColumn.prototype = {
+window.ActionColumn = Class.create({
 
     // ---------------------------------------
 
@@ -15,7 +14,7 @@ ActionColumn.prototype = {
         if (config.onclick_action) {
             var method = config.onclick_action + '(';
             if (id) {
-                method = method + id;
+                method = method + "'" +id+ "'";
             }
             method = method + ')';
             eval(method);
@@ -25,6 +24,6 @@ ActionColumn.prototype = {
     }
 
     // ---------------------------------------
-};
+});
 
 ActionColumnObj = new ActionColumn();

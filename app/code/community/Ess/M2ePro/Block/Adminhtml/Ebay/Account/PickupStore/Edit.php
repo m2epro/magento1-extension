@@ -54,7 +54,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_PickupStore_Edit extends Mage_Admi
         $this->_addButton(
             'back', array(
             'label'     => Mage::helper('M2ePro')->__('Back'),
-            'onclick'   => 'EbayPickupStoreHandlerObj.back_click(\'' .Mage::helper('M2ePro')->getBackUrl('list').'\')',
+            'onclick'   => 'EbayPickupStoreObj.back_click(\'' .Mage::helper('M2ePro')->getBackUrl('list').'\')',
             'class'     => 'back'
             )
         );
@@ -66,7 +66,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_PickupStore_Edit extends Mage_Admi
             $this->_addButton(
                 'duplicate', array(
                 'label'     => Mage::helper('M2ePro')->__('Duplicate'),
-                'onclick'   => 'EbayPickupStoreHandlerObj.duplicate_click(
+                'onclick'   => 'EbayPickupStoreObj.duplicate_click(
                     \'ebay-account-pickupStore\', \''.$duplicateHeaderText.'\'
                     )',
                 'class'     => 'add M2ePro_duplicate_button'
@@ -76,7 +76,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_PickupStore_Edit extends Mage_Admi
             $this->_addButton(
                 'delete', array(
                 'label'     => Mage::helper('M2ePro')->__('Delete'),
-                'onclick'   => 'EbayPickupStoreHandlerObj.delete_click()',
+                'onclick'   => 'EbayPickupStoreObj.delete_click()',
                 'class'     => 'delete M2ePro_delete_button'
                 )
             );
@@ -84,7 +84,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_PickupStore_Edit extends Mage_Admi
             $this->_addButton(
                 'save', array(
                 'label'     => Mage::helper('M2ePro')->__('Save'),
-                'onclick'   => 'EbayPickupStoreHandlerObj.save_click()',
+                'onclick'   => 'EbayPickupStoreObj.save_click()',
                 'class'     => 'save'
                 )
             );
@@ -93,7 +93,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_PickupStore_Edit extends Mage_Admi
         $this->_addButton(
             'save', array(
             'label'     => Mage::helper('M2ePro')->__('Save'),
-            'onclick'   => 'EbayPickupStoreHandlerObj.save_click()',
+            'onclick'   => 'EbayPickupStoreObj.save_click()',
             'class'     => 'save'
             )
         );
@@ -101,7 +101,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_PickupStore_Edit extends Mage_Admi
         $this->_addButton(
             'save_and_continue', array(
             'label'     => Mage::helper('M2ePro')->__('Save And Continue Edit'),
-            'onclick'   => 'EbayPickupStoreHandlerObj.save_and_edit_click(\''.$url.'\')',
+            'onclick'   => 'EbayPickupStoreObj.save_and_edit_click(\''.$url.'\')',
             'class'     => 'save'
             )
         );

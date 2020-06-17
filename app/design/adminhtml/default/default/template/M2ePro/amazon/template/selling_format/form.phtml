@@ -49,58 +49,7 @@
 
     $formData['discount_rules'] = $model && $model->getId() ? $model->getChildObject()->getBusinessDiscounts() : array();
 
-    $default = array(
-        'title' => '',
-
-        'is_regular_customer_allowed' => 1,
-        'is_business_customer_allowed' => 0,
-
-        'qty_mode' => Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_PRODUCT,
-        'qty_custom_value' => 1,
-        'qty_custom_attribute' => '',
-        'qty_percentage' => 100,
-        'qty_modification_mode' => Ess_M2ePro_Model_Amazon_Template_SellingFormat::QTY_MODIFICATION_MODE_OFF,
-        'qty_min_posted_value' => Ess_M2ePro_Model_Amazon_Template_SellingFormat::QTY_MIN_POSTED_DEFAULT_VALUE,
-        'qty_max_posted_value' => Ess_M2ePro_Model_Amazon_Template_SellingFormat::QTY_MAX_POSTED_DEFAULT_VALUE,
-
-        'regular_price_mode' => Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_PRODUCT,
-        'regular_price_coefficient' => '',
-        'regular_price_custom_attribute' => '',
-
-        'regular_map_price_mode' => Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_NONE,
-        'regular_map_price_custom_attribute' => '',
-
-        'regular_sale_price_mode' => Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_NONE,
-        'regular_sale_price_coefficient' => '',
-        'regular_sale_price_custom_attribute' => '',
-
-        'regular_price_variation_mode' => Ess_M2ePro_Model_Amazon_Template_SellingFormat::PRICE_VARIATION_MODE_PARENT,
-
-        'regular_sale_price_start_date_mode' => Ess_M2ePro_Model_Amazon_Template_SellingFormat::DATE_VALUE,
-        'regular_sale_price_end_date_mode' => Ess_M2ePro_Model_Amazon_Template_SellingFormat::DATE_VALUE,
-
-        'regular_sale_price_start_date_custom_attribute' => '',
-        'regular_sale_price_end_date_custom_attribute' => '',
-
-        'regular_sale_price_start_date_value' => Mage::helper('M2ePro')->getCurrentGmtDate(false, 'Y-m-d'),
-        'regular_sale_price_end_date_value' => Mage::helper('M2ePro')->getCurrentGmtDate(false, 'Y-m-d'),
-
-        'regular_price_vat_percent' => 0,
-
-        'business_price_mode' => Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_PRODUCT,
-        'business_price_coefficient' => '',
-        'business_price_custom_attribute' => '',
-
-        'business_price_variation_mode' => Ess_M2ePro_Model_Amazon_Template_SellingFormat::PRICE_VARIATION_MODE_PARENT,
-
-        'business_price_vat_percent' => 0,
-
-        'business_discounts_mode' => 0,
-        'business_discounts_tier_coefficient' => '',
-        'business_discounts_tier_customer_group_id' => null,
-
-        'discount_rules' => array()
-    );
+    $default = Mage::getModel('M2ePro/Amazon_Template_SellingFormat_Builder')->getDefaultData();
 
     $formData = array_merge($default, $formData);
 
@@ -213,90 +162,90 @@
     M2ePro.formData.discountRules = <?php echo json_encode($formData['discount_rules']) ?>;
 
     Event.observe(window, 'load', function() {
-        AmazonTemplateSellingFormatHandlerObj = new AmazonTemplateSellingFormatHandler();
+        AmazonTemplateSellingFormatObj = new AmazonTemplateSellingFormat();
 
         if ($('is_regular_customer_allowed')) {
             $('is_regular_customer_allowed')
-                .observe('change', AmazonTemplateSellingFormatHandlerObj.is_regular_customer_allowed_change)
+                .observe('change', AmazonTemplateSellingFormatObj.is_regular_customer_allowed_change)
                 .simulate('change');
         }
 
         if ($('is_business_customer_allowed')) {
             $('is_business_customer_allowed')
-                .observe('change', AmazonTemplateSellingFormatHandlerObj.is_business_customer_allowed_change)
+                .observe('change', AmazonTemplateSellingFormatObj.is_business_customer_allowed_change)
                 .simulate('change');
         }
 
         $('qty_mode')
-             .observe('change', AmazonTemplateSellingFormatHandlerObj.qty_mode_change)
+             .observe('change', AmazonTemplateSellingFormatObj.qty_mode_change)
              .simulate('change');
 
         $('qty_modification_mode')
-             .observe('change', AmazonTemplateSellingFormatHandlerObj.qtyPostedMode_change)
+             .observe('change', AmazonTemplateSellingFormatObj.qtyPostedMode_change)
              .simulate('change');
 
         if ($('regular_price_mode')) {
             $('regular_price_mode')
-                .observe('change', AmazonTemplateSellingFormatHandlerObj.regular_price_mode_change)
+                .observe('change', AmazonTemplateSellingFormatObj.regular_price_mode_change)
                 .simulate('change');
         }
 
         if ($('regular_map_price_mode')) {
             $('regular_map_price_mode')
-                .observe('change', AmazonTemplateSellingFormatHandlerObj.regular_map_price_mode_change)
+                .observe('change', AmazonTemplateSellingFormatObj.regular_map_price_mode_change)
                 .simulate('change');
         }
 
         if ($('regular_sale_price_start_date_mode')) {
             $('regular_sale_price_start_date_mode')
-                .observe('change', AmazonTemplateSellingFormatHandlerObj.regular_sale_price_start_date_mode_change)
+                .observe('change', AmazonTemplateSellingFormatObj.regular_sale_price_start_date_mode_change)
                 .simulate('change');
         }
 
         if ($('regular_sale_price_end_date_mode')) {
             $('regular_sale_price_end_date_mode')
-                .observe('change', AmazonTemplateSellingFormatHandlerObj.regular_sale_price_end_date_mode_change)
+                .observe('change', AmazonTemplateSellingFormatObj.regular_sale_price_end_date_mode_change)
                 .simulate('change');
         }
 
         if ($('regular_sale_price_mode')) {
             $('regular_sale_price_mode')
-                .observe('change', AmazonTemplateSellingFormatHandlerObj.regular_sale_price_mode_change)
+                .observe('change', AmazonTemplateSellingFormatObj.regular_sale_price_mode_change)
                 .simulate('change');
         }
 
         if ($('regular_price_increase_vat_percent')) {
             $('regular_price_increase_vat_percent')
-                .observe('change', AmazonTemplateSellingFormatHandlerObj.regular_price_increase_vat_percent_mode_change)
+                .observe('change', AmazonTemplateSellingFormatObj.regular_price_increase_vat_percent_mode_change)
                 .simulate('change');
         }
 
         if ($('business_price_mode')) {
             $('business_price_mode')
-                .observe('change', AmazonTemplateSellingFormatHandlerObj.business_price_mode_change)
+                .observe('change', AmazonTemplateSellingFormatObj.business_price_mode_change)
                 .simulate('change');
         }
 
         if ($('business_price_increase_vat_percent')) {
             $('business_price_increase_vat_percent')
-                .observe('change', AmazonTemplateSellingFormatHandlerObj.business_price_increase_vat_percent_mode_change)
+                .observe('change', AmazonTemplateSellingFormatObj.business_price_increase_vat_percent_mode_change)
                 .simulate('change');
         }
 
         if ($('business_discounts_mode')) {
             $('business_discounts_mode')
-                .observe('change', AmazonTemplateSellingFormatHandlerObj.business_discounts_mode_change)
+                .observe('change', AmazonTemplateSellingFormatObj.business_discounts_mode_change)
                 .simulate('change');
         }
 
         if ($('business_discounts_custom_value_discount_table_tbody')) {
             $('business_discounts_custom_value_discount_table_tbody').on(
-                'change', 'select.business-discount-mode', AmazonTemplateSellingFormatHandlerObj.business_discount_price_mode_change
+                'change', 'select.business-discount-mode', AmazonTemplateSellingFormatObj.business_discount_price_mode_change
             );
         }
 
         if ($('business_discounts_mode')) {
-            AmazonTemplateSellingFormatHandlerObj.renderDiscountRules(M2ePro.formData.discountRules);
+            AmazonTemplateSellingFormatObj.renderDiscountRules(M2ePro.formData.discountRules);
         }
 
         editForm = new varienForm('edit_form', '<?php echo $this->getValidationUrl(); ?>');

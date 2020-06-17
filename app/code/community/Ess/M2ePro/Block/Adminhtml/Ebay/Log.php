@@ -47,8 +47,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Log extends Ess_M2ePro_Block_Adminhtml_Wid
     M2ePro.translator.add({$translations});
 
     Event.observe(window, 'load', function() {
-        CommonHandlerObj = new CommonHandler();
-        LogHandlerObj = new LogHandler();
+        CommonObj = new Common();
+        LogObj = new Log();
     });
 
 </script>

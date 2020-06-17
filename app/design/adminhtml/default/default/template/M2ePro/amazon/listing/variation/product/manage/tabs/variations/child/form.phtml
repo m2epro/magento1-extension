@@ -61,7 +61,7 @@ $virtualChannelAttributes = $this->getVirtualChannelAttributes();
                     <select name="new_child_product[product][options][]"
                             class="new-child-product-option"
                             disabled="disabled"
-                            onchange="ListingGridHandlerObj.validateNewChildAttributeOptions('product')">
+                            onchange="ListingGridObj.validateNewChildAttributeOptions('product')">
                         <option value=""></option>
                     </select>
                 </td>
@@ -98,12 +98,12 @@ $virtualChannelAttributes = $this->getVirtualChannelAttributes();
 
                     <div id="manage_variations_create_new_asin">
                         <?php echo Mage::helper('M2ePro')->__('or')?>&nbsp;&nbsp;
-                        <a href="javascript:void(0);" onclick="ListingGridHandlerObj.createNewAsinBtn()"><?php echo Mage::helper('M2ePro')->__('Create New ASIN/ISBN'); ?></a>
+                        <a href="javascript:void(0);" onclick="ListingGridObj.createNewAsinBtn()"><?php echo Mage::helper('M2ePro')->__('Create New ASIN/ISBN'); ?></a>
                     </div>
                     <div id="manage_variations_select_options" style="display: none;">
                         <input type="hidden" name="create_new_asin" disabled="disabled" value="1">
                         <?php echo Mage::helper('M2ePro')->__('or')?>&nbsp;&nbsp;
-                        <a href="javascript:void(0);" onclick="ListingGridHandlerObj.selectOptionsBtn()"><?php echo Mage::helper('M2ePro')->__('Select Existing Variation'); ?></a>
+                        <a href="javascript:void(0);" onclick="ListingGridObj.selectOptionsBtn()"><?php echo Mage::helper('M2ePro')->__('Select Existing Variation'); ?></a>
                     </div>
 
                     <?php } else { ?>
@@ -133,7 +133,7 @@ $virtualChannelAttributes = $this->getVirtualChannelAttributes();
                             name="new_child_product[channel][options][]"
                             class="new-child-channel-option"
                             disabled="disabled"
-                            onchange="ListingGridHandlerObj.validateNewChildAttributeOptions('channel')">
+                            onchange="ListingGridObj.validateNewChildAttributeOptions('channel')">
                         <option value=""></option>
                     </select>
                 </td>
@@ -156,8 +156,8 @@ $virtualChannelAttributes = $this->getVirtualChannelAttributes();
     <div id="variation_manager_unused_channel_variations_tree" style="display: none;"><?php echo json_encode($this->getChannelVariationsTree()) ?></div>
 
     <div style="text-align: right; padding-top: 5px; clear: both;">
-        <a href="javascript:void(0);" onclick="ListingGridHandlerObj.closeNewChildForm(this);" ><?php echo Mage::helper('M2ePro')->__('Cancel'); ?></a>&nbsp;&nbsp;
-        <button id="variation_manager_product_options_form_submit_btn" onclick="ListingGridHandlerObj.addNewChildProduct()"><?php echo Mage::helper('M2ePro')->__('Confirm'); ?></button>
+        <a href="javascript:void(0);" onclick="ListingGridObj.closeNewChildForm(this);" ><?php echo Mage::helper('M2ePro')->__('Cancel'); ?></a>&nbsp;&nbsp;
+        <button id="variation_manager_product_options_form_submit_btn" onclick="ListingGridObj.addNewChildProduct()"><?php echo Mage::helper('M2ePro')->__('Confirm'); ?></button>
     </div>
 </form>
 

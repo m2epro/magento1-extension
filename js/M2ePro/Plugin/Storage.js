@@ -1,5 +1,4 @@
-LocalStorage = Class.create();
-LocalStorage.prototype = {
+window.LocalStorage = Class.create({
 
     // ---------------------------------------
 
@@ -97,4 +96,4 @@ LocalStorage.prototype = {
     }
 
     // ---------------------------------------
-};
+});

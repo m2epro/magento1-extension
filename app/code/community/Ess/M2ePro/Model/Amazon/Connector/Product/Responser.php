@@ -61,8 +61,7 @@ abstract class Ess_M2ePro_Model_Amazon_Connector_Product_Responser
 
         $this->getLogger()->logListingProductMessage(
             $this->_listingProduct,
-            $message,
-            Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH
+            $message
         );
     }
 

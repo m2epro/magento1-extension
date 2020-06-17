@@ -185,54 +185,13 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Instruction_SynchronizationTemplat
             }
         }
 
-        if ($amazonSynchronizationTemplate->isRelistWhenQtyMagentoHasValue()) {
-            $result = false;
-            $productQty = (int)$amazonListingProduct->getQty(true);
-
-            $typeQty = (int)$amazonSynchronizationTemplate->getRelistWhenQtyMagentoHasValueType();
-            $minQty = (int)$amazonSynchronizationTemplate->getRelistWhenQtyMagentoHasValueMin();
-            $maxQty = (int)$amazonSynchronizationTemplate->getRelistWhenQtyMagentoHasValueMax();
-
-            if ($typeQty == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_LESS &&
-                $productQty <= $minQty) {
-                $result = true;
-            }
-
-            if ($typeQty == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_MORE &&
-                $productQty >= $minQty) {
-                $result = true;
-            }
-
-            if ($typeQty == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_BETWEEN &&
-                $productQty >= $minQty && $productQty <= $maxQty) {
-                $result = true;
-            }
-
-            if (!$result) {
-                return false;
-            }
-        }
-
         if ($amazonSynchronizationTemplate->isRelistWhenQtyCalculatedHasValue()) {
             $result = false;
+
             $productQty = (int)$amazonListingProduct->getQty(false);
+            $minQty = (int)$amazonSynchronizationTemplate->getRelistWhenQtyCalculatedHasValue();
 
-            $typeQty = (int)$amazonSynchronizationTemplate->getRelistWhenQtyCalculatedHasValueType();
-            $minQty = (int)$amazonSynchronizationTemplate->getRelistWhenQtyCalculatedHasValueMin();
-            $maxQty = (int)$amazonSynchronizationTemplate->getRelistWhenQtyCalculatedHasValueMax();
-
-            if ($typeQty == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_LESS &&
-                $productQty <= $minQty) {
-                $result = true;
-            }
-
-            if ($typeQty == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_MORE &&
-                $productQty >= $minQty) {
-                $result = true;
-            }
-
-            if ($typeQty == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_BETWEEN &&
-                $productQty >= $minQty && $productQty <= $maxQty) {
+            if ($productQty >= $minQty) {
                 $result = true;
             }
 

@@ -22,11 +22,11 @@ class Ess_M2ePro_Adminhtml_Amazon_AccountController
         $this->getLayout()->getBlock('head')
             ->setCanLoadExtJs(true)
             ->addJs('M2ePro/Plugin/ActionColumn.js')
-            ->addJs('M2ePro/GridHandler.js')
-            ->addJs('M2ePro/AccountHandler.js')
-            ->addJs('M2ePro/AccountGridHandler.js')
+            ->addJs('M2ePro/Grid.js')
+            ->addJs('M2ePro/Account.js')
+            ->addJs('M2ePro/AccountGrid.js')
             ->addJs('M2ePro/Plugin/DropDown.js')
-            ->addJs('M2ePro/Amazon/AccountHandler.js')
+            ->addJs('M2ePro/Amazon/Account.js')
             ->addCss('M2ePro/css/Plugin/AreaWrapper.css')
             ->addCss('M2ePro/css/Plugin/DropDown.css');
         $this->_initPopUp();
@@ -214,333 +214,7 @@ class Ess_M2ePro_Adminhtml_Amazon_AccountController
             $this->_redirect('*/*/index');
         }
 
-        // Base prepare
-        // ---------------------------------------
-        $data = array();
-        // ---------------------------------------
-
-        // tab: general
-        // ---------------------------------------
-        $keys = array(
-            'title',
-            'marketplace_id',
-            'merchant_id',
-            'token',
-        );
-        foreach ($keys as $key) {
-            if (isset($post[$key])) {
-                $data[$key] = $post[$key];
-            }
-        }
-
-        // ---------------------------------------
-
-        // tab: 3rd party listings
-        // ---------------------------------------
-        $keys = array(
-            'related_store_id',
-
-            'other_listings_synchronization',
-            'other_listings_mapping_mode'
-        );
-        foreach ($keys as $key) {
-            if (isset($post[$key])) {
-                $data[$key] = $post[$key];
-            }
-        }
-
-        // ---------------------------------------
-
-        // Mapping
-        // ---------------------------------------
-        $tempData = array();
-        $keys = array(
-            'mapping_general_id_mode',
-            'mapping_general_id_priority',
-            'mapping_general_id_attribute',
-
-            'mapping_sku_mode',
-            'mapping_sku_priority',
-            'mapping_sku_attribute',
-
-            'mapping_title_mode',
-            'mapping_title_priority',
-            'mapping_title_attribute'
-        );
-        foreach ($keys as $key) {
-            if (isset($post[$key])) {
-                $tempData[$key] = $post[$key];
-            }
-        }
-
-        $mappingSettings = array();
-
-        if (isset($tempData['mapping_general_id_mode']) &&
-            $tempData['mapping_general_id_mode'] == Account::OTHER_LISTINGS_MAPPING_GENERAL_ID_MODE_CUSTOM_ATTRIBUTE
-        ) {
-            $mappingSettings['general_id']['mode'] = (int)$tempData['mapping_general_id_mode'];
-            $mappingSettings['general_id']['priority'] = (int)$tempData['mapping_general_id_priority'];
-            $mappingSettings['general_id']['attribute'] = (string)$tempData['mapping_general_id_attribute'];
-        }
-
-        if (isset($tempData['mapping_sku_mode']) &&
-            ($tempData['mapping_sku_mode'] == Account::OTHER_LISTINGS_MAPPING_SKU_MODE_DEFAULT ||
-            $tempData['mapping_sku_mode'] == Account::OTHER_LISTINGS_MAPPING_SKU_MODE_CUSTOM_ATTRIBUTE ||
-            $tempData['mapping_sku_mode'] == Account::OTHER_LISTINGS_MAPPING_SKU_MODE_PRODUCT_ID)
-        ) {
-            $mappingSettings['sku']['mode'] = (int)$tempData['mapping_sku_mode'];
-            $mappingSettings['sku']['priority'] = (int)$tempData['mapping_sku_priority'];
-
-            if ($tempData['mapping_sku_mode'] == Account::OTHER_LISTINGS_MAPPING_SKU_MODE_CUSTOM_ATTRIBUTE) {
-                $mappingSettings['sku']['attribute'] = (string)$tempData['mapping_sku_attribute'];
-            }
-        }
-
-        if (isset($tempData['mapping_title_mode']) &&
-            ($tempData['mapping_title_mode'] == Account::OTHER_LISTINGS_MAPPING_TITLE_MODE_DEFAULT ||
-            $tempData['mapping_title_mode'] == Account::OTHER_LISTINGS_MAPPING_TITLE_MODE_CUSTOM_ATTRIBUTE)
-        ) {
-            $mappingSettings['title']['mode'] = (int)$tempData['mapping_title_mode'];
-            $mappingSettings['title']['priority'] = (int)$tempData['mapping_title_priority'];
-            $mappingSettings['title']['attribute'] = (string)$tempData['mapping_title_attribute'];
-        }
-
-        $data['other_listings_mapping_settings'] = Mage::helper('M2ePro')->jsonEncode($mappingSettings);
-        // ---------------------------------------
-
-        // tab: orders
-        // ---------------------------------------
-        $data['magento_orders_settings'] = array();
-
-        // m2e orders settings
-        // ---------------------------------------
-        $tempKey = 'listing';
-        $tempSettings = !empty($post['magento_orders_settings'][$tempKey])
-            ? $post['magento_orders_settings'][$tempKey] : array();
-
-        $keys = array(
-            'mode',
-            'store_mode',
-            'store_id'
-        );
-        foreach ($keys as $key) {
-            if (isset($tempSettings[$key])) {
-                $data['magento_orders_settings'][$tempKey][$key] = $tempSettings[$key];
-            }
-        }
-
-        // ---------------------------------------
-
-        // 3rd party orders settings
-        // ---------------------------------------
-        $tempKey = 'listing_other';
-        $tempSettings = !empty($post['magento_orders_settings'][$tempKey])
-            ? $post['magento_orders_settings'][$tempKey] : array();
-
-        $keys = array(
-            'mode',
-            'product_mode',
-            'product_tax_class_id',
-            'store_id'
-        );
-        foreach ($keys as $key) {
-            if (isset($tempSettings[$key])) {
-                $data['magento_orders_settings'][$tempKey][$key] = $tempSettings[$key];
-            }
-        }
-
-        // ---------------------------------------
-
-        // order number settings
-        // ---------------------------------------
-        $tempKey = 'number';
-        $tempSettings = !empty($post['magento_orders_settings'][$tempKey])
-            ? $post['magento_orders_settings'][$tempKey] : array();
-
-        $data['magento_orders_settings'][$tempKey]['source'] = $tempSettings['source'];
-        $data['magento_orders_settings'][$tempKey]['apply_to_amazon'] = $tempSettings['apply_to_amazon'];
-
-        $prefixKeys = array(
-            'prefix',
-            'afn-prefix',
-            'prime-prefix',
-            'b2b-prefix',
-        );
-        $tempSettings = !empty($tempSettings['prefix']) ? $tempSettings['prefix'] : array();
-        foreach ($prefixKeys as $key) {
-            if (isset($tempSettings[$key])) {
-                $data['magento_orders_settings'][$tempKey]['prefix'][$key] = $tempSettings[$key];
-            }
-        }
-
-        // ---------------------------------------
-
-        // qty reservation
-        // ---------------------------------------
-        $tempKey = 'qty_reservation';
-        $tempSettings = !empty($post['magento_orders_settings'][$tempKey])
-            ? $post['magento_orders_settings'][$tempKey] : array();
-
-        $keys = array(
-            'days',
-        );
-        foreach ($keys as $key) {
-            if (isset($tempSettings[$key])) {
-                $data['magento_orders_settings'][$tempKey][$key] = $tempSettings[$key];
-            }
-        }
-
-        // ---------------------------------------
-
-        // refund & cancellation
-        // ---------------------------------------
-        $tempKey = 'refund_and_cancellation';
-        $tempSettings = !empty($post['magento_orders_settings'][$tempKey])
-            ? $post['magento_orders_settings'][$tempKey] : array();
-
-        $keys = array(
-            'refund_mode',
-        );
-        foreach ($keys as $key) {
-            if (isset($tempSettings[$key])) {
-                $data['magento_orders_settings'][$tempKey][$key] = $tempSettings[$key];
-            }
-        }
-
-        // ---------------------------------------
-
-        // fba
-        // ---------------------------------------
-        $tempKey = 'fba';
-        $tempSettings = !empty($post['magento_orders_settings'][$tempKey])
-            ? $post['magento_orders_settings'][$tempKey] : array();
-
-        $keys = array(
-            'mode',
-            'stock_mode'
-        );
-        foreach ($keys as $key) {
-            if (isset($tempSettings[$key])) {
-                $data['magento_orders_settings'][$tempKey][$key] = $tempSettings[$key];
-            }
-        }
-
-        // ---------------------------------------
-
-        // tax settings
-        // ---------------------------------------
-        $tempKey = 'tax';
-        $tempSettings = !empty($post['magento_orders_settings'][$tempKey])
-            ? $post['magento_orders_settings'][$tempKey] : array();
-
-        $keys = array(
-            'mode'
-        );
-        foreach ($keys as $key) {
-            if (isset($tempSettings[$key])) {
-                $data['magento_orders_settings'][$tempKey][$key] = $tempSettings[$key];
-            }
-        }
-
-        // ---------------------------------------
-
-        // customer settings
-        // ---------------------------------------
-        $tempKey = 'customer';
-        $tempSettings = !empty($post['magento_orders_settings'][$tempKey])
-            ? $post['magento_orders_settings'][$tempKey] : array();
-
-        $keys = array(
-            'mode',
-            'id',
-            'website_id',
-            'group_id',
-            'billing_address_mode',
-//            'subscription_mode'
-        );
-        foreach ($keys as $key) {
-            if (isset($tempSettings[$key])) {
-                $data['magento_orders_settings'][$tempKey][$key] = $tempSettings[$key];
-            }
-        }
-
-        $notificationsKeys = array(
-//            'customer_created',
-            'order_created',
-            'invoice_created'
-        );
-        $tempSettings = !empty($tempSettings['notifications']) ? $tempSettings['notifications'] : array();
-        foreach ($notificationsKeys as $key) {
-            if (in_array($key, $tempSettings)) {
-                $data['magento_orders_settings'][$tempKey]['notifications'][$key] = true;
-            }
-        }
-
-        // ---------------------------------------
-
-        // status mapping settings
-        // ---------------------------------------
-        $tempKey = 'status_mapping';
-        $tempSettings = !empty($post['magento_orders_settings'][$tempKey])
-            ? $post['magento_orders_settings'][$tempKey] : array();
-
-        $keys = array(
-            'mode',
-            'processing',
-            'shipped'
-        );
-        foreach ($keys as $key) {
-            if (isset($tempSettings[$key])) {
-                $data['magento_orders_settings'][$tempKey][$key] = $tempSettings[$key];
-            }
-        }
-
-        // ---------------------------------------
-
-        // invoice/shipment settings
-        // ---------------------------------------
-        $data['magento_orders_settings']['invoice_mode'] = 1;
-        $data['magento_orders_settings']['shipment_mode'] = 1;
-
-        $temp = Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_STATUS_MAPPING_MODE_CUSTOM;
-        if (!empty($data['magento_orders_settings']['status_mapping']['mode']) &&
-            $data['magento_orders_settings']['status_mapping']['mode'] == $temp) {
-            if (!isset($post['magento_orders_settings']['invoice_mode'])) {
-                $data['magento_orders_settings']['invoice_mode'] = 0;
-            }
-
-            if (!isset($post['magento_orders_settings']['shipment_mode'])) {
-                $data['magento_orders_settings']['shipment_mode'] = 0;
-            }
-        }
-
-        // ---------------------------------------
-
-        // ---------------------------------------
-        $data['magento_orders_settings'] = Mage::helper('M2ePro')->jsonEncode($data['magento_orders_settings']);
-        // ---------------------------------------
-
-        // tab: vat calculation service
-        // ---------------------------------------
-        $keys = array(
-            'auto_invoicing',
-            'is_magento_invoice_creation_disabled',
-        );
-        foreach ($keys as $key) {
-            if (isset($post[$key])) {
-                $data[$key] = $post[$key];
-            }
-        }
-
-        if (empty($data['auto_invoicing'])) {
-            $data['is_magento_invoice_creation_disabled'] = false;
-        }
-
-        // ---------------------------------------
-
-        // Add or update model
-        // ---------------------------------------
-        $model = $this->updateAccount($this->getRequest()->getParam('id'), $data);
+        $model = $this->updateAccount($this->getRequest()->getParam('id'), $post);
 
         // Repricing
         // ---------------------------------------
@@ -554,8 +228,7 @@ class Ess_M2ePro_Adminhtml_Amazon_AccountController
 
             $repricingOldData = $snapshotBuilder->getSnapshot();
 
-            $repricingModel->addData($post['repricing']);
-            $repricingModel->save();
+            Mage::getModel('M2ePro/Amazon_Account_Repricing_Builder')->build($repricingModel, $post['repricing']);
 
             $snapshotBuilder = Mage::getModel('M2ePro/Amazon_Account_Repricing_SnapshotBuilder');
             $snapshotBuilder->setModel($repricingModel);
@@ -748,7 +421,7 @@ class Ess_M2ePro_Adminhtml_Amazon_AccountController
         $note   = $response['info']['note'];
 
         if ($status) {
-            return 'MagentoMessageObj.addNotice(\''.$note.'\');';
+            return 'MessageObj.addNotice(\''.$note.'\');';
         }
 
         $errorMessage = Mage::helper('M2ePro')->__(
@@ -756,7 +429,7 @@ class Ess_M2ePro_Adminhtml_Amazon_AccountController
             array('error_message' => $note)
         );
 
-        return 'MagentoMessageObj.addError(\''.$errorMessage.'\');';
+        return 'MessageObj.addError(\''.$errorMessage.'\');';
     }
 
     //########################################
@@ -767,15 +440,12 @@ class Ess_M2ePro_Adminhtml_Amazon_AccountController
 
         if (isset($id)) {
             $model->loadInstance($id);
-            $model->addData($data);
             $model->setData('isEdit', true);
         } else {
-            $model->setData($data);
             $model->setData('isEdit', false);
         }
 
-        $model->save();
-        $model->getChildObject()->save();
+        Mage::getModel('M2ePro/Amazon_Account_Builder')->build($model, $data);
 
         return $model;
     }

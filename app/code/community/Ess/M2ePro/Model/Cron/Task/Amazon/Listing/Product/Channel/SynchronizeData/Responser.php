@@ -30,8 +30,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
 
             $this->getSynchronizationLog()->addMessage(
                 Mage::helper('M2ePro')->__($message->getText()),
-                $logType,
-                Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH
+                $logType
             );
         }
     }
@@ -57,8 +56,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
 
         $this->getSynchronizationLog()->addMessage(
             Mage::helper('M2ePro')->__($messageText),
-            Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
-            Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH
+            Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR
         );
     }
 
@@ -68,14 +66,9 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
     {
         try {
             $this->updateReceivedListingsProducts();
-        } catch (Exception $exception) {
-            Mage::helper('M2ePro/Module_Exception')->process($exception);
-
-            $this->getSynchronizationLog()->addMessage(
-                Mage::helper('M2ePro')->__($exception->getMessage()),
-                Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
-                Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH
-            );
+        } catch (Exception $e) {
+            Mage::helper('M2ePro/Module_Exception')->process($e);
+            $this->getSynchronizationLog()->addMessageFromException($e);
         }
     }
 
@@ -196,16 +189,27 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
             }
 
             if ($this->isDataChanged($existingData, $newData, 'online_qty')) {
-                $instructionsData[] = array(
-                    'listing_product_id' => $listingProduct->getId(),
-                    'type'               =>
-                        Ess_M2ePro_Model_Amazon_Listing_Product::INSTRUCTION_TYPE_CHANNEL_QTY_CHANGED,
-                    'initiator'          => self::INSTRUCTION_INITIATOR,
-                    'priority'           => 80,
-                );
+                if ($this->isNeedSkipQTYChange($existingData, $newData)) {
+                    Mage::helper('M2ePro/Module_Logger')->process(
+                        array(
+                            'sku'       => $existingItem['sku'],
+                            'new_qty'   => $newData['online_qty'],
+                            'exist_qty' => $existingItem['online_qty']
+                        ),
+                        'amazon-skip-online-change'
+                    );
+                } else {
+                    $instructionsData[] = array(
+                        'listing_product_id' => $listingProduct->getId(),
+                        'type'               =>
+                            Ess_M2ePro_Model_Amazon_Listing_Product::INSTRUCTION_TYPE_CHANNEL_QTY_CHANGED,
+                        'initiator'          => self::INSTRUCTION_INITIATOR,
+                        'priority'           => 80,
+                    );
 
-                if (!empty($existingItem['is_variation_product']) && !empty($existingItem['variation_parent_id'])) {
-                    $parentIdsForProcessing[] = (int)$existingItem['variation_parent_id'];
+                    if (!empty($existingItem['is_variation_product']) && !empty($existingItem['variation_parent_id'])) {
+                        $parentIdsForProcessing[] = (int)$existingItem['variation_parent_id'];
+                    }
                 }
             }
 
@@ -269,8 +273,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
                     $this->getLogsActionId(),
                     Ess_M2ePro_Model_Listing_Log::ACTION_CHANNEL_CHANGE,
                     $tempLogMessage,
-                    Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS,
-                    Ess_M2ePro_Model_Log_Abstract::PRIORITY_LOW
+                    Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS
                 );
             }
 
@@ -431,6 +434,19 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
         }
 
         return $existData[$key] != $newData[$key];
+    }
+
+    /**
+     * Skip channel change to prevent oversell when we have got report before an order
+     * https://m2epro.atlassian.net/browse/M1-77
+     *
+     * @param $existData
+     * @param $newData
+     * @return bool
+     */
+    protected function isNeedSkipQTYChange($existData, $newData)
+    {
+        return $newData['online_qty'] < 5 && $newData['online_qty'] < $existData['online_qty'];
     }
 
     //########################################

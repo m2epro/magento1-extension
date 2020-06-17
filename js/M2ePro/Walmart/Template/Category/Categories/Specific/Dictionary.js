@@ -1,5 +1,4 @@
-WalmartTemplateCategoryCategoriesSpecificDictionary = Class.create();
-WalmartTemplateCategoryCategoriesSpecificDictionary.prototype = {
+window.WalmartTemplateCategoryCategoriesSpecificDictionary = Class.create({
 
     // ---------------------------------------
 
@@ -141,4 +140,4 @@ WalmartTemplateCategoryCategoriesSpecificDictionary.prototype = {
     }
 
     // ---------------------------------------
-};
+});

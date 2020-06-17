@@ -2,11 +2,9 @@
 
 // @codingStandardsIgnoreFile
 
-/** @var $this Ess_M2ePro_Block_Adminhtml_Listing_AutoAction_Mode_Website */
+/** @var $this Ess_M2ePro_Block_Adminhtml_Amazon_Listing_AutoAction_Mode_Website */
 
-$formData = $this->getFormData();
-$default  = $this->getDefault();
-$formData = array_merge($default, $formData);
+$formData = array_merge($this->getDefault(), $this->getFormData());
 
 /** @var Ess_M2ePro_Model_Resource_Amazon_Template_Description_Collection $collection */
 $collection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Template_Description');
@@ -42,23 +40,19 @@ usort($descriptionTemplates, function($a, $b)
         'marketplace_id'            => $this->getListing()->getMarketplaceId()
     )); ?>';
 
-    ListingAutoActionHandlerObj.showCreateNewAsin = <?php echo $showCreateNewAsin ?>;
+    ListingAutoActionObj.showCreateNewAsin = <?php echo $showCreateNewAsin ?>;
 
     $('auto_website_adding_mode')
-        .observe('change', ListingAutoActionHandlerObj.addingModeChange)
+        .observe('change', ListingAutoActionObj.addingModeChange)
         .simulate('change');
-
-    $('continue_button')
-        .stopObserving('click')
-        .observe('click', ListingAutoActionHandlerObj.websiteStepTwo);
 
     $('reset_button')
         .observe('click', function() {
-            ListingAutoActionHandlerObj.reset(false);
+            ListingAutoActionObj.reset(false);
         });
 
     $('auto_action_create_asin')
-        .observe('change', ListingAutoActionHandlerObj.createAsinChange)
+        .observe('change', ListingAutoActionObj.createAsinChange)
         .simulate('change');
 
     $('adding_description_template_id').observe('change', function(el) {
@@ -169,7 +163,7 @@ usort($descriptionTemplates, function($a, $b)
                         <span><?php echo Mage::helper('M2ePro')->__('Creation of new ASIN/ISBN will be performed based on specified Description Policy. Only the Description Policies set for new ASIN/ISBN creation are available for choosing.
                                 <br/><br/><b>Note:</b> If chosen Description Policy doesn’t meet all the Conditions for new ASIN/ISBN creation, the Products will still be added to M2E Pro Listings but will not be Listed on Amazon.'); ?></span>
                     </span>
-                    <a href="javascript: void(0);" style="vertical-align: inherit;" onclick="ListingAutoActionHandlerObj.addNewTemplate(M2ePro.url.addNewDescriptionTemplate, ListingAutoActionHandlerObj.reloadDescriptionTemplates);"><?php echo Mage::helper('M2ePro')->__('Add New') ?></a>
+                    <a href="javascript: void(0);" style="vertical-align: inherit;" onclick="ListingAutoActionObj.addNewTemplate(M2ePro.url.addNewDescriptionTemplate, ListingAutoActionObj.reloadDescriptionTemplates);"><?php echo Mage::helper('M2ePro')->__('Add New') ?></a>
                 </td>
             </tr>
 
@@ -212,7 +206,7 @@ usort($descriptionTemplates, function($a, $b)
 <div style="float: right; margin: 10px 0;">
     <?php if (!$this->hasFormData()): ?>
         <a id="reset_button" href="" style="display: none;"></a>
-        <a id="close_button" href="javascript: void(0);" onclick="ListingAutoActionHandlerObj.loadAutoActionHtml();"><?php echo Mage::helper('M2ePro')->__('Cancel') ?></a>
+        <a id="close_button" href="javascript: void(0);" onclick="ListingAutoActionObj.loadAutoActionHtml();"><?php echo Mage::helper('M2ePro')->__('Cancel') ?></a>
     <?php endif; ?>
     &nbsp;
     &nbsp;

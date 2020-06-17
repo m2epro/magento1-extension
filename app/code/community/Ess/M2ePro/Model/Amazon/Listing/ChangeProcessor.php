@@ -23,7 +23,7 @@ class Ess_M2ePro_Model_Amazon_Listing_ChangeProcessor
 
     // ---------------------------------------
 
-    protected function getInstructionsData(Ess_M2ePro_Model_Template_Diff_Abstract $diff, $status)
+    protected function getInstructionsData(Ess_M2ePro_Model_ActiveRecord_Diff $diff, $status)
     {
         /** @var Ess_M2ePro_Model_Amazon_Listing_Diff $diff */
 

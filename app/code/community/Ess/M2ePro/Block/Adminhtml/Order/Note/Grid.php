@@ -78,12 +78,12 @@ class Ess_M2ePro_Block_Adminhtml_Order_Note_Grid extends Mage_Adminhtml_Block_Wi
             'actions'   => array(
                 array(
                     'caption'        => Mage::helper('M2ePro')->__('Edit'),
-                    'onclick_action' => "OrderNoteHandlerObj.openEditNotePopup",
+                    'onclick_action' => "OrderNoteObj.openEditNotePopup",
                     'field'          => 'id'
                 ),
                 array(
                     'caption'        => Mage::helper('M2ePro')->__('Delete'),
-                    'onclick_action' => "OrderNoteHandlerObj.deleteNote",
+                    'onclick_action' => "OrderNoteObj.deleteNote",
                     'field'          => 'id'
                 )
             )

@@ -28,8 +28,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
 
             $this->getSynchronizationLog()->addMessage(
                 Mage::helper('M2ePro')->__($message->getText()),
-                $logType,
-                Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH
+                $logType
             );
         }
     }
@@ -55,8 +54,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
 
         $this->getSynchronizationLog()->addMessage(
             Mage::helper('M2ePro')->__($messageText),
-            Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
-            Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH
+            Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR
         );
     }
 
@@ -67,14 +65,9 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
         try {
             $this->clearAllDefectedMessages();
             $this->updateReceivedDefectedListingsProducts();
-        } catch (Exception $exception) {
-            Mage::helper('M2ePro/Module_Exception')->process($exception);
-
-            $this->getSynchronizationLog()->addMessage(
-                Mage::helper('M2ePro')->__($exception->getMessage()),
-                Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
-                Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH
-            );
+        } catch (Exception $e) {
+            Mage::helper('M2ePro/Module_Exception')->process($e);
+            $this->getSynchronizationLog()->addMessageFromException($e);
         }
     }
 
@@ -110,7 +103,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
 
         $keys = array_map(
             function($el){
-            return (string)$el; 
+            return (string)$el;
             }, array_keys($receivedItems)
         );
 

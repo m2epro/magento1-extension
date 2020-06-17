@@ -51,7 +51,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_View extends Mage_Adminhtml_Block_Wi
         $this->_addButton(
             'back', array(
             'label'     => Mage::helper('M2ePro')->__('Back'),
-            'onclick'   => 'CommonHandlerObj.back_click(\''.$url.'\')',
+            'onclick'   => 'CommonObj.back_click(\''.$url.'\')',
             'class'     => 'back'
             )
         );

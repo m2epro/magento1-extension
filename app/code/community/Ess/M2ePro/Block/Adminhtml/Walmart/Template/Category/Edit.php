@@ -64,7 +64,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Category_Edit
         $this->_addButton(
             'back', array(
             'label'     => Mage::helper('M2ePro')->__('Back'),
-            'onclick'   => 'WalmartTemplateCategoryHandlerObj.back_click(\'' . $url . '\')',
+            'onclick'   => 'WalmartTemplateCategoryObj.back_click(\'' . $url . '\')',
             'class'     => 'back'
             )
         );
@@ -77,7 +77,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Category_Edit
             $this->_addButton(
                 'duplicate', array(
                 'label'   => Mage::helper('M2ePro')->__('Duplicate'),
-                'onclick' => 'WalmartTemplateCategoryHandlerObj.duplicate_click'
+                'onclick' => 'WalmartTemplateCategoryObj.duplicate_click'
                     .'(\'walmart-template-sellingFormat\')',
                 'class'   => 'add M2ePro_duplicate_button'
                 )
@@ -88,7 +88,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Category_Edit
             $this->_addButton(
                 'delete', array(
                 'label'     => Mage::helper('M2ePro')->__('Delete'),
-                'onclick'   => 'WalmartTemplateCategoryHandlerObj.delete_click()',
+                'onclick'   => 'WalmartTemplateCategoryObj.delete_click()',
                 'class'     => 'delete M2ePro_delete_button'
                 )
             );
@@ -99,7 +99,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Category_Edit
         $this->_addButton(
             'save', array(
             'label'     => Mage::helper('M2ePro')->__('Save'),
-            'onclick'   => 'WalmartTemplateCategoryHandlerObj.save_click('
+            'onclick'   => 'WalmartTemplateCategoryObj.save_click('
                 . '\'\','
                 . '\'' . $this->getSaveConfirmationText() . '\','
                 . '\'' . Ess_M2ePro_Block_Adminhtml_Walmart_Template_Grid::TEMPLATE_CATEGORY . '\''
@@ -113,7 +113,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Category_Edit
         $this->_addButton(
             'save_and_continue', array(
             'label'     => Mage::helper('M2ePro')->__('Save And Continue Edit'),
-            'onclick'   => 'WalmartTemplateCategoryHandlerObj.save_and_edit_click('
+            'onclick'   => 'WalmartTemplateCategoryObj.save_and_edit_click('
                 . '\'\','
                 . 'undefined,'
                 . '\'' . $this->getSaveConfirmationText() . '\','

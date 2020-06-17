@@ -32,24 +32,15 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Order_CreateFailed
 
     protected function performActions()
     {
-        $permittedAccounts = $this->getPermittedAccounts();
-        if (empty($permittedAccounts)) {
-            return;
-        }
+        /** @var $accountsCollection Mage_Core_Model_Resource_Db_Collection_Abstract */
+        $accountsCollection = Mage::helper('M2ePro/Component_Walmart')->getCollection('Account');
 
-        foreach ($permittedAccounts as $account) {
+        foreach ($accountsCollection->getItems() as $account) {
             /** @var $account Ess_M2ePro_Model_Account **/
 
             try {
-                $this->getOperationHistory()->addText('Starting account "'.$account->getTitle().'"');
-
-                // ---------------------------------------
-
                 $walmartOrders = $this->getWalmartOrders($account);
-
-                if (!empty($walmartOrders)) {
-                    $this->createMagentoOrders($walmartOrders);
-                }
+                $this->createMagentoOrders($walmartOrders);
             } catch (\Exception $exception) {
                 $message = Mage::helper('M2ePro')->__(
                     'The "Create Failed Orders" Action for Walmart Account "%account%" was completed with error.',
@@ -64,35 +55,20 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Order_CreateFailed
 
     //########################################
 
-    protected function getPermittedAccounts()
-    {
-        /** @var $accountsCollection Mage_Core_Model_Resource_Db_Collection_Abstract */
-        $accountsCollection = Mage::helper('M2ePro/Component_Walmart')->getCollection('Account');
-        return $accountsCollection->getItems();
-    }
-
-    // ---------------------------------------
-
     protected function createMagentoOrders($walmartOrders)
     {
+        /** @var Ess_M2ePro_Model_Cron_Task_Walmart_Order_Creator $ordersCreator */
+        $ordersCreator = Mage::getModel('M2ePro/Cron_Task_Walmart_Order_Creator');
+        $ordersCreator->setSynchronizationLog($this->getSynchronizationLog());
+
         foreach ($walmartOrders as $order) {
             /** @var $order Ess_M2ePro_Model_Order */
 
-            if ($this->isOrderChangedInParallelProcess($order)) {
+            if ($ordersCreator->isOrderChangedInParallelProcess($order)) {
                 continue;
             }
 
-            if ($order->canCreateMagentoOrder()) {
-                try {
-                    $message = 'Magento order creation rules are met.';
-                    $message .= ' M2E Pro will attempt to create Magento order.';
-
-                    $order->addNoticeLog($message);
-                    $order->createMagentoOrder();
-                } catch (Exception $exception) {
-                    continue;
-                }
-            } else {
+            if (!$order->canCreateMagentoOrder()) {
                 $order->addData(
                     array(
                         'magento_order_creation_failure' => Ess_M2ePro_Model_Order::MAGENTO_ORDER_CREATION_FAILED_NO,
@@ -101,47 +77,12 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Order_CreateFailed
                     )
                 );
                 $order->save();
-
                 continue;
             }
 
-            if ($order->getReserve()->isNotProcessed() && $order->isReservable()) {
-                $order->getReserve()->place();
-            }
-
-            if ($order->getChildObject()->canCreateInvoice()) {
-                $order->createInvoice();
-            }
-
-            if ($order->getChildObject()->canCreateShipment()) {
-                $order->createShipment();
-            }
-
-            if ($order->getStatusUpdateRequired()) {
-                $order->updateMagentoOrderStatus();
-            }
+            $ordersCreator->createMagentoOrder($order);
         }
     }
-
-    /**
-     * This is going to protect from Magento Orders duplicates.
-     * (Is assuming that there may be a parallel process that has already created Magento Order)
-     *
-     * But this protection is not covering a cases when two parallel cron processes are isolated by mysql transactions
-     */
-    protected function isOrderChangedInParallelProcess(Ess_M2ePro_Model_Order $order)
-    {
-        /** @var Ess_M2ePro_Model_Order $dbOrder */
-        $dbOrder = Mage::getModel('M2ePro/Order')->load($order->getId());
-
-        if ($dbOrder->getMagentoOrderId() != $order->getMagentoOrderId()) {
-            return true;
-        }
-
-        return false;
-    }
-
-    // ---------------------------------------
 
     protected function getWalmartOrders(Ess_M2ePro_Model_Account $account)
     {

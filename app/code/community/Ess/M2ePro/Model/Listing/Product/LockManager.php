@@ -90,8 +90,7 @@ class Ess_M2ePro_Model_Listing_Product_LockManager
             $this->_logsActionId,
             $this->_logsAction,
             Mage::helper('M2ePro')->__('Another Action is being processed. Try again when the Action is completed.'),
-            Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
-            Ess_M2ePro_Model_Log_Abstract::PRIORITY_MEDIUM
+            Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR
         );
 
         return true;

@@ -34,116 +34,7 @@ $isEdit && $formData = array(
 );
 
 $default = array(
-    'definition' => array(
-
-        'title_mode'     => Ess_M2ePro_Model_Amazon_Template_Description_Definition::TITLE_MODE_PRODUCT,
-        'title_template' => '',
-
-        'brand_mode'             => Ess_M2ePro_Model_Amazon_Template_Description_Definition::BRAND_MODE_NONE,
-        'brand_custom_value'     => '',
-        'brand_custom_attribute' => '',
-
-        'manufacturer_mode'             => Ess_M2ePro_Model_Amazon_Template_Description_Definition::MANUFACTURER_MODE_NONE,
-        'manufacturer_custom_value'     => '',
-        'manufacturer_custom_attribute' => '',
-
-        'manufacturer_part_number_mode'             => Ess_M2ePro_Model_Amazon_Template_Description_Definition::MANUFACTURER_PART_NUMBER_MODE_NONE,
-        'manufacturer_part_number_custom_value'     => '',
-        'manufacturer_part_number_custom_attribute' => '',
-
-        // ---
-
-        'item_package_quantity_mode'             => Ess_M2ePro_Model_Amazon_Template_Description_Definition::ITEM_PACKAGE_QUANTITY_MODE_NONE,
-        'item_package_quantity_custom_value'     => '',
-        'item_package_quantity_custom_attribute' => '',
-
-        'number_of_items_mode'             => Ess_M2ePro_Model_Amazon_Template_Description_Definition::NUMBER_OF_ITEMS_MODE_NONE,
-        'number_of_items_custom_value'     => '',
-        'number_of_items_custom_attribute' => '',
-
-        // ---
-
-        'msrp_rrp_mode'             => Ess_M2ePro_Model_Amazon_Template_Description_Definition::MSRP_RRP_MODE_NONE,
-        'msrp_rrp_custom_attribute' => '',
-
-        // ---
-
-        'item_dimensions_volume_mode'                    => Ess_M2ePro_Model_Amazon_Template_Description_Definition::DIMENSION_VOLUME_MODE_NONE,
-        'item_dimensions_volume_length_custom_value'     => '',
-        'item_dimensions_volume_width_custom_value'      => '',
-        'item_dimensions_volume_height_custom_value'     => '',
-        'item_dimensions_volume_length_custom_attribute' => '',
-        'item_dimensions_volume_width_custom_attribute'  => '',
-        'item_dimensions_volume_height_custom_attribute' => '',
-
-        'item_dimensions_volume_unit_of_measure_mode'             => Ess_M2ePro_Model_Amazon_Template_Description_Definition::DIMENSION_VOLUME_UNIT_OF_MEASURE_MODE_CUSTOM_VALUE,
-        'item_dimensions_volume_unit_of_measure_custom_value'     => '',
-        'item_dimensions_volume_unit_of_measure_custom_attribute' => '',
-
-        'item_dimensions_weight_mode' => Ess_M2ePro_Model_Amazon_Template_Description_Definition::WEIGHT_MODE_NONE,
-        'item_dimensions_weight_custom_value'     => '',
-        'item_dimensions_weight_custom_attribute' => '',
-
-        'item_dimensions_weight_unit_of_measure_mode' => Ess_M2ePro_Model_Amazon_Template_Description_Definition::WEIGHT_UNIT_OF_MEASURE_MODE_CUSTOM_VALUE,
-        'item_dimensions_weight_unit_of_measure_custom_value'     => '',
-        'item_dimensions_weight_unit_of_measure_custom_attribute' => '',
-
-        // ---
-
-        'package_dimensions_volume_mode'                    => Ess_M2ePro_Model_Amazon_Template_Description_Definition::DIMENSION_VOLUME_MODE_NONE,
-        'package_dimensions_volume_length_custom_value'     => '',
-        'package_dimensions_volume_width_custom_value'      => '',
-        'package_dimensions_volume_height_custom_value'     => '',
-        'package_dimensions_volume_length_custom_attribute' => '',
-        'package_dimensions_volume_width_custom_attribute'  => '',
-        'package_dimensions_volume_height_custom_attribute' => '',
-
-        'package_dimensions_volume_unit_of_measure_mode'                => Ess_M2ePro_Model_Amazon_Template_Description_Definition::DIMENSION_VOLUME_UNIT_OF_MEASURE_MODE_CUSTOM_VALUE,
-        'package_dimensions_volume_unit_of_measure_custom_value'     => '',
-        'package_dimensions_volume_unit_of_measure_custom_attribute' => '',
-
-        // ---
-
-        'package_weight_mode'             => Ess_M2ePro_Model_Amazon_Template_Description_Definition::WEIGHT_MODE_NONE,
-        'package_weight_custom_value'     => '',
-        'package_weight_custom_attribute' => '',
-
-        'package_weight_unit_of_measure_mode' => Ess_M2ePro_Model_Amazon_Template_Description_Definition::WEIGHT_UNIT_OF_MEASURE_MODE_CUSTOM_VALUE,
-        'package_weight_unit_of_measure_custom_value' => '',
-        'package_weight_unit_of_measure_custom_attribute' => '',
-
-        'shipping_weight_mode'             => Ess_M2ePro_Model_Amazon_Template_Description_Definition::WEIGHT_MODE_NONE,
-        'shipping_weight_custom_value'     => '',
-        'shipping_weight_custom_attribute' => '',
-
-        'shipping_weight_unit_of_measure_mode'             => Ess_M2ePro_Model_Amazon_Template_Description_Definition::WEIGHT_UNIT_OF_MEASURE_MODE_CUSTOM_VALUE,
-        'shipping_weight_unit_of_measure_custom_value'     => '',
-        'shipping_weight_unit_of_measure_custom_attribute' => '',
-
-        // ---
-
-        'target_audience_mode' => Ess_M2ePro_Model_Amazon_Template_Description_Definition::TARGET_AUDIENCE_MODE_NONE,
-        'target_audience'      => json_encode(array()),
-
-        'search_terms_mode' => Ess_M2ePro_Model_Amazon_Template_Description_Definition::SEARCH_TERMS_MODE_NONE,
-        'search_terms'      => json_encode(array()),
-
-        'image_main_mode'      => Ess_M2ePro_Model_Amazon_Template_Description_Definition::IMAGE_MAIN_MODE_PRODUCT,
-        'image_main_attribute' => '',
-
-        'image_variation_difference_mode'      => Ess_M2ePro_Model_Amazon_Template_Description_Definition::IMAGE_VARIATION_DIFFERENCE_MODE_NONE,
-        'image_variation_difference_attribute' => '',
-
-        'gallery_images_mode'      => Ess_M2ePro_Model_Amazon_Template_Description_Definition::GALLERY_IMAGES_MODE_NONE,
-        'gallery_images_limit'     => 1,
-        'gallery_images_attribute' => '',
-
-        'bullet_points_mode' => Ess_M2ePro_Model_Amazon_Template_Description_Definition::BULLET_POINTS_MODE_NONE,
-        'bullet_points'      => json_encode(array()),
-
-        'description_mode'     => Ess_M2ePro_Model_Amazon_Template_Description_Definition::DESCRIPTION_MODE_NONE,
-        'description_template' => '',
-    )
+    'definition' => Mage::getModel('M2ePro/Amazon_Template_Description_Definition_Builder')->getDefaultData()
 );
 
 $formData = Mage::helper('M2ePro')->arrayReplaceRecursive($default, $formData);
@@ -179,129 +70,129 @@ $attributesByInputTypes = array(
 
     Event.observe(window, 'load', function() {
 
-        AmazonTemplateDescriptionDefinitionHandlerObj = new AmazonTemplateDescriptionDefinitionHandler();
+        AmazonTemplateDescriptionDefinitionObj = new AmazonTemplateDescriptionDefinition();
 
-        AmazonTemplateDescriptionDefinitionHandlerObj.setConstants(
+        AmazonTemplateDescriptionDefinitionObj.setConstants(
             '<?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Model_Amazon_Template_Description_Definition'); ?>'
         );
 
         M2ePro.formData.definition = <?php echo json_encode($formData['definition']); ?>;
 
         $('title_mode')
-            .observe('change', AmazonTemplateDescriptionDefinitionHandlerObj.title_mode_change)
+            .observe('change', AmazonTemplateDescriptionDefinitionObj.title_mode_change)
             .simulate('change');
 
         $('brand_mode')
-            .observe('change', AmazonTemplateDescriptionDefinitionHandlerObj.brand_mode_change)
+            .observe('change', AmazonTemplateDescriptionDefinitionObj.brand_mode_change)
             .simulate('change');
 
         $('manufacturer_mode')
-            .observe('change', AmazonTemplateDescriptionDefinitionHandlerObj.manufacturer_mode_change)
+            .observe('change', AmazonTemplateDescriptionDefinitionObj.manufacturer_mode_change)
             .simulate('change');
 
         $('manufacturer_part_number_mode')
-            .observe('change', AmazonTemplateDescriptionDefinitionHandlerObj.manufacturer_part_number_mode_change)
+            .observe('change', AmazonTemplateDescriptionDefinitionObj.manufacturer_part_number_mode_change)
             .simulate('change');
 
         // ---
 
         $('item_package_quantity_mode')
-            .observe('change', AmazonTemplateDescriptionDefinitionHandlerObj.onChangeItemPackageQuantityMode)
+            .observe('change', AmazonTemplateDescriptionDefinitionObj.onChangeItemPackageQuantityMode)
             .simulate('change');
 
         $('number_of_items_mode')
-            .observe('change', AmazonTemplateDescriptionDefinitionHandlerObj.onChangeNumberOfItemsMode)
+            .observe('change', AmazonTemplateDescriptionDefinitionObj.onChangeNumberOfItemsMode)
             .simulate('change');
 
         // ---
 
         $('msrp_rrp_mode')
-            .observe('change', AmazonTemplateDescriptionDefinitionHandlerObj.onChangeMsrpRrpMode)
+            .observe('change', AmazonTemplateDescriptionDefinitionObj.onChangeMsrpRrpMode)
             .simulate('change');
 
         // ---
 
         $('item_dimensions_volume_mode')
-            .observe('change', AmazonTemplateDescriptionDefinitionHandlerObj.item_dimensions_volume_mode_change)
+            .observe('change', AmazonTemplateDescriptionDefinitionObj.item_dimensions_volume_mode_change)
             .simulate('change');
 
         $('item_dimensions_volume_unit_of_measure_mode')
-            .observe('change', AmazonTemplateDescriptionDefinitionHandlerObj.item_dimensions_volume_unit_of_measure_mode_change)
+            .observe('change', AmazonTemplateDescriptionDefinitionObj.item_dimensions_volume_unit_of_measure_mode_change)
             .simulate('change');
 
         $('item_dimensions_weight_mode')
-            .observe('change', AmazonTemplateDescriptionDefinitionHandlerObj.item_dimensions_weight_mode_change)
+            .observe('change', AmazonTemplateDescriptionDefinitionObj.item_dimensions_weight_mode_change)
             .simulate('change');
 
         $('item_dimensions_weight_unit_of_measure_mode')
-            .observe('change', AmazonTemplateDescriptionDefinitionHandlerObj.item_dimensions_weight_unit_of_measure_mode_change)
+            .observe('change', AmazonTemplateDescriptionDefinitionObj.item_dimensions_weight_unit_of_measure_mode_change)
             .simulate('change');
 
         // ---
 
         $('package_dimensions_volume_mode')
-            .observe('change', AmazonTemplateDescriptionDefinitionHandlerObj.package_dimensions_volume_mode_change)
+            .observe('change', AmazonTemplateDescriptionDefinitionObj.package_dimensions_volume_mode_change)
             .simulate('change');
 
         $('package_dimensions_volume_unit_of_measure_mode')
-            .observe('change', AmazonTemplateDescriptionDefinitionHandlerObj.package_dimensions_volume_unit_of_measure_mode_change)
+            .observe('change', AmazonTemplateDescriptionDefinitionObj.package_dimensions_volume_unit_of_measure_mode_change)
             .simulate('change');
 
         // ---
 
         $('package_weight_mode')
-            .observe('change', AmazonTemplateDescriptionDefinitionHandlerObj.package_weight_mode_change)
+            .observe('change', AmazonTemplateDescriptionDefinitionObj.package_weight_mode_change)
             .simulate('change');
 
         $('package_weight_unit_of_measure_mode')
-            .observe('change', AmazonTemplateDescriptionDefinitionHandlerObj.package_weight_unit_of_measure_mode_change)
+            .observe('change', AmazonTemplateDescriptionDefinitionObj.package_weight_unit_of_measure_mode_change)
             .simulate('change');
 
         $('shipping_weight_mode')
-            .observe('change', AmazonTemplateDescriptionDefinitionHandlerObj.shipping_weight_mode_change)
+            .observe('change', AmazonTemplateDescriptionDefinitionObj.shipping_weight_mode_change)
             .simulate('change');
 
         $('shipping_weight_unit_of_measure_mode')
-            .observe('change', AmazonTemplateDescriptionDefinitionHandlerObj.shipping_weight_unit_of_measure_mode_change)
+            .observe('change', AmazonTemplateDescriptionDefinitionObj.shipping_weight_unit_of_measure_mode_change)
             .simulate('change');
 
         // ---
 
         $('target_audience_mode')
             .observe('change', function () {
-                AmazonTemplateDescriptionDefinitionHandlerObj.multi_element_mode_change.call(this,'target_audience',4);
+                AmazonTemplateDescriptionDefinitionObj.multi_element_mode_change.call(this,'target_audience',4);
             })
             .simulate('change');
 
         $('bullet_points_mode')
             .observe('change', function () {
-                AmazonTemplateDescriptionDefinitionHandlerObj.multi_element_mode_change.call(this,'bullet_points',5);
+                AmazonTemplateDescriptionDefinitionObj.multi_element_mode_change.call(this,'bullet_points',5);
             })
             .simulate('change');
 
         $('search_terms_mode')
             .observe('change', function () {
-                AmazonTemplateDescriptionDefinitionHandlerObj.multi_element_mode_change.call(this,'search_terms',5);
+                AmazonTemplateDescriptionDefinitionObj.multi_element_mode_change.call(this,'search_terms',5);
             })
             .simulate('change');
 
         $('description_mode')
-            .observe('change', AmazonTemplateDescriptionDefinitionHandlerObj.description_mode_change)
+            .observe('change', AmazonTemplateDescriptionDefinitionObj.description_mode_change)
             .simulate('change');
 
         $('image_main_mode')
-            .observe('change', AmazonTemplateDescriptionDefinitionHandlerObj.image_main_mode_change)
+            .observe('change', AmazonTemplateDescriptionDefinitionObj.image_main_mode_change)
             .simulate('change');
 
         $('image_variation_difference_mode')
-            .observe('change', AmazonTemplateDescriptionDefinitionHandlerObj.image_variation_difference_mode_change)
+            .observe('change', AmazonTemplateDescriptionDefinitionObj.image_variation_difference_mode_change)
             .simulate('change');
 
         $('gallery_images_mode')
-            .observe('change', AmazonTemplateDescriptionDefinitionHandlerObj.gallery_images_mode_change)
+            .observe('change', AmazonTemplateDescriptionDefinitionObj.gallery_images_mode_change)
             .simulate('change');
 
-        AmazonTemplateDescriptionHandlerObj.onChangeNewAsinAccepted.bind($('new_asin_accepted'))();
+        AmazonTemplateDescriptionObj.onChangeNewAsinAccepted.bind($('new_asin_accepted'))();
     });
 
 </script>
@@ -1291,7 +1182,7 @@ $attributesByInputTypes = array(
                             <label><?php echo Mage::helper('M2ePro')->__('Target Audience Value #%s', $i + 1); ?>: <span class="required">*</span></label>
                         </td>
                         <td class="value">
-                            <input id="target_audience_<?php echo $i; ?>" onkeyup="AmazonTemplateDescriptionDefinitionHandlerObj.multi_element_keyup('target_audience',this)"
+                            <input id="target_audience_<?php echo $i; ?>" onkeyup="AmazonTemplateDescriptionDefinitionObj.multi_element_keyup('target_audience',this)"
                                    name="definition[target_audience][]" type="text" class="input-text M2ePro-required-when-visible"
                                    value="<?php echo !empty($formData['definition']['target_audience'][$i]) ? Mage::helper('M2ePro')->escapeHtml($formData['definition']['target_audience'][$i]) : ''; ?>">
                             <p class="note">
@@ -1316,9 +1207,9 @@ $attributesByInputTypes = array(
                 <tr id="target_audience_actions_tr" style="display: none;">
                     <td></td>
                     <td class="value" style="padding-top: 0 !important;">
-                        <a id="show_target_audience_action" href="javascript: void(0);" onclick="AmazonTemplateDescriptionDefinitionHandlerObj.showElement('target_audience');"><?php echo Mage::helper('M2ePro')->__('Add New') ?></a>
+                        <a id="show_target_audience_action" href="javascript: void(0);" onclick="AmazonTemplateDescriptionDefinitionObj.showElement('target_audience');"><?php echo Mage::helper('M2ePro')->__('Add New') ?></a>
                         /
-                        <a id="hide_target_audience_action" href="javascript: void(0);" onclick="AmazonTemplateDescriptionDefinitionHandlerObj.hideElement('target_audience');"><?php echo Mage::helper('M2ePro')->__('Remove') ?></a>
+                        <a id="hide_target_audience_action" href="javascript: void(0);" onclick="AmazonTemplateDescriptionDefinitionObj.hideElement('target_audience');"><?php echo Mage::helper('M2ePro')->__('Remove') ?></a>
                     </td>
                 </tr>
 
@@ -1349,7 +1240,7 @@ $attributesByInputTypes = array(
                             <label><?php echo Mage::helper('M2ePro')->__('Search Terms Value #%s', $i + 1); ?>: <span class="required">*</span></label>
                         </td>
                         <td class="value">
-                            <input id="search_terms_<?php echo $i; ?>" onkeyup="AmazonTemplateDescriptionDefinitionHandlerObj.multi_element_keyup('search_terms',this)"
+                            <input id="search_terms_<?php echo $i; ?>" onkeyup="AmazonTemplateDescriptionDefinitionObj.multi_element_keyup('search_terms',this)"
                                    name="definition[search_terms][]" type="text" class="input-text M2ePro-required-when-visible"
                                    maxlength="250"
                                    value="<?php echo !empty($formData['definition']['search_terms'][$i]) ? Mage::helper('M2ePro')->escapeHtml($formData['definition']['search_terms'][$i]) : ''; ?>">
@@ -1375,9 +1266,9 @@ $attributesByInputTypes = array(
                 <tr id="search_terms_actions_tr" style="display: none;">
                     <td></td>
                     <td class="value" style="padding-top: 0 !important;">
-                        <a id="show_search_terms_action" href="javascript: void(0);" onclick="AmazonTemplateDescriptionDefinitionHandlerObj.showElement('search_terms');"><?php echo Mage::helper('M2ePro')->__('Add New') ?></a>
+                        <a id="show_search_terms_action" href="javascript: void(0);" onclick="AmazonTemplateDescriptionDefinitionObj.showElement('search_terms');"><?php echo Mage::helper('M2ePro')->__('Add New') ?></a>
                         /
-                        <a id="hide_search_terms_action" href="javascript: void(0);" onclick="AmazonTemplateDescriptionDefinitionHandlerObj.hideElement('search_terms');"><?php echo Mage::helper('M2ePro')->__('Remove') ?></a>
+                        <a id="hide_search_terms_action" href="javascript: void(0);" onclick="AmazonTemplateDescriptionDefinitionObj.hideElement('search_terms');"><?php echo Mage::helper('M2ePro')->__('Remove') ?></a>
                     </td>
                 </tr>
 
@@ -1408,11 +1299,11 @@ $attributesByInputTypes = array(
                             <label><?php echo Mage::helper('M2ePro')->__('Bullet Points Value #%s', $i + 1); ?>: <span class="required">*</span></label>
                         </td>
                         <td class="value">
-                            <input id="bullet_points_<?php echo $i; ?>" onkeyup="AmazonTemplateDescriptionDefinitionHandlerObj.multi_element_keyup('bullet_points',this)"
+                            <input id="bullet_points_<?php echo $i; ?>" onkeyup="AmazonTemplateDescriptionDefinitionObj.multi_element_keyup('bullet_points',this)"
                                    name="definition[bullet_points][]" type="text" class="input-text M2ePro-required-when-visible"
                                    value="<?php echo !empty($formData['definition']['bullet_points'][$i]) ? Mage::helper('M2ePro')->escapeHtml($formData['definition']['bullet_points'][$i]) : ''; ?>">
                             <p class="note">
-                                <span><?php echo Mage::helper('M2ePro')->__('Max. 100 characters.'); ?></span>
+                                <span><?php echo Mage::helper('M2ePro')->__('Max. 500 characters.'); ?></span>
                             </p>
                         </td>
                         <td class="value">
@@ -1433,9 +1324,9 @@ $attributesByInputTypes = array(
                 <tr id="bullet_points_actions_tr" style="display: none;">
                     <td></td>
                     <td class="value" style="padding-top: 0 !important;">
-                        <a id="show_bullet_points_action" href="javascript: void(0);" onclick="AmazonTemplateDescriptionDefinitionHandlerObj.showElement('bullet_points');"><?php echo Mage::helper('M2ePro')->__('Add New') ?></a>
+                        <a id="show_bullet_points_action" href="javascript: void(0);" onclick="AmazonTemplateDescriptionDefinitionObj.showElement('bullet_points');"><?php echo Mage::helper('M2ePro')->__('Add New') ?></a>
                         /
-                        <a id="hide_bullet_points_action" href="javascript: void(0);" onclick="AmazonTemplateDescriptionDefinitionHandlerObj.hideElement('bullet_points');"><?php echo Mage::helper('M2ePro')->__('Remove') ?></a>
+                        <a id="hide_bullet_points_action" href="javascript: void(0);" onclick="AmazonTemplateDescriptionDefinitionObj.hideElement('bullet_points');"><?php echo Mage::helper('M2ePro')->__('Remove') ?></a>
                     </td>
                 </tr>
 

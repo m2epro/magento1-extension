@@ -30,7 +30,7 @@ class Ess_M2ePro_Sql_Upgrade_v6_5_0_11__v6_5_0_12_AllFeatures extends Ess_M2ePro
         );
 
         $installer->run(<<<SQL
-DELETE FROM `m2epro_lock_transactional`
+DELETE FROM `{$this->_installer->getTable('m2epro_lock_transactional')}`
 WHERE `nick` LIKE 'scheduled_manager%'
 SQL
         );
@@ -38,7 +38,7 @@ SQL
         //########################################
 
         $installer->run(<<<SQL
-UPDATE `m2epro_marketplace`
+UPDATE `{$this->_installer->getTable('m2epro_marketplace')}`
 SET `group_title` = 'Australia Region'
 WHERE `id` IN (4, 35)
 SQL

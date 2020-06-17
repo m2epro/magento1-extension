@@ -27,7 +27,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_Edit_Tabs_Store extends Mage_Admin
         // ---------------------------------------
         $data = array(
             'label'   => Mage::helper('M2ePro')->__('Refresh'),
-            'onclick' => 'EbayAccountHandlerObj.ebayStoreUpdate();',
+            'onclick' => 'EbayAccountObj.ebayStoreUpdate();',
             'class'   => 'update_ebay_store'
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
@@ -37,7 +37,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_Edit_Tabs_Store extends Mage_Admin
         // ---------------------------------------
         $data = array(
             'label'   => Mage::helper('M2ePro')->__('Hide'),
-            'onclick' => 'EbayAccountHandlerObj.ebayStoreSelectCategoryHide();',
+            'onclick' => 'EbayAccountObj.ebayStoreSelectCategoryHide();',
             'class'   => 'hide_selected_category'
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);

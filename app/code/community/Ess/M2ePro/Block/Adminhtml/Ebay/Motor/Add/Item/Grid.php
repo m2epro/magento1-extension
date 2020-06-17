@@ -131,7 +131,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Ebay_Motor_Add_Item_Grid extends Mage_
             $removeCustomRecordHtml = <<<HTML
 <a href="javascript:void(0);"
    class="remove-custom-created-record-link"
-   onclick="EbayMotorsHandlerObj.removeCustomMotorsRecord('{$type}', '{$row[$idKey]}');"
+   onclick="EbayMotorsObj.removeCustomMotorsRecord('{$type}', '{$row[$idKey]}');"
    align="center" title="{$removeTitle}"></a>
 HTML;
         }
@@ -182,7 +182,7 @@ HTML;
             'id'      => 'save_filter_btn',
             'label'   => Mage::helper('M2ePro')->__('Save Filter'),
             'class'   => 'success',
-            'onclick' => 'EbayMotorAddItemGridHandlerObj.saveFilter()'
+            'onclick' => 'EbayMotorAddItemGridObj.saveFilter()'
         );
         $saveFilterBtn = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('save_filter', $saveFilterBtn);
@@ -232,7 +232,7 @@ HTML;
 
         if ($this->canDisplayContainer()) {
             $additionalHtml .= <<<JS
-EbayMotorAddItemGridHandlerObj = new EbayMotorAddItemGridHandler('{$this->getId()}');
+EbayMotorAddItemGridObj = new EbayMotorAddItemGrid('{$this->getId()}');
 
 $('save_filter_btn').addClassName('disabled');
 
@@ -256,7 +256,7 @@ JS;
         $constants = Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Helper_Component_Ebay_Motors');
 
         $additionalHtml .= <<<JS
-EbayMotorAddItemGridHandlerObj.afterInitPage();
+EbayMotorAddItemGridObj.afterInitPage();
 
 M2ePro.url.add({$urls});
 M2ePro.translator.add({$translations});
@@ -284,7 +284,7 @@ JS;
             'No records found.
              You can %link_new_item_start%add Custom Compatible Vehicles%link_new_item_end% manually
              or through the %link_start%Import Tool%link_end%.',
-            '<a href="javascript:void(0)" onclick="EbayMotorsHandlerObj.openAddRecordPopup();">',
+            '<a href="javascript:void(0)" onclick="EbayMotorsObj.openAddRecordPopup();">',
             '</a>',
             '<a target="_blank" href="' .
                 $this->getUrl('*/adminhtml_ebay_configuration/index') .

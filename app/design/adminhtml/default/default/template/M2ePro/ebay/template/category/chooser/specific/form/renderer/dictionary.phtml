@@ -1,0 +1,53 @@
+<?php
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
+ */
+
+// @codingStandardsIgnoreFile
+
+/** @var Ess_M2ePro_Block_Adminhtml_Ebay_Template_Category_Chooser_Specific_Form_Renderer_Dictionary $this */
+
+/** @var Ess_M2ePro_Block_Adminhtml_Ebay_Template_Category_Chooser_Specific_Form_Element_Dictionary $element */
+$element = $this->getElement();
+?>
+
+<table class="form-list" cellspacing="0" cellpadding="0" style="width: 100%;">
+
+    <tr>
+        <td class="grid" colspan="2">
+
+            <table class="border" cellpadding="0" cellspacing="0">
+                <thead>
+                <tr class="headings">
+                    <th style="width: 30%;"><?php echo Mage::helper('M2ePro')->__('Name'); ?></th>
+                    <th style="width: 30%;"><?php echo Mage::helper('M2ePro')->__('Mode'); ?></th>
+                    <th style="width: 40%;"><?php echo Mage::helper('M2ePro')->__('Value'); ?></th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php foreach ($element->getSpecifics() as $index => $specific) { ?>
+                    <tr style="height: 25px;">
+                        <td style="vertical-align:top;">
+                            <?php echo $element->getAttributeTitleHiddenHtml($index, $specific); ?>
+                            <?php echo $element->getModeHtml($index); ?>
+                            <?php echo $element->getAttributeTitleLabelHtml($index, $specific); ?>
+                        </td>
+                        <td style="vertical-align:top;">
+                            <?php echo $element->getValueModeSelectHtml($index, $specific); ?>
+                        </td>
+                        <td style="width: 100%; vertical-align:top; text-align: left;">
+                            <?php echo $element->getValueEbayRecomendedHtml($index, $specific); ?>
+                            <?php echo $element->getValueCustomValueHtml($index, $specific); ?>
+                            <?php echo $element->getValueCustomAttributeHtml($index, $specific); ?>
+                        </td>
+                    </tr>
+                    <?php } ?>
+                </tbody>
+            </table>
+
+        </td>
+    </tr>
+
+</table>

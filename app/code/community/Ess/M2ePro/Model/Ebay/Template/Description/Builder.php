@@ -6,179 +6,153 @@
  * @license    Commercial use is forbidden
  */
 
-class Ess_M2ePro_Model_Ebay_Template_Description_Builder
-    extends Ess_M2ePro_Model_Ebay_Template_Builder_Abstract
+use Ess_M2ePro_Model_Ebay_Template_Description as Description;
+
+class Ess_M2EPro_Model_Ebay_Template_Description_Builder
+    extends Ess_M2ePro_Model_Ebay_Template_AbstractBuilder
 {
     //########################################
 
-    public function build(array $data)
+    protected function prepareData()
     {
-        if (empty($data)) {
-            return null;
-        }
+        $data = parent::prepareData();
 
-        $this->validate($data);
-
-        $data = $this->prepareData($data);
-
-        $template = Mage::helper('M2ePro/Component_Ebay')->getModel('Template_Description');
-
-        if (isset($data['id'])) {
-            $template->load($data['id']);
-        }
-
-        $template->addData($data);
-        $template->save();
-
-        return $template;
-    }
-
-    //########################################
-
-    protected function prepareData(array &$data)
-    {
-        $prepared = parent::prepareData($data);
-
-        $defaultData = Mage::getSingleton('M2ePro/Ebay_Template_Description')->getDefaultSettings();
-
-        $defaultData['enhancement'] = explode(',', $defaultData['enhancement']);
-        $defaultData['product_details'] = Mage::helper('M2ePro')->jsonDecode($defaultData['product_details']);
-        $defaultData['watermark_settings'] = Mage::helper('M2ePro')->jsonDecode($defaultData['watermark_settings']);
+        $defaultData = $this->getDefaultData();
 
         $data = Mage::helper('M2ePro')->arrayReplaceRecursive($defaultData, $data);
 
-        if (isset($data['title_mode'])) {
-            $prepared['title_mode'] = (int)$data['title_mode'];
+        if (isset($this->_rawData['title_mode'])) {
+            $data['title_mode'] = (int)$this->_rawData['title_mode'];
         }
 
-        if (isset($data['title_template'])) {
-            $prepared['title_template'] = $data['title_template'];
+        if (isset($this->_rawData['title_template'])) {
+            $data['title_template'] = $this->_rawData['title_template'];
         }
 
-        if (isset($data['subtitle_mode'])) {
-            $prepared['subtitle_mode'] = (int)$data['subtitle_mode'];
+        if (isset($this->_rawData['subtitle_mode'])) {
+            $data['subtitle_mode'] = (int)$this->_rawData['subtitle_mode'];
         }
 
-        if (isset($data['subtitle_template'])) {
-            $prepared['subtitle_template'] = $data['subtitle_template'];
+        if (isset($this->_rawData['subtitle_template'])) {
+            $data['subtitle_template'] = $this->_rawData['subtitle_template'];
         }
 
-        if (isset($data['description_mode'])) {
-            $prepared['description_mode'] = (int)$data['description_mode'];
+        if (isset($this->_rawData['description_mode'])) {
+            $data['description_mode'] = (int)$this->_rawData['description_mode'];
         }
 
-        if (isset($data['description_template'])) {
-            $prepared['description_template'] = $data['description_template'];
+        if (isset($this->_rawData['description_template'])) {
+            $data['description_template'] = $this->_rawData['description_template'];
         }
 
-        if (isset($data['condition_mode'])) {
-            $prepared['condition_mode'] = (int)$data['condition_mode'];
+        if (isset($this->_rawData['condition_mode'])) {
+            $data['condition_mode'] = (int)$this->_rawData['condition_mode'];
         }
 
-        if (isset($data['condition_value'])) {
-            $prepared['condition_value'] = (int)$data['condition_value'];
+        if (isset($this->_rawData['condition_value'])) {
+            $data['condition_value'] = (int)$this->_rawData['condition_value'];
         }
 
-        if (isset($data['condition_attribute'])) {
-            $prepared['condition_attribute'] = $data['condition_attribute'];
+        if (isset($this->_rawData['condition_attribute'])) {
+            $data['condition_attribute'] = $this->_rawData['condition_attribute'];
         }
 
-        if (isset($data['condition_note_mode'])) {
-            $prepared['condition_note_mode'] = (int)$data['condition_note_mode'];
+        if (isset($this->_rawData['condition_note_mode'])) {
+            $data['condition_note_mode'] = (int)$this->_rawData['condition_note_mode'];
         }
 
-        if (isset($data['condition_note_template'])) {
-            $prepared['condition_note_template'] = $data['condition_note_template'];
+        if (isset($this->_rawData['condition_note_template'])) {
+            $data['condition_note_template'] = $this->_rawData['condition_note_template'];
         }
 
-        if (isset($data['product_details'])) {
-            $prepared['product_details'] = $data['product_details'];
+        if (isset($this->_rawData['product_details'])) {
+            $data['product_details'] = $this->_rawData['product_details'];
 
-            if (is_array($prepared['product_details'])) {
-                $prepared['product_details'] = Mage::helper('M2ePro')->jsonEncode($prepared['product_details']);
+            if (is_array($data['product_details'])) {
+                $data['product_details'] = Mage::helper('M2ePro')->jsonEncode($data['product_details']);
             }
         }
 
-        if (isset($data['editor_type'])) {
-            $prepared['editor_type'] = (int)$data['editor_type'];
+        if (isset($this->_rawData['editor_type'])) {
+            $data['editor_type'] = (int)$this->_rawData['editor_type'];
         }
 
-        if (isset($data['cut_long_titles'])) {
-            $prepared['cut_long_titles'] = (int)$data['cut_long_titles'];
+        if (isset($this->_rawData['cut_long_titles'])) {
+            $data['cut_long_titles'] = (int)$this->_rawData['cut_long_titles'];
         }
 
-        if (isset($data['hit_counter'])) {
-            $prepared['hit_counter'] = $data['hit_counter'];
+        if (isset($this->_rawData['hit_counter'])) {
+            $data['hit_counter'] = $this->_rawData['hit_counter'];
         }
 
-        if (isset($data['enhancement'])) {
-            $prepared['enhancement'] = $data['enhancement'];
+        if (isset($this->_rawData['enhancement'])) {
+            $data['enhancement'] = $this->_rawData['enhancement'];
 
-            if (is_array($prepared['enhancement'])) {
-                $prepared['enhancement'] = implode(',', $data['enhancement']);
+            if (is_array($data['enhancement'])) {
+                $data['enhancement'] = implode(',', $this->_rawData['enhancement']);
             }
         }
 
-        if (isset($data['gallery_type'])) {
-            $prepared['gallery_type'] = (int)$data['gallery_type'];
+        if (isset($this->_rawData['gallery_type'])) {
+            $data['gallery_type'] = (int)$this->_rawData['gallery_type'];
         }
 
-        if (isset($data['image_main_mode'])) {
-            $prepared['image_main_mode'] = (int)$data['image_main_mode'];
+        if (isset($this->_rawData['image_main_mode'])) {
+            $data['image_main_mode'] = (int)$this->_rawData['image_main_mode'];
         }
 
-        if (isset($data['image_main_attribute'])) {
-            $prepared['image_main_attribute'] = $data['image_main_attribute'];
+        if (isset($this->_rawData['image_main_attribute'])) {
+            $data['image_main_attribute'] = $this->_rawData['image_main_attribute'];
         }
 
-        if (isset($data['gallery_images_mode'])) {
-            $prepared['gallery_images_mode'] = (int)$data['gallery_images_mode'];
+        if (isset($this->_rawData['gallery_images_mode'])) {
+            $data['gallery_images_mode'] = (int)$this->_rawData['gallery_images_mode'];
         }
 
-        if (isset($data['gallery_images_limit'])) {
-            $prepared['gallery_images_limit'] = (int)$data['gallery_images_limit'];
+        if (isset($this->_rawData['gallery_images_limit'])) {
+            $data['gallery_images_limit'] = (int)$this->_rawData['gallery_images_limit'];
         }
 
-        if (isset($data['gallery_images_attribute'])) {
-            $prepared['gallery_images_attribute'] = $data['gallery_images_attribute'];
+        if (isset($this->_rawData['gallery_images_attribute'])) {
+            $data['gallery_images_attribute'] = $this->_rawData['gallery_images_attribute'];
         }
 
-        if (isset($data['variation_images_mode'])) {
-            $prepared['variation_images_mode'] = (int)$data['variation_images_mode'];
+        if (isset($this->_rawData['variation_images_mode'])) {
+            $data['variation_images_mode'] = (int)$this->_rawData['variation_images_mode'];
         }
 
-        if (isset($data['variation_images_limit'])) {
-            $prepared['variation_images_limit'] = (int)$data['variation_images_limit'];
+        if (isset($this->_rawData['variation_images_limit'])) {
+            $data['variation_images_limit'] = (int)$this->_rawData['variation_images_limit'];
         }
 
-        if (isset($data['variation_images_attribute'])) {
-            $prepared['variation_images_attribute'] = $data['variation_images_attribute'];
+        if (isset($this->_rawData['variation_images_attribute'])) {
+            $data['variation_images_attribute'] = $this->_rawData['variation_images_attribute'];
         }
 
-        if (isset($data['reserve_price_custom_attribute'])) {
-            $prepared['reserve_price_custom_attribute'] = $data['reserve_price_custom_attribute'];
+        if (isset($this->_rawData['reserve_price_custom_attribute'])) {
+            $data['reserve_price_custom_attribute'] = $this->_rawData['reserve_price_custom_attribute'];
         }
 
-        if (isset($data['default_image_url'])) {
-            $prepared['default_image_url'] = $data['default_image_url'];
+        if (isset($this->_rawData['default_image_url'])) {
+            $data['default_image_url'] = $this->_rawData['default_image_url'];
         }
 
-        if (isset($data['variation_configurable_images'])) {
-            $prepared['variation_configurable_images'] = $data['variation_configurable_images'];
+        if (isset($this->_rawData['variation_configurable_images'])) {
+            $data['variation_configurable_images'] = $this->_rawData['variation_configurable_images'];
 
-            if (is_array($prepared['variation_configurable_images'])) {
-                $prepared['variation_configurable_images'] = Mage::helper('M2ePro')->jsonEncode(
-                    $prepared['variation_configurable_images']
+            if (is_array($data['variation_configurable_images'])) {
+                $data['variation_configurable_images'] = Mage::helper('M2ePro')->jsonEncode(
+                    $data['variation_configurable_images']
                 );
             }
         }
 
-        if (isset($data['use_supersize_images'])) {
-            $prepared['use_supersize_images'] = (int)$data['use_supersize_images'];
+        if (isset($this->_rawData['use_supersize_images'])) {
+            $data['use_supersize_images'] = (int)$this->_rawData['use_supersize_images'];
         }
 
-        if (isset($data['watermark_mode'])) {
-            $prepared['watermark_mode'] = (int)$data['watermark_mode'];
+        if (isset($this->_rawData['watermark_mode'])) {
+            $data['watermark_mode'] = (int)$this->_rawData['watermark_mode'];
         }
 
         // ---------------------------------------
@@ -186,29 +160,31 @@ class Ess_M2ePro_Model_Ebay_Template_Description_Builder
         $watermarkSettings = array();
         $hashChange = false;
 
-        if (isset($data['watermark_settings']['position'])) {
-            $watermarkSettings['position'] = (int)$data['watermark_settings']['position'];
+        if (isset($this->_rawData['watermark_settings']['position'])) {
+            $watermarkSettings['position'] = (int)$this->_rawData['watermark_settings']['position'];
 
-            if (isset($data['old_watermark_settings']) &&
-                $data['watermark_settings']['position'] !== $data['old_watermark_settings']['position']) {
+            if (isset($this->_rawData['old_watermark_settings']) &&
+                $this->_rawData['watermark_settings']['position'] !==
+                $this->_rawData['old_watermark_settings']['position']) {
                 $hashChange = true;
             }
         }
 
-        if (isset($data['watermark_settings']['scale'])) {
-            $watermarkSettings['scale'] = (int)$data['watermark_settings']['scale'];
+        if (isset($this->_rawData['watermark_settings']['scale'])) {
+            $watermarkSettings['scale'] = (int)$this->_rawData['watermark_settings']['scale'];
 
-            if (isset($data['old_watermark_settings']) &&
-                $data['watermark_settings']['scale'] !== $data['old_watermark_settings']['scale']) {
+            if (isset($this->_rawData['old_watermark_settings']) &&
+                $this->_rawData['watermark_settings']['scale'] !== $this->_rawData['old_watermark_settings']['scale']) {
                 $hashChange = true;
             }
         }
 
-        if (isset($data['watermark_settings']['transparent'])) {
-            $watermarkSettings['transparent'] = (int)$data['watermark_settings']['transparent'];
+        if (isset($this->_rawData['watermark_settings']['transparent'])) {
+            $watermarkSettings['transparent'] = (int)$this->_rawData['watermark_settings']['transparent'];
 
-            if (isset($data['old_watermark_settings']) &&
-                $data['watermark_settings']['transparent'] !== $data['old_watermark_settings']['transparent']) {
+            if (isset($this->_rawData['old_watermark_settings']) &&
+                $this->_rawData['watermark_settings']['transparent'] !==
+                $this->_rawData['old_watermark_settings']['transparent']) {
                 $hashChange = true;
             }
         }
@@ -218,37 +194,111 @@ class Ess_M2ePro_Model_Ebay_Template_Description_Builder
         if (!empty($_FILES['watermark_image']['tmp_name'])) {
             $hashChange = true;
 
-            $prepared['watermark_image'] = file_get_contents($_FILES['watermark_image']['tmp_name']);
+            $data['watermark_image'] = file_get_contents($_FILES['watermark_image']['tmp_name']);
 
-            if (isset($prepared['id'])) {
+            if (isset($data['id'])) {
                 $varDir = new Ess_M2ePro_Model_VariablesDir(
                     array('child_folder' => 'ebay/template/description/watermarks')
                 );
 
-                $watermarkPath = $varDir->getPath().(int)$prepared['id'].'.png';
+                $watermarkPath = $varDir->getPath().(int)$data['id'].'.png';
                 if (is_file($watermarkPath)) {
                     @unlink($watermarkPath);
                 }
             }
-        } elseif (!empty($data['old_watermark_image']) && !isset($prepared['id'])) {
-            $prepared['watermark_image'] = base64_decode($data['old_watermark_image']);
+        } elseif (!empty($this->_rawData['old_watermark_image']) && !isset($data['id'])) {
+            $data['watermark_image'] = base64_decode($this->_rawData['old_watermark_image']);
         }
 
         // ---------------------------------------
 
         if ($hashChange) {
-            $watermarkSettings['hashes']['previous'] = $data['old_watermark_settings']['hashes']['current'];
+            $watermarkSettings['hashes']['previous'] = $this->_rawData['old_watermark_settings']['hashes']['current'];
             $watermarkSettings['hashes']['current'] = substr(sha1(microtime()), 0, 5);
         } else {
-            $watermarkSettings['hashes']['previous'] = $data['old_watermark_settings']['hashes']['previous'];
-            $watermarkSettings['hashes']['current'] = $data['old_watermark_settings']['hashes']['current'];
+            $watermarkSettings['hashes']['previous'] = $this->_rawData['old_watermark_settings']['hashes']['previous'];
+            $watermarkSettings['hashes']['current'] = $this->_rawData['old_watermark_settings']['hashes']['current'];
         }
 
-        $prepared['watermark_settings'] = Mage::helper('M2ePro')->jsonEncode($watermarkSettings);
+        $data['watermark_settings'] = Mage::helper('M2ePro')->jsonEncode($watermarkSettings);
 
         // ---------------------------------------
 
-        return $prepared;
+        return $data;
+    }
+
+    //########################################
+
+    public function getDefaultData()
+    {
+        return array(
+
+            'title_mode' => Description::TITLE_MODE_PRODUCT,
+            'title_template' => '',
+
+            'subtitle_mode' => Description::SUBTITLE_MODE_NONE,
+            'subtitle_template' => '',
+
+            'description_mode' => Description::DESCRIPTION_MODE_PRODUCT,
+            'description_template' => '',
+
+            'condition_mode' => Description::CONDITION_MODE_EBAY,
+            'condition_value' => Description::CONDITION_EBAY_NEW,
+            'condition_attribute' => '',
+
+            'condition_note_mode' => Description::CONDITION_NOTE_MODE_NONE,
+            'condition_note_template' => '',
+
+            'product_details' => Mage::helper('M2ePro')->jsonEncode(
+                array(
+                    'isbn'  => array('mode' => Description::PRODUCT_DETAILS_MODE_NONE, 'attribute' => ''),
+                    'epid'  => array('mode' => Description::PRODUCT_DETAILS_MODE_NONE, 'attribute' => ''),
+                    'upc'   => array('mode' => Description::PRODUCT_DETAILS_MODE_NONE, 'attribute' => ''),
+                    'ean'   => array('mode' => Description::PRODUCT_DETAILS_MODE_NONE, 'attribute' => ''),
+                    'brand' => array('mode' => Description::PRODUCT_DETAILS_MODE_NONE, 'attribute' => ''),
+                    'mpn'   => array('mode' => Description::PRODUCT_DETAILS_MODE_DOES_NOT_APPLY, 'attribute' => ''),
+                    'include_description' => 1,
+                    'include_image'       => 1,
+                )
+            ),
+
+            'editor_type' => Description::EDITOR_TYPE_SIMPLE,
+            'cut_long_titles' => Description::CUT_LONG_TITLE_ENABLED,
+            'hit_counter' => Description::HIT_COUNTER_NONE,
+
+            'enhancement' => '',
+            'gallery_type' => Description::GALLERY_TYPE_EMPTY,
+
+            'image_main_mode' => Description::IMAGE_MAIN_MODE_PRODUCT,
+            'image_main_attribute' => '',
+            'gallery_images_mode' => Description::GALLERY_IMAGES_MODE_NONE,
+            'gallery_images_limit' => 0,
+            'gallery_images_attribute' => '',
+            'variation_images_mode' => Description::VARIATION_IMAGES_MODE_PRODUCT,
+            'variation_images_limit' => 1,
+            'variation_images_attribute' => '',
+            'default_image_url' => '',
+
+            'variation_configurable_images' => Mage::helper('M2ePro')->jsonEncode(array()),
+            'use_supersize_images' => Description::USE_SUPERSIZE_IMAGES_NO,
+
+            'watermark_mode' => Description::WATERMARK_MODE_NO,
+
+            'watermark_settings' => Mage::helper('M2ePro')->jsonEncode(
+                array(
+                    'position' => Description::WATERMARK_POSITION_TOP,
+                    'scale' => Description::WATERMARK_SCALE_MODE_NONE,
+                    'transparent' => Description::WATERMARK_TRANSPARENT_MODE_NO,
+
+                    'hashes' => array(
+                        'current'  => '',
+                        'previous' => '',
+                    )
+                )
+            ),
+
+            'watermark_image' => null
+        );
     }
 
     //########################################

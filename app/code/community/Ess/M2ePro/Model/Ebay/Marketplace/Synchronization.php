@@ -167,6 +167,7 @@ class Ess_M2ePro_Model_Ebay_Marketplace_Synchronization
         );
 
         $connWrite->delete($tableCategories, array('marketplace_id = ?' => $this->_marketplace->getId()));
+        Mage::helper('M2ePro/Component_Ebay_Category')->removeEbayRecent();
 
         $partNumber = 1;
 

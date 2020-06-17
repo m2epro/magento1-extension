@@ -21,9 +21,9 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Template_Description_Grid
     protected $_marketplaceId;
     protected $_variationProductsIds;
 
-    protected $_mapToTemplateJsFn     = 'ListingGridHandlerObj.templateDescriptionHandler.mapToTemplateDescription';
+    protected $_mapToTemplateJsFn     = 'ListingGridObj.templateDescription.mapToTemplateDescription';
     protected $_createNewTemplateJsFn =
-        'ListingGridHandlerObj.templateDescriptionHandler.createTemplateDescriptionInNewTab';
+        'ListingGridObj.templateDescription.createTemplateDescriptionInNewTab';
 
     protected $_cacheData = array();
 
@@ -467,10 +467,16 @@ HTML;
 
     protected function getNewTemplateDescriptionUrl()
     {
+        $isActiveWizard = Mage::helper('M2ePro/Module_Wizard')->isActive(
+            Ess_M2ePro_Helper_View_Amazon::WIZARD_INSTALLATION_NICK
+        );
+
         return $this->getUrl(
             '*/adminhtml_amazon_template_description/new', array(
                 'is_new_asin_accepted' => $this->getCheckNewAsinAccepted(),
-                'marketplace_id'       => $this->getMarketplaceId()
+                'marketplace_id'       => $this->getMarketplaceId(),
+                'wizard'               => $isActiveWizard,
+                'close_on_save'        => $isActiveWizard
             )
         );
     }

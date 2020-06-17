@@ -1,4 +1,4 @@
-AmazonTemplateDescriptionCategorySpecificBlockGridRenderer = Class.create(AmazonTemplateDescriptionCategorySpecificRenderer, {
+window.AmazonTemplateDescriptionCategorySpecificBlockGridRenderer = Class.create(AmazonTemplateDescriptionCategorySpecificRenderer, {
 
     // ---------------------------------------
 

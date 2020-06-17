@@ -87,9 +87,9 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Motor_Add_Tabs
 <script type="text/javascript">
     {$this->getJsObjectName()}.moveTabContentInDest();
 
-    EbayMotorsHandlerObj.saveAsGroupPopupHtml = $('save_as_group_popup').innerHTML;
+    EbayMotorsObj.saveAsGroupPopupHtml = $('save_as_group_popup').innerHTML;
     $('save_as_group_popup').remove();
-    EbayMotorsHandlerObj.setNotePopupHtml = $('set_note_popup').innerHTML;
+    EbayMotorsObj.setNotePopupHtml = $('set_note_popup').innerHTML;
     $('set_note_popup').remove();
 
 </script>

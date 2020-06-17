@@ -7,7 +7,7 @@
  */
 
 class Ess_M2ePro_Model_Walmart_Template_Synchronization_Diff
-    extends Ess_M2ePro_Model_Template_Synchronization_Diff_Abstract
+    extends Ess_M2ePro_Model_Template_Synchronization_DiffAbstract
 {
     //########################################
 
@@ -18,7 +18,6 @@ class Ess_M2ePro_Model_Walmart_Template_Synchronization_Diff
                $this->isReviseQtySettingsChanged() ||
                $this->isRevisePriceEnabled() ||
                $this->isRevisePriceDisabled() ||
-               $this->isRevisePriceSettingsChanged() ||
                $this->isRevisePromotionsEnabled() ||
                $this->isRevisePromotionsDisabled() ||
                $this->isReviseDetailsEnabled() ||
@@ -71,18 +70,6 @@ class Ess_M2ePro_Model_Walmart_Template_Synchronization_Diff
         $oldSnapshotData = $this->_oldSnapshot;
 
         return !empty($oldSnapshotData['revise_update_price']) && empty($newSnapshotData['revise_update_price']);
-    }
-
-    // ---------------------------------------
-
-    public function isRevisePriceSettingsChanged()
-    {
-        $keys = array(
-            'revise_update_price_max_allowed_deviation_mode',
-            'revise_update_price_max_allowed_deviation',
-        );
-
-        return $this->isSettingsDifferent($keys);
     }
 
     //########################################

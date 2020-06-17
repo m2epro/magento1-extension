@@ -24,7 +24,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Processor
 
     const PENDING_REQUEST_MAX_LIFE_TIME = 86400;
 
-    const CONNECTION_ERROR_REPEAT_TIMEOUT = 180;
     const FIRST_CONNECTION_ERROR_DATE_REGISTRY_KEY = '/walmart/listing/product/action/first_connection_error/date/';
 
     //########################################
@@ -229,16 +228,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Processor
                         $additionalData = Mage::helper('M2ePro')->jsonDecode($listingProductData['additional_data']);
                         if (!empty($additionalData['configurator'])) {
                             $listingProductConfigurator->setData($additionalData['configurator']);
-                        }
-
-                        if ($actionType == Ess_M2ePro_Model_Listing_Product::ACTION_RELIST) {
-                            if (!empty($result[$accountId][$actionType][$listingProductId]['configurator'])) {
-                                continue;
-                            }
-
-                            $listingProductData['configurator'] = $listingProductConfigurator;
-                            $result[$accountId][$actionType][$listingProductId] = $listingProductData;
-                            continue;
                         }
 
                         /** @var Ess_M2ePro_Model_Walmart_Listing_Product_Action_Configurator $configurator */
@@ -606,20 +595,11 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Processor
         } catch (Exception $exception) {
             Mage::helper('M2ePro/Module_Exception')->process($exception);
 
-            $currentDate              = Mage::helper('M2ePro')->getCurrentGmtDate();
-            $firstConnectionErrorDate = $this->getFirstConnectionErrorDate();
-
-            if (empty($firstConnectionErrorDate)) {
-                $this->setFirstConnectionErrorDate($currentDate);
-                return;
-            }
-
-            if (strtotime($currentDate) - strtotime($firstConnectionErrorDate) < self::CONNECTION_ERROR_REPEAT_TIMEOUT){
-                return;
-            }
-
-            if (!empty($firstConnectionErrorDate)) {
-                $this->removeFirstConnectionErrorDate();
+            if ($exception instanceof Ess_M2ePro_Model_Exception_Connection) {
+                $isRepeat = $exception->handleRepeatTimeout(self::FIRST_CONNECTION_ERROR_DATE_REGISTRY_KEY);
+                if ($isRepeat) {
+                    return;
+                }
             }
 
             $message = Mage::getModel('M2ePro/Connector_Connection_Response_Message');
@@ -689,7 +669,8 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Processor
 
         $unionSelect = $connRead->select()->union(
             array(
-                $this->getRelistScheduledActionsPreparedCollection($account->getId())->getSelect(),
+                $this->getRelistQtyScheduledActionsPreparedCollection($account->getId())->getSelect(),
+                $this->getRelistPriceScheduledActionsPreparedCollection($account->getId())->getSelect(),
                 $this->getReviseQtyScheduledActionsPreparedCollection($account->getId())->getSelect(),
                 $this->getReviseLagTimeScheduledActionsPreparedCollection($account->getId())->getSelect(),
                 $this->getRevisePriceScheduledActionsPreparedCollection($account->getId())->getSelect(),
@@ -715,7 +696,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Processor
      * @return Ess_M2ePro_Model_Resource_Listing_Product_ScheduledAction_Collection
      * @throws Ess_M2ePro_Model_Exception_Logic
      */
-    protected function getRelistScheduledActionsPreparedCollection($accountId)
+    protected function getRelistQtyScheduledActionsPreparedCollection($accountId)
     {
         /** @var Ess_M2ePro_Model_Resource_Listing_Product_ScheduledAction_Collection $collection */
         $collection = Mage::getResourceModel('M2ePro/Listing_Product_ScheduledAction_Collection');
@@ -724,7 +705,36 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Processor
                 self::RELIST_PRIORITY,
                 Ess_M2ePro_Model_Listing_Product::ACTION_RELIST
             )
-            ->addFilteredTagColumnToSelect(new Zend_Db_Expr("''"))
+            ->addFilteredTagColumnToSelect(new Zend_Db_Expr("'qty'"))
+            ->addTagFilter('qty', true)
+            ->addFieldToFilter('l.account_id', $accountId);
+
+        if (Mage::helper('M2ePro/Module')->isProductionEnvironment()) {
+            $minAllowedWaitInterval = (int)$this->getConfigValue(
+                '/walmart/listing/product/action/relist/', 'min_allowed_wait_interval'
+            );
+            $collection->addCreatedBeforeFilter($minAllowedWaitInterval);
+        }
+
+        return $collection;
+    }
+
+    /**
+     * @param $accountId
+     * @return Ess_M2ePro_Model_Resource_Listing_Product_ScheduledAction_Collection
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
+    protected function getRelistPriceScheduledActionsPreparedCollection($accountId)
+    {
+        /** @var Ess_M2ePro_Model_Resource_Listing_Product_ScheduledAction_Collection $collection */
+        $collection = Mage::getResourceModel('M2ePro/Listing_Product_ScheduledAction_Collection');
+        $collection->setComponentMode(Ess_M2ePro_Helper_Component_Walmart::NICK)
+            ->getScheduledActionsPreparedCollection(
+                self::RELIST_PRIORITY,
+                Ess_M2ePro_Model_Listing_Product::ACTION_RELIST
+            )
+            ->addFilteredTagColumnToSelect(new Zend_Db_Expr("'price'"))
+            ->addTagFilter('price', true)
             ->addFieldToFilter('l.account_id', $accountId);
 
         if (Mage::helper('M2ePro/Module')->isProductionEnvironment()) {
@@ -1006,6 +1016,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Processor
 
         if ($actionType == Ess_M2ePro_Model_Listing_Product::ACTION_STOP) {
             $feedTypes[] = self::FEED_TYPE_UPDATE_QTY;
+
             return $feedTypes;
         }
 
@@ -1038,47 +1049,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Processor
             foreach ($feedPacks as $accountId => $accountPacks) {
                 $throttlingManager->registerRequests($accountId, $feedType, count($accountPacks));
             }
-        }
-    }
-
-    //########################################
-
-    /**
-     * @return mixed
-     */
-    protected function getFirstConnectionErrorDate()
-    {
-        $registry = Mage::getModel('M2ePro/Registry');
-        $registry->load(self::FIRST_CONNECTION_ERROR_DATE_REGISTRY_KEY, 'key');
-
-        return $registry->getValue();
-    }
-
-    /**
-     * @param $date
-     * @throws Exception
-     */
-    protected function setFirstConnectionErrorDate($date)
-    {
-        $registry = Mage::getModel('M2ePro/Registry');
-        $registry->load(self::FIRST_CONNECTION_ERROR_DATE_REGISTRY_KEY, 'key');
-
-        $registry->setData('key', self::FIRST_CONNECTION_ERROR_DATE_REGISTRY_KEY);
-        $registry->setData('value', $date);
-
-        $registry->save();
-    }
-
-    /**
-     * @throws Exception
-     */
-    protected function removeFirstConnectionErrorDate()
-    {
-        $registry = Mage::getModel('M2ePro/Registry');
-        $registry->load(self::FIRST_CONNECTION_ERROR_DATE_REGISTRY_KEY, 'key');
-
-        if ($registry->getId()) {
-            $registry->delete();
         }
     }
 

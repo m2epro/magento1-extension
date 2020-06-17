@@ -267,7 +267,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Feedback_Grid extends Mage_Adminhtml_Block
                              .': </b><span style="color: '.$color.';">'
                              .Mage::helper('M2ePro')->escapeHtml($sellerFeedback).'</span></label></div></label></div>';
         } else {
-            $responseUrl = '<a href="javascript:void(0);" onclick="EbayFeedbackHandlerObj.openFeedback(this,
+            $responseUrl = '<a href="javascript:void(0);" onclick="EbayFeedbackObj.openFeedback(this,
                 \''.$row->getData('id').'\',
                 \''.$row->getData('ebay_transaction_id').'\',
                 \''.$row->getData('ebay_item_id').'\',

@@ -64,13 +64,13 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore_Variation_Product_View
         $data = array(
             'style' => 'float: right; margin-top: 7px; ',
             'label'   => Mage::helper('M2ePro')->__('Close'),
-            'onclick' => 'EbayListingPickupStoreGridHandlerObj.closeVariationPopUp()'
+            'onclick' => 'EbayListingPickupStoreGridObj.closeVariationPopUp()'
         );
         $closeBtn = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
 
         $additionalJavascript = <<<HTML
         <script type="text/javascript">
-            EbayListingPickupStoreGridHandlerObj.loadVariationsGrid(true);
+            EbayListingPickupStoreGridObj.loadVariationsGrid(true);
         </script>
 HTML;
 

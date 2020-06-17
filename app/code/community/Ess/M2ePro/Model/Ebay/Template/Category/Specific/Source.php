@@ -9,12 +9,12 @@
 class Ess_M2ePro_Model_Ebay_Template_Category_Specific_Source
 {
     /**
-     * @var $_magentoProduct Ess_M2ePro_Model_Magento_Product
+     * @var Ess_M2ePro_Model_Magento_Product
      */
     protected $_magentoProduct = null;
 
     /**
-     * @var $_categorySpecificTemplateModel Ess_M2ePro_Model_Ebay_Template_Category_Specific
+     * @var Ess_M2ePro_Model_Ebay_Template_Category_Specific
      */
     protected $_categorySpecificTemplateModel = null;
 
@@ -108,7 +108,7 @@ class Ess_M2ePro_Model_Ebay_Template_Category_Specific_Source
         $attributeCode = $this->getCategorySpecificTemplate()->getData('value_custom_attribute');
         $valueTemp = $this->getAttributeValue($attributeCode);
 
-        $categoryId = $this->getCategoryTemplate()->getCategoryMainId();
+        $categoryId = $this->getCategoryTemplate()->getCategoryId();
         $marketplaceId = $this->getCategoryTemplate()->getMarketplaceId();
 
         if (empty($categoryId) || empty($marketplaceId) || strpos($valueTemp, ',') === false ||

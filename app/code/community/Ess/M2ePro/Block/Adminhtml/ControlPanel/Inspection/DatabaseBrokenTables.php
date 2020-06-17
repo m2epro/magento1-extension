@@ -11,7 +11,6 @@ class Ess_M2ePro_Block_Adminhtml_ControlPanel_Inspection_DatabaseBrokenTables
 {
     public $emptyTables        = array();
     public $notInstalledTables = array();
-    public $crashedTables      = array();
 
     //########################################
 
@@ -19,11 +18,7 @@ class Ess_M2ePro_Block_Adminhtml_ControlPanel_Inspection_DatabaseBrokenTables
     {
         parent::__construct();
 
-        // Initialization block
-        // ---------------------------------------
         $this->setId('controlPanelInspectionDatabaseBrokenTables');
-        // ---------------------------------------
-
         $this->setTemplate('M2ePro/controlPanel/inspection/databaseBrokenTables.phtml');
 
         $this->prepareTablesInfo();
@@ -34,8 +29,7 @@ class Ess_M2ePro_Block_Adminhtml_ControlPanel_Inspection_DatabaseBrokenTables
     protected function isShown()
     {
         return !empty($this->emptyTables) ||
-               !empty($this->notInstalledTables) ||
-               !empty($this->crashedTables);
+               !empty($this->notInstalledTables);
     }
 
     //########################################
@@ -44,7 +38,6 @@ class Ess_M2ePro_Block_Adminhtml_ControlPanel_Inspection_DatabaseBrokenTables
     {
         $this->emptyTables        = $this->getEmptyTables();
         $this->notInstalledTables = $this->getNotInstalledTables();
-        $this->crashedTables      = $this->getCrashedTables();
     }
 
     //########################################
@@ -77,30 +70,12 @@ class Ess_M2ePro_Block_Adminhtml_ControlPanel_Inspection_DatabaseBrokenTables
         return $notInstalledTables;
     }
 
-    protected function getCrashedTables()
-    {
-        $helper = Mage::helper('M2ePro/Module_Database_Structure');
-
-        $crashedTables = array();
-        foreach ($helper->getModuleTables() as $tableName) {
-            if (!$helper->isTableExists($tableName)) {
-                continue;
-            }
-
-            !$helper->isTableStatusOk($tableName) && $crashedTables[] = $tableName;
-        }
-
-        return $crashedTables;
-    }
-
     //########################################
 
     protected function getGeneralTables()
     {
         return array(
-            'm2epro_primary_config',
             'm2epro_config',
-            'm2epro_synchronization_config',
             'm2epro_wizard',
             'm2epro_marketplace',
             'm2epro_amazon_marketplace',

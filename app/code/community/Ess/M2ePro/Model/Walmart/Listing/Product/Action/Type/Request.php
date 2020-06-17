@@ -91,10 +91,15 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Request
     //########################################
 
     /**
+     * LagTime and Qty always should be sent together for Canada(ONLY) Marketplace
      * @return array
      */
     public function getQtyData()
     {
+        if ($this->getMarketplace()->getCode() === 'CA' && $this->getConfigurator()->isLagTimeAllowed()) {
+            $this->getConfigurator()->allowQty();
+        }
+
         if (!$this->getConfigurator()->isQtyAllowed()) {
             return array();
         }
@@ -104,10 +109,15 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Request
     }
 
     /**
+     * LagTime and Qty always should be sent together for Canada(ONLY) Marketplace
      * @return array
      */
     public function getLagTimeData()
     {
+        if ($this->getMarketplace()->getCode() === 'CA' && $this->getConfigurator()->isQtyAllowed()) {
+            $this->getConfigurator()->allowLagTime();
+        }
+
         if (!$this->getConfigurator()->isLagTimeAllowed()) {
             return array();
         }

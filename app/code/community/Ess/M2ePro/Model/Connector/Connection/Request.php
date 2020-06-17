@@ -95,9 +95,6 @@ class Ess_M2ePro_Model_Connector_Connection_Request
             )
         );
 
-        $adminKey = Mage::helper('M2ePro/Server')->getAdminKey();
-        $adminKey !== null && $adminKey != '' && $data['auth']['admin_key'] = $adminKey;
-
         $applicationKey = Mage::helper('M2ePro/Server')->getApplicationKey();
         $applicationKey !== null && $applicationKey != '' && $data['auth']['application_key'] = $applicationKey;
 

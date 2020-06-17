@@ -62,7 +62,6 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_Synchronization
             Ess_M2ePro_Model_Ebay_Template_ChangeProcessor_Abstract::INSTRUCTION_TYPE_PRICE_DATA_CHANGED,
             Ess_M2ePro_Model_Ebay_Template_Synchronization_ChangeProcessor::INSTRUCTION_TYPE_REVISE_PRICE_ENABLED,
             Ess_M2ePro_Model_Ebay_Template_Synchronization_ChangeProcessor::INSTRUCTION_TYPE_REVISE_PRICE_DISABLED,
-            SynchronizationChangeProcessor::INSTRUCTION_TYPE_REVISE_PRICE_SETTINGS_CHANGED,
             Ess_M2ePro_Model_Ebay_Listing_Product::INSTRUCTION_TYPE_CHANNEL_PRICE_CHANGED,
             Ess_M2ePro_Model_Listing::INSTRUCTION_TYPE_PRODUCT_MOVED_FROM_OTHER,
             Ess_M2ePro_Model_Listing::INSTRUCTION_TYPE_PRODUCT_MOVED_FROM_LISTING,

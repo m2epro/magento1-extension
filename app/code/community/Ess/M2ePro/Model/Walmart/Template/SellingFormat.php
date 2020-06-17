@@ -63,12 +63,16 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat extends Ess_M2ePro_Model_C
      */
     protected $_sellingFormatSourceModels = array();
 
+    /** @var Ess_M2ePro_Model_ActiveRecord_Factory */
+    protected $_activeRecordFactory;
+
     //########################################
 
     public function _construct()
     {
         parent::_construct();
         $this->_init('M2ePro/Walmart_Template_SellingFormat');
+        $this->_activeRecordFactory = Mage::getSingleton('M2ePro/ActiveRecord_Factory');
     }
 
     //########################################
@@ -167,61 +171,52 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat extends Ess_M2ePro_Model_C
 
     /**
      * @param bool $asObjects
-     * @param array $filters
-     * @return array
-     * @throws Ess_M2ePro_Model_Exception_Logic
-     */
-    public function getListings($asObjects = false, array $filters = array())
-    {
-        return $this->getRelatedComponentItems('Listing', 'template_selling_format_id', $asObjects, $filters);
-    }
-
-    //########################################
-
-    /**
-     * @param bool $asObjects
-     * @param array $filters
      * @return array|Ess_M2ePro_Model_Walmart_Template_SellingFormat_Promotion[]
      * @throws Ess_M2ePro_Model_Exception_Logic
      */
-    public function getPromotions($asObjects = false, array $filters = array())
+    public function getPromotions($asObjects = false)
     {
-        $services = $this->getRelatedSimpleItems(
-            'Walmart_Template_SellingFormat_Promotion',
-            'template_selling_format_id', $asObjects, $filters
+        $collection = $this->_activeRecordFactory->getObjectCollection(
+            'Walmart_Template_SellingFormat_Promotion'
         );
+        $collection->addFieldToFilter('template_selling_format_id', $this->getId());
 
-        if ($asObjects) {
-            /** @var $service Ess_M2ePro_Model_Walmart_Template_SellingFormat_Promotion */
-            foreach ($services as $service) {
-                $service->setSellingFormatTemplate($this);
-            }
+        /** @var $service Ess_M2ePro_Model_Walmart_Template_SellingFormat_Promotion */
+        foreach ($collection->getItems() as $service) {
+            $service->setSellingFormatTemplate($this);
         }
 
-        return $services;
+        if (!$asObjects) {
+            $result = $collection->toArray();
+            return $result['items'];
+        }
+
+        return $collection->getItems();
     }
 
     /**
      * @param bool $asObjects
-     * @param array $filters
      * @return array|Ess_M2ePro_Model_Walmart_Template_SellingFormat_ShippingOverride[]
      * @throws Ess_M2ePro_Model_Exception_Logic
      */
-    public function getShippingOverrides($asObjects = false, array $filters = array())
+    public function getShippingOverrides($asObjects = false)
     {
-        $shippingOverrides = $this->getRelatedSimpleItems(
-            'Walmart_Template_SellingFormat_ShippingOverride',
-            'template_selling_format_id', $asObjects, $filters
+        $collection = $this->_activeRecordFactory->getObjectCollection(
+            'Walmart_Template_SellingFormat_ShippingOverride'
         );
+        $collection->addFieldToFilter('template_selling_format_id', $this->getId());
 
-        if ($asObjects) {
-            /** @var $shippingOverride Ess_M2ePro_Model_Walmart_Template_SellingFormat_ShippingOverride */
-            foreach ($shippingOverrides as $shippingOverride) {
-                $shippingOverride->setSellingFormatTemplate($this);
-            }
+        /** @var $shippingOverride Ess_M2ePro_Model_Walmart_Template_SellingFormat_ShippingOverride */
+        foreach ($collection->getItems() as $shippingOverride) {
+            $shippingOverride->setSellingFormatTemplate($this);
         }
 
-        return $shippingOverrides;
+        if (!$asObjects) {
+            $result = $collection->toArray();
+            return $result['items'];
+        }
+
+        return $collection->getItems();
     }
 
     //########################################

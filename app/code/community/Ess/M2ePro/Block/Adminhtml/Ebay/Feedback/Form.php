@@ -44,7 +44,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Feedback_Form extends Mage_Adminhtml_Block
         // ---------------------------------------
         $data = array(
             'label'   => Mage::helper('M2ePro')->__('Send'),
-            'onclick' => 'EbayFeedbackHandlerObj.sendFeedback();',
+            'onclick' => 'EbayFeedbackObj.sendFeedback();',
             'class'   => 'send_feedback'
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);

@@ -31,48 +31,36 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_OrdersProcessor
 
     public function process()
     {
-        $permittedAccounts = $this->getPermittedAccounts();
-        if (empty($permittedAccounts)) {
-            return;
-        }
+        /** @var $accountsCollection Mage_Core_Model_Resource_Db_Collection_Abstract */
+        $accountsCollection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Account');
 
-        foreach ($permittedAccounts as $account) {
+        foreach ($accountsCollection->getItems() as $account) {
             /** @var $account Ess_M2ePro_Model_Account **/
 
             try {
                 $this->processAccount($account);
-            } catch (Exception $exception) {
-                $this->_synchronizationLog->addMessage(
-                    Mage::helper('M2ePro')->__($exception->getMessage()),
-                    Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
-                    Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH
-                );
-
-                Mage::helper('M2ePro/Module_Exception')->process($exception);
+            } catch (Exception $e) {
+                Mage::helper('M2ePro/Module_Exception')->process($e);
+                $this->_synchronizationLog->addMessageFromException($e);
             }
         }
     }
 
     //########################################
 
-    protected function getPermittedAccounts()
-    {
-        /** @var $accountsCollection Mage_Core_Model_Resource_Db_Collection_Abstract */
-        $accountsCollection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Account');
-        return $accountsCollection->getItems();
-    }
-
-    //########################################
-
     protected function processAccount(Ess_M2ePro_Model_Account $account)
     {
-        $ebayData = $this->receiveEbayOrdersData($account);
-        /** @var Ess_M2ePro_Model_Ebay_Account $ebayAccount */
-        $ebayAccount = $account->getChildObject();
+        /** @var Ess_M2ePro_Model_Cron_Task_Ebay_Order_Creator $ordersCreator */
+        $ordersCreator = Mage::getModel('M2ePro/Cron_Task_Ebay_Order_Creator');
+        $ordersCreator->setSynchronizationLog($this->_synchronizationLog);
 
+        $ebayData = $this->receiveEbayOrdersData($account);
         if (empty($ebayData)) {
             return null;
         }
+
+        /** @var Ess_M2ePro_Model_Ebay_Account $ebayAccount */
+        $ebayAccount = $account->getChildObject();
 
         if (!empty($ebayData['job_token'])) {
             $ebayAccount->setData('job_token', $ebayData['job_token']);
@@ -80,19 +68,12 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_OrdersProcessor
             $ebayAccount->setData('job_token', null);
         }
 
-        $processedEbayOrders = $this->processEbayOrders($account, $ebayData['items']);
-
-        // ---------------------------------------
-
-        if (!empty($processedEbayOrders)) {
-            $this->createMagentoOrders($processedEbayOrders);
-        }
+        $processedEbayOrders = $ordersCreator->processEbayOrders($account, $ebayData['items']);
+        $ordersCreator->processMagentoOrders($processedEbayOrders);
 
         $ebayAccount->setData('orders_last_synchronization', $ebayData['to_update_date']);
         $ebayAccount->save();
     }
-
-    // ---------------------------------------
 
     /**
      * @param Ess_M2ePro_Model_Account $account
@@ -139,36 +120,6 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_OrdersProcessor
         return $responseData;
     }
 
-    // ---------------------------------------
-
-    /**
-     * @param Ess_M2ePro_Model_Account $account
-     * @param array $ordersData
-     * @return Ess_M2ePro_Model_Order[]
-     */
-    protected function processEbayOrders(Ess_M2ePro_Model_Account $account, array $ordersData)
-    {
-        $accountCreateDate = new DateTime($account->getData('create_date'), new DateTimeZone('UTC'));
-
-        $orders = array();
-        foreach ($ordersData as $ebayOrderData) {
-            $orderCreateDate = new DateTime($ebayOrderData['purchase_create_date'], new DateTimeZone('UTC'));
-            if ($orderCreateDate < $accountCreateDate) {
-                continue;
-            }
-
-            /** @var $ebayOrder Ess_M2ePro_Model_Ebay_Order_Builder */
-            $ebayOrder = Mage::getModel('M2ePro/Ebay_Order_Builder');
-            $ebayOrder->initialize($account, $ebayOrderData);
-
-            $orders[] = $ebayOrder->process();
-        }
-
-        return array_filter($orders);
-    }
-
-    // ---------------------------------------
-
     protected function processResponseMessages(array $messages)
     {
         /** @var Ess_M2ePro_Model_Connector_Connection_Response_Message_Set $messagesSet */
@@ -185,82 +136,9 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_OrdersProcessor
 
             $this->_synchronizationLog->addMessage(
                 Mage::helper('M2ePro')->__($message->getText()),
-                $logType,
-                Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH
+                $logType
             );
         }
-    }
-
-    // ---------------------------------------
-
-    protected function createMagentoOrders($ebayOrders)
-    {
-        $iteration = 0;
-
-        foreach ($ebayOrders as $order) {
-            /** @var $order Ess_M2ePro_Model_Order */
-
-            $iteration++;
-
-            if ($this->isOrderChangedInParallelProcess($order)) {
-                continue;
-            }
-
-            if ($order->canCreateMagentoOrder()) {
-                try {
-                    $order->addNoticeLog(
-                        'Magento order creation rules are met. M2E Pro will attempt to create Magento order.'
-                    );
-                    $order->createMagentoOrder();
-                } catch (Exception $exception) {
-                    continue;
-                }
-            }
-
-            if ($order->getReserve()->isNotProcessed() && $order->isReservable()) {
-                $order->getReserve()->place();
-            }
-
-            if ($order->getChildObject()->canCreatePaymentTransaction()) {
-                $order->getChildObject()->createPaymentTransactions();
-            }
-
-            if ($order->getChildObject()->canCreateInvoice()) {
-                $order->createInvoice();
-            }
-
-            if ($order->getChildObject()->canCreateShipment()) {
-                $order->createShipment();
-            }
-
-            if ($order->getChildObject()->canCreateTracks()) {
-                $order->getChildObject()->createTracks();
-            }
-
-            if ($order->getStatusUpdateRequired()) {
-                $order->updateMagentoOrderStatus();
-            }
-        }
-    }
-
-    //########################################
-
-    /**
-     * This is going to protect from Magento Orders duplicates.
-     * (Is assuming that there may be a parallel process that has already created Magento Order)
-     *
-     * But this protection is not covering a cases when two parallel cron processes are isolated by mysql transactions
-     */
-    protected function isOrderChangedInParallelProcess(Ess_M2ePro_Model_Order $order)
-    {
-        /** @var Ess_M2ePro_Model_Order $dbOrder */
-        $dbOrder = Mage::getModel('M2ePro/Order')->load($order->getId());
-
-        if ($dbOrder->getMagentoOrderId() != $order->getMagentoOrderId()) {
-            return true;
-        }
-
-        return false;
     }
 
     //########################################

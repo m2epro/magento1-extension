@@ -525,7 +525,7 @@ class Ess_M2ePro_Model_Walmart_Template_Description_Source
 
     protected function getMagentoProductAttributeValue($attributeCode, $store)
     {
-        return $this->getMagentoProduct()->getAttributeValue($attributeCode); // todo
+        return $this->getMagentoProduct()->getAttributeValue($attributeCode);
     }
 
     //########################################

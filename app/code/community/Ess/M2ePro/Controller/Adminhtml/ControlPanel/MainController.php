@@ -11,6 +11,13 @@ abstract class Ess_M2ePro_Controller_Adminhtml_ControlPanel_MainController
 {
     //########################################
 
+    protected function _preDispatch()
+    {
+        return null;
+    }
+
+    //########################################
+
     public function indexAction()
     {
         $this->_redirect(Mage::helper('M2ePro/View_ControlPanel')->getPageRoute());

@@ -6,7 +6,7 @@
  * @license    Commercial use is forbidden
  */
 
-class Ess_M2ePro_Model_Amazon_Template_ProductTaxCode_Diff extends Ess_M2ePro_Model_Template_Diff_Abstract
+class Ess_M2ePro_Model_Amazon_Template_ProductTaxCode_Diff extends Ess_M2ePro_Model_ActiveRecord_Diff
 {
     //########################################
 

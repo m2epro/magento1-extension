@@ -6,20 +6,23 @@
  * @license    Commercial use is forbidden
  */
 
+/**
+ * @method Ess_M2ePro_Model_Template_SellingFormat getModel()
+ */
 class Ess_M2ePro_Model_Walmart_Template_SellingFormat_SnapshotBuilder
-    extends Ess_M2ePro_Model_Template_SnapshotBuilder_Abstract
+    extends Ess_M2ePro_Model_ActiveRecord_SnapshotBuilder
 {
     //########################################
 
     public function getSnapshot()
     {
-        $data = $this->_model->getData();
+        $data = $this->getModel()->getData();
         if (empty($data)) {
             return array();
         }
 
         /** @var Ess_M2ePro_Model_Walmart_Template_SellingFormat $childModel */
-        $childModel = $this->_model->getChildObject();
+        $childModel = $this->getModel()->getChildObject();
 
         $ignoredKeys = array(
             'id',

@@ -98,6 +98,9 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Order_Update_Abstract
         }
 
         parent::process();
+        /** @var Ess_M2ePro_Model_Order_Change $orderChange */
+        $orderChange = Mage::getModel('M2ePro/Order_Change')->load($this->getOrderChangeId());
+        $this->_order->getLog()->setInitiator($orderChange->getCreatorType());
 
         foreach ($this->getResponse()->getMessages()->getEntities() as $message) {
             if (!$message->isError()) {
@@ -123,12 +126,16 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Order_Update_Abstract
         if ($this->_order->getMarketplace()->getCode() == 'India'
             && stripos($this->_order->getChildObject()->getPaymentMethod(), 'paisa') !== false
         ) {
+            /** @var Ess_M2ePro_Model_Order_Change $orderChange */
+            $orderChange = Mage::getModel('M2ePro/Order_Change')->load($this->getOrderChangeId());
+            $this->_order->getLog()->setInitiator($orderChange->getCreatorType());
             $this->_order->addErrorLog(
                 'eBay Order Status was not updated. Reason: %msg%', array(
                 'msg' => 'Status of India Site Orders cannot be updated if the Buyer uses PaisaPay payment method.'
                 )
             );
 
+            $orderChange->deleteInstance();
             return false;
         }
 

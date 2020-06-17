@@ -6,21 +6,14 @@
  * @license    Commercial use is forbidden
  */
 
+/**
+ * @method Ess_M2ePro_Model_Template_Description getModel()
+ */
+// phpcs:ignore MEQP1.CodeAnalysis.EmptyBlock.DetectedClass
 class Ess_M2ePro_Model_Ebay_Template_Description_SnapshotBuilder
-    extends Ess_M2ePro_Model_Template_SnapshotBuilder_Abstract
+    extends Ess_M2ePro_Model_ActiveRecord_SnapshotBuilder
 {
     //########################################
-
-    public function getSnapshot()
-    {
-        $data = $this->_model->getData();
-
-        foreach ($data as &$value) {
-            $value !== null && !is_array($value) && $value = (string)$value;
-        }
-
-        return $data;
-    }
 
     //########################################
 }

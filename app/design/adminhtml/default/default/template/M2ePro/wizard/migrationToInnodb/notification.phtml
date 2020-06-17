@@ -1,0 +1,29 @@
+<?php
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
+ */
+
+// @codingStandardsIgnoreFile
+
+/** @var Ess_M2ePro_Block_Adminhtml_Wizard_MigrationToInnodb_Notification $this */
+
+$startWizardLink = $this->getUrl("*/adminhtml_wizard_migrationToInnodb");
+
+?>
+
+<div class="wizard-note">
+
+    <div>
+        <?php
+
+        echo Mage::helper('M2ePro')->__(
+                'The Marketplace data must be synchronized. Click <a href="%url_1%">here</a> to get to the Marketplace Synchronization Wizard.',
+                $startWizardLink
+        );
+
+        ?>
+    </div>
+
+</div>

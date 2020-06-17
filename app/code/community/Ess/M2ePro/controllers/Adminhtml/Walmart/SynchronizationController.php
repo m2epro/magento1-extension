@@ -22,8 +22,8 @@ class Ess_M2ePro_Adminhtml_Walmart_SynchronizationController
              ->addCss('M2ePro/css/Plugin/ProgressBar.css')
              ->addJs('M2ePro/Plugin/AreaWrapper.js')
              ->addCss('M2ePro/css/Plugin/AreaWrapper.css')
-             ->addJs('M2ePro/SynchProgressHandler.js')
-             ->addJs('M2ePro/SynchronizationHandler.js');
+             ->addJs('M2ePro/SynchProgress.js')
+             ->addJs('M2ePro/Synchronization.js');
 
         $this->_initPopUp();
 

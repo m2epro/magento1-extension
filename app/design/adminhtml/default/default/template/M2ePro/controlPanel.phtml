@@ -72,7 +72,57 @@
 
     /*  ############################################  */
 
+    .feature-disabled {
+        color: green;
+    }
+    .feature-enabled {
+        color: red;
+        font-weight: bold;
+    }
+    .feature-enabled-word:after {
+        content: "enabled";
+    }
+    .feature-disabled-word:after {
+        content: "disabled";
+    }
+
 </style>
+
+<script type="text/javascript">
+
+    function SetupManagementActionHandler() {
+
+        this.confirmImportantAction = function(promptString, successUrlAction)
+        {
+            var operand1 = Math.floor(Math.random() * (9 - 1 + 1)) + 1,
+                operand2 = Math.floor(Math.random() * (9 - 1 + 1)) + 1;
+
+            var result = prompt(promptString + ' Confirm that: ' + operand1 + ' + ' + operand2 + ' = ');
+
+            if (result != operand1 + operand2) {
+                alert('Wrong!');
+                return false;
+            }
+
+            document.location = successUrlAction;
+        };
+
+        this.askAdditionalParametersForAction = function(promptString, url, placeHolder)
+        {
+            var result = prompt(promptString);
+
+            if (result == null) {
+                return false;
+            }
+
+            url = url.replace(encodeURIComponent('#') + placeHolder + encodeURIComponent('#'), result);
+            document.location = url;
+        }
+    }
+
+    var handlerObj = new SetupManagementActionHandler();
+
+</script>
 
 <div id="controlPanel_container">
     <?php echo $this->getChildHtml('tabs_controlPanel'); ?>

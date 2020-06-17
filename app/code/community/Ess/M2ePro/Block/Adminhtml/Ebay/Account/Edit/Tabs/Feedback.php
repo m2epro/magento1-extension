@@ -27,7 +27,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_Edit_Tabs_Feedback extends Mage_Ad
         // ---------------------------------------
         $data = array(
             'label'   => Mage::helper('M2ePro')->__('Add Template'),
-            'onclick' => 'EbayAccountHandlerObj.feedbacksOpenAddForm();',
+            'onclick' => 'EbayAccountObj.feedbacksOpenAddForm();',
             'class'   => 'open_add_form'
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
@@ -37,7 +37,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_Edit_Tabs_Feedback extends Mage_Ad
         // ---------------------------------------
         $data = array(
             'label'   => Mage::helper('M2ePro')->__('Save'),
-            'onclick' => 'EbayAccountHandlerObj.feedbacksAddAction();',
+            'onclick' => 'EbayAccountObj.feedbacksAddAction();',
             'class'   => 'add_action'
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
@@ -47,7 +47,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_Edit_Tabs_Feedback extends Mage_Ad
         // ---------------------------------------
         $data = array(
             'label'   => Mage::helper('M2ePro')->__('Save'),
-            'onclick' => 'EbayAccountHandlerObj.feedbacksEditAction();',
+            'onclick' => 'EbayAccountObj.feedbacksEditAction();',
             'class'   => 'edit_action'
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);

@@ -34,15 +34,15 @@ $formData = $this->getFormData();
 <script type="text/javascript">
 
     var init = function() {
-        EbayTemplateSynchronizationHandlerObj = new EbayTemplateSynchronizationHandler();
+        EbayTemplateSynchronizationObj = new EbayTemplateSynchronization();
 
         $$('.navigation_bar').each(function(el){
-            el.observe('click', EbayTemplateSynchronizationHandlerObj.setVirtualTabAsActive);
+            el.observe('click', EbayTemplateSynchronizationObj.setVirtualTabAsActive);
         });
 
         setTimeout(function() {
             $$('#ebay_template_synchronization_edit_form_container select').each(function(el){
-                el.observe('change', EbayTemplateSynchronizationHandlerObj.setVirtualTabAsChanged);
+                el.observe('change', EbayTemplateSynchronizationObj.setVirtualTabAsChanged);
             });
         },350);
     };

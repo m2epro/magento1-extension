@@ -166,8 +166,7 @@ class Ess_M2ePro_Observer_StockItem extends Ess_M2ePro_Observer_Abstract
                 'From [%from%] to [%to%].',
                 array('!from'=>$oldValue,'!to'=>$newValue)
             ),
-            Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE,
-            Ess_M2ePro_Model_Log_Abstract::PRIORITY_LOW
+            Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE
         );
     }
 

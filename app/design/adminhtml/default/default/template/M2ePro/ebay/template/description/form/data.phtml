@@ -49,49 +49,49 @@ $isCustomDescription = ($formData['description_mode'] == Ess_M2ePro_Model_Ebay_T
         'Seller Notes must be less then 1000 symbols.' => Mage::helper('M2ePro')->__('Seller Notes must be less then 1000 symbols.')
     )); ?>);
 
-    AttributeHandlerObj = new AttributeHandler();
-    EbayTemplateDescriptionHandlerObj = new EbayTemplateDescriptionHandler();
+    AttributeObj = new Attribute();
+    EbayTemplateDescriptionObj = new EbayTemplateDescription();
 
     var init = function() {
 
         $('title_mode')
-            .observe('change', EbayTemplateDescriptionHandlerObj.title_mode_change)
+            .observe('change', EbayTemplateDescriptionObj.title_mode_change)
             .simulate('change');
 
         $('subtitle_mode')
-            .observe('change', EbayTemplateDescriptionHandlerObj.subtitle_mode_change)
+            .observe('change', EbayTemplateDescriptionObj.subtitle_mode_change)
             .simulate('change');
 
         $('item_condition')
-            .observe('change', EbayTemplateDescriptionHandlerObj.item_condition_change)
+            .observe('change', EbayTemplateDescriptionObj.item_condition_change)
             .simulate('change');
 
         $('condition_note_mode')
-            .observe('change', EbayTemplateDescriptionHandlerObj.condition_note_mode_change)
+            .observe('change', EbayTemplateDescriptionObj.condition_note_mode_change)
             .simulate('change');
 
         $('watermark_scale')
-            .observe('change', EbayTemplateDescriptionHandlerObj.watermark_scale_mode_change)
+            .observe('change', EbayTemplateDescriptionObj.watermark_scale_mode_change)
             .simulate('change');
 
         $('watermark_mode')
-            .observe('change', EbayTemplateDescriptionHandlerObj.watermark_mode_change)
+            .observe('change', EbayTemplateDescriptionObj.watermark_mode_change)
             .simulate('change');
 
         $('description_mode')
-            .observe('change', EbayTemplateDescriptionHandlerObj.description_mode_change)
+            .observe('change', EbayTemplateDescriptionObj.description_mode_change)
             .simulate('change');
 
         $('image_main')
-            .observe('change', EbayTemplateDescriptionHandlerObj.image_main_change)
+            .observe('change', EbayTemplateDescriptionObj.image_main_change)
             .simulate('change');
 
         $('gallery_images')
-            .observe('change', EbayTemplateDescriptionHandlerObj.gallery_images_change)
+            .observe('change', EbayTemplateDescriptionObj.gallery_images_change)
             .simulate('change');
 
         $('variation_images')
-            .observe('change', EbayTemplateDescriptionHandlerObj.variation_images_change)
+            .observe('change', EbayTemplateDescriptionObj.variation_images_change)
             .simulate('change');
 
         $('product_details_ean',
@@ -99,16 +99,16 @@ $isCustomDescription = ($formData['description_mode'] == Ess_M2ePro_Model_Ebay_T
           'product_details_epid',
           'product_details_isbn'
         ).each(function(element) {
-                element.observe('change', EbayTemplateDescriptionHandlerObj.product_details_specification_visibility_change)
+                element.observe('change', EbayTemplateDescriptionObj.product_details_specification_visibility_change)
                     .simulate('change');
         });
 
         $('product_details_brand')
-            .observe('change', EbayTemplateDescriptionHandlerObj.product_details_brand_change)
+            .observe('change', EbayTemplateDescriptionObj.product_details_brand_change)
             .simulate('change');
 
         $('product_details_mpn')
-            .observe('change', EbayTemplateDescriptionHandlerObj.product_details_mpn_change);
+            .observe('change', EbayTemplateDescriptionObj.product_details_mpn_change);
     };
 
     <?php if ($this->getRequest()->isXmlHttpRequest()): ?>
@@ -179,9 +179,9 @@ $isCustomDescription = ($formData['description_mode'] == Ess_M2ePro_Model_Ebay_T
                                 <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Description::CONDITION_MODE_EBAY; ?>" attribute_code="<?php echo Ess_M2ePro_Model_Ebay_Template_Description::CONDITION_EBAY_ACCEPTABLE; ?>" <?php if ($formData['condition_mode'] == Ess_M2ePro_Model_Ebay_Template_Description::CONDITION_MODE_EBAY && $formData['condition_value'] == Ess_M2ePro_Model_Ebay_Template_Description::CONDITION_EBAY_ACCEPTABLE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Acceptable'); ?></option>
                                 <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Description::CONDITION_MODE_EBAY; ?>" attribute_code="<?php echo Ess_M2ePro_Model_Ebay_Template_Description::CONDITION_EBAY_NOT_WORKING; ?>" <?php if ($formData['condition_mode'] == Ess_M2ePro_Model_Ebay_Template_Description::CONDITION_MODE_EBAY && $formData['condition_value'] == Ess_M2ePro_Model_Ebay_Template_Description::CONDITION_EBAY_NOT_WORKING): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('For Parts or Not Working'); ?></option>
                             </optgroup>
-                            <optgroup class="simple_mode_disallowed M2ePro-custom-attribute-optgroup" label="Magento Attributes">
+                            <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attributes">
                                 <?php foreach($attributesByInputTypes['text_select'] as $attribute) : ?>
-                                    <option class="simple_mode_disallowed" value="<?php echo Ess_M2ePro_Model_Ebay_Template_Description::CONDITION_MODE_ATTRIBUTE; ?>" attribute_code="<?php echo $attribute['code']; ?>" <?php if ($formData['condition_mode'] == Ess_M2ePro_Model_Ebay_Template_Description::CONDITION_MODE_ATTRIBUTE && $formData['condition_attribute'] == $attribute['code']): ?>selected="selected"<?php endif; ?>>
+                                    <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Description::CONDITION_MODE_ATTRIBUTE; ?>" attribute_code="<?php echo $attribute['code']; ?>" <?php if ($formData['condition_mode'] == Ess_M2ePro_Model_Ebay_Template_Description::CONDITION_MODE_ATTRIBUTE && $formData['condition_attribute'] == $attribute['code']): ?>selected="selected"<?php endif; ?>>
                                         <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
                                     </option>
                                 <?php endforeach; ?>
@@ -229,7 +229,7 @@ $isCustomDescription = ($formData['description_mode'] == Ess_M2ePro_Model_Ebay_T
                     <td class="value">
                         <textarea id="condition_note_template" name="description[condition_note_template]" style="width: 350px;" class="M2ePro-required-when-visible M2ePro-validate-condition-note-length"><?php echo Mage::helper('M2ePro')->__($formData['condition_note_template']); ?></textarea>
                     </td>
-                    <td class="value simple_mode_disallowed">
+                    <td class="value">
                         <span id="select_attributes_for_condition_note_span" class="select-wrapper">
                             <select id="select_attributes_for_condition_note" class="M2ePro-custom-attribute-can-be-created" style="width: 150px;">
                                 <?php foreach($this->attributes as $attribute) : ?>
@@ -248,7 +248,7 @@ $isCustomDescription = ($formData['description_mode'] == Ess_M2ePro_Model_Ebay_T
 
 </div>
 
-<div class="entry-edit simple_mode_disallowed" id="magento_block_ebay_template_description_form_data_image">
+<div class="entry-edit" id="magento_block_ebay_template_description_form_data_image">
 
 <div class="entry-edit-head">
     <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Images & Watermark'); ?></h4>
@@ -556,7 +556,7 @@ $isCustomDescription = ($formData['description_mode'] == Ess_M2ePro_Model_Ebay_T
 </div>
 </div>
 
-<div class="entry-edit simple_mode_disallowed" id="magento_block_ebay_template_description_form_data_details">
+<div class="entry-edit" id="magento_block_ebay_template_description_form_data_details">
 
     <div class="entry-edit-head">
         <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Details'); ?></h4>
@@ -675,7 +675,7 @@ $isCustomDescription = ($formData['description_mode'] == Ess_M2ePro_Model_Ebay_T
 
 </div>
 
-<div class="entry-edit simple_mode_disallowed" id="magento_block_ebay_template_description_form_data_description">
+<div class="entry-edit" id="magento_block_ebay_template_description_form_data_description">
 
     <div class="entry-edit-head">
         <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Description'); ?></h4>
@@ -721,7 +721,7 @@ $isCustomDescription = ($formData['description_mode'] == Ess_M2ePro_Model_Ebay_T
                     <td class="label">
                     </td>
                     <td class="value">
-                        <a href="javascript:void(0)" onclick="EbayTemplateDescriptionHandlerObj.view_edit_custom_change()">View / Edit Custom Description</a>
+                        <a href="javascript:void(0)" onclick="EbayTemplateDescriptionObj.view_edit_custom_change()">View / Edit Custom Description</a>
                     </td>
                 </tr>
             <?php endif;?>
@@ -1034,7 +1034,7 @@ $isCustomDescription = ($formData['description_mode'] == Ess_M2ePro_Model_Ebay_T
     </div>
 </div>
 
-<div class="entry-edit simple_mode_disallowed" id="magento_block_ebay_template_description_form_data_product_details">
+<div class="entry-edit" id="magento_block_ebay_template_description_form_data_product_details">
 
     <div class="entry-edit-head">
         <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('eBay Catalog Identifiers'); ?></h4>
@@ -1276,7 +1276,7 @@ $isCustomDescription = ($formData['description_mode'] == Ess_M2ePro_Model_Ebay_T
 
 </div>
 
-<div class="entry-edit simple_mode_disallowed" id="magento_block_ebay_template_description_form_data_upgrade_tools">
+<div class="entry-edit" id="magento_block_ebay_template_description_form_data_upgrade_tools">
 
     <div class="entry-edit-head">
         <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Upgrade Tools'); ?></h4>

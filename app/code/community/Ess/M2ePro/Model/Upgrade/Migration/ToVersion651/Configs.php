@@ -785,25 +785,25 @@ SQL
         $this->_installer->run(
             <<<SQL
 
-UPDATE `m2epro_cache_config`
+UPDATE `{$this->_installer->getTable('m2epro_cache_config')}`
 SET `group` = '/view/ebay/listing/advanced/autoaction_popup/',
     `key`   = 'shown'
 WHERE `group` = '/view/ebay/advanced/autoaction_popup/'
   AND `key`   = 'shown';
 
-UPDATE `m2epro_cache_config`
+UPDATE `{$this->_installer->getTable('m2epro_cache_config')}`
 SET `group` = '/view/ebay/listing/motors_epids_attribute/',
     `key`   = 'notification_shown'
 WHERE `group` = '/view/ebay/motors_epids_attribute/'
   AND `key`   = 'listing_notification_shown';
 
-UPDATE `m2epro_cache_config`
+UPDATE `{$this->_installer->getTable('m2epro_cache_config')}`
 SET `group` = '/view/ebay/template/selling_format/multi_currency_marketplace_2/',
     `key`   = 'notification_shown'
 WHERE `group` = '/view/ebay/multi_currency_marketplace_2/'
   AND `key`   = 'notification_shown';
 
-UPDATE `m2epro_cache_config`
+UPDATE `{$this->_installer->getTable('m2epro_cache_config')}`
 SET `group` = '/view/ebay/template/selling_format/multi_currency_marketplace_19/',
     `key`   = 'notification_shown'
 WHERE `group` = '/view/ebay/multi_currency_marketplace_19/'

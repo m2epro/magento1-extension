@@ -44,16 +44,16 @@ class Ess_M2ePro_Helper_Module_Wizard extends Mage_Core_Helper_Abstract
 
     //########################################
 
-    public function isNotStarted($nick)
+    public function isNotStarted($nick, $view = null)
     {
         return $this->getStatus($nick) == self::STATUS_NOT_STARTED &&
-               $this->getWizard($nick)->isActive();
+               $this->getWizard($nick)->isActive($view);
     }
 
-    public function isActive($nick)
+    public function isActive($nick, $view = null)
     {
         return $this->getStatus($nick) == self::STATUS_ACTIVE &&
-               $this->getWizard($nick)->isActive();
+               $this->getWizard($nick)->isActive($view);
     }
 
     public function isCompleted($nick)
@@ -166,7 +166,9 @@ class Ess_M2ePro_Helper_Module_Wizard extends Mage_Core_Helper_Abstract
 
         /** @var $wizard Ess_M2ePro_Model_Wizard */
         foreach ($wizards as $wizard) {
-            if ($this->isNotStarted($this->getNick($wizard)) || $this->isActive($this->getNick($wizard))) {
+            if ($this->isNotStarted($this->getNick($wizard), $view) ||
+                $this->isActive($this->getNick($wizard), $view)
+            ) {
                 return $wizard;
             }
         }
@@ -212,10 +214,10 @@ class Ess_M2ePro_Helper_Module_Wizard extends Mage_Core_Helper_Abstract
 
     //########################################
 
-    public function addWizardHandlerJs()
+    public function addWizardJs()
     {
         Mage::getSingleton('core/layout')->getBlock('head')->addJs(
-            'M2ePro/WizardHandler.js'
+            'M2ePro/Wizard.js'
         );
     }
 
@@ -281,7 +283,9 @@ class Ess_M2ePro_Helper_Module_Wizard extends Mage_Core_Helper_Abstract
                 continue;
             }
 
-            if ($this->isNotStarted($this->getNick($wizard)) || $this->isActive($this->getNick($wizard))) {
+            if ($this->isNotStarted($this->getNick($wizard), $view) ||
+                $this->isActive($this->getNick($wizard), $view)
+            ) {
                 return $wizard;
             }
         }

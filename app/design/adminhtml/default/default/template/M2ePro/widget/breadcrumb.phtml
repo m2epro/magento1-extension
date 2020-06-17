@@ -1,0 +1,64 @@
+<?php
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
+ */
+
+// @codingStandardsIgnoreFile
+
+/** @var Ess_M2ePro_Block_Adminhtml_Widget_Breadcrumb $this */
+
+$stepsCount = count($this->getSteps());
+$width = 100 / $stepsCount - 0.25;
+
+$containerStyles = $this->getContainerData('style');
+$containerIdPrefix = $this->getContainerData('id_prefix');
+
+$id = $containerIdPrefix ? $containerIdPrefix.'_breadcrumb_container' : 'breadcrumb_container';
+?>
+
+<style type="text/css">
+    [id$='breadcrumb_container'] {
+        margin: 10px 0 15px 0;
+        overflow: hidden;
+    }
+    .breadcrumb {
+        width: <?php echo $width; ?>%;
+        padding: 12px 0;
+        color: #aaa;
+        font-size: 14px;
+        text-align: center;
+        background: #EBF3F3;
+        margin-left: 0.33%;
+        float: left;
+    }
+
+    .breadcrumb:first-child {
+        margin-left: 0;
+    }
+    .selected {
+        color: white;
+        background: #6f8992;
+        font-weight: bold;
+    }
+</style>
+
+<div id="<?php echo $id; ?>" <?php echo $containerStyles ? 'style="'.$containerStyles.'"' : ''; ?>>
+
+    <?php foreach ($this->getSteps() as $step) :?>
+        <div id="step_<?php echo $step['id']; ?>" class="breadcrumb <?php if ($this->getSelectedStep() === $step['id']) {
+            echo 'selected';
+                      } ?>">
+
+        <span>
+            <?php echo $step['title'] ?>:
+        </span>
+        <span>
+            <?php echo $step['description'] ?>
+        </span>
+
+        </div>
+    <?php endforeach; ?>
+
+</div>

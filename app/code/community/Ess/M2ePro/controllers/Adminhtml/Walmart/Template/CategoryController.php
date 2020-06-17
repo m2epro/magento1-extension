@@ -20,11 +20,11 @@ class Ess_M2ePro_Adminhtml_Walmart_Template_CategoryController
              ->_title(Mage::helper('M2ePro')->__('Category Policies'));
 
         $this->getLayout()->getBlock('head')
-            ->addJs('M2ePro/Template/EditHandler.js')
-            ->addJs('M2ePro/Walmart/Template/EditHandler.js')
-            ->addJs('M2ePro/Walmart/Template/Category/Handler.js')
-            ->addJs('M2ePro/Walmart/Template/Category/Categories/ChooserHandler.js')
-            ->addJs('M2ePro/Walmart/Template/Category/Categories/SpecificHandler.js')
+            ->addJs('M2ePro/Template/Edit.js')
+            ->addJs('M2ePro/Walmart/Template/Edit.js')
+            ->addJs('M2ePro/Walmart/Template/Category.js')
+            ->addJs('M2ePro/Walmart/Template/Category/Categories/Chooser.js')
+            ->addJs('M2ePro/Walmart/Template/Category/Categories/Specific.js')
             ->addJs('M2ePro/Walmart/Template/Category/Categories/Specific/Renderer.js')
             ->addJs('M2ePro/Walmart/Template/Category/Categories/Specific/Dictionary.js')
             ->addJs('M2ePro/Walmart/Template/Category/Categories/Specific/BlockRenderer.js')
@@ -33,7 +33,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Template_CategoryController
             ->addJs('M2ePro/Walmart/Template/Category/Categories/Specific/Grid/RowRenderer.js')
             ->addJs('M2ePro/Walmart/Template/Category/Categories/Specific/Grid/RowAttributeRenderer.js')
 
-            ->addJs('M2ePro/AttributeHandler.js');
+            ->addJs('M2ePro/Attribute.js');
 
         $this->_initPopUp();
 
@@ -96,35 +96,9 @@ class Ess_M2ePro_Adminhtml_Walmart_Template_CategoryController
             return $this->indexAction();
         }
 
-        $id = $this->getRequest()->getParam('id');
-
-        // Base prepare
-        // ---------------------------------------
-
-        $keys = array(
-            'title',
-            'marketplace_id',
-
-            'category_path',
-            'product_data_nick',
-            'browsenode_id'
-        );
-
-        $dataForAdd = array();
-        foreach ($keys as $key) {
-            if ($key === 'encoded_data') {
-                continue;
-            }
-
-            if(isset($post[$key])) {
-                $dataForAdd[$key] = $post[$key];
-            }
-        }
-
-        $dataForAdd['title'] = strip_tags($dataForAdd['title']);
-
         /** @var Ess_M2ePro_Model_Walmart_Template_Category $categoryTemplate */
-        $categoryTemplate = Mage::getModel('M2ePro/Walmart_Template_Category')->load($id);
+        $categoryTemplate = Mage::getModel('M2ePro/Walmart_Template_Category')
+            ->load($this->getRequest()->getParam('id'));
 
         $oldData = array();
         if ($categoryTemplate->getId()) {
@@ -134,7 +108,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Template_CategoryController
             $oldData = $snapshotBuilder->getSnapshot();
         }
 
-        $categoryTemplate->addData($dataForAdd)->save();
+        Mage::getModel('M2ePro/Walmart_Template_Category_Builder')->build($categoryTemplate, $post);
         // ---------------------------------------
 
         $id = $categoryTemplate->getId();
@@ -150,40 +124,21 @@ class Ess_M2ePro_Adminhtml_Walmart_Template_CategoryController
 
         $this->sortSpecifics($specifics, $post['product_data_nick'], $post['marketplace_id']);
 
+        /** @var Ess_M2ePro_Model_Walmart_Template_Category_Specific_Builder $categorySpecificBuilder */
+        $categorySpecificBuilder = Mage::getModel('M2ePro/Walmart_Template_Category_Specific_Builder');
+
         foreach ($specifics as $xpath => $specificData) {
             if (!$this->validateSpecificData($specificData)) {
                 continue;
             }
 
+            $specificData['xpath'] = $xpath;
+
+            /** @var Ess_M2ePro_Model_Walmart_Template_Category_Specific $specificInstance */
             $specificInstance = Mage::getModel('M2ePro/Walmart_Template_Category_Specific');
-
-            $type       = isset($specificData['type']) ? $specificData['type'] : '';
-            $isRequired = isset($specificData['is_required']) ? $specificData['is_required'] : 0;
-            $attributes = isset($specificData['attributes'])
-                ? Mage::helper('M2ePro')->jsonEncode($specificData['attributes']) : '[]';
-
-            $customValue = $specificData['mode'] == $specificInstance::DICTIONARY_MODE_CUSTOM_VALUE
-                ? $specificData['custom_value'] : '';
-
-            $customAttribute = $specificData['mode'] == $specificInstance::DICTIONARY_MODE_CUSTOM_ATTRIBUTE
-                ? $specificData['custom_attribute'] : '';
-
-            $specificInstance->addData(
-                array(
-                'template_category_id' => $id,
-                'xpath'                   => $xpath,
-                'mode'                    => $specificData['mode'],
-                'is_required'             => $isRequired,
-                'custom_value'            => $customValue,
-                'custom_attribute'        => $customAttribute,
-                'type'                    => $type,
-                'attributes'              => $attributes
-                )
-            );
-            $specificInstance->save();
+            $categorySpecificBuilder->setTemplateCategoryId($id);
+            $categorySpecificBuilder->build($specificInstance, $specificData);
         }
-
-        // ---------------------------------------
 
         // Is Need Synchronize
         // ---------------------------------------
@@ -555,20 +510,20 @@ class Ess_M2ePro_Adminhtml_Walmart_Template_CategoryController
         }
 
         if ($specificData['mode'] == Category_Specific::DICTIONARY_MODE_RECOMMENDED_VALUE &&
-            (!isset($specificData['recommended_value']) || $specificData['recommended_value'] == ''))
-        {
+            (!isset($specificData['recommended_value']) || $specificData['recommended_value'] == '')
+        ) {
             return false;
         }
 
         if ($specificData['mode'] == Category_Specific::DICTIONARY_MODE_CUSTOM_ATTRIBUTE &&
-            (!isset($specificData['custom_attribute']) || $specificData['custom_attribute'] == ''))
-        {
+            (!isset($specificData['custom_attribute']) || $specificData['custom_attribute'] == '')
+        ) {
             return false;
         }
 
         if ($specificData['mode'] == Category_Specific::DICTIONARY_MODE_CUSTOM_VALUE &&
-            (!isset($specificData['custom_value']) || $specificData['custom_value'] == ''))
-        {
+            (!isset($specificData['custom_value']) || $specificData['custom_value'] == '')
+        ) {
             return false;
         }
 

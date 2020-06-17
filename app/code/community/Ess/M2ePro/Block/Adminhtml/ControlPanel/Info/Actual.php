@@ -14,11 +14,7 @@ class Ess_M2ePro_Block_Adminhtml_ControlPanel_Info_Actual extends Mage_Adminhtml
     {
         parent::__construct();
 
-        // Initialization block
-        // ---------------------------------------
         $this->setId('controlPanelSummaryInfo');
-        // ---------------------------------------
-
         $this->setTemplate('M2ePro/controlPanel/info/actual.phtml');
     }
 
@@ -26,6 +22,11 @@ class Ess_M2ePro_Block_Adminhtml_ControlPanel_Info_Actual extends Mage_Adminhtml
 
     protected function _beforeToHtml()
     {
+        // ---------------------------------------
+        $this->systemName = Mage::helper('M2ePro/Client')->getSystem();
+        $this->systemTime = Mage::helper('M2ePro')->getCurrentGmtDate();
+        // ---------------------------------------
+
         $this->magentoInfo = Mage::helper('M2ePro')->__(ucwords(Mage::helper('M2ePro/Magento')->getEditionName())) .
             ' (' . Mage::helper('M2ePro/Magento')->getVersion() . ')';
 
@@ -33,6 +34,11 @@ class Ess_M2ePro_Block_Adminhtml_ControlPanel_Info_Actual extends Mage_Adminhtml
         $this->publicVersion = Mage::helper('M2ePro/Module')->getPublicVersion();
         $this->setupVersion  = Mage::helper('M2ePro/Module')->getSetupVersion();
         $this->moduleEnvironment = Mage::helper('M2ePro/Module')->getEnvironment();
+        // ---------------------------------------
+
+        // ---------------------------------------
+        $this->maintenanceMode = Mage::helper('M2ePro/Module_Maintenance')->isEnabled();
+        $this->maintenanceCanBeIgnored = Mage::helper('M2ePro/Module_Maintenance')->isMaintenanceCanBeIgnored();;
         // ---------------------------------------
 
         // ---------------------------------------
@@ -53,20 +59,8 @@ class Ess_M2ePro_Block_Adminhtml_ControlPanel_Info_Actual extends Mage_Adminhtml
         // ---------------------------------------
         $this->mySqlVersion = Mage::helper('M2ePro/Client')->getMysqlVersion();
         $this->mySqlDatabaseName = Mage::helper('M2ePro/Magento')->getDatabaseName();
-        // ---------------------------------------
-
-        // ---------------------------------------
-        $this->cronLastRunTime = 'N/A';
-        $this->cronIsNotWorking = false;
-        $this->cronCurrentRunner = ucfirst(Mage::helper('M2ePro/Module_Cron')->getRunner());
-
-        $cronLastRunTime = Mage::helper('M2ePro/Module_Cron')->getLastRun();
-
-        if ($cronLastRunTime !== null) {
-            $this->cronLastRunTime = $cronLastRunTime;
-            $this->cronIsNotWorking = Mage::helper('M2ePro/Module_Cron')->isLastRunMoreThan(12, true);
-        }
-
+        $this->mySqlPrefix = Mage::helper('M2ePro/Magento')->getDatabaseTablesPrefix();
+        empty($this->mySqlPrefix) && $this->mySqlPrefix = Mage::helper('M2ePro')->__('disabled');
         // ---------------------------------------
 
         return parent::_beforeToHtml();

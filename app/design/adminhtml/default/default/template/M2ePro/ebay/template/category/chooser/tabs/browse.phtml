@@ -1,0 +1,45 @@
+<?php
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
+ */
+
+// @codingStandardsIgnoreFile
+
+/** @var $this Ess_M2ePro_Block_Adminhtml_Ebay_Template_Category_Chooser_Tabs_Browse */
+
+$categoryType = $this->getData('category_type');
+$ebayCategoryTypes =  Mage::helper('M2ePro/Component_Ebay_Category')->getEbayCategoryTypes();
+$isWizard = !Mage::helper('M2ePro/View_Ebay')->isInstallationWizardFinished();
+
+?>
+
+<style>
+    .category-children-block {
+        display: inline-block;
+        margin-left: 10px;
+    }
+</style>
+
+<script type="text/javascript">
+    EbayTemplateCategoryChooserBrowseObj = new EbayTemplateCategoryChooserBrowse();
+    EbayTemplateCategoryChooserBrowseObj.setMarketplaceId(EbayTemplateCategoryChooserObj.getMarketplaceId());
+    EbayTemplateCategoryChooserBrowseObj.setAccountId(EbayTemplateCategoryChooserObj.getAccountId());
+    EbayTemplateCategoryChooserBrowseObj.renderTopLevelCategories('chooser_browser');
+    EbayTemplateCategoryChooserBrowseObj.observe('leaf_selected', function(selected) {
+        var leafId = selected[selected.length-1];
+        EbayTemplateCategoryChooserObj.selectCategory(M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Template_Category::CATEGORY_MODE_EBAY'), leafId);
+    });
+</script>
+
+<?php if (in_array($categoryType, $ebayCategoryTypes)): ?>
+    <div id="block_notice_ebay_category_chooser_browser_refresh" class="block_notices_module" title="" subtitle="" collapseable="no" hideblock="no" always_show="yes" <?php echo $isWizard ? 'style="display:none";' : '' ?>>
+        <?php echo Mage::helper('M2ePro')->__('If you cannot find necessary Category, try to <a href="javascript:void(0)" onclick="EbayTemplateCategoryChooserObj.refreshEbayCategories()">update Marketplaces Data</a>.') ?>
+    </div>
+<?php else: ?>
+    <div id="block_notice_ebay_category_chooser_browser_refresh" class="block_notices_module" title="" subtitle="" collapseable="no" hideblock="no" always_show="yes">
+        <?php echo Mage::helper('M2ePro')->__('If you cannot find necessary Store Category, try to <a href="javascript:void(0)" onclick="EbayTemplateCategoryChooserObj.refreshStoreCategories()">refresh eBay Store Data</a>.') ?>
+    </div>
+<?php endif; ?>
+<div id="chooser_browser"></div>

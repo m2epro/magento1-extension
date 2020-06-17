@@ -9,9 +9,18 @@
 class Ess_M2ePro_Model_Wizard_InstallationAmazon extends Ess_M2ePro_Model_Wizard
 {
     protected $_steps = array(
-        'license',
-        'marketplace',
-        'account'
+        'registration',
+        'account',
+
+        'listingTutorial',
+        'listingGeneral',
+        'listingSelling',
+        'listingSearch',
+
+        'sourceMode',
+        'productSelection',
+        'newAsin',
+        'searchAsin'
     );
 
     //########################################
@@ -19,7 +28,7 @@ class Ess_M2ePro_Model_Wizard_InstallationAmazon extends Ess_M2ePro_Model_Wizard
     /**
      * @return bool
      */
-    public function isActive()
+    public function isActive($view)
     {
         return Mage::helper('M2ePro/Component_Amazon')->isEnabled();
     }

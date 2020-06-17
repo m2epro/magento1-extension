@@ -171,112 +171,112 @@ class Ess_M2ePro_Sql_Upgrade_v6_3_2__v6_3_3_AllFeatures extends Ess_M2ePro_Model
 
         $installer->run(<<<SQL
 
-    UPDATE `m2epro_config`
+    UPDATE `{$this->_installer->getTable('m2epro_config')}`
     SET `group` = '/cron/task/logs_clearing/'
     WHERE `group` = '/cron/task/logs_cleaning/';
 
-    UPDATE `m2epro_config`
+    UPDATE `{$this->_installer->getTable('m2epro_config')}`
     SET `group` = '/logs/clearing/listings/'
     WHERE `group` = '/logs/cleaning/listings/';
 
-    UPDATE `m2epro_config`
+    UPDATE `{$this->_installer->getTable('m2epro_config')}`
     SET `group` = '/logs/clearing/other_listings/'
     WHERE `group` = '/logs/cleaning/other_listings/';
 
-    UPDATE `m2epro_config`
+    UPDATE `{$this->_installer->getTable('m2epro_config')}`
     SET `group` = '/logs/clearing/synchronizations/'
     WHERE `group` = '/logs/cleaning/synchronizations/';
 
-    UPDATE `m2epro_config`
+    UPDATE `{$this->_installer->getTable('m2epro_config')}`
     SET `group` = '/logs/clearing/orders/'
     WHERE `group` = '/logs/cleaning/orders/';
 
-    UPDATE `m2epro_registry`
+    UPDATE `{$this->_installer->getTable('m2epro_registry')}`
     SET `key` = '/wizard/new_amazon_description_templates/'
     WHERE `key` = 'wizard_new_amazon_description_templates';
 
-    UPDATE `m2epro_registry`
+    UPDATE `{$this->_installer->getTable('m2epro_registry')}`
     SET `key` = '/wizard/license_form_data/'
     WHERE `key` = 'wizard_license_form_data';
 
-    UPDATE `m2epro_registry`
+    UPDATE `{$this->_installer->getTable('m2epro_registry')}`
     SET `key` = '/wizard/migrationToV6_notes_html/'
     WHERE `key` = 'wizard_migrationToV6_notes_html';
 
-    UPDATE `m2epro_cache_config`
+    UPDATE `{$this->_installer->getTable('m2epro_cache_config')}`
     SET `group` = '/installation/'
     WHERE `group` = '/installation/version/'
     AND `key` = 'last_version';
 
-    UPDATE `m2epro_ebay_account`
+    UPDATE `{$this->_installer->getTable('m2epro_ebay_account')}`
     SET `magento_orders_settings` = REPLACE(
         `magento_orders_settings`,
         '"qty_reservation":{"days":"0"}',
         '"qty_reservation":{"days":"1"}'
     );
 
-    UPDATE `m2epro_amazon_account`
+    UPDATE `{$this->_installer->getTable('m2epro_amazon_account')}`
     SET `magento_orders_settings` = REPLACE(
         `magento_orders_settings`,
         '"qty_reservation":{"days":"0"}',
         '"qty_reservation":{"days":"1"}'
     );
 
-    UPDATE `m2epro_ebay_template_selling_format`
+    UPDATE `{$this->_installer->getTable('m2epro_ebay_template_selling_format')}`
     SET `qty_max_posted_value` = 100
     WHERE `qty_min_posted_value` = 1
     AND `qty_max_posted_value` = 10;
 
-    UPDATE `m2epro_amazon_template_selling_format`
+    UPDATE `{$this->_installer->getTable('m2epro_amazon_template_selling_format')}`
     SET `qty_max_posted_value` = 100
     WHERE `qty_min_posted_value` = 1
     AND `qty_max_posted_value` = 10;
 
-    UPDATE `m2epro_buy_template_selling_format`
+    UPDATE `{$this->_installer->getTable('m2epro_buy_template_selling_format')}`
     SET `qty_max_posted_value` = 100
     WHERE `qty_min_posted_value` = 1
     AND `qty_max_posted_value` = 10;
 
-    UPDATE `m2epro_ebay_template_synchronization`
+    UPDATE `{$this->_installer->getTable('m2epro_ebay_template_synchronization')}`
     SET `revise_update_qty_max_applied_value` = 5
     WHERE `revise_update_qty_max_applied_value` = 10;
 
-    UPDATE `m2epro_amazon_template_synchronization`
+    UPDATE `{$this->_installer->getTable('m2epro_amazon_template_synchronization')}`
     SET `revise_update_qty_max_applied_value` = 5
     WHERE `revise_update_qty_max_applied_value` = 10;
 
-    UPDATE `m2epro_buy_template_synchronization`
+    UPDATE `{$this->_installer->getTable('m2epro_buy_template_synchronization')}`
     SET `revise_update_qty_max_applied_value` = 5
     WHERE `revise_update_qty_max_applied_value` = 10;
 
-    UPDATE `m2epro_ebay_dictionary_category`
+    UPDATE `{$this->_installer->getTable('m2epro_ebay_dictionary_category')}`
     SET    `item_specifics` = NULL
     WHERE  `item_specifics` IS NOT NULL;
 
-    DELETE FROM `m2epro_cache_config`
+    DELETE FROM `{$this->_installer->getTable('m2epro_cache_config')}`
     WHERE `group` = '/server/baseurl/'
     AND   `key` = 'date_of_emergency_state';
 
-    DELETE FROM `m2epro_synchronization_config`
+    DELETE FROM `{$this->_installer->getTable('m2epro_synchronization_config')}`
     WHERE `group` = '/ebay/policies/'
     OR `group` = '/ebay/policies/receive/';
 
-    UPDATE `m2epro_cache_config`
+    UPDATE `{$this->_installer->getTable('m2epro_cache_config')}`
     SET `group` = '/ebay/category/recent/store/secondary/'
     WHERE `group` = 'ebay/category/recent/store/secondary/';
 
-    DROP TABLE IF EXISTS `m2epro_ebay_account_policy`;
-    DROP TABLE IF EXISTS `m2epro_ebay_template_policy`;
+    DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_ebay_account_policy')}`;
+    DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_ebay_template_policy')}`;
 
-    UPDATE `m2epro_synchronization_config`
+    UPDATE `{$this->_installer->getTable('m2epro_synchronization_config')}`
     SET `value` = '86400'
     WHERE `group` = '/amazon/defaults/update_listings_products/' AND `key` = 'interval';
 
-    UPDATE `m2epro_synchronization_config`
+    UPDATE `{$this->_installer->getTable('m2epro_synchronization_config')}`
     SET `value` = '86400'
     WHERE `group` = '/buy/defaults/update_listings_products/' AND `key` = 'interval';
 
-    UPDATE `m2epro_processing_request`
+    UPDATE `{$this->_installer->getTable('m2epro_processing_request')}`
     SET `next_part` = 1
     WHERE `perform_type` = 2 AND `next_part` IS NULL;
 
@@ -297,7 +297,8 @@ SQL
 
             $installer->run(<<<SQL
 
-INSERT INTO `m2epro_synchronization_config` (`group`,`key`,`value`,`notice`,`update_date`,`create_date`) VALUES
+INSERT INTO `{$this->_installer->getTable('m2epro_synchronization_config')}` 
+(`group`,`key`,`value`,`notice`,`update_date`,`create_date`) VALUES
 ('/amazon/defaults/update_defected_listings_products/', 'interval', '259200', 'in seconds',
    '2013-05-08 00:00:00', '2013-05-08 00:00:00'),
 ('/amazon/defaults/update_defected_listings_products/', 'mode', '1', '0 - disable, \r\n1 - enable',
@@ -325,7 +326,7 @@ SQL
             $values = $connection->quote(json_encode((array)$specific['value_custom_value']));
 
             $installer->run(<<<SQL
-        UPDATE `m2epro_ebay_template_category_specific`
+        UPDATE `{$this->_installer->getTable('m2epro_ebay_template_category_specific')}`
         SET    `value_custom_value` = {$values}
         WHERE  `id` = {$id};
 SQL
@@ -361,7 +362,7 @@ SQL
                 $recentCategoriesData = $connection->quote(@json_encode($resultRecentCategories));
 
                 $installer->run(<<<SQL
-        INSERT INTO `m2epro_registry` (`key`, `value`, `update_date`, `create_date`)
+        INSERT INTO `{$this->_installer->getTable('m2epro_registry')}` (`key`, `value`, `update_date`, `create_date`)
         VALUES ('/amazon/category/recent/', {$recentCategoriesData}, {$date}, {$date});
 SQL
                 );
@@ -369,7 +370,7 @@ SQL
         }
 
         $installer->run(<<<SQL
-    DELETE FROM `m2epro_cache_config`
+    DELETE FROM `{$this->_installer->getTable('m2epro_cache_config')}`
     WHERE `group` LIKE '/amazon/category/recent/marketplace/%';
 SQL
         );
@@ -414,7 +415,7 @@ SQL
                 $recentCategoriesData = $connection->quote(@json_encode($resultRecentCategories));
 
                 $installer->run(<<<SQL
-        INSERT INTO `m2epro_registry` (`key`, `value`, `update_date`, `create_date`)
+        INSERT INTO `{$this->_installer->getTable('m2epro_registry')}` (`key`, `value`, `update_date`, `create_date`)
         VALUES ('/ebay/category/recent/', {$recentCategoriesData}, {$date}, {$date});
 SQL
                 );
@@ -422,7 +423,7 @@ SQL
         }
 
         $installer->run(<<<SQL
-    DELETE FROM `m2epro_cache_config`
+    DELETE FROM `{$this->_installer->getTable('m2epro_cache_config')}`
     WHERE `group` LIKE '/ebay/category/recent/%';
 SQL
         );
@@ -449,7 +450,8 @@ SQL
                     $exceptionsFiltersData = $connection->quote(@json_encode($allExceptionsFilters));
 
                     $installer->run(<<<SQL
-            INSERT INTO `m2epro_registry` (`key`, `value`, `update_date`, `create_date`)
+            INSERT INTO `{$this->_installer->getTable('m2epro_registry')}` 
+            (`key`, `value`, `update_date`, `create_date`)
             VALUES ('/exceptions_filters/', {$exceptionsFiltersData}, {$date}, {$date})
 SQL
                     );
@@ -457,7 +459,7 @@ SQL
             }
 
             $installer->run(<<<SQL
-        DROP TABLE IF EXISTS `m2epro_exceptions_filters`;
+        DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_exceptions_filters')}`;
 SQL
             );
         }
@@ -493,7 +495,7 @@ SQL
                 $versionsHistoryData = $connection->quote(@json_encode($resultVersionsHistory));
 
                 $installer->run(<<<SQL
-        INSERT INTO `m2epro_registry` (`key`, `value`, `update_date`, `create_date`)
+        INSERT INTO `{$this->_installer->getTable('m2epro_registry')}` (`key`, `value`, `update_date`, `create_date`)
         VALUES ('/installation/versions_history/', {$versionsHistoryData}, {$date}, {$date})
 SQL
                 );
@@ -501,7 +503,7 @@ SQL
         }
 
         $installer->run(<<<SQL
-    DELETE FROM `m2epro_cache_config`
+    DELETE FROM `{$this->_installer->getTable('m2epro_cache_config')}`
     WHERE `group` = '/installation/version/history/';
 SQL
         );
@@ -532,9 +534,9 @@ SQL;
 
         $installer->run(<<<SQL
 
-    DELETE FROM `m2epro_wizard` WHERE `nick` = 'play';
+    DELETE FROM `{$this->_installer->getTable('m2epro_wizard')}` WHERE `nick` = 'play';
 
-    INSERT INTO `m2epro_wizard` (`nick`, `view`, `status`, `step`, `type`, `priority`)
+    INSERT INTO `{$this->_installer->getTable('m2epro_wizard')}` (`nick`, `view`, `status`, `step`, `type`, `priority`)
     SELECT 'removedPlay', 'common', {$wizardStatus}, NULL, 0, MAX( `priority` )+1 FROM `m2epro_wizard`;
 
 SQL
@@ -576,7 +578,7 @@ SQL;
             if ($amazonMode && $amazonAllowed) {
 
                 $installer->run(<<<SQL
-            UPDATE `m2epro_config`
+            UPDATE `{$this->_installer->getTable('m2epro_config')}`
             SET `value` = 'amazon'
             WHERE `group` = '/view/common/component/'
             AND `key` = 'default';
@@ -606,7 +608,7 @@ SQL;
                 if ($buyMode && $buyAllowed) {
 
                     $installer->run(<<<SQL
-                UPDATE `m2epro_config`
+                UPDATE `{$this->_installer->getTable('m2epro_config')}`
                 SET `value` = 'buy'
                 WHERE `group` = '/view/common/component/'
                 AND `key` = 'default';
@@ -616,7 +618,7 @@ SQL
                 } else {
 
                     $installer->run(<<<SQL
-                UPDATE `m2epro_config`
+                UPDATE `{$this->_installer->getTable('m2epro_config')}`
                 SET `value` = 'amazon'
                 WHERE `group` = '/view/common/component/'
                 AND `key` = 'default';
@@ -648,7 +650,7 @@ SQL;
                 $ids = is_array($ids) ? implode(',', $ids) : $ids;
 
                 $installer->run(<<<SQL
-        DELETE FROM `m2epro_locked_object`
+        DELETE FROM `{$this->_installer->getTable('m2epro_locked_object')}`
         WHERE `model_name` LIKE '{$model}'
         AND `object_id` IN ({$ids});
 SQL
@@ -660,50 +662,50 @@ SQL
 
         $installer->run(<<<SQL
 
-    DELETE FROM `m2epro_lock_item` WHERE `nick` LIKE '%_play%';
-    DELETE FROM `m2epro_lock_item` WHERE `nick` LIKE 'play%';
+    DELETE FROM `{$this->_installer->getTable('m2epro_lock_item')}` WHERE `nick` LIKE '%_play%';
+    DELETE FROM `{$this->_installer->getTable('m2epro_lock_item')}` WHERE `nick` LIKE 'play%';
 
-    DELETE FROM `m2epro_config` WHERE `group` LIKE '%/play/%';
-    DELETE FROM `m2epro_synchronization_config` WHERE `group` LIKE '%/play/%';
-    DELETE FROM `m2epro_primary_config` WHERE `group` LIKE '%/play/%';
+    DELETE FROM `{$this->_installer->getTable('m2epro_config')}` WHERE `group` LIKE '%/play/%';
+    DELETE FROM `{$this->_installer->getTable('m2epro_synchronization_config')}` WHERE `group` LIKE '%/play/%';
+    DELETE FROM `{$this->_installer->getTable('m2epro_primary_config')}` WHERE `group` LIKE '%/play/%';
 
-    DELETE FROM `m2epro_order_change` WHERE `component` = 'play';
-    DELETE FROM `m2epro_order_repair` WHERE `component` = 'play';
-    DELETE FROM `m2epro_processing_request` WHERE `component` = 'play';
+    DELETE FROM `{$this->_installer->getTable('m2epro_order_change')}` WHERE `component` = 'play';
+    DELETE FROM `{$this->_installer->getTable('m2epro_order_repair')}` WHERE `component` = 'play';
+    DELETE FROM `{$this->_installer->getTable('m2epro_processing_request')}` WHERE `component` = 'play';
 
-    DELETE FROM `m2epro_account` WHERE `component_mode` = 'play';
-    DELETE FROM `m2epro_listing` WHERE `component_mode` = 'play';
-    DELETE FROM `m2epro_listing_auto_category_group` WHERE `component_mode` = 'play';
-    DELETE FROM `m2epro_listing_log` WHERE `component_mode` = 'play';
-    DELETE FROM `m2epro_listing_other` WHERE `component_mode` = 'play';
-    DELETE FROM `m2epro_listing_other_log` WHERE `component_mode` = 'play';
-    DELETE FROM `m2epro_listing_product` WHERE `component_mode` = 'play';
-    DELETE FROM `m2epro_listing_product_variation` WHERE `component_mode` = 'play';
-    DELETE FROM `m2epro_listing_product_variation_option` WHERE `component_mode` = 'play';
-    DELETE FROM `m2epro_marketplace` WHERE `component_mode` = 'play';
-    DELETE FROM `m2epro_order` WHERE `component_mode` = 'play';
-    DELETE FROM `m2epro_order_item` WHERE `component_mode` = 'play';
-    DELETE FROM `m2epro_order_log` WHERE `component_mode` = 'play';
-    DELETE FROM `m2epro_stop_queue` WHERE `component_mode` = 'play';
-    DELETE FROM `m2epro_synchronization_log` WHERE `component_mode` = 'play';
-    DELETE FROM `m2epro_template_selling_format` WHERE `component_mode` = 'play';
-    DELETE FROM `m2epro_template_synchronization` WHERE `component_mode` = 'play';
-    DELETE FROM `m2epro_template_description` WHERE `component_mode` = 'play';
+    DELETE FROM `{$this->_installer->getTable('m2epro_account')}` WHERE `component_mode` = 'play';
+    DELETE FROM `{$this->_installer->getTable('m2epro_listing')}` WHERE `component_mode` = 'play';
+    DELETE FROM `{$this->_installer->getTable('m2epro_listing_auto_category_group')}` WHERE `component_mode` = 'play';
+    DELETE FROM `{$this->_installer->getTable('m2epro_listing_log')}` WHERE `component_mode` = 'play';
+    DELETE FROM `{$this->_installer->getTable('m2epro_listing_other')}` WHERE `component_mode` = 'play';
+    DELETE FROM `{$this->_installer->getTable('m2epro_listing_other_log')}` WHERE `component_mode` = 'play';
+    DELETE FROM `{$this->_installer->getTable('m2epro_listing_product')}` WHERE `component_mode` = 'play';
+    DELETE FROM `{$this->_installer->getTable('m2epro_listing_product_variation')}` WHERE `component_mode` = 'play';
+    DELETE FROM `{$this->_installer->getTable('m2epro_listing_product_variation_option')}` WHERE `component_mode` = 'play';
+    DELETE FROM `{$this->_installer->getTable('m2epro_marketplace')}` WHERE `component_mode` = 'play';
+    DELETE FROM `{$this->_installer->getTable('m2epro_order')}` WHERE `component_mode` = 'play';
+    DELETE FROM `{$this->_installer->getTable('m2epro_order_item')}` WHERE `component_mode` = 'play';
+    DELETE FROM `{$this->_installer->getTable('m2epro_order_log')}` WHERE `component_mode` = 'play';
+    DELETE FROM `{$this->_installer->getTable('m2epro_stop_queue')}` WHERE `component_mode` = 'play';
+    DELETE FROM `{$this->_installer->getTable('m2epro_synchronization_log')}` WHERE `component_mode` = 'play';
+    DELETE FROM `{$this->_installer->getTable('m2epro_template_selling_format')}` WHERE `component_mode` = 'play';
+    DELETE FROM `{$this->_installer->getTable('m2epro_template_synchronization')}` WHERE `component_mode` = 'play';
+    DELETE FROM `{$this->_installer->getTable('m2epro_template_description')}` WHERE `component_mode` = 'play';
 
-    DROP TABLE IF EXISTS `m2epro_play_account`;
-    DROP TABLE IF EXISTS `m2epro_play_item`;
-    DROP TABLE IF EXISTS `m2epro_play_listing`;
-    DROP TABLE IF EXISTS `m2epro_play_listing_auto_category_group`;
-    DROP TABLE IF EXISTS `m2epro_play_listing_other`;
-    DROP TABLE IF EXISTS `m2epro_play_listing_product`;
-    DROP TABLE IF EXISTS `m2epro_play_listing_product_variation`;
-    DROP TABLE IF EXISTS `m2epro_play_listing_product_variation_option`;
-    DROP TABLE IF EXISTS `m2epro_play_marketplace`;
-    DROP TABLE IF EXISTS `m2epro_play_order`;
-    DROP TABLE IF EXISTS `m2epro_play_order_item`;
-    DROP TABLE IF EXISTS `m2epro_play_processed_inventory`;
-    DROP TABLE IF EXISTS `m2epro_play_template_selling_format`;
-    DROP TABLE IF EXISTS `m2epro_play_template_synchronization`;
+    DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_play_account')}`;
+    DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_play_item')}`;
+    DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_play_listing')}`;
+    DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_play_listing_auto_category_group')}`;
+    DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_play_listing_other')}`;
+    DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_play_listing_product')}`;
+    DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_play_listing_product_variation')}`;
+    DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_play_listing_product_variation_option')}`;
+    DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_play_marketplace')}`;
+    DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_play_order')}`;
+    DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_play_order_item')}`;
+    DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_play_processed_inventory')}`;
+    DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_play_template_selling_format')}`;
+    DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_play_template_synchronization')}`;
 
 SQL
         );
