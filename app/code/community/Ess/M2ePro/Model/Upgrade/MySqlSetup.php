@@ -33,12 +33,6 @@ class Ess_M2ePro_Model_Upgrade_MySqlSetup extends Mage_Core_Model_Resource_Setup
             return;
         }
 
-        if (Mage::helper('M2ePro/Module_Maintenance')->isEnabled() &&
-            !Mage::helper('M2ePro/Module_Maintenance')->isMaintenanceCanBeIgnored()
-        ) {
-            return;
-        }
-
         Mage::helper('M2ePro/Module_Maintenance')->enable();
 
         try {
@@ -78,41 +72,13 @@ class Ess_M2ePro_Model_Upgrade_MySqlSetup extends Mage_Core_Model_Resource_Setup
             return;
         }
 
-        if (Mage::helper('M2ePro/Module_Maintenance')->isEnabled() &&
-            !Mage::helper('M2ePro/Module_Maintenance')->isMaintenanceCanBeIgnored()
-        ) {
-            return;
-        }
-
         Mage::helper('M2ePro/Module_Maintenance')->enable();
 
         try {
-
-            /** @var Ess_M2ePro_Model_Setup[] $notCompletedUpgrades */
-            $notCompletedUpgrades = Mage::getModel('M2ePro/Setup')->getResource()->getNotCompletedUpgrades();
-            if ($this->getSetupConfigObject()->isAllowedRollbackFromBackup() && !empty($notCompletedUpgrades)) {
-
-                /**
-                 * Only one not completed upgrade is supported
-                 */
-                $notCompletedUpgrade = reset($notCompletedUpgrades);
-                if (version_compare($notCompletedUpgrade->getVersionFrom(), $oldVersion, '<')) {
-                    $oldVersion = $notCompletedUpgrade->getVersionFrom();
-                }
-            }
-
-            if (version_compare($oldVersion, self::MIN_SUPPORTED_VERSION_FOR_UPGRADE, '<')) {
-                throw new Exception(
-                    sprintf(
-                        'This version [%s] is too old.', $oldVersion
-                    )
-                );
-            }
-
             $this->beforeModuleDbModification();
             $this->beforeUpgrade($oldVersion, $newVersion);
 
-            $versionsToExecute = $this->getAvailableFiles($oldVersion, $newVersion);
+            $versionsToExecute = $this->getVersionsToExecute($oldVersion, $newVersion);
             foreach ($versionsToExecute as $versionFrom => $versionTo) {
 
                 /** @var Ess_M2ePro_Model_Upgrade_MySqlSetup_UpgradeManager $upgradeManager */
@@ -120,10 +86,6 @@ class Ess_M2ePro_Model_Upgrade_MySqlSetup extends Mage_Core_Model_Resource_Setup
 
                 $setupObject  = $upgradeManager->getCurrentSetupObject();
                 $backupObject = $upgradeManager->getBackupObject();
-
-                if ($setupObject->isBackuped() && $this->getSetupConfigObject()->isAllowedRollbackFromBackup()) {
-                    $backupObject->rollback();
-                }
 
                 if (!$setupObject->isBackuped()) {
                     $backupObject->create();
@@ -159,6 +121,30 @@ class Ess_M2ePro_Model_Upgrade_MySqlSetup extends Mage_Core_Model_Resource_Setup
         $this->getLockObject()->releaseLock();
     }
 
+    protected function getVersionsToExecute($versionFrom, $versionTo)
+    {
+        /** @var Ess_M2ePro_Model_Setup[] $notCompletedUpgrades */
+        $notCompletedUpgrades = Mage::getModel('M2ePro/Setup')->getResource()
+            ->getNotCompletedUpgrades();
+
+        if (!empty($notCompletedUpgrades)) {
+            /**
+             * Only one not completed upgrade is supported
+             */
+            $notCompletedUpgrade = reset($notCompletedUpgrades);
+            if (version_compare($notCompletedUpgrade->getVersionFrom(), $versionFrom, '<')) {
+                $versionFrom = $notCompletedUpgrade->getVersionFrom();
+            }
+        }
+
+        if (version_compare($versionFrom, self::MIN_SUPPORTED_VERSION_FOR_UPGRADE, '<')) {
+            // @codingStandardsIgnoreLine
+            throw new Exception(sprintf('This version [%s] is too old.', $versionFrom));
+        }
+
+        return $this->getAvailableFiles($versionFrom, $versionTo);
+    }
+
     protected function getAvailableFiles($fromVersion, $toVersion)
     {
         $filesDir = Mage::getModuleDir('sql', Ess_M2ePro_Helper_Module::IDENTIFIER) .DS. 'Upgrade';
@@ -187,7 +173,7 @@ class Ess_M2ePro_Model_Upgrade_MySqlSetup extends Mage_Core_Model_Resource_Setup
 
         uksort(
             $files, function($first, $second) {
-            return version_compare($first, $second);
+                return version_compare($first, $second);
             }
         );
 
@@ -197,7 +183,7 @@ class Ess_M2ePro_Model_Upgrade_MySqlSetup extends Mage_Core_Model_Resource_Setup
         foreach ($files as $fileVersionFrom => $fileData) {
             uksort(
                 $fileData, function($first, $second) {
-                return version_compare($first, $second);
+                    return version_compare($first, $second);
                 }
             );
 
@@ -462,14 +448,6 @@ class Ess_M2ePro_Model_Upgrade_MySqlSetup extends Mage_Core_Model_Resource_Setup
         /** @var Ess_M2ePro_Model_Upgrade_Tables $object */
         $object = Mage::getModel('M2ePro/Upgrade_Tables', $this);
         return $this->_cache[__METHOD__] = $object;
-    }
-
-    /**
-     * @return Ess_M2ePro_Model_Upgrade_MySqlSetup_Config
-     */
-    public function getSetupConfigObject()
-    {
-        return Mage::getSingleton('M2ePro/Upgrade_MySqlSetup_Config');
     }
 
     /**

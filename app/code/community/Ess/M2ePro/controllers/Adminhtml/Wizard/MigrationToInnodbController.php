@@ -52,9 +52,14 @@ class Ess_M2ePro_Adminhtml_Wizard_MigrationToInnodbController extends Ess_M2ePro
 
     public function indexAction()
     {
+        $enabledComponents = Mage::helper('M2ePro/Component')->getEnabledComponents();
+        $component = array_shift($enabledComponents);
+
+        $this->getRequest()->getParam('component') && $component = $this->getRequest()->getParam('component');
+
         /** @var Ess_M2ePro_Model_Wizard_MigrationToInnodb $wizard */
         $wizard = $this->getWizardHelper()->getWizard($this->getNick());
-        $wizard->rememberRefererUrl($this->_getRefererUrl());
+        $wizard->rememberRefererUrl($this->getUrl("*/adminhtml_{$component}_listing"));
 
         return parent::indexAction();
     }

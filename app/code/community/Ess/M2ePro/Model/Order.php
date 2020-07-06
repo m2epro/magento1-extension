@@ -8,6 +8,7 @@
 
 /**
  * @method Ess_M2ePro_Model_Amazon_Order|Ess_M2ePro_Model_Ebay_Order|Ess_M2ePro_Model_Walmart_Order getChildObject()
+ * @method void setStatusUpdateRequired($flag)
  */
 class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
 {

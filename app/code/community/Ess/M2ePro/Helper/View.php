@@ -9,6 +9,9 @@
 use Ess_M2ePro_Helper_View_Ebay_Controller as EbayControllerComponent;
 use Ess_M2ePro_Helper_View_Amazon_Controller as AmazonControllerComponent;
 use Ess_M2ePro_Helper_View_Walmart_Controller as WalmartControllerComponent;
+use Ess_M2ePro_Helper_Component_Ebay as EbayHelperComponent;
+use Ess_M2ePro_Helper_Component_Amazon as AmazonHelperComponent;
+use Ess_M2ePro_Helper_Component_Walmart as WalmartHelperComponent;
 
 class Ess_M2ePro_Helper_View extends Mage_Core_Helper_Abstract
 {
@@ -32,7 +35,7 @@ class Ess_M2ePro_Helper_View extends Mage_Core_Helper_Abstract
 
     /**
      * @param string $viewNick
-     * @return Ess_M2ePro_Helper_View_Amazon|Ess_M2ePro_Helper_View_Ebay|Ess_M2ePro_Helper_View_Walmart
+     * @return Ess_M2ePro_Helper_View_Amazon|Ess_M2ePro_Helper_View_Ebay|Ess_M2ePro_Helper_View_Walmart|null
      */
     public function getHelper($viewNick = null)
     {
@@ -42,28 +45,21 @@ class Ess_M2ePro_Helper_View extends Mage_Core_Helper_Abstract
 
         switch ($viewNick) {
             case Ess_M2ePro_Helper_View_Ebay::NICK:
-                $helper = Mage::helper('M2ePro/View_Ebay');
-                break;
+                return Mage::helper('M2ePro/View_Ebay');
 
             case Ess_M2ePro_Helper_View_Amazon::NICK:
-                $helper = Mage::helper('M2ePro/View_Amazon');
-                break;
+                return Mage::helper('M2ePro/View_Amazon');
 
             case Ess_M2ePro_Helper_View_Walmart::NICK:
-                $helper = Mage::helper('M2ePro/View_Walmart');
-                break;
-
-            default:
-                $helper = Mage::helper('M2ePro/View_Amazon');
-                break;
+                return Mage::helper('M2ePro/View_Walmart');
         }
 
-        return $helper;
+        return null;
     }
 
     /**
      * @param string $viewNick
-     * @return Ess_M2ePro_Helper_Component_Amazon|Ess_M2ePro_Helper_Component_Ebay|Ess_M2ePro_Helper_Component_Walmart
+     * @return AmazonHelperComponent|EbayHelperComponent|WalmartHelperComponent|null
      */
     public function getComponentHelper($viewNick = null)
     {
@@ -73,20 +69,16 @@ class Ess_M2ePro_Helper_View extends Mage_Core_Helper_Abstract
 
         switch ($viewNick) {
             case Ess_M2ePro_Helper_Component_Ebay::NICK:
-                $helper = Mage::helper('M2ePro/Component_Ebay');
-                break;
+                return Mage::helper('M2ePro/Component_Ebay');
 
             case Ess_M2ePro_Helper_Component_Amazon::NICK:
-                $helper = Mage::helper('M2ePro/Component_Amazon');
-                break;
+                return Mage::helper('M2ePro/Component_Amazon');
 
-            default:
             case Ess_M2ePro_Helper_Component_Walmart::NICK:
-                $helper = Mage::helper('M2ePro/Component_Walmart');
-                break;
+                return Mage::helper('M2ePro/Component_Walmart');
         }
 
-        return $helper;
+        return null;
     }
 
     /**
@@ -101,20 +93,16 @@ class Ess_M2ePro_Helper_View extends Mage_Core_Helper_Abstract
 
         switch ($viewNick) {
             case Ess_M2ePro_Helper_Component_Ebay::NICK:
-                $helper = Mage::helper('M2ePro/View_Ebay_Controller');
-                break;
+                return Mage::helper('M2ePro/View_Ebay_Controller');
 
             case Ess_M2ePro_Helper_Component_Amazon::NICK:
-                $helper = Mage::helper('M2ePro/View_Amazon_Controller');
-                break;
+                return Mage::helper('M2ePro/View_Amazon_Controller');
 
-            default:
             case Ess_M2ePro_Helper_Component_Walmart::NICK:
-                $helper = Mage::helper('M2ePro/View_Walmart_Controller');
-                break;
+                return Mage::helper('M2ePro/View_Walmart_Controller');
         }
 
-        return $helper;
+        return null;
     }
 
     //########################################

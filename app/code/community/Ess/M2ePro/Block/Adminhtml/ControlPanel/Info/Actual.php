@@ -38,10 +38,6 @@ class Ess_M2ePro_Block_Adminhtml_ControlPanel_Info_Actual extends Mage_Adminhtml
 
         // ---------------------------------------
         $this->maintenanceMode = Mage::helper('M2ePro/Module_Maintenance')->isEnabled();
-        $this->maintenanceCanBeIgnored = Mage::helper('M2ePro/Module_Maintenance')->isMaintenanceCanBeIgnored();;
-        // ---------------------------------------
-
-        // ---------------------------------------
         $this->coreResourceVersion = Mage::getResourceSingleton('core/resource')->getDbVersion('M2ePro_setup');
         $this->coreResourceDataVersion = Mage::getResourceSingleton('core/resource')->getDataVersion('M2ePro_setup');
         // ---------------------------------------

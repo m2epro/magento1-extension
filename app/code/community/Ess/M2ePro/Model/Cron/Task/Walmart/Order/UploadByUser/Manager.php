@@ -160,7 +160,11 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Order_UploadByUser_Manager
 
     public function setIdentifierByAccount(Ess_M2ePro_Model_Account $account)
     {
-        return $this->setIdentifier($account->getChildObject()->getConsumerId());
+        $id = $account->getChildObject()->getClientId()
+            ? $account->getChildObject()->getClientId()
+            : $account->getChildObject()->getConsumerId();
+
+        return $this->setIdentifier($id);
     }
 
     //########################################

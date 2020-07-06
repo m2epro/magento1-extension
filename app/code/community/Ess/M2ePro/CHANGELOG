@@ -1,9 +1,17 @@
-* 6.7.0 (r15287) (17/06/2020) 
+* 6.7.1 (r15341) (06/07/2020) 
+
+Common: [Fixed] Base table 'm2epro_listing_log' not found on repeat upgrade (if previous one failed)
+Common: [Fixed] MigrationToInnodb wizard is redirected to help page after the upgrade to 6.7.0
+Common: [Improved] Rework of upgrades engine
+Common: [Improved] Order reimport improvement [set date in customer locale, store in UTC]
+Ebay: [Fixed] Orders may be duplicated (for auction listings)
+
+* 6.7.0 (r15191) (02/06/2020)
 
 Common: [Added] Add 3rd Party Reset button
 Common: [Added] Automatically set maintenance mode if the server connection fails
 Common: [Added] New Active Record engine
-Common: [Added] Ability to reimport Orders manually
+Common: [Added] Ability to reimport orders manually
 Common: [Improved] Only one config model should be left
 Common: [Improved] Changes to System and Synchronization Logs
 Common: [Improved] JS handlers refactored [m1 compatibility]
@@ -26,18 +34,18 @@ Common: [Removed] Usage of MyISAM tables
 eBay: [Added] Improved eBay Categories settings and management
 eBay: [Improved] Send variation images for Bundle product
 eBay: [Improved] Assign Category when import 3rd party item from eBay
-eBay: [Fixed] Error in Logs when Manual Mark Order as Shipped
+eBay: [Fixed] Error in Logs when manually mark an order as Shipped
 Amazon: [Improved] Background Synchronization
 Amazon: [Improved] Allow 500 characters in Bullet Point fields
-Amazon: [Fixed] Error in Logs when Manual Mark Order as Shipped
+Amazon: [Fixed] Error in Logs when manually mark an order as Shipped
 Amazon: [Fixed] After upgrading from 6.4.14 to 6.5.0.16 or higher, Australia Marketplace is not displayed
 Amazon: [Fixed] Problem with throttling (throttling manager feed counts were not considered for the price on Relist action)
-Amazon: [Fixed] Some orders do not get imported
+Amazon: [Fixed] Some orders are not imported
 Walmart: [Improved] Problem with throttling (sent lag time only for Canada on QTY feed)
 Walmart: [Fixed] Problem with throttling (promotions are not sent on Relist action)
 Walmart: [Fixed] Problem with throttling (throttling manager feed counts were not considered for the price on Relist action)
 ControlPanel: [Improved] Maintenance Mode does not let to come in Control Panel
-ControlPanel: [Improved] "Build Order Quote" not working in some cases
+ControlPanel: [Improved] "Build Order Quote" does not work in some cases
 
 * 6.6.0 (r15089) (04/05/2020)
 

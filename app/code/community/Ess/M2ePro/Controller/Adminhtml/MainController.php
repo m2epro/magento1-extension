@@ -19,7 +19,9 @@ abstract class Ess_M2ePro_Controller_Adminhtml_MainController
             !$this->getRequest()->isPost() &&
             !$this->getRequest()->isXmlHttpRequest()
         ) {
-            if (!$this->getCustomViewComponentHelper()->isEnabled()) {
+            if (Mage::helper('M2ePro/View')->isCurrentViewIntegration() &&
+                !$this->getCustomViewComponentHelper()->isEnabled()
+            ) {
                 return $this->_redirect(Mage::helper('M2ePro/Module_Support')->getPageRoute());
             }
 
@@ -118,7 +120,10 @@ abstract class Ess_M2ePro_Controller_Adminhtml_MainController
             $this->addServerNotifications();
             $this->addServerMaintenanceInfo();
 
-            $this->getCustomViewControllerHelper()->addMessages();
+            if (Mage::helper('M2ePro/View')->isCurrentViewIntegration()) {
+                $this->getCustomViewControllerHelper()->addMessages();
+            }
+
             $this->addCronErrorMessage();
         }
     }
@@ -128,7 +133,10 @@ abstract class Ess_M2ePro_Controller_Adminhtml_MainController
     protected function addLicenseNotifications()
     {
         $added = false;
-        if (!$added && $this->getCustomViewHelper()->isInstallationWizardFinished()) {
+        if (!$added &&
+            Mage::helper('M2ePro/View')->isCurrentViewIntegration() &&
+            $this->getCustomViewHelper()->isInstallationWizardFinished()
+        ) {
             $added = $this->addLicenseActivationNotifications();
         }
 

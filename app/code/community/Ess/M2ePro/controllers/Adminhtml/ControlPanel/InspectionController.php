@@ -135,18 +135,5 @@ class Ess_M2ePro_Adminhtml_ControlPanel_InspectionController
         return $this->_redirectUrl(Mage::helper('M2ePro/View_ControlPanel')->getPageUrl());
     }
 
-    public function dropMagentoCoreSetupValueAction()
-    {
-        Mage::getSingleton('core/resource')->getConnection('core_write')->delete(
-            Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('core_resource'),
-            array('code = ?' => Ess_M2ePro_Model_Upgrade_MySqlSetup::MODULE_IDENTIFIER)
-        );
-
-        Mage::helper('M2ePro/Magento')->clearCache();
-
-        $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Extension install was successfully completed.'));
-        return $this->_redirectUrl(Mage::helper('M2ePro/View_ControlPanel')->getPageUrl());
-    }
-
     //########################################
 }

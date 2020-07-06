@@ -310,7 +310,8 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
 
             if ($activeBlocker = $wizardHelper->getActiveBlockerWizard($component)) {
                 $wizardUrl = Mage::helper('adminhtml')->getUrl(
-                    'M2ePro/adminhtml_wizard_'.$wizardHelper->getNick($activeBlocker).'/index'
+                    'M2ePro/adminhtml_wizard_'.$wizardHelper->getNick($activeBlocker).'/index',
+                    array('component' => $component)
                 );
 
                 $menuArray[self::MENU_ROOT_NODE]['children'][$component]['children'] = array();

@@ -80,26 +80,6 @@
 
     <tr>
         <td class="label">
-            <label><?php echo Mage::helper('M2ePro')->__('Maintenance: can be ignored'); ?>: </label>
-        </td>
-        <td class="value">
-            <table class="form-list" cellspacing="0" cellpadding="0">
-                <tr>
-                    <td>
-                        <span style="<?php echo $this->maintenanceCanBeIgnored ? 'color: green;' : 'color: red;'; ?>"><?php echo $this->maintenanceCanBeIgnored ? Mage::helper('M2ePro')->__('enabled') : Mage::helper('M2ePro')->__('disabled'); ?></span>
-                    </td>
-                    <td>
-                        <span style="color: orange;">
-                            &nbsp;<a href="<?php echo $this->getUrl('*/adminhtml_controlPanel_inspection/changeMaintenanceCanBeIgnored'); ?>" onclick="return confirm('Are you sure?');">[<?php echo Mage::helper('M2ePro')->__('change'); ?>]</a>
-                        </span>
-                    </td>
-                </tr>
-            </table>
-        </td>
-    </tr>
-
-    <tr>
-        <td class="label">
             <label><?php echo Mage::helper('M2ePro')->__('Core Resource'); ?>: </label>
         </td>
         <td class="value">
@@ -112,8 +92,7 @@
                     </td>
                     <td>
                         <span style="color: orange;">
-                            &nbsp;<a href="javascript:void(0);" onclick="return handlerObj.askAdditionalParametersForAction('Please specify version to set:', '<?php echo $this->getUrl('*/adminhtml_controlPanel_inspection/setMagentoCoreSetupValue', array('_query' => array('version' => '#version#'))); ?>', 'version');">[<?php echo Mage::helper('M2ePro')->__('set'); ?>]</a>
-                            &nbsp;<a href="javascript:void(0);" onclick="return handlerObj.confirmImportantAction('This row will be DROPPED.', '<?php echo $this->getUrl('*/adminhtml_controlPanel_inspection/dropMagentoCoreSetupValue'); ?>');">[<?php echo Mage::helper('M2ePro')->__('drop'); ?>]</a>
+                            &nbsp;<a href="javascript:void(0);" onclick="return setupManagementActionHandler.askAdditionalParametersForAction('Please specify version to set:', '<?php echo $this->getUrl('*/adminhtml_controlPanel_inspection/setMagentoCoreSetupValue', array('_query' => array('version' => '#version#'))); ?>', 'version');">[<?php echo Mage::helper('M2ePro')->__('set'); ?>]</a>
                         </span>
                     </td>
                 </tr>
