@@ -52,6 +52,10 @@ class Ess_M2ePro_Model_Ebay_Account_Builder extends Ess_M2ePro_Model_ActiveRecor
             ->getColumnValues('id');
 
         $marketplacesData = array();
+        if ($this->getModel()->getId()) {
+            $marketplacesData = $this->getModel()->getChildObject()->getSettings('marketplaces_data');
+        }
+
         foreach ($marketplacesIds as $marketplaceId) {
             $marketplacesData[$marketplaceId]['related_store_id'] =
                 isset($this->_rawData['related_store_id_' . $marketplaceId])
@@ -84,6 +88,9 @@ class Ess_M2ePro_Model_Ebay_Account_Builder extends Ess_M2ePro_Model_ActiveRecor
         }
 
         $mappingSettings = array();
+        if ($this->getModel()->getId()) {
+            $mappingSettings = $this->getModel()->getChildObject()->getSettings('other_listings_mapping_settings');
+        }
 
         if (isset($tempData['mapping_sku_mode']) &&
             ($tempData['mapping_sku_mode'] == Account::OTHER_LISTINGS_MAPPING_SKU_MODE_DEFAULT ||
@@ -120,6 +127,11 @@ class Ess_M2ePro_Model_Ebay_Account_Builder extends Ess_M2ePro_Model_ActiveRecor
         // tab: orders
         // ---------------------------------------
         $data['magento_orders_settings'] = array();
+        if ($this->getModel()->getId()) {
+            $data['magento_orders_settings'] = $this->getModel()->getChildObject()->getSettings(
+                'magento_orders_settings'
+            );
+        }
 
         // m2e orders settings
         // ---------------------------------------
@@ -217,7 +229,6 @@ class Ess_M2ePro_Model_Ebay_Account_Builder extends Ess_M2ePro_Model_ActiveRecor
             'id',
             'website_id',
             'group_id',
-//            'subscription_mode'
         );
         foreach ($keys as $key) {
             if (isset($tempSettings[$key])) {
@@ -226,7 +237,6 @@ class Ess_M2ePro_Model_Ebay_Account_Builder extends Ess_M2ePro_Model_ActiveRecor
         }
 
         $notificationsKeys = array(
-//            'customer_created',
             'order_created',
             'invoice_created'
         );
@@ -289,12 +299,13 @@ class Ess_M2ePro_Model_Ebay_Account_Builder extends Ess_M2ePro_Model_ActiveRecor
 
         // invoice/shipment settings
         // ---------------------------------------
-        $data['magento_orders_settings']['invoice_mode'] = 1;
-        $data['magento_orders_settings']['shipment_mode'] = 1;
-
         $temp = Account::MAGENTO_ORDERS_STATUS_MAPPING_MODE_CUSTOM;
-        if (!empty($data['magento_orders_settings']['status_mapping']['mode']) &&
-            $data['magento_orders_settings']['status_mapping']['mode'] == $temp) {
+        if (isset($this->_rawData['magento_orders_settings']['status_mapping']['mode']) &&
+            $this->_rawData['magento_orders_settings']['status_mapping']['mode'] == $temp
+        ) {
+            $data['magento_orders_settings']['invoice_mode']  = 1;
+            $data['magento_orders_settings']['shipment_mode'] = 1;
+
             if (!isset($this->_rawData['magento_orders_settings']['invoice_mode'])) {
                 $data['magento_orders_settings']['invoice_mode'] = 0;
             }
@@ -361,9 +372,7 @@ class Ess_M2ePro_Model_Ebay_Account_Builder extends Ess_M2ePro_Model_ActiveRecor
                     'id' => null,
                     'website_id' => null,
                     'group_id' => null,
-//                    'subscription_mode' => 0,
                     'notifications' => array(
-//                        'customer_created' => false,
                         'invoice_created' => false,
                         'order_created' => false
                     )
@@ -402,4 +411,6 @@ class Ess_M2ePro_Model_Ebay_Account_Builder extends Ess_M2ePro_Model_ActiveRecor
             'feedbacks_auto_response_only_positive' => 0
         );
     }
+
+    //########################################
 }

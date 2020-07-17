@@ -107,7 +107,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_AutoActionController
         );
         if ($categorySecondaryTemplate !== null) {
             $converter->setCategoryDataFromTemplate(
-                $categoryTemplate->getData(),
+                $categorySecondaryTemplate->getData(),
                 Ess_M2ePro_Helper_Component_Ebay_Category::TYPE_EBAY_SECONDARY
             );
         }
@@ -121,7 +121,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_AutoActionController
         );
         if ($storeTemplate !== null) {
             $converter->setCategoryDataFromTemplate(
-                $categoryTemplate->getData(),
+                $storeTemplate->getData(),
                 Ess_M2ePro_Helper_Component_Ebay_Category::TYPE_STORE_MAIN
             );
         }
@@ -135,7 +135,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_AutoActionController
         );
         if ($storeSecondaryTemplate !== null) {
             $converter->setCategoryDataFromTemplate(
-                $categoryTemplate->getData(),
+                $storeSecondaryTemplate->getData(),
                 Ess_M2ePro_Helper_Component_Ebay_Category::TYPE_STORE_SECONDARY
             );
         }

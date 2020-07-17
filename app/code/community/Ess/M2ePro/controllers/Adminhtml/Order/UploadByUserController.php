@@ -84,8 +84,12 @@ class Ess_M2ePro_Adminhtml_Order_UploadByUserController
         $account = Mage::helper('M2ePro/Component')->getCachedComponentObject($component, 'Account', $accountId);
         $manager = $this->getManager($account);
 
-        $fromDate = $this->getRequest()->getParam('from_date');
-        $toDate   = $this->getRequest()->getParam('to_date');
+        $fromDate = Mage::helper('M2ePro/Data')->timezoneDateToGmt(
+            $this->getRequest()->getParam('from_date')
+        );
+        $toDate   = Mage::helper('M2ePro/Data')->timezoneDateToGmt(
+            $this->getRequest()->getParam('to_date')
+        );
 
         try {
             $manager->setFromToDates($fromDate, $toDate);

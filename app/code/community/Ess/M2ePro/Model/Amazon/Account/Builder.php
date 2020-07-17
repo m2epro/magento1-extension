@@ -66,6 +66,9 @@ class Ess_M2ePro_Model_Amazon_Account_Builder extends Ess_M2ePro_Model_ActiveRec
         }
 
         $mappingSettings = array();
+        if ($this->getModel()->getId()) {
+            $mappingSettings = $this->getModel()->getChildObject()->getSettings('other_listings_mapping_settings');
+        }
 
         if (isset($tempData['mapping_general_id_mode']) &&
             $tempData['mapping_general_id_mode'] == Account::OTHER_LISTINGS_MAPPING_GENERAL_ID_MODE_CUSTOM_ATTRIBUTE
@@ -102,6 +105,11 @@ class Ess_M2ePro_Model_Amazon_Account_Builder extends Ess_M2ePro_Model_ActiveRec
         // tab: orders
         // ---------------------------------------
         $data['magento_orders_settings'] = array();
+        if ($this->getModel()->getId()) {
+            $data['magento_orders_settings'] = $this->getModel()->getChildObject()->getSettings(
+                'magento_orders_settings'
+            );
+        }
 
         // m2e orders settings
         // ---------------------------------------
@@ -144,8 +152,13 @@ class Ess_M2ePro_Model_Amazon_Account_Builder extends Ess_M2ePro_Model_ActiveRec
         $tempSettings = !empty($this->_rawData['magento_orders_settings'][$tempKey])
             ? $this->_rawData['magento_orders_settings'][$tempKey] : array();
 
-        $data['magento_orders_settings'][$tempKey]['source'] = $tempSettings['source'];
-        $data['magento_orders_settings'][$tempKey]['apply_to_amazon'] = $tempSettings['apply_to_amazon'];
+        if (!empty($tempSettings['source'])) {
+            $data['magento_orders_settings'][$tempKey]['source'] = $tempSettings['source'];
+        }
+
+        if (!empty($tempSettings['apply_to_amazon'])) {
+            $data['magento_orders_settings'][$tempKey]['apply_to_amazon'] = $tempSettings['apply_to_amazon'];
+        }
 
         $prefixKeys = array(
             'prefix',
@@ -233,7 +246,6 @@ class Ess_M2ePro_Model_Amazon_Account_Builder extends Ess_M2ePro_Model_ActiveRec
             'website_id',
             'group_id',
             'billing_address_mode',
-            //            'subscription_mode'
         );
         foreach ($keys as $key) {
             if (isset($tempSettings[$key])) {
@@ -242,7 +254,6 @@ class Ess_M2ePro_Model_Amazon_Account_Builder extends Ess_M2ePro_Model_ActiveRec
         }
 
         $notificationsKeys = array(
-//            'customer_created',
             'order_created',
             'invoice_created'
         );
@@ -272,12 +283,13 @@ class Ess_M2ePro_Model_Amazon_Account_Builder extends Ess_M2ePro_Model_ActiveRec
 
         // invoice/shipment settings
         // ---------------------------------------
-        $data['magento_orders_settings']['invoice_mode'] = 1;
-        $data['magento_orders_settings']['shipment_mode'] = 1;
-
         $temp = Account::MAGENTO_ORDERS_STATUS_MAPPING_MODE_CUSTOM;
-        if (!empty($data['magento_orders_settings']['status_mapping']['mode']) &&
-            $data['magento_orders_settings']['status_mapping']['mode'] == $temp) {
+        if (isset($this->_rawData['magento_orders_settings']['status_mapping']['mode']) &&
+            $this->_rawData['magento_orders_settings']['status_mapping']['mode'] == $temp
+        ) {
+            $data['magento_orders_settings']['invoice_mode']  = 1;
+            $data['magento_orders_settings']['shipment_mode'] = 1;
+
             if (!isset($this->_rawData['magento_orders_settings']['invoice_mode'])) {
                 $data['magento_orders_settings']['invoice_mode'] = 0;
             }
@@ -356,9 +368,7 @@ class Ess_M2ePro_Model_Amazon_Account_Builder extends Ess_M2ePro_Model_ActiveRec
                     'id' => null,
                     'website_id' => null,
                     'group_id' => null,
-//                    'subscription_mode' => 0,
                     'notifications' => array(
-//                        'customer_created' => false,
                         'invoice_created' => false,
                         'order_created' => false
                     ),
@@ -389,4 +399,6 @@ class Ess_M2ePro_Model_Amazon_Account_Builder extends Ess_M2ePro_Model_ActiveRec
             'is_magento_invoice_creation_disabled' => 0,
         );
     }
+
+    //########################################
 }

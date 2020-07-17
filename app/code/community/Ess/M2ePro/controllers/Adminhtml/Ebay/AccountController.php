@@ -346,8 +346,15 @@ class Ess_M2ePro_Adminhtml_Ebay_AccountController extends Ess_M2ePro_Controller_
         try {
             $dispatcherObject->process($connectorObj);
             $response = $connectorObj->getResponseData();
-        } catch (Exception $e) {
-            $response = array();
+        } catch (Exception $exception) {
+            Mage::helper('M2ePro/Module_Exception')->process($exception);
+
+            $this->_getSession()->addError(
+                Mage::helper('M2ePro')->__(
+                    'The Ebay access obtaining is currently unavailable.<br/>Reason: %error_message%',
+                    $exception->getMessage()
+                )
+            );
         }
 
         if (!isset($response['token_expired_date'])) {

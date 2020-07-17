@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Ess_M2ePro>
-            <version>6.7.1</version>
+            <version>6.7.2</version>
         </Ess_M2ePro>
     </modules>
     <default>
@@ -520,7 +520,7 @@
                     <M2ePro_observer_order_create>
                         <type>model</type>
                         <class>Ess_M2ePro_Observer_Dispatcher</class>
-                        <method>magentoOrderCreate</method>
+                        <method>salesOrderSaveAfterStoreMagentoOrderId</method>
                     </M2ePro_observer_order_create>
                 </observers>
             </sales_order_save_after>
@@ -530,7 +530,7 @@
                     <M2ePro_observer_order_status_change>
                         <type>model</type>
                         <class>Ess_M2ePro_Observer_Dispatcher</class>
-                        <method>magentoOrderStatusChange</method>
+                        <method>salesOrderSaveAfterSendPickupStoreNotifications</method>
                     </M2ePro_observer_order_status_change>
                 </observers>
             </sales_order_save_after>

@@ -268,12 +268,12 @@ UPDATE `{$this->_installer->getTable('m2epro_amazon_listing_other')}`
 SET `is_repricing_inactive` = 0;
 
 UPDATE `{$this->_installer->getTable('m2epro_listing_product')}` mlp
-JOIN `m2epro_amazon_listing_product` malp ON mlp.id = malp.listing_product_id
+JOIN `{$this->_installer->getTable('m2epro_amazon_listing_product')}` malp ON mlp.id = malp.listing_product_id
 SET mlp.additional_data = REPLACE(`additional_data`, 'repricing_disabled_count', 'repricing_not_managed_count')
 WHERE malp.is_repricing = 1;
 
 UPDATE `{$this->_installer->getTable('m2epro_listing_product')}` mlp
-JOIN `m2epro_amazon_listing_product` malp ON mlp.id = malp.listing_product_id
+JOIN `{$this->_installer->getTable('m2epro_amazon_listing_product')}` malp ON mlp.id = malp.listing_product_id
 SET mlp.additional_data = REPLACE(`additional_data`, 'repricing_enabled_count', 'repricing_managed_count')
 WHERE malp.is_repricing = 1;
 SQL

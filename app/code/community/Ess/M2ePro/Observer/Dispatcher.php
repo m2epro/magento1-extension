@@ -143,14 +143,14 @@ class Ess_M2ePro_Observer_Dispatcher
         $this->process('Creditmemo_Save_After', $eventObserver);
     }
 
-    public function magentoOrderCreate(Varien_Event_Observer $eventObserver)
+    public function salesOrderSaveAfterStoreMagentoOrderId(Varien_Event_Observer $eventObserver)
     {
-        $this->process('Order', $eventObserver);
+        $this->process('Order_Save_After_StoreMagentoOrderId', $eventObserver);
     }
 
-    public function magentoOrderStatusChange(Varien_Event_Observer $eventObserver)
+    public function salesOrderSaveAfterSendPickupStoreNotifications(Varien_Event_Observer $eventObserver)
     {
-        $this->process('Ebay_Order', $eventObserver);
+        $this->process('Order_Save_After_SendPickupStoreNotifications', $eventObserver);
     }
 
     public function salesConvertQuoteItemToOrderItem(Varien_Event_Observer $eventObserver)

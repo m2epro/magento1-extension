@@ -6,7 +6,7 @@
  * @license    Commercial use is forbidden
  */
 
-class Ess_M2ePro_Observer_Ebay_Order extends Ess_M2ePro_Observer_Abstract
+class Ess_M2ePro_Observer_Order_Save_After_SendPickupStoreNotifications extends Ess_M2ePro_Observer_Abstract
 {
     //########################################
 
@@ -20,7 +20,9 @@ class Ess_M2ePro_Observer_Ebay_Order extends Ess_M2ePro_Observer_Abstract
             return;
         }
 
-        if ($origData['status'] == $magentoOrder->getStatus() && $origData['state'] == $magentoOrder->getState()) {
+        if (isset($origData['status']) && $origData['status'] == $magentoOrder->getStatus() &&
+            isset($origData['state']) && $origData['state'] == $magentoOrder->getState()
+        ) {
             return;
         }
 

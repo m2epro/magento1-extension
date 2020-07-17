@@ -41,6 +41,8 @@ class Ess_M2ePro_Model_Listing_Product_Instruction_Processor
 
     public function process()
     {
+        $this->deleteInstructionsWithoutListingProducts();
+
         $listingsProducts = $this->getNeededListingsProducts();
 
         $instructions = $this->loadInstructions($listingsProducts);
@@ -115,8 +117,8 @@ class Ess_M2ePro_Model_Listing_Product_Instruction_Processor
         $collection->applySkipUntilFilter();
         $collection->addFieldToFilter('main_table.component', $this->_component);
 
-        $collection->setOrder('main_table.priority', 'DESC');
-        $collection->setOrder('main_table.create_date', 'ASC');
+        $collection->setOrder('MAX(main_table.priority)', 'DESC');
+        $collection->setOrder('MIN(main_table.create_date)', 'ASC');
 
         $collection->getSelect()->limit($this->_maxListingsProductsCount);
         $collection->getSelect()->group('main_table.listing_product_id');
@@ -133,6 +135,25 @@ class Ess_M2ePro_Model_Listing_Product_Instruction_Processor
         $listingsProductsCollection->addFieldToFilter('id', $ids);
 
         return $listingsProductsCollection->getItems();
+    }
+
+    //########################################
+
+    protected function deleteInstructionsWithoutListingProducts()
+    {
+        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Instruction_Collection $collection */
+        $collection = Mage::getModel('M2ePro/Listing_Product_Instruction')->getCollection();
+        $collection->getSelect()->joinLeft(
+            array('second_table' => Mage::getResourceModel('M2ePro/Listing_Product')->getMainTable()),
+            'main_table.listing_product_id = second_table.id'
+        );
+        $collection->getSelect()->where('second_table.id IS NULL');
+        $collection->getSelect()->reset(Zend_Db_Select::COLUMNS);
+        $collection->getSelect()->columns('main_table.id');
+
+        Mage::getResourceModel('M2ePro/Listing_Product_Instruction')->remove(
+            $collection->getColumnValues('id')
+        );
     }
 
     //########################################

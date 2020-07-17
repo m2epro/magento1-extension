@@ -73,7 +73,7 @@ TEXT;
 Attention! The Trading API token for "%account_title%" eBay Account is expired. The inventory and order synchronization
 with eBay marketplace cannot be maintained until you grant M2E Pro the access token.<br>
 
-Please go to <i>%menu_label% > Configuration > Accounts > eBay Account > General >&nbsp
+Please go to <i>%menu_label% > Configuration > Accounts > eBay Account > General >
 <a href="%url%" target="_blank">Trading API Details</a></i> and click Get Token. After you are redirected to the
 eBay website, sign into your seller account, then click Agree to generate a new access token.<br>
 
@@ -83,8 +83,8 @@ TEXT;
             }
 
             $tempTitle = Mage::helper('M2ePro')->__(
-                'Attention! M2E Pro needs to be reauthorized: the API token for "%account_title%" eBay Account is
-                expired. Please generate a new access token.',
+                'Attention! The API token for "%account_title%" eBay account has expired.
+                You need to generate a new access token to reauthorize M2E Pro.',
                 Mage::helper('M2ePro')->escapeHtml($account->getTitle())
             );
             $tempMessage = Mage::helper('M2ePro')->__(
@@ -131,7 +131,7 @@ TEXT;
 Attention! The Trading API token for "%account_title%" eBay Account expires on %date%.
 It needs to be renewed to maintain the inventory and order synchronization with eBay marketplace.<br>
 
-Please go to <i>%menu_label% > Configuration > Accounts > eBay Account > General >&nbsp
+Please go to <i>%menu_label% > Configuration > Accounts > eBay Account > General >
 <a href="%url%" target="_blank">Trading API Details</a></i> and click Get Token. After you are redirected to the
 eBay website, sign into your seller account, then click Agree to generate a new access token.<br>
 
@@ -142,8 +142,8 @@ TEXT;
 
             $format = Mage::app()->getLocale()->getDateTimeFormat(Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM);
             $tempTitle = Mage::helper('M2ePro')->__(
-                'Attention! M2E Pro needs to be reauthorized: the API token for "%account_title%" eBay Account
-                is to expire. Please generate a new access token.',
+                'Attention! The API token for "%account_title%" eBay account is to expire.
+                You need to generate a new access token to reauthorize M2E Pro.',
                 Mage::helper('M2ePro')->escapeHtml($account->getTitle())
             );
 
@@ -192,7 +192,7 @@ TEXT;
 Attention! The Sell API token for "%account_title%" eBay Account is expired. The inventory and order synchronization
 with eBay marketplace cannot be maintained until you grant M2E Pro the access token.<br>
 
-Please go to <i>%menu_label% > Configuration > Accounts > eBay Account > General >&nbsp
+Please go to <i>%menu_label% > Configuration > Accounts > eBay Account > General >
 <a href="%url%" target="_blank">Sell API Details</a></i> and click Get Token. After you are redirected to the
 eBay website, sign into your seller account, then click Agree to generate a new access token.<br>
 
@@ -201,8 +201,8 @@ Account Configuration.
 TEXT;
 
             $tempTitle = Mage::helper('M2ePro')->__(
-                'Attention! M2E Pro needs to be reauthorized: the API token for "%account_title%" eBay Account is
-                expired. Please generate a new access token.',
+                'Attention! The API token for "%account_title%" eBay account has expired.
+                You need to generate a new access token to reauthorize M2E Pro.',
                 Mage::helper('M2ePro')->escapeHtml($account->getTitle())
             );
             $tempMessage = Mage::helper('M2ePro')->__(
@@ -237,7 +237,7 @@ TEXT;
 Attention! The Sell API token for "%account_title%" eBay Account expires on %date%.
 It needs to be renewed to maintain the inventory and order synchronization with eBay marketplace.<br>
 
-Please go to <i>%menu_label% > Configuration > Accounts > eBay Account > General >&nbsp
+Please go to <i>%menu_label% > Configuration > Accounts > eBay Account > General >
 <a href="%url%" target="_blank">Sell API Details</a></i> and click Get Token. After you are redirected to the
 eBay website, sign into your seller account, then click Agree to generate a new access token.<br>
 
@@ -245,8 +245,8 @@ eBay website, sign into your seller account, then click Agree to generate a new 
 Account Configuration.
 TEXT;
             $tempTitle = Mage::helper('M2ePro')->__(
-                'Attention! M2E Pro needs to be reauthorized: the API token for "%account_title%" eBay Account
-                is to expire. Please generate a new access token.',
+                'Attention! The API token for "%account_title%" eBay account is to expire.
+                You need to generate a new access token to reauthorize M2E Pro.',
                 Mage::helper('M2ePro')->escapeHtml($account->getTitle())
             );
 

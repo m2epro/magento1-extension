@@ -249,7 +249,7 @@ JS;
             ->where('`tax_codes` IS NOT NULL')
             ->query();
 
-        return (array)$queryStmt->fetchColumn();
+        return (array)$queryStmt->fetchAll(Zend_Db::FETCH_COLUMN);
     }
 
     //########################################

@@ -6,7 +6,7 @@
  * @license    Commercial use is forbidden
  */
 
-class Ess_M2ePro_Observer_Order extends Ess_M2ePro_Observer_Abstract
+class Ess_M2ePro_Observer_Order_Save_After_StoreMagentoOrderId extends Ess_M2ePro_Observer_Abstract
 {
     //########################################
 

@@ -254,9 +254,8 @@ HTML;
         $templateCategoryNewUrl = $this->getNewTemplateCategoryUrl();
 
         $data = array(
-            'id'    => 'templateCategory_addNew_button',
+            'id'    => 'add_new_category_policy',
             'label' => Mage::helper('M2ePro')->__('Add New Category Policy'),
-            'class' => 'templateCategory_addNew_button',
             'style' => 'float: right;',
             'onclick' => "{$this->getCreateNewTemplateJsFn()}('$templateCategoryNewUrl')"
         );
@@ -323,7 +322,8 @@ HTML;
     {
         return $this->getUrl(
             '*/adminhtml_walmart_template_category/new', array(
-            'marketplace_id' => $this->getMarketplaceId()
+                'marketplace_id' => $this->getMarketplaceId(),
+                'close_on_save' => 1
             )
         );
     }

@@ -46,7 +46,7 @@ class Ess_M2ePro_Adminhtml_TemplateController extends Ess_M2ePro_Controller_Admi
             $templateData = $template->getData();
         }
 
-        if ($template === null && empty($templateData)) {
+        if ($template === null || empty($templateData)) {
             $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('messages' => '')));
             return;
         }

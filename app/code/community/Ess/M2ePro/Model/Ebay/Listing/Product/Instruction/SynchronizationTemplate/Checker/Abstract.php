@@ -142,6 +142,8 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_Synchronization
     protected function getReviseVariationImagesInstructionTypes()
     {
         return array(
+            Ess_M2ePro_Model_Ebay_Magento_Product_ChangeProcessor::INSTRUCTION_TYPE_IMAGES_DATA_CHANGED,
+            Ess_M2ePro_Model_Ebay_Template_ChangeProcessor_Abstract::INSTRUCTION_TYPE_IMAGES_DATA_CHANGED,
             Ess_M2ePro_Model_Ebay_Template_Synchronization_ChangeProcessor::INSTRUCTION_TYPE_REVISE_IMAGES_ENABLED,
             Ess_M2ePro_Model_Ebay_Template_Synchronization_ChangeProcessor::INSTRUCTION_TYPE_REVISE_IMAGES_DISABLED,
             Ess_M2ePro_Model_Listing::INSTRUCTION_TYPE_PRODUCT_MOVED_FROM_OTHER,
