@@ -289,7 +289,7 @@ HTML;
         $javascriptsMain = <<<HTML
 <script type="text/javascript">
 
-    var button = $('walmart_listing_category_continue_btn');
+    var button = $('add_products_category_template_manual_continue');
     if ({$isNotExistProductsWithCategoryTemplate}) {
         button.addClassName('disabled');
         button.disable();

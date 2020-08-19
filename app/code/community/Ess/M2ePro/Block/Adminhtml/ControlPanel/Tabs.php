@@ -28,7 +28,6 @@ class Ess_M2ePro_Block_Adminhtml_ControlPanel_Tabs extends Ess_M2ePro_Block_Admi
             Ess_M2ePro_Helper_View_ControlPanel::TAB_INSPECTION,
             Ess_M2ePro_Helper_View_ControlPanel::TAB_DATABASE,
             Ess_M2ePro_Helper_View_ControlPanel::TAB_TOOLS,
-            Ess_M2ePro_Helper_View_ControlPanel::TAB_MODULE,
             Ess_M2ePro_Helper_View_ControlPanel::TAB_CRON,
             Ess_M2ePro_Helper_View_ControlPanel::TAB_DEBUG
         );
@@ -45,13 +44,16 @@ class Ess_M2ePro_Block_Adminhtml_ControlPanel_Tabs extends Ess_M2ePro_Block_Admi
 
         $this->addTab(Ess_M2ePro_Helper_View_ControlPanel::TAB_SUMMARY, $params);
         // ---------------------------------------
+        $params = array('label' => Mage::helper('M2ePro')->__('Inspection'));
+        if ($activeTab == Ess_M2ePro_Helper_View_ControlPanel::TAB_INSPECTION) {
+            $params['content'] = $this->getLayout()
+                ->createBlock('M2ePro/adminhtml_controlPanel_tabs_inspection')->toHtml();
+        } else {
+            $params['url'] = $this->getUrl('*/adminhtml_controlPanel/inspectionTab');
+            $params['class'] = 'ajax';
+        }
 
-        $this->addTab(
-            Ess_M2ePro_Helper_View_ControlPanel::TAB_INSPECTION, array(
-            'label'     => Mage::helper('M2ePro')->__('Inspection'),
-            'content'   => $this->getLayout()->createBlock('M2ePro/adminhtml_controlPanel_tabs_inspection')->toHtml(),
-            )
-        );
+        $this->addTab(Ess_M2ePro_Helper_View_ControlPanel::TAB_INSPECTION, $params);
 
         // ---------------------------------------
         $params = array('label' => Mage::helper('M2ePro')->__('Database'));
@@ -72,12 +74,7 @@ class Ess_M2ePro_Block_Adminhtml_ControlPanel_Tabs extends Ess_M2ePro_Block_Admi
             'content'   => $this->getLayout()->createBlock('M2ePro/adminhtml_controlPanel_tabs_tools')->toHtml(),
             )
         );
-        $this->addTab(
-            Ess_M2ePro_Helper_View_ControlPanel::TAB_MODULE, array(
-            'label'     => Mage::helper('M2ePro')->__('Module'),
-            'content'   => $this->getLayout()->createBlock('M2ePro/adminhtml_controlPanel_tabs_module')->toHtml(),
-            )
-        );
+
         $this->addTab(
             Ess_M2ePro_Helper_View_ControlPanel::TAB_CRON, array(
             'label'     => Mage::helper('M2ePro')->__('Cron'),

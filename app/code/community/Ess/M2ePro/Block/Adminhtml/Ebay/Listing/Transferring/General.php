@@ -63,8 +63,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Transferring_General extends Mage_
 
     public function isShownTutorial()
     {
-        return (bool)(int)Mage::helper('M2ePro/Module')->getConfig()
-            ->getGroupValue('/ebay/sell_on_another_marketplace/', 'tutorial_shown');
+        return (bool)Mage::helper('M2ePro/Component_Ebay_Configuration')
+            ->getSellOnAnotherMarketplaceTutorialShown();
     }
 
     //########################################

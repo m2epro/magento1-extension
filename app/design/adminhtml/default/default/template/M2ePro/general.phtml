@@ -13,7 +13,6 @@
 <script type="text/javascript">
 
     var BLOCK_NOTICES_SHOW = <?php echo $this->block_notices_show ? 'true' : 'false'; ?>;
-    var BLOCK_NOTICES_DISABLE_COLLAPSE = <?php echo json_encode((bool)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue('/view/ebay/notice/', 'disable_collapse')); ?>;
 
     var IS_VIEW_EBAY = <?php echo json_encode(Mage::helper('M2ePro/View')->isCurrentViewEbay()); ?>;
     var IS_VIEW_AMAZON = <?php echo json_encode(Mage::helper('M2ePro/View')->isCurrentViewAmazon()); ?>;

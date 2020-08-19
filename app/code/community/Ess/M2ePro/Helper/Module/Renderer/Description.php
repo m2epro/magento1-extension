@@ -262,7 +262,7 @@ class Ess_M2ePro_Helper_Module_Renderer_Description extends Mage_Core_Helper_Abs
         }
 
         // Convert single linebreaks to <br/>
-        $br = Mage::helper('M2ePro/Module')->getConfig()->getGroupValue('/renderer/description/', 'convert_linebreaks');
+        $br = Mage::helper('M2ePro/Module_Configuration')->getRendererDescriptionConvertLinebreaksMode();
         if ($br === null || (bool)(int)$br === true) {
             $str = preg_replace('~(?<!\n)\n(?!\n)~', "<br/>\n", $str);
         }

@@ -70,7 +70,6 @@ class Ess_M2ePro_Model_Magento_Quote
             $this->prepareOrderNumber();
             // ---------------------------------------
         } catch (Exception $e) {
-
             // Remove ordered items from customer cart
             $this->_quote->setIsActive(false);
             $this->_quote->removeAllAddresses();

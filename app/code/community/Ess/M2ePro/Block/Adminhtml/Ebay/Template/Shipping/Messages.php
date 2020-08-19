@@ -138,9 +138,8 @@ HTML;
             return false;
         }
 
-        $isPriceConvertEnabled = (int)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
-            '/magento/attribute/', 'price_type_converting'
-        );
+        $isPriceConvertEnabled = Mage::helper('M2ePro/Module_Configuration')
+            ->isEnableMagentoAttributePriceTypeConvertingMode();
 
         if (!$isPriceConvertEnabled) {
             return false;

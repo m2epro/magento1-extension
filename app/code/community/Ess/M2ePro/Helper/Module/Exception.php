@@ -138,7 +138,7 @@ class Ess_M2ePro_Helper_Module_Exception extends Mage_Core_Helper_Abstract
         $info .= $traceInfo;
         $info .= $this->getCurrentUserActionInfo();
         $info .= $this->getAdditionalActionInfo();
-        $info .= Mage::helper('M2ePro/Module_Support_Form')->getSummaryInfo();
+        $info .= Mage::helper('M2ePro/Module_Support')->getSummaryInfo();
 
         return $info;
     }
@@ -149,7 +149,7 @@ class Ess_M2ePro_Helper_Module_Exception extends Mage_Core_Helper_Abstract
         $info .= $this->getExceptionStackTraceInfo($exception);
         $info .= $this->getCurrentUserActionInfo();
         $info .= $this->getAdditionalActionInfo();
-        $info .= Mage::helper('M2ePro/Module_Support_Form')->getSummaryInfo();
+        $info .= Mage::helper('M2ePro/Module_Support')->getSummaryInfo();
 
         return $info;
     }
@@ -336,9 +336,7 @@ ACTION;
             return false;
         }
 
-        $registry = Mage::getModel('M2ePro/Registry')->loadByKey('/exceptions_filters/');
-        $exceptionFilters = $registry->getValueFromJson();
-
+        $exceptionFilters = Mage::helper('M2ePro/Module')->getRegistry()->getValueFromJson('/exceptions_filters/');
         foreach ($exceptionFilters as $exceptionFilter) {
             try {
                 $searchSubject = '';

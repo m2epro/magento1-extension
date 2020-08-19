@@ -75,7 +75,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Settings_Grid
             array(
                 'id'              => 'id',
                 'component_mode'  => 'component_mode',
-                'amazon_status'   => 'status',
+                'status'   => 'status',
                 'additional_data' => 'additional_data'
             ),
             array(
@@ -94,7 +94,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Settings_Grid
                 'search_settings_status'         => 'search_settings_status',
                 'search_settings_data'           => 'search_settings_data',
                 'variation_child_statuses'       => 'variation_child_statuses',
-                'amazon_sku'                     => 'sku',
+                'sku'                            => 'sku',
                 'online_qty'                     => 'online_qty',
                 'online_regular_price'           => 'online_regular_price',
                 'online_regular_sale_price'              => 'IF(
@@ -205,8 +205,8 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Settings_Grid
                 'align'                  => 'left',
                 'width'                  => '150px',
                 'type'                   => 'text',
-                'index'                  => 'amazon_sku',
-                'filter_index'           => 'amazon_sku',
+                'index'                  => 'sku',
+                'filter_index'           => 'sku',
                 'show_defected_messages' => false,
                 'renderer'               => 'M2ePro/adminhtml_amazon_grid_column_renderer_sku'
             )
@@ -545,7 +545,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Settings_Grid
     protected function getGeneralIdColumnValueEmptyGeneralId($row)
     {
         // ---------------------------------------
-        if ((int)$row->getData('amazon_status') != Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED) {
+        if ((int)$row->getData('status') != Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED) {
             return '<i style="color:gray;">'.Mage::helper('M2ePro')->__('receiving...').'</i>';
         }
 
@@ -585,7 +585,7 @@ HTML;
                 '</span>';
         }
 
-        if ((int)$row->getData('amazon_status') != Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED) {
+        if ((int)$row->getData('status') != Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED) {
             return <<<HTML
 <a href="{$url}" target="_blank">{$generalId}</a>{$generalIdOwnerHtml}
 HTML;

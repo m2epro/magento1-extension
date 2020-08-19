@@ -16,7 +16,7 @@ class Ess_M2ePro_Model_Amazon_Magento_Product_Rule_Custom_AmazonStatus
      */
     public function getAttributeCode()
     {
-        return 'amazon_status';
+        return 'status';
     }
 
     /**
@@ -33,7 +33,7 @@ class Ess_M2ePro_Model_Amazon_Magento_Product_Rule_Custom_AmazonStatus
      */
     public function getValueByProductInstance(Mage_Catalog_Model_Product $product)
     {
-        $status = $product->getData('amazon_status');
+        $status = $product->getData('status');
         $variationChildStatuses = $product->getData('variation_child_statuses');
 
         if ($product->getData('is_variation_parent') && !empty($variationChildStatuses)) {

@@ -533,18 +533,16 @@ HTML
         }
 
         $viewLogIcon = $this->getLayout()->createBlock(
-            'M2ePro/adminhtml_ebay_grid_column_renderer_viewLogIcon_pickupStore', '', array(
-                'js_handler' => 'EbayListingPickupStoreGridObj'
-            )
+            'M2ePro/adminhtml_ebay_grid_column_renderer_viewLogIcon_pickupStore'
         );
 
         $logIcon = $viewLogIcon->render($row);
 
         if (!empty($logIcon)) {
             $logIcon .= '<input type="hidden"
-                                id="product_row_order_'.$row->getData('id').'"
-                                value="'.$row->getData('id').'"
-                                listing-product-pickup-store-state="'.$row->getData('state_id').'"/>';
+                                id="product_row_order_' . $row->getData('id') . '"
+                                value="' . $row->getData('id') . '"
+                                listing-product-pickup-store-state="' . $row->getData('state_id') . '"/>';
         }
 
         return $logIcon;

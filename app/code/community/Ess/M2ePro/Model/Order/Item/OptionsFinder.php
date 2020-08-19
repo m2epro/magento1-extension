@@ -334,9 +334,8 @@ class Ess_M2ePro_Model_Order_Item_OptionsFinder
             return $this->_isNeedToReturnFirstOptionValues;
         }
 
-        $configGroup = '/order/magento/settings/';
-        $configKey   = 'create_with_first_product_options_when_variation_unavailable';
-        $configValue = (bool)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue($configGroup, $configKey);
+        $configValue = (bool)Mage::helper('M2ePro/Module_Configuration')
+            ->getCreateWithFirstProductOptionsWhenVariationUnavailable();
 
         return $this->_isNeedToReturnFirstOptionValues = $configValue;
     }

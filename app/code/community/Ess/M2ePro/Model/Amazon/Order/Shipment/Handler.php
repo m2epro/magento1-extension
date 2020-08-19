@@ -52,9 +52,9 @@ class Ess_M2ePro_Model_Amazon_Order_Shipment_Handler extends Ess_M2ePro_Model_Or
 
             /*
              * Extension stores Shipped QTY for each item starting from v6.5.4
-            */
+             */
             $itemQtyShipped = isset($data['shipped_qty'][$orderItemId]) ? $data['shipped_qty'][$orderItemId] : 0;
-            $itemQty = $item->getChildObject()->getQty();
+            $itemQty = $item->getChildObject()->getQtyPurchased();
 
             if ($itemQtyShipped >= $itemQty) {
                 continue;
@@ -64,7 +64,7 @@ class Ess_M2ePro_Model_Amazon_Order_Shipment_Handler extends Ess_M2ePro_Model_Or
                 $itemQty = $qtyAvailable;
             }
 
-            $items[] = array(
+            $shipmentItems[] = array(
                 'amazon_order_item_id' => $orderItemId,
                 'qty'                  => $itemQty
             );
@@ -72,8 +72,8 @@ class Ess_M2ePro_Model_Amazon_Order_Shipment_Handler extends Ess_M2ePro_Model_Or
             $qtyAvailable -= $itemQty;
             $data['shipped_qty'][$orderItemId] = $itemQty;
         }
-
         unset($data);
+
         $additionalData[Helper::CUSTOM_IDENTIFIER]['shipments'][$shipmentItem->getId()] = $shipmentItems;
 
         $shipmentItem->getOrderItem()->setAdditionalData(

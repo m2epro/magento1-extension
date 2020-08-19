@@ -46,7 +46,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View extends Mage_Adminhtml_Block_
         $url = $this->getUrl(
             '*/adminhtml_ebay_log/listing',
             array(
-                'id'   => $this->_listing->getId()
+                'listing_id' => $this->_listing->getId()
             )
         );
         $this->_addButton(
@@ -66,26 +66,27 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View extends Mage_Adminhtml_Block_
             );
             $this->_addButton(
                 'pickup_store_management', array(
-                'label' => Mage::helper('M2ePro')->__('In-Store Pickup Management'),
-                'onclick' => 'window.open(\'' . $pickupStoreUrl . '\',\'_blank\')',
-                'class' => 'success'
+                    'label' => Mage::helper('M2ePro')->__('In-Store Pickup Management'),
+                    'onclick' => 'window.open(\'' . $pickupStoreUrl . '\',\'_blank\')',
+                    'class' => 'success'
                 )
             );
         }
 
         $this->_addButton(
             'edit_templates', array(
-            'label'   => Mage::helper('M2ePro')->__('Edit Settings'),
-            'onclick' => '',
-            'class'   => 'drop_down edit_default_settings_drop_down'
+                'label'   => Mage::helper('M2ePro')->__('Edit Settings'),
+                'onclick' => '',
+                'class'   => 'drop_down edit_default_settings_drop_down'
             )
         );
 
         $this->_addButton(
             'add_products', array(
-            'label'     => Mage::helper('M2ePro')->__('Add Products'),
-            'onclick'   => '',
-            'class'     => 'add drop_down add_products_drop_down'
+                'id'        => 'add_products',
+                'label'     => Mage::helper('M2ePro')->__('Add Products'),
+                'onclick'   => '',
+                'class'     => 'add drop_down add_products_drop_down'
             )
         );
     }

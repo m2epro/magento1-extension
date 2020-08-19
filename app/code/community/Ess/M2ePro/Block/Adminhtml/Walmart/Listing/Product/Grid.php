@@ -151,9 +151,8 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Product_Grid extends Mage_Admin
                 $dbExcludeSelect->where('`listing_id` = ?', (int)$listingData['id']);
             }
 
-            $useAlternativeSelect = (bool)(int)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
-                '/view/products_grid/', 'use_alternative_mysql_select'
-            );
+            $useAlternativeSelect = (bool)Mage::helper('M2ePro/Module_Configuration')
+                ->getViewProductsGridUseAlternativeMysqlSelectMode();
 
             if ($useAlternativeSelect) {
                 $collection->getSelect()

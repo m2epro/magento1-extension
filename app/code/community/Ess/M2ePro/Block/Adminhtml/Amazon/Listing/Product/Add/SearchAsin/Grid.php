@@ -56,7 +56,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Product_Add_SearchAsin_Grid
             array(
                 'id'              => 'id',
                 'component_mode'  => 'component_mode',
-                'amazon_status'   => 'status',
+                'status'   => 'status',
                 'additional_data' => 'additional_data'
             ),
             array(
@@ -72,7 +72,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Product_Add_SearchAsin_Grid
                 'search_settings_status'         => 'search_settings_status',
                 'search_settings_data'           => 'search_settings_data',
                 'variation_child_statuses'       => 'variation_child_statuses',
-                'amazon_sku'                     => 'sku',
+                'sku'                     => 'sku',
                 'online_qty'                     => 'online_qty',
                 'online_regular_price'           => 'online_regular_price',
                 'online_regular_sale_price'      => 'online_regular_sale_price',

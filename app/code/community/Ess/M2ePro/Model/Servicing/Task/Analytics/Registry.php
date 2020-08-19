@@ -10,23 +10,6 @@ class Ess_M2ePro_Model_Servicing_Task_Analytics_Registry
 {
     const STORAGE_KEY = 'servicing/analytics';
 
-    /** @var Ess_M2ePro_Model_Registry */
-    protected $_registry;
-
-    //########################################
-
-    public function __construct()
-    {
-        $this->_registry = Mage::getModel('M2ePro/Registry')->loadByKey(self::STORAGE_KEY);
-    }
-
-    //########################################
-
-    public function save()
-    {
-        $this->_registry->save();
-    }
-
     //########################################
 
     public function isPlannedNow()
@@ -73,8 +56,7 @@ class Ess_M2ePro_Model_Servicing_Task_Analytics_Registry
         $regData['planned_at'] = $date;
         unset($regData['started_at'], $regData['finished_at'], $regData['progress']);
 
-        $this->_registry->setValue($regData);
-        $this->_registry->save();
+        $this->setStoredData($regData);
     }
 
     public function markStarted()
@@ -84,8 +66,7 @@ class Ess_M2ePro_Model_Servicing_Task_Analytics_Registry
         $regData['started_at'] = Mage::helper('M2ePro')->getCurrentGmtDate(false, 'Y-m-d H:i:s');
         $regData['progress'] = array();
 
-        $this->_registry->setValue($regData);
-        $this->_registry->save();
+        $this->setStoredData($regData);
     }
 
     public function markFinished()
@@ -93,8 +74,7 @@ class Ess_M2ePro_Model_Servicing_Task_Analytics_Registry
         $regData = $this->getStoredData();
         $regData['finished_at'] = Mage::helper('M2ePro')->getCurrentGmtDate(false, 'Y-m-d H:i:s');
 
-        $this->_registry->setValue($regData);
-        $this->_registry->save();
+        $this->setStoredData($regData);
     }
 
     //########################################
@@ -111,14 +91,19 @@ class Ess_M2ePro_Model_Servicing_Task_Analytics_Registry
         $regData = $this->getStoredData();
         $regData['progress'][$nick][$progressDataKey] = $progressDataValue;
 
-        $this->_registry->setValue($regData);
+        $this->setStoredData($regData);
     }
 
     //########################################
 
+    protected function setStoredData($data)
+    {
+        return Mage::helper('M2ePro/Module')->getRegistry()->setValue(self::STORAGE_KEY, $data);
+    }
+
     protected function getStoredData()
     {
-        return $this->_registry->getValueFromJson();
+        return Mage::helper('M2ePro/Module')->getRegistry()->getValueFromJson(self::STORAGE_KEY);
     }
 
     //########################################

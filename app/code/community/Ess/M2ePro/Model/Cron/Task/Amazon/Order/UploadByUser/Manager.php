@@ -183,10 +183,10 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_UploadByUser_Manager
 
     protected function getSettings($key = null)
     {
-        $registry = Mage::getModel('M2ePro/Registry')
-            ->loadByKey("/amazon/orders/upload_by_user/{$this->_identifier}/");
+        $value = Mage::helper('M2ePro/Module')->getRegistry()->getValueFromJson(
+            "/amazon/orders/upload_by_user/{$this->_identifier}/"
+        );
 
-        $value = $registry->getValueFromJson();
         if ($key === null) {
             return $value;
         }
@@ -196,21 +196,23 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_UploadByUser_Manager
 
     protected function setSettings($key, $value)
     {
-        $registry = Mage::getModel('M2ePro/Registry')
-            ->loadByKey("/amazon/orders/upload_by_user/{$this->_identifier}/");
+        $settings = Mage::helper('M2ePro/Module')->getRegistry()->getValueFromJson(
+            "/amazon/orders/upload_by_user/{$this->_identifier}/"
+        );
 
-        $settings = $registry->getValueFromJson();
         $settings[$key] = $value;
 
-        $registry->setValue($settings);
-        $registry->save();
+        Mage::helper('M2ePro/Module')->getRegistry()->setValue(
+            "/amazon/orders/upload_by_user/{$this->_identifier}/",
+            $settings
+        );
     }
 
     protected function removeSettings()
     {
-        $registry = Mage::getModel('M2ePro/Registry')
-            ->loadByKey("/amazon/orders/upload_by_user/{$this->_identifier}/");
-        $registry->delete();
+        Mage::helper('M2ePro/Module')->getRegistry()->deleteValue(
+            "/amazon/orders/upload_by_user/{$this->_identifier}/"
+        );
     }
 
     //########################################

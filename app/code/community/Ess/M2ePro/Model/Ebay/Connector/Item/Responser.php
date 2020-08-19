@@ -63,10 +63,16 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Item_Responser
             Ess_M2ePro_Model_Connector_Connection_Response_Message::TYPE_ERROR
         );
 
-        $this->getLogger()->logListingProductMessage(
-            $this->_listingProduct,
-            $message
-        );
+        $this->getLogger()->logListingProductMessage($this->_listingProduct, $message);
+    }
+
+    public function eventAfterExecuting()
+    {
+        if ($this->isTemporaryErrorAppeared($this->getResponse()->getMessages()->getEntities())) {
+            $this->getResponseObject()->throwRepeatActionInstructions();
+        }
+
+        parent::eventAfterExecuting();
     }
 
     //########################################
@@ -102,8 +108,9 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Item_Responser
         $responseMessages = $this->getResponse()->getMessages()->getEntities();
 
         $this->processCompleted(
-            $responseData, array(
-            'is_images_upload_error' => $this->isImagesUploadFailed($responseMessages)
+            $responseData,
+            array(
+                'is_images_upload_error' => $this->isImagesUploadFailed($responseMessages)
             )
         );
     }
@@ -125,9 +132,9 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Item_Responser
             Ess_M2ePro_Model_Connector_Connection_Response_Message::TYPE_SUCCESS
         );
 
-        $this->getLogger()->logListingProductMessage(
-            $this->_listingProduct, $message
-        );
+        if ($message->getText() !== null) {
+            $this->getLogger()->logListingProductMessage($this->_listingProduct, $message);
+        }
 
         $this->_isSuccess = true;
     }
@@ -288,6 +295,29 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Item_Responser
     {
         foreach ($messages as $message) {
             if ($message->getCode() == 21919067) {
+                return $message;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param Ess_M2ePro_Model_Connector_Connection_Response_Message[] $messages
+     * @return Ess_M2ePro_Model_Connector_Connection_Response_Message|bool
+     *
+     * 10007: Sorry, Something Went Wrong. Please Wait A Moment And Try Again.
+     * 931: The token of eBay account is no longer valid. Please edit your eBay account and get a new token.
+     */
+    protected function isTemporaryErrorAppeared(array $messages)
+    {
+        $errorCodes = array(
+            10007,
+            931
+        );
+
+        foreach ($messages as $message) {
+            if (in_array($message->getCode(), $errorCodes, true)) {
                 return $message;
             }
         }
@@ -497,9 +527,9 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Item_Responser
         $this->_listingProduct->setData('is_duplicate', 1);
         $this->_listingProduct->setSetting(
             'additional_data', 'item_duplicate_action_required', array(
-            'item_id' => $duplicateItemId,
-            'source'  => 'uuid',
-            'message' => $message->getText()
+                'item_id' => $duplicateItemId,
+                'source'  => 'uuid',
+                'message' => $message->getText()
             )
         );
         $this->_listingProduct->save();
@@ -516,9 +546,9 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Item_Responser
         $this->_listingProduct->setData('is_duplicate', 1);
         $this->_listingProduct->setSetting(
             'additional_data', 'item_duplicate_action_required', array(
-            'item_id' => $duplicateItemId,
-            'source'  => 'ebay_engine',
-            'message' => $message->getText()
+                'item_id' => $duplicateItemId,
+                'source'  => 'ebay_engine',
+                'message' => $message->getText()
             )
         );
         $this->_listingProduct->save();
@@ -599,8 +629,8 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Item_Responser
 
         $this->_listingProduct->addData(
             array(
-            'status' => Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED,
-            'additional_data' => Mage::helper('M2ePro')->jsonEncode($additionalData),
+                'status' => Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED,
+                'additional_data' => Mage::helper('M2ePro')->jsonEncode($additionalData),
             )
         )->save();
 

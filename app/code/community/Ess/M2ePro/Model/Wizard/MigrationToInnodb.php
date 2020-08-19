@@ -48,26 +48,17 @@ class Ess_M2ePro_Model_Wizard_MigrationToInnodb extends Ess_M2ePro_Model_Wizard
 
     public function rememberRefererUrl($url)
     {
-        /** @var Ess_M2ePro_Model_Registry $registry */
-        $registry = Mage::getModel('M2ePro/Registry')->loadByKey('/wizard/migration_to_innodb/referer_url/');
-        $registry->setValue($url);
-        $registry->save();
+        Mage::helper('M2ePro/Module')->getRegistry()->setValue('/wizard/migration_to_innodb/referer_url/', $url);
     }
 
     public function getRefererUrl()
     {
-        /** @var Ess_M2ePro_Model_Registry $registry */
-        $registry = Mage::getModel('M2ePro/Registry')->loadByKey('/wizard/migration_to_innodb/referer_url/');
-        return $registry->getValue();
+        return Mage::helper('M2ePro/Module')->getRegistry()->getValue('/wizard/migration_to_innodb/referer_url/');
     }
 
     public function clearRefererUrl()
     {
-        /** @var Ess_M2ePro_Model_Registry $registry */
-        $registry = Mage::getModel('M2ePro/Registry')->loadByKey('/wizard/migration_to_innodb/referer_url/');
-        if ($registry->getId()) {
-            $registry->delete();
-        }
+        Mage::helper('M2ePro/Module')->getRegistry()->deleteValue('/wizard/migration_to_innodb/referer_url/');
     }
 
     //########################################

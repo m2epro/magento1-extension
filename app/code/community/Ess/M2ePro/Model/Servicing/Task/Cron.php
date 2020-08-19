@@ -42,11 +42,11 @@ class Ess_M2ePro_Model_Servicing_Task_Cron extends Ess_M2ePro_Model_Servicing_Ta
         if ($helper->isRunnerMagento()) {
             $currentTimeStamp = Mage::helper('M2ePro')->getCurrentGmtDate(true);
             $lastTypeChange = $helper->getLastRunnerChange();
-            $lastRun = Mage::helper('M2ePro/Module')->getRegistryValue('/servicing/cron/last_run/');
+            $lastRun = Mage::helper('M2ePro/Module')->getRegistry()->getValue('/servicing/cron/last_run/');
 
             if (($lastTypeChange === null || $currentTimeStamp > strtotime($lastTypeChange) + 86400) &&
                 ($lastRun === null || $currentTimeStamp > strtotime($lastRun) + 86400)) {
-                Mage::helper('M2ePro/Module')->setRegistryValue(
+                Mage::helper('M2ePro/Module')->getRegistry()->setValue(
                     '/servicing/cron/last_run/',
                     Mage::helper('M2ePro')->getCurrentGmtDate()
                 );

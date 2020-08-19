@@ -6,7 +6,7 @@
  * @license    Commercial use is forbidden
  */
 
-class Ess_M2ePro_Model_Config_Manager extends Ess_M2ePro_Model_Abstract
+class Ess_M2ePro_Model_Config_Manager
 {
     const SORT_NONE       = 0;
     const SORT_KEY_ASC    = 1;

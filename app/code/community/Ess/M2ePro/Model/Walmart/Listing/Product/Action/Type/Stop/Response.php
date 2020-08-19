@@ -6,6 +6,8 @@
  * @license    Commercial use is forbidden
  */
 
+use Ess_M2ePro_Model_Walmart_Template_ChangeProcessor_Abstract as ChangeProcessor;
+
 class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Stop_Response
     extends Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Response
 {
@@ -36,6 +38,22 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Stop_Response
         $additionalData = $this->getListingProduct()->getAdditionalData();
         $additionalData['last_synchronization_dates']['qty'] = Mage::helper('M2ePro')->getCurrentGmtDate();
         $this->getListingProduct()->setSettings('additional_data', $additionalData);
+    }
+
+    //########################################
+
+    public function throwRepeatActionInstructions()
+    {
+        Mage::getResourceModel('M2ePro/Listing_Product_Instruction')->add(
+            array(
+                array(
+                    'listing_product_id' => $this->getListingProduct()->getId(),
+                    'type'               => ChangeProcessor::INSTRUCTION_TYPE_QTY_DATA_CHANGED,
+                    'initiator'          => self::INSTRUCTION_INITIATOR,
+                    'priority'           => 80
+                )
+            )
+        );
     }
 
     //########################################

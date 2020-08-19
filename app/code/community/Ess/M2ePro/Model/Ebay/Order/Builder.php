@@ -593,7 +593,7 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
                     )
                 );
 
-                $log->addMessage($order->getId(), $description, Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING);
+                $log->addMessage($order, $description, Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING);
 
                 try {
                     $order->cancelMagentoOrder();
@@ -613,7 +613,7 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
                 )
             );
 
-            $log->addMessage($order->getId(), $description, Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING);
+            $log->addMessage($order, $description, Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING);
 
             $order->deleteInstance();
         }

@@ -50,6 +50,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Create_Search
         );
         $this->addButton(
             'save_and_next', array(
+                'id' => 'save_and_next',
                 'label'   => Mage::helper('M2ePro')->__('Next Step'),
                 'onclick' => 'CommonObj.save_click(\'' . $url . '\')',
                 'class'   => 'next'

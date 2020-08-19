@@ -6,8 +6,12 @@
  * @license    Commercial use is forbidden
  */
 
+use Ess_M2ePro_Model_Walmart_Template_ChangeProcessor_Abstract as ChangeProcessor;
+
 abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Response
 {
+    const INSTRUCTION_INITIATOR = 'action_response';
+
     /**
      * @var array
      */
@@ -252,7 +256,10 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Response
             return $data;
         }
 
-        $data['online_promotions'] = Mage::helper('M2ePro')->jsonEncode($requestMetadata['promotions_data']);
+        $data['online_promotions'] = Mage::helper('M2ePro')->hashString(
+            Mage::helper('M2ePro')->jsonEncode($requestMetadata['promotions_data']),
+            'md5'
+        );
 
         return $data;
     }
@@ -264,7 +271,10 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Response
             return $data;
         }
 
-        $data['online_details_data'] = Mage::helper('M2ePro')->jsonEncode($requestMetadata['details_data']);
+        $data['online_details_data'] = Mage::helper('M2ePro')->hashString(
+            Mage::helper('M2ePro')->jsonEncode($requestMetadata['details_data']),
+            'md5'
+        );
 
         return $data;
     }
@@ -342,6 +352,60 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Response
         }
 
         $this->getListingProduct()->setSettings('additional_data', $additionalData);
+    }
+
+    //########################################
+
+    public function throwRepeatActionInstructions()
+    {
+        $instructions = array();
+
+        if ($this->getConfigurator()->isQtyAllowed()) {
+            $instructions[] = array(
+                'listing_product_id' => $this->getListingProduct()->getId(),
+                'type'               => ChangeProcessor::INSTRUCTION_TYPE_QTY_DATA_CHANGED,
+                'initiator'          => self::INSTRUCTION_INITIATOR,
+                'priority'           => 80
+            );
+        }
+
+        if ($this->getConfigurator()->isLagTimeAllowed()) {
+            $instructions[] = array(
+                'listing_product_id' => $this->getListingProduct()->getId(),
+                'type'               => ChangeProcessor::INSTRUCTION_TYPE_LAG_TIME_DATA_CHANGED,
+                'initiator'          => self::INSTRUCTION_INITIATOR,
+                'priority'           => 80
+            );
+        }
+
+        if ($this->getConfigurator()->isPriceAllowed()) {
+            $instructions[] = array(
+                'listing_product_id' => $this->getListingProduct()->getId(),
+                'type'               => ChangeProcessor::INSTRUCTION_TYPE_PRICE_DATA_CHANGED,
+                'initiator'          => self::INSTRUCTION_INITIATOR,
+                'priority'           => 80
+            );
+        }
+
+        if ($this->getConfigurator()->isPromotionsAllowed()) {
+            $instructions[] = array(
+                'listing_product_id' => $this->getListingProduct()->getId(),
+                'type'               => ChangeProcessor::INSTRUCTION_TYPE_PROMOTIONS_DATA_CHANGED,
+                'initiator'          => self::INSTRUCTION_INITIATOR,
+                'priority'           => 60
+            );
+        }
+
+        if ($this->getConfigurator()->isDetailsAllowed()) {
+            $instructions[] = array(
+                'listing_product_id' => $this->getListingProduct()->getId(),
+                'type'               => ChangeProcessor::INSTRUCTION_TYPE_DETAILS_DATA_CHANGED,
+                'initiator'          => self::INSTRUCTION_INITIATOR,
+                'priority'           => 30
+            );
+        }
+
+        Mage::getResourceModel('M2ePro/Listing_Product_Instruction')->add($instructions);
     }
 
     //########################################

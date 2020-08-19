@@ -770,8 +770,8 @@ HTML;
         $path = 'adminhtml_walmart_log/listingProduct';
         $urls[$path] = $this->getUrl(
             '*/' . $path, array(
-            'channel' => Ess_M2ePro_Helper_Component_Walmart::NICK,
-            'back'=>$helper->makeBackUrlParam('*/adminhtml_walmart_listing/view', array('id' => $listingId))
+                'channel' => Ess_M2ePro_Helper_Component_Walmart::NICK,
+                'back'=>$helper->makeBackUrlParam('*/adminhtml_walmart_listing/view', array('id' => $listingId))
             )
         );
 
@@ -803,8 +803,8 @@ HTML;
 
         $logViewUrl = $this->getUrl(
             '*/adminhtml_walmart_log/listing', array(
-            'id' =>$listingId,
-            'back'=>$helper->makeBackUrlParam('*/adminhtml_walmart_listing/view', array('id' => $listingId))
+                'listing_id' => $listingId,
+                'back' => $helper->makeBackUrlParam('*/adminhtml_walmart_listing/view', array('id' => $listingId))
             )
         );
 

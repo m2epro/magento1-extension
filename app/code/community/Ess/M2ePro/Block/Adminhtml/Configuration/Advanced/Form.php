@@ -58,15 +58,18 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_Advanced_Form extends Ess_M2ePro_
         // ---------------------------------------
 
         $confirmBtnText = 'Confirm';
-        $popupTitle = 'Disable/Enable Module';
-        if (Mage::helper('M2ePro/Module')->isDisabled()) {
+        $isModuleDisabled = Mage::helper('M2ePro/Module')->isDisabled();
+        $popupTitle = $isModuleDisabled ? 'Enable Module' : 'Disable Module';
+        $buttonText = $isModuleDisabled ? 'Enable' : 'Disable';
+
+        if ($isModuleDisabled) {
             $confirmBtnText = 'Ok';
             $popupTitle = 'Confirmation';
         }
 
         // ---------------------------------------
         $data = array(
-            'label'   => Mage::helper('M2ePro')->__('Proceed'),
+            'label'   => Mage::helper('M2ePro')->__($buttonText),
             'onclick' => 'AdvancedObj.moduleModePopup(\''.Mage::helper('M2ePro')->__($popupTitle).'\')',
             'class'   => 'proceed_button'
         );
@@ -79,7 +82,7 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_Advanced_Form extends Ess_M2ePro_
             'label'   => Mage::helper('M2ePro')->__($confirmBtnText),
             'onclick' => 'setLocation(\''.$this->getUrl(
                 'M2ePro/adminhtml_configuration_advanced/changeModuleMode', array(
-                    'module_mode' => (int)!Mage::helper('M2ePro/Module')->isDisabled()
+                    'module_mode' => (int)!$isModuleDisabled
                 )
             ).'\')',
             'class'   => 'proceed_button'
@@ -87,6 +90,21 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_Advanced_Form extends Ess_M2ePro_
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('confirm_module_mode_button', $buttonBlock);
         // ---------------------------------------
+
+        $isCronEnabled = Mage::helper('M2ePro/Module_Cron')->isModeEnabled();
+        $disableCronButtonText = $isCronEnabled ? 'Disable' : 'Enable';
+
+        $data = array(
+            'label'   => Mage::helper('M2ePro')->__($disableCronButtonText),
+            'onclick' => 'setLocation(\''.$this->getUrl(
+                    'M2ePro/adminhtml_configuration_advanced/changeCronMode', array(
+                        'cron_mode' => (int)!$isCronEnabled
+                    )
+                ).'\')',
+            'class'   => 'proceed_button'
+        );
+        $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
+        $this->setChild('change_cron_mode_button', $buttonBlock);
 
         return parent::_beforeToHtml();
     }

@@ -826,14 +826,9 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
         $totalItemsCount = $this->getParentObject()->getItemsCollection()->getSize();
         $orderId     = $this->getParentObject()->getId();
 
-        /** @var Ess_M2ePro_Model_Resource_Order_Change_Collection $changeCollection */
-        $changeCollection = Mage::getModel('M2ePro/Order_Change')->getCollection();
-        $changeCollection->addFieldToFilter('order_id', $orderId);
-        $changeCollection->addFieldToFilter('action', Ess_M2ePro_Model_Order_Change::ACTION_UPDATE_SHIPPING);
-
         $action = Ess_M2ePro_Model_Order_Change::ACTION_CANCEL;
-        if ($this->isShipped() || $this->isPartiallyShipped() || count($items) != $totalItemsCount ||
-            $this->isSetProcessingLock('update_shipping_status') || $changeCollection->getSize() > 0
+        if ($this->isShipped() || $this->isPartiallyShipped() ||
+            count($items) != $totalItemsCount || $this->getParentObject()->isStatusUpdatingToShipped()
         ) {
             if (empty($items)) {
                 $this->getParentObject()->addErrorLog(

@@ -468,17 +468,10 @@ class Ess_M2ePro_Adminhtml_Amazon_Order_MerchantFulfillmentController
 
     public function discardMagentoNotificationPopupAction()
     {
-        $registry = Mage::getModel('M2ePro/Registry');
-        $registry->load('/amazon/order/merchant_fulfillment/disable_notification_popup/', 'key');
-
-        $registry->setData(
-            array(
-            'key'   => '/amazon/order/merchant_fulfillment/disable_notification_popup/',
-            'value' => 1,
-            )
+        Mage::helper('M2ePro/Module')->getRegistry()->setValue(
+            '/amazon/order/merchant_fulfillment/disable_notification_popup/',
+            1
         );
-
-        $registry->save();
     }
 
     //########################################

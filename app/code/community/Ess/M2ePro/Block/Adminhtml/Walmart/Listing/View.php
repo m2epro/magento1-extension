@@ -46,7 +46,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View extends Mage_Adminhtml_Blo
 
         $url = $this->getUrl(
             '*/adminhtml_walmart_log/listing', array(
-            'id' => $this->_listing->getId()
+                'listing_id' => $this->_listing->getId()
             )
         );
         $this->_addButton(
@@ -59,17 +59,18 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View extends Mage_Adminhtml_Blo
 
         $this->_addButton(
             'edit_settings', array(
-            'label'   => Mage::helper('M2ePro')->__('Edit Settings'),
-            'onclick' => '',
-            'class'   => 'drop_down edit_settings_drop_down'
+                'label'   => Mage::helper('M2ePro')->__('Edit Settings'),
+                'onclick' => '',
+                'class'   => 'drop_down edit_settings_drop_down'
             )
         );
 
         $this->_addButton(
             'add_products', array(
-            'label'     => Mage::helper('M2ePro')->__('Add Products'),
-            'onclick'   => '',
-            'class'     => 'add drop_down add_products_drop_down'
+                'id'      => 'add_products',
+                'label'   => Mage::helper('M2ePro')->__('Add Products'),
+                'onclick' => '',
+                'class'   => 'add drop_down add_products_drop_down'
             )
         );
     }
@@ -140,12 +141,12 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View extends Mage_Adminhtml_Blo
         $path = 'adminhtml_walmart_log/listingProduct';
         $urls[$path] = $this->getUrl(
             '*/' . $path, array(
-            'channel' => Ess_M2ePro_Helper_Component_Walmart::NICK,
-            'back' => $helper->makeBackUrlParam(
-                '*/adminhtml_walmart_listing/view', array(
-                'id' => $this->_listing->getId()
+                'channel' => Ess_M2ePro_Helper_Component_Walmart::NICK,
+                'back' => $helper->makeBackUrlParam(
+                    '*/adminhtml_walmart_listing/view', array(
+                        'id' => $this->_listing->getId()
+                    )
                 )
-            )
             )
         );
 
@@ -184,11 +185,11 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View extends Mage_Adminhtml_Blo
 
         $logViewUrl = $this->getUrl(
             '*/adminhtml_walmart_log/listing', array(
-            'id' => $this->_listing->getId(),
-            'back' => $helper->makeBackUrlParam(
-                '*/adminhtml_walmart_listing/view',
-                array('id'  => $this->_listing->getId())
-            )
+                'listing_id' => $this->_listing->getId(),
+                'back' => $helper->makeBackUrlParam(
+                    '*/adminhtml_walmart_listing/view',
+                    array('id' => $this->_listing->getId())
+                )
             )
         );
         $getErrorsSummary = $this->getUrl('*/adminhtml_listing/getErrorsSummary');

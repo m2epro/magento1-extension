@@ -277,8 +277,8 @@ abstract class Ess_M2ePro_Model_Listing_Product_QtyCalculator
             return $value;
         }
 
-        $roundingFunction = (bool)(int)Mage::helper('M2ePro/Module')->getConfig()
-                ->getGroupValue('/qty/percentage/', 'rounding_greater') ? 'ceil' : 'floor';
+        $roundingFunction = (bool)Mage::helper('M2ePro/Module_Configuration')
+            ->getQtyPercentageRoundingGreater() ? 'ceil' : 'floor';
 
         return (int)$roundingFunction(($value/100) * $percents);
     }

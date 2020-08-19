@@ -27,7 +27,7 @@ class Ess_M2ePro_Model_Servicing_Task_Settings extends Ess_M2ePro_Model_Servicin
     {
         $requestData = array();
 
-        $tempValue = Mage::helper('M2ePro/Module')->getRegistryValue(
+        $tempValue = Mage::helper('M2ePro/Module')->getRegistry()->getValue(
             '/server/location/default_index_given_by_server_at/'
         );
         if ($tempValue) {
@@ -134,7 +134,7 @@ class Ess_M2ePro_Model_Servicing_Task_Settings extends Ess_M2ePro_Model_Servicin
             (int)$data['default_server_baseurl_index']
         );
 
-        Mage::helper('M2ePro/Module')->setRegistryValue(
+        Mage::helper('M2ePro/Module')->getRegistry()->setValue(
             '/server/location/default_index_given_by_server_at/',
             Mage::helper('M2ePro')->getCurrentGmtDate()
         );
@@ -146,11 +146,11 @@ class Ess_M2ePro_Model_Servicing_Task_Settings extends Ess_M2ePro_Model_Servicin
             return;
         }
 
-        Mage::helper('M2ePro/Module')->setRegistryValue(
+        Mage::helper('M2ePro/Module')->getRegistry()->setValue(
             '/installation/public_last_version/',
             $data['last_version']['magento_1']['public']
         );
-        Mage::helper('M2ePro/Module')->setRegistryValue(
+        Mage::helper('M2ePro/Module')->getRegistry()->setValue(
             '/installation/build_last_version/',
             $data['last_version']['magento_1']['build']
         );
@@ -173,6 +173,7 @@ class Ess_M2ePro_Model_Servicing_Task_Settings extends Ess_M2ePro_Model_Servicin
             return;
         }
 
+        /** @var Ess_M2ePro_Model_Servicing_Task_Analytics_Registry $registry */
         $registry = Mage::getSingleton('M2ePro/Servicing_Task_Analytics_Registry');
 
         if (isset($data['analytics']['planned_at']) && $data['analytics']['planned_at'] !== $registry->getPlannedAt()) {

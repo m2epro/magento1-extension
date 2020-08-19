@@ -86,7 +86,7 @@ HTML;
         if ($this->_logRenderer === null) {
             $this->_logRenderer = $this->getLayout()->createBlock(
                 'M2ePro/adminhtml_grid_column_renderer_viewLogIcon_listing', '', array(
-                    'js_handler' => 'EbayListingEbayGridObj'
+                    'jsHandler' => 'EbayListingEbayGridObj'
                 )
             );
         }

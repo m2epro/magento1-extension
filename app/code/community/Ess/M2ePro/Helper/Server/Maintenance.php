@@ -52,13 +52,12 @@ class Ess_M2ePro_Helper_Server_Maintenance extends Mage_Core_Helper_Abstract
     public function getDateEnabledFrom()
     {
         if ($this->_dateEnabledFrom === null) {
-            /**  @var $date Ess_M2ePro_Model_Registry */
-            $registry = Mage::getModel('M2ePro/Registry')->loadByKey('/server/maintenance/schedule/date/enabled/from/');
-
-            $this->_dateEnabledFrom = false;
-            if ($registry->getValue()) {
-                $this->_dateEnabledFrom = new DateTime($registry->getValue(), new DateTimeZone('UTC'));
-            }
+            $dateEnabledFrom = Mage::helper('M2ePro/Module')->getRegistry()->getValue(
+                '/server/maintenance/schedule/date/enabled/from/'
+            );
+            $this->_dateEnabledFrom = $dateEnabledFrom
+                ? new DateTime($dateEnabledFrom, new DateTimeZone('UTC'))
+                : false;
         }
 
         return $this->_dateEnabledFrom;
@@ -66,25 +65,24 @@ class Ess_M2ePro_Helper_Server_Maintenance extends Mage_Core_Helper_Abstract
 
     public function setDateEnabledFrom($date)
     {
-        /**  @var $date Ess_M2ePro_Model_Registry */
-        $registry = Mage::getModel('M2ePro/Registry')->loadByKey('/server/maintenance/schedule/date/enabled/from/');
-        $registry->setValue($date);
-        $registry->save();
-
+        Mage::helper('M2ePro/Module')->getRegistry()->setValue(
+            '/server/maintenance/schedule/date/enabled/from/',
+            $date
+        );
         $this->_dateEnabledFrom = $date;
+
         return $this;
     }
 
     public function getDateEnabledTo()
     {
         if ($this->_dateEnabledTo === null) {
-            /**  @var $date Ess_M2ePro_Model_Registry */
-            $registry = Mage::getModel('M2ePro/Registry')->loadByKey('/server/maintenance/schedule/date/enabled/to/');
-
-            $this->_dateEnabledTo = false;
-            if ($registry->getValue()) {
-                $this->_dateEnabledTo = new DateTime($registry->getValue(), new DateTimeZone('UTC'));
-            }
+            $dateEnabledTo = Mage::helper('M2ePro/Module')->getRegistry()->getValue(
+                '/server/maintenance/schedule/date/enabled/to/'
+            );
+            $this->_dateEnabledTo = $dateEnabledTo
+                ? new DateTime($dateEnabledTo, new DateTimeZone('UTC'))
+                : false;
         }
 
         return $this->_dateEnabledTo;
@@ -92,12 +90,12 @@ class Ess_M2ePro_Helper_Server_Maintenance extends Mage_Core_Helper_Abstract
 
     public function setDateEnabledTo($date)
     {
-        /**  @var $date Ess_M2ePro_Model_Registry */
-        $registry = Mage::getModel('M2ePro/Registry')->loadByKey('/server/maintenance/schedule/date/enabled/to/');
-        $registry->setValue($date);
-        $registry->save();
-
+        Mage::helper('M2ePro/Module')->getRegistry()->setValue(
+            '/server/maintenance/schedule/date/enabled/to/',
+            $date
+        );
         $this->_dateEnabledTo = $date;
+
         return $this;
     }
 

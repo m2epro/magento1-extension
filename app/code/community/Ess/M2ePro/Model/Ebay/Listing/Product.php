@@ -751,7 +751,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product extends Ess_M2ePro_Model_Component_C
 
     public function getOnlineImages()
     {
-        return $this->getSettings('online_images');
+        return $this->getData('online_images');
     }
 
     public function getOnlineDuration()
@@ -839,7 +839,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product extends Ess_M2ePro_Model_Component_C
      */
     public function getOnlineShippingData()
     {
-        return $this->getSettings('online_shipping_data');
+        return $this->getData('online_shipping_data');
     }
 
     /**
@@ -847,7 +847,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product extends Ess_M2ePro_Model_Component_C
      */
     public function getOnlinePaymentData()
     {
-        return $this->getSettings('online_payment_data');
+        return $this->getData('online_payment_data');
     }
 
     /**
@@ -855,7 +855,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product extends Ess_M2ePro_Model_Component_C
      */
     public function getOnlineReturnData()
     {
-        return $this->getSettings('online_return_data');
+        return $this->getData('online_return_data');
     }
 
     /**
@@ -863,7 +863,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product extends Ess_M2ePro_Model_Component_C
      */
     public function getOnlineOtherData()
     {
-        return $this->getSettings('online_other_data');
+        return $this->getData('online_other_data');
     }
 
     // ---------------------------------------

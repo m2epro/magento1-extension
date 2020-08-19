@@ -58,6 +58,11 @@ class Ess_M2ePro_Model_Response_Message
         return $this->_text;
     }
 
+    public function getType()
+    {
+        return $this->_type;
+    }
+
     //########################################
 
     public function isError()

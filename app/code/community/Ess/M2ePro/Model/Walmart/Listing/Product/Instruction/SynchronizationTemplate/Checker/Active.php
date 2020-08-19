@@ -432,10 +432,17 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_SynchronizationTempla
         $onlinePromotions = $walmartListingProduct->getOnlinePromotions();
 
         if (empty($onlinePromotions)) {
-            $onlinePromotions = array('promotion_prices' => array());
+            $onlinePromotions = $hashDetailsData = Mage::helper('M2ePro')->hashString(
+                Mage::helper('M2ePro')->jsonEncode(array('promotion_prices' => array())),
+                'md5'
+            );
         }
 
-        return $promotionsActionDataBuilder->getData() != $onlinePromotions;
+        $hashPromotionsData = Mage::helper('M2ePro')->hashString(
+            Mage::helper('M2ePro')->jsonEncode($promotionsActionDataBuilder->getData()),
+            'md5'
+        );
+        return $hashPromotionsData != $onlinePromotions;
     }
 
     // ---------------------------------------
@@ -453,10 +460,10 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_SynchronizationTempla
             return false;
         }
 
-        $detailsActionDataBuilder = Mage::getModel('M2ePro/Walmart_Listing_Product_Action_DataBuilder_Details');
-        $detailsActionDataBuilder->setListingProduct($listingProduct);
+        $actionDataBuilder = Mage::getModel('M2ePro/Walmart_Listing_Product_Action_DataBuilder_Details');
+        $actionDataBuilder->setListingProduct($listingProduct);
 
-        $currentDetailsData = $detailsActionDataBuilder->getData();
+        $currentDetailsData = $actionDataBuilder->getData();
 
         $currentStartDate = $currentDetailsData['start_date'];
         unset($currentDetailsData['start_date']);
@@ -464,7 +471,11 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_SynchronizationTempla
         $currentEndDate = $currentDetailsData['end_date'];
         unset($currentDetailsData['end_date']);
 
-        if ($currentDetailsData != $walmartListingProduct->getOnlineDetailsData()) {
+        $hashDetailsData = Mage::helper('M2ePro')->hashString(
+            Mage::helper('M2ePro')->jsonEncode($currentDetailsData),
+            'md5'
+        );
+        if ($hashDetailsData != $walmartListingProduct->getOnlineDetailsData()) {
             return true;
         }
 

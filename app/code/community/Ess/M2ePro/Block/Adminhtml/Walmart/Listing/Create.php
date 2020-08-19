@@ -30,9 +30,10 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Create extends Mage_Adminhtml_B
 
         $this->_addButton(
             'save_and_next', array(
-                'label'     => Mage::helper('M2ePro')->__('Next Step'),
-                'onclick'   => 'WalmartListingCreateGeneralObj.save_and_next()',
-                'class'     => 'next'
+                'id'      => 'save_and_next',
+                'label'   => Mage::helper('M2ePro')->__('Next Step'),
+                'onclick' => 'WalmartListingCreateGeneralObj.save_and_next()',
+                'class'   => 'next'
             )
         );
         // ---------------------------------------

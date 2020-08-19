@@ -92,34 +92,42 @@ class Ess_M2ePro_Model_Ebay_Account_Builder extends Ess_M2ePro_Model_ActiveRecor
             $mappingSettings = $this->getModel()->getChildObject()->getSettings('other_listings_mapping_settings');
         }
 
-        if (isset($tempData['mapping_sku_mode']) &&
-            ($tempData['mapping_sku_mode'] == Account::OTHER_LISTINGS_MAPPING_SKU_MODE_DEFAULT ||
-                $tempData['mapping_sku_mode'] == Account::OTHER_LISTINGS_MAPPING_SKU_MODE_CUSTOM_ATTRIBUTE ||
-                $tempData['mapping_sku_mode'] == Account::OTHER_LISTINGS_MAPPING_SKU_MODE_PRODUCT_ID)
-        ) {
+        if (isset($tempData['mapping_sku_mode'])) {
             $mappingSettings['sku']['mode'] = (int)$tempData['mapping_sku_mode'];
-            $mappingSettings['sku']['priority'] = (int)$tempData['mapping_sku_priority'];
+
+            if ($tempData['mapping_sku_mode'] == Account::OTHER_LISTINGS_MAPPING_SKU_MODE_DEFAULT ||
+                $tempData['mapping_sku_mode'] == Account::OTHER_LISTINGS_MAPPING_SKU_MODE_CUSTOM_ATTRIBUTE ||
+                $tempData['mapping_sku_mode'] == Account::OTHER_LISTINGS_MAPPING_SKU_MODE_PRODUCT_ID
+            ) {
+                $mappingSettings['sku']['priority'] = (int)$tempData['mapping_sku_priority'];
+            }
 
             if ($tempData['mapping_sku_mode'] == Account::OTHER_LISTINGS_MAPPING_SKU_MODE_CUSTOM_ATTRIBUTE) {
                 $mappingSettings['sku']['attribute'] = (string)$tempData['mapping_sku_attribute'];
             }
         }
 
-        if (isset($tempData['mapping_title_mode']) &&
-            ($tempData['mapping_title_mode'] == Account::OTHER_LISTINGS_MAPPING_TITLE_MODE_DEFAULT ||
-                $tempData['mapping_title_mode'] == Account::OTHER_LISTINGS_MAPPING_TITLE_MODE_CUSTOM_ATTRIBUTE)
-        ) {
+        if (isset($tempData['mapping_title_mode'])) {
             $mappingSettings['title']['mode'] = (int)$tempData['mapping_title_mode'];
-            $mappingSettings['title']['priority'] = (int)$tempData['mapping_title_priority'];
-            $mappingSettings['title']['attribute'] = (string)$tempData['mapping_title_attribute'];
+
+            if ($tempData['mapping_title_mode'] == Account::OTHER_LISTINGS_MAPPING_TITLE_MODE_DEFAULT ||
+                $tempData['mapping_title_mode'] == Account::OTHER_LISTINGS_MAPPING_TITLE_MODE_CUSTOM_ATTRIBUTE
+            ) {
+                $mappingSettings['title']['priority'] = (int)$tempData['mapping_title_priority'];
+            }
+
+            if ($tempData['mapping_title_mode'] == Account::OTHER_LISTINGS_MAPPING_TITLE_MODE_CUSTOM_ATTRIBUTE) {
+                $mappingSettings['title']['attribute'] = (string)$tempData['mapping_title_attribute'];
+            }
         }
 
-        if (isset($tempData['mapping_item_id_mode']) &&
-            $tempData['mapping_item_id_mode'] == Account::OTHER_LISTINGS_MAPPING_ITEM_ID_MODE_CUSTOM_ATTRIBUTE
-        ) {
+        if (isset($tempData['mapping_item_id_mode'])) {
             $mappingSettings['item_id']['mode'] = (int)$tempData['mapping_item_id_mode'];
-            $mappingSettings['item_id']['priority'] = (int)$tempData['mapping_item_id_priority'];
-            $mappingSettings['item_id']['attribute'] = (string)$tempData['mapping_item_id_attribute'];
+
+            if ($tempData['mapping_item_id_mode'] == Account::OTHER_LISTINGS_MAPPING_ITEM_ID_MODE_CUSTOM_ATTRIBUTE) {
+                $mappingSettings['item_id']['priority'] = (int)$tempData['mapping_item_id_priority'];
+                $mappingSettings['item_id']['attribute'] = (string)$tempData['mapping_item_id_attribute'];
+            }
         }
 
         $data['other_listings_mapping_settings'] = Mage::helper('M2ePro')->jsonEncode($mappingSettings);
@@ -180,6 +188,7 @@ class Ess_M2ePro_Model_Ebay_Account_Builder extends Ess_M2ePro_Model_ActiveRecor
 
         $prefixKeys = array(
             'prefix',
+            'use_marketplace_prefix'
         );
         $tempSettings = !empty($tempSettings['prefix']) ? $tempSettings['prefix'] : array();
         foreach ($prefixKeys as $key) {
@@ -365,6 +374,7 @@ class Ess_M2ePro_Model_Ebay_Account_Builder extends Ess_M2ePro_Model_ActiveRecor
                     'source' => Account::MAGENTO_ORDERS_NUMBER_SOURCE_MAGENTO,
                     'prefix' => array(
                         'prefix' => '',
+                        'use_marketplace_prefix' => 0,
                     ),
                 ),
                 'customer' => array(

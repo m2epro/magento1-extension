@@ -44,7 +44,7 @@ class Ess_M2ePro_Adminhtml_Ebay_LogController extends Ess_M2ePro_Controller_Admi
 
     public function listingAction()
     {
-        $id = $this->getRequest()->getParam('id', false);
+        $id = $this->getRequest()->getParam('listing_id', false);
         if ($id) {
             $listing = Mage::helper('M2ePro/Component_Ebay')->getCachedObject('Listing', $id);
 
@@ -59,7 +59,7 @@ class Ess_M2ePro_Adminhtml_Ebay_LogController extends Ess_M2ePro_Controller_Admi
         $this->setPageHelpLink(null, null, "x/MAAJAQ");
 
         if (!empty($id)) {
-            $logBlock = $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_listing_log');
+            $logBlock = $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_log_listing_view');
         } else {
             $logBlock = $this->getLayout()->createBlock(
                 'M2ePro/adminhtml_ebay_log', '',
@@ -72,7 +72,7 @@ class Ess_M2ePro_Adminhtml_Ebay_LogController extends Ess_M2ePro_Controller_Admi
 
     public function listingGridAction()
     {
-        $id = $this->getRequest()->getParam('id', false);
+        $id = $this->getRequest()->getParam('listing_id', false);
         if ($id) {
             $listing = Mage::helper('M2ePro/Component_Ebay')->getCachedObject('Listing', $id);
 
@@ -93,7 +93,7 @@ class Ess_M2ePro_Adminhtml_Ebay_LogController extends Ess_M2ePro_Controller_Admi
         }
 
         $response = $this->loadLayout()->getLayout()
-            ->createBlock('M2ePro/adminhtml_ebay_listing_log_view_' . $viewMode . '_grid')->toHtml();
+            ->createBlock('M2ePro/adminhtml_ebay_log_listing_view_' . $viewMode . '_grid')->toHtml();
         $this->getResponse()->setBody($response);
     }
 
@@ -113,7 +113,7 @@ class Ess_M2ePro_Adminhtml_Ebay_LogController extends Ess_M2ePro_Controller_Admi
 
         $this->_initAction();
 
-        $logBlock = $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_listing_log');
+        $logBlock = $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_log_listing_view');
 
         $this->_addContent($logBlock)->renderLayout();
     }
@@ -141,7 +141,7 @@ class Ess_M2ePro_Adminhtml_Ebay_LogController extends Ess_M2ePro_Controller_Admi
         }
 
         $response = $this->loadLayout()->getLayout()
-            ->createBlock('M2ePro/adminhtml_ebay_listing_log_view_' . $viewMode . '_grid')->toHtml();
+            ->createBlock('M2ePro/adminhtml_ebay_log_listing_view_' . $viewMode . '_grid')->toHtml();
         $this->getResponse()->setBody($response);
     }
 
@@ -164,7 +164,7 @@ class Ess_M2ePro_Adminhtml_Ebay_LogController extends Ess_M2ePro_Controller_Admi
     public function synchronizationGridAction()
     {
         $response = $this->loadLayout()->getLayout()
-            ->createBlock('M2ePro/adminhtml_ebay_synchronization_log_grid')->toHtml();
+            ->createBlock('M2ePro/adminhtml_ebay_log_synchronization_grid')->toHtml();
         $this->getResponse()->setBody($response);
     }
 
@@ -187,11 +187,7 @@ class Ess_M2ePro_Adminhtml_Ebay_LogController extends Ess_M2ePro_Controller_Admi
 
     public function orderGridAction()
     {
-        $grid = $this->loadLayout()->getLayout()->createBlock(
-            'M2ePro/adminhtml_order_log_grid', '', array(
-                'component_mode' => Ess_M2ePro_Helper_Component_Ebay::NICK
-            )
-        );
+        $grid = $this->loadLayout()->getLayout()->createBlock('M2ePro/adminhtml_ebay_log_order_grid');
         $this->getResponse()->setBody($grid->toHtml());
     }
 

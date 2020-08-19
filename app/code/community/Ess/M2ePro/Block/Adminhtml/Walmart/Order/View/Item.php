@@ -345,7 +345,7 @@ HTML;
         $price = $aOrderItem->getPrice();
 
         return Mage::getSingleton('M2ePro/Currency')->formatPrice(
-            $currency, $price * $aOrderItem->getQty()
+            $currency, $price * $aOrderItem->getQtyPurchased()
         );
     }
 

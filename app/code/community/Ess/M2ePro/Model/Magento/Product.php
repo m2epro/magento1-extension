@@ -906,18 +906,11 @@ class Ess_M2ePro_Model_Magento_Product
         $backorders,
         $useConfigBackorders
     ) {
-        $forceQtyMode = (int)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
-            '/product/force_qty/', 'mode'
-        );
-
-        if ($forceQtyMode == 0) {
+        if (!Mage::helper('M2ePro/Module_Configuration')->isEnableProductForceQtyMode()) {
             return $qty;
         }
 
-        $forceQtyValue = (int)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
-            '/product/force_qty/', 'value'
-        );
-
+        $forceQtyValue = Mage::helper('M2ePro/Module_Configuration')->getProductForceQtyValue();
         $manageStockGlobal = Mage::getStoreConfigFlag('cataloginventory/item_options/manage_stock');
         if (($useConfigManageStock && !$manageStockGlobal) || (!$useConfigManageStock && !$manageStock)) {
             self::$statistics[$this->getStatisticId()]
@@ -1185,7 +1178,7 @@ class Ess_M2ePro_Model_Magento_Product
                     $value = Mage::app()->getStore($this->getStoreId())
                             ->getBaseUrl(
                                 Mage_Core_Model_Store::URL_TYPE_MEDIA,
-                                Mage::helper('M2ePro/Component_Ebay_Images')->shouldBeUrlsSecure()
+                                Mage::helper('M2ePro/Module_Configuration')->getSecureImageUrlInItemDescriptionMode()
                             ) . 'catalog/product/'.ltrim($value, '/');
                 }
             }
@@ -1382,7 +1375,7 @@ class Ess_M2ePro_Model_Magento_Product
             $imageUrl = Mage::app()->getStore($this->getStoreId())
                     ->getBaseUrl(
                         Mage_Core_Model_Store::URL_TYPE_MEDIA,
-                        Mage::helper('M2ePro/Component_Ebay_Images')->shouldBeUrlsSecure()
+                        Mage::helper('M2ePro/Module_Configuration')->getSecureImageUrlInItemDescriptionMode()
                     ) . $imagePath;
 
             $imageUrl  = $this->prepareImageUrl($imageUrl);
@@ -1440,7 +1433,7 @@ class Ess_M2ePro_Model_Magento_Product
         $imageUrl = Mage::app()->getStore($this->getStoreId())
                 ->getBaseUrl(
                     Mage_Core_Model_Store::URL_TYPE_MEDIA,
-                    Mage::helper('M2ePro/Component_Ebay_Images')->shouldBeUrlsSecure()
+                    Mage::helper('M2ePro/Module_Configuration')->getSecureImageUrlInItemDescriptionMode()
                 ) . $imagePath;
 
         $imageUrl = $this->prepareImageUrl($imageUrl);

@@ -59,10 +59,8 @@ class Ess_M2ePro_Model_Amazon_ThrottlingManager
 
     public function getReservedRequestsCount($merchantId, $requestType)
     {
-        $registry = Mage::getModel('M2ePro/Registry');
-        $registry->load(self::RESERVED_REQUESTS_REGISTRY_KEY, 'key');
-
-        $reservedRequests = $registry->getValueFromJson();
+        $reservedRequests = Mage::helper('M2ePro/Module')->getRegistry()
+            ->getValueFromJson(self::RESERVED_REQUESTS_REGISTRY_KEY);
 
         if (!isset($reservedRequests[$merchantId][$requestType])) {
             return 0;
@@ -73,10 +71,8 @@ class Ess_M2ePro_Model_Amazon_ThrottlingManager
 
     public function reserveRequests($merchantId, $requestType, $requestsCount)
     {
-        $registry = Mage::getModel('M2ePro/Registry');
-        $registry->load(self::RESERVED_REQUESTS_REGISTRY_KEY, 'key');
-
-        $reservedRequests = $registry->getValueFromJson();
+        $reservedRequests = Mage::helper('M2ePro/Module')->getRegistry()
+            ->getValueFromJson(self::RESERVED_REQUESTS_REGISTRY_KEY);
 
         if (!isset($reservedRequests[$merchantId][$requestType])) {
             $reservedRequests[$merchantId][$requestType] = 0;
@@ -84,21 +80,16 @@ class Ess_M2ePro_Model_Amazon_ThrottlingManager
 
         $reservedRequests[$merchantId][$requestType] += $requestsCount;
 
-        $registry->setData(
-            array(
-            'key'   => self::RESERVED_REQUESTS_REGISTRY_KEY,
-            'value' => Mage::helper('M2ePro')->jsonEncode($reservedRequests),
-            )
+        Mage::helper('M2ePro/Module')->getRegistry()->setValue(
+            self::RESERVED_REQUESTS_REGISTRY_KEY,
+            $reservedRequests
         );
-        $registry->save();
     }
 
     public function releaseReservedRequests($merchantId, $requestType, $requestsCount)
     {
-        $registry = Mage::getModel('M2ePro/Registry');
-        $registry->load(self::RESERVED_REQUESTS_REGISTRY_KEY, 'key');
-
-        $reservedRequests = $registry->getValueFromJson();
+        $reservedRequests = Mage::helper('M2ePro/Module')->getRegistry()
+            ->getValueFromJson(self::RESERVED_REQUESTS_REGISTRY_KEY);
 
         if (!isset($reservedRequests[$merchantId][$requestType])) {
             return;
@@ -110,13 +101,10 @@ class Ess_M2ePro_Model_Amazon_ThrottlingManager
             unset($reservedRequests[$merchantId][$requestType]);
         }
 
-        $registry->setData(
-            array(
-            'key'   => self::RESERVED_REQUESTS_REGISTRY_KEY,
-            'value' => Mage::helper('M2ePro')->jsonEncode($reservedRequests),
-            )
+        Mage::helper('M2ePro/Module')->getRegistry()->setValue(
+            self::RESERVED_REQUESTS_REGISTRY_KEY,
+            $reservedRequests
         );
-        $registry->save();
     }
 
     //########################################

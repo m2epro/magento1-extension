@@ -47,7 +47,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View extends Mage_Adminhtml_Bloc
 
         $url = $this->getUrl(
             '*/adminhtml_amazon_log/listing', array(
-            'id' => $this->_listing->getId()
+                'listing_id' => $this->_listing->getId()
             )
         );
         $this->_addButton(
@@ -60,17 +60,18 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View extends Mage_Adminhtml_Bloc
 
         $this->_addButton(
             'edit_settings', array(
-            'label'   => Mage::helper('M2ePro')->__('Edit Settings'),
-            'onclick' => '',
-            'class'   => 'drop_down edit_settings_drop_down'
+                'label'   => Mage::helper('M2ePro')->__('Edit Settings'),
+                'onclick' => '',
+                'class'   => 'drop_down edit_settings_drop_down'
             )
         );
 
         $this->_addButton(
             'add_products', array(
-            'label'     => Mage::helper('M2ePro')->__('Add Products'),
-            'onclick'   => '',
-            'class'     => 'add drop_down add_products_drop_down'
+                'id' => 'add_products',
+                'label'     => Mage::helper('M2ePro')->__('Add Products'),
+                'onclick'   => '',
+                'class'     => 'add drop_down add_products_drop_down'
             )
         );
     }
@@ -145,7 +146,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View extends Mage_Adminhtml_Bloc
             'channel' => Ess_M2ePro_Helper_Component_Amazon::NICK,
             'back' => $helper->makeBackUrlParam(
                 '*/adminhtml_amazon_listing/view', array(
-                'id' => $this->_listing->getId()
+                    'id' => $this->_listing->getId()
                 )
             )
             )
@@ -182,11 +183,11 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View extends Mage_Adminhtml_Bloc
 
         $logViewUrl = $this->getUrl(
             '*/adminhtml_amazon_log/listing', array(
-            'id' => $this->_listing->getId(),
-            'back' => $helper->makeBackUrlParam(
-                '*/adminhtml_amazon_listing/view',
-                array('id' => $this->_listing->getId())
-            )
+                'listing_id' => $this->_listing->getId(),
+                'back' => $helper->makeBackUrlParam(
+                    '*/adminhtml_amazon_listing/view',
+                    array('id' => $this->_listing->getId())
+                )
             )
         );
         $getErrorsSummary = $this->getUrl('*/adminhtml_listing/getErrorsSummary');

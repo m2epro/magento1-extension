@@ -49,19 +49,14 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Update
         }
 
         foreach ($permittedAccounts as $account) {
-
             /** @var Ess_M2ePro_Model_Account $account */
 
-            // ---------------------------------------
             $this->getOperationHistory()->addText('Starting Account "'.$account->getTitle().'"');
-            // ---------------------------------------
 
-            // ---------------------------------------
             $this->getOperationHistory()->addTimePoint(
                 __METHOD__.'process'.$account->getId(),
                 'Process Account '.$account->getTitle()
             );
-            // ---------------------------------------
 
             try {
                 $this->processAccount($account);

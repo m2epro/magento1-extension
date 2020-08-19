@@ -103,7 +103,7 @@ class Ess_M2ePro_Model_Walmart_Template_Description_Builder extends Ess_M2ePro_M
 
             // ---
 
-            'description_mode'     => '',
+            'description_mode'     => Description::DESCRIPTION_MODE_PRODUCT,
             'description_template' => '',
 
             'image_main_mode'      => Description::IMAGE_MAIN_MODE_PRODUCT,

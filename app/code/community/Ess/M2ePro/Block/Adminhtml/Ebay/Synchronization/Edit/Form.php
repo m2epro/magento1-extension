@@ -32,9 +32,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Synchronization_Edit_Form extends Mage_Adm
         // ---------------------------------------
 
         // ---------------------------------------
-        $this->inspectorMode = (bool)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
-            '/listing/product/inspector/', 'mode'
-        );
+        $this->inspectorMode = Mage::helper('M2ePro/Module_Configuration')->isEnableListingProductInspectorMode();
         // ---------------------------------------
 
         return parent::_beforeToHtml();

@@ -26,7 +26,7 @@ class Ess_M2ePro_Helper_Module_Logger extends Mage_Core_Helper_Abstract
                 return;
             }
 
-            $info .= Mage::helper('M2ePro/Module_Support_Form')->getSummaryInfo();
+            $info .= Mage::helper('M2ePro/Module_Support')->getSummaryInfo();
 
             $this->send($info, $class);
 

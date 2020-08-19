@@ -792,9 +792,8 @@ class Ess_M2ePro_Model_Amazon_Template_SellingFormat extends Ess_M2ePro_Model_Co
     {
         $attributeHelper = Mage::helper('M2ePro/Magento_Attribute');
 
-        $isPriceConvertEnabled = (int)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
-            '/magento/attribute/', 'price_type_converting'
-        );
+        $isPriceConvertEnabled = Mage::helper('M2ePro/Module_Configuration')
+            ->isEnableMagentoAttributePriceTypeConvertingMode();
 
         if ($this->isRegularCustomerAllowed()) {
             if ($this->isRegularPriceModeProduct() || $this->isRegularPriceModeSpecial()) {

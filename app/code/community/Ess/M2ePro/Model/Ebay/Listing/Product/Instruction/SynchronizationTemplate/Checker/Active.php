@@ -571,7 +571,8 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
 
         $actionData = $actionDataBuilder->getData();
 
-        if ($actionData['description'] == $ebayListingProduct->getOnlineDescription()) {
+        $hashDescription = Mage::helper('M2ePro')->hashString($actionData['description'], 'md5');
+        if ($hashDescription == $ebayListingProduct->getOnlineDescription()) {
             return false;
         }
 
@@ -597,7 +598,11 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
         $actionDataBuilder->setListingProduct($listingProduct);
         $actionDataBuilder->setIsVariationItem($ebayListingProduct->isVariationsReady());
 
-        if ($actionDataBuilder->getData() == $ebayListingProduct->getOnlineImages()) {
+        $hashImagesData = Mage::helper('M2ePro')->hashString(
+            Mage::helper('M2ePro')->jsonEncode($actionDataBuilder->getData()),
+            'md5'
+        );
+        if ($hashImagesData == $ebayListingProduct->getOnlineImages()) {
             return false;
         }
 
@@ -647,7 +652,11 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
         $actionDataBuilder = Mage::getModel('M2ePro/Ebay_Listing_Product_Action_DataBuilder_Payment');
         $actionDataBuilder->setListingProduct($listingProduct);
 
-        if ($actionDataBuilder->getData() == $ebayListingProduct->getOnlinePaymentData()) {
+        $hashPaymentData = Mage::helper('M2ePro')->hashString(
+            Mage::helper('M2ePro')->jsonEncode($actionDataBuilder->getData()),
+            'md5'
+        );
+        if ($hashPaymentData == $ebayListingProduct->getOnlinePaymentData()) {
             return false;
         }
 
@@ -672,7 +681,11 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
         $actionDataBuilder = Mage::getModel('M2ePro/Ebay_Listing_Product_Action_DataBuilder_Shipping');
         $actionDataBuilder->setListingProduct($listingProduct);
 
-        if ($actionDataBuilder->getData() == $ebayListingProduct->getOnlineShippingData()) {
+        $hashShippingData = Mage::helper('M2ePro')->hashString(
+            Mage::helper('M2ePro')->jsonEncode($actionDataBuilder->getData()),
+            'md5'
+        );
+        if ($hashShippingData == $ebayListingProduct->getOnlineShippingData()) {
             return false;
         }
 
@@ -697,7 +710,11 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
         $actionDataBuilder = Mage::getModel('M2ePro/Ebay_Listing_Product_Action_DataBuilder_Return');
         $actionDataBuilder->setListingProduct($listingProduct);
 
-        if ($actionDataBuilder->getData() == $ebayListingProduct->getOnlineReturnData()) {
+        $hashReturnData = Mage::helper('M2ePro')->hashString(
+            Mage::helper('M2ePro')->jsonEncode($actionDataBuilder->getData()),
+            'md5'
+        );
+        if ($hashReturnData == $ebayListingProduct->getOnlineReturnData()) {
             return false;
         }
 
@@ -722,7 +739,11 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
         $actionDataBuilder = Mage::getModel('M2ePro/Ebay_Listing_Product_Action_DataBuilder_Other');
         $actionDataBuilder->setListingProduct($listingProduct);
 
-        if ($actionDataBuilder->getData() == $ebayListingProduct->getOnlineOtherData()) {
+        $hashOtherData = Mage::helper('M2ePro')->hashString(
+            Mage::helper('M2ePro')->jsonEncode($actionDataBuilder->getData()),
+            'md5'
+        );
+        if ($hashOtherData == $ebayListingProduct->getOnlineOtherData()) {
             return false;
         }
 

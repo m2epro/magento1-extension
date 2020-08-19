@@ -49,20 +49,19 @@ class Ess_M2ePro_Helper_Client extends Mage_Core_Helper_Abstract
 
     public function updateLocationData($forceUpdate = false)
     {
-        $registry = Mage::getModel('M2ePro/Registry')->loadByKey('/location/date_last_check/');
-
-        $dateLastCheck = $registry->getValue();
-        if ($dateLastCheck === null) {
-            $dateLastCheck = Mage::helper('M2ePro')->getCurrentGmtDate(true)-60*60*365;
-        } else {
+        $dateLastCheck = Mage::helper('M2ePro/Module')->getRegistry()->getValue('/location/date_last_check/');
+        if ($dateLastCheck !== null) {
             $dateLastCheck = strtotime($dateLastCheck);
+
+            if (!$forceUpdate && Mage::helper('M2ePro')->getCurrentGmtDate(true) < $dateLastCheck + 60*60*24) {
+                return;
+            }
         }
 
-        if (!$forceUpdate && Mage::helper('M2ePro')->getCurrentGmtDate(true) < $dateLastCheck + 60*60*24) {
-            return;
-        }
-
-        $registry->setValue($dateLastCheck)->save();
+        Mage::helper('M2ePro/Module')->getRegistry()->setValue(
+            '/location/date_last_check/',
+            Mage::helper('M2ePro')->getCurrentGmtDate()
+        );
 
         $domain = $this->getServerDomain();
         if (null === $domain) {
@@ -328,9 +327,7 @@ class Ess_M2ePro_Helper_Client extends Mage_Core_Helper_Abstract
 
     public function testMemoryLimit($bytes = null)
     {
-        /** @var Ess_M2ePro_Model_Registry $registry */
-        $registry = Mage::getModel('M2ePro/Registry')->loadByKey('/tools/memory-limit/test/');
-        $registry->setValue(null)->save();
+        Mage::helper('M2ePro/Module')->getRegistry()->setValue('/tools/memory-limit/test/', null);
 
         $i = 0;
         $array = array();
@@ -339,8 +336,7 @@ class Ess_M2ePro_Helper_Client extends Mage_Core_Helper_Abstract
         while (($usage = memory_get_usage(true)) < $bytes || $bytes === null) {
             $array[] = $array;
             if (++$i % 100 === 0) {
-                $registry->setValue($usage);
-                $registry->save();
+                Mage::helper('M2ePro/Module')->getRegistry()->setValue('/tools/memory-limit/test/', $usage);
             }
         }
         // @codingStandardsIgnoreEnd
@@ -350,9 +346,7 @@ class Ess_M2ePro_Helper_Client extends Mage_Core_Helper_Abstract
 
     public function getTestedMemoryLimit()
     {
-        /** @var Ess_M2ePro_Model_Registry $registry */
-        $registry = Mage::getModel('M2ePro/Registry')->loadByKey('/tools/memory-limit/test/');
-        return $registry->getValue();
+        return Mage::helper('M2ePro/Module')->getRegistry()->getValue('/tools/memory-limit/test/');
     }
 
     // ---------------------------------------
@@ -369,9 +363,7 @@ class Ess_M2ePro_Helper_Client extends Mage_Core_Helper_Abstract
 
     public function testExecutionTime($seconds)
     {
-        /** @var Ess_M2ePro_Model_Registry $registry */
-        $registry = Mage::getModel('M2ePro/Registry')->loadByKey('/tools/execution-time/test/');
-        $registry->setValue(null)->save();
+        Mage::helper('M2ePro/Module')->getRegistry()->setValue('/tools/execution-time/test/', null);
 
         $i = 0;
 
@@ -379,23 +371,19 @@ class Ess_M2ePro_Helper_Client extends Mage_Core_Helper_Abstract
         while ($i < $seconds) {
             sleep(1);
             if (++$i % 10 === 0) {
-                $registry->setValue($i);
-                $registry->save();
+                Mage::helper('M2ePro/Module')->getRegistry()->setValue('/tools/execution-time/test/', $i);
             }
         }
         // @codingStandardsIgnoreEnd
 
-        $registry->setValue($seconds);
-        $registry->save();
+        Mage::helper('M2ePro/Module')->getRegistry()->setValue('/tools/execution-time/test/', $seconds);
 
         return $i;
     }
 
     public function getTestedExecutionTime()
     {
-        /** @var Ess_M2ePro_Model_Registry $registry */
-        $registry = Mage::getModel('M2ePro/Registry')->loadByKey('/tools/execution-time/test/');
-        return $registry->getValue();
+        return Mage::helper('M2ePro/Module')->getRegistry()->getValue('/tools/execution-time/test/');
     }
 
     // ---------------------------------------

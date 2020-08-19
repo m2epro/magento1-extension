@@ -31,29 +31,19 @@ class Ess_M2ePro_Helper_Component_Ebay_Motors extends Mage_Core_Helper_Abstract
     {
         switch ($type) {
             case self::TYPE_EPID_MOTOR:
-                return Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
-                    '/ebay/motors/', 'epids_motor_attribute'
-                );
+                return Mage::helper('M2ePro/Component_Ebay_Configuration')->getMotorsEpidsAttribute();
 
             case self::TYPE_KTYPE:
-                return Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
-                    '/ebay/motors/', 'ktypes_attribute'
-                );
+                return Mage::helper('M2ePro/Component_Ebay_Configuration')->getKTypesAttribute();
 
             case self::TYPE_EPID_UK:
-                return Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
-                    '/ebay/motors/', 'epids_uk_attribute'
-                );
+                return Mage::helper('M2ePro/Component_Ebay_Configuration')->getUkEpidsAttribute();
 
             case self::TYPE_EPID_DE:
-                return Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
-                    '/ebay/motors/', 'epids_de_attribute'
-                );
+                return Mage::helper('M2ePro/Component_Ebay_Configuration')->getDeEpidsAttribute();
 
             case self::TYPE_EPID_AU:
-                return Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
-                    '/ebay/motors/', 'epids_au_attribute'
-                );
+                return Mage::helper('M2ePro/Component_Ebay_Configuration')->getAuEpidsAttribute();
         }
 
         return '';
@@ -297,6 +287,56 @@ class Ess_M2ePro_Helper_Component_Ebay_Motors extends Mage_Core_Helper_Abstract
             default:
                 return null;
         }
+    }
+
+    //########################################
+
+    /**
+     * @param int $type
+     *
+     * @return array
+     * @throws Zend_Db_Statement_Exception
+     */
+    public function getDictionaryRecordCount($type)
+    {
+        $postfix = Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_KTYPE == $type ? 'ktype' : 'epid';
+        $dbHelper = Mage::helper('M2ePro/Module_Database_Structure');
+
+        $selectStmt = Mage::getSingleton('core/resource')->getConnection('core_read')
+            ->select()
+            ->from(
+                $dbHelper->getTableNameWithPrefix("m2epro_ebay_dictionary_motor_{$postfix}"),
+                array(
+                    'count' => new Zend_Db_Expr('COUNT(*)'),
+                    'is_custom'
+                )
+            )
+            ->group('is_custom');
+
+        if ($this->isTypeBasedOnEpids($type)) {
+            $selectStmt->where('scope = ?', $this->getEpidsScopeByType($type));
+        }
+
+        $custom = $ebay = 0;
+        $queryStmt = $selectStmt->query();
+        while ($row = $queryStmt->fetch()) {
+            $row['is_custom'] == 1 ? $custom = $row['count'] : $ebay = $row['count'];
+        }
+
+        return array((int)$ebay, (int)$custom);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isKTypeMarketplacesEnabled() {
+
+        /** @var Ess_M2ePro_Model_Resource_Marketplace_Collection $marketplaceCollection */
+        $marketplaceCollection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Marketplace');
+        $marketplaceCollection->addFieldToFilter('is_ktype', 1);
+        $marketplaceCollection->addFieldToFilter('status', Ess_M2ePro_Model_Marketplace::STATUS_ENABLE);
+
+        return (bool)$marketplaceCollection->getSize();
     }
 
     //########################################

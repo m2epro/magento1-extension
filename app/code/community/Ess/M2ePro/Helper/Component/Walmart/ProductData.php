@@ -14,9 +14,7 @@ class Ess_M2ePro_Helper_Component_Walmart_ProductData extends Mage_Core_Helper_A
 
     public function getRecent($marketplaceId, $excludedProductDataNick = null)
     {
-        /** @var $registryModel Ess_M2ePro_Model_Registry */
-        $registryModel = Mage::getModel('M2ePro/Registry')->load($this->getConfigGroup(), 'key');
-        $allRecent = $registryModel->getValueFromJson();
+        $allRecent = Mage::helper('M2ePro/Module')->getRegistry()->getValueFromJson($this->getConfigGroup());
 
         if (!isset($allRecent[$marketplaceId])) {
             return array();
@@ -35,11 +33,7 @@ class Ess_M2ePro_Helper_Component_Walmart_ProductData extends Mage_Core_Helper_A
 
     public function addRecent($marketplaceId, $productDataNick)
     {
-        $key = $this->getConfigGroup();
-
-        /** @var $registryModel Ess_M2ePro_Model_Registry */
-        $registryModel = Mage::getModel('M2ePro/Registry')->load($key, 'key');
-        $allRecent = $registryModel->getValueFromJson();
+        $allRecent = Mage::helper('M2ePro/Module')->getRegistry()->getValueFromJson($this->getConfigGroup());
 
         !isset($allRecent[$marketplaceId]) && $allRecent[$marketplaceId] = array();
 
@@ -57,12 +51,7 @@ class Ess_M2ePro_Helper_Component_Walmart_ProductData extends Mage_Core_Helper_A
         $recent[] = $productDataNick;
         $allRecent[$marketplaceId] = $recent;
 
-        $registryModel->addData(
-            array(
-            'key'   => $key,
-            'value' => Mage::helper('M2ePro')->jsonEncode($allRecent)
-            )
-        )->save();
+        Mage::helper('M2ePro/Module')->getRegistry()->setValue($this->getConfigGroup(), $allRecent);
     }
 
     //########################################

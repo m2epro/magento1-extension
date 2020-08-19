@@ -324,7 +324,7 @@ class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
             $description = Mage::helper('M2ePro/Module_Log')->encodeDescription($description, $params, $links);
         }
 
-        $log->addMessage($this->getId(), $description, $type);
+        $log->addMessage($this, $description, $type);
     }
 
     public function addSuccessLog($description, array $params = array(), array $links = array())
@@ -785,6 +785,20 @@ class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
         }
 
         return $shipment;
+    }
+
+    /**
+     * @return bool
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
+    public function isStatusUpdatingToShipped()
+    {
+        /** @var Ess_M2ePro_Model_Resource_Order_Change_Collection $changes */
+        $changes = Mage::getModel('M2ePro/Order_Change')->getCollection();
+        $changes->addFieldToFilter('order_id', $this->getId());
+        $changes->addFieldToFilter('action', Ess_M2ePro_Model_Order_Change::ACTION_UPDATE_SHIPPING);
+
+        return $this->getChildObject()->isSetProcessingLock('update_shipping_status') || $changes->getSize() > 0;
     }
 
     //########################################

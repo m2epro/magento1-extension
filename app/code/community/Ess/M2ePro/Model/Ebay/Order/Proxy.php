@@ -23,6 +23,23 @@ class Ess_M2ePro_Model_Ebay_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
     //########################################
 
     /**
+     * @return string
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
+    public function getOrderNumberPrefix()
+    {
+        $prefix = $this->_order->getEbayAccount()->getMagentoOrdersNumberRegularPrefix();
+
+        if ($this->_order->getEbayAccount()->isMagentoOrdersNumberMarketplacePrefixUsed()) {
+            $prefix .= $this->_order->getMagentoOrdersNumberMarketplacePrefix();
+        }
+
+        return $prefix;
+    }
+
+    //########################################
+
+    /**
      * @return false|Mage_Customer_Model_Customer
      * @throws Ess_M2ePro_Model_Exception
      */

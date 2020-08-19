@@ -8,11 +8,8 @@
 // @codingStandardsIgnoreFile
 
 /** @var $this Ess_M2ePro_Block_Adminhtml_Configuration_Settings_Form */
-
-$urlComponents = Mage::helper('M2ePro/Component')->getEnabledComponents();
-$componentForUrl = count($urlComponents) == 1 ? array_shift($urlComponents) : Ess_M2ePro_Helper_Component_Ebay::NICK;
-
 ?>
+
 <script type="text/javascript">
 
     // General for all tabs
@@ -32,7 +29,7 @@ $componentForUrl = count($urlComponents) == 1 ? array_shift($urlComponents) : Es
 
         //------------------------------
 
-        $('force_qty_mode').simulate('change');
+        $('product_force_qty_mode').simulate('change');
 
         //------------------------------
 
@@ -52,7 +49,6 @@ $componentForUrl = count($urlComponents) == 1 ? array_shift($urlComponents) : Es
 
     <input name="form_key" value="<?php echo $this->getFormKey(); ?>" type="hidden" />
 
-    <!-- General   -->
     <div class="entry-edit" id="magento_block_configuration_interface_general">
 
         <div class="entry-edit-head">
@@ -77,12 +73,12 @@ $componentForUrl = count($urlComponents) == 1 ? array_shift($urlComponents) : Es
 
                     <tr>
                         <td class="label">
-                            <label><?php echo Mage::helper('M2ePro')->__('Products Thumbnails'); ?>: </label>
+                            <label for="view_show_products_thumbnails_mode"><?php echo Mage::helper('M2ePro')->__('Products Thumbnails'); ?>: </label>
                         </td>
                         <td class="value">
-                            <select id="products_show_thumbnails" name="products_show_thumbnails" class="required-entry">
-                                <option value="0" <?php if (!$this->products_show_thumbnails): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Do Not Show'); ?></option>
-                                <option value="1" <?php if ($this->products_show_thumbnails): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Show'); ?></option>
+                            <select id="view_show_products_thumbnails_mode" name="view_show_products_thumbnails_mode" class="required-entry">
+                                <option value="0" <?php if (!$this->getConfigurationHelper()->getViewShowProductsThumbnailsMode()): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Do Not Show'); ?></option>
+                                <option value="1" <?php if ($this->getConfigurationHelper()->getViewShowProductsThumbnailsMode()): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Show'); ?></option>
                             </select>
                             <p class="note">
                                 <span><?php echo Mage::helper('M2ePro')->__('Choose whether you want to see Thumbnail Images for Products on the Add Products and View Listing Pages.'); ?></span>
@@ -92,12 +88,12 @@ $componentForUrl = count($urlComponents) == 1 ? array_shift($urlComponents) : Es
 
                     <tr>
                         <td class="label">
-                            <label><?php echo Mage::helper('M2ePro')->__('Help Blocks'); ?>: </label>
+                            <label for="view_show_block_notices_mode"><?php echo Mage::helper('M2ePro')->__('Help Blocks'); ?>: </label>
                         </td>
                         <td class="value">
-                            <select id="block_notices_show" name="block_notices_show" class="required-entry">
-                                <option value="0" <?php if (!$this->block_notices_show): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Do Not Show'); ?></option>
-                                <option value="1" <?php if ($this->block_notices_show): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Show'); ?></option>
+                            <select id="view_show_block_notices_mode" name="view_show_block_notices_mode" class="required-entry">
+                                <option value="0" <?php if (!$this->getConfigurationHelper()->getViewShowBlockNoticesMode()): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Do Not Show'); ?></option>
+                                <option value="1" <?php if ($this->getConfigurationHelper()->getViewShowBlockNoticesMode()): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Show'); ?></option>
                             </select>
                             <p class="note">
                                 <span><?php echo Mage::helper('M2ePro')->__('Choose whether you want the help at the top of each M2E Pro Page to be available.'); ?></span>
@@ -126,9 +122,7 @@ $componentForUrl = count($urlComponents) == 1 ? array_shift($urlComponents) : Es
         </div>
 
     </div>
-    <!-- End General   -->
 
-    <!-- QTY Settings  -->
     <div class="entry-edit" id="magento_block_configuration_settings_qty">
 
         <div class="entry-edit-head">
@@ -151,12 +145,12 @@ $componentForUrl = count($urlComponents) == 1 ? array_shift($urlComponents) : Es
 
                     <tr>
                         <td class="label">
-                            <label for="force_qty_mode"><?php echo Mage::helper('M2ePro')->__('Manage Stock "No", Backorders'); ?>: </label>
+                            <label for="product_force_qty_mode"><?php echo Mage::helper('M2ePro')->__('Manage Stock "No", Backorders'); ?>: </label>
                         </td>
                         <td class="value" colspan="2">
-                            <select id="force_qty_mode" name="force_qty_mode" onchange="SettingsObj.changeForceQtyMode();">
-                                <option value="0"<?php if ($this->forceQtyMode == 0) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Disallow'); ?></option>
-                                <option value="1"<?php if ($this->forceQtyMode == 1) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Allow'); ?></option>
+                            <select id="product_force_qty_mode" name="product_force_qty_mode" onchange="SettingsObj.changeForceQtyMode();">
+                                <option value="0"<?php if (!$this->getConfigurationHelper()->isEnableProductForceQtyMode()) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Disallow'); ?></option>
+                                <option value="1"<?php if ($this->getConfigurationHelper()->isEnableProductForceQtyMode()) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Allow'); ?></option>
                             </select>
                             <p class="note">
                                 <span><?php echo Mage::helper('M2ePro')->__(
@@ -167,12 +161,12 @@ $componentForUrl = count($urlComponents) == 1 ? array_shift($urlComponents) : Es
                         </td>
                     </tr>
 
-                    <tr id="force_qty_value_tr">
+                    <tr id="product_force_qty_value_tr">
                         <td class="label">
-                            <label for="force_qty_value"><?php echo Mage::helper('M2ePro')->__('Quantity To Be Listed'); ?>: </label>
+                            <label for="product_force_qty_value"><?php echo Mage::helper('M2ePro')->__('Quantity To Be Listed'); ?>: </label>
                         </td>
                         <td class="value" colspan="2">
-                            <input id="force_qty_value" name="force_qty_value" value="<?php echo $this->forceQtyValue; ?>" type="text" class="M2ePro-required-when-visible input-text validate-greater-than-zero" />
+                            <input id="product_force_qty_value" name="product_force_qty_value" value="<?php echo $this->getConfigurationHelper()->getProductForceQtyValue(); ?>" type="text" class="M2ePro-required-when-visible input-text validate-greater-than-zero" />
                             <p class="note">
                                 <span><?php echo Mage::helper('M2ePro')->__('Set a number to List, e.g. if you have Manage Stock "No" in Magento Product and set this Value to 10, 10 will be sent as available Quantity to the Channel.'); ?></span>
                             </p>
@@ -187,9 +181,7 @@ $componentForUrl = count($urlComponents) == 1 ? array_shift($urlComponents) : Es
         </div>
 
     </div>
-    <!-- End QTY Settings   -->
 
-    <!-- Price Settings  -->
     <div class="entry-edit" id="magento_block_configuration_settings_price">
 
         <div class="entry-edit-head">
@@ -212,12 +204,12 @@ $componentForUrl = count($urlComponents) == 1 ? array_shift($urlComponents) : Es
 
                     <tr>
                         <td class="label">
-                            <label for="price_convert_mode"><?php echo Mage::helper('M2ePro')->__('Convert Magento Price Attribute'); ?>: </label>
+                            <label for="magento_attribute_price_type_converting_mode"><?php echo Mage::helper('M2ePro')->__('Convert Magento Price Attribute'); ?>: </label>
                         </td>
                         <td class="value" colspan="2">
-                            <select id="price_convert_mode" name="price_convert_mode">
-                                <option value="0"<?php if ($this->priceConvertMode == 0) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
-                                <option value="1"<?php if ($this->priceConvertMode == 1) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
+                            <select id="magento_attribute_price_type_converting_mode" name="magento_attribute_price_type_converting_mode">
+                                <option value="0"<?php if (!$this->getConfigurationHelper()->isEnableMagentoAttributePriceTypeConvertingMode()) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
+                                <option value="1"<?php if ($this->getConfigurationHelper()->isEnableMagentoAttributePriceTypeConvertingMode()) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
                             </select>
                             <p class="note">
                                 <span><?php echo Mage::helper('M2ePro')->__(
@@ -240,9 +232,7 @@ $componentForUrl = count($urlComponents) == 1 ? array_shift($urlComponents) : Es
         </div>
 
     </div>
-    <!-- End Price Settings   -->
 
-    <!-- Advanced Settings  -->
     <div class="entry-edit" id="magento_block_configuration_settings_advanced">
 
         <div class="entry-edit-head">
@@ -277,12 +267,12 @@ $componentForUrl = count($urlComponents) == 1 ? array_shift($urlComponents) : Es
 
                         <tr>
                             <td class="label">
-                                <label for="inspector_mode"><?php echo Mage::helper('M2ePro')->__('Track Direct Database Changes'); ?>: </label>
+                                <label for="listing_product_inspector_mode"><?php echo Mage::helper('M2ePro')->__('Track Direct Database Changes'); ?>: </label>
                             </td>
                             <td class="value" colspan="2">
-                                <select id="inspector_mode" name="inspector_mode">
-                                    <option value="0"<?php if ($this->inspectorMode == 0) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
-                                    <option value="1"<?php if ($this->inspectorMode == 1) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
+                                <select id="listing_product_inspector_mode" name="listing_product_inspector_mode">
+                                    <option value="0"<?php if (!$this->getConfigurationHelper()->isEnableListingProductInspectorMode()) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
+                                    <option value="1"<?php if ($this->getConfigurationHelper()->isEnableListingProductInspectorMode()) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
                                 </select>
                                 <p class="note">
                                     <span><?php echo Mage::helper('M2ePro')->__("<b>Note:</b> Enable this Option if you really need it, as it is very resource and time consuming and may affect Synchronization Performance."); ?></span>
@@ -298,6 +288,5 @@ $componentForUrl = count($urlComponents) == 1 ? array_shift($urlComponents) : Es
         </div>
 
     </div>
-    <!-- End Advanced Settings   -->
 
 </form>

@@ -23,34 +23,8 @@ class Ess_M2ePro_Block_Adminhtml_ControlPanel_Tabs_Inspection extends Mage_Admin
     protected function _beforeToHtml()
     {
         $this->setChild(
-            'requirements', $this->getLayout()->createBlock(
-                'M2ePro/adminhtml_controlPanel_inspection_requirements'
-            )
-        );
-
-        $this->setChild(
-            'caches', $this->getLayout()->createBlock(
-                'M2ePro/adminhtml_controlPanel_inspection_caches'
-            )
-        );
-        $this->setChild(
-            'conflicted_modules', $this->getLayout()->createBlock(
-                'M2ePro/adminhtml_controlPanel_inspection_conflictedModules'
-            )
-        );
-        $this->setChild(
-            'magento', $this->getLayout()->createBlock(
-                'M2ePro/adminhtml_controlPanel_inspection_magento'
-            )
-        );
-        $this->setChild(
-            'database_broken', $this->getLayout()->createBlock(
-                'M2ePro/adminhtml_controlPanel_inspection_databaseBrokenTables'
-            )
-        );
-        $this->setChild(
-            'other_issues', $this->getLayout()->createBlock(
-                'M2ePro/adminhtml_controlPanel_inspection_otherIssues'
+            'inspections', $this->getLayout()->createBlock(
+                'M2ePro/adminhtml_controlPanel_inspection_grid'
             )
         );
 

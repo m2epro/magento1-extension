@@ -36,16 +36,6 @@ class Ess_M2ePro_Block_Adminhtml_Wizard_InstallationWalmart_Installation_Account
                     Mage::helper('M2ePro')->__(
                         'M2E Pro was not able to get access to the Walmart Account. Reason: %error_message%'
                     ),
-
-                'Consumer ID' => 'Consumer ID',
-                'Consumer ID / Partner ID' => 'Consumer ID / Partner ID',
-                'The specified Consumer ID / Partner ID is not valid' => Mage::helper('M2ePro')->__(
-                    'The specified Consumer ID / Partner ID is not valid.
-                 Please find the instruction on how to get it <a target="_blank" href="%url%">here</a>.',
-                    Mage::helper('M2ePro/Module_Support')->getSupportUrl(
-                        'how-to-guide/1570387-how-to-get-my-consumer-id-partner-id-to-auth-m2e-on-walmart-us'
-                    )
-                )
             )
         );
 

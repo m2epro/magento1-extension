@@ -50,25 +50,25 @@ class Ess_M2ePro_Model_Ebay_Connector_Order_Receive_Items
         } catch (Ess_M2ePro_Model_Exception_Connection $exception) {
             $data = $exception->getAdditionalData();
             if (!empty($data['curl_error_number']) && $data['curl_error_number'] == CURLE_OPERATION_TIMEOUTED) {
-                $fails = (int)Mage::helper('M2ePro/Module')->getRegistryValue(
+                $fails = (int)Mage::helper('M2ePro/Module')->getRegistry()->getValue(
                     '/ebay/synchronization/orders/receive/timeout_fails/'
                 );
                 $fails++;
 
-                $rise = (int)Mage::helper('M2ePro/Module')->getRegistryValue(
+                $rise = (int)Mage::helper('M2ePro/Module')->getRegistry()->getValue(
                     '/ebay/synchronization/orders/receive/timeout_rise/'
                 );
                 $rise += self::TIMEOUT_RISE_ON_ERROR;
 
                 if ($fails >= self::TIMEOUT_ERRORS_COUNT_TO_RISE && $rise <= self::TIMEOUT_RISE_MAX_VALUE) {
                     $fails = 0;
-                    Mage::helper('M2ePro/Module')->setRegistryValue(
+                    Mage::helper('M2ePro/Module')->getRegistry()->setValue(
                         '/ebay/synchronization/orders/receive/timeout_rise/',
                         $rise
                     );
                 }
 
-                Mage::helper('M2ePro/Module')->setRegistryValue(
+                Mage::helper('M2ePro/Module')->getRegistry()->setValue(
                     '/ebay/synchronization/orders/receive/timeout_fails/',
                     $fails
                 );
@@ -77,7 +77,9 @@ class Ess_M2ePro_Model_Ebay_Connector_Order_Receive_Items
             throw $exception;
         }
 
-        Mage::helper('M2ePro/Module')->setRegistryValue('/ebay/synchronization/orders/receive/timeout_fails/', 0);
+        Mage::helper('M2ePro/Module')->getRegistry()->setValue(
+            '/ebay/synchronization/orders/receive/timeout_fails/', 0
+        );
     }
 
     protected function buildConnectionInstance()
@@ -92,7 +94,7 @@ class Ess_M2ePro_Model_Ebay_Connector_Order_Receive_Items
 
     protected function getRequestTimeOut()
     {
-        $rise = (int)Mage::helper('M2ePro/Module')->getRegistryValue(
+        $rise = (int)Mage::helper('M2ePro/Module')->getRegistry()->getValue(
             '/ebay/synchronization/orders/receive/timeout_rise/'
         );
         $rise > self::TIMEOUT_RISE_MAX_VALUE && $rise = self::TIMEOUT_RISE_MAX_VALUE;

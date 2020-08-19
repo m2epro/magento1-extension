@@ -45,9 +45,9 @@ class Ess_M2ePro_Model_Magento_Quote_Store_Configurator
             Mage_Tax_Model_Config::CONFIG_XML_PATH_BASED_ON,
             Mage_Customer_Model_Group::XML_PATH_DEFAULT_ID,
             Mage_Weee_Helper_Data::XML_PATH_FPT_ENABLED,
-            $this->getOriginCountryIdXmlPath(),
-            $this->getOriginRegionIdXmlPath(),
-            $this->getOriginPostcodeXmlPath()
+            Mage_Shipping_Model_Config::XML_PATH_ORIGIN_COUNTRY_ID,
+            Mage_Shipping_Model_Config::XML_PATH_ORIGIN_REGION_ID,
+            Mage_Shipping_Model_Config::XML_PATH_ORIGIN_POSTCODE
         );
 
         $config = array();
@@ -95,9 +95,9 @@ class Ess_M2ePro_Model_Magento_Quote_Store_Configurator
 
         // store origin address
         // ---------------------------------------
-        $this->setStoreConfig($this->getOriginCountryIdXmlPath(), $this->getOriginCountryId());
-        $this->setStoreConfig($this->getOriginRegionIdXmlPath(), $this->getOriginRegionId());
-        $this->setStoreConfig($this->getOriginPostcodeXmlPath(), $this->getOriginPostcode());
+        $this->setStoreConfig(Mage_Shipping_Model_Config::XML_PATH_ORIGIN_COUNTRY_ID, $this->getOriginCountryId());
+        $this->setStoreConfig(Mage_Shipping_Model_Config::XML_PATH_ORIGIN_REGION_ID, $this->getOriginRegionId());
+        $this->setStoreConfig(Mage_Shipping_Model_Config::XML_PATH_ORIGIN_POSTCODE, $this->getOriginPostcode());
         // ---------------------------------------
 
         // ---------------------------------------
@@ -182,67 +182,75 @@ class Ess_M2ePro_Model_Magento_Quote_Store_Configurator
 
     //########################################
 
+    /**
+     * @return string|null
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     protected function getOriginCountryId()
     {
-        $originCountryId = $this->getStoreConfig($this->getOriginCountryIdXmlPath());
-
-        if ($this->_proxyOrder->isTaxModeMagento()) {
-            return $originCountryId;
+        if ($this->shouldReturnConfigValue()) {
+            return $this->getStoreConfig(Mage_Shipping_Model_Config::XML_PATH_ORIGIN_COUNTRY_ID);
         }
 
-        if ($this->_proxyOrder->isTaxModeMixed() && !$this->_proxyOrder->hasTax()) {
-            return $originCountryId;
-        }
-
-        if ($this->_proxyOrder->isTaxModeNone()
-            || ($this->_proxyOrder->isTaxModeChannel() && !$this->_proxyOrder->hasTax())
-        ) {
+        if ($this->shouldReturnEmptyValue()) {
             return '';
         }
 
         return $this->_quote->getShippingAddress()->getCountryId();
     }
 
+    /**
+     * @return mixed|string|null
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     protected function getOriginRegionId()
     {
-        $originRegionId = $this->getStoreConfig($this->getOriginRegionIdXmlPath());
-
-        if ($this->_proxyOrder->isTaxModeMagento()) {
-            return $originRegionId;
+        if ($this->shouldReturnConfigValue()) {
+            return $this->getStoreConfig(Mage_Shipping_Model_Config::XML_PATH_ORIGIN_REGION_ID);
         }
 
-        if ($this->_proxyOrder->isTaxModeMixed() && !$this->_proxyOrder->hasTax()) {
-            return $originRegionId;
-        }
-
-        if ($this->_proxyOrder->isTaxModeNone()
-            || ($this->_proxyOrder->isTaxModeChannel() && !$this->_proxyOrder->hasTax())
-        ) {
+        if ($this->shouldReturnEmptyValue()) {
             return '';
         }
 
         return $this->_quote->getShippingAddress()->getRegionId();
     }
 
+    /**
+     * @return string|null
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     protected function getOriginPostcode()
     {
-        $originPostcode = $this->getStoreConfig($this->getOriginPostcodeXmlPath());
-
-        if ($this->_proxyOrder->isTaxModeMagento()) {
-            return $originPostcode;
+        if ($this->shouldReturnConfigValue()) {
+            return $this->getStoreConfig(Mage_Shipping_Model_Config::XML_PATH_ORIGIN_POSTCODE);
         }
 
-        if ($this->_proxyOrder->isTaxModeMixed() && !$this->_proxyOrder->hasTax()) {
-            return $originPostcode;
-        }
-
-        if ($this->_proxyOrder->isTaxModeNone()
-            || ($this->_proxyOrder->isTaxModeChannel() && !$this->_proxyOrder->hasTax())
-        ) {
+        if ($this->shouldReturnEmptyValue()) {
             return '';
         }
 
         return $this->_quote->getShippingAddress()->getPostcode();
+    }
+
+    /**
+     * @return bool
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
+    protected function shouldReturnConfigValue()
+    {
+        return $this->_proxyOrder->isTaxModeMagento() ||
+               ($this->_proxyOrder->isTaxModeMixed() && !$this->_proxyOrder->hasTax());
+    }
+
+    /**
+     * @return bool
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
+    protected function shouldReturnEmptyValue()
+    {
+        return $this->_proxyOrder->isTaxModeNone() ||
+               ($this->_proxyOrder->isTaxModeChannel() && !$this->_proxyOrder->hasTax());
     }
 
     //########################################
@@ -289,32 +297,6 @@ class Ess_M2ePro_Model_Magento_Quote_Store_Configurator
         }
 
         return 'shipping';
-    }
-
-    //########################################
-
-    protected function getOriginCountryIdXmlPath()
-    {
-        // Magento 1.4.x backward compatibility
-        return @defined('Mage_Shipping_Model_Config::XML_PATH_ORIGIN_COUNTRY_ID')
-            ? Mage_Shipping_Model_Config::XML_PATH_ORIGIN_COUNTRY_ID
-            : 'shipping/origin/country_id';
-    }
-
-    protected function getOriginRegionIdXmlPath()
-    {
-        // Magento 1.4.x backward compatibility
-        return @defined('Mage_Shipping_Model_Config::XML_PATH_ORIGIN_REGION_ID')
-            ? Mage_Shipping_Model_Config::XML_PATH_ORIGIN_REGION_ID
-            : 'shipping/origin/region_id';
-    }
-
-    protected function getOriginPostcodeXmlPath()
-    {
-        // Magento 1.4.x backward compatibility
-        return @defined('Mage_Shipping_Model_Config::XML_PATH_ORIGIN_POSTCODE')
-            ? Mage_Shipping_Model_Config::XML_PATH_ORIGIN_POSTCODE
-            : 'shipping/origin/postcode';
     }
 
     //########################################

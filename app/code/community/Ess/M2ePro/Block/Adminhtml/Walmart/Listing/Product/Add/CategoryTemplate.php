@@ -36,23 +36,24 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Product_Add_CategoryTemplate
         $listingId = $this->getRequest()->getParam('id');
         $url = $this->getUrl(
             '*/adminhtml_walmart_listing_productAdd/removeAddedProducts', array(
-            'id' => $listingId,
-            '_current' => true
+                'id' => $listingId,
+                '_current' => true
             )
         );
         $this->_addButton(
             'back', array(
-            'label'     => Mage::helper('M2ePro')->__('Back'),
-            'class'     => 'back',
-            'onclick'   => 'setLocation(\''.$url.'\');'
+                'label'     => Mage::helper('M2ePro')->__('Back'),
+                'class'     => 'back',
+                'onclick'   => 'setLocation(\''.$url.'\');'
             )
         );
 
         $this->_addButton(
             'next', array(
-            'label'     => Mage::helper('M2ePro')->__('Continue'),
-            'class'     => 'scalable next',
-            'onclick'   => "categoryTemplateModeFormSubmit()"
+                'id'      => 'next',
+                'label'   => Mage::helper('M2ePro')->__('Continue'),
+                'class'   => 'scalable next',
+                'onclick' => "categoryTemplateModeFormSubmit()"
             )
         );
 

@@ -13,7 +13,29 @@ class Ess_M2ePro_Model_Ebay_Connector_Item_List_Responser
 
     protected function getSuccessfulMessage()
     {
-        return 'Item was successfully Listed';
+        $currency = Mage::app()->getLocale()->currency(
+            $this->_listingProduct->getMarketplace()->getChildObject()->getCurrency()
+        );
+
+        $onlineQty = $this->_listingProduct->getChildObject()->getOnlineQty() -
+                     $this->_listingProduct->getChildObject()->getOnlineQtySold();
+
+        if ($this->getRequestDataObject()->isVariationItem()) {
+            $calculateWithEmptyQty = $this->_listingProduct->getChildObject()->isOutOfStockControlEnabled();
+
+            return sprintf(
+                'Product was Listed with QTY %d, Price %s - %s',
+                $onlineQty,
+                $currency->toCurrency($this->getRequestDataObject()->getVariationMinPrice($calculateWithEmptyQty)),
+                $currency->toCurrency($this->getRequestDataObject()->getVariationMaxPrice($calculateWithEmptyQty))
+            );
+        }
+
+        return sprintf(
+            'Product was Listed with QTY %d, Price %s',
+            $onlineQty,
+            $currency->toCurrency($this->_listingProduct->getChildObject()->getOnlineCurrentPrice())
+        );
     }
 
     //########################################

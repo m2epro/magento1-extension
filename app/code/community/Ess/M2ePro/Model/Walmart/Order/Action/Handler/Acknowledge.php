@@ -58,10 +58,8 @@ class Ess_M2ePro_Model_Walmart_Order_Action_Handler_Acknowledge
         $this->getOrder()->setData('status', $orderStatus);
         $this->getOrder()->save();
 
-        $this->getOrder()->getLog()->addMessage(
-            $this->getOrder()->getId(),
-            Mage::helper('M2ePro')->__('Order was successfully acknowledged.'),
-            Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS
+        $this->getOrder()->addSuccessLog(
+            Mage::helper('M2ePro')->__('Order was successfully acknowledged.')
         );
     }
 
@@ -81,11 +79,7 @@ class Ess_M2ePro_Model_Walmart_Order_Action_Handler_Acknowledge
         }
 
         foreach ($messages as $message) {
-            $this->getOrder()->getLog()->addMessage(
-                $this->getOrder()->getId(),
-                $message->getText(),
-                Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR
-            );
+            $this->getOrder()->getLog()->addServerResponseMessage($this->getOrder(), $message);
         }
     }
 

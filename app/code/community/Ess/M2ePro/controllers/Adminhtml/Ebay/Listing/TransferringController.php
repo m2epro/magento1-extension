@@ -44,9 +44,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_TransferringController
 
     public function shownTutorialAction()
     {
-        Mage::helper('M2ePro/Module')
-            ->getConfig()
-            ->setGroupValue('/ebay/sell_on_another_marketplace/', 'tutorial_shown', 1);
+        Mage::helper('M2ePro/Component_Ebay_Configuration')->setSellOnAnotherMarketplaceTutorialShown(1);
     }
 
     //########################################

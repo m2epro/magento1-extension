@@ -14,7 +14,7 @@ class Ess_M2ePro_Adminhtml_Amazon_LogController
     protected function _initAction()
     {
         $this->loadLayout()
-             ->_title(Mage::helper('M2ePro')->__('Logs & Events'));
+            ->_title(Mage::helper('M2ePro')->__('Logs & Events'));
 
         $this->getLayout()->getBlock('head')
             ->addCss('M2ePro/css/Plugin/DropDown.css')
@@ -46,7 +46,7 @@ class Ess_M2ePro_Adminhtml_Amazon_LogController
 
     public function listingAction()
     {
-        $id = $this->getRequest()->getParam('id', false);
+        $id = $this->getRequest()->getParam('listing_id', false);
         if ($id) {
             $listing = Mage::helper('M2ePro/Component')->getCachedUnknownObject('Listing', $id);
 
@@ -55,7 +55,7 @@ class Ess_M2ePro_Adminhtml_Amazon_LogController
                 return $this->_redirect('*/*/index');
             }
 
-            $block = $this->getLayout()->createBlock('M2ePro/adminhtml_amazon_listing_log');
+            $block = $this->getLayout()->createBlock('M2ePro/adminhtml_amazon_log_listing_view');
         }
 
         if (empty($block)) {
@@ -86,7 +86,7 @@ class Ess_M2ePro_Adminhtml_Amazon_LogController
 
     public function listingGridAction()
     {
-        $id = $this->getRequest()->getParam('id', false);
+        $id = $this->getRequest()->getParam('listing_id', false);
         if ($id) {
             $listing = Mage::helper('M2ePro/Component')->getCachedUnknownObject('Listing', $id);
 
@@ -107,7 +107,7 @@ class Ess_M2ePro_Adminhtml_Amazon_LogController
         }
 
         $response = $this->loadLayout()->getLayout()
-            ->createBlock('M2ePro/adminhtml_amazon_listing_log_view_' . $viewMode . '_grid')->toHtml();
+            ->createBlock('M2ePro/adminhtml_amazon_log_listing_view_' . $viewMode . '_grid')->toHtml();
         $this->getResponse()->setBody($response);
     }
 
@@ -128,7 +128,7 @@ class Ess_M2ePro_Adminhtml_Amazon_LogController
 
         $this->_initAction();
 
-        $logBlock = $this->getLayout()->createBlock('M2ePro/adminhtml_amazon_listing_log');
+        $logBlock = $this->getLayout()->createBlock('M2ePro/adminhtml_amazon_log_listing_view');
 
         $this->_addContent($logBlock)->renderLayout();
     }
@@ -157,7 +157,7 @@ class Ess_M2ePro_Adminhtml_Amazon_LogController
         }
 
         $response = $this->loadLayout()->getLayout()
-            ->createBlock('M2ePro/adminhtml_amazon_listing_log_view_' . $viewMode . '_grid')->toHtml();
+            ->createBlock('M2ePro/adminhtml_amazon_log_listing_view_' . $viewMode . '_grid')->toHtml();
         $this->getResponse()->setBody($response);
     }
 
@@ -192,7 +192,7 @@ class Ess_M2ePro_Adminhtml_Amazon_LogController
     public function synchronizationGridAction()
     {
         $response = $this->loadLayout()->getLayout()
-             ->createBlock('M2ePro/adminhtml_amazon_synchronization_log_grid')->toHtml();
+             ->createBlock('M2ePro/adminhtml_amazon_log_synchronization_grid')->toHtml();
         $this->getResponse()->setBody($response);
     }
 
@@ -217,11 +217,7 @@ class Ess_M2ePro_Adminhtml_Amazon_LogController
 
     public function orderGridAction()
     {
-        $grid = $this->loadLayout()->getLayout()->createBlock(
-            'M2ePro/adminhtml_order_log_grid', '', array(
-                'component_mode' => Ess_M2ePro_Helper_Component_Amazon::NICK
-            )
-        );
+        $grid = $this->loadLayout()->getLayout()->createBlock('M2ePro/adminhtml_amazon_log_order_grid');
         $this->getResponse()->setBody($grid->toHtml());
     }
 

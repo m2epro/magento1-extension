@@ -359,13 +359,7 @@ window.EbayAccount = Class.create(Common, {
         }
     },
 
-    magentoOrdersNumberSourceChange: function()
-    {
-        var self = EbayAccountObj;
-        self.renderOrderNumberExample();
-    },
-
-    magentoOrdersNumberPrefixPrefixChange: function()
+    magentoOrdersNumberChange: function()
     {
         var self = EbayAccountObj;
         self.renderOrderNumberExample();
@@ -378,7 +372,12 @@ window.EbayAccount = Class.create(Common, {
             orderNumber = $('sample_ebay_order_id').value;
         }
 
-        orderNumber = $('magento_orders_number_prefix_prefix').value + orderNumber;
+        var marketplacePrefix = '';
+        if ($('magento_orders_number_prefix_use_marketplace_prefix').value == 1) {
+            marketplacePrefix = $('sample_marketplace_prefix').value;
+        }
+
+        orderNumber = $('magento_orders_number_prefix_prefix').value + marketplacePrefix + orderNumber;
 
         $('order_number_example_container').update(orderNumber);
     },

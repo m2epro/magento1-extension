@@ -11,6 +11,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Switcher extends Mage_Adm
     const MODE_LISTING_PRODUCT = 1;
     const MODE_COMMON          = 2;
 
+    const MAX_TEMPLATE_ITEMS_COUNT  = 10000;
+
     protected $_templates;
 
     //########################################
@@ -19,11 +21,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Switcher extends Mage_Adm
     {
         parent::__construct();
 
-        // Initialization block
-        // ---------------------------------------
         $this->setId('ebayListingTemplateSwitcher');
-        // ---------------------------------------
-
         $this->setTemplate('M2ePro/ebay/listing/template/switcher.phtml');
     }
 
@@ -270,9 +268,7 @@ HTML;
 
     public function canDisplaySwitcher()
     {
-        $templates = $this->getTemplates();
-
-        if (empty($templates) && !$this->canDisplayUseDefaultOption()) {
+        if (!$this->canDisplayUseDefaultOption() && $this->getTemplatesCount() === 0) {
             return false;
         }
 
@@ -298,6 +294,35 @@ HTML;
             return $this->_templates;
         }
 
+        $collection = $this->getTemplatesCollection();
+        $collection->getSelect()->limit(self::MAX_TEMPLATE_ITEMS_COUNT);
+
+        $this->_templates = $collection->getItems();
+
+        $currentTemplateOfListing = $this->getTemplateObject();
+        if (!empty($currentTemplateOfListing) && !$this->isExistTemplate($currentTemplateOfListing->getId())) {
+            $this->_templates[$currentTemplateOfListing->getId()] = $currentTemplateOfListing;
+        }
+
+        return $this->_templates;
+    }
+
+    protected function isExistTemplate($templateId)
+    {
+        if (array_key_exists($templateId, $this->_templates)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function getTemplatesCount()
+    {
+        return $this->getTemplatesCollection()->getSize();
+    }
+
+    protected function getTemplatesCollection()
+    {
         $manager = Mage::getModel('M2ePro/Ebay_Template_Manager')->setTemplate($this->getTemplateNick());
 
         $collection = $manager->getTemplateModel()
@@ -310,9 +335,7 @@ HTML;
             $collection->addFieldToFilter('marketplace_id', $marketplace->getId());
         }
 
-        $this->_templates = $collection->getItems();
-
-        return $this->_templates;
+        return $collection;
     }
 
     //########################################

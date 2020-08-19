@@ -48,11 +48,11 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Product_Add_CategoryTemplate_Ma
         );
 
         $this->_addButton(
-            'save_and_go_to_listing_view', array(
-            'id'        => 'walmart_listing_category_continue_btn',
-            'label'     => Mage::helper('M2ePro')->__('Continue'),
-            'onclick'   => 'ListingGridObj.completeCategoriesDataStep()',
-            'class'     => 'scalable next'
+            'add_products_category_template_manual_continue', array(
+                'id'        => 'add_products_category_template_manual_continue',
+                'label'     => Mage::helper('M2ePro')->__('Continue'),
+                'onclick'   => 'ListingGridObj.completeCategoriesDataStep()',
+                'class'     => 'scalable next'
             )
         );
     }

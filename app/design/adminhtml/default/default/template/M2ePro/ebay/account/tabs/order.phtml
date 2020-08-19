@@ -45,8 +45,9 @@
             $('magento_orders_listings_other_mode').observe('change', EbayAccountObj.magentoOrdersListingsOtherModeChange);
             $('magento_orders_listings_other_product_mode').observe('change', EbayAccountObj.magentoOrdersListingsOtherProductModeChange);
 
-            $('magento_orders_number_source').observe('change', EbayAccountObj.magentoOrdersNumberSourceChange);
-            $('magento_orders_number_prefix_prefix').observe('keyup', EbayAccountObj.magentoOrdersNumberPrefixPrefixChange);
+            $('magento_orders_number_source').observe('change', EbayAccountObj.magentoOrdersNumberChange);
+            $('magento_orders_number_prefix_prefix').observe('keyup', EbayAccountObj.magentoOrdersNumberChange);
+            $('magento_orders_number_prefix_use_marketplace_prefix').observe('change', EbayAccountObj.magentoOrdersNumberChange);
             EbayAccountObj.renderOrderNumberExample();
 
             $('magento_orders_customer_mode').observe('change', EbayAccountObj.magentoOrdersCustomerModeChange);
@@ -237,13 +238,24 @@
                 </tr>
                 <tr id="magento_orders_number_prefix_container">
                     <td class="label">
-                        <label for="magento_orders_customer_id"><?php echo Mage::helper('M2ePro')->__('Prefix'); ?>:</label>
+                        <label for="magento_orders_number_prefix_prefix"><?php echo Mage::helper('M2ePro')->__('General Prefix'); ?>:</label>
                     </td>
                     <td class="value" style="width: auto;">
                         <input id="magento_orders_number_prefix_prefix" maxlength="5" name="magento_orders_settings[number][prefix][prefix]" value="<?php echo $this->escapeHtml($formData['magento_orders_settings']['number']['prefix']['prefix']); ?>" type="text" class="M2ePro-account-order-number-prefix input-text" />
                         <p class="note">
                             <span><?php echo Mage::helper('M2ePro')->__('Enter the prefix to be set before Magento Order number.'); ?></span>
                         </p>
+                    </td>
+                </tr>
+                <tr id="magento_orders_number_use_marketplace_prefix_container">
+                    <td class="label">
+                        <label for="magento_orders_number_prefix_use_marketplace_prefix"><?php echo Mage::helper('M2ePro')->__('Use Marketplace ID as a prefix'); ?>:</label>
+                    </td>
+                    <td class="value" style="width: auto;">
+                        <select id="magento_orders_number_prefix_use_marketplace_prefix" name="magento_orders_settings[number][prefix][use_marketplace_prefix]" class="M2ePro-required-when-visible">
+                            <option value="0" <?php if ($formData['magento_orders_settings']['number']['prefix']['use_marketplace_prefix'] == 0) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
+                            <option value="1" <?php if ($formData['magento_orders_settings']['number']['prefix']['use_marketplace_prefix'] == 1) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
+                        </select>
                     </td>
                 </tr>
 
@@ -253,7 +265,8 @@
                     </td>
                     <td class="value" style="width: auto;">
                         <input type="hidden" id="sample_magento_order_id" value="<?php echo Mage::helper('M2ePro/Magento')->getNextMagentoOrderId(); ?>" />
-                        <input type="hidden" id="sample_ebay_order_id" value="110194096334-27192305001" />
+                        <input type="hidden" id="sample_ebay_order_id" value="07-02610-01994" />
+                        <input type="hidden" id="sample_marketplace_prefix" value="GB" />
 
                         <p class="note note-no-tool-tip">
                             <?php echo Mage::helper('M2ePro')->__('e.g.'); ?> <strong><span id="order_number_example_container"></span></strong>

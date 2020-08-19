@@ -24,9 +24,9 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Same_Chooser extends Ess_
 
         $this->_addButton(
             'back', array(
-            'label'     => Mage::helper('M2ePro')->__('Back'),
-            'class'     => 'back',
-            'onclick'   => 'setLocation(\'' . $this->getUrl('*/*/*', array('_current' => true, 'step' => 1)) . '\');'
+                'label'   => Mage::helper('M2ePro')->__('Back'),
+                'class'   => 'back',
+                'onclick' => 'setLocation(\'' . $this->getUrl('*/*/*', array('_current' => true, 'step' => 1)) . '\');'
             )
         );
 
@@ -37,9 +37,10 @@ EbayListingCategoryObj.modeSameSubmitData(
 JS;
         $this->_addButton(
             'next', array(
-            'label'     => Mage::helper('M2ePro')->__('Continue'),
-            'class'     => 'scalable next',
-            'onclick'   => $onClick
+                'id'      => 'next',
+                'label'   => Mage::helper('M2ePro')->__('Continue'),
+                'class'   => 'scalable next',
+                'onclick' => $onClick
             )
         );
     }

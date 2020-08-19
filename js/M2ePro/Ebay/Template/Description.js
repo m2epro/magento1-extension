@@ -45,7 +45,9 @@ window.EbayTemplateDescription = Class.create(Common, {
 
     description_mode_change: function()
     {
-        var self = EbayTemplateDescriptionObj;
+        if (this.value !== '' && this.options[0].value === '') {
+            this.removeChild(this.options[0]);
+        }
 
         var viewEditCustomDescription = $('view_edit_custom_description');
 

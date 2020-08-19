@@ -170,6 +170,61 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Table extends Ess_M2ePro_Model_Upgrade_M
     }
 
     /**
+     * @param string $from
+     * @param string $to
+     * @param string $type
+     * @param string|null $default
+     * @param string|null $after
+     * @param bool $autoCommit
+     * @return $this
+     * @throws Ess_M2ePro_Model_Exception_Setup
+     * @throws Zend_Db_Exception
+     */
+    public function changeAndRenameColumn($from, $to, $type, $default = null, $after = null, $autoCommit = true)
+    {
+        if (!$this->isColumnExists($from) && $this->isColumnExists($to)) {
+            return $this;
+        }
+
+        if ($this->isColumnExists($from) && $this->isColumnExists($to)) {
+            throw new Ess_M2ePro_Model_Exception_Setup(
+                "Column '{$from}' cannot be changed to '{$to}', because last one
+                 already exists in '{$this->getTableName()}' table."
+            );
+        }
+
+        if (!$this->isColumnExists($from) && !$this->isColumnExists($to)) {
+            throw new Ess_M2ePro_Model_Exception_Setup(
+                "Column '{$from}' cannot be changed, because
+                 does not exist in '{$this->getTableName()}' table."
+            );
+        }
+
+        $definition = $this->buildColumnDefinition($type, $default, $after, $autoCommit);
+
+        if (empty($definition)) {
+            throw new Ess_M2ePro_Model_Exception_Setup(
+                "Definition for '{$this->getTableName()}'.'{$to}' column is empty."
+            );
+        }
+
+        if ($autoCommit) {
+            $this->getConnection()->changeColumn($this->getTableName(), $from, $to, $definition);
+        } else {
+            $this->addQueryToCommit(
+                self::COMMIT_KEY_CHANGE_COLUMN,
+                'CHANGE COLUMN %s %s %s',
+                array($from, $to),
+                $definition
+            );
+        }
+
+        $this->renameIndex($from, $to, $autoCommit);
+
+        return $this;
+    }
+
+    /**
      * @param string $name
      * @param bool $dropIndex
      * @param bool $autoCommit
@@ -325,13 +380,15 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Table extends Ess_M2ePro_Model_Upgrade_M
         $default = '';
         if ($columnInfo['DEFAULT'] !== null) {
             $default = $this->getConnection()->quoteInto('DEFAULT ?', $columnInfo['DEFAULT']);
+        } elseif ($columnInfo['NULLABLE']) {
+            $default = 'DEFAULT NULL';
         }
 
         return sprintf(
             '%s %s %s %s %s',
             $type,
             $columnInfo['UNSIGNED']  ? 'UNSIGNED' : '',
-            !$columnInfo['NULLABLE'] ? 'NOT NULL' : 'DEFAULT NULL',
+            !$columnInfo['NULLABLE'] ? 'NOT NULL' : '',
             $default,
             $columnInfo['IDENTITY']  ? 'AUTO_INCREMENT' : ''
         );

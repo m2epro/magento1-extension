@@ -293,8 +293,8 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_listing_product')}` (
   `online_qty` INT(11) UNSIGNED DEFAULT NULL,
   `online_handling_time` INT(11) UNSIGNED DEFAULT NULL,
   `online_restock_date` DATETIME DEFAULT NULL,
-  `online_details_data` LONGTEXT DEFAULT NULL,
-  `online_images_data` LONGTEXT DEFAULT NULL,
+  `online_details_data` VARCHAR(40) DEFAULT NULL,
+  `online_images_data` VARCHAR(40) DEFAULT NULL,
   `is_repricing` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `is_afn_channel` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `is_isbn_general_id` TINYINT(2) UNSIGNED DEFAULT NULL,
@@ -503,6 +503,7 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_order_item')}` (
   `general_id` VARCHAR(255) DEFAULT NULL,
   `is_isbn_general_id` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `price` DECIMAL(12, 4) UNSIGNED NOT NULL,
+  `shipping_price` DECIMAL(12, 4) UNSIGNED NOT NULL DEFAULT 0.0000,
   `gift_price` DECIMAL(12, 4) UNSIGNED NOT NULL DEFAULT 0.0000,
   `gift_message` TEXT DEFAULT NULL,
   `gift_type` VARCHAR(255) DEFAULT NULL,
@@ -816,7 +817,7 @@ INSERT INTO `{$this->_installer->getTable('m2epro_config')}` (`group`,`key`,`val
   ('/amazon/order/settings/marketplace_25/', 'use_first_street_line_as_company', '1', NOW(), NOW()),
   ('/amazon/repricing/', 'mode', '1', NOW(), NOW()),
   ('/amazon/repricing/', 'base_url', 'https://repricer.m2epro.com/connector/m2epro/', NOW(), NOW()),
-  ('/amazon/business/', 'mode', '0', NOW(), NOW());
+  ('/amazon/configuration/', 'business_mode', '0', NOW(), NOW());
 
 INSERT INTO `{$this->_installer->getTable('m2epro_marketplace')}` VALUES
   (24, 4, 'Canada', 'CA', 'amazon.ca', 0, 4, 'America', 'amazon', NOW(), NOW()),

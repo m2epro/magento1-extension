@@ -6,6 +6,16 @@
  * @license    Commercial use is forbidden
  */
 
+/**
+ * Class Ess_M2ePro_Block_Adminhtml_Walmart_Configuration_General_Form
+ *
+ * @method Ess_M2ePro_Helper_Magento_Attribute getMagentoAttributeHelper()
+ * @method Ess_M2ePro_Helper_Component_Walmart_Configuration getConfigurationHelper()
+ * @method bool getShowWarning()
+ * @method $this setShowWarning(bool $showWarning)
+ * @method array getAllAttributes()
+ * @method array getTextAttributes()
+ */
 class Ess_M2ePro_Block_Adminhtml_Walmart_Configuration_General_Form extends Mage_Adminhtml_Block_Widget_Form
 {
     //########################################
@@ -24,14 +34,12 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Configuration_General_Form extends Mage
 
     protected function _prepareForm()
     {
-        $form = new Varien_Data_Form(
-            array(
+        $form = new Varien_Data_Form(array(
             'id'      => 'edit_form',
             'action'  => $this->getUrl('*/adminhtml_walmart_configuration/save'),
             'method'  => 'post',
             'enctype' => 'multipart/form-data'
-            )
-        );
+        ));
 
         $this->setForm($form);
 
@@ -40,12 +48,14 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Configuration_General_Form extends Mage
 
     protected function _beforeToHtml()
     {
+        $this->setData('configuration_helper', Mage::helper('M2ePro/Component_Walmart_Configuration'));
+        $this->setData('magento_attribute_helper', Mage::helper('M2ePro/Magento_Attribute'));
+        $this->setData('show_warning', false);
+        $this->setData('all_attributes', $this->getMagentoAttributeHelper()->getAll());
         $this->setData(
-            'all_attributes',
-            Mage::helper('M2ePro/Magento_Attribute')->getAll()
+            'text_attributes',
+            $this->getMagentoAttributeHelper()->filterByInputTypes($this->getAllAttributes(), array('text'))
         );
-
-        $this->addData(Mage::helper('M2ePro/Component_Walmart_Configuration')->getConfigValues());
 
         return parent::_beforeToHtml();
     }

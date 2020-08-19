@@ -11,10 +11,6 @@ use Ess_M2ePro_Model_Ebay_Template_Description_Source as DescriptionSource;
 class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Images
     extends Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Abstract
 {
-    const UPLOAD_IMAGES_MODE_AUTO = 1;
-    const UPLOAD_IMAGES_MODE_SELF = 2;
-    const UPLOAD_IMAGES_MODE_EPS  = 3;
-
     //########################################
 
     public function getData()

@@ -75,57 +75,6 @@ class Ess_M2ePro_Helper_Magento extends Mage_Core_Helper_Abstract
         return array_keys((array)Mage::getConfig()->getNode('modules')->children());
     }
 
-    public function getConflictedModules()
-    {
-        $modules = Mage::getConfig()->getNode('modules')->asArray();
-
-        $conflictedModules = array(
-            '/TBT_Enhancedgrid/i' => '',
-            '/warp/i' => '',
-            '/Auctionmaid_/i' => '',
-
-            '/Exactor_Tax/i' => '',
-            '/Exactory_Core/i' => '',
-            '/Exactor_ExactorSettings/i' => '',
-            '/Exactor_Sales/i' => '',
-            '/Aoe_AsyncCache/i' => '',
-            '/Idev_OneStepCheckout/i' => '',
-
-            '/Mercent_Sales/i' => '',
-            '/Webtex_Fba/i' => 'Breaks creation Amazon Fba orders.',
-
-            '/MW_FreeGift/i' => 'last item in combined amazon orders has zero price
-                                 (observing event sales_quote_product_add_after)',
-
-            '/Unirgy_Dropship/i' => 'Rewrites stock item and in some cases return
-                                     always in stock for all products',
-
-            '/Aitoc_Aitquantitymanager/i' => 'Stock management conflicts. Wrong statuses, "In\OUT Stock". During Auto.',
-
-            '/Eternalsoft_Ajaxcart/i' => 'Broke some ajax responses.',
-            '/Amasty_Shiprestriction/i' => '"Please specify a shipping method" error for some orders.',
-            '/RicoNeitzel_PaymentFilter/i' => '"The requested payment method is not available" error',
-            '/Mxperts_NoRegion/i' => 'Error about empty billing address information',
-            '/MageWorx_DeliveryZone/i' => 'Shipping price is 0 in magento order',
-
-            '/Netzarbeiter_Cache/i' => 'Adding product step by circle.',
-
-            '/Netzarbeiter_LoginCatalog/i' => 'Cron problem. [Model_Observer->_redirectToLoginPage()]',
-            '/Elsner_Loginonly/i'          => 'Cron problem. [Model_Observer->_redirectToLoginPage()]'
-        );
-
-        $result = array();
-        foreach ($conflictedModules as $expression=>$description) {
-            foreach ($modules as $module => $data) {
-                if (preg_match($expression, $module)) {
-                    $result[$module] = array_merge($data, array('description'=>$description));
-                }
-            }
-        }
-
-        return $result;
-    }
-
     public function isTinyMceAvailable()
     {
         if ($this->isCommunityEdition()) {
@@ -227,7 +176,8 @@ class Ess_M2ePro_Helper_Magento extends Mage_Core_Helper_Abstract
 
         try {
             $country = Mage::getModel('directory/country')->loadByCode($countryCode);
-        } catch (Mage_Core_Exception $e) {
+        } catch (\Exception $e) {
+            Mage::helper('M2ePro/Module_Exception')->process($e);
             return $result;
         }
 
@@ -237,8 +187,11 @@ class Ess_M2ePro_Helper_Magento extends Mage_Core_Helper_Abstract
 
         $result = array();
         foreach ($country->getRegions() as $region) {
-            $region->setName($region->getName());
-            $result[] = $region->toArray(array('region_id', 'code', 'name'));
+            $result[] = array(
+                'region_id' => $region->getRegionId(),
+                'code'      => $region->getCode(),
+                'name'      => $region->getName()
+            );
         }
 
         if (empty($result) && $countryCode == 'AU') {
@@ -265,84 +218,6 @@ class Ess_M2ePro_Helper_Magento extends Mage_Core_Helper_Abstract
         }
 
         return $result;
-    }
-
-    //########################################
-
-    public function getRewrites($entity = 'models')
-    {
-        $config = Mage::getConfig()->getNode('global/' . $entity)->children();
-        $rewrites = array();
-
-        foreach ($config as $node) {
-            foreach ($node->rewrite as $rewriteNode) {
-                foreach ($rewriteNode->children() as $rewrite) {
-                    if (!$node->class) {
-                        continue;
-                    }
-
-                    $classNameParts = explode('_', $rewrite->getName());
-                    foreach ($classNameParts as &$part) {
-                        $part = strtolower($part);
-                        $part[0] = strtoupper($part[0]);
-                    }
-
-                    $classNameParts = array_merge(array($node->class), $classNameParts);
-
-                    $rewrites[] = array(
-                        'from' => implode('_', $classNameParts),
-                        'to'   => (string)$rewrite
-                    );
-                }
-            }
-        }
-
-        return $rewrites;
-    }
-
-    // ---------------------------------------
-
-    public function getLocalPoolOverwrites()
-    {
-        $paths = array(
-            Mage::getBaseDir().'/app/code/local/Mage',
-            Mage::getBaseDir().'/app/code/local/Zend',
-            Mage::getBaseDir().'/app/code/local/Ess',
-            Mage::getBaseDir().'/app/code/local/Varien',
-        );
-
-        $overwrites = array();
-        foreach ($paths as $path) {
-            if (!is_dir($path)) {
-                continue;
-            }
-
-            $directoryIterator = new RecursiveDirectoryIterator($path, RecursiveDirectoryIterator::SKIP_DOTS);
-            $iterator = new RecursiveIteratorIterator($directoryIterator, RecursiveIteratorIterator::SELF_FIRST);
-
-            /** @var SplFileInfo $splFileObj */
-            foreach ($iterator as $splFileObj) {
-                $splFileObj->isFile() && $overwrites[] = $splFileObj->getRealPath();
-            }
-        }
-
-        $result = array();
-        foreach ($overwrites as $item) {
-            $this->isOriginalFileExists($item) && $result[] = str_replace(Mage::getBaseDir().DS, '', $item);
-        }
-
-        return $result;
-    }
-
-    protected function isOriginalFileExists($overwritedFilename)
-    {
-        $unixFormattedPath = str_replace('\\', '/', $overwritedFilename);
-
-        $isOriginalCoreFileExist      = is_file(str_replace('/local/', '/core/', $unixFormattedPath));
-        $isOriginalCommunityFileExist = is_file(str_replace('/local/', '/community/', $unixFormattedPath));
-        $isOriginalLibFileExist       = is_file(str_replace('app/code/local/', 'lib/', $unixFormattedPath));
-
-        return $isOriginalCoreFileExist || $isOriginalCommunityFileExist || $isOriginalLibFileExist;
     }
 
     //########################################

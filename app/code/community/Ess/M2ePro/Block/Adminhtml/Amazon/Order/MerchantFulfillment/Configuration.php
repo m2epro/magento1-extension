@@ -110,8 +110,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Order_MerchantFulfillment_Configuration
 
     public function getUserData()
     {
-        $licenseFormDataRegistry = Mage::getModel('M2ePro/Registry')->load('/wizard/license_form_data/', 'key');
-        return $licenseFormDataRegistry->getValueFromJson();
+        return Mage::helper('M2ePro/Module')->getRegistry()->getValueFromJson('/wizard/license_form_data/');
     }
 
     //########################################

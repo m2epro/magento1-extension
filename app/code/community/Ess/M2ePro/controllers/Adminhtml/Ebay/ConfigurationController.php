@@ -61,76 +61,16 @@ class Ess_M2ePro_Adminhtml_Ebay_ConfigurationController extends Ess_M2ePro_Contr
 
     public function saveAction()
     {
-        Mage::helper('M2ePro/Module')->getConfig()->setGroupValue(
-            '/view/ebay/feedbacks/notification/', 'mode',
-            (int)$this->getRequest()->getParam('view_ebay_feedbacks_notification_mode')
-        );
+        try {
 
-        Mage::helper('M2ePro/Module')->getConfig()->setGroupValue(
-            '/ebay/connector/listing/', 'check_the_same_product_already_listed',
-            (int)$this->getRequest()->getParam('check_the_same_product_already_listed_mode')
-        );
+            Mage::helper('M2ePro/Component_Ebay_Configuration')->setConfigValues($this->getRequest()->getPost());
 
-        Mage::helper('M2ePro/Module')->getConfig()->setGroupValue(
-            '/ebay/description/', 'upload_images_mode',
-            (int)$this->getRequest()->getParam('upload_images_mode')
-        );
-        Mage::helper('M2ePro/Module')->getConfig()->setGroupValue(
-            '/ebay/description/', 'should_be_ulrs_secure',
-            (int)$this->getRequest()->getParam('should_be_ulrs_secure')
-        );
+            $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Settings was successfully saved.'));
 
-        // ---------------------------------------
-
-        // ---------------------------------------
-        $motorsAttributes = array();
-
-        if ($motorsEpidsMotorAttribute = $this->getRequest()->getParam('motors_epids_motor_attribute')) {
-            $motorsAttributes[] = $motorsEpidsMotorAttribute;
+        } catch (Ess_M2ePro_Model_Exception_Logic $e) {
+            $this->_getSession()->addError(Mage::helper('M2ePro')->__($e->getMessage()));
         }
 
-        if ($motorsEpidsUkAttribute = $this->getRequest()->getParam('motors_epids_uk_attribute')) {
-            $motorsAttributes[] = $motorsEpidsUkAttribute;
-        }
-
-        if ($motorsEpidsDeAttribute = $this->getRequest()->getParam('motors_epids_de_attribute')) {
-            $motorsAttributes[] = $motorsEpidsDeAttribute;
-        }
-
-        if ($motorsEpidsAuAttribute = $this->getRequest()->getParam('motors_epids_au_attribute')) {
-            $motorsAttributes[] = $motorsEpidsAuAttribute;
-        }
-
-        if ($motorsKtypesAttribute = $this->getRequest()->getParam('motors_ktypes_attribute')) {
-            $motorsAttributes[] = $motorsKtypesAttribute;
-        }
-
-        if (count($motorsAttributes) != count(array_unique($motorsAttributes))) {
-            $this->_getSession()->addError(
-                Mage::helper('M2ePro')->__('Motors Attributes can not be the same.')
-            );
-            $this->_redirectUrl($this->_getRefererUrl());
-            return;
-        }
-
-        Mage::helper('M2ePro/Module')->getConfig()->setGroupValue(
-            '/ebay/motors/', 'epids_motor_attribute', $motorsEpidsMotorAttribute
-        );
-        Mage::helper('M2ePro/Module')->getConfig()->setGroupValue(
-            '/ebay/motors/', 'epids_uk_attribute', $motorsEpidsUkAttribute
-        );
-        Mage::helper('M2ePro/Module')->getConfig()->setGroupValue(
-            '/ebay/motors/', 'epids_de_attribute', $motorsEpidsDeAttribute
-        );
-        Mage::helper('M2ePro/Module')->getConfig()->setGroupValue(
-            '/ebay/motors/', 'epids_au_attribute', $motorsEpidsAuAttribute
-        );
-        Mage::helper('M2ePro/Module')->getConfig()->setGroupValue(
-            '/ebay/motors/', 'ktypes_attribute', $motorsKtypesAttribute
-        );
-        // ---------------------------------------
-
-        $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Settings was successfully saved.'));
         $this->_redirectUrl($this->_getRefererUrl());
     }
 

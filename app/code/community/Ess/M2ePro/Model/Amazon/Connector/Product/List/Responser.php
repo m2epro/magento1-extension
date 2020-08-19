@@ -17,7 +17,23 @@ class Ess_M2ePro_Model_Amazon_Connector_Product_List_Responser
 
     protected function getSuccessfulMessage()
     {
-        return 'Item was successfully Listed';
+        $currency = Mage::app()->getLocale()->currency(
+            $this->_listingProduct->getMarketplace()->getChildObject()->getCurrency()
+        );
+
+        $parts = array(
+            sprintf('Product was Listed with QTY %d', $this->_listingProduct->getChildObject()->getOnlineQty())
+        );
+
+        if ($regularPrice = $this->_listingProduct->getChildObject()->getOnlineRegularPrice()) {
+            $parts[] = sprintf('Regular Price %s', $currency->toCurrency($regularPrice));
+        }
+
+        if ($businessPrice = $this->_listingProduct->getChildObject()->getOnlineBusinessPrice()) {
+            $parts[] = sprintf('Business Price %s', $currency->toCurrency($businessPrice));
+        }
+
+        return implode(', ', $parts);
     }
 
     //########################################
@@ -38,11 +54,7 @@ class Ess_M2ePro_Model_Amazon_Connector_Product_List_Responser
                 Ess_M2ePro_Model_Connector_Connection_Response_Message::TYPE_ERROR
             );
 
-            $this->getLogger()->logListingProductMessage(
-                $this->_listingProduct,
-                $message
-            );
-
+            $this->getLogger()->logListingProductMessage($this->_listingProduct, $message);
             return;
         }
 

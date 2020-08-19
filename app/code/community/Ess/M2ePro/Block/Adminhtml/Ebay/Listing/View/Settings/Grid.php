@@ -618,7 +618,7 @@ HTML;
         $path = 'adminhtml_ebay_log/listing';
         $urls[$path] = $this->getUrl(
             '*/adminhtml_ebay_log/listing', array(
-                'id' => $this->getListing()->getId()
+                'listing_id' => $this->getListing()->getId()
             )
         );
 
@@ -689,7 +689,7 @@ HTML;
 
         $logViewUrl = $this->getUrl(
             '*/adminhtml_ebay_log/listing', array(
-                'id' => $this->getListing()->getId(),
+                'listing_id' => $this->getListing()->getId(),
                 'back' => $helper->makeBackUrlParam(
                     '*/adminhtml_ebay_listing/view', array('id' => $this->getListing()->getId())
                 )

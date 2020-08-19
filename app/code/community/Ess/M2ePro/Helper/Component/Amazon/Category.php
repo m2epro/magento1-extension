@@ -14,9 +14,7 @@ class Ess_M2ePro_Helper_Component_Amazon_Category extends Mage_Core_Helper_Abstr
 
     public function getRecent($marketplaceId, array $excludedCategory = array())
     {
-        /** @var $registryModel Ess_M2ePro_Model_Registry */
-        $registryModel = Mage::getModel('M2ePro/Registry')->load($this->getConfigGroup(), 'key');
-        $allRecentCategories = $registryModel->getValueFromJson();
+        $allRecentCategories = Mage::helper('M2ePro/Module')->getRegistry()->getValueFromJson($this->getConfigGroup());
 
         if (!isset($allRecentCategories[$marketplaceId])) {
             return array();
@@ -44,11 +42,7 @@ class Ess_M2ePro_Helper_Component_Amazon_Category extends Mage_Core_Helper_Abstr
 
     public function addRecent($marketplaceId, $browseNodeId, $categoryPath)
     {
-        $key = $this->getConfigGroup();
-
-        /** @var $registryModel Ess_M2ePro_Model_Registry */
-        $registryModel = Mage::getModel('M2ePro/Registry')->load($key, 'key');
-        $allRecentCategories = $registryModel->getValueFromJson();
+        $allRecentCategories = Mage::helper('M2ePro/Module')->getRegistry()->getValueFromJson($this->getConfigGroup());
 
         !isset($allRecentCategories[$marketplaceId]) && $allRecentCategories[$marketplaceId] = array();
 
@@ -76,12 +70,7 @@ class Ess_M2ePro_Helper_Component_Amazon_Category extends Mage_Core_Helper_Abstr
         $recentCategories[] = $categoryInfo;
         $allRecentCategories[$marketplaceId] = $recentCategories;
 
-        $registryModel->addData(
-            array(
-            'key'   => $key,
-            'value' => Mage::helper('M2ePro')->jsonEncode($allRecentCategories)
-            )
-        )->save();
+        Mage::helper('M2ePro/Module')->getRegistry()->setValue($this->getConfigGroup(), $allRecentCategories);
     }
 
     //########################################
@@ -133,9 +122,7 @@ class Ess_M2ePro_Helper_Component_Amazon_Category extends Mage_Core_Helper_Abstr
 
     protected function removeRecentCategory(array $category, $marketplaceId)
     {
-        /** @var $registryModel Ess_M2ePro_Model_Registry */
-        $registryModel = Mage::getModel('M2ePro/Registry')->load($this->getConfigGroup(), 'key');
-        $allRecentCategories = $registryModel->getValueFromJson();
+        $allRecentCategories = Mage::helper('M2ePro/Module')->getRegistry()->getValueFromJson($this->getConfigGroup());
         $currentRecentCategories = $allRecentCategories[$marketplaceId];
 
         foreach ($currentRecentCategories as $index => $recentCategory) {
@@ -146,12 +133,7 @@ class Ess_M2ePro_Helper_Component_Amazon_Category extends Mage_Core_Helper_Abstr
             }
         }
 
-        $registryModel->addData(
-            array(
-            'key' => $this->getConfigGroup(),
-            'value' => Mage::helper('M2ePro')->jsonEncode($allRecentCategories)
-            )
-        )->save();
+        Mage::helper('M2ePro/Module')->getRegistry()->setValue($this->getConfigGroup(), $allRecentCategories);
     }
 
     //########################################

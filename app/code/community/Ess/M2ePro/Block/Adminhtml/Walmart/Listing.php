@@ -30,18 +30,19 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing extends Mage_Adminhtml_Block_Wi
         $url = $this->getUrl('*/adminhtml_walmart_log/listing');
         $this->_addButton(
             'view_log', array(
-            'label'     => Mage::helper('M2ePro')->__('Logs & Events'),
-            'onclick'   => 'WalmartListingObj.viewLogs(\'' . $url . '\')',
-            'class'     => 'button_link'
+                'label'     => Mage::helper('M2ePro')->__('Logs & Events'),
+                'onclick'   => 'WalmartListingObj.viewLogs(\'' . $url . '\')',
+                'class'     => 'button_link'
             )
         );
 
         $url = $this->getUrl('*/adminhtml_walmart_listing_create/index', array('step' => 1, 'clear' => 'yes'));
         $this->_addButton(
             'add', array(
-            'label'     => Mage::helper('M2ePro')->__('Add Listing'),
-            'onclick'   => 'WalmartListingObj.createListing(\'' . $url . '\')',
-            'class'     => 'add'
+                'id'      => 'add',
+                'label'   => Mage::helper('M2ePro')->__('Add Listing'),
+                'onclick' => 'WalmartListingObj.createListing(\'' . $url . '\')',
+                'class'   => 'add'
             )
         );
     }

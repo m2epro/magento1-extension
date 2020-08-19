@@ -18,8 +18,9 @@ class Ess_M2ePro_Helper_Server extends Mage_Core_Helper_Abstract
             $currentTimeStamp = Mage::helper('M2ePro')->getCurrentGmtDate(true);
 
             $interval = self::MAX_INTERVAL_OF_RETURNING_TO_DEFAULT_BASEURL;
-            $registry = Mage::getModel('M2ePro/Registry')->loadByKey('/server/location/datetime_of_last_switching');
-            $switchingDateTime = $registry->getValue();
+            $switchingDateTime = Mage::helper('M2ePro/Module')->getRegistry()->getValue(
+                '/server/location/datetime_of_last_switching'
+            );
 
             if ($switchingDateTime === null || strtotime($switchingDateTime) + $interval <= $currentTimeStamp) {
                 $this->setCurrentIndex($this->getDefaultIndex());
@@ -44,9 +45,10 @@ class Ess_M2ePro_Helper_Server extends Mage_Core_Helper_Abstract
 
         $this->setCurrentIndex($nextIndex);
 
-        $registry = Mage::getModel('M2ePro/Registry')->loadByKey('/server/location/datetime_of_last_switching');
-        $registry->setValue(Mage::helper('M2ePro')->getCurrentGmtDate());
-        $registry->save();
+        Mage::helper('M2ePro/Module')->getRegistry()->setValue(
+            '/server/location/datetime_of_last_switching',
+            Mage::helper('M2ePro')->getCurrentGmtDate()
+        );
 
         return true;
     }

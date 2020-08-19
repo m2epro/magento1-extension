@@ -63,6 +63,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Product_Add_Review extends Ess_M
             ->createBlock('adminhtml/widget_button')
             ->setData(
                 array(
+                    'id' => 'go_to_the_listing',
                     'label'   => Mage::helper('M2ePro')->__('Review Your Products'),
                     'onclick' => 'setLocation(\'' . $url . '\');',
                     'class'   => 'save'

@@ -9,14 +9,19 @@
 class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Update_Responser
     extends Ess_M2ePro_Model_Amazon_Connector_Orders_Update_ItemsResponser
 {
-    /** @var Ess_M2ePro_Model_Order $_order */
-    protected $_order = array();
+    /** @var Ess_M2ePro_Model_Order */
+    protected $_order;
+
+    /** @var Ess_M2ePro_Model_Order_Change */
+    protected $_orderChange;
 
     //########################################
 
     public function __construct(array $params, Ess_M2ePro_Model_Connector_Connection_Response $response)
     {
         $this->_order = Mage::helper('M2ePro/Component_Amazon')->getObject('Order', $params['order']['order_id']);
+        $this->_orderChange = Mage::getModel('M2ePro/Order_Change')->load($params['order']['change_id']);
+
         parent::__construct($params, $response);
     }
 
@@ -30,9 +35,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Update_Responser
     {
         parent::failDetected($messageText);
 
-        /** @var Ess_M2ePro_Model_Order_Change $orderChange */
-        $orderChange = Mage::getModel('M2ePro/Order_Change')->load($this->_params['order']['change_id']);
-        $this->_order->getLog()->setInitiator($orderChange->getCreatorType());
+        $this->_order->getLog()->setInitiator($this->_orderChange->getCreatorType());
         $this->_order->addErrorLog('Amazon Order status was not updated. Reason: %msg%', array('msg' => $messageText));
     }
 
@@ -60,8 +63,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Update_Responser
     {
         parent::processResponseMessages();
 
-        $orderChange = Mage::getModel('M2ePro/Order_Change')->load($this->_params['order']['change_id']);
-        $this->_order->getLog()->setInitiator($orderChange->getCreatorType());
+        $this->_order->getLog()->setInitiator($this->_orderChange->getCreatorType());
 
         foreach ($this->getResponse()->getMessages()->getEntities() as $message) {
             if ($message->isError()) {
@@ -82,16 +84,8 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Update_Responser
      */
     protected function processResponseData()
     {
-        /** @var Ess_M2ePro_Model_Order_Change $orderChange */
-        $orderChange = Mage::getModel('M2ePro/Order_Change')->load($this->_params['order']['change_id']);
-        $this->_order->getLog()->setInitiator($orderChange->getCreatorType());
-        $orderChange->deleteInstance();
-
+        $this->_order->getLog()->setInitiator($this->_orderChange->getCreatorType());
         $responseData = $this->getResponse()->getData();
-
-        // Check separate messages
-        //----------------------
-        $isFailed = false;
 
         /** @var Ess_M2ePro_Model_Connector_Connection_Response_Message_Set $messagesSet */
         $messagesSet = Mage::getModel('M2ePro/Connector_Connection_Response_Message_Set');
@@ -99,8 +93,6 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Update_Responser
 
         foreach ($messagesSet->getEntities() as $message) {
             if ($message->isError()) {
-                $isFailed = true;
-
                 $this->_order->addErrorLog(
                     'Amazon Order status was not updated. Reason: %msg%',
                     array('msg' => $message->getText())
@@ -110,13 +102,11 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Update_Responser
             }
         }
 
-        //----------------------
-
-        if ($isFailed) {
+        if ($messagesSet->hasErrorEntities()) {
             return;
         }
 
-        //----------------------
+        $this->_orderChange->deleteInstance();
         $this->_order->addSuccessLog('Amazon Order status was updated to Shipped.');
 
         if (empty($this->_params['order']['tracking_number']) || empty($this->_params['order']['carrier_name'])) {
@@ -130,7 +120,6 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Update_Responser
                 'code' => $this->_params['order']['carrier_name']
             )
         );
-        //----------------------
     }
 
     //########################################

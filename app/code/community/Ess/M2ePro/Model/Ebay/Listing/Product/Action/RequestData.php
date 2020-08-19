@@ -340,6 +340,15 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_RequestData
      */
     public function getVariationPrice($calculateWithEmptyQty = true)
     {
+        return $this->getVariationMinPrice($calculateWithEmptyQty);
+    }
+
+    /**
+     * @param bool $calculateWithEmptyQty
+     * @return float|null
+     */
+    public function getVariationMinPrice($calculateWithEmptyQty = true)
+    {
         if (!$this->hasVariations()) {
             return null;
         }
@@ -356,6 +365,37 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_RequestData
             }
 
             if ($price !== null && (float)$variationData['price'] >= $price) {
+                continue;
+            }
+
+            $price = (float)$variationData['price'];
+        }
+
+        return (float)$price;
+    }
+
+    /**
+     * @param bool $calculateWithEmptyQty
+     * @return float|null
+     */
+    public function getVariationMaxPrice($calculateWithEmptyQty = true)
+    {
+        if (!$this->hasVariations()) {
+            return null;
+        }
+
+        $price = null;
+
+        foreach ($this->getVariations() as $variationData) {
+            if ($variationData['delete'] || !isset($variationData['price'])) {
+                continue;
+            }
+
+            if (!$calculateWithEmptyQty && (int)$variationData['qty'] <= 0) {
+                continue;
+            }
+
+            if ($price !== null && (float)$variationData['price'] <= $price) {
                 continue;
             }
 

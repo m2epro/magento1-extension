@@ -51,8 +51,9 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_AccountMarketplace
         // ---------------------------------------
         $this->_addButton(
             'next', array(
-            'label'     => Mage::helper('M2ePro')->__('Next Step'),
-            'class'     => 'scalable next next_step_button'
+                'id'    => 'next',
+                'label' => Mage::helper('M2ePro')->__('Next Step'),
+                'class' => 'scalable next next_step_button'
             )
         );
         // ---------------------------------------

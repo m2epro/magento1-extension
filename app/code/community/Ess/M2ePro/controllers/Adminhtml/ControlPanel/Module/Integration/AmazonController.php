@@ -135,7 +135,7 @@ HTML;
 
     protected function getEmptyResultsHtml($messageText)
     {
-        $backUrl = Mage::helper('M2ePro/View_ControlPanel')->getPageModuleTabUrl();
+        $backUrl = Mage::helper('M2ePro/View_ControlPanel')->getPageToolsTabUrl();
 
         return <<<HTML
     <h2 style="margin: 20px 0 0 10px">

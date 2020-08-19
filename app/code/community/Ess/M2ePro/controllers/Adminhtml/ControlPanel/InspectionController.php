@@ -87,18 +87,6 @@ class Ess_M2ePro_Adminhtml_ControlPanel_InspectionController
         return $this->_redirectUrl(Mage::helper('M2ePro/View_ControlPanel')->getPageUrl());
     }
 
-    public function changeMaintenanceCanBeIgnoredAction()
-    {
-        if (Mage::helper('M2ePro/Module_Maintenance')->isMaintenanceCanBeIgnored()) {
-            Mage::helper('M2ePro/Module_Maintenance')->setMaintenanceCanBeIgnored(0);
-        } else {
-            Mage::helper('M2ePro/Module_Maintenance')->setMaintenanceCanBeIgnored(1);
-        }
-
-        $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Changed successfully.'));
-        return $this->_redirectUrl(Mage::helper('M2ePro/View_ControlPanel')->getPageUrl());
-    }
-
     //########################################
 
     public function setMagentoCoreSetupValueAction()
@@ -133,6 +121,14 @@ class Ess_M2ePro_Adminhtml_ControlPanel_InspectionController
 
         $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Extension upgrade was successfully completed.'));
         return $this->_redirectUrl(Mage::helper('M2ePro/View_ControlPanel')->getPageUrl());
+    }
+
+    //########################################
+
+    public function getInspectionsGridAction()
+    {
+        $grid = $this->loadLayout()->getLayout()->createBlock('M2ePro/adminhtml_controlPanel_inspection_grid');
+        return $this->getResponse()->setBody($grid->toHtml());
     }
 
     //########################################

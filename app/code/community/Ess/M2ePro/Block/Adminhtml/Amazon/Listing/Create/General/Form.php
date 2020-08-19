@@ -41,7 +41,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Create_General_Form extends Mage
 
         $title = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing')->getSize() == 0 ? 'Default' : '';
         $accountId = '';
-
         $storeId = '';
 
         $sessionKey = 'amazon_listing_create';

@@ -17,11 +17,6 @@ class Ess_M2ePro_Adminhtml_SupportController
              ->_title(Mage::helper('M2ePro')->__('M2E Pro'))
              ->_title(Mage::helper('M2ePro')->__('Help Center'));
 
-        $this->getLayout()->getBlock('head')
-            ->addJs('M2ePro/Support.js')
-            ->addJs('M2ePro/Plugin/DropDown.js')
-            ->addCss('M2ePro/css/Plugin/DropDown.css');
-
         $this->_initPopUp();
 
         return $this;
@@ -53,65 +48,6 @@ class Ess_M2ePro_Adminhtml_SupportController
 
     //########################################
 
-    public function getResultsHtmlAction()
-    {
-        $query = $this->getRequest()->getParam('query');
-        $blockData = Mage::helper('M2ePro/Module_Support_Search')->process($query);
-
-        $blockHtml = $this->loadLayout()
-                          ->getLayout()
-                          ->createBlock('M2ePro/adminhtml_support_results', '', array('results_data' => $blockData))
-                          ->toHtml();
-
-        $this->getResponse()->setBody($blockHtml);
-    }
-
-    //########################################
-
-    public function saveAction()
-    {
-        if (!$post = $this->getRequest()->getPost()) {
-            return $this->_redirect('*/*/index');
-        }
-
-        $keys = array(
-            'component',
-            'contact_mail',
-            'contact_name',
-            'subject',
-            'description'
-        );
-
-        $components = Mage::helper('M2ePro/Component')->getEnabledComponents();
-        count($components) == 1 && $post['component'] = array_pop($components);
-
-        $data = array();
-        foreach ($keys as $key) {
-            if (!isset($post[$key])) {
-                $this->_getSession()->addError(Mage::helper('M2ePro')->__('You should fill in all required fields.'));
-                return $this->_redirect('*/*/index');
-            }
-
-            $data[$key] = $post[$key];
-        }
-
-        $severity = isset($post['severity']) ? $post['severity'] : null;
-
-        Mage::helper('M2ePro/Module_Support_Form')->send(
-            $data['component'],
-            $data['contact_mail'],
-            $data['contact_name'],
-            $data['subject'],
-            $data['description'],
-            $severity
-        );
-
-        $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Your message has been successfully sent.'));
-        $this->_redirect('*/*/index');
-    }
-
-    //########################################
-
     public function testExecutionTimeAction()
     {
         Mage::helper('M2ePro/Client')->testExecutionTime((int)$this->getRequest()->getParam('seconds'));
@@ -126,8 +62,6 @@ class Ess_M2ePro_Adminhtml_SupportController
             )
         );
     }
-
-    //----------------------------------------
 
     public function testMemoryLimitAction()
     {

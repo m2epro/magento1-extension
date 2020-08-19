@@ -624,7 +624,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product extends Ess_M2ePro_Model_Component
      */
     public function getOnlineDetailsData()
     {
-        return $this->getSettings('online_details_data');
+        return $this->getData('online_details_data');
     }
 
     /**
@@ -632,7 +632,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product extends Ess_M2ePro_Model_Component
      */
     public function getOnlineImagesData()
     {
-        return $this->getSettings('online_images_data');
+        return $this->getData('online_images_data');
     }
 
     // ---------------------------------------
@@ -760,7 +760,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product extends Ess_M2ePro_Model_Component
 
     public function isAllowedForBusinessCustomers()
     {
-        if (!Mage::helper('M2ePro/Component_Amazon_Business')->isEnabled()) {
+        if (!Mage::helper('M2ePro/Component_Amazon_Configuration')->isEnabledBusinessMode()) {
             return false;
         }
 

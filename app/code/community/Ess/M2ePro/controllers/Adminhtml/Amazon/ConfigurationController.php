@@ -46,12 +46,7 @@ class Ess_M2ePro_Adminhtml_Amazon_ConfigurationController
 
     public function saveAction()
     {
-        $businessMode = $this->getRequest()->getParam('business_mode');
-
-        Mage::helper('M2ePro/Module')->getConfig()->setGroupValue(
-            '/amazon/business/', 'mode',
-            $businessMode
-        );
+        Mage::helper('M2ePro/Component_Amazon_Configuration')->setConfigValues($this->getRequest()->getPost());
 
         $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Settings was successfully saved.'));
         $this->_redirectUrl($this->_getRefererUrl());

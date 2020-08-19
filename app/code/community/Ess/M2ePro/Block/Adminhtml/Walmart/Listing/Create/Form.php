@@ -233,14 +233,15 @@ HTML
 &nbsp;
 <span style="line-height: 20px;">
     <span id="edit_selling_format_template_link" style="color:#41362f">
-        <a href="javascript: void(0);" style="" onclick="WalmartListingSettingsObj.openWindow(
-            M2ePro.url.editSellingFormatTemplate + 'id/' + $('template_selling_format_id').value
+        <a href="javascript: void(0);" style="" onclick="WalmartListingSettingsObj.editTemplate(
+            M2ePro.url.editSellingFormatTemplate, $('template_selling_format_id').value
         );">
             {$helper->__('View')}&nbsp;/&nbsp;{$helper->__('Edit')}
         </a>
         <span>{$helper->__('or')}</span>
     </span>
-    <a href="javascript: void(0);" onclick="WalmartListingSettingsObj.addNewTemplate(
+    <a id="add_selling_format_template_link" href="javascript: void(0);"
+        onclick="WalmartListingSettingsObj.addNewTemplate(
         M2ePro.url.addNewSellingFormatTemplate,
         WalmartListingSettingsObj.newSellingFormatTemplateCallback
     );">{$helper->__('Add New')}</a>
@@ -283,14 +284,15 @@ HTML
 &nbsp;
 <span style="line-height: 20px;">
     <span id="edit_description_template_link" style="color:#41362f">
-        <a href="javascript: void(0);" onclick="WalmartListingSettingsObj.openWindow(
-            M2ePro.url.editDescriptionTemplate + 'id/' + $('template_description_id').value
+        <a href="javascript: void(0);" onclick="WalmartListingSettingsObj.editTemplate(
+            M2ePro.url.editDescriptionTemplate, $('template_description_id').value
         );">
             {$helper->__('View')}&nbsp;/&nbsp;{$helper->__('Edit')}
         </a>
         <span>{$helper->__('or')}</span>
     </span>
-    <a href="javascript: void(0);" onclick="WalmartListingSettingsObj.addNewTemplate(
+    <a id="add_description_template_link" href="javascript: void(0);"
+        onclick="WalmartListingSettingsObj.addNewTemplate(
         M2ePro.url.addNewDescriptionTemplate,
         WalmartListingSettingsObj.newDescriptionTemplateCallback
     );">{$helper->__('Add New')}</a>
@@ -334,14 +336,15 @@ HTML
 &nbsp;
 <span style="line-height: 20px;">
     <span id="edit_synchronization_template_link" style="color:#41362f">
-        <a href="javascript: void(0);" onclick="WalmartListingSettingsObj.openWindow(
-            M2ePro.url.editSynchronizationTemplate + 'id/' + $('template_synchronization_id').value
+        <a href="javascript: void(0);" onclick="WalmartListingSettingsObj.editTemplate(
+            M2ePro.url.editSynchronizationTemplate, $('template_synchronization_id').value
         );">
             {$helper->__('View')}&nbsp;/&nbsp;{$helper->__('Edit')}
         </a>
         <span>{$helper->__('or')}</span>
     </span>
-    <a href="javascript: void(0);" onclick="WalmartListingSettingsObj.addNewTemplate(
+    <a id="add_synchronization_template_link" href="javascript: void(0);"
+        onclick="WalmartListingSettingsObj.addNewTemplate(
         M2ePro.url.addNewSynchronizationTemplate,
         WalmartListingSettingsObj.newSynchronizationTemplateCallback
     );">{$helper->__('Add New')}</a>

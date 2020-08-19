@@ -238,8 +238,8 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Sellercentral_Grid
                 'align'        => 'left',
                 'width'        => '150px',
                 'type'         => 'text',
-                'index'        => 'amazon_sku',
-                'filter_index' => 'amazon_sku',
+                'index'        => 'sku',
+                'filter_index' => 'sku',
                 'renderer'     => 'M2ePro/adminhtml_amazon_grid_column_renderer_sku'
             )
         );
@@ -248,11 +248,13 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Sellercentral_Grid
             'general_id', array(
                 'header'         => Mage::helper('M2ePro')->__('ASIN / ISBN'),
                 'align'          => 'left',
-                'width'          => '140px',
+                'width'          => '150px',
                 'type'           => 'text',
                 'index'          => 'general_id',
                 'filter_index'   => 'general_id',
-                'frame_callback' => array($this, 'callbackColumnGeneralId')
+                'filter'         => 'M2ePro/adminhtml_amazon_grid_column_filter_generalId',
+                'frame_callback' => array($this, 'callbackColumnGeneralId'),
+                'filter_condition_callback' => array($this, 'callbackFilterGeneralId')
             )
         );
 
@@ -292,7 +294,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Sellercentral_Grid
         $this->addColumn(
             'status', array(
                 'header'       => Mage::helper('M2ePro')->__('Status'),
-                'width'        => '155px',
+                'width'        => '140px',
                 'index'        => 'status',
                 'filter_index' => 'status',
                 'type'         => 'options',
@@ -730,6 +732,19 @@ HTML;
                 array('attribute'=>'name', 'like'=>'%'.$value.'%')
             )
         );
+    }
+
+    protected function callbackFilterGeneralId($collection, $column)
+    {
+        $inputValue = $column->getFilter()->getValue('input');
+        if ($inputValue !== null) {
+            $collection->addFieldToFilter('general_id', array('like' => '%' . $inputValue . '%'));
+        }
+
+        $selectValue = $column->getFilter()->getValue('select');
+        if ($selectValue !== null) {
+            $collection->addFieldToFilter('is_general_id_owner', $selectValue);
+        }
     }
 
     protected function callbackFilterQty($collection, $column)

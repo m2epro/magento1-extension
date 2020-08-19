@@ -46,18 +46,16 @@ class Ess_M2ePro_Helper_Module_Product_Variation_Vocabulary extends Mage_Core_He
 
     public function addAttributeToLocalStorage($productAttribute, $channelAttribute)
     {
-        /** @var Ess_M2ePro_Model_Registry $registry */
-        $registry = Mage::getModel('M2ePro/Registry')->load(self::LOCAL_DATA_REGISTRY_KEY, 'key');
+        $vocabularyData = Mage::helper('M2ePro/Module')->getRegistry()
+            ->getValueFromJson(self::LOCAL_DATA_REGISTRY_KEY);
 
-        $vocabularyData = $registry->getSettings('value');
         $vocabularyData[$channelAttribute]['names'][] = $productAttribute;
 
         if (!isset($vocabularyData[$channelAttribute]['options'])) {
             $vocabularyData[$channelAttribute]['options'] = array();
         }
 
-        $registry->setData('key', self::LOCAL_DATA_REGISTRY_KEY);
-        $registry->setSettings('value', $vocabularyData)->save();
+        Mage::helper('M2ePro/Module')->getRegistry()->setValue(self::LOCAL_DATA_REGISTRY_KEY, $vocabularyData);
 
         $this->removeLocalDataCache();
     }
@@ -87,10 +85,9 @@ class Ess_M2ePro_Helper_Module_Product_Variation_Vocabulary extends Mage_Core_He
 
     public function removeAttributeFromLocalStorage($productAttribute, $channelAttribute)
     {
-        /** @var Ess_M2ePro_Model_Registry $registry */
-        $registry = Mage::getModel('M2ePro/Registry')->load(self::LOCAL_DATA_REGISTRY_KEY, 'key');
+        $vocabularyData = Mage::helper('M2ePro/Module')->getRegistry()
+            ->getValueFromJson(self::LOCAL_DATA_REGISTRY_KEY);
 
-        $vocabularyData = $registry->getSettings('value');
         if (empty($vocabularyData[$channelAttribute]['names'])) {
             return;
         }
@@ -103,8 +100,7 @@ class Ess_M2ePro_Helper_Module_Product_Variation_Vocabulary extends Mage_Core_He
 
         $vocabularyData[$channelAttribute]['names'] = array_values($vocabularyData[$channelAttribute]['names']);
 
-        $registry->setData('key', self::LOCAL_DATA_REGISTRY_KEY);
-        $registry->setSettings('value', $vocabularyData)->save();
+        Mage::helper('M2ePro/Module')->getRegistry()->setValue(self::LOCAL_DATA_REGISTRY_KEY, $vocabularyData);
 
         $this->removeLocalDataCache();
     }
@@ -211,10 +207,8 @@ class Ess_M2ePro_Helper_Module_Product_Variation_Vocabulary extends Mage_Core_He
 
     public function addOptionToLocalStorage($productOption, $channelOption, $channelAttribute)
     {
-        /** @var Ess_M2ePro_Model_Registry $registry */
-        $registry = Mage::getModel('M2ePro/Registry')->load(self::LOCAL_DATA_REGISTRY_KEY, 'key');
-
-        $vocabularyData = $registry->getSettings('value');
+        $vocabularyData = Mage::helper('M2ePro/Module')->getRegistry()
+            ->getValueFromJson(self::LOCAL_DATA_REGISTRY_KEY);
 
         if (!isset($vocabularyData[$channelAttribute]['names'])) {
             $vocabularyData[$channelAttribute]['names'] = array();
@@ -241,8 +235,7 @@ class Ess_M2ePro_Helper_Module_Product_Variation_Vocabulary extends Mage_Core_He
             );
         }
 
-        $registry->setData('key', self::LOCAL_DATA_REGISTRY_KEY);
-        $registry->setSettings('value', $vocabularyData)->save();
+        Mage::helper('M2ePro/Module')->getRegistry()->setValue(self::LOCAL_DATA_REGISTRY_KEY, $vocabularyData);
 
         $this->removeLocalDataCache();
     }
@@ -273,10 +266,9 @@ class Ess_M2ePro_Helper_Module_Product_Variation_Vocabulary extends Mage_Core_He
 
     public function removeOptionFromLocalStorage($productOption, $productOptionsGroup, $channelAttribute)
     {
-        /** @var Ess_M2ePro_Model_Registry $registry */
-        $registry = Mage::getModel('M2ePro/Registry')->load(self::LOCAL_DATA_REGISTRY_KEY, 'key');
+        $vocabularyData = Mage::helper('M2ePro/Module')->getRegistry()
+            ->getValueFromJson(self::LOCAL_DATA_REGISTRY_KEY);
 
-        $vocabularyData = $registry->getSettings('value');
         if (empty($vocabularyData[$channelAttribute]['options'])) {
             return;
         }
@@ -298,8 +290,7 @@ class Ess_M2ePro_Helper_Module_Product_Variation_Vocabulary extends Mage_Core_He
             }
         }
 
-        $registry->setData('key', self::LOCAL_DATA_REGISTRY_KEY);
-        $registry->setSettings('value', $vocabularyData)->save();
+        Mage::helper('M2ePro/Module')->getRegistry()->setValue(self::LOCAL_DATA_REGISTRY_KEY, $vocabularyData);
 
         $this->removeLocalDataCache();
     }
@@ -395,9 +386,8 @@ class Ess_M2ePro_Helper_Module_Product_Variation_Vocabulary extends Mage_Core_He
             return $cacheData;
         }
 
-        /** @var Ess_M2ePro_Model_Registry $registry */
-        $registry = Mage::getModel('M2ePro/Registry')->load(self::LOCAL_DATA_REGISTRY_KEY, 'key');
-        $vocabularyData = $registry->getSettings('value');
+        $vocabularyData = Mage::helper('M2ePro/Module')->getRegistry()
+            ->getValueFromJson(self::LOCAL_DATA_REGISTRY_KEY);
 
         $this->setLocalDataCache($vocabularyData);
 
@@ -423,9 +413,8 @@ class Ess_M2ePro_Helper_Module_Product_Variation_Vocabulary extends Mage_Core_He
             return $cacheData;
         }
 
-        /** @var Ess_M2ePro_Model_Registry $registry */
-        $registry = Mage::getModel('M2ePro/Registry')->load(self::SERVER_DATA_REGISTRY_KEY, 'key');
-        $vocabularyData = $registry->getSettings('value');
+        $vocabularyData = Mage::helper('M2ePro/Module')->getRegistry()
+            ->getValueFromJson(self::SERVER_DATA_REGISTRY_KEY);
 
         $this->setServerDataCache($vocabularyData);
 
@@ -451,9 +440,8 @@ class Ess_M2ePro_Helper_Module_Product_Variation_Vocabulary extends Mage_Core_He
             return $cacheData;
         }
 
-        /** @var Ess_M2ePro_Model_Registry $registry */
-        $registry = Mage::getModel('M2ePro/Registry')->load(self::SERVER_METADATA_REGISTRY_KEY, 'key');
-        $vocabularyData = $registry->getSettings('value');
+        $vocabularyData = Mage::helper('M2ePro/Module')->getRegistry()
+            ->getValueFromJson(self::SERVER_METADATA_REGISTRY_KEY);
 
         $this->setServerMetadataCache($vocabularyData);
 
@@ -497,33 +485,21 @@ class Ess_M2ePro_Helper_Module_Product_Variation_Vocabulary extends Mage_Core_He
 
     public function setLocalData(array $data)
     {
-        /** @var Ess_M2ePro_Model_Registry $registry */
-        $registry = Mage::getModel('M2ePro/Registry')->load(self::LOCAL_DATA_REGISTRY_KEY, 'key');
-
-        $registry->setData('key', self::LOCAL_DATA_REGISTRY_KEY);
-        $registry->setSettings('value', $data)->save();
+        Mage::helper('M2ePro/Module')->getRegistry()->setValue(self::LOCAL_DATA_REGISTRY_KEY, $data);
 
         $this->removeLocalDataCache();
     }
 
     public function setServerData(array $data)
     {
-        /** @var Ess_M2ePro_Model_Registry $registry */
-        $registry = Mage::getModel('M2ePro/Registry')->load(self::SERVER_DATA_REGISTRY_KEY, 'key');
-
-        $registry->setData('key', self::SERVER_DATA_REGISTRY_KEY);
-        $registry->setSettings('value', $data)->save();
+        Mage::helper('M2ePro/Module')->getRegistry()->setValue(self::SERVER_DATA_REGISTRY_KEY, $data);
 
         $this->removeServerDataCache();
     }
 
     public function setServerMetadata(array $data)
     {
-        /** @var Ess_M2ePro_Model_Registry $registry */
-        $registry = Mage::getModel('M2ePro/Registry')->load(self::SERVER_METADATA_REGISTRY_KEY, 'key');
-
-        $registry->setData('key', self::SERVER_METADATA_REGISTRY_KEY);
-        $registry->setSettings('value', $data)->save();
+        Mage::helper('M2ePro/Module')->getRegistry()->setValue(self::SERVER_METADATA_REGISTRY_KEY, $data);
 
         $this->removeServerMetadataCache();
     }

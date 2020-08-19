@@ -20,6 +20,12 @@ abstract class Ess_M2ePro_Model_Order_Creditmemo_Handler
     abstract protected function getComponentMode();
     abstract protected function getItemsToRefund(Ess_M2ePro_Model_Order $order, Mage_Sales_Model_Order_Creditmemo $cm);
 
+    /**
+     * @param Ess_M2ePro_Model_Order $order
+     * @param Mage_Sales_Model_Order_Creditmemo $creditmemo
+     * @return int
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function handle(Ess_M2ePro_Model_Order $order, Mage_Sales_Model_Order_Creditmemo $creditmemo)
     {
         if ($order->getComponentMode() !== $this->getComponentMode()) {

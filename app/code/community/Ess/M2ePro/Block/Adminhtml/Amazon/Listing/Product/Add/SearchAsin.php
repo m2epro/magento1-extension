@@ -48,7 +48,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Product_Add_SearchAsin
         );
 
         $this->_addButton(
-            'auto_action', array(
+            'edit_search_settings', array(
                 'label'   => Mage::helper('M2ePro')->__('Edit Search Settings'),
                 'onclick' => 'ListingGridObj.editSearchSettings(\'' .
                              Mage::helper('M2ePro')->__('Listing Search Settings') . '\' ,' .
@@ -58,7 +58,8 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Product_Add_SearchAsin
         );
 
         $this->_addButton(
-            'save_and_go_to_listing_view', array(
+            'add_products_search_asin_continue', array(
+                'id' => 'add_products_search_asin_continue',
                 'label'   => Mage::helper('M2ePro')->__('Continue'),
                 'onclick' => 'ListingGridObj.checkSearchResults(' . $listingId . ')',
                 'class'   => 'scalable next'

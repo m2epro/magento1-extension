@@ -577,7 +577,7 @@ class Ess_M2ePro_Model_Walmart_Order extends Ess_M2ePro_Model_Component_Child_Wa
                             $existingItem['walmart_order_item_id']
                         )
                         ->getFirstItem()
-                        ->getQty();
+                        ->getQtyPurchased();
                     $newQtyTotal >= $maxQtyTotal && $newQtyTotal = $maxQtyTotal;
                     $existingItem['qty'] = $newQtyTotal;
                     continue 2;
@@ -628,7 +628,10 @@ class Ess_M2ePro_Model_Walmart_Order extends Ess_M2ePro_Model_Component_Child_Wa
         $orderId     = $this->getParentObject()->getId();
         $action = Ess_M2ePro_Model_Order_Change::ACTION_CANCEL;
 
-        if ($this->isShipped() || $this->isPartiallyShipped() || $this->isSetProcessingLock('update_shipping_status')) {
+        if ($this->isShipped() ||
+            $this->isPartiallyShipped() ||
+            $this->getParentObject()->isStatusUpdatingToShipped()
+        ) {
             if (empty($items)) {
                 $this->getParentObject()->addErrorLog(
                     'Walmart Order was not refunded. Reason: %msg%',

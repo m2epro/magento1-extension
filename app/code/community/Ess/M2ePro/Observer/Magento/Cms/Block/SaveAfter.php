@@ -22,10 +22,18 @@ class Ess_M2ePro_Observer_Magento_Cms_Block_SaveAfter extends Ess_M2ePro_Observe
             return;
         }
 
-        /** @var Ess_M2ePro_Model_Resource_Template_Description_Collection $templates */
-        $templates = Mage::getModel('M2ePro/Ebay_Template_Description')->getCollection()->addFieldToFilter(
-            'description_template', array('like' => "%{$block->getIdentifier()}%")
+        $templates = Mage::getModel('M2ePro/Ebay_Template_Description')->getCollection();
+        $conditions = array(
+            $templates->getConnection()->quoteInto(
+                'description_template LIKE ?',
+                '%id="'.$block->getIdentifier().'"%'
+            ),
+            $templates->getConnection()->quoteInto(
+                'description_template LIKE ?',
+                '%id="'.$block->getId().'"%'
+            )
         );
+        $templates->getSelect()->where(implode(' OR ', $conditions));
 
         foreach ($templates as $template) {
             /** @var Ess_M2ePro_Model_Template_Description $template */

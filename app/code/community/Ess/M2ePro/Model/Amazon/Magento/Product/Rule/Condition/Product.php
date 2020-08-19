@@ -14,14 +14,15 @@ class Ess_M2ePro_Model_Amazon_Magento_Product_Rule_Condition_Product
     protected function getCustomFilters()
     {
         $amazonFilters = array(
-            'amazon_sku'                  => 'AmazonSku',
+            'sku'                         => 'AmazonSku',
             'amazon_general_id'           => 'AmazonGeneralId',
+            'is_general_id_owner'         => 'AmazonGeneralIdOwner',
             'amazon_online_qty'           => 'AmazonOnlineQty',
             'amazon_online_price'         => 'AmazonOnlinePrice',
             'amazon_online_sale_price'    => 'AmazonOnlineSalePrice',
             'amazon_is_afn_chanel'        => 'AmazonIsAfnChanel',
             'amazon_is_repricing'         => 'AmazonIsRepricing',
-            'amazon_status'               => 'AmazonStatus',
+            'status'               => 'AmazonStatus',
             'amazon_general_id_state'     => 'AmazonGeneralIdState'
         );
 
@@ -122,7 +123,7 @@ class Ess_M2ePro_Model_Amazon_Magento_Product_Rule_Condition_Product
             } else {
                 if (is_array($validatedValue)) {
                     // hack for amazon status
-                    if ($this->getAttribute() == 'amazon_status') {
+                    if ($this->getAttribute() == 'status') {
                         if ($op == '==') {
                             $result = !empty($validatedValue[$value]);
                         } else {

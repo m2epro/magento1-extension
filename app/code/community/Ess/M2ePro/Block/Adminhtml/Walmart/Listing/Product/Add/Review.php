@@ -68,9 +68,10 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Product_Add_Review extends Ess_
             ->createBlock('adminhtml/widget_button')
             ->setData(
                 array(
-                'label'   => Mage::helper('M2ePro')->__('Review Your Products'),
-                'onclick' => 'setLocation(\''.$url.'\');',
-                'class' => 'save'
+                    'id'      => 'go_to_the_listing',
+                    'label'   => Mage::helper('M2ePro')->__('Review Your Products'),
+                    'onclick' => 'setLocation(\'' . $url . '\');',
+                    'class'   => 'save'
                 )
             );
         $this->setChild('review', $buttonBlock);

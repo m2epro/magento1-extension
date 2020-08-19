@@ -251,7 +251,7 @@ class Ess_M2ePro_Adminhtml_Ebay_AccountController extends Ess_M2ePro_Controller_
 
         $this->_redirectUrl(
             Mage::helper('M2ePro')->getBackUrl(
-                'list', array(), array('edit'=>array('id'=>$id, 'update_ebay_store' => null, '_current'=>true))
+                'list', array(), array('edit'=>array('id'=>$id))
             )
         );
     }

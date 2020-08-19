@@ -27,6 +27,7 @@ class Ess_M2ePro_Model_Amazon_Order_Item_Builder extends Mage_Core_Model_Abstrac
         // Init sale data
         // ---------------------------------------
         $this->setData('price', (float)$data['price']);
+        $this->setData('shipping_price', (float)$data['shipping_price']);
         $this->setData('gift_price', (float)$data['gift_price']);
         $this->setData('currency', trim($data['currency']));
         $this->setData('discount_details', Mage::helper('M2ePro')->jsonEncode($data['discount_details']));

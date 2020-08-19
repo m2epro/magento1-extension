@@ -85,15 +85,14 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_License_Form extends Ess_M2ePro_B
         $userId = Mage::getSingleton('admin/session')->getUser()->getId();
         $userInfo = Mage::getModel('admin/user')->load($userId)->getData();
 
-        $tempPath = defined('Mage_Shipping_Model_Config::XML_PATH_ORIGIN_CITY')
-            ? Mage_Shipping_Model_Config::XML_PATH_ORIGIN_CITY : 'shipping/origin/city';
-        $userInfo['city'] = Mage::getStoreConfig($tempPath, $defaultStoreId);
+        $userInfo['city'] = Mage::getStoreConfig(Mage_Shipping_Model_Config::XML_PATH_ORIGIN_CITY, $defaultStoreId);
+        $userInfo['postal_code'] = Mage::getStoreConfig(
+            Mage_Shipping_Model_Config::XML_PATH_ORIGIN_POSTCODE,
+            $defaultStoreId
+        );
 
-        $tempPath = defined('Mage_Shipping_Model_Config::XML_PATH_ORIGIN_POSTCODE')
-            ? Mage_Shipping_Model_Config::XML_PATH_ORIGIN_POSTCODE : 'shipping/origin/postcode';
-        $userInfo['postal_code'] = Mage::getStoreConfig($tempPath, $defaultStoreId);
 
-        $userInfo['country'] = Mage::getStoreConfig('general/country/default', $defaultStoreId);
+        $userInfo['country'] = Mage::helper('core')->getDefaultCountry($defaultStoreId);
         // ---------------------------------------
 
         $this->licenseFormData = $userInfo;

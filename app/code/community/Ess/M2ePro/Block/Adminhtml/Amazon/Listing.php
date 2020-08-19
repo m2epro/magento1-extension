@@ -30,18 +30,20 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing extends Mage_Adminhtml_Block_Wid
         $url = $this->getUrl('*/adminhtml_amazon_log/listing');
         $this->_addButton(
             'view_log', array(
-            'label'     => Mage::helper('M2ePro')->__('Logs & Events'),
-            'onclick'   => 'AmazonListingObj.viewLogs(\'' . $url . '\')',
-            'class'     => 'button_link'
+                'label'   => Mage::helper('M2ePro')->__('Logs & Events'),
+                'onclick' => 'AmazonListingObj.viewLogs(\'' . $url . '\')',
+                'class'   => 'button_link'
             )
         );
 
         $url = $this->getUrl('*/adminhtml_amazon_listing_create/index', array('step' => 1, 'clear' => 'yes'));
         $this->_addButton(
-            'add', array(
-            'label'     => Mage::helper('M2ePro')->__('Add Listing'),
-            'onclick'   => 'AmazonListingObj.createListing(\'' . $url . '\')',
-            'class'     => 'add'
+            'add',
+            array(
+                'id' => 'add',
+                'label'   => Mage::helper('M2ePro')->__('Add Listing'),
+                'onclick' => 'AmazonListingObj.createListing(\'' . $url . '\')',
+                'class'   => 'add'
             )
         );
     }

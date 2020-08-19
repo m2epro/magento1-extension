@@ -941,8 +941,8 @@ class Ess_M2ePro_Adminhtml_Ebay_ListingController extends Ess_M2ePro_Controller_
     protected function processConnector($action, array $params = array())
     {
         if (Mage::helper('M2ePro/Server_Maintenance')->isNow()) {
-            $message = 'The action is temporarily unavailable. M2E Pro server is currently';
-            $message .= ' under the planned maintenance. Please try again later.';
+            $message = 'The action is temporarily unavailable. M2E Pro Server is';
+            $message .= '  under maintenance. Please try again later.';
 
             return Mage::helper('M2ePro')->__($message);
         }

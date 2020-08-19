@@ -63,4 +63,13 @@ class Ess_M2ePro_Block_Adminhtml_Support extends Mage_Adminhtml_Block_Widget_For
     }
 
     //########################################
+
+    protected function _prepareLayout()
+    {
+        Mage::helper('M2ePro/View')->getJsUrlsRenderer()->addControllerActions('adminhtml_support');
+
+        parent::_prepareLayout();
+    }
+
+    //########################################
 }

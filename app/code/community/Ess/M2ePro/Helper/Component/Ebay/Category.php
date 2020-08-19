@@ -71,9 +71,8 @@ class Ess_M2ePro_Helper_Component_Ebay_Category extends Mage_Core_Helper_Abstrac
 
     public function getRecent($marketplaceOrAccountId, $categoryType, $excludeCategory = null)
     {
-        /** @var $registryModel Ess_M2ePro_Model_Registry */
-        $registryModel = Mage::getModel('M2ePro/Registry')->loadByKey('/ebay/category/recent/');
-        $allRecentCategories = $registryModel->getValueFromJson();
+        $allRecentCategories = Mage::helper('M2ePro/Module')->getRegistry()
+            ->getValueFromJson('/ebay/category/recent/');
         $configPath = $this->getRecentConfigPath($categoryType);
 
         if (!isset($allRecentCategories[$configPath]) ||
@@ -112,9 +111,8 @@ class Ess_M2ePro_Helper_Component_Ebay_Category extends Mage_Core_Helper_Abstrac
 
     public function addRecent($categoryId, $marketplaceOrAccountId, $categoryType)
     {
-        /** @var $registryModel Ess_M2ePro_Model_Registry */
-        $registryModel = Mage::getModel('M2ePro/Registry')->loadByKey('/ebay/category/recent/');
-        $allRecentCategories = $registryModel->getValueFromJson();
+        $allRecentCategories = Mage::helper('M2ePro/Module')->getRegistry()
+            ->getValueFromJson('/ebay/category/recent/');
         $configPath = $this->getRecentConfigPath($categoryType);
 
         $categories = array();
@@ -131,36 +129,31 @@ class Ess_M2ePro_Helper_Component_Ebay_Category extends Mage_Core_Helper_Abstrac
 
         $allRecentCategories[$configPath][$marketplaceOrAccountId] = implode(',', $categories);
 
-        $registryModel->setValue($allRecentCategories);
-        $registryModel->save();
+        Mage::helper('M2ePro/Module')->getRegistry()->setValue('/ebay/category/recent/', $allRecentCategories);
     }
 
     public function removeEbayRecent()
     {
-        /** @var $registryModel Ess_M2ePro_Model_Registry */
-        $registryModel = Mage::getModel('M2ePro/Registry')->loadByKey('/ebay/category/recent/');
-        $allRecentCategories = $registryModel->getValueFromJson();
+        $allRecentCategories = Mage::helper('M2ePro/Module')->getRegistry()
+            ->getValueFromJson('/ebay/category/recent/');
 
         foreach ($this->getEbayCategoryTypes() as $categoryType) {
             unset($allRecentCategories[$this->getRecentConfigPath($categoryType)]);
         }
 
-        $registryModel->setValue($allRecentCategories);
-        $registryModel->save();
+        Mage::helper('M2ePro/Module')->getRegistry()->setValue('/ebay/category/recent/', $allRecentCategories);
     }
 
     public function removeStoreRecent()
     {
-        /** @var $registryModel Ess_M2ePro_Model_Registry */
-        $registryModel = Mage::getModel('M2ePro/Registry')->loadByKey('/ebay/category/recent/');
-        $allRecentCategories = $registryModel->getValueFromJson();
+        $allRecentCategories = Mage::helper('M2ePro/Module')->getRegistry()
+            ->getValueFromJson('/ebay/category/recent/');
 
         foreach ($this->getStoreCategoryTypes() as $categoryType) {
             unset($allRecentCategories[$this->getRecentConfigPath($categoryType)]);
         }
 
-        $registryModel->setValue($allRecentCategories);
-        $registryModel->save();
+        Mage::helper('M2ePro/Module')->getRegistry()->setValue('/ebay/category/recent/', $allRecentCategories);
     }
 
     // ---------------------------------------

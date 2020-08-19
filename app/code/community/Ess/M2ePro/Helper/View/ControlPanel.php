@@ -15,7 +15,6 @@ class Ess_M2ePro_Helper_View_ControlPanel extends Mage_Core_Helper_Abstract
     const TAB_INSPECTION  = 'inspection';
     const TAB_DATABASE    = 'database';
     const TAB_TOOLS       = 'tools';
-    const TAB_MODULE      = 'module';
     const TAB_CRON        = 'cron';
     const TAB_DEBUG       = 'debug';
 
@@ -53,11 +52,6 @@ class Ess_M2ePro_Helper_View_ControlPanel extends Mage_Core_Helper_Abstract
     public function getPageToolsTabUrl(array $params = array())
     {
         return $this->getPageUrl(array_merge($params, array('tab' => self::TAB_TOOLS)));
-    }
-
-    public function getPageModuleTabUrl(array $params = array())
-    {
-        return $this->getPageUrl(array_merge($params, array('tab' => self::TAB_MODULE)));
     }
 
     public function getPageCronTabUrl(array $params = array())

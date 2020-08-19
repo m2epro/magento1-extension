@@ -25,14 +25,9 @@ abstract class Ess_M2ePro_Controller_Adminhtml_WizardController
     protected function _initAction()
     {
         $this->loadLayout();
-
-        // Popup
-        // ---------------------------------------
         $this->_initPopUp();
-        // ---------------------------------------
 
         Mage::helper('M2ePro/Module_Wizard')->addWizardJs();
-
         return $this;
     }
 
@@ -87,10 +82,8 @@ abstract class Ess_M2ePro_Controller_Adminhtml_WizardController
 
     public function registrationAction()
     {
-        $registry = Mage::getModel('M2ePro/Registry')->load('/wizard/license_form_data/', 'key')
-            ->getData('value');
-
-        if ($registry !== null) {
+        $licenseData = Mage::helper('M2ePro/Module')->getRegistry()->getValueFromJson('/wizard/license_form_data/');
+        if (!empty($licenseData)) {
             $this->setStep($this->getNextStep());
         }
 
@@ -170,10 +163,7 @@ abstract class Ess_M2ePro_Controller_Adminhtml_WizardController
             }
         }
 
-        $registry = Mage::getModel('M2ePro/Registry')->load('/wizard/license_form_data/', 'key');
-        $registry->setData('key', '/wizard/license_form_data/');
-        $registry->setData('value', Mage::helper('M2ePro')->jsonEncode($licenseData));
-        $registry->save();
+        Mage::helper('M2ePro/Module')->getRegistry()->setValue('/wizard/license_form_data/', $licenseData);
 
         return $this->getResponse()->setBody(
             Mage::helper('M2ePro')->jsonEncode(
@@ -229,10 +219,7 @@ abstract class Ess_M2ePro_Controller_Adminhtml_WizardController
                     $licenseData['postal_code'], $licenseData['phone']
                 );
 
-                $registry = Mage::getModel('M2ePro/Registry')->load('/wizard/license_form_data/', 'key');
-                $registry->setData('key', '/wizard/license_form_data/');
-                $registry->setData('value', Mage::helper('M2ePro')->jsonEncode($licenseData));
-                $registry->save();
+                Mage::helper('M2ePro/Module')->getRegistry()->setValue('/wizard/license_form_data/', $licenseData);
             } catch (Exception $e) {
                 Mage::helper('M2ePro/Module_Exception')->process($e);
                 $licenseResult = false;

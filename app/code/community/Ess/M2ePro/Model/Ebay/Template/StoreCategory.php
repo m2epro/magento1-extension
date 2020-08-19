@@ -152,11 +152,11 @@ class Ess_M2ePro_Model_Ebay_Template_StoreCategory extends Ess_M2ePro_Model_Comp
     }
 
     /**
-     * @return int
+     * @return double
      */
     public function getCategoryId()
     {
-        return (int)$this->getData('category_id');
+        return $this->getData('category_id');
     }
 
     /**

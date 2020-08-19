@@ -331,7 +331,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore_Variation_Product_View
     {
         $viewLogIcon = $this->getLayout()->createBlock(
             'M2ePro/adminhtml_ebay_grid_column_renderer_viewLogIcon_pickupStore', '', array(
-                'js_handler' => 'EbayListingPickupStoreGridObj'
+                'jsHandler' => 'EbayListingPickupStoreGridObj'
             )
         );
 

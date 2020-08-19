@@ -29,12 +29,12 @@ class Ess_M2ePro_Model_Servicing_Task_Statistic extends Ess_M2ePro_Model_Servici
      */
     public function isAllowed()
     {
-        $lastRun = Mage::helper('M2ePro/Module')->getRegistryValue('/servicing/statistic/last_run/');
+        $lastRun = Mage::helper('M2ePro/Module')->getRegistry()->getValue('/servicing/statistic/last_run/');
 
         if ($this->getInitiator() === Ess_M2ePro_Helper_Data::INITIATOR_DEVELOPER ||
             $lastRun === null ||
             Mage::helper('M2ePro')->getCurrentGmtDate(true) > strtotime($lastRun) + self::RUN_INTERVAL) {
-            Mage::helper('M2ePro/Module')->setRegistryValue(
+            Mage::helper('M2ePro/Module')->getRegistry()->setValue(
                 '/servicing/statistic/last_run/',
                 Mage::helper('M2ePro')->getCurrentGmtDate()
             );
@@ -384,13 +384,14 @@ class Ess_M2ePro_Model_Servicing_Task_Statistic extends Ess_M2ePro_Model_Servici
     {
         $settings = array();
         $conf = Mage::helper('M2ePro/Module')->getConfig();
+        $configHelper = Mage::helper('M2ePro/Module_Configuration');
 
-        $settings['products_show_thumbnails']    = $conf->getGroupValue('/view/', 'show_products_thumbnails');
-        $settings['block_notices_show']          = $conf->getGroupValue('/view/', 'show_block_notices');
-        $settings['manage_stock_backorders']     = $conf->getGroupValue('/product/force_qty/', 'mode');
-        $settings['manage_stock_backorders_qty'] = $conf->getGroupValue('/product/force_qty/', 'value');
-        $settings['price_convert_mode']          = $conf->getGroupValue('/magento/attribute/', 'price_type_converting');
-        $settings['inspector_mode']              = $conf->getGroupValue('/listing/product/inspector/', 'mode');
+        $settings['products_show_thumbnails']    = $configHelper->getViewShowProductsThumbnailsMode();
+        $settings['block_notices_show']          = $configHelper->getViewShowBlockNoticesMode();
+        $settings['manage_stock_backorders']     = $configHelper->getProductForceQtyMode();
+        $settings['manage_stock_backorders_qty'] = $configHelper->getProductForceQtyValue();
+        $settings['price_convert_mode']          = $configHelper->getMagentoAttributePriceTypeConvertingMode();
+        $settings['inspector_mode']              = $configHelper->getListingProductInspectorMode();
 
         $settings['logs_clearing'] = array();
         $settings['channels']      = array();

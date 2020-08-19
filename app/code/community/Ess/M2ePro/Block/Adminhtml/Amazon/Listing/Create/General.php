@@ -31,6 +31,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Create_General
 
         $this->_addButton(
             'save_and_next', array(
+                'id'        => 'save_and_next',
                 'label'     => Mage::helper('M2ePro')->__('Next Step'),
                 'onclick'   => 'AmazonListingCreateGeneralObj.save_and_next()',
                 'class'     => 'next'

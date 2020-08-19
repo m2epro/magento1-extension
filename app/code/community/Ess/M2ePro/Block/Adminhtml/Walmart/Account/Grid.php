@@ -60,20 +60,19 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Account_Grid extends Ess_M2ePro_Block_A
     public function callbackColumnTitle($value, $row, $column, $isExport)
     {
         /** @var Ess_M2ePro_Model_Account $row */
-        $marketplaceLabel = Mage::helper('M2ePro')->__('Marketplace');
-        $marketplaceTitle = $row->getData('marketplace_title');
+        $helper = Mage::helper('M2ePro');
 
-        $merchantLabel = Mage::helper('M2ePro')->__('Consumer ID');
-        $consumerId = $row->getData('consumer_id');
+        $consumerId = $row->getData('client_id');
+        empty($consumerId) && $consumerId = $row->getData('consumer_id');
 
         return <<<HTML
 <div>
     {$value}<br/>
-    <span style="font-weight: bold">{$merchantLabel}</span>:
+    <span style="font-weight: bold">{$helper->__('Consumer ID')}</span>:
     <span style="color: #505050">{$consumerId}</span>
     <br/>
-    <span style="font-weight: bold">{$marketplaceLabel}</span>:
-    <span style="color: #505050">{$marketplaceTitle}</span>
+    <span style="font-weight: bold">{$helper->__('Marketplace')}</span>:
+    <span style="color: #505050">{$row->getData('marketplace_title')}</span>
     <br/>
 </div>
 HTML;
@@ -90,7 +89,7 @@ HTML;
         }
 
         $collection->getSelect()->where(
-            'main_table.title LIKE ? OR m.title LIKE ? OR second_table.consumer_id LIKE ?',
+            'main_table.title LIKE ? OR m.title LIKE ? OR consumer_id LIKE ? OR client_id LIKE ?',
             '%'. $value .'%'
         );
     }

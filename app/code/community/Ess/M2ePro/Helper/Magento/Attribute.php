@@ -420,9 +420,8 @@ class Ess_M2ePro_Helper_Magento_Attribute extends Ess_M2ePro_Helper_Magento_Abst
             return $attributeValue;
         }
 
-        $isPriceConvertEnabled = (int)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
-            '/magento/attribute/', 'price_type_converting'
-        );
+        $isPriceConvertEnabled = Mage::helper('M2ePro/Module_Configuration')
+            ->isEnableMagentoAttributePriceTypeConvertingMode();
 
         if ($isPriceConvertEnabled && $this->isAttributeInputTypePrice($attributeCode)) {
             $attributeValue = Mage::getSingleton('M2ePro/Currency')->convertPrice(

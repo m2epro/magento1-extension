@@ -197,7 +197,7 @@ final class Ess_M2ePro_Model_Servicing_Dispatcher
 
     protected function getLastUpdateDate()
     {
-        $lastUpdateDate = Mage::helper('M2ePro/Module')->getRegistryValue('/servicing/last_update_time/');
+        $lastUpdateDate = Mage::helper('M2ePro/Module')->getRegistry()->getValue('/servicing/last_update_time/');
 
         if ($lastUpdateDate !== null) {
             $lastUpdateDate = new \DateTime($lastUpdateDate, new \DateTimeZone('UTC'));
@@ -208,7 +208,7 @@ final class Ess_M2ePro_Model_Servicing_Dispatcher
 
     protected function setLastUpdateDateTime()
     {
-        Mage::helper('M2ePro/Module')->setRegistryValue(
+        Mage::helper('M2ePro/Module')->getRegistry()->setValue(
             '/servicing/last_update_time/',
             Mage::helper('M2ePro')->getCurrentGmtDate()
         );

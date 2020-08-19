@@ -79,7 +79,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Motor_Add extends Ess_M2ePro_Block_Adminht
 
     public function wasInstructionShown()
     {
-        return Mage::helper('M2ePro/Module')->getRegistryValue('/ebay/motors/instruction/is_shown/');
+        return Mage::helper('M2ePro/Module')->getRegistry()->getValue('/ebay/motors/instruction/is_shown/');
     }
 
     //########################################

@@ -173,12 +173,11 @@ class Ess_M2ePro_Model_Magento_Product_Image
 
     protected function getBaseMediaUrl()
     {
-        $shouldBeSecure = $this->getArea() == Mage_Core_Model_App_Area::AREA_FRONTEND
-            ? Mage::helper('M2ePro/Component_Ebay_Images')->shouldBeUrlsSecure()
-            : null;
+        $secure = $this->getArea() == Mage_Core_Model_App_Area::AREA_FRONTEND
+            ? Mage::helper('M2ePro/Module_Configuration')->getSecureImageUrlInItemDescriptionMode() : null;
 
         return Mage::app()->getStore($this->_storeId)->getBaseUrl(
-            Mage_Core_Model_Store::URL_TYPE_MEDIA, $shouldBeSecure
+            Mage_Core_Model_Store::URL_TYPE_MEDIA, $secure
         );
     }
 

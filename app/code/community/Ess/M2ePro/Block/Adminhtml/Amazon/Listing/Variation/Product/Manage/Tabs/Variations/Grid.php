@@ -864,7 +864,7 @@ HTML;
 
         $logViewUrl = $this->getUrl(
             '*/adminhtml_amazon_log/listing', array(
-                'id'   => $listingId,
+                'listing_id' => $listingId,
                 'back' => $helper->makeBackUrlParam('*/adminhtml_amazon_listing/view', array('id' => $listingId))
             )
         );

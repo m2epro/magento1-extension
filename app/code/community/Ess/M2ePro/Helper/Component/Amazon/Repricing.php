@@ -69,9 +69,10 @@ class Ess_M2ePro_Helper_Component_Amazon_Repricing extends Mage_Core_Helper_Abst
 
         if ($response === false) {
             throw new Ess_M2ePro_Model_Exception_Connection(
-                'The Action was not completed because connection with M2E Pro Repricing Service was not set.
-                 There are several possible reasons: temporary connection problem – please wait and try again later;
-                 block of outgoing connection by firewall',
+                Mage::helper('M2ePro')->__(
+                    'M2E Pro Server connection failed. Find the solution <a target="_blank" href="%url%">here</a>',
+                    Mage::helper('M2ePro/Module_Support')->getKnowledgebaseUrl('664870')
+                ),
                 array(
                     'curl_error_number' => $errorNumber,
                     'curl_info'         => $curlInfo

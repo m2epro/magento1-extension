@@ -312,7 +312,7 @@ HTML;
         $javascriptsMain = <<<HTML
 <script type="text/javascript">
 
-    var button = $('amazon_listing_category_continue_btn');
+    var button = $('add_products_new_asin_manual_continue');
     if ({$isNotExistProductsWithDescriptionTemplate}) {
         button.addClassName('disabled');
         button.disable();

@@ -112,8 +112,7 @@ class Ess_M2ePro_Model_Magento_Product_Index
      */
     public function isIndexManagementEnabled()
     {
-        return (bool)(int)Mage::helper('M2ePro/Module')->getConfig()
-                            ->getGroupValue('/product/index/', 'mode');
+        return (bool)Mage::helper('M2ePro/Module_Configuration')->getProductIndexMode();
     }
 
     public function isDisabledIndex($code)

@@ -32,26 +32,12 @@ class Ess_M2ePro_Helper_Module extends Mage_Core_Helper_Abstract
 
     //########################################
 
-    public function setRegistryValue($key, $value)
+    /**
+     * @return Ess_M2ePro_Model_Registry_Manager
+     */
+    public function getRegistry()
     {
-        $registryModel = Mage::getModel('M2ePro/Registry')->loadByKey($key);
-        $registryModel->setValue($value);
-        $registryModel->save();
-    }
-
-    public function getRegistryValue($key)
-    {
-        return Mage::getModel('M2ePro/Registry')->loadByKey($key)->getValue();
-    }
-
-    public function deleteRegistryValue($key)
-    {
-        $registryModel = Mage::getModel('M2ePro/Registry');
-        $registryModel->load($key, 'key');
-
-        if ($registryModel->getId()) {
-            $registryModel->delete();
-        }
+        return Mage::getSingleton('M2ePro/Registry_Manager');
     }
 
     //########################################
@@ -90,16 +76,14 @@ class Ess_M2ePro_Helper_Module extends Mage_Core_Helper_Abstract
 
     public function getInstallationKey()
     {
-        return Mage::helper('M2ePro/Module')->getConfig()->getGroupValue('/', 'installation_key');
+        return $this->getConfig()->getGroupValue('/', 'installation_key');
     }
 
     //########################################
 
     public function getServerMessages()
     {
-        /** @var Ess_M2ePro_Model_Registry $registry */
-        $registry = Mage::getModel('M2ePro/Registry')->loadByKey('/server/messages/');
-        $messages = $registry->getValueFromJson();
+        $messages = $this->getRegistry()->getValueFromJson('/server/messages/');
 
         $messages = array_filter($messages, array($this,'getServerMessagesFilterModuleMessages'));
         !is_array($messages) && $messages = array();
@@ -135,67 +119,6 @@ class Ess_M2ePro_Helper_Module extends Mage_Core_Helper_Abstract
         }
 
         return true;
-    }
-
-    //########################################
-
-    public function getFoldersAndFiles()
-    {
-        $paths = array(
-            'app/code/community/Ess/',
-            'app/code/community/Ess/M2ePro/*',
-
-            'app/locale/*/Ess_M2ePro.csv',
-            'app/etc/modules/Ess_M2ePro.xml',
-            'app/design/adminhtml/default/default/layout/M2ePro.xml',
-
-            'js/M2ePro/*',
-            'skin/adminhtml/default/default/M2ePro/*',
-            'skin/adminhtml/default/enterprise/M2ePro/*',
-            'app/design/adminhtml/default/default/template/M2ePro/*'
-        );
-
-        return $paths;
-    }
-
-    //########################################
-
-    public function getUnWritableDirectories()
-    {
-        $directoriesForCheck = array();
-        foreach ($this->getFoldersAndFiles() as $item) {
-            $fullDirPath = Mage::getBaseDir().DS.$item;
-
-            if (preg_match('/\*.*$/', $item)) {
-                $fullDirPath = preg_replace('/\*.*$/', '', $fullDirPath);
-                $directoriesForCheck = array_merge($directoriesForCheck, $this->getDirectories($fullDirPath));
-            }
-
-            $directoriesForCheck[] = dirname($fullDirPath);
-            is_dir($fullDirPath) && $directoriesForCheck[] = rtrim($fullDirPath, '/\\');
-        }
-
-        $directoriesForCheck = array_unique($directoriesForCheck);
-
-        $unWritableDirs = array();
-        foreach ($directoriesForCheck as $directory) {
-            !is_dir_writeable($directory) && $unWritableDirs[] = $directory;
-        }
-
-        return $unWritableDirs;
-    }
-
-    protected function getDirectories($dirPath)
-    {
-        $directoryIterator = new RecursiveDirectoryIterator($dirPath, FilesystemIterator::SKIP_DOTS);
-        $iterator = new RecursiveIteratorIterator($directoryIterator, RecursiveIteratorIterator::SELF_FIRST);
-
-        $directories = array();
-        foreach ($iterator as $path) {
-            $path->isDir() && $directories[] = rtrim($path->getPathname(), '/\\');
-        }
-
-        return $directories;
     }
 
     //########################################

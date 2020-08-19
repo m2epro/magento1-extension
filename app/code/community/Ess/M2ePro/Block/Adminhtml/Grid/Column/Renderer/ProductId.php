@@ -30,8 +30,8 @@ class Ess_M2ePro_Block_Adminhtml_Grid_Column_Renderer_ProductId
         $url = $this->getUrl('adminhtml/catalog_product/edit', array('id' => $productId, 'store' => $storeId));
         $withoutImageHtml = '<a href="'.$url.'" target="_blank">' . $productId . '</a>';
 
-        $showProductsThumbnails = (bool)(int)Mage::helper('M2ePro/Module')
-            ->getConfig()->getGroupValue('/view/', 'show_products_thumbnails');
+        $showProductsThumbnails = (bool)Mage::helper('M2ePro/Module_Configuration')
+            ->getViewShowProductsThumbnailsMode();
         if (!$showProductsThumbnails) {
             return $withoutImageHtml;
         }

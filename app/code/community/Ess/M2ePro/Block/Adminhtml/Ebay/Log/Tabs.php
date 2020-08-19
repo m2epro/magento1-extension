@@ -45,26 +45,10 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Log_Tabs extends Ess_M2ePro_Block_Adminhtm
         );
 
         if ($this->getData('active_tab') == self::TAB_ID_LISTING) {
-            $tab['content'] = $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_listing_log_help')->toHtml();
-            $tab['content'] .= $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_listing_log')->toHtml();
+            $tab['content'] = $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_log_listing_help')->toHtml();
+            $tab['content'] .= $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_log_listing_view')->toHtml();
         } else {
             $tab['url'] = $this->getUrl('*/adminhtml_ebay_log/listing');
-        }
-
-        return $tab;
-    }
-
-    protected function prepareTabSynchronization()
-    {
-        $tab = array(
-            'label' => Mage::helper('M2ePro')->__('Synchronization'),
-            'title' => Mage::helper('M2ePro')->__('Synchronization')
-        );
-
-        if ($this->getData('active_tab') == self::TAB_ID_SYNCHRONIZATION) {
-            $tab['content'] = $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_synchronization_log')->toHtml();
-        } else {
-            $tab['url'] = $this->getUrl('*/adminhtml_ebay_log/synchronization');
         }
 
         return $tab;
@@ -78,14 +62,30 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Log_Tabs extends Ess_M2ePro_Block_Adminhtm
         );
 
         if ($this->getData('active_tab') == self::TAB_ID_ORDER) {
-            $tab['content'] = $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_order_log_help')->toHtml();
+            $tab['content'] = $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_log_order_help')->toHtml();
             $tab['content'] .= $this->getLayout()->createBlock(
-                'M2ePro/adminhtml_order_log', '', array(
+                'M2ePro/adminhtml_ebay_log_order', '', array(
                     'component_mode' => Ess_M2ePro_Helper_Component_Ebay::NICK
                 )
             )->toHtml();
         } else {
             $tab['url'] = $this->getUrl('*/adminhtml_ebay_log/order');
+        }
+
+        return $tab;
+    }
+
+    protected function prepareTabSynchronization()
+    {
+        $tab = array(
+            'label' => Mage::helper('M2ePro')->__('Synchronization'),
+            'title' => Mage::helper('M2ePro')->__('Synchronization')
+        );
+
+        if ($this->getData('active_tab') == self::TAB_ID_SYNCHRONIZATION) {
+            $tab['content'] = $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_log_synchronization')->toHtml();
+        } else {
+            $tab['url'] = $this->getUrl('*/adminhtml_ebay_log/synchronization');
         }
 
         return $tab;

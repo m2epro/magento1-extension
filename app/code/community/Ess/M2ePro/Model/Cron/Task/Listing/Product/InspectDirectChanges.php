@@ -18,12 +18,18 @@ class Ess_M2ePro_Model_Cron_Task_Listing_Product_InspectDirectChanges extends Es
 
     //########################################
 
+    protected function isModeEnabled()
+    {
+        if (!parent::isModeEnabled()) {
+            return false;
+        }
+
+        return Mage::helper('M2ePro/Module_Configuration')->isEnableListingProductInspectorMode();
+    }
+
     protected function performActions()
     {
         foreach (Mage::helper('M2ePro/Component')->getEnabledComponents() as $component) {
-            if (!$this->isEnabled()) {
-                continue;
-            }
 
             $allowedListingsProductsCount = $this->calculateAllowedListingsProductsCount($component);
             if ($allowedListingsProductsCount <= 0) {
@@ -88,16 +94,9 @@ class Ess_M2ePro_Model_Cron_Task_Listing_Product_InspectDirectChanges extends Es
 
     //########################################
 
-    protected function isEnabled()
-    {
-        return (bool)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(self::KEY_PREFIX.'/', 'mode');
-    }
-
-    // ---------------------------------------
-
     protected function getLastListingProductId($component)
     {
-        $configValue = Mage::helper('M2ePro/Module')->getRegistryValue(
+        $configValue = Mage::helper('M2ePro/Module')->getRegistry()->getValue(
             self::KEY_PREFIX.'/'.$component.'/last_listing_product_id/'
         );
 
@@ -110,7 +109,7 @@ class Ess_M2ePro_Model_Cron_Task_Listing_Product_InspectDirectChanges extends Es
 
     protected function setLastListingProductId($component, $listingProductId)
     {
-        Mage::helper('M2ePro/Module')->setRegistryValue(
+        Mage::helper('M2ePro/Module')->getRegistry()->setValue(
             self::KEY_PREFIX.'/'.$component.'/last_listing_product_id/',
             (int)$listingProductId
         );

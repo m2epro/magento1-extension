@@ -119,7 +119,6 @@ HTML
     /**
      * @title "Print Inspector Data"
      * @description "Print Inspector Data"
-     * @new_line
      */
     public function getInspectorDataAction()
     {
@@ -338,7 +337,6 @@ HTML
     /**
      * @title "Build Order Quote"
      * @description "Print Order Quote Data"
-     * @new_line
      */
     public function getPrintOrderQuoteDataAction()
     {
@@ -350,7 +348,7 @@ HTML
 
             if (!$order->getId()) {
                 $this->_getSession()->addError('Unable to load order instance.');
-                $this->_redirectUrl(Mage::helper('M2ePro/View_ControlPanel')->getPageModuleTabUrl());
+                $this->_redirectUrl(Mage::helper('M2ePro/View_ControlPanel')->getPageToolsTabUrl());
                 return;
             }
 
@@ -419,202 +417,9 @@ HTML
         );
     }
 
-    //########################################
-
-    /**
-     * @title "Search Troubles With Parallel Execution"
-     * @description "By operation history table"
-     * @new_line
-     */
-    public function searchTroublesWithParallelExecutionAction()
-    {
-        if (!$this->getRequest()->getParam('print')) {
-            $formKey = Mage::getSingleton('core/session')->getFormKey();
-            $actionUrl = Mage::helper('adminhtml')->getUrl('*/*/*');
-
-            $collection = Mage::getModel('M2ePro/OperationHistory')->getCollection();
-            $collection->getSelect()->reset(\Zend_Db_Select::COLUMNS);
-            $collection->getSelect()->columns(array('nick'));
-            $collection->getSelect()->order('nick ASC');
-            $collection->getSelect()->distinct();
-
-            $optionsHtml = '';
-            foreach ($collection->getItems() as $item) {
-                $optionsHtml .= <<<HTML
-<option value="{$item->getData('nick')}">{$item->getData('nick')}</option>
-HTML;
-            }
-
-            $html = <<<HTML
-<form method="get" enctype="multipart/form-data" action="{$actionUrl}">
-
-    <div style="margin: 5px 0; width: 400px;">
-        <label style="width: 170px; display: inline-block;">Search by nick: </label>
-        <select name="nick" style="width: 200px;" required>
-            <option value="" style="display: none;"></option>
-            {$optionsHtml}
-        </select>
-    </div>
-
-    <input name="form_key" value="{$formKey}" type="hidden" />
-    <input name="print" value="1" type="hidden" />
-
-    <div style="margin: 10px 0; width: 365px; text-align: right;">
-        <button type="submit">Search</button>
-    </div>
-
-</form>
-HTML;
-            return $this->getResponse()->setBody($html);
-        }
-
-        $searchByNick = (string)$this->getRequest()->getParam('nick');
-
-        $collection = Mage::getModel('M2ePro/OperationHistory')->getCollection();
-        $collection->addFieldToFilter('nick', $searchByNick);
-        $collection->getSelect()->order('id ASC');
-
-        $results = array();
-        $prevItem = null;
-
-        foreach ($collection->getItems() as $item) {
-            /** @var Ess_M2ePro_Model_OperationHistory $item */
-            /** @var Ess_M2ePro_Model_OperationHistory $prevItem */
-
-            if ($item->getData('end_date') === null) {
-                continue;
-            }
-
-            if ($prevItem === null) {
-                $prevItem = $item;
-                continue;
-            }
-
-            $prevEnd   = new DateTime($prevItem->getData('end_date'), new \DateTimeZone('UTC'));
-            $currStart = new DateTime($item->getData('start_date'), new \DateTimeZone('UTC'));
-
-            if ($currStart->getTimeStamp() < $prevEnd->getTimeStamp()) {
-                $results[$item->getId().'##'.$prevItem->getId()] = array(
-                    'curr' => array(
-                        'id'    => $item->getId(),
-                        'start' => $item->getData('start_date'),
-                        'end'   => $item->getData('end_date')
-                    ),
-                    'prev' => array(
-                        'id'    => $prevItem->getId(),
-                        'start' => $prevItem->getData('start_date'),
-                        'end'   => $prevItem->getData('end_date')
-                    ),
-                );
-            }
-
-            $prevItem = $item;
-        }
-
-        if (empty($results)) {
-            return $this->getResponse()->setBody(
-                $this->getEmptyResultsHtml(
-                    'There are no troubles with a parallel work of crons.'
-                )
-            );
-        }
-
-        $tableContent = <<<HTML
-<tr>
-    <th>Num</th>
-    <th>Type</th>
-    <th>ID</th>
-    <th>Started</th>
-    <th>Finished</th>
-    <th>Total</th>
-    <th>Delay</th>
-</tr>
-HTML;
-        $index = 1;
-        $results = array_reverse($results, true);
-
-        foreach ($results as $key => $row) {
-            $currStart = new \DateTime($row['curr']['start'], new \DateTimeZone('UTC'));
-            $currEnd   = new \DateTime($row['curr']['end'], new \DateTimeZone('UTC'));
-            $currTime = $currEnd->diff($currStart);
-            $currTime = $currTime->format('%H:%I:%S');
-
-            $currUrlUp = $this->getUrl(
-                '*/adminhtml_controlPanel_database/showOperationHistoryExecutionTreeUp',
-                array('operation_history_id' => $row['curr']['id'])
-            );
-            $currUrlDown = $this->getUrl(
-                '*/adminhtml_controlPanel_database/showOperationHistoryExecutionTreeDown',
-                array('operation_history_id' => $row['curr']['id'])
-            );
-
-            $prevStart = new \DateTime($row['prev']['start'], new \DateTimeZone('UTC'));
-            $prevEnd   = new \DateTime($row['prev']['end'], new \DateTimeZone('UTC'));
-            $prevTime = $prevEnd->diff($prevStart);
-            $prevTime = $prevTime->format('%H:%I:%S');
-
-            $prevUrlUp = $this->getUrl(
-                '*/adminhtml_controlPanel_database/showOperationHistoryExecutionTreeUp',
-                array('operation_history_id' => $row['prev']['id'])
-            );
-            $prevUrlDown = $this->getUrl(
-                '*/adminhtml_controlPanel_database/showOperationHistoryExecutionTreeDown',
-                array('operation_history_id' => $row['prev']['id'])
-            );
-
-            $delayTime = $currStart->diff($prevStart);
-            $delayTime = $delayTime->format('%H:%I:%S');
-
-            $tableContent .= <<<HTML
-<tr>
-    <td rowspan="2">{$index}</td>
-    <td>Previous</td>
-    <td>
-        {$row['prev']['id']}&nbsp;
-        <a style="color: green;" href="{$prevUrlUp}" target="_blank"><span>&uarr;</span></a>&nbsp;
-        <a style="color: green;" href="{$prevUrlDown}" target="_blank"><span>&darr;</span></a>
-    </td>
-    <td><span>{$row['prev']['start']}</span></td>
-    <td><span>{$row['prev']['end']}</span></td>
-    <td><span>{$prevTime}</span></td>
-    <td rowspan="2"><span>{$delayTime}</span>
-</tr>
-<tr>
-    <td>Current</td>
-    <td>
-        {$row['curr']['id']}&nbsp;
-        <a style="color: green;" href="{$currUrlUp}" target="_blank"><span>&uarr;</span></a>&nbsp;&nbsp;
-        <a style="color: green;" href="{$currUrlDown}" target="_blank"><span>&darr;</span></a>
-        </td>
-    <td><span>{$row['curr']['start']}</span></td>
-    <td><span>{$row['curr']['end']}</span></td>
-    <td><span>{$currTime}</span></td>
-</tr>
-HTML;
-            $index++;
-        }
-
-        $html = $this->getStyleHtml() . <<<HTML
-<html>
-    <body>
-        <h2 style="margin: 20px 0 0 10px">Parallel work of [{$searchByNick}]
-            <span style="color: #808080; font-size: 15px;">(#count# entries)</span>
-        </h2>
-        <br/>
-        <table class="grid" cellpadding="0" cellspacing="0">
-            {$tableContent}
-        </table>
-    </body>
-</html>
-HTML;
-        return $this->getResponse()->setBody(str_replace('#count#', count($results), $html));
-    }
-
-    //########################################
-
     protected function getEmptyResultsHtml($messageText)
     {
-        $backUrl = Mage::helper('M2ePro/View_ControlPanel')->getPageModuleTabUrl();
+        $backUrl = Mage::helper('M2ePro/View_ControlPanel')->getPageToolsTabUrl();
 
         return <<<HTML
     <h2 style="margin: 20px 0 0 10px">

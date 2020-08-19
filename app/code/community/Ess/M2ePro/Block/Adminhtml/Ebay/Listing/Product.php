@@ -63,6 +63,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Product extends Mage_Adminhtml_Blo
 
         $this->_addButton(
             'continue', array(
+                'id'        => 'continue',
                 'label'     => Mage::helper('M2ePro')->__('Continue'),
                 'class'     => 'scalable next',
                 'onclick'   => 'ListingProductAddObj.continue();'
@@ -180,6 +181,7 @@ JS;
 ListingProductAddObj.settingsPopupNoClick();
 JS;
         $data = array(
+            'id'      => 'add_products_custom_settings_popup_no',
             'label'   => Mage::helper('M2ePro')->__('No'),
             'onclick' => $onclick
         );

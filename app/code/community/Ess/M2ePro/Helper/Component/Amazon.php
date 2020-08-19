@@ -128,7 +128,7 @@ class Ess_M2ePro_Helper_Component_Amazon extends Mage_Core_Helper_Abstract
 
         $domain = $this->getCachedObject('Marketplace', $marketplaceId)->getUrl();
 
-        return 'https://sellercentral.'.$domain.'/gp/orders-v2/details/?orderID='.$orderId;
+        return 'https://sellercentral.'.$domain.'/orders-v3/order/'.$orderId;
     }
 
     //########################################

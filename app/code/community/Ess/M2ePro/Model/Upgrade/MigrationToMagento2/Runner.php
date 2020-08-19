@@ -8,9 +8,13 @@
 
 class Ess_M2ePro_Model_Upgrade_MigrationToMagento2_Runner
 {
-    const BACKUP_PREFIX     = 'mtm2';
     const MAP_PREFIX        = 'mtm2map';
     const CONFIG_PREFIX     = '/migrationtomagento2/source/';
+
+    const MAGENTO_PRODUCTS_TABLE_NAME   = 'magento_products';
+    const MAGENTO_ORDERS_TABLE_NAME     = 'magento_orders';
+    const MAGENTO_STORES_TABLE_NAME     = 'magento_stores';
+    const MAGENTO_CATEGORIES_TABLE_NAME = 'magento_categories';
 
     //########################################
 
@@ -22,18 +26,6 @@ class Ess_M2ePro_Model_Upgrade_MigrationToMagento2_Runner
             self::CONFIG_PREFIX, 'is_prepared_for_migration', 0
         );
         $config->setGroupValue(
-            self::CONFIG_PREFIX, 'version', Mage::helper('M2ePro/Module')->getPublicVersion()
-        );
-        $config->setGroupValue(
-            self::CONFIG_PREFIX. 'magento/', 'version', Mage::helper('M2ePro/Magento')->getVersion()
-        );
-        $config->setGroupValue(
-            self::CONFIG_PREFIX. 'magento/', 'edition', Mage::helper('M2ePro/Magento')->getEditionName()
-        );
-        $config->setGroupValue(
-            self::CONFIG_PREFIX. 'magento/', 'tables_prefix', Mage::helper('M2ePro/Magento')->getDatabaseTablesPrefix()
-        );
-        $config->setGroupValue(
             self::CONFIG_PREFIX. 'm2epro/', 'version', Mage::helper('M2ePro/Module')->getPublicVersion()
         );
     }
@@ -41,7 +33,6 @@ class Ess_M2ePro_Model_Upgrade_MigrationToMagento2_Runner
     public function run()
     {
         $this->removeOldTables();
-        $this->backupTables();
         $this->clearUnnecessaryData();
         $this->createMagentoMap();
     }
@@ -51,6 +42,63 @@ class Ess_M2ePro_Model_Upgrade_MigrationToMagento2_Runner
         Mage::helper('M2ePro/Module')->getConfig()->setGroupValue(self::CONFIG_PREFIX, 'is_prepared_for_migration', 1);
         Mage::helper('M2ePro/Module_Maintenance')->enable();
         Mage::helper('M2ePro/Magento')->clearCache();
+    }
+
+    /**
+     * @return array
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
+    public function getMappingTablesRecordsCount()
+    {
+        /** @var Varien_Db_Adapter_Interface $connection */
+        $connection = Mage::getSingleton('core/resource')->getConnection('core_setup');
+
+        $mappingTables = array(
+            self::MAGENTO_PRODUCTS_TABLE_NAME,
+            self::MAGENTO_ORDERS_TABLE_NAME,
+            self::MAGENTO_STORES_TABLE_NAME,
+            self::MAGENTO_CATEGORIES_TABLE_NAME
+        );
+
+        $tablesInfo = array();
+
+        foreach ($mappingTables as $mappingTable) {
+
+            $mappingTableName = $this->getMapTableName($mappingTable);
+            if (!$connection->isTableExists($mappingTableName)){
+                throw new Ess_M2ePro_Model_Exception_Logic("Mapping table {$mappingTableName} does not exist.");
+            }
+
+            $countSelect = $connection->select()->from($mappingTableName, new \Zend_Db_Expr('COUNT(*)'));
+
+            $tablesInfo[$mappingTable] = (int)$connection->fetchOne($countSelect);
+        }
+
+        return $tablesInfo;
+    }
+
+    /**
+     * @param $mappingTableName
+     * @param $limit
+     * @param $offset
+     * @return array
+     * @throws Exception
+     */
+    public function selectDataFromMappingTable($mappingTableName, $limit, $offset)
+    {
+        if (!$this->isMappingTableNameValid($mappingTableName)) {
+            throw new \InvalidArgumentException('Invalid mapping table name.');
+        }
+
+        /** @var Varien_Db_Adapter_Interface $connection */
+        $connection = Mage::getSingleton('core/resource')->getConnection('core_setup');
+
+        $select = $connection->select()
+            ->from($this->getMapTableName($mappingTableName))
+            ->order('id ASC')
+            ->limit($limit, $offset);
+
+        return $connection->fetchAll($select);
     }
 
     //########################################
@@ -86,66 +134,6 @@ class Ess_M2ePro_Model_Upgrade_MigrationToMagento2_Runner
         }
     }
 
-    protected function backupTables()
-    {
-        $tablesForBackup = array(
-            'listing_log',
-            'system_log',
-            'order_log',
-            'synchronization_log',
-            'ebay_account_pickup_store_log',
-
-            'amazon_order',
-            'amazon_order_item',
-            'ebay_order',
-            'ebay_order_item',
-            'ebay_order_external_transaction',
-            'order',
-            'order_item',
-            'walmart_order',
-            'walmart_order_item',
-
-            'listing_product_instruction',
-            'listing_product_scheduled_action',
-
-            'lock_item',
-            'lock_transactional',
-
-            'processing',
-            'processing_lock',
-            'request_pending_single',
-            'request_pending_partial',
-            'request_pending_partial_data',
-            'connector_command_pending_processing_single',
-            'connector_command_pending_processing_partial',
-            'ebay_listing_product_action_processing',
-            'amazon_listing_product_action_processing',
-            'amazon_listing_product_action_processing_list_sku',
-            'amazon_order_action_processing',
-            'walmart_listing_product_action_processing',
-            'walmart_listing_product_action_processing_list',
-
-            'operation_history',
-            'magento_product_websites_update',
-            'order_change',
-            'stop_queue',
-            'archived_entity'
-        );
-
-        $installer = new Ess_M2ePro_Model_Upgrade_MySqlSetup('M2ePro_setup');
-        $installer->versionFrom = '';
-        $installer->versionTo = self::BACKUP_PREFIX;
-
-        /** @var Ess_M2ePro_Model_Upgrade_Backup $backupObject */
-        $backupObject = Mage::getModel(
-            'M2ePro/Upgrade_Backup', array(
-                                       $installer, $tablesForBackup
-                                   )
-        );
-
-        $backupObject->create();
-    }
-
     protected function clearUnnecessaryData()
     {
         $resource   = Mage::getSingleton('core/resource');
@@ -153,51 +141,8 @@ class Ess_M2ePro_Model_Upgrade_MigrationToMagento2_Runner
         $connection = $resource->getConnection('core_write');
 
         $tablesForClearing = array(
-            'm2epro_ebay_dictionary_category',
-            'm2epro_ebay_dictionary_marketplace',
-            'm2epro_ebay_dictionary_shipping',
-            'm2epro_ebay_dictionary_motor_epid',
-            'm2epro_ebay_dictionary_motor_ktype',
-
-            'm2epro_amazon_dictionary_category',
-            'm2epro_amazon_dictionary_category_product_data',
-            'm2epro_amazon_dictionary_marketplace',
-            'm2epro_amazon_dictionary_specific',
-
-            'm2epro_walmart_dictionary_category',
-            'm2epro_walmart_dictionary_marketplace',
-            'm2epro_walmart_dictionary_specific',
-
-            'm2epro_listing_log',
             'm2epro_system_log',
-            'm2epro_synchronization_log',
-            'm2epro_ebay_account_pickup_store_log',
-
-            'm2epro_listing_product_instruction',
-            'm2epro_listing_product_scheduled_action',
-
-            'm2epro_lock_item',
-            'm2epro_lock_transactional',
-
-            'm2epro_processing',
-            'm2epro_processing_lock',
-            'm2epro_request_pending_single',
-            'm2epro_request_pending_partial',
-            'm2epro_request_pending_partial_data',
-            'm2epro_connector_command_pending_processing_single',
-            'm2epro_connector_command_pending_processing_partial',
-            'm2epro_ebay_listing_product_action_processing',
-            'm2epro_amazon_listing_product_action_processing',
-            'm2epro_amazon_listing_product_action_processing_list_sku',
-            'm2epro_amazon_order_action_processing',
-            'm2epro_walmart_listing_product_action_processing',
-            'm2epro_walmart_listing_product_action_processing_list',
-
-            'm2epro_operation_history',
-            'm2epro_magento_product_websites_update',
-            'm2epro_order_change',
-            'm2epro_stop_queue',
-            'm2epro_archived_entity'
+            'm2epro_operation_history'
         );
 
         foreach ($tablesForClearing as $tableName) {
@@ -205,105 +150,15 @@ class Ess_M2ePro_Model_Upgrade_MigrationToMagento2_Runner
                 Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix($tableName)
             );
         }
-
-        //clear all orders data older than one month
-        $minData = new DateTime('now', new DateTimeZone('UTC'));
-        $minData->modify('-1 month');
-
-        $connection->delete(
-            Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('m2epro_order'),
-            'create_date < \'' . $minData->format('Y-m-d H:i:s') . '\''
-        );
-
-        $orderItemTable = Mage::helper('M2ePro/Module_Database_Structure')
-            ->getTableNameWithPrefix('m2epro_order_item');
-        $orderTable = Mage::helper('M2ePro/Module_Database_Structure')
-            ->getTableNameWithPrefix('m2epro_order');
-
-        $select = $connection->select()
-            ->from($orderItemTable)
-            ->joinLeft(
-                $orderTable,
-                "{$orderItemTable}.order_id={$orderTable}.id"
-            )
-            ->where("{$orderTable}.id IS NULL");
-        $connection->query(
-            $connection->deleteFromSelect($select, $orderItemTable)
-        );
-
-        $orderLogTable = Mage::helper('M2ePro/Module_Database_Structure')
-            ->getTableNameWithPrefix('m2epro_order_log');
-
-        $select = $connection->select()
-            ->from($orderLogTable)
-            ->joinLeft(
-                $orderTable,
-                "{$orderLogTable}.order_id={$orderTable}.id"
-            )
-            ->where("{$orderTable}.id IS NULL");
-        $connection->query(
-            $connection->deleteFromSelect($select, $orderLogTable)
-        );
-
-        $orderExternalTransactionTable = Mage::helper('M2ePro/Module_Database_Structure')
-            ->getTableNameWithPrefix('m2epro_ebay_order_external_transaction');
-
-        $select = $connection->select()
-            ->from($orderExternalTransactionTable)
-            ->joinLeft(
-                $orderTable,
-                "{$orderExternalTransactionTable}.order_id={$orderTable}.id"
-            )
-            ->where("{$orderTable}.id IS NULL");
-        $connection->query(
-            $connection->deleteFromSelect(
-                $select, Mage::helper('M2ePro/Module_Database_Structure')
-                ->getTableNameWithPrefix('m2epro_ebay_order_external_transaction')
-            )
-        );
-
-        $components = array(
-            Ess_M2ePro_Helper_Component_Amazon::NICK,
-            Ess_M2ePro_Helper_Component_Ebay::NICK,
-            Ess_M2ePro_Helper_Component_Walmart::NICK
-        );
-
-        foreach ($components as $component) {
-            $componentTable = Mage::helper('M2ePro/Module_Database_Structure')
-                ->getTableNameWithPrefix('m2epro_'.$component.'_order');
-            $select = $connection->select()
-                ->from($componentTable)
-                ->joinLeft(
-                    $orderTable,
-                    "{$componentTable}.order_id={$orderTable}.id"
-                )
-                ->where("{$orderTable}.id IS NULL");
-            $connection->query(
-                $connection->deleteFromSelect($select, $componentTable)
-            );
-
-            $componentTable = Mage::helper('M2ePro/Module_Database_Structure')
-                ->getTableNameWithPrefix('m2epro_'.$component.'_order_item');
-            $select = $connection->select()
-                ->from($componentTable)
-                ->joinLeft(
-                    $orderItemTable,
-                    "{$componentTable}.order_item_id={$orderItemTable}.id"
-                )
-                ->where("{$orderItemTable}.id IS NULL");
-            $connection->query(
-                $connection->deleteFromSelect($select, $componentTable)
-            );
-        }
     }
 
-    protected function createMagentoMap()
+    public function createMagentoMap()
     {
         /** @var Varien_Db_Adapter_Interface $connection */
         $connection = Mage::getSingleton('core/resource')->getConnection('core_setup');
 
         // ---------------------------------------
-        $tableName = $this->getMapTableName('magento_products');
+        $tableName = $this->getMapTableName(self::MAGENTO_PRODUCTS_TABLE_NAME);
         if($connection->isTableExists($tableName)){
             $connection->dropTable($tableName);
         }
@@ -365,7 +220,7 @@ class Ess_M2ePro_Model_Upgrade_MigrationToMagento2_Runner
         // ---------------------------------------
 
         // ---------------------------------------
-        $tableName = $this->getMapTableName('magento_orders');
+        $tableName = $this->getMapTableName(self::MAGENTO_ORDERS_TABLE_NAME);
         if($connection->isTableExists($tableName)){
             $connection->dropTable($tableName);
         }
@@ -415,7 +270,7 @@ class Ess_M2ePro_Model_Upgrade_MigrationToMagento2_Runner
         // ---------------------------------------
 
         // ---------------------------------------
-        $tableName = $this->getMapTableName('magento_stores');
+        $tableName = $this->getMapTableName(self::MAGENTO_STORES_TABLE_NAME);
         if($connection->isTableExists($tableName)){
             $connection->dropTable($tableName);
         }
@@ -477,7 +332,7 @@ class Ess_M2ePro_Model_Upgrade_MigrationToMagento2_Runner
         // ---------------------------------------
 
         // ---------------------------------------
-        $tableName = $this->getMapTableName('magento_categories');
+        $tableName = $this->getMapTableName(self::MAGENTO_CATEGORIES_TABLE_NAME);
         if($connection->isTableExists($tableName)){
             $connection->dropTable($tableName);
         }
@@ -546,6 +401,23 @@ class Ess_M2ePro_Model_Upgrade_MigrationToMagento2_Runner
     {
         return Mage::helper('M2ePro/Module_Database_Structure')
             ->getTableNameWithPrefix('m2epro__' . self::MAP_PREFIX . '_' . $name);
+    }
+
+    /**
+     * @param $tableName
+     * @return bool
+     */
+    protected function isMappingTableNameValid($tableName)
+    {
+        return in_array(
+            $tableName,
+            array(
+                self::MAGENTO_PRODUCTS_TABLE_NAME,
+                self::MAGENTO_ORDERS_TABLE_NAME,
+                self::MAGENTO_STORES_TABLE_NAME,
+                self::MAGENTO_CATEGORIES_TABLE_NAME
+            )
+        );
     }
 
     //########################################

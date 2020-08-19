@@ -58,7 +58,7 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationWalmartController
             $requiredFields = array(
                 'marketplace_id',
                 'consumer_id',
-                'old_private_key',
+                'private_key',
                 'client_id',
                 'client_secret'
             );
@@ -73,11 +73,11 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationWalmartController
             $marketplace = Mage::getModel('M2ePro/Marketplace')->loadInstance($accountData['marketplace_id']);
 
             if ($params['marketplace_id'] == Ess_M2ePro_Helper_Component_Walmart::MARKETPLACE_CA &&
-                $params['consumer_id'] && $params['old_private_key']) {
+                $params['consumer_id'] && $params['private_key']) {
                 $requestData = array(
                     'marketplace_id' => $params['marketplace_id'],
                     'consumer_id'    => $params['consumer_id'],
-                    'private_key'    => $params['old_private_key'],
+                    'private_key'    => $params['private_key'],
                 );
             } elseif ($params['marketplace_id'] != Ess_M2ePro_Helper_Component_Walmart::MARKETPLACE_CA &&
                 $params['client_id'] && $params['client_secret']) {
@@ -85,7 +85,6 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationWalmartController
                     'marketplace_id' => $params['marketplace_id'],
                     'client_id'      => $params['client_id'],
                     'client_secret'  => $params['client_secret'],
-                    'consumer_id'    => $params['consumer_id']
                 );
             } else {
                 $error = Mage::helper('M2ePro')->__('You should fill all required fields.');

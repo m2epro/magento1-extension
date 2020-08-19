@@ -231,10 +231,7 @@ class Ess_M2ePro_Helper_Component_Walmart_Variation extends Mage_Core_Helper_Abs
 
     public function increaseThemeUsageCount($theme, $marketplaceId)
     {
-        /** @var Ess_M2ePro_Model_Registry $registry */
-        $registry = Mage::getModel('M2ePro/Registry')->load(self::DATA_REGISTRY_KEY, 'key');
-
-        $data = $registry->getSettings('value');
+        $data = Mage::helper('M2ePro/Module')->getRegistry()->getValueFromJson(self::DATA_REGISTRY_KEY);
 
         if (empty($data[$marketplaceId][$theme])) {
             $data[$marketplaceId][$theme] = 0;
@@ -244,8 +241,7 @@ class Ess_M2ePro_Helper_Component_Walmart_Variation extends Mage_Core_Helper_Abs
 
         arsort($data[$marketplaceId]);
 
-        $registry->setData('key', self::DATA_REGISTRY_KEY);
-        $registry->setSettings('value', $data)->save();
+        Mage::helper('M2ePro/Module')->getRegistry()->setValue(self::DATA_REGISTRY_KEY, $data);
 
         $this->removeThemeUsageDataCache();
     }
@@ -259,9 +255,7 @@ class Ess_M2ePro_Helper_Component_Walmart_Variation extends Mage_Core_Helper_Abs
             return $cacheData;
         }
 
-        /** @var Ess_M2ePro_Model_Registry $registry */
-        $registry = Mage::getModel('M2ePro/Registry')->load(self::DATA_REGISTRY_KEY, 'key');
-        $data = $registry->getSettings('value');
+        $data = Mage::helper('M2ePro/Module')->getRegistry()->getValueFromJson(self::DATA_REGISTRY_KEY);
 
         $this->setThemeUsageDataCache($data);
 

@@ -13,7 +13,29 @@ class Ess_M2ePro_Model_Ebay_Connector_Item_Relist_Responser
 
     protected function getSuccessfulMessage()
     {
-        return 'Item was successfully Relisted';
+        $currency = Mage::app()->getLocale()->currency(
+            $this->_listingProduct->getMarketplace()->getChildObject()->getCurrency()
+        );
+
+        $onlineQty = $this->_listingProduct->getChildObject()->getOnlineQty() -
+                     $this->_listingProduct->getChildObject()->getOnlineQtySold();
+
+        if ($this->getRequestDataObject()->isVariationItem()) {
+            $calculateWithEmptyQty = $this->_listingProduct->getChildObject()->isOutOfStockControlEnabled();
+
+            return sprintf(
+                'Product was Relisted with QTY %d, Price %s - %s',
+                $onlineQty,
+                $currency->toCurrency($this->getRequestDataObject()->getVariationMinPrice($calculateWithEmptyQty)),
+                $currency->toCurrency($this->getRequestDataObject()->getVariationMaxPrice($calculateWithEmptyQty))
+            );
+        }
+
+        return sprintf(
+            'Product was Relisted with QTY %d, Price %s',
+            $onlineQty,
+            $currency->toCurrency($this->_listingProduct->getChildObject()->getOnlineCurrentPrice())
+        );
     }
 
     //########################################
@@ -134,22 +156,6 @@ class Ess_M2ePro_Model_Ebay_Connector_Item_Relist_Responser
         if ($message = $this->isDuplicateErrorByEbayEngineAppeared($responseMessages)) {
             $this->processDuplicateByEbayEngine($message);
         }
-
-        $additionalData = $this->_listingProduct->getAdditionalData();
-        if (empty($additionalData['skipped_action_configurator_data'])) {
-            return;
-        }
-
-        $configurator = Mage::getModel('M2ePro/Ebay_Listing_Product_Action_Configurator');
-        $configurator->setData($additionalData['skipped_action_configurator_data']);
-
-        $scheduledActionManager = Mage::getModel('M2ePro/Listing_Product_ScheduledAction_Manager');
-        $scheduledActionManager->addReviseAction(
-            $this->_listingProduct, $configurator, false, $this->_params['params']
-        );
-
-        unset($additionalData['skipped_action_configurator_data']);
-        $this->_listingProduct->setSettings('additional_data', $additionalData)->save();
 
         parent::eventAfterExecuting();
     }

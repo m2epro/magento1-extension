@@ -20,8 +20,7 @@ class Ess_M2ePro_Helper_Server_Request extends Mage_Core_Helper_Abstract
     ) {
         if (!$canIgnoreMaintenance && Mage::helper('M2ePro/Server_Maintenance')->isNow()) {
             throw new Ess_M2ePro_Model_Exception_Connection(
-                'The action is temporarily unavailable. M2E Pro server is currently under the planned maintenance.
-                Please try again later.'
+                'The action is temporarily unavailable. M2E Pro Server is under maintenance. Please try again later.'
             );
         }
 
@@ -70,18 +69,11 @@ class Ess_M2ePro_Helper_Server_Request extends Mage_Core_Helper_Abstract
                 );
             }
 
-            $errorMsg = 'The Action was not completed because connection with M2E Pro Server was not set.
-            There are several possible reasons:  temporary connection problem – please wait and try again later;
-            block of outgoing connection by firewall – please, ensure that connection to s1.m2epro.com and
-            s2.m2epro.com, port 443 is allowed; CURL library is not installed or it does not support HTTPS Protocol –
-            please, install/update CURL library on your server and ensure it supports HTTPS Protocol.
-            More information you can find <a target="_blank" href="'.
-                Mage::helper('M2ePro/Module_Support')
-                    ->getKnowledgebaseUrl('server-connection')
-                .'">here</a>';
-
             throw new Ess_M2ePro_Model_Exception_Connection(
-                $errorMsg,
+                Mage::helper('M2ePro')->__(
+                    'M2E Pro Server connection failed. Find the solution <a target="_blank" href="%url%">here</a>',
+                    Mage::helper('M2ePro/Module_Support')->getKnowledgebaseUrl('664870')
+                ),
                 array(
                     'curl_error_number'  => $response['curl_error_number'],
                     'curl_error_message' => $response['curl_error_message'],
@@ -104,8 +96,7 @@ class Ess_M2ePro_Helper_Server_Request extends Mage_Core_Helper_Abstract
     ) {
         if (!$canIgnoreMaintenance && Mage::helper('M2ePro/Server_Maintenance')->isNow()) {
             throw new Ess_M2ePro_Model_Exception_Connection(
-                'The action is temporarily unavailable. M2E Pro server is currently under the planned maintenance.
-                Please try again later.'
+                'The action is temporarily unavailable. M2E Pro Server is under maintenance. Please try again later.'
             );
         }
 

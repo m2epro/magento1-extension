@@ -265,10 +265,6 @@ window.BlockNotice = Class.create({
     getHeaderHtml: function(id,title,subtitle,collapseable,hideblock)
     {
         var isClosedContent = this.getHashedStorage(id + this.storageKeys.closed);
-        if (BLOCK_NOTICES_DISABLE_COLLAPSE) {
-            isClosedContent = 0;
-        }
-
         var titleHtml = '';
         if (title != '') {
             titleHtml = '<span class="title">'+title+'</span>';
@@ -323,10 +319,6 @@ window.BlockNotice = Class.create({
     getContentHtml: function(id,content,collapseable)
     {
         var isClosedContent = this.getHashedStorage(id + this.storageKeys.closed);
-        if (BLOCK_NOTICES_DISABLE_COLLAPSE) {
-            isClosedContent = 0;
-        }
-
         var contentHtml = '';
         if (collapseable && isClosedContent == '1') {
             contentHtml = '<div class="block_notices_content" style="display: none;">';
@@ -525,8 +517,8 @@ window.BlockNotice = Class.create({
             return;
         }
 
-        if ((IS_VIEW_INTEGRATION || IS_VIEW_WIZARD || IS_VIEW_CONFIGURATION) && !BLOCK_NOTICES_DISABLE_COLLAPSE
-            && !alwaysShow && this.collapseHelpBlockIntoIcon(object)) {
+        if ((IS_VIEW_INTEGRATION || IS_VIEW_WIZARD || IS_VIEW_CONFIGURATION) &&
+            !alwaysShow && this.collapseHelpBlockIntoIcon(object)) {
 
             object.remove();
             return;

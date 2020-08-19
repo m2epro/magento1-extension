@@ -1,4 +1,42 @@
-* 6.7.2 (r15398) (17/07/2020) 
+* 6.8.0 (r15569) (19/08/2020) 
+
+Common: [Added] Registry Manager
+Common: [Added] Freshdesk widget
+Common: [Added] Config helper
+Common: [Added] Enable/disable automatic synchronization manually
+Common: [Improved] Do not store completely built online data in longtext fields
+Common: [Improved] Make logs the same on both M1 and M2
+Common: [Improved] Validation when moving 3rd Party item to M2E Pro Listing
+Common: [Improved] Create additional instructions for products with the error "Sorry, something went wrong. Please wait a moment and try again"
+Common: [Improved] M2E Pro Migration Process
+Common: [Improved] Use search by indexed column in `m2epro_operation_history` table
+Common: [Improved] Detailed Listing Product Log(s)
+Common: [Fixed] Incorrect updating of "Location Data" in cache info
+Common: [Fixed] Error when search logs by creation date
+Common: [Fixed] Text is not centered in special case in Logs
+Common: [Fixed] 3rd party mapping settings are not being changed after Save action
+Common: [Removed] Remove backward compatibility with Magento v. < 1.6.0.0
+eBay: [Added] Prefixes for eBay orders (by Marketplace)
+eBay: [Added] Create additional instructions for products with the error "Validation of the authentication token in API request failed"
+eBay: [Improved] Observe Magento static blocks by ID
+eBay: [Fixed] Store category cannot be updated
+eBay: [Fixed] In Store Pickup region retrieving does not work
+Amazon: [Added] ASIN Creator filter
+Amazon: [Improved] Amazon cancel/refund reason - send default reason 'CustomerReturn' if order is Shipped
+Amazon: [Improved] Automatic order data resend after an unexpected error on Channel
+Amazon: [Improved] Amazon refund include the shipping cost
+Amazon: [Fixed] Fatal Error: Call to a member function getCreatorType() on null during order status update
+Amazon: [Fixed] Partially Shipped does not work
+Amazon: [Fixed] Link to Channel Order
+Walmart: [Improved] Using the same Marketplace when adding new Policy on Listing Creation Wizard
+Walmart: [Improved] Change order log type/content
+Walmart: [Improved] Automatic order data resend after an unexpected error on Channel
+Walmart: [Fixed] Walmart US Account cannot be saved
+Walmart: [Fixed] Magento orders are not created automatically for Walmart orders after upgrade on 6.7.0
+Walmart: [Fixed] Undefined index: sku in Model/Walmart/Listing/Product/Action/ListAction/Processor.php
+Walmart: [Removed] Consumer ID text field for US Marketplace
+
+* 6.7.2 (r15341) (17/07/2020)
 
 Common: [Improved] Rename sales_order_save_after observers
 Common: [Improved] Listing Product instructions were processed randomly
@@ -23,7 +61,7 @@ Ebay: [Fixed] Orders may be duplicated (for auction listings)
 * 6.7.0 (r15191) (02/06/2020)
 
 Common: [Added] Add 3rd Party Reset button
-Common: [Added] Automatically set maintenance mode if the server connection fails
+Common: [Added] Postpone server requests by a few minutes if the first connection attempt fails
 Common: [Added] New Active Record engine
 Common: [Added] Ability to reimport orders manually
 Common: [Improved] Only one config model should be left

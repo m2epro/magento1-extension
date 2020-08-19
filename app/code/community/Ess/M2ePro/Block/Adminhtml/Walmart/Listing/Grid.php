@@ -207,7 +207,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Grid extends Ess_M2ePro_Block_A
             'viewLog' => array(
                 'caption' => $helper->__('Logs & Events'),
                 'group'   => 'other',
-                'field'   => 'id',
+                'field'   => 'listing_id',
                 'url'     => array(
                     'base'   => '*/adminhtml_walmart_log/listing',
                     'params' => array(

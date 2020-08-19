@@ -19,7 +19,6 @@ class Ess_M2ePro_Model_Magento_Tax_Helper
             ->addFieldToFilter(
                 'code', array('neq' => Ess_M2ePro_Model_Magento_Tax_Rule_Builder::TAX_RATE_CODE_SHIPPING)
             )
-            ->addFieldToFilter('code', array('neq' => 'eBay Tax Rate')) // backward compatibility with m2e 3.x.x
             ->getSize();
     }
 

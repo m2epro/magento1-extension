@@ -136,14 +136,13 @@ class Ess_M2ePro_Adminhtml_Walmart_AccountController
                         'marketplace_id'   => (int)$post['marketplace_id'],
                         'related_store_id' => (int)$post['related_store_id'],
                         'consumer_id'      => $post['consumer_id'],
-                        'private_key'      => $post['old_private_key']
+                        'private_key'      => $post['private_key']
                     );
                 } else {
                     $requestData = array(
                         'title'            => $post['title'],
                         'marketplace_id'   => (int)$post['marketplace_id'],
                         'related_store_id' => (int)$post['related_store_id'],
-                        'consumer_id'      => $post['consumer_id'],
                         'client_id'        => $post['client_id'],
                         'client_secret'    => $post['client_secret'],
                     );
@@ -267,7 +266,7 @@ class Ess_M2ePro_Adminhtml_Walmart_AccountController
     public function checkAuthAction()
     {
         $consumerId    = $this->getRequest()->getParam('consumer_id', false);
-        $oldPrivateKey = $this->getRequest()->getParam('old_private_key', false);
+        $privateKey    = $this->getRequest()->getParam('private_key', false);
         $clientId      = $this->getRequest()->getParam('client_id', false);
         $clientSecret  = $this->getRequest()->getParam('client_secret', false);
         $marketplaceId = $this->getRequest()->getParam('marketplace_id', false);
@@ -279,11 +278,11 @@ class Ess_M2ePro_Adminhtml_Walmart_AccountController
         );
 
         if ($marketplaceId == Ess_M2ePro_Helper_Component_Walmart::MARKETPLACE_CA &&
-            $consumerId && $oldPrivateKey) {
+            $consumerId && $privateKey) {
             $requestData = array(
                 'marketplace' => $marketplaceObject->getNativeId(),
                 'consumer_id' => $consumerId,
-                'private_key' => $oldPrivateKey,
+                'private_key' => $privateKey,
             );
         } elseif ($marketplaceId != Ess_M2ePro_Helper_Component_Walmart::MARKETPLACE_CA &&
                   $clientId && $clientSecret) {
@@ -291,7 +290,6 @@ class Ess_M2ePro_Adminhtml_Walmart_AccountController
                 'marketplace'   => $marketplaceObject->getNativeId(),
                 'client_id'     => $clientId,
                 'client_secret' => $clientSecret,
-                'consumer_id'   => $consumerId
             );
         } else {
             return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode($result));

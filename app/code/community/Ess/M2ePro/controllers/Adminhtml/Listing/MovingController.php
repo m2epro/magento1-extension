@@ -157,11 +157,11 @@ class Ess_M2ePro_Adminhtml_Listing_MovingController
         if ($errorsCount) {
             $logViewUrl = $this->getUrl(
                 '*/adminhtml_' . $componentMode . '_log/listing', array(
-                'id' => $sourceListing->getId(),
-                'back' => Mage::helper('M2ePro')->makeBackUrlParam(
-                    '*/adminhtml_' . $componentMode . '_listing/view',
-                    array('id' => $sourceListing->getId())
-                )
+                    'listing_id' => $sourceListing->getId(),
+                    'back' => Mage::helper('M2ePro')->makeBackUrlParam(
+                        '*/adminhtml_' . $componentMode . '_listing/view',
+                        array('id' => $sourceListing->getId())
+                    )
                 )
             );
 

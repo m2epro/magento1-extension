@@ -17,16 +17,4 @@ class Ess_M2ePro_Model_Resource_Registry
     }
 
     //########################################
-
-    public function loadByKey(Ess_M2ePro_Model_Registry $object, $key)
-    {
-        $this->load($object, $key, 'key');
-        if (!$object->getId()) {
-            $object->setData('key', $key);
-        }
-
-        return $object;
-    }
-
-    //########################################
 }

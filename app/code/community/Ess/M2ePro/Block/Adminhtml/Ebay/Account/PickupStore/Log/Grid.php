@@ -6,7 +6,7 @@
  * @license    Commercial use is forbidden
  */
 
-class Ess_M2ePro_Block_Adminhtml_Ebay_Account_PickupStore_Log_Grid extends Ess_M2ePro_Block_Adminhtml_Log_Grid_Abstract
+class Ess_M2ePro_Block_Adminhtml_Ebay_Account_PickupStore_Log_Grid extends Ess_M2ePro_Block_Adminhtml_Log_AbstractGrid
 {
     protected $_listingProductPickupStoreStateId;
 
@@ -89,7 +89,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_PickupStore_Log_Grid extends Ess_M
             'type'      => 'text',
             'index'     => 'description',
             'filter_index' => 'main_table.description',
-            'frame_callback' => array($this, 'callbackDescription')
+            'frame_callback' => array($this, 'callbackColumnDescription')
             )
         );
 

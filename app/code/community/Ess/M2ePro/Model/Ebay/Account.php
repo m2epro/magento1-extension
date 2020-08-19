@@ -617,6 +617,17 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
 
     // ---------------------------------------
 
+    /**
+     * @return bool
+     */
+    public function isMagentoOrdersNumberMarketplacePrefixUsed()
+    {
+        $settings = $this->getSetting('magento_orders_settings', array('number', 'prefix'));
+        return isset($settings['use_marketplace_prefix']) ? (bool)$settings['use_marketplace_prefix'] : false;
+    }
+
+    // ---------------------------------------
+
     public function getMagentoOrdersCreationMode()
     {
         $setting = $this->getSetting(

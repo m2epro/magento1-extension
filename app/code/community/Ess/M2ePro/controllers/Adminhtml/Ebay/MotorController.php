@@ -672,7 +672,7 @@ class Ess_M2ePro_Adminhtml_Ebay_MotorController extends Ess_M2ePro_Controller_Ad
 
     public function closeInstructionAction()
     {
-        Mage::helper('M2ePro/Module')->setRegistryValue('/ebay/motors/instruction/is_shown/', 1);
+        Mage::helper('M2ePro/Module')->getRegistry()->setValue('/ebay/motors/instruction/is_shown/', 1);
     }
 
     //########################################

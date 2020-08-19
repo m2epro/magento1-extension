@@ -20,17 +20,15 @@ class Ess_M2ePro_Model_Ebay_Feedback_Issue_NegativeReceived extends Ess_M2ePro_M
             return array();
         }
 
-        $config = Mage::helper('M2ePro/Module')->getConfig();
-        if (!$config->getGroupValue('/view/ebay/feedbacks/notification/', 'mode')) {
+        $eBayConfigHelper = Mage::helper('M2ePro/Component_Ebay_Configuration');
+        if (!$eBayConfigHelper->isEnableFeedbackNotificationMode()) {
             return array();
         }
 
-        $lastCheckDate = $config->getGroupValue('/view/ebay/feedbacks/notification/', 'last_check');
-
+        $lastCheckDate = $eBayConfigHelper->getFeedbackNotificationLastCheck();
         if ($lastCheckDate === null) {
-            $config->setGroupValue(
-                '/view/ebay/feedbacks/notification/', 'last_check', Mage::helper('M2ePro')->getCurrentGmtDate()
-            );
+            $eBayConfigHelper->setFeedbackNotificationLastCheck(Mage::helper('M2ePro')->getCurrentGmtDate());
+
             return array();
         }
 
@@ -51,9 +49,7 @@ class Ess_M2ePro_Model_Ebay_Feedback_Issue_NegativeReceived extends Ess_M2ePro_M
                 array('_query' => array('hash' => $editHash))
             );
 
-            $config->setGroupValue(
-                '/view/ebay/feedbacks/notification/', 'last_check', Mage::helper('M2ePro')->getCurrentGmtDate()
-            );
+            $eBayConfigHelper->setFeedbackNotificationLastCheck(Mage::helper('M2ePro')->getCurrentGmtDate());
 
             return array(
                 Mage::getModel(

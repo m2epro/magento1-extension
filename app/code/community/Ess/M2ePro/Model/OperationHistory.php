@@ -171,7 +171,7 @@ class Ess_M2ePro_Model_OperationHistory extends Ess_M2ePro_Model_Abstract
                     Mage::helper('M2ePro/Module_Database_Structure')
                         ->getTableNameWithPrefix('m2epro_operation_history'),
                     array(
-                        '`create_date` <= ?' => $minDate->format('Y-m-d H:i:s')
+                        '`start_date` <= ?' => $minDate->format('Y-m-d H:i:s')
                     )
                 );
     }

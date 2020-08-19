@@ -67,10 +67,11 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Product_Add_SourceMode_Product
         );
 
         $this->_addButton(
-            'save_and_go_to_listing_view', array(
-            'label'     => Mage::helper('M2ePro')->__('Continue'),
-            'onclick'   => 'ProductGridObj.save_click(\'view\')',
-            'class'     => 'scalable next'
+            'add_products_mode_product_continue', array(
+                'id'      => 'add_products_mode_product_continue',
+                'label'   => Mage::helper('M2ePro')->__('Continue'),
+                'onclick' => 'ProductGridObj.save_click(\'view\')',
+                'class'   => 'scalable next'
             )
         );
     }

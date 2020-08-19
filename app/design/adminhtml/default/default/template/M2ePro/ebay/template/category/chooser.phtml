@@ -79,7 +79,8 @@ $itemSpecificsRequired = isset($categoriesData[Category::TYPE_EBAY_MAIN]['mode']
                         </td>
                         <?php if ($this->getIsEditCategoryAllowed()) : ?>
                             <td class="value">
-                                <a href="#" onclick="EbayTemplateCategoryChooserObj.showEditPopUp(<?php echo Category::TYPE_EBAY_MAIN; ?>)"><?php echo Mage::helper('M2ePro')->__('Edit'); ?></a>
+                                <a id="ebay_template_category_chooser_ebay_primary_category_edit" href="#"
+                                   onclick="EbayTemplateCategoryChooserObj.showEditPopUp(<?php echo Category::TYPE_EBAY_MAIN; ?>)"><?php echo Mage::helper('M2ePro')->__('Edit'); ?></a>
                             </td>
                         <?php endif; ?>
                     </tr>
@@ -106,7 +107,9 @@ $itemSpecificsRequired = isset($categoriesData[Category::TYPE_EBAY_MAIN]['mode']
 
                         <?php if (isset($categoriesData[Category::TYPE_EBAY_MAIN]['mode']) && $categoriesData[Category::TYPE_EBAY_MAIN]['mode'] != Ess_M2ePro_Model_Ebay_Template_Category::CATEGORY_MODE_NONE): ?>
                             <td class="value">
-                                <a href="#" onclick="EbayTemplateCategoryChooserObj.editSpecifics()"><?php echo Mage::helper('M2ePro')->__('Edit'); ?></a>
+                                <a id="ebay_template_category_chooser_item_specifics_edit" href="#"
+                                   onclick="EbayTemplateCategoryChooserObj.editSpecifics()"><?php echo
+                                    Mage::helper('M2ePro')->__('Edit'); ?></a>
                             </td>
                         <?php endif; ?>
 

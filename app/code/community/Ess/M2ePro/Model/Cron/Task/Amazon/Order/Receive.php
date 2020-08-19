@@ -100,12 +100,14 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Receive
         }
 
         if (!empty($preparedResponseData['job_token'])) {
-            Mage::helper('M2ePro/Module')->setRegistryValue(
+            Mage::helper('M2ePro/Module')->getRegistry()->setValue(
                 "/amazon/orders/receive/{$merchantId}/job_token/",
                 $preparedResponseData['job_token']
             );
         } else {
-            Mage::helper('M2ePro/Module')->deleteRegistryValue("/amazon/orders/receive/{$merchantId}/job_token/");
+            Mage::helper('M2ePro/Module')->getRegistry()->deleteValue(
+                "/amazon/orders/receive/{$merchantId}/job_token/"
+            );
         }
 
         /** @var Ess_M2ePro_Model_Cron_Task_Amazon_Order_Creator $ordersCreator */
@@ -130,7 +132,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Receive
             $ordersCreator->processMagentoOrders($amazonOrders);
         }
 
-        Mage::helper('M2ePro/Module')->setRegistryValue(
+        Mage::helper('M2ePro/Module')->getRegistry()->setValue(
             "/amazon/orders/receive/{$merchantId}/from_update_date/",
             $preparedResponseData['to_update_date']
         );
@@ -138,7 +140,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Receive
 
     protected function receiveAmazonOrdersData($merchantId, $accounts)
     {
-        $updateSinceTime = Mage::helper('M2ePro/Module')->getRegistryValue(
+        $updateSinceTime = Mage::helper('M2ePro/Module')->getRegistry()->getValue(
             "/amazon/orders/receive/{$merchantId}/from_update_date/"
         );
 
@@ -158,7 +160,9 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Receive
             'to_update_date'   => $toDate
         );
 
-        $jobToken = Mage::helper('M2ePro/Module')->getRegistryValue("/amazon/orders/receive/{$merchantId}/job_token/");
+        $jobToken = Mage::helper('M2ePro/Module')->getRegistry()->getValue(
+            "/amazon/orders/receive/{$merchantId}/job_token/"
+        );
 
         if (!empty($jobToken)) {
             $params['job_token'] = $jobToken;

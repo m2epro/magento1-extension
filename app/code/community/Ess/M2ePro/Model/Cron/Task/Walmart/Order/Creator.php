@@ -50,7 +50,7 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Order_Creator
                 $orderBuilder->initialize($account, $orderData);
 
                 $order = $orderBuilder->process();
-                !$order && $processedWalmartOrders[] = $order;
+                $order && $orders[] = $order;
             } catch (\Exception $e) {
                 $this->_synchronizationLog->addMessageFromException($e);
                 Mage::helper('M2ePro/Module_Exception')->process($e);

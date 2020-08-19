@@ -188,7 +188,7 @@ abstract class Ess_M2ePro_Model_Cron_Task_Abstract
 
     protected function updateLastRun()
     {
-        Mage::helper('M2ePro/Module')->setRegistryValue(
+        Mage::helper('M2ePro/Module')->getRegistry()->setValue(
             $this->getConfigGroup() . 'last_run/',
             Mage::helper('M2ePro')->getCurrentGmtDate()
         );
@@ -244,7 +244,7 @@ abstract class Ess_M2ePro_Model_Cron_Task_Abstract
      */
     protected function isIntervalExceeded()
     {
-        $lastRun = Mage::helper('M2ePro/Module')->getRegistryValue($this->getConfigGroup() . 'last_run/');
+        $lastRun = Mage::helper('M2ePro/Module')->getRegistry()->getValue($this->getConfigGroup() . 'last_run/');
         if ($lastRun === null) {
             return true;
         }

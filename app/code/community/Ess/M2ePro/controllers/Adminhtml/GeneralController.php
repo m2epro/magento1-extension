@@ -286,7 +286,7 @@ class Ess_M2ePro_Adminhtml_GeneralController
 
     public function requirementsPopupCloseAction()
     {
-        Mage::helper('M2ePro/Module')->setRegistryValue('/view/requirements/popup/closed/', 1);
+        Mage::helper('M2ePro/Module')->getRegistry()->setValue('/view/requirements/popup/closed/', 1);
     }
 
     //########################################

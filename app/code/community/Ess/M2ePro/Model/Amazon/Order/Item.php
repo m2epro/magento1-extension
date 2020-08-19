@@ -109,6 +109,14 @@ class Ess_M2ePro_Model_Amazon_Order_Item extends Ess_M2ePro_Model_Component_Chil
     }
 
     /**
+     * @return float
+     */
+    public function getShippingPrice()
+    {
+        return (float)$this->getData('shipping_price');
+    }
+
+    /**
      * @return mixed
      */
     public function getCurrency()
@@ -146,15 +154,33 @@ class Ess_M2ePro_Model_Amazon_Order_Item extends Ess_M2ePro_Model_Component_Chil
 
     // ---------------------------------------
 
+    /**
+     * @return array
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function getTaxDetails()
     {
         return $this->getSettings('tax_details');
     }
 
+    /**
+     * @return float
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function getTaxAmount()
     {
         $taxDetails = $this->getTaxDetails();
         return isset($taxDetails['product']['value']) ? (float)$taxDetails['product']['value'] : 0.0;
+    }
+
+    /**
+     * @return float
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
+    public function getShippingTaxAmount()
+    {
+        $taxDetails = $this->getTaxDetails();
+        return isset($taxDetails['shipping']['value']) ? (float)$taxDetails['shipping']['value'] : 0.0;
     }
 
     // ---------------------------------------
@@ -327,7 +353,19 @@ class Ess_M2ePro_Model_Amazon_Order_Item extends Ess_M2ePro_Model_Component_Chil
     protected function createProduct()
     {
         if (!$this->getAmazonAccount()->isMagentoOrdersListingsOtherProductImportEnabled()) {
-            throw new Ess_M2ePro_Model_Exception('Product Import is disabled in Amazon Account Settings.');
+            throw new Ess_M2ePro_Model_Exception(
+                Mage::helper('M2ePro')->__(
+                    'Product creation is disabled in "Account > Orders > Product Not Found". 
+                     Enable product creation <a href="%url%" target="_blank">here</a>',
+                    Mage::helper('adminhtml')->getUrl(
+                        'M2ePro/adminhtml_amazon_account/edit',
+                        array(
+                            'id' => $this->getAmazonAccount()->getId(),
+                            'tab' => Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit_Tabs::TAB_ID_ORDERS
+                        )
+                    )
+                )
+            );
         }
 
         $storeId = $this->getAmazonAccount()->getMagentoOrdersListingsOtherStoreId();

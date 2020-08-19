@@ -29,7 +29,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Log extends Ess_M2ePro_Block_Adminhtml_W
         $this->removeButton('save');
         $this->removeButton('edit');
 
-        $this->setTemplate('M2ePro/amazon/log/log.phtml');
+        $this->setTemplate('M2ePro/log.phtml');
     }
 
     //########################################
@@ -49,26 +49,13 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Log extends Ess_M2ePro_Block_Adminhtml_W
 
 HTML;
 
-        $javascript = <<<JAVASCIRPT
-
-<script type="text/javascript">
-
-    Event.observe(window, 'load', function() {
-        CommonObj = new Common();
-        LogObj = new Log();
-    });
-
-</script>
-
-JAVASCIRPT;
-
         $activeTab = $this->getData('active_tab') !== null ? $this->getData('active_tab')
             : Ess_M2ePro_Block_Adminhtml_Amazon_Log_Tabs::TAB_ID_LISTING;
         $tabsBlock = $this->getLayout()->createBlock(
             'M2ePro/adminhtml_amazon_log_tabs', '', array('active_tab' => $activeTab)
         );
 
-        return $css . $javascript .
+        return $css .
             parent::_toHtml() .
             $tabsBlock->toHtml() .
             '<div id="tabs_container"></div>';

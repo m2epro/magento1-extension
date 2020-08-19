@@ -34,18 +34,19 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Mode extends Ess_M2ePro_B
 
             $this->_addButton(
                 'back', array(
-                'label'     => Mage::helper('M2ePro')->__('Back'),
-                'class'     => 'back',
-                'onclick'   => 'setLocation(\''.$url.'\');'
+                    'label'     => Mage::helper('M2ePro')->__('Back'),
+                    'class'     => 'back',
+                    'onclick'   => 'setLocation(\''.$url.'\');'
                 )
             );
         }
 
         $this->_addButton(
             'next', array(
-            'label'     => Mage::helper('M2ePro')->__('Continue'),
-            'class'     => 'scalable next',
-            'onclick'   => "$('categories_mode_form').submit();"
+                'id'        => 'next',
+                'label'     => Mage::helper('M2ePro')->__('Continue'),
+                'class'     => 'scalable next',
+                'onclick'   => "$('categories_mode_form').submit();"
             )
         );
     }

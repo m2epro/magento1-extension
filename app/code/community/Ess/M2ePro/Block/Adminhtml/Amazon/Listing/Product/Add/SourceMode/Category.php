@@ -65,7 +65,8 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Product_Add_SourceMode_Category
         );
 
         $this->_addButton(
-            'save_and_go_to_listing_view', array(
+            'add_products_mode_category_continue', array(
+                'id' => 'add_products_mode_category_continue',
                 'label'   => Mage::helper('M2ePro')->__('Continue'),
                 'onclick' => 'add_category_products()',
                 'class'   => 'scalable next'

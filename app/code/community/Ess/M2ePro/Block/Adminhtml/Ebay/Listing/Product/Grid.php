@@ -110,9 +110,8 @@ abstract class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Product_Grid
                 $dbExcludeSelect->where('`listing_id` = ?', (int)$this->getListing()->getId());
             }
 
-            $useAlternativeSelect = (bool)(int)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
-                '/view/products_grid/', 'use_alternative_mysql_select'
-            );
+            $useAlternativeSelect = (bool)Mage::helper('M2ePro/Module_Configuration')
+                ->getViewProductsGridUseAlternativeMysqlSelectMode();
 
             if ($useAlternativeSelect) {
                 $collection->getSelect()
@@ -358,7 +357,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Product_Grid
 
         // ---------------------------------------
         $showAutoActionPopup = Mage::helper('M2ePro')->jsonEncode(
-            !Mage::helper('M2ePro/Module')->getRegistryValue('/ebay/listing/autoaction_popup/is_shown/')
+            !Mage::helper('M2ePro/Module')->getRegistry()->getValue('/ebay/listing/autoaction_popup/is_shown/')
         );
 
         $sessionData = Mage::helper('M2ePro/Data_Session')->getValue($this->_sessionKey . $this->getListing()->getId());

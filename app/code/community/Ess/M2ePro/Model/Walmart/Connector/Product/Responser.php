@@ -67,7 +67,12 @@ abstract class Ess_M2ePro_Model_Walmart_Connector_Product_Responser
 
     public function eventAfterExecuting()
     {
+        if ($this->isTemporaryErrorAppeared($this->getResponse()->getMessages()->getEntities())) {
+            $this->getResponseObject()->throwRepeatActionInstructions();
+        }
+
         parent::eventAfterExecuting();
+
         $this->processParentProcessor();
     }
 
@@ -154,14 +159,10 @@ abstract class Ess_M2ePro_Model_Walmart_Connector_Product_Responser
         $hasError = false;
 
         foreach ($messages as $message) {
-
             /** @var Ess_M2ePro_Model_Connector_Connection_Response_Message $message */
 
             !$hasError && $hasError = $message->isError();
-
-            $this->getLogger()->logListingProductMessage(
-                $this->_listingProduct, $message
-            );
+            $this->getLogger()->logListingProductMessage($this->_listingProduct, $message);
         }
 
         return !$hasError;
@@ -177,9 +178,9 @@ abstract class Ess_M2ePro_Model_Walmart_Connector_Product_Responser
             Ess_M2ePro_Model_Connector_Connection_Response_Message::TYPE_SUCCESS
         );
 
-        $this->getLogger()->logListingProductMessage(
-            $this->_listingProduct, $message
-        );
+        if ($message->getText() !== null) {
+            $this->getLogger()->logListingProductMessage($this->_listingProduct, $message);
+        }
 
         $this->_isSuccess = true;
     }
@@ -361,6 +362,29 @@ abstract class Ess_M2ePro_Model_Walmart_Connector_Product_Responser
         }
 
         throw new Ess_M2ePro_Model_Exception('Wrong Action type');
+    }
+
+    //########################################
+
+    /**
+     * @param Ess_M2ePro_Model_Connector_Connection_Response_Message[] $messages
+     * @return Ess_M2ePro_Model_Connector_Connection_Response_Message|bool
+     *
+     * TODO ERROR CODEs
+     */
+    protected function isTemporaryErrorAppeared(array $messages)
+    {
+        $errorCodes = array(
+            /* TODO ERROR CODEs */
+        );
+
+        foreach ($messages as $message) {
+            if (in_array($message->getCode(), $errorCodes, true)) {
+                return $message;
+            }
+        }
+
+        return false;
     }
 
     //########################################

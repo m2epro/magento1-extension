@@ -67,9 +67,9 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Description_Edit
             $headId = 'walmart-template-description';
             $this->_addButton(
                 'duplicate', array(
-                'label'   => Mage::helper('M2ePro')->__('Duplicate'),
-                'onclick' => "WalmartTemplateDescriptionObj.duplicate_click('{$headId}')",
-                'class'   => 'add M2ePro_duplicate_button'
+                    'label'   => Mage::helper('M2ePro')->__('Duplicate'),
+                    'onclick' => "WalmartTemplateDescriptionObj.duplicate_click('{$headId}')",
+                    'class'   => 'add M2ePro_duplicate_button'
                 )
             );
 
@@ -88,6 +88,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Description_Edit
             $this->_addButton(
                 'save',
                 array(
+                    'id'      => 'save_and_close',
                     'label'   => Mage::helper('M2ePro')->__('Save And Close'),
                     'onclick' => 'WalmartTemplateDescriptionObj.saveAndClose('
                         . '\'' . $this->getUrl('*/*/save', array('_current' => true)) . '\','

@@ -544,7 +544,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_Processor
 
         $message = Mage::getModel('M2ePro/Connector_Connection_Response_Message');
         $message->initFromPreparedData(
-            'Item was successfully Listed',
+            $this->getSuccessMessage($listingProduct),
             Ess_M2ePro_Model_Connector_Connection_Response_Message::TYPE_SUCCESS
         );
 
@@ -601,6 +601,22 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_Processor
         $logger->logListingProductMessage($listingProduct, $message);
 
         $this->completeListProcessingActionSuccess($processingAction);
+    }
+
+    //########################################
+
+    //todo: move to responser
+    protected function getSuccessMessage(Ess_M2ePro_Model_Listing_Product $listingProduct)
+    {
+        $currency = Mage::app()->getLocale()->currency(
+            $listingProduct->getMarketplace()->getChildObject()->getCurrency()
+        );
+
+        return sprintf(
+            'Product was Listed with QTY %d, Price %s',
+            $listingProduct->getChildObject()->getOnlineQty(),
+            $currency->toCurrency($listingProduct->getChildObject()->getOnlinePrice())
+        );
     }
 
     //########################################
@@ -733,6 +749,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_Processor
 
                     $listingProductData['sku'] = $sku;
                 }
+                unset($listingProductData);
             }
         }
 

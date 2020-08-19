@@ -159,6 +159,17 @@ class Ess_M2ePro_Model_Ebay_Order extends Ess_M2ePro_Model_Component_Child_Ebay_
 
     // ---------------------------------------
 
+    /**
+     * @return string
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
+    public function getMagentoOrdersNumberMarketplacePrefix()
+    {
+        return strtoupper($this->getParentObject()->getMarketplace()->getChildObject()->getOriginCountry());
+    }
+
+    // ---------------------------------------
+
     public function getTaxDetails()
     {
         return $this->getSettings('tax_details');

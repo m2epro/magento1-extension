@@ -184,8 +184,9 @@ abstract class Ess_M2ePro_Controller_Adminhtml_BaseController
         if (Mage::helper('M2ePro/Module')->isDisabled()) {
             $message = Mage::helper('M2ePro')->__(
                 <<<HTML
-                M2E Pro is disabled. Inventory and Order synchronization is not running at this moment.
-                At any time, you can enable the Module under <b>System > Configuration > M2E Pro > Advanced.</b>
+                M2E Pro is disabled. Inventory and Order synchronization is not running. 
+                The Module interface is unavailable.<br>
+                You can enable the Module under <i>System > Configuration > M2E Pro > Advanced > Module</i>.
 HTML
             );
             $this->_getSession()->addError($message);
@@ -194,8 +195,8 @@ HTML
         if (Mage::helper('M2ePro/Component')->getEnabledComponents() === array()) {
             $message = Mage::helper('M2ePro')->__(
                 <<<HTML
-                Channel Integrations are disabled. To start working with M2E Pro, please go to 
-                <b>System > Configuration > M2E Pro > Channels</b> and enable at least one Channel Integration.
+                Channel Integrations are disabled. To start working with M2E Pro, go to 
+                <i>System > Configuration > M2E Pro > Channels</i> and enable at least one Channel Integration.
 HTML
             );
             $this->_getSession()->addError($message);

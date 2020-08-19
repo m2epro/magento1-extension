@@ -103,6 +103,8 @@ class Ess_M2ePro_Model_Upgrade_MySqlSetup extends Mage_Core_Model_Resource_Setup
                 $this->_setResourceVersion(self::TYPE_DB_UPGRADE, $versionTo);
             }
 
+            $this->_setResourceVersion(self::TYPE_DB_UPGRADE, $newVersion);
+
             $this->afterUpgrade($oldVersion, $newVersion);
             $this->afterModuleDbModification();
         } catch (Exception $e) {

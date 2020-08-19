@@ -56,7 +56,7 @@ class Ess_M2ePro_Model_Exception_Connection extends Ess_M2ePro_Model_Exception
      */
     protected function getFirstConnectionErrorDate($key)
     {
-        return Mage::getModel('M2ePro/Registry')->loadByKey($key)->getValue();
+        return Mage::helper('M2ePro/Module')->getRegistry()->getValue($key);
     }
 
     /**
@@ -66,22 +66,15 @@ class Ess_M2ePro_Model_Exception_Connection extends Ess_M2ePro_Model_Exception
      */
     protected function setFirstConnectionErrorDate($key, $date)
     {
-        Mage::getModel('M2ePro/Registry')
-            ->loadByKey($key)
-            ->setValue($date)
-            ->save();
+        Mage::helper('M2ePro/Module')->getRegistry()->setValue($key, $date);
     }
 
     /**
      * @param string $key
-     *
-     * @throws Ess_M2ePro_Model_Exception_Logic
      */
     protected function removeFirstConnectionErrorDate($key)
     {
-        Mage::getModel('M2ePro/Registry')
-            ->loadByKey($key)
-            ->delete();
+        Mage::helper('M2ePro/Module')->getRegistry()->deleteValue($key);
     }
 
     //########################################

@@ -6,6 +6,8 @@
  * @license    Commercial use is forbidden
  */
 
+use Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Qty as QtyBuilder;
+
 class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Revise_Response
     extends Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Response
 {
@@ -45,79 +47,11 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Revise_Response
 
     //########################################
 
-    /**
-     * @return string
-     */
-    public function getSuccessfulMessage()
-    {
-        if ($this->getConfigurator()->isExcludingMode()) {
-            return 'Item was successfully Revised';
-        }
-
-        $sequenceStrings = array();
-        $isPlural = false;
-
-        if ($this->getConfigurator()->isQtyAllowed()) {
-            $params = $this->getParams();
-
-            if (!empty($params['switch_to']) &&
-                $params['switch_to'] ===
-                Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Qty::FULFILLMENT_MODE_AFN) {
-                return 'Item was successfully switched to AFN';
-            }
-
-            if (!empty($params['switch_to']) &&
-                $params['switch_to'] ===
-                Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Qty::FULFILLMENT_MODE_MFN) {
-                return 'Item was successfully switched to MFN';
-            }
-
-            $sequenceStrings[] = 'QTY';
-        }
-
-        if ($this->getConfigurator()->isRegularPriceAllowed()) {
-            $sequenceStrings[] = 'Price';
-        }
-
-        if ($this->getConfigurator()->isBusinessPriceAllowed()) {
-            $sequenceStrings[] = 'Business Price';
-        }
-
-        if ($this->getConfigurator()->isDetailsAllowed()) {
-            $sequenceStrings[] = 'Details';
-            $isPlural = true;
-        }
-
-        if ($this->getConfigurator()->isImagesAllowed()) {
-            $sequenceStrings[] = 'Images';
-            $isPlural = true;
-        }
-
-        if (empty($sequenceStrings)) {
-            return 'Item was successfully Revised';
-        }
-
-        if (count($sequenceStrings) == 1) {
-            $verb = 'was';
-            if ($isPlural) {
-                $verb = 'were';
-            }
-
-            return ucfirst($sequenceStrings[0]).' '.$verb.' successfully Revised';
-        }
-
-        return ucfirst(implode(', ', $sequenceStrings)).' were successfully Revised';
-    }
-
-    //########################################
-
     protected function appendQtyValues($data)
     {
         $params = $this->getParams();
 
-        if (!empty($params['switch_to']) &&
-            $params['switch_to']
-                === Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Qty::FULFILLMENT_MODE_AFN) {
+        if (!empty($params['switch_to']) && $params['switch_to'] === QtyBuilder::FULFILLMENT_MODE_AFN) {
             $data['is_afn_channel'] = Ess_M2ePro_Model_Amazon_Listing_Product::IS_AFN_CHANNEL_YES;
             $data['online_qty'] = null;
             $data['status'] = Ess_M2ePro_Model_Listing_Product::STATUS_UNKNOWN;
@@ -125,9 +59,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Revise_Response
             return $data;
         }
 
-        if (!empty($params['switch_to']) &&
-            $params['switch_to']
-                === Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Qty::FULFILLMENT_MODE_MFN) {
+        if (!empty($params['switch_to']) && $params['switch_to'] === QtyBuilder::FULFILLMENT_MODE_MFN) {
             $data['is_afn_channel'] = Ess_M2ePro_Model_Amazon_Listing_Product::IS_AFN_CHANNEL_NO;
         }
 

@@ -29,7 +29,7 @@ class Ess_M2ePro_Model_Resource_Walmart_Order
         $collection->addFieldToFilter('order_id', (int)$orderId);
         $collection->getSelect()->columns(
             array(
-            'items_total' => new Zend_Db_Expr('SUM((`price`)*`qty`)')
+            'items_total' => new Zend_Db_Expr('SUM((`price`)*`qty_purchased`)')
             )
         );
         $collection->getSelect()->group('order_id');

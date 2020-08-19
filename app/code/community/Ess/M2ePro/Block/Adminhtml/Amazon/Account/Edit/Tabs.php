@@ -8,16 +8,19 @@
 
 class Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit_Tabs extends Ess_M2ePro_Block_Adminhtml_Widget_Tabs
 {
+    const TAB_ID_GENERAL             = 'general';
+    const TAB_ID_LISTING_OTHER       = 'listingOther';
+    const TAB_ID_ORDERS              = 'orders';
+    const TAB_ID_VCS_UPLOAD_INVOICES = 'vcs_upload_invoices';
+    const TAB_ID_REPRICING           = 'repricing';
+
     //########################################
 
     public function __construct()
     {
         parent::__construct();
 
-        // Initialization block
-        // ---------------------------------------
         $this->setId('amazonAccountEditTabs');
-        // ---------------------------------------
 
         $this->setTitle(Mage::helper('M2ePro')->__('Configuration'));
         $this->setDestElementId('edit_form');
@@ -29,7 +32,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit_Tabs extends Ess_M2ePro_Blo
         $account = Mage::helper('M2ePro/Data_Global')->getValue('model_account');
 
         $this->addTab(
-            'general',
+            self::TAB_ID_GENERAL,
             array(
                 'label'   => Mage::helper('M2ePro')->__('General'),
                 'title'   => Mage::helper('M2ePro')->__('General'),
@@ -40,7 +43,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit_Tabs extends Ess_M2ePro_Blo
         );
 
         $this->addTab(
-            'listingOther',
+            self::TAB_ID_LISTING_OTHER,
             array(
                 'label'   => Mage::helper('M2ePro')->__('3rd Party Listings'),
                 'title'   => Mage::helper('M2ePro')->__('3rd Party Listings'),
@@ -51,7 +54,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit_Tabs extends Ess_M2ePro_Blo
         );
 
         $this->addTab(
-            'orders',
+            self::TAB_ID_ORDERS,
             array(
                 'label'   => Mage::helper('M2ePro')->__('Orders'),
                 'title'   => Mage::helper('M2ePro')->__('Orders'),
@@ -65,7 +68,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit_Tabs extends Ess_M2ePro_Blo
             $account->getChildObject()->getMarketplace()->getChildObject()->isVatCalculationServiceAvailable()
         ) {
             $this->addTab(
-                'vcs_upload_invoices',
+                self::TAB_ID_VCS_UPLOAD_INVOICES,
                 array(
                     'label'   => Mage::helper('M2ePro')->__('VCS / Upload Invoices'),
                     'title'   => Mage::helper('M2ePro')->__('VCS / Upload Invoices'),
@@ -78,7 +81,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit_Tabs extends Ess_M2ePro_Blo
 
         if (Mage::helper('M2ePro/Component_Amazon_Repricing')->isEnabled() && $account->getId()) {
             $this->addTab(
-                'repricing',
+                self::TAB_ID_REPRICING,
                 array(
                     'label'   => Mage::helper('M2ePro')->__('Repricing Tool'),
                     'title'   => Mage::helper('M2ePro')->__('Repricing Tool'),
@@ -89,7 +92,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit_Tabs extends Ess_M2ePro_Blo
             );
         }
 
-        $this->setActiveTab($this->getRequest()->getParam('tab', 'general'));
+        $this->setActiveTab($this->getRequest()->getParam('tab', self::TAB_ID_GENERAL));
 
         return parent::_beforeToHtml();
     }

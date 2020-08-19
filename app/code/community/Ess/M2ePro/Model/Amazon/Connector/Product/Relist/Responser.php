@@ -16,30 +16,23 @@ class Ess_M2ePro_Model_Amazon_Connector_Product_Relist_Responser
 
     protected function getSuccessfulMessage()
     {
-        return 'Item was successfully Relisted';
-    }
-
-    //########################################
-
-    public function eventAfterExecuting()
-    {
-        parent::eventAfterExecuting();
-
-        $additionalData = $this->_listingProduct->getAdditionalData();
-        if (empty($additionalData['skipped_action_configurator_data'])) {
-            return;
-        }
-
-        $configurator = Mage::getModel('M2ePro/Amazon_Listing_Product_Action_Configurator');
-        $configurator->setData($additionalData['skipped_action_configurator_data']);
-
-        $scheduledActionManager = Mage::getModel('M2ePro/Listing_Product_ScheduledAction_Manager');
-        $scheduledActionManager->addReviseAction(
-            $this->_listingProduct, $configurator, false, $this->_params['params']
+        $currency = Mage::app()->getLocale()->currency(
+            $this->_listingProduct->getMarketplace()->getChildObject()->getCurrency()
         );
 
-        unset($additionalData['skipped_action_configurator_data']);
-        $this->_listingProduct->setSettings('additional_data', $additionalData)->save();
+        $parts = array(
+            sprintf('Product was Relisted with QTY %d', $this->_listingProduct->getChildObject()->getOnlineQty())
+        );
+
+        if ($regularPrice = $this->_listingProduct->getChildObject()->getOnlineRegularPrice()) {
+            $parts[] = sprintf('Regular Price %s', $currency->toCurrency($regularPrice));
+        }
+
+        if ($businessPrice = $this->_listingProduct->getChildObject()->getOnlineBusinessPrice()) {
+            $parts[] = sprintf('Business Price %s', $currency->toCurrency($businessPrice));
+        }
+
+        return implode(', ', $parts);
     }
 
     //########################################

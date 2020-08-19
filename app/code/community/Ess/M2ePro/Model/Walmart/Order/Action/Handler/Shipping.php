@@ -11,16 +11,6 @@ use Ess_M2ePro_Model_Walmart_Order_Item as OrderItem;
 class Ess_M2ePro_Model_Walmart_Order_Action_Handler_Shipping
     extends Ess_M2ePro_Model_Walmart_Order_Action_Handler_Abstract
 {
-    protected $_params = array();
-
-    //########################################
-
-    public function setParams(array $params)
-    {
-        $this->_params = $params;
-        return $this;
-    }
-
     //########################################
 
     public function isNeedProcess()
@@ -44,8 +34,9 @@ class Ess_M2ePro_Model_Walmart_Order_Action_Handler_Shipping
     protected function getRequestData()
     {
         $resultItems = array();
+        $params = $this->_orderChange->getParams();
 
-        foreach ($this->_params['items'] as $itemData) {
+        foreach ($params['items'] as $itemData) {
             $resultItems[] = array(
                 'number' => $itemData['walmart_order_item_id'],
                 'qty'    => $itemData['qty'],
@@ -67,8 +58,9 @@ class Ess_M2ePro_Model_Walmart_Order_Action_Handler_Shipping
         }
 
         $itemsStatuses = array();
+        $params = $this->_orderChange->getParams();
 
-        foreach ($this->_params['items'] as $itemData) {
+        foreach ($params['items'] as $itemData) {
 
             /** @var Ess_M2ePro_Model_Order_Item $orderItem */
             $orderItem = $this->getOrder()->getItemsCollection()->getItemByColumnValue(
@@ -98,10 +90,9 @@ class Ess_M2ePro_Model_Walmart_Order_Action_Handler_Shipping
         $this->getOrder()->setData('status', $orderStatus);
         $this->getOrder()->save();
 
-        $this->getOrder()->getLog()->addMessage(
-            $this->getOrder()->getId(),
-            Mage::helper('M2ePro')->__('Order was successfully marked as Shipped.'),
-            Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS
+        $this->_orderChange->delete();
+        $this->getOrder()->addSuccessLog(
+            Mage::helper('M2ePro')->__('Order was successfully marked as Shipped.')
         );
     }
 
@@ -122,11 +113,7 @@ class Ess_M2ePro_Model_Walmart_Order_Action_Handler_Shipping
         }
 
         foreach ($messages as $message) {
-            $this->getOrder()->getLog()->addMessage(
-                $this->getOrder()->getId(),
-                $message->getText(),
-                Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR
-            );
+            $this->getOrder()->getLog()->addServerResponseMessage($this->getOrder(), $message);
         }
     }
 

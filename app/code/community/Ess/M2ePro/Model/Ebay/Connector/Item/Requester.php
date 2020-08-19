@@ -110,7 +110,7 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Item_Requester
             $requestData['is_eps_ebay_images_mode'] === false ||
             ($requestData['is_eps_ebay_images_mode'] === null &&
                 $requestData['upload_images_mode'] ==
-                Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Images::UPLOAD_IMAGES_MODE_SELF)) {
+                Ess_M2ePro_Helper_Component_Ebay_Configuration::UPLOAD_IMAGES_MODE_SELF)) {
             return self::DEFAULT_REQUEST_TIMEOUT;
         }
 

@@ -43,9 +43,10 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Product_Add_SourceMode
         $url = $this->getUrl('*/*/index', array('_current' => true, 'step' => 2));
         $this->_addButton(
             'next', array(
-            'label'     => Mage::helper('M2ePro')->__('Continue'),
-            'onclick'   => 'CommonObj.submitForm(\''.$url.'\');',
-            'class'     => 'scalable next'
+                'id'      => 'next',
+                'label'   => Mage::helper('M2ePro')->__('Continue'),
+                'onclick' => 'CommonObj.submitForm(\'' . $url . '\');',
+                'class'   => 'scalable next'
             )
         );
     }

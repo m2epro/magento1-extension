@@ -207,7 +207,7 @@ HTML;
             );
 
             $addErrorJs = <<<JS
-var button = $('save_and_go_to_listing_view');
+var button = $('add_products_category_template_category_continue');
 if ({$isNotExistProductsWithCategoryTemplate}) {
     button.addClassName('disabled');
     button.disable();
@@ -244,7 +244,7 @@ HTML;
 
             $addErrorJs .= <<<JS
 MessageObj.addError(`{$msg}`);
-$('save_and_go_to_listing_view').addClassName('disabled').disable();
+$('add_products_category_template_category_continue').addClassName('disabled').disable();
 JS;
         }
 

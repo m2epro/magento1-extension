@@ -158,7 +158,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_SendInvoice
         /** @var Ess_M2ePro_Model_Resource_Order_Change_Collection $changesCollection */
         $changesCollection = Mage::getModel('M2ePro/Order_Change')->getCollection();
         $changesCollection->addAccountFilter($account->getId());
-        $changesCollection->addProcessingAttemptDateFilter(10);
+        $changesCollection->addProcessingAttemptDateFilter();
         $changesCollection->addFieldToFilter('component', Ess_M2ePro_Helper_Component_Amazon::NICK);
         $changesCollection->addFieldToFilter('action', Ess_M2ePro_Model_Order_Change::ACTION_SEND_INVOICE);
         $changesCollection->getSelect()->joinLeft(

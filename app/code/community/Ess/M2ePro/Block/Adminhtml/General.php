@@ -36,9 +36,7 @@ class Ess_M2ePro_Block_Adminhtml_General extends Mage_Adminhtml_Block_Widget
         $this->setId('generalHtml');
         $this->setTemplate('M2ePro/general.phtml');
 
-        $this->block_notices_show = (bool)(int)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
-            '/view/', 'show_block_notices'
-        );
+        $this->block_notices_show = (bool)Mage::helper('M2ePro/Module_Configuration')->getViewShowBlockNoticesMode();
 
         $this->_jsPhp        = Mage::getBlockSingleton('M2ePro/adminhtml_magento_renderer_jsPhp');
         $this->_jsTranslator = Mage::getBlockSingleton('M2ePro/adminhtml_magento_renderer_jsTranslator');

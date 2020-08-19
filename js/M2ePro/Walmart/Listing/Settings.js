@@ -207,7 +207,24 @@ window.WalmartListingSettings = Class.create(Common, {
 
     addNewTemplate: function(url, callback)
     {
-        var win = window.open(url);
+        var win = window.open(url + 'marketplace_id/' + $('marketplace_id').value);
+
+        var intervalId = setInterval(function() {
+
+            if (!win.closed) {
+                return;
+            }
+
+            clearInterval(intervalId);
+
+            callback && callback();
+
+        }, 1000);
+    },
+
+    editTemplate: function(url, id, callback)
+    {
+        var win = window.open(url + 'id/' + id + '/marketplace_id/' + $('marketplace_id').value);
 
         var intervalId = setInterval(function() {
 

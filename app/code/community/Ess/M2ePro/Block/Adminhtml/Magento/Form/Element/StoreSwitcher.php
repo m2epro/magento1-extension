@@ -28,7 +28,7 @@ class Ess_M2ePro_Block_Adminhtml_Magento_Form_Element_StoreSwitcher extends Vari
                     'name'                       => $this->getName(),
                     'display_default_store_mode' => $this->getData('display_default_store_mode'),
                     'required_option'            => $this->getData('required'),
-                    'has_empty_option'           => $this->getData('has_empty_option'),
+                    'empty_option'               => $this->getData('has_empty_option'),
                     'class'                      => $this->getData('class'),
                     'has_default_option'         => $this->getData('has_default_option'),
                 )

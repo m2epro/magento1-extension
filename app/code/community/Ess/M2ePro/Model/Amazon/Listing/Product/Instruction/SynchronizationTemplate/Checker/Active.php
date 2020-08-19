@@ -495,10 +495,14 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Instruction_SynchronizationTemplat
             return false;
         }
 
-        $detailsActionDataBuilder = Mage::getModel('M2ePro/Amazon_Listing_Product_Action_DataBuilder_Details');
-        $detailsActionDataBuilder->setListingProduct($listingProduct);
+        $actionDataBuilder = Mage::getModel('M2ePro/Amazon_Listing_Product_Action_DataBuilder_Details');
+        $actionDataBuilder->setListingProduct($listingProduct);
 
-        if ($detailsActionDataBuilder->getData() != $amazonListingProduct->getOnlineDetailsData()) {
+        $hashDetailsData = Mage::helper('M2ePro')->hashString(
+            Mage::helper('M2ePro')->jsonEncode($actionDataBuilder->getData()),
+            'md5'
+        );
+        if ($hashDetailsData != $amazonListingProduct->getOnlineDetailsData()) {
             return true;
         }
 
@@ -522,7 +526,11 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Instruction_SynchronizationTemplat
         $actionDataBuilder = Mage::getModel('M2ePro/Amazon_Listing_Product_Action_DataBuilder_Images');
         $actionDataBuilder->setListingProduct($listingProduct);
 
-        if ($actionDataBuilder->getData() != $amazonListingProduct->getOnlineImagesData()) {
+        $hashImagesData = Mage::helper('M2ePro')->hashString(
+            Mage::helper('M2ePro')->jsonEncode($actionDataBuilder->getData()),
+            'md5'
+        );
+        if ($hashImagesData != $amazonListingProduct->getOnlineImagesData()) {
             return true;
         }
 

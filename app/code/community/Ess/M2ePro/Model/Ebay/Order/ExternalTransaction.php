@@ -99,7 +99,7 @@ class Ess_M2ePro_Model_Ebay_Order_ExternalTransaction extends Ess_M2ePro_Model_C
         );
 
         $modePrefix = $this->getOrder()->getAccount()->getChildObject()->isModeSandbox() ? 'sandbox.' : '';
-        $baseUrl = Mage::helper('M2ePro/Module')->getConfig()->getGroupValue('/other/paypal/', 'url');
+        $baseUrl = Mage::helper('M2ePro/Module_Configuration')->getOtherPayPalUrl();
 
         return 'https://www.' . $modePrefix . $baseUrl . '?' . http_build_query($params, '', '&');
     }

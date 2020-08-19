@@ -6,6 +6,11 @@
  * @license    Commercial use is forbidden
  */
 
+/**
+ * Class Ess_M2ePro_Block_Adminhtml_Configuration_Settings_Form
+ *
+ * @method Ess_M2ePro_Helper_Module_Configuration getConfigurationHelper()
+ */
 class Ess_M2ePro_Block_Adminhtml_Configuration_Settings_Form extends Ess_M2ePro_Block_Adminhtml_Configuration_Abstract
 {
     //########################################
@@ -30,14 +35,12 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_Settings_Form extends Ess_M2ePro_
 
     protected function _prepareForm()
     {
-        $form = new Varien_Data_Form(
-            array(
+        $form = new Varien_Data_Form(array(
             'id'      => 'config_edit_form',
             'action'  => $this->getUrl('M2ePro/adminhtml_configuration_settings/save'),
             'method'  => 'post',
             'enctype' => 'multipart/form-data'
-            )
-        );
+        ));
 
         $form->setUseContainer(true);
         $this->setForm($form);
@@ -56,46 +59,15 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_Settings_Form extends Ess_M2ePro_
 
     protected function _beforeToHtml()
     {
-        // Set data for form
-        // ---------------------------------------
-        $this->products_show_thumbnails = (bool)(int)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
-            '/view/', 'show_products_thumbnails'
-        );
-        $this->block_notices_show = (bool)(int)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
-            '/view/', 'show_block_notices'
-        );
-        // ---------------------------------------
+        $this->setData('configuration_helper', Mage::helper('M2ePro/Module_Configuration'));
 
-        // ---------------------------------------
-        $data = array(
+        /** @var Mage_Adminhtml_Block_Widget_Button $restoreBlockNoticesButton */
+        $restoreBlockNoticesButton = $this->getLayout()->createBlock('adminhtml/widget_button')->setData(array(
             'label'   => Mage::helper('M2ePro')->__('Restore All Helps & Remembered Choices'),
             'onclick' => 'SettingsObj.restoreAllHelpsAndRememberedChoices()',
             'class'   => 'restore_block_notices'
-        );
-        $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
-        $this->setChild('restore_block_notices', $buttonBlock);
-        // ---------------------------------------
-
-        // ---------------------------------------
-        $this->forceQtyMode = (int)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
-            '/product/force_qty/', 'mode'
-        );
-        $this->forceQtyValue = (int)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
-            '/product/force_qty/', 'value'
-        );
-        // ---------------------------------------
-
-        // ---------------------------------------
-        $this->priceConvertMode = (int)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
-            '/magento/attribute/', 'price_type_converting'
-        );
-        // ---------------------------------------
-
-        // ---------------------------------------
-        $this->inspectorMode = (bool)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
-            '/listing/product/inspector/', 'mode'
-        );
-        // ---------------------------------------
+        ));
+        $this->setChild('restore_block_notices', $restoreBlockNoticesButton);
 
         return parent::_beforeToHtml();
     }

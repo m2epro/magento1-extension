@@ -24,9 +24,8 @@ class Ess_M2ePro_Model_Walmart_ThrottlingManager
 
     public function getAvailableRequestsCount($accountId, $requestType)
     {
-        /** @var Ess_M2ePro_Model_Registry $registry */
-        $registry = Mage::getModel('M2ePro/Registry')->load(self::REGISTRY_KEY.$accountId.'/', 'key');
-        $lastRequestInfo = $registry->getValueFromJson();
+        $lastRequestInfo = Mage::helper('M2ePro/Module')->getRegistry()
+            ->getValueFromJson(self::REGISTRY_KEY . $accountId . '/');
 
         $throttlingInfo = $this->getThrottlingInfo($requestType);
 
@@ -74,19 +73,14 @@ class Ess_M2ePro_Model_Walmart_ThrottlingManager
             'available_requests_count' => $availableRequestsCount,
         );
 
-        /** @var Ess_M2ePro_Model_Registry $registry */
-        $registry = Mage::getModel('M2ePro/Registry')->load(self::REGISTRY_KEY.$accountId.'/', 'key');
-
-        $existedLastRequestInfo = $registry->getValueFromJson();
+        $existedLastRequestInfo = Mage::helper('M2ePro/Module')->getRegistry()
+            ->getValueFromJson(self::REGISTRY_KEY . $accountId . '/');
         $existedLastRequestInfo[$requestType] = $lastRequestInfo;
 
-        $registry->addData(
-            array(
-            'key'   => self::REGISTRY_KEY . $accountId . '/',
-            'value' => Mage::helper('M2ePro')->jsonEncode($existedLastRequestInfo),
-            )
+        Mage::helper('M2ePro/Module')->getRegistry()->setValue(
+            self::REGISTRY_KEY . $accountId . '/',
+            $existedLastRequestInfo
         );
-        $registry->save();
     }
 
     //########################################

@@ -29,42 +29,20 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Log extends Ess_M2ePro_Block_Adminhtml_Wid
         $this->removeButton('save');
         $this->removeButton('edit');
 
-        $this->setTemplate('M2ePro/ebay/log.phtml');
+        $this->setTemplate('M2ePro/log.phtml');
     }
 
     protected function _toHtml()
     {
-        $translations = Mage::helper('M2ePro')->jsonEncode(
-            array(
-            'Description' => Mage::helper('M2ePro')->__('Description')
-            )
-        );
-
-        $javascript = <<<JAVASCIRPT
-
-<script type="text/javascript">
-
-    M2ePro.translator.add({$translations});
-
-    Event.observe(window, 'load', function() {
-        CommonObj = new Common();
-        LogObj = new Log();
-    });
-
-</script>
-
-JAVASCIRPT;
-
         $activeTab = $this->getData('active_tab') !== null ? $this->getData('active_tab')
             : Ess_M2ePro_Block_Adminhtml_Ebay_Log_Tabs::TAB_ID_LISTING;
         $tabsBlock = $this->getLayout()->createBlock(
             'M2ePro/adminhtml_ebay_log_tabs', '', array('active_tab' => $activeTab)
         );
 
-        return $javascript .
-        parent::_toHtml() .
-        $tabsBlock->toHtml() .
-        '<div id="tabs_container"></div>';
+        return parent::_toHtml() .
+               $tabsBlock->toHtml() .
+               '<div id="tabs_container"></div>';
     }
 
     //########################################

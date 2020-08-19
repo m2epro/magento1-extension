@@ -134,9 +134,8 @@ class Ess_M2ePro_Helper_Component_Ebay extends Mage_Core_Helper_Abstract
 
     public function isShowTaxCategory()
     {
-        return (bool)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
-            '/view/ebay/template/selling_format/', 'show_tax_category'
-        );
+        return (bool)Mage::helper('M2ePro/Component_Ebay_Configuration')
+            ->getViewTemplateSellingFormatShowTaxCategory();
     }
 
     public function getAvailableDurations()

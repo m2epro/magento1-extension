@@ -15,10 +15,10 @@ window.ConfigurationSettings = Class.create(Common, {
 
     changeForceQtyMode: function()
     {
-        if($('force_qty_mode').value == 1) {
-            $('force_qty_value_tr').show();
+        if($('product_force_qty_mode').value == 1) {
+            $('product_force_qty_value_tr').show();
         } else {
-            $('force_qty_value_tr').hide();
+            $('product_force_qty_value_tr').hide();
         }
     },
 

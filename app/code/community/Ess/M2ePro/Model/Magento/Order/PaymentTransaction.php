@@ -57,12 +57,10 @@ class Ess_M2ePro_Model_Magento_Order_PaymentTransaction extends Mage_Core_Model_
         $payment->setTransactionId($this->getData('transaction_id'));
         $this->_transaction = $payment->addTransaction($transactionType);
 
-        if (@defined('Mage_Sales_Model_Order_Payment_Transaction::RAW_DETAILS')) {
-            $this->unsetData('transaction_id');
-            $this->_transaction->setAdditionalInformation(
-                Mage_Sales_Model_Order_Payment_Transaction::RAW_DETAILS, $this->getData()
-            );
-        }
+        $this->unsetData('transaction_id');
+        $this->_transaction->setAdditionalInformation(
+            Mage_Sales_Model_Order_Payment_Transaction::RAW_DETAILS, $this->getData()
+        );
 
         $this->_transaction->save();
     }

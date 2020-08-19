@@ -71,11 +71,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_List_Validator
             return true;
         }
 
-        $config = Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
-            '/ebay/connector/listing/', 'check_the_same_product_already_listed'
-        );
-
-        if (empty($config)) {
+        if (!Mage::helper('M2ePro/Component_Ebay_Configuration')->isEnablePreventItemDuplicatesMode()) {
             return true;
         }
 

@@ -598,7 +598,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_ProductAddController
 
     public function setAutoActionPopupShownAction()
     {
-        Mage::helper('M2ePro/Module')->setRegistryValue('/ebay/listing/autoaction_popup/is_shown/', 1);
+        Mage::helper('M2ePro/Module')->getRegistry()->setValue('/ebay/listing/autoaction_popup/is_shown/', 1);
     }
 
     //########################################

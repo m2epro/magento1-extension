@@ -254,7 +254,9 @@ HTML
         </a>
         <span>{$helper->__('or')}</span>
     </span>
-    <a href="javascript: void(0);" onclick="AmazonListingSettingsObj.addNewTemplate(
+    <a href="javascript: void(0);"
+        id="add_selling_format_template_link" 
+        onclick="AmazonListingSettingsObj.addNewTemplate(
         M2ePro.url.addNewSellingFormatTemplate,
         AmazonListingSettingsObj.newSellingFormatTemplateCallback
     );">{$helper->__('Add New')}</a>
@@ -305,7 +307,9 @@ HTML
         </a>
         <span>{$helper->__('or')}</span>
     </span>
-    <a href="javascript: void(0);" onclick="AmazonListingSettingsObj.addNewTemplate(
+    <a href="javascript: void(0);"
+        id="add_synchronization_template_link"  
+        onclick="AmazonListingSettingsObj.addNewTemplate(
         M2ePro.url.addNewSynchronizationTemplate,
         AmazonListingSettingsObj.newSynchronizationTemplateCallback
     );">{$helper->__('Add New')}</a>

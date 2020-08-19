@@ -47,9 +47,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Synchronization_Edit_Form extends Mage_
         // ---------------------------------------
 
         // ---------------------------------------
-        $this->inspectorMode = (bool)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
-            '/listing/product/inspector/', 'mode'
-        );
+        $this->inspectorMode = Mage::helper('M2ePro/Module_Configuration')->isEnableListingProductInspectorMode();
         // ---------------------------------------
 
         return parent::_beforeToHtml();

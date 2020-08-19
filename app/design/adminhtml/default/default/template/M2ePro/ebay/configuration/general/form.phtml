@@ -8,7 +8,6 @@
 // @codingStandardsIgnoreFile
 
 /** @var $this Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_General_Form */
-
 ?>
 
 <script type="text/javascript">
@@ -49,7 +48,7 @@
 
     <input name="form_key" value="<?php echo $this->getFormKey(); ?>" type="hidden" />
 
-    <?php if ($this->is_ebay_feedbacks_enabled) : ?>
+    <?php if ($this->getEnabledFeedback()) : ?>
         <div class="entry-edit" id="magento_block_ebay_configuration_general_notification">
 
             <div class="entry-edit-head">
@@ -65,12 +64,12 @@
 
                         <tr id="negative_feedbacks_row">
                             <td class="label">
-                                <label><?php echo Mage::helper('M2ePro')->__('Negative Feedback'); ?>: </label>
+                                <label for="feedback_notification_mode"><?php echo Mage::helper('M2ePro')->__('Negative Feedback'); ?>: </label>
                             </td>
                             <td class="value">
-                                <select name="view_ebay_feedbacks_notification_mode">
-                                    <option value="0" <?php if (!$this->view_ebay_feedbacks_notification_mode): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
-                                    <option value="1" <?php if ($this->view_ebay_feedbacks_notification_mode): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
+                                <select id="feedback_notification_mode" name="feedback_notification_mode">
+                                    <option value="0" <?php if (!$this->getConfigurationHelper()->isEnableFeedbackNotificationMode()): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
+                                    <option value="1" <?php if ($this->getConfigurationHelper()->isEnableFeedbackNotificationMode()): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
                                 </select>
                                 <p class="note">
                                     <span><?php echo Mage::helper('M2ePro')->__('Show a notification in Magento when you receive negative Feedback on eBay.'); ?></span>
@@ -103,19 +102,17 @@
 
                     <tr>
                         <td class="label">
-                            <label><?php echo Mage::helper('M2ePro')->__('Prevent eBay Item Duplicates')?>: </label>
+                            <label for="prevent_item_duplicates_mode"><?php echo Mage::helper('M2ePro')->__('Prevent eBay Item Duplicates')?>: </label>
                         </td>
 
                         <td class="value">
-                            <select name="check_the_same_product_already_listed_mode">
-                                <option value="0" <?php if (!$this->check_the_same_product_already_listed_mode): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
-                                <option value="1" <?php if ($this->check_the_same_product_already_listed_mode): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
+                            <select id="prevent_item_duplicates_mode" name="prevent_item_duplicates_mode">
+                                <option value="0" <?php if (!$this->getConfigurationHelper()->isEnablePreventItemDuplicatesMode()): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
+                                <option value="1" <?php if ($this->getConfigurationHelper()->isEnablePreventItemDuplicatesMode()): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
                             </select>
                             <p class="note">
                                 <span><?php echo Mage::helper('M2ePro')->__(
-                                    'Choose \'Yes\' to prevent M2E Pro Listing a Product if it has already been added by another M2E Pro Listing.<br/>
-                                     This function is useful if you have Automatic Rules set up that list Products automatically as it will ensure a Product is Listed only once.<br/>
-                                     <b>Note:</b> Applies only to Products Listed automatically on live Marketplaces (ie not using a Sandbox Account).'
+                                    'M2E Pro will not list Magento Product on the Channel if it is already listed within the same eBay Account and Marketplace.'
                                 ); ?></span>
                             </p>
                         </td>
@@ -143,14 +140,14 @@
 
                     <tr>
                         <td class="label">
-                            <label><?php echo Mage::helper('M2ePro')->__('Main Image/Gallery Hosting Mode')?>: </label>
+                            <label for="upload_images_mode"><?php echo Mage::helper('M2ePro')->__('Main Image/Gallery Hosting Mode')?>: </label>
                         </td>
 
                         <td class="value">
-                            <select name="upload_images_mode">
-                                <option value="<?php echo Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Images::UPLOAD_IMAGES_MODE_AUTO; ?>" <?php if ($this->upload_images_mode == Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Images::UPLOAD_IMAGES_MODE_AUTO): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Automatic'); ?></option>
-                                <option value="<?php echo Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Images::UPLOAD_IMAGES_MODE_SELF; ?>" <?php if ($this->upload_images_mode == Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Images::UPLOAD_IMAGES_MODE_SELF): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Self-Hosted'); ?></option>
-                                <option value="<?php echo Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Images::UPLOAD_IMAGES_MODE_EPS; ?>" <?php if ($this->upload_images_mode == Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Images::UPLOAD_IMAGES_MODE_EPS): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('EPS-Hosted'); ?></option>
+                            <select id="upload_images_mode" name="upload_images_mode">
+                                <option value="<?php echo Ess_M2ePro_Helper_Component_Ebay_Configuration::UPLOAD_IMAGES_MODE_AUTO; ?>" <?php if ($this->getConfigurationHelper()->isAutoUploadImagesMode()): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Automatic'); ?></option>
+                                <option value="<?php echo Ess_M2ePro_Helper_Component_Ebay_Configuration::UPLOAD_IMAGES_MODE_SELF; ?>" <?php if ($this->getConfigurationHelper()->isSelfUploadImagesMode()): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Self-Hosted'); ?></option>
+                                <option value="<?php echo Ess_M2ePro_Helper_Component_Ebay_Configuration::UPLOAD_IMAGES_MODE_EPS; ?>" <?php if ($this->getConfigurationHelper()->isEpsUploadImagesMode()): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('EPS-Hosted'); ?></option>
                             </select>
                             <p class="note">
                                 <span><?php echo Mage::helper('M2ePro')->__('
@@ -166,24 +163,6 @@
                         </td>
                     </tr>
 
-                    <tr>
-                        <td class="label">
-                            <label><?php echo Mage::helper('M2ePro')->__('Use Secure Image URLs in Item Description')?>: </label>
-                        </td>
-
-                        <td class="value">
-                            <select name="should_be_ulrs_secure">
-                                <option value="<?php echo Ess_M2ePro_Helper_Component_Ebay_Images::SHOULD_BE_URLS_SECURE_YES; ?>" <?php if ($this->should_be_ulrs_secure == Ess_M2ePro_Helper_Component_Ebay_Images::SHOULD_BE_URLS_SECURE_YES): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
-                                <option value="<?php echo Ess_M2ePro_Helper_Component_Ebay_Images::SHOULD_BE_URLS_SECURE_NO; ?>" <?php if ($this->should_be_ulrs_secure == Ess_M2ePro_Helper_Component_Ebay_Images::SHOULD_BE_URLS_SECURE_NO): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
-                            </select>
-                            <p class="note">
-                                <span><?php echo Mage::helper('M2ePro')->__('
-                                    Set <strong>Yes</strong> to use the secure content in eBay Item Description
-                                '); ?></span>
-                            </p>
-                        </td>
-                    </tr>
-
                 </table>
 
             </div>
@@ -191,7 +170,7 @@
 
     </div>
 
-    <?php if ($this->motors_marketplace->isStatusEnabled() && $this->motors_marketplace->getChildObject()->isEpidEnabled()): ?>
+    <?php if ($this->getMotorsMarketplace()->isStatusEnabled() && $this->getMotorsMarketplace()->getChildObject()->isEpidEnabled()): ?>
         <div class="entry-edit" id="magento_block_ebay_configuration_general_motors_epids">
 
             <div class="entry-edit-head">
@@ -212,23 +191,23 @@
                     <table class="form-list" cellspacing="0" cellpadding="0">
                         <tbody>
 
-                            <tr>
-                                <td class="label">
-                                    <label for="motors_epids_motor_attribute"><?php echo Mage::helper('M2ePro')->__('Attribute'); ?>:</label>
+                        <tr>
+                            <td class="label">
+                                <label for="motors_epids_attribute"><?php echo Mage::helper('M2ePro')->__('Attribute'); ?>:</label>
+                            </td>
+
+                            <?php if (count($this->getAvailabilityAttributes()) != 0): ?>
+
+                                <td class="value">
+                                    <select id="motors_epids_attribute" class="select M2ePro-custom-attribute-can-be-created" allowed_attribute_types="textarea" apply_to_all_attribute_sets="0" name="motors_epids_attribute">
+                                        <option value="">-- <?php echo Mage::helper('M2ePro')->__('Select Attribute'); ?> --</option>
+                                        <?php foreach ($this->getAvailabilityAttributes() as $attribute): ?>
+                                            <option value="<?php echo $attribute['code']; ?>"<?php if ($attribute['code'] == $this->getConfigurationHelper()->getMotorsEpidsAttribute()): ?> selected="selected"<?php endif; ?>><?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
                                 </td>
-
-                                <?php if (count($this->attributes_for_motors) != 0): ?>
-
-                                    <td class="value">
-                                        <select id="motors_epids_motor_attribute" class="select M2ePro-custom-attribute-can-be-created" allowed_attribute_types="textarea" apply_to_all_attribute_sets="0" name="motors_epids_motor_attribute">
-                                            <option value="">-- <?php echo Mage::helper('M2ePro')->__('Select Attribute'); ?> --</option>
-                                            <?php foreach ($this->attributes_for_motors as $attribute): ?>
-                                                <option value="<?php echo $attribute['code']; ?>"<?php if ($attribute['code'] == $this->motors_epids_motor_attribute): ?> selected="selected"<?php endif; ?>><?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?></option>
-                                            <?php endforeach; ?>
-                                        </select>
-                                    </td>
-                                    <td id="motors_epids_motor_attribute_td_note">
-                                        <p class="note">
+                                <td id="motors_epids_attribute_td_note">
+                                    <p class="note">
                                             <span><?php echo Mage::helper('M2ePro')->__(
                                                 'Choose the Attribute that contains the Product Reference IDs (ePIDs) of compatible vehicles for the parts.
                                                  In the M2E Pro Listing, use the <strong>Add Compatible Vehicles</strong> tool to find necessary compatible Items.
@@ -241,7 +220,7 @@
                                 <?php else: ?>
 
                                     <td class="value">
-                                        <div id="block_notice_ebay_configuration_motors_epids_motor_attribute" class="block_notices_module" title="" subtitle="" collapseable="no" hideblock="no" always_show="yes">
+                                        <div id="block_notice_ebay_configuration_motors_epids_attribute" class="block_notices_module" title="" subtitle="" collapseable="no" hideblock="no" always_show="yes">
                                             <?php echo Mage::helper('M2ePro')->__('You do not have Textarea Attributes.'); ?>
                                         </div>
                                     </td>
@@ -256,10 +235,10 @@
 
                                 <td class="value">
                                     <span style="padding-right: 2px;"><?php echo Mage::helper('M2ePro')->__('From eBay'); ?>: </span>
-                                    <span style="font-weight: bold; display: inline-block; width: 40px;"><?php echo $this->motors_epids_motor_dictionary_ebay_count; ?></span>
+                                    <span style="font-weight: bold; display: inline-block; width: 40px;"><?php echo $this->getMotorsEpidCount(); ?></span>
 
                                     <span style="padding-right: 2px; padding-left: 10px;"><?php echo Mage::helper('M2ePro')->__('Custom Added'); ?>: </span>
-                                    <span style="font-weight: bold; padding-right: 2px;"><?php echo $this->motors_epids_motor_dictionary_custom_count; ?></span>
+                                    <span style="font-weight: bold; padding-right: 2px;"><?php echo $this->getMotorsEpidCustomCount(); ?></span>
 
                                     <span style="">
                                         (<a href="javascript:void(0);" onclick="EbayConfigurationObj.manageMotorsRecords('<?php echo Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_EPID_MOTOR; ?>', '<?php echo Mage::helper('M2ePro')->__('Manage Custom Compatibility [ePIDs Motors]'); ?>');"><?php echo Mage::helper('M2ePro')->__('manage'); ?></a>)
@@ -276,7 +255,7 @@
         </div>
     <?php endif; ?>
 
-    <?php if ($this->uk_marketplace->isStatusEnabled() && $this->uk_marketplace->getChildObject()->isEpidEnabled()): ?>
+    <?php if ($this->getUkMarketplace()->isStatusEnabled() && $this->getUkMarketplace()->getChildObject()->isEpidEnabled()): ?>
         <div class="entry-edit" id="magento_block_ebay_configuration_general_motors_epids_uk">
 
             <div class="entry-edit-head">
@@ -302,20 +281,20 @@
 
                         <tr>
                             <td class="label">
-                                <label for="motors_epids_uk_attribute"><?php echo Mage::helper('M2ePro')->__('Attribute'); ?>:</label>
+                                <label for="uk_epids_attribute"><?php echo Mage::helper('M2ePro')->__('Attribute'); ?>:</label>
                             </td>
 
-                            <?php if (count($this->attributes_for_motors) != 0): ?>
+                            <?php if (count($this->getAvailabilityAttributes()) != 0): ?>
 
                                 <td class="value">
-                                    <select id="motors_epids_uk_attribute" class="select M2ePro-custom-attribute-can-be-created" allowed_attribute_types="textarea" apply_to_all_attribute_sets="0" name="motors_epids_uk_attribute">
+                                    <select id="uk_epids_attribute" class="select M2ePro-custom-attribute-can-be-created" allowed_attribute_types="textarea" apply_to_all_attribute_sets="0" name="uk_epids_attribute">
                                         <option value="">-- <?php echo Mage::helper('M2ePro')->__('Select Attribute'); ?> --</option>
-                                        <?php foreach ($this->attributes_for_motors as $attribute): ?>
-                                            <option value="<?php echo $attribute['code']; ?>"<?php if ($attribute['code'] == $this->motors_epids_uk_attribute): ?> selected="selected"<?php endif; ?>><?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?></option>
+                                        <?php foreach ($this->getAvailabilityAttributes() as $attribute): ?>
+                                            <option value="<?php echo $attribute['code']; ?>"<?php if ($attribute['code'] == $this->getConfigurationHelper()->getUkEpidsAttribute()): ?> selected="selected"<?php endif; ?>><?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?></option>
                                         <?php endforeach; ?>
                                     </select>
                                 </td>
-                                <td id="motors_epids_uk_attribute_td_note">
+                                <td id="uk_epids_attribute_td_note">
                                     <p class="note">
                                         <span>
                                             <?php echo Mage::helper('M2ePro')->__(
@@ -331,7 +310,7 @@
                             <?php else: ?>
 
                                 <td class="value">
-                                    <div id="block_notice_ebay_configuration_motors_epids_uk_attribute" class="block_notices_module" title="" subtitle="" collapseable="no" hideblock="no" always_show="yes">
+                                    <div id="block_notice_ebay_configuration_uk_epids_attribute" class="block_notices_module" title="" subtitle="" collapseable="no" hideblock="no" always_show="yes">
                                         <?php echo Mage::helper('M2ePro')->__('You do not have Textarea Attributes.'); ?>
                                     </div>
                                 </td>
@@ -346,10 +325,10 @@
 
                             <td class="value">
                                 <span style="padding-right: 2px;"><?php echo Mage::helper('M2ePro')->__('From eBay'); ?>: </span>
-                                <span style="font-weight: bold; display: inline-block; width: 40px;"><?php echo $this->motors_epids_uk_dictionary_ebay_count; ?></span>
+                                <span style="font-weight: bold; display: inline-block; width: 40px;"><?php echo $this->getUkEpidCount(); ?></span>
 
                                 <span style="padding-right: 2px; padding-left: 10px;"><?php echo Mage::helper('M2ePro')->__('Custom Added'); ?>: </span>
-                                <span style="font-weight: bold; padding-right: 2px;"><?php echo $this->motors_epids_uk_dictionary_custom_count; ?></span>
+                                <span style="font-weight: bold; padding-right: 2px;"><?php echo $this->getUkEpidCustomCount(); ?></span>
 
                                 <span style="">
                                     (<a href="javascript:void(0);" onclick="EbayConfigurationObj.manageMotorsRecords('<?php echo Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_EPID_UK; ?>', '<?php echo Mage::helper('M2ePro')->__('Manage Custom Compatibility [ePIDs UK]'); ?>');"><?php echo Mage::helper('M2ePro')->__('manage'); ?></a>)
@@ -366,7 +345,7 @@
         </div>
     <?php endif; ?>
 
-    <?php if ($this->de_marketplace->isStatusEnabled() && $this->de_marketplace->getChildObject()->isEpidEnabled()): ?>
+    <?php if ($this->getDeMarketplace()->isStatusEnabled() && $this->getDeMarketplace()->getChildObject()->isEpidEnabled()): ?>
         <div class="entry-edit" id="magento_block_ebay_configuration_general_motors_epids_de">
 
             <div class="entry-edit-head">
@@ -392,20 +371,20 @@
 
                         <tr>
                             <td class="label">
-                                <label for="motors_epids_de_attribute"><?php echo Mage::helper('M2ePro')->__('Attribute'); ?>:</label>
+                                <label for="de_epids_attribute"><?php echo Mage::helper('M2ePro')->__('Attribute'); ?>:</label>
                             </td>
 
-                            <?php if (count($this->attributes_for_motors) != 0): ?>
+                            <?php if (count($this->getAvailabilityAttributes()) != 0): ?>
 
                                 <td class="value">
-                                    <select id="motors_epids_de_attribute" class="select M2ePro-custom-attribute-can-be-created" allowed_attribute_types="textarea" apply_to_all_attribute_sets="0" name="motors_epids_de_attribute">
+                                    <select id="de_epids_attribute" class="select M2ePro-custom-attribute-can-be-created" allowed_attribute_types="textarea" apply_to_all_attribute_sets="0" name="de_epids_attribute">
                                         <option value="">-- <?php echo Mage::helper('M2ePro')->__('Select Attribute'); ?> --</option>
-                                        <?php foreach ($this->attributes_for_motors as $attribute): ?>
-                                            <option value="<?php echo $attribute['code']; ?>"<?php if ($attribute['code'] == $this->motors_epids_de_attribute): ?> selected="selected"<?php endif; ?>><?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?></option>
+                                        <?php foreach ($this->getAvailabilityAttributes() as $attribute): ?>
+                                            <option value="<?php echo $attribute['code']; ?>"<?php if ($attribute['code'] == $this->getConfigurationHelper()->getDeEpidsAttribute()): ?> selected="selected"<?php endif; ?>><?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?></option>
                                         <?php endforeach; ?>
                                     </select>
                                 </td>
-                                <td id="motors_epids_de_attribute_td_note">
+                                <td id="de_epids_attribute_td_note">
                                     <p class="note">
                                         <span>
                                             <?php echo Mage::helper('M2ePro')->__(
@@ -421,7 +400,7 @@
                             <?php else: ?>
 
                                 <td class="value">
-                                    <div id="block_notice_ebay_configuration_motors_epids_de_attribute" class="block_notices_module" title="" subtitle="" collapseable="no" hideblock="no" always_show="yes">
+                                    <div id="block_notice_ebay_configuration_de_epids_attribute" class="block_notices_module" title="" subtitle="" collapseable="no" hideblock="no" always_show="yes">
                                         <?php echo Mage::helper('M2ePro')->__('You do not have Textarea Attributes.'); ?>
                                     </div>
                                 </td>
@@ -436,10 +415,10 @@
 
                             <td class="value">
                                 <span style="padding-right: 2px;"><?php echo Mage::helper('M2ePro')->__('From eBay'); ?>: </span>
-                                <span style="font-weight: bold; display: inline-block; width: 40px;"><?php echo $this->motors_epids_de_dictionary_ebay_count; ?></span>
+                                <span style="font-weight: bold; display: inline-block; width: 40px;"><?php echo $this->getDeEpidCount(); ?></span>
 
                                 <span style="padding-right: 2px; padding-left: 10px;"><?php echo Mage::helper('M2ePro')->__('Custom Added'); ?>: </span>
-                                <span style="font-weight: bold; padding-right: 2px;"><?php echo $this->motors_epids_de_dictionary_custom_count; ?></span>
+                                <span style="font-weight: bold; padding-right: 2px;"><?php echo $this->getDeEpidCustomCount(); ?></span>
 
                                 <span style="">
                                     (<a href="javascript:void(0);" onclick="EbayConfigurationObj.manageMotorsRecords('<?php echo Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_EPID_DE; ?>', '<?php echo Mage::helper('M2ePro')->__('Manage Custom Compatibility [ePIDs DE]'); ?>');"><?php echo Mage::helper('M2ePro')->__('manage'); ?></a>)
@@ -456,7 +435,7 @@
         </div>
     <?php endif; ?>
 
-    <?php if ($this->au_marketplace->isStatusEnabled() && $this->au_marketplace->getChildObject()->isEpidEnabled()): ?>
+    <?php if ($this->getAuMarketplace()->isStatusEnabled() && $this->getAuMarketplace()->getChildObject()->isEpidEnabled()): ?>
         <div class="entry-edit" id="magento_block_ebay_configuration_general_motors_epids_au">
 
             <div class="entry-edit-head">
@@ -482,20 +461,20 @@
 
                         <tr>
                             <td class="label">
-                                <label for="motors_epids_au_attribute"><?php echo Mage::helper('M2ePro')->__('Attribute'); ?>:</label>
+                                <label for="au_epids_attribute"><?php echo Mage::helper('M2ePro')->__('Attribute'); ?>:</label>
                             </td>
 
-                            <?php if (count($this->attributes_for_motors) != 0): ?>
+                            <?php if (count($this->getAvailabilityAttributes()) != 0): ?>
 
                                 <td class="value">
-                                    <select id="motors_epids_au_attribute" class="select M2ePro-custom-attribute-can-be-created" allowed_attribute_types="textarea" apply_to_all_attribute_sets="0" name="motors_epids_au_attribute">
+                                    <select id="au_epids_attribute" class="select M2ePro-custom-attribute-can-be-created" allowed_attribute_types="textarea" apply_to_all_attribute_sets="0" name="au_epids_attribute">
                                         <option value="">-- <?php echo Mage::helper('M2ePro')->__('Select Attribute'); ?> --</option>
-                                        <?php foreach ($this->attributes_for_motors as $attribute): ?>
-                                            <option value="<?php echo $attribute['code']; ?>"<?php if ($attribute['code'] == $this->motors_epids_au_attribute): ?> selected="selected"<?php endif; ?>><?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?></option>
+                                        <?php foreach ($this->getAvailabilityAttributes() as $attribute): ?>
+                                            <option value="<?php echo $attribute['code']; ?>"<?php if ($attribute['code'] == $this->getConfigurationHelper()->getAuEpidsAttribute()): ?> selected="selected"<?php endif; ?>><?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?></option>
                                         <?php endforeach; ?>
                                     </select>
                                 </td>
-                                <td id="motors_epids_au_attribute_td_note">
+                                <td id="au_epids_attribute_td_note">
                                     <p class="note">
                                         <span>
                                             <?php echo Mage::helper('M2ePro')->__(
@@ -511,7 +490,7 @@
                             <?php else: ?>
 
                                 <td class="value">
-                                    <div id="block_notice_ebay_configuration_motors_epids_au_attribute" class="block_notices_module" title="" subtitle="" collapseable="no" hideblock="no" always_show="yes">
+                                    <div id="block_notice_ebay_configuration_au_epids_attribute" class="block_notices_module" title="" subtitle="" collapseable="no" hideblock="no" always_show="yes">
                                         <?php echo Mage::helper('M2ePro')->__('You do not have Textarea Attributes.'); ?>
                                     </div>
                                 </td>
@@ -526,10 +505,10 @@
 
                             <td class="value">
                                 <span style="padding-right: 2px;"><?php echo Mage::helper('M2ePro')->__('From eBay'); ?>: </span>
-                                <span style="font-weight: bold; display: inline-block; width: 40px;"><?php echo $this->motors_epids_au_dictionary_ebay_count; ?></span>
+                                <span style="font-weight: bold; display: inline-block; width: 40px;"><?php echo $this->getAuEpidCount(); ?></span>
 
                                 <span style="padding-right: 2px; padding-left: 10px;"><?php echo Mage::helper('M2ePro')->__('Custom Added'); ?>: </span>
-                                <span style="font-weight: bold; padding-right: 2px;"><?php echo $this->motors_epids_au_dictionary_custom_count; ?></span>
+                                <span style="font-weight: bold; padding-right: 2px;"><?php echo $this->getAuEpidCustomCount(); ?></span>
 
                                 <span style="">
                                     (<a href="javascript:void(0);" onclick="EbayConfigurationObj.manageMotorsRecords('<?php echo Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_EPID_AU; ?>', '<?php echo Mage::helper('M2ePro')->__('Manage Custom Compatibility [ePIDs AU]'); ?>');"><?php echo Mage::helper('M2ePro')->__('manage'); ?></a>)
@@ -546,7 +525,7 @@
         </div>
     <?php endif; ?>
 
-    <?php if ($this->is_motors_ktypes_marketplace_enabled) : ?>
+    <?php if ($this->getEnabledKtype()) : ?>
 
         <div class="entry-edit" id="magento_block_ebay_configuration_general_motors_ktypes">
 
@@ -570,20 +549,20 @@
 
                         <tr>
                             <td class="label">
-                                <label for="motors_ktypes_attribute"><?php echo Mage::helper('M2ePro')->__('Attribute'); ?>:</label>
+                                <label for="ktypes_attribute"><?php echo Mage::helper('M2ePro')->__('Attribute'); ?>:</label>
                             </td>
 
-                            <?php if (count($this->attributes_for_motors) != 0): ?>
+                            <?php if (count($this->getAvailabilityAttributes()) != 0): ?>
 
                                 <td class="value">
-                                    <select id="motors_ktypes_attribute" class="select M2ePro-custom-attribute-can-be-created" allowed_attribute_types="textarea" apply_to_all_attribute_sets="0" name="motors_ktypes_attribute">
+                                    <select id="ktypes_attribute" class="select M2ePro-custom-attribute-can-be-created" allowed_attribute_types="textarea" apply_to_all_attribute_sets="0" name="ktypes_attribute">
                                         <option value="">-- <?php echo Mage::helper('M2ePro')->__('Select Attribute'); ?> --</option>
-                                        <?php foreach ($this->attributes_for_motors as $attribute): ?>
-                                            <option value="<?php echo $attribute['code']; ?>"<?php if ($attribute['code'] == $this->motors_ktypes_attribute): ?> selected="selected"<?php endif; ?>><?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?></option>
+                                        <?php foreach ($this->getAvailabilityAttributes() as $attribute): ?>
+                                            <option value="<?php echo $attribute['code']; ?>"<?php if ($attribute['code'] == $this->getConfigurationHelper()->getKTypesAttribute()): ?> selected="selected"<?php endif; ?>><?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?></option>
                                         <?php endforeach; ?>
                                     </select>
                                 </td>
-                                <td id="motors_ktypes_attribute_td_note">
+                                <td id="ktypes_attribute_td_note">
                                     <p class="note">
                                         <span><?php echo Mage::helper('M2ePro')->__(
                                             'Choose the Attribute that contains the kTypes of compatible vehicles for the parts.
@@ -597,7 +576,7 @@
                             <?php else: ?>
 
                                 <td class="value">
-                                    <div id="block_notice_ebay_configuration_motors_ktypes_attribute" class="block_notices_module" title="" subtitle="" collapseable="no" hideblock="no" always_show="yes">
+                                    <div id="block_notice_ebay_configuration_ktypes_attribute" class="block_notices_module" title="" subtitle="" collapseable="no" hideblock="no" always_show="yes">
                                         <?php echo Mage::helper('M2ePro')->__('You do not have Textarea Attributes.'); ?>
                                     </div>
                                 </td>
@@ -612,10 +591,10 @@
 
                             <td class="value">
                                 <span style="padding-right: 2px;"><?php echo Mage::helper('M2ePro')->__('From eBay'); ?>: </span>
-                                <span style="font-weight: bold; display: inline-block; width: 40px;"><?php echo $this->motors_ktypes_dictionary_ebay_count; ?></span>
+                                <span style="font-weight: bold; display: inline-block; width: 40px;"><?php echo $this->getKtypeCount(); ?></span>
 
                                 <span style="padding-right: 2px; padding-left: 10px;"><?php echo Mage::helper('M2ePro')->__('Custom Added'); ?>: </span>
-                                <span style="font-weight: bold; padding-right: 2px;"><?php echo $this->motors_ktypes_dictionary_custom_count; ?></span>
+                                <span style="font-weight: bold; padding-right: 2px;"><?php echo $this->getKtypeCustomCount(); ?></span>
 
                                 <span style="">
                                         (<a href="javascript:void(0);" onclick="EbayConfigurationObj.manageMotorsRecords('<?php echo Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_KTYPE; ?>', '<?php echo Mage::helper('M2ePro')->__('Manage Custom Compatibility [kTypes]'); ?>');"><?php echo Mage::helper('M2ePro')->__('manage'); ?></a>)
@@ -679,11 +658,11 @@
                                 <label><?php echo Mage::helper('M2ePro')->__('Database'); ?>:</label>
                             </td>
                             <td class="value">
-                                <span id="database-statistic-popup-epids-motor" class="database-statistic-popup" style="font-weight: bold;"><?php echo $this->motors_epids_motor_dictionary_custom_count; ?></span>
-                                <span id="database-statistic-popup-epids-uk" class="database-statistic-popup" style="font-weight: bold;"><?php echo $this->motors_epids_uk_dictionary_custom_count; ?></span>
-                                <span id="database-statistic-popup-epids-de" class="database-statistic-popup" style="font-weight: bold;"><?php echo $this->motors_epids_de_dictionary_custom_count; ?></span>
-                                <span id="database-statistic-popup-epids-au" class="database-statistic-popup" style="font-weight: bold;"><?php echo $this->motors_epids_au_dictionary_custom_count; ?></span>
-                                <span id="database-statistic-popup-ktypes" class="database-statistic-popup" style="font-weight: bold;"><?php echo $this->motors_ktypes_dictionary_custom_count; ?></span>
+                                <span id="database-statistic-popup-epids-uk" class="database-statistic-popup" style="font-weight: bold;"><?php echo $this->getUkEpidCustomCount(); ?></span>
+                                <span id="database-statistic-popup-epids-de" class="database-statistic-popup" style="font-weight: bold;"><?php echo $this->getDeEpidCustomCount(); ?></span>
+                                <span id="database-statistic-popup-epids-au" class="database-statistic-popup" style="font-weight: bold;"><?php echo $this->getAuEpidCustomCount(); ?></span>
+                                <span id="database-statistic-popup-epids-motor" class="database-statistic-popup" style="font-weight: bold;"><?php echo $this->getMotorsEpidCustomCount(); ?></span>
+                                <span id="database-statistic-popup-ktypes" class="database-statistic-popup" style="font-weight: bold;"><?php echo $this->getKtypeCustomCount(); ?></span>
                             </td>
                             <td class="value" style="width: 90px; text-align: right;">
                                 <button type="button" style="min-width: 55px;" onclick="EbayConfigurationObj.clearAddedMotorsRecords.bind(this)();"><?php echo Mage::helper('M2ePro')->__('Clear') ?></button>

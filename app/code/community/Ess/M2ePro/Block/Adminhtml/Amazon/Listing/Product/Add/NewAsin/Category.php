@@ -54,8 +54,8 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Product_Add_NewAsin_Category
 
         $url = $this->getUrl('*/*/index', array('_current' => true, 'step' => 5));
         $this->_addButton(
-            'save_and_go_to_listing_view', array(
-                'id'      => 'save_and_go_to_listing_view',
+            'add_products_new_asin_category_continue', array(
+                'id'      => 'add_products_new_asin_category_continue',
                 'label'   => Mage::helper('M2ePro')->__('Continue'),
                 'onclick' => 'ListingGridObj.checkProducts(\'' . $url . '\')',
                 'class'   => 'scalable next'

@@ -552,7 +552,7 @@ HTML;
         $path = 'adminhtml_ebay_listing/getEstimatedFees';
         $urls[$path] = $this->getUrl(
             '*/' . $path, array(
-            'listing_id' => $this->_listing->getId()
+                'listing_id' => $this->_listing->getId()
             )
         );
 
@@ -566,10 +566,10 @@ HTML;
 
         $logViewUrl = $this->getUrl(
             '*/adminhtml_ebay_log/listing', array(
-                'id'   => $this->_listing->getId(),
+                'listing_id' => $this->_listing->getId(),
                 'back' => $helper->makeBackUrlParam(
                     '*/adminhtml_ebay_listing/view',
-                    array('id'=>$this->_listing->getId())
+                    array('id' => $this->_listing->getId())
                 )
             )
         );

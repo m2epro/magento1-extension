@@ -66,22 +66,6 @@ window.WalmartAccount = Class.create(Common, {
 
     initTokenValidation: function()
     {
-        Validation.add('M2ePro-validate-consumer-id', M2ePro.translator.translate('The specified Consumer ID / Partner ID is not valid'), function(value, el) {
-
-            if (CommonObj.isElementHiddenFromPage(el)) {
-                return true;
-            }
-
-            // Do not validate on edit
-            if (el.disabled) {
-                return true;
-            }
-
-            // Partner ID example: 10000004781
-            // Consumer ID Example: c2cfff2c-57a9-4f0a-b5ab-00b000dfe000
-            return /^[0-9]{11}$/.test(value) || /^[a-f0-9-]{36}$/.test(value);
-        });
-
         Validation.add('M2ePro-marketplace-merchant', M2ePro.translator.translate('M2E Pro was not able to get access to the Walmart Account'), function(value, el) {
 
             if (CommonObj.isElementHiddenFromPage(el)) {
@@ -96,13 +80,12 @@ window.WalmartAccount = Class.create(Common, {
 
             if (marketplace_id == M2ePro.php.constant('Ess_M2ePro_Helper_Component_Walmart::MARKETPLACE_CA')) {
                 params = {
-                    consumer_id     : $('consumer_id').value,
-                    old_private_key : $('old_private_key').value,
-                    marketplace_id  : marketplace_id
+                    consumer_id    : $('consumer_id').value,
+                    private_key    : $('private_key').value,
+                    marketplace_id : marketplace_id
                 };
             } else {
                 params = {
-                    consumer_id    : $('consumer_id').value,
                     client_id      : $('client_id').value,
                     client_secret  : $('client_secret').value,
                     marketplace_id : marketplace_id
@@ -158,11 +141,6 @@ window.WalmartAccount = Class.create(Common, {
         var marketplaceId = this.value;
         if (marketplaceId === '') {
             return;
-        }
-
-        $('consumer_id').removeClassName('M2ePro-validate-consumer-id');
-        if (marketplaceId == M2ePro.php.constant('Ess_M2ePro_Helper_Component_Walmart::MARKETPLACE_US')) {
-            $('consumer_id').addClassName('M2ePro-validate-consumer-id');
         }
 
         $$('.marketplace-required-field-id' + marketplaceId, '.marketplace-required-field-id-not-null').each(function(obj) {

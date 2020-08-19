@@ -239,7 +239,7 @@ class Ess_M2EPro_Model_Ebay_Template_Description_Builder
             'subtitle_mode' => Description::SUBTITLE_MODE_NONE,
             'subtitle_template' => '',
 
-            'description_mode' => Description::DESCRIPTION_MODE_PRODUCT,
+            'description_mode' => '',
             'description_template' => '',
 
             'condition_mode' => Description::CONDITION_MODE_EBAY,

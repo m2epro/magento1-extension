@@ -133,12 +133,13 @@ window.WalmartTemplateCategoryCategoriesChooser = Class.create(Common, {
                 categories.each(function(category) {
 
                     var option = new Element('option', {value: category.category_id});
-                    option.observe('click', function() {
-                        self.browseClickCategory.call(self, selectEl, category.category_id);
-                    });
 
                     var arrowString = category.is_leaf == 0 ? ' > ' : '';
                     selectEl.appendChild(option).update(category.title + arrowString);
+                });
+
+                selectEl.observe('change', function() {
+                    self.browseClickCategory.call(self, selectEl);
                 });
 
                 selectEl.style.display = 'inline-block';
@@ -149,8 +150,10 @@ window.WalmartTemplateCategoryCategoriesChooser = Class.create(Common, {
 
     // ---------------------------------------
 
-    browseClickCategory: function(selectObj, categoryId)
+    browseClickCategory: function(selectObj)
     {
+        var categoryId = selectObj.options[selectObj.selectedIndex].value;
+
         var callback = function(transport) {
 
             var categoryInfo = transport.responseText.evalJSON();

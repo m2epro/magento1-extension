@@ -57,8 +57,8 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Log_Tabs extends Mage_Adminhtml_Block_W
         );
 
         if ($this->getData('active_tab') == self::TAB_ID_LISTING) {
-            $tab['content'] = $this->getLayout()->createBlock('M2ePro/adminhtml_walmart_listing_log_help')->toHtml();
-            $tab['content'] .= $this->getLayout()->createBlock('M2ePro/adminhtml_walmart_listing_log')->toHtml();
+            $tab['content'] = $this->getLayout()->createBlock('M2ePro/adminhtml_walmart_log_listing_help')->toHtml();
+            $tab['content'] .= $this->getLayout()->createBlock('M2ePro/adminhtml_walmart_log_listing_view')->toHtml();
         } else {
             $tab['url'] = $this->getUrl('*/adminhtml_walmart_log/listing', array('_current' => true));
         }
@@ -74,9 +74,9 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Log_Tabs extends Mage_Adminhtml_Block_W
         );
 
         if ($this->getData('active_tab') == self::TAB_ID_ORDER) {
-            $tab['content'] = $this->getLayout()->createBlock('M2ePro/adminhtml_walmart_order_log_help')->toHtml();
+            $tab['content'] = $this->getLayout()->createBlock('M2ePro/adminhtml_walmart_log_order_help')->toHtml();
             $tab['content'] .= $this->getLayout()->createBlock(
-                'M2ePro/adminhtml_order_log', '', array(
+                'M2ePro/adminhtml_walmart_log_order', '', array(
                     'component_mode' => Ess_M2ePro_Helper_Component_Walmart::NICK
                 )
             )->toHtml();
@@ -95,40 +95,12 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Log_Tabs extends Mage_Adminhtml_Block_W
         );
 
         if ($this->getData('active_tab') == self::TAB_ID_SYNCHRONIZATION) {
-            $tab['content'] = $this->getLayout()->createBlock('M2ePro/adminhtml_walmart_synchronization_log')->toHtml();
+            $tab['content'] = $this->getLayout()->createBlock('M2ePro/adminhtml_walmart_log_synchronization')->toHtml();
         } else {
             $tab['url'] = $this->getUrl('*/adminhtml_walmart_log/synchronization', array('_current' => true));
         }
 
         return $tab;
-    }
-
-    //########################################
-
-    protected function _toHtml()
-    {
-        $translations = Mage::helper('M2ePro')->jsonEncode(
-            array(
-            'Description' => Mage::helper('M2ePro')->__('Description')
-            )
-        );
-
-        $javascript = <<<JAVASCIRPT
-
-<script type="text/javascript">
-
-    M2ePro.translator.add({$translations});
-
-    Event.observe(window, 'load', function() {
-        LogObj = new Log();
-        LogObj.afterInitPage();
-    });
-
-</script>
-
-JAVASCIRPT;
-
-        return $javascript . parent::_toHtml() . '<div id="tabs_container"></div>';
     }
 
     //########################################

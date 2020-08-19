@@ -470,7 +470,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product extends Ess_M2ePro_Model_Componen
      */
     public function getOnlinePromotions()
     {
-        return $this->getSettings('online_promotions');
+        return $this->getData('online_promotions');
     }
 
     // ---------------------------------------
@@ -498,7 +498,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product extends Ess_M2ePro_Model_Componen
      */
     public function getOnlineDetailsData()
     {
-        return $this->getSettings('online_details_data');
+        return $this->getData('online_details_data');
     }
 
     // ---------------------------------------

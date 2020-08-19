@@ -453,11 +453,7 @@ abstract class Ess_M2ePro_Model_Listing_Product_PriceCalculator
             }
 
             if ($this->isSourceModeAttribute()) {
-                $isConvertEnabled = (bool)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
-                    '/magento/attribute/', 'price_type_converting'
-                );
-
-                if ($isConvertEnabled &&
+                if (Mage::helper('M2ePro/Module_Configuration')->isEnableMagentoAttributePriceTypeConvertingMode() &&
                     $this->getSource('attribute') == Ess_M2ePro_Helper_Magento_Attribute::PRICE_CODE
                 ) {
                     $value = $this->convertValueFromStoreToMarketplace($value);
@@ -842,11 +838,7 @@ abstract class Ess_M2ePro_Model_Listing_Product_PriceCalculator
         }
 
         if ($this->isSourceModeAttribute()) {
-            $isConvertEnabled = (bool)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
-                '/magento/attribute/', 'price_type_converting'
-            );
-
-            if ($isConvertEnabled &&
+            if (Mage::helper('M2ePro/Module_Configuration')->isEnableMagentoAttributePriceTypeConvertingMode() &&
                 ($this->getSource('attribute') == Ess_M2ePro_Helper_Magento_Attribute::PRICE_CODE ||
                 $this->getSource('attribute') == Ess_M2ePro_Helper_Magento_Attribute::SPECIAL_PRICE_CODE)
             ) {
@@ -885,11 +877,7 @@ abstract class Ess_M2ePro_Model_Listing_Product_PriceCalculator
         }
 
         if ($this->isSourceModeAttribute()) {
-            $isConvertEnabled = (bool)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
-                '/magento/attribute/', 'price_type_converting'
-            );
-
-            if ($isConvertEnabled &&
+            if (Mage::helper('M2ePro/Module_Configuration')->isEnableMagentoAttributePriceTypeConvertingMode() &&
                 ($this->getSource('attribute') == Ess_M2ePro_Helper_Magento_Attribute::PRICE_CODE ||
                  $this->getSource('attribute') == Ess_M2ePro_Helper_Magento_Attribute::SPECIAL_PRICE_CODE)
             ) {

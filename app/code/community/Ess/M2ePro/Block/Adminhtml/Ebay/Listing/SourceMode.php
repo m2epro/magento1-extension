@@ -49,9 +49,10 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_SourceMode
         $url = $this->getUrl('*/*/index', array('_current' => true, 'step' => 1, 'back' => $backUrl));
         $this->_addButton(
             'next', array(
-            'label'   => Mage::helper('M2ePro')->__('Continue'),
-            'onclick' => 'CommonObj.submitForm(\''.$url.'\');',
-            'class'   => 'scalable next'
+                'id'      => 'next',
+                'label'   => Mage::helper('M2ePro')->__('Continue'),
+                'onclick' => 'CommonObj.submitForm(\''.$url.'\');',
+                'class'   => 'scalable next'
             )
         );
     }

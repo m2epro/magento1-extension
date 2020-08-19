@@ -214,17 +214,30 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Description_Edit_Form_Data extend
         return false;
     }
 
+    public function isEdit()
+    {
+        $template = Mage::helper('M2ePro/Data_Global')->getValue('ebay_template_description');
+
+        if ($template === null || $template->getId() === null) {
+            return false;
+        }
+
+        return true;
+    }
+
+    //########################################
+
     public function getTitle()
     {
         if ($this->isCustom()) {
             return isset($this->_data['custom_title']) ? $this->_data['custom_title'] : '';
         }
 
-        $template = Mage::helper('M2ePro/Data_Global')->getValue('ebay_template_description');
-
-        if ($template === null) {
+        if (!$this->isEdit()) {
             return '';
         }
+
+        $template = Mage::helper('M2ePro/Data_Global')->getValue('ebay_template_description');
 
         return $template->getTitle();
     }
@@ -233,12 +246,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Description_Edit_Form_Data extend
 
     public function getFormData()
     {
-        $template = Mage::helper('M2ePro/Data_Global')->getValue('ebay_template_description');
-
-        if ($template === null || $template->getId() === null) {
+        if (!$this->isEdit()) {
             return array();
         }
 
+        $template = Mage::helper('M2ePro/Data_Global')->getValue('ebay_template_description');
         $data = $template->getData();
 
         if (!empty($data['enhancement']) && is_string($data['enhancement'])) {

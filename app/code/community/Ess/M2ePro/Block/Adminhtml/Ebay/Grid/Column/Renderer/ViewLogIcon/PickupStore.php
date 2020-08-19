@@ -14,10 +14,10 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Grid_Column_Renderer_ViewLogIcon_PickupSto
     protected function getAvailableActions()
     {
         return array(
-            Ess_M2ePro_Model_Ebay_Account_PickupStore_Log::ACTION_UNKNOWN,
-            Ess_M2ePro_Model_Ebay_Account_PickupStore_Log::ACTION_ADD_PRODUCT,
-            Ess_M2ePro_Model_Ebay_Account_PickupStore_Log::ACTION_UPDATE_QTY,
-            Ess_M2ePro_Model_Ebay_Account_PickupStore_Log::ACTION_DELETE_PRODUCT
+            Ess_M2ePro_Model_Ebay_Account_PickupStore_Log::ACTION_UNKNOWN        => $this->__('Unknown'),
+            Ess_M2ePro_Model_Ebay_Account_PickupStore_Log::ACTION_ADD_PRODUCT    => $this->__('Add'),
+            Ess_M2ePro_Model_Ebay_Account_PickupStore_Log::ACTION_UPDATE_QTY     => $this->__('Update'),
+            Ess_M2ePro_Model_Ebay_Account_PickupStore_Log::ACTION_DELETE_PRODUCT => $this->__('Delete'),
         );
     }
 
@@ -25,48 +25,52 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Grid_Column_Renderer_ViewLogIcon_PickupSto
 
     public function render(Varien_Object $row)
     {
-        if (!parent::render($row)) {
-            return parent::render($row);
+        $stateId = (int)$row->getData('state_id');
+        $columnId = (int)$row->getData('id');
+        $availableActionsId = array_keys($this->getAvailableActions());
+
+        $dbSelect = Mage::getSingleton('core/resource')->getConnection('core_read')
+            ->select()
+            ->from(
+                Mage::getResourceModel('M2ePro/Ebay_Account_PickupStore_Log')->getResource()->getMainTable(),
+                array('id', 'action_id', 'action', 'type', 'description', 'create_date')
+            )
+            ->where('`account_pickup_store_state_id` = ?', $stateId)
+            ->where('`action_id` IS NOT NULL')
+            ->where('`action` IN (?)', $availableActionsId)
+            ->order(array('id DESC'))
+            ->limit(Ess_M2ePro_Block_Adminhtml_Log_Grid_LastActions::PRODUCTS_LIMIT);
+
+        $logs = Mage::getSingleton('core/resource')->getConnection('core_read')->fetchAll($dbSelect);
+
+        if (empty($logs)) {
+            return '';
         }
 
-        $pickupStoreState = Mage::getModel('M2ePro/Ebay_Account_PickupStore_State')
-            ->load($row->getData('state_id'));
-        $translations = Mage::helper('M2ePro')->jsonEncode(
+        foreach ($logs as &$log) {
+            $log['initiator'] = Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION;
+        }
+
+        $summary = $this->getLayout()->createBlock('M2ePro/adminhtml_listing_log_grid_lastActions')
+            ->setData(
+                array(
+                        'entity_id' => (int)$columnId,
+                        'logs' => $logs,
+                        'available_actions' => $this->getAvailableActions(),
+                        'view_help_handler' => 'EbayListingPickupStoreGridObj.viewItemHelp',
+                        'hide_help_handler' => 'EbayListingPickupStoreGridObj.hideItemHelp'
+                    )
+            );
+
+        $pickupStoreState = Mage::getModel('M2ePro/Ebay_Account_PickupStore_State')->load($stateId);
+
+        Mage::helper('M2ePro/View')->getJsTranslatorRenderer()->addTranslations(
             array(
                 'Log For Sku' => Mage::helper('M2ePro')->__('Log For Sku (%s%)', $pickupStoreState->getSku())
             )
         );
 
-        $html = "<script>M2ePro.translator.add({$translations});</script>";
-
-        return $html . parent::render($row);
-    }
-
-    //########################################
-
-    protected function getLastMessages(Varien_Object $row)
-    {
-        $dbSelect = Mage::getSingleton('core/resource')->getConnection('core_read')
-            ->select()
-            ->from(
-                Mage::getResourceModel('M2ePro/Ebay_Account_PickupStore_Log')->getMainTable(),
-                array('id', 'action_id','action','type','description','create_date')
-            )
-            ->where('`account_pickup_store_state_id` = ?', (int)$row->getData('state_id'))
-            ->where('`action_id` IS NOT NULL')
-            ->where('`action` IN (?)', $this->getAvailableActions())
-            ->order(array('id DESC'))
-            ->limit(30);
-
-        return Mage::getSingleton('core/resource')->getConnection('core_read')
-            ->fetchAll($dbSelect);
-    }
-
-    //########################################
-
-    protected function getInitiatorForAction($actionRows)
-    {
-        return Mage::helper('M2ePro')->__('Automatic');
+        return $summary->toHtml();
     }
 
     //########################################

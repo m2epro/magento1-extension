@@ -151,10 +151,10 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Grid extends Ess_M2ePro_Block_Admi
             'viewLogs' => array(
                 'caption' => $helper->__('Logs & Events'),
                 'group'   => 'other',
-                'field'   => 'id',
+                'field'   => 'listing_id',
                 'url'     => array(
                     'base'   => '*/adminhtml_ebay_log/listing',
-                    'params' => array('id' => $this->getId())
+                    'params' => array('listing_id' => $this->getId())
                 )
             ),
 

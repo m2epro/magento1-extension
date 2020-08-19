@@ -302,7 +302,7 @@
 
 </div>
 
-<?php if (Mage::helper('M2ePro/Component_Amazon_Business')->isEnabled()) { ?>
+<?php if (Mage::helper('M2ePro/Component_Amazon_Configuration')->isEnabledBusinessMode()) { ?>
     <div class="entry-edit" id="magento_block_amazon_template_selling_format_business">
 
         <div class="entry-edit-head">
@@ -482,7 +482,7 @@
 
     <div class="entry-edit-head">
         <?php
-            $priceTitle = Mage::helper('M2ePro/Component_Amazon_Business')->isEnabled() ?
+            $priceTitle = Mage::helper('M2ePro/Component_Amazon_Configuration')->isEnabledBusinessMode() ?
                 Mage::helper('M2ePro')->__('Price (B2C)') :
                 Mage::helper('M2ePro')->__('Price')
         ?>
@@ -743,7 +743,7 @@
 
 </div>
 
-<?php if (Mage::helper('M2ePro/Component_Amazon_Business')->isEnabled()) { ?>
+<?php if (Mage::helper('M2ePro/Component_Amazon_Configuration')->isEnabledBusinessMode()) { ?>
     <div class="entry-edit" id="magento_block_amazon_template_selling_format_business_prices">
 
         <div class="entry-edit-head">
@@ -959,7 +959,7 @@
 
 </form>
 
-<?php if (Mage::helper('M2ePro/Component_Amazon_Business')->isEnabled()) { ?>
+<?php if (Mage::helper('M2ePro/Component_Amazon_Configuration')->isEnabledBusinessMode()) { ?>
 <table id="business_discounts_custom_value_discount_table_row_template" style="display: none;">
     <tbody>
     <tr id="custom_value_discount_rule_%i%_tr" class="business-discount-rule">

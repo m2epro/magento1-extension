@@ -31,7 +31,7 @@ class Ess_M2ePro_Model_Walmart_Order_Item_Proxy extends Ess_M2ePro_Model_Order_I
      */
     public function getOriginalQty()
     {
-        return $this->_item->getQty();
+        return $this->_item->getQtyPurchased();
     }
 
     //########################################

@@ -41,11 +41,11 @@ HTML;
     {
         return array(
             array(
-                'value' => 'separated',
+                'value' => self::VIEW_MODE_SEPARATED,
                 'label' => Mage::helper('M2ePro')->__('Separated')
             ),
             array(
-                'value' => 'grouped',
+                'value' => self::VIEW_MODE_GROUPED,
                 'label' => Mage::helper('M2ePro')->__('Grouped')
             )
         );

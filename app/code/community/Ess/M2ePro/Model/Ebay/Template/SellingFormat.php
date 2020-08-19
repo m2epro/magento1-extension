@@ -1109,9 +1109,8 @@ class Ess_M2ePro_Model_Ebay_Template_SellingFormat extends Ess_M2ePro_Model_Comp
      */
     public function usesConvertiblePrices()
     {
-        $isPriceConvertEnabled = (int)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
-            '/magento/attribute/', 'price_type_converting'
-        );
+        $isPriceConvertEnabled = Mage::helper('M2ePro/Module_Configuration')
+            ->isEnableMagentoAttributePriceTypeConvertingMode();
 
         $attributeHelper = Mage::helper('M2ePro/Magento_Attribute');
 

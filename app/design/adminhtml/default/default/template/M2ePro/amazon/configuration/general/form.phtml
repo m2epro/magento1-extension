@@ -8,8 +8,6 @@
 // @codingStandardsIgnoreFile
 
 /** @var $this Ess_M2ePro_Block_Adminhtml_Amazon_Configuration_General_Form */
-$businessMode = Mage::helper('M2ePro/Component_Amazon_Business')->isEnabled();
-
 ?>
 
 <script type="text/javascript">
@@ -46,12 +44,12 @@ $businessMode = Mage::helper('M2ePro/Component_Amazon_Business')->isEnabled();
 
                         <tr>
                             <td class="label">
-                                <label><?php echo Mage::helper('M2ePro')->__('Price, QTY Discounts'); ?>: </label>
+                                <label for="business_mode"><?php echo Mage::helper('M2ePro')->__('Price, QTY Discounts'); ?>: </label>
                             </td>
                             <td class="value">
                                 <select id="business_mode" name="business_mode">
-                                    <option value="0" <?php if (0 == $businessMode) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Disabled'); ?></option>
-                                    <option value="1" <?php if (1 == $businessMode) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Enabled'); ?></option>
+                                    <option value="0" <?php if (!$this->getConfigurationHelper()->isEnabledBusinessMode()) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Disabled'); ?></option>
+                                    <option value="1" <?php if ($this->getConfigurationHelper()->isEnabledBusinessMode()) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Enabled'); ?></option>
                                 </select>
                                 <p class="note">
                                     <span><?php echo Mage::helper('M2ePro')->__('

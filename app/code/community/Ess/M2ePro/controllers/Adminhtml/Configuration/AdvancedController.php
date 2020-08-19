@@ -28,5 +28,15 @@ class Ess_M2ePro_Adminhtml_Configuration_AdvancedController
         $this->_redirectUrl($this->_getRefererUrl());
     }
 
+    public function changeCronModeAction()
+    {
+        $cronMode = (int)$this->getRequest()->getParam('cron_mode');
+        Mage::helper('M2ePro/Module')->getConfig()->setGroupValue('/cron/', 'mode', $cronMode);
+
+        Mage::helper('M2ePro/Magento')->clearMenuCache();
+
+        $this->_redirectUrl($this->_getRefererUrl());
+    }
+
     //########################################
 }

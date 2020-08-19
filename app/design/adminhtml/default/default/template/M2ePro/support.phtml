@@ -11,54 +11,23 @@
 
 ?>
 
-<script type="text/javascript">
+<!-- Initialize FreshworksWidget -->
+<script>
+    window.fwSettings={
+        'widget_id':9000000228
+    };
+    !function(){if("function"!=typeof window.FreshworksWidget){var n=function(){n.q.push(arguments)};n.q=[],window.FreshworksWidget=n}}();
 
-    M2ePro.url.add(<?php echo json_encode(Mage::helper('M2ePro')->getControllerActions('adminhtml_support')) ?>);
-
-    M2ePro.url.add(<?php echo json_encode(array(
-        'formSubmit' => $this->getUrl('M2ePro/adminhtml_support/save', array(
-            'referrer' => $this->getRequest()->getParam('referrer', NULl)
-        ))
-    )); ?>);
-
-    Event.observe(window, 'load', function() {
-        SupportObj = new Support();
-
-        editForm = new varienForm('edit_form', '<?php echo $this->getValidationUrl(); ?>');
-        $('query').focus();
-
-        <?php if ($this->isFromError): ?>
-            $('support_results').hide();
-        <?php endif; ?>
+    FreshworksWidget('prefill', 'ticketForm', {
+        custom_fields: {
+            cf_summary_info: <?php echo json_encode(Mage::helper('M2ePro/Module_Support')->getSummaryInfo()); ?>,
+        }
     });
 
+    FreshworksWidget('hide', 'ticketForm', ['custom_fields.cf_summary_info', 'custom_fields.cf_version']);
 </script>
-
-<style type="text/css">
-
-    div#support_input_query_container {
-        width: 100%;
-        text-align: center;
-        border: 1px solid grey;
-        border-radius: 4px;
-        padding: 20px 0;
-        margin-bottom: 15px;
-    }
-
-    div#support_input_query_container input {
-        width: 400px;
-        height: 25px;
-        border: 1px solid grey;
-        border-radius: 3px;
-        padding-left: 2px;
-    }
-
-    div#support_input_query_container button {
-        height: 25px;
-        margin-left: 10px;
-    }
-
-</style>
+<script type='text/javascript' src='https://widget.freshworks.com/widgets/9000000228.js' async defer></script>
+<!--------------------------------->
 
 <div class="box-left">
     <div id="support_system_requirements_container" class="entry-edit">
@@ -104,22 +73,4 @@
         </div>
 
     </div>
-</div>
-
-<div style="clear: both;"></div>
-
-<div id="block_notice_support" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Get Help'); ?>">
-    <?php echo Mage::helper('M2ePro')->__(
-        'Find the answers by searching through our Knowledge Base.<br>If you need assistance, submit your request to our Support via the contact form.'
-    ); ?>
-</div>
-
-<div id="support_input_query_container">
-    <input onkeypress="SupportObj.keyPressQuery(event)" type="text" placeholder="<?php echo Mage::helper('M2ePro')->__('Enter keywords to search'); ?>" name="query" id="query">
-    <?php echo $this->getChildHtml('user_voice_search'); ?>
-</div>
-
-<div id="support_other_container" <?php if (!$this->isFromError): echo 'style="display: none;"'; endif; ?>>
-    <?php echo $this->getChildHtml('tabs'); ?>
-    <div id="support_tab_container"></div>
 </div>

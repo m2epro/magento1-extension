@@ -89,6 +89,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Template_Synchronization_Edit
             $this->_addButton(
                 'save',
                 array(
+                    'id' => 'save_and_close',
                     'label'   => Mage::helper('M2ePro')->__('Save And Close'),
                     'onclick' => 'AmazonTemplateSynchronizationObj.saveAndClose('
                         . '\'' . $this->getUrl('*/*/save', array('_current' => true)) . '\','

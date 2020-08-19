@@ -42,10 +42,7 @@ class Ess_M2ePro_Model_Servicing_Task_Exceptions extends Ess_M2ePro_Model_Servic
             '/server/exceptions/', 'send', (int)$data['send_to_server']['exception']
         );
 
-        /**  @var $registryModel Ess_M2ePro_Model_Registry */
-        $registryModel = Mage::getModel('M2ePro/Registry')->loadByKey('/exceptions_filters/');
-        $registryModel->setValue($data['filters']);
-        $registryModel->save();
+        Mage::helper('M2ePro/Module')->getRegistry()->setValue('/exceptions_filters/', $data['filters']);
     }
 
     //########################################

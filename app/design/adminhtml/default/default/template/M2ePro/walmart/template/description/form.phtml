@@ -647,7 +647,6 @@
                     </td>
                     <td class="value">
                         <select id="description_mode" name="description_mode" class="required-entry">
-                            <option value=""></option>
                             <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::DESCRIPTION_MODE_PRODUCT; ?>" <?php if ($formData['description_mode'] == Ess_M2ePro_Model_Walmart_Template_Description::DESCRIPTION_MODE_PRODUCT): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Product Description'); ?></option>
                             <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::DESCRIPTION_MODE_SHORT; ?>" <?php if ($formData['description_mode'] == Ess_M2ePro_Model_Walmart_Template_Description::DESCRIPTION_MODE_SHORT): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Product Short Description'); ?></option>
                             <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::DESCRIPTION_MODE_CUSTOM; ?>" <?php if ($formData['description_mode'] == Ess_M2ePro_Model_Walmart_Template_Description::DESCRIPTION_MODE_CUSTOM): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Custom Value'); ?></option>

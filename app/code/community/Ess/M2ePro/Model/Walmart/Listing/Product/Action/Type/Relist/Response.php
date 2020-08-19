@@ -9,8 +9,6 @@
 class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Relist_Response
     extends Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Response
 {
-    const INSTRUCTION_INITIATOR             = 'relist_action_response';
-
     const INSTRUCTION_TYPE_CHECK_QTY        = 'success_relist_check_qty';
     const INSTRUCTION_TYPE_CHECK_LAG_TIME   = 'success_relist_check_lag_time';
     const INSTRUCTION_TYPE_CHECK_PRICE      = 'success_relist_check_price';

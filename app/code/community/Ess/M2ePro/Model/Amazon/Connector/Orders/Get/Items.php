@@ -58,25 +58,25 @@ class Ess_M2ePro_Model_Amazon_Connector_Orders_Get_Items extends Ess_M2ePro_Mode
         } catch (Ess_M2ePro_Model_Exception_Connection $exception) {
             $data = $exception->getAdditionalData();
             if (!empty($data['curl_error_number']) && $data['curl_error_number'] == CURLE_OPERATION_TIMEOUTED) {
-                $fails = (int)Mage::helper('M2ePro/Module')->getRegistryValue(
+                $fails = (int)Mage::helper('M2ePro/Module')->getRegistry()->getValue(
                     '/amazon/orders/receive/timeout_fails/'
                 );
                 $fails++;
 
-                $rise = (int)Mage::helper('M2ePro/Module')->getRegistryValue(
+                $rise = (int)Mage::helper('M2ePro/Module')->getRegistry()->getValue(
                     '/amazon/orders/receive/timeout_rise/'
                 );
                 $rise += self::TIMEOUT_RISE_ON_ERROR;
 
                 if ($fails >= self::TIMEOUT_ERRORS_COUNT_TO_RISE && $rise <= self::TIMEOUT_RISE_MAX_VALUE) {
                     $fails = 0;
-                    Mage::helper('M2ePro/Module')->setRegistryValue(
+                    Mage::helper('M2ePro/Module')->getRegistry()->setValue(
                         '/amazon/orders/receive/timeout_rise/',
                         $rise
                     );
                 }
 
-                Mage::helper('M2ePro/Module')->setRegistryValue(
+                Mage::helper('M2ePro/Module')->getRegistry()->setValue(
                     '/amazon/orders/receive/timeout_fails/',
                     $fails
                 );
@@ -85,7 +85,7 @@ class Ess_M2ePro_Model_Amazon_Connector_Orders_Get_Items extends Ess_M2ePro_Mode
             throw $exception;
         }
 
-        Mage::helper('M2ePro/Module')->setRegistryValue('/amazon/orders/receive/timeout_fails/', 0);
+        Mage::helper('M2ePro/Module')->getRegistry()->setValue('/amazon/orders/receive/timeout_fails/', 0);
     }
 
     protected function buildConnectionInstance()
@@ -100,7 +100,7 @@ class Ess_M2ePro_Model_Amazon_Connector_Orders_Get_Items extends Ess_M2ePro_Mode
 
     protected function getRequestTimeOut()
     {
-        $rise = (int)Mage::helper('M2ePro/Module')->getRegistryValue(
+        $rise = (int)Mage::helper('M2ePro/Module')->getRegistry()->getValue(
             '/amazon/orders/receive/timeout_rise/'
         );
         $rise > self::TIMEOUT_RISE_MAX_VALUE && $rise = self::TIMEOUT_RISE_MAX_VALUE;
@@ -194,6 +194,7 @@ class Ess_M2ePro_Model_Amazon_Connector_Orders_Get_Items extends Ess_M2ePro_Mode
                         'is_isbn_general_id'   => (int)$item['identifiers']['is_isbn'],
                         'title'                => trim($item['title']),
                         'price'                => (float)$item['prices']['product']['value'],
+                        'shipping_price'       => (float)$item['prices']['shipping']['value'],
                         'gift_price'           => (float)$item['prices']['gift']['value'],
                         'gift_type'            => trim($item['gift_type']),
                         'gift_message'         => trim($item['gift_message']),

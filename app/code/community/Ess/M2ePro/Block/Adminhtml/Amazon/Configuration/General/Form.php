@@ -6,6 +6,11 @@
  * @license    Commercial use is forbidden
  */
 
+/**
+ * Class Ess_M2ePro_Block_Adminhtml_Amazon_Configuration_General_Form
+ *
+ * @method Ess_M2ePro_Helper_Component_Amazon_Configuration getConfigurationHelper()
+ */
 class Ess_M2ePro_Block_Adminhtml_Amazon_Configuration_General_Form extends Mage_Adminhtml_Block_Widget_Form
 {
     //########################################
@@ -36,6 +41,13 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Configuration_General_Form extends Mage_
         $this->setForm($form);
 
         return parent::_prepareForm();
+    }
+
+    protected function _beforeToHtml()
+    {
+        $this->setData('configuration_helper', Mage::helper('M2ePro/Component_Amazon_Configuration'));
+
+        return parent::_beforeToHtml();
     }
 
     //########################################

@@ -86,7 +86,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Template_SellingFormatController
         $oldData = $snapshotBuilder->getSnapshot();
 
         Mage::getModel('M2ePro/Amazon_Template_SellingFormat_Builder')->build($model, $post);
-        if (Mage::helper('M2ePro/Component_Amazon_Business')->isEnabled()) {
+        if (Mage::helper('M2ePro/Component_Amazon_Configuration')->isEnabledBusinessMode()) {
             $this->saveDiscounts($model->getId(), $post);
         }
 

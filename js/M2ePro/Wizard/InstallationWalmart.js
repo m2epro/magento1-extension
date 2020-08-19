@@ -67,13 +67,6 @@ window.WizardInstallationWalmart = Class.create(Common, {
             return;
         }
 
-        $('consumer_id').removeClassName('M2ePro-validate-consumer-id');
-        $$('label[for="consumer_id"]').first().innerHTML = M2ePro.translator.translate('Consumer ID');
-        if (marketplaceId == M2ePro.php.constant('Ess_M2ePro_Helper_Component_Walmart::MARKETPLACE_US')) {
-            $('consumer_id').addClassName('M2ePro-validate-consumer-id');
-            $$('label[for="consumer_id"]').first().innerHTML = M2ePro.translator.translate('Consumer ID / Partner ID');
-        }
-
         $$('.marketplace-required-field-id' + marketplaceId, '.marketplace-required-field-id-not-null').each(function(obj) {
             obj.up('.field-row').show();
         });

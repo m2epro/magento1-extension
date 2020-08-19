@@ -63,7 +63,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Magento_Grid
             'product_id=entity_id',
             array(
                 'id' => 'id',
-                'amazon_status' => 'status',
+                'status' => 'status',
                 'additional_data' => 'additional_data'
             ),
             array(
@@ -75,7 +75,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Magento_Grid
             'listing_product_id=id',
             array(
                 'general_id'                => 'general_id',
-                'amazon_sku'                => 'sku',
+                'sku'                => 'sku',
                 'online_qty'                => 'online_qty',
                 'online_regular_price'      => 'online_regular_price',
                 'online_regular_sale_price' => 'online_regular_sale_price',

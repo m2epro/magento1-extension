@@ -9,13 +9,22 @@
 abstract class Ess_M2ePro_Model_Walmart_Order_Action_Handler_Abstract
 {
     /** @var Ess_M2ePro_Model_Order $_order */
-    protected $_order = null;
+    protected $_order;
+
+    /** @var Ess_M2ePro_Model_Order_Change */
+    protected $_orderChange;
 
     //########################################
 
     public function setOrder(Ess_M2ePro_Model_Order $order)
     {
         $this->_order = $order;
+        return $this;
+    }
+
+    public function setOrderChange(Ess_M2ePro_Model_Order_Change $orderChange)
+    {
+        $this->_orderChange = $orderChange;
         return $this;
     }
 

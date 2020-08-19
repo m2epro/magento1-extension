@@ -177,8 +177,9 @@ abstract class Ess_M2ePro_Controller_Adminhtml_MainController
     protected function addServerMaintenanceInfo()
     {
         if (Mage::helper('M2ePro/Server_Maintenance')->isNow()) {
-            $message = 'M2E Pro server is currently under the planned maintenance. The process is scheduled to last';
-            $message .= ' %from% to %to%. Please do not apply any actions during this time frame.';
+            $message = 'M2E Pro Server is under maintenance. It is scheduled to last';
+            $message .= ' %from% to %to%. Please do not apply Product Actions (List, Relist, Revise, Stop)';
+            $message .= ' during this time frame.';
 
             $this->_getSession()->addNotice(
                 Mage::helper('M2ePro')->__(
@@ -188,8 +189,8 @@ abstract class Ess_M2ePro_Controller_Adminhtml_MainController
                 )
             );
         } else if (Mage::helper('M2ePro/Server_Maintenance')->isScheduled()) {
-            $message = 'The preventive server maintenance has been scheduled. The Service will be unavailable';
-            $message .= ' %from% to %to%. All product updates will processed after the technical works are finished.';
+            $message = 'M2E Pro Server maintenance is scheduled. The Service will be unavailable';
+            $message .= ' %from% to %to%. Product updates will be processed after the technical works are finished.';
 
             $this->_getSession()->addWarning(
                 Mage::helper('M2ePro')->__(
@@ -316,7 +317,7 @@ HTML
 
     protected function addRequirementsErrorMessage()
     {
-        if (Mage::helper('M2ePro/Module')->getRegistryValue('/view/requirements/popup/closed/')) {
+        if (Mage::helper('M2ePro/Module')->getRegistry()->getValue('/view/requirements/popup/closed/')) {
             return;
         }
 

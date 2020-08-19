@@ -97,10 +97,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Request
     protected function prepareFinalData(array $data)
     {
         $data['is_eps_ebay_images_mode'] = $this->getIsEpsImagesMode();
-        $data['upload_images_mode'] = (int)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
-            '/ebay/description/', 'upload_images_mode'
-        );
-
+        $data['upload_images_mode'] = Mage::helper('M2ePro/Component_Ebay_Configuration')->getUploadImagesMode();
         $data = $this->replaceVariationSpecificsNames($data);
         $data = $this->resolveVariationAndItemSpecificsConflict($data);
         $data = $this->removeVariationsInstances($data);

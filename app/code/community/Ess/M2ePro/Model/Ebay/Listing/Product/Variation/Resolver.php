@@ -242,9 +242,8 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Resolver
 
                 $tempVariation['details']['mpn'] = $additionalData['online_product_details']['mpn'];
 
-                $isMpnCanBeChanged = Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
-                    '/component/ebay/variation/', 'mpn_can_be_changed'
-                );
+                $isMpnCanBeChanged = Mage::helper('M2ePro/Component_Ebay_Configuration')
+                    ->getVariationMpnCanBeChanged();
 
                 if (!$isMpnCanBeChanged) {
                     continue;

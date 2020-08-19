@@ -24,7 +24,7 @@ class Ess_M2ePro_Model_Walmart_Order_Item_Builder extends Mage_Core_Model_Abstra
         // Init sale data
         // ---------------------------------------
         $this->setData('price', (float)$data['price']);
-        $this->setData('qty', (int)$data['qty']);
+        $this->setData('qty_purchased', (int)$data['qty']);
         // ---------------------------------------
 
         /**

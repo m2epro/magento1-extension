@@ -122,10 +122,10 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_OtherController extends Ess_M2ePro_Contr
                 'Listing_Other', $otherListingProduct
             );
 
-            $listingProduct = $listingInstance->getChildObject()
-                ->addProductFromOther(
-                    $listingOther, Ess_M2ePro_Helper_Data::INITIATOR_USER, false, false
-                );
+            $listingProduct = $listingInstance->getChildObject()->addProductFromOther(
+                $listingOther,
+                Ess_M2ePro_Helper_Data::INITIATOR_USER
+            );
 
             if (!($listingProduct instanceof Ess_M2ePro_Model_Listing_Product)) {
                 $errorsCount++;
@@ -157,11 +157,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_OtherController extends Ess_M2ePro_Contr
                 );
 
                 return $this->getResponse()->setBody(
-                    Mage::helper('M2ePro')->jsonEncode(
-                        array(
-                        'result' => false
-                        )
-                    )
+                    Mage::helper('M2ePro')->jsonEncode(array('result' => false))
                 );
             }
 
@@ -175,11 +171,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_OtherController extends Ess_M2ePro_Contr
         }
 
         return $this->getResponse()->setBody(
-            Mage::helper('M2ePro')->jsonEncode(
-                array(
-                'result' => true
-                )
-            )
+            Mage::helper('M2ePro')->jsonEncode(array('result' => true))
         );
     }
 

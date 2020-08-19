@@ -1095,9 +1095,8 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat extends Ess_M2ePro_Model_C
     {
         $attributeHelper = Mage::helper('M2ePro/Magento_Attribute');
 
-        $isPriceConvertEnabled = (int)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
-            '/magento/attribute/', 'price_type_converting'
-        );
+        $isPriceConvertEnabled = Mage::helper('M2ePro/Module_Configuration')
+            ->getMagentoAttributePriceTypeConvertingMode();
 
         if ($this->isPriceModeProduct() || $this->isPriceModeSpecial()) {
             return true;

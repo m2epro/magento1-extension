@@ -306,89 +306,16 @@ HTML;
             }
         }
 
-        return $returnString.$this->getViewLogIconHtml($row->getId());
-    }
+        /** @var Ess_M2ePro_Block_Adminhtml_Grid_Column_Renderer_ViewLogIcon_Order $viewLogIcon */
+        $viewLogIcon = $this->getLayout()->createBlock('M2ePro/Adminhtml_Grid_Column_Renderer_ViewLogIcon_Order');
+        $logIconHtml = $viewLogIcon->render($row);
 
-    protected function getViewLogIconHtml($orderId)
-    {
-        $orderId = (int)$orderId;
-
-        // Prepare collection
-        // ---------------------------------------
-        /** @var Ess_M2ePro_Model_Resource_Order_Log_Collection $orderLogsCollection */
-        $orderLogsCollection = Mage::getModel('M2ePro/Order_Log')->getCollection()
-            ->addFieldToFilter('order_id', $orderId)
-            ->setOrder('id', 'DESC');
-        $orderLogsCollection->getSelect()
-            ->limit(3);
-        // ---------------------------------------
-
-        // Prepare logs data
-        // ---------------------------------------
-        if ($orderLogsCollection->getSize() <= 0) {
-            return '';
+        if ($logIconHtml !== '') {
+            return '<div style="min-width: 100px">' . $returnString . $logIconHtml . '</div>';
         }
 
-        $format = Mage::app()->getLocale()->getDateTimeFormat(Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM);
-
-        $logRows = array();
-        foreach ($orderLogsCollection->getItems() as $log) {
-            $logRows[] = array(
-                'type' => $log->getData('type'),
-                'text' => Mage::helper('M2ePro/View')->getModifiedLogMessage($log->getData('description')),
-                'initiator' => $this->getInitiatorForAction($log->getData('initiator')),
-                'date' => Mage::app()->getLocale()->date(strtotime($log->getData('create_date')))->toString($format)
-            );
-        }
-
-        // ---------------------------------------
-
-        $tips = array(
-            Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS => 'Last Order Action was completed successfully.',
-            Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR => 'Last Order Action was completed with error(s).',
-            Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING => 'Last Order Action was completed with warning(s).'
-        );
-
-        $icons = array(
-            Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS => 'normal',
-            Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR => 'error',
-            Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING => 'warning'
-        );
-
-        $summary = $this->getLayout()->createBlock(
-            'M2ePro/adminhtml_log_grid_summary', '', array(
-            'entity_id' => $orderId,
-            'rows' => $logRows,
-            'tips' => $tips,
-            'icons' => $icons,
-            'view_help_handler' => 'OrderObj.viewOrderHelp',
-            'hide_help_handler' => 'OrderObj.hideOrderHelp',
-            )
-        );
-
-        return $summary->toHtml();
+        return $returnString;
     }
-
-    public function getInitiatorForAction($initiator)
-    {
-        $string = '';
-
-        switch ((int)$initiator) {
-            case Ess_M2ePro_Helper_Data::INITIATOR_UNKNOWN:
-                $string = '';
-                break;
-            case Ess_M2ePro_Helper_Data::INITIATOR_USER:
-                $string = Mage::helper('M2ePro')->__('Manual');
-                break;
-            case Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION:
-                $string = Mage::helper('M2ePro')->__('Automatic');
-                break;
-        }
-
-        return $string;
-    }
-
-    // ---------------------------------------
 
     public function callbackColumnItems($value, $row, $column, $isExport)
     {

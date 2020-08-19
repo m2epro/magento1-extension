@@ -67,15 +67,16 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Product_Review extends Ess_M2ePro_
         // ---------------------------------------
         $url = $this->getUrl(
             '*/adminhtml_ebay_listing/view', array(
-            'id' => $this->getRequest()->getParam('listing_id')
+                'id' => $this->getRequest()->getParam('listing_id')
             )
         );
         $buttonBlock = $this->getLayout()
             ->createBlock('adminhtml/widget_button')
             ->setData(
                 array(
-                'label'   => Mage::helper('M2ePro')->__('Go To The Listing'),
-                'onclick' => 'setLocation(\''.$url.'\');',
+                    'id'      => 'go_to_the_listing',
+                    'label'   => Mage::helper('M2ePro')->__('Go To The Listing'),
+                    'onclick' => 'setLocation(\'' . $url . '\');',
                 )
             );
         $this->setChild('review', $buttonBlock);
@@ -85,17 +86,17 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Product_Review extends Ess_M2ePro_
         $addedProductsIds = Mage::helper('M2ePro/Data_Session')->getValue('added_products_ids');
         $url = $this->getUrl(
             '*/adminhtml_ebay_listing/previewItems', array(
-            'currentProductId' => $addedProductsIds[0],
-            'productIds' => implode(',', $addedProductsIds),
+                'currentProductId' => $addedProductsIds[0],
+                'productIds' => implode(',', $addedProductsIds),
             )
         );
         $buttonBlock = $this->getLayout()
             ->createBlock('adminhtml/widget_button')
             ->setData(
                 array(
-                'label'   => Mage::helper('M2ePro')->__('Preview Added Products Now'),
-                'onclick' => 'window.open(\''.$url.'\').focus();',
-                'class'   => 'go'
+                    'label'   => Mage::helper('M2ePro')->__('Preview Added Products Now'),
+                    'onclick' => 'window.open(\''.$url.'\').focus();',
+                    'class'   => 'go'
                 )
             );
         $this->setChild('preview', $buttonBlock);
@@ -104,17 +105,17 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Product_Review extends Ess_M2ePro_
         // ---------------------------------------
         $url = $this->getUrl(
             '*/adminhtml_ebay_listing/view', array(
-            'id' => $this->getRequest()->getParam('listing_id'),
-            'do_list' => true
+                'id' => $this->getRequest()->getParam('listing_id'),
+                'do_list' => true
             )
         );
         $buttonBlock = $this->getLayout()
             ->createBlock('adminhtml/widget_button')
             ->setData(
                 array(
-                'label' => Mage::helper('M2ePro')->__('List Added Products Now'),
-                'onclick' => 'setLocation(\''.$url.'\');',
-                'class' => 'save'
+                    'label' => Mage::helper('M2ePro')->__('List Added Products Now'),
+                    'onclick' => 'setLocation(\''.$url.'\');',
+                    'class' => 'save'
                 )
             );
         $this->getRequest()->getParam('disable_list', false) && $buttonBlock->setData('style', 'display: none');
@@ -125,17 +126,17 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Product_Review extends Ess_M2ePro_
         if ($this->getSource() === SourceModeBlock::SOURCE_OTHER) {
             $url = $this->getUrl(
                 '*/adminhtml_ebay_listing_other/view', array(
-                'account'     => $listing->getAccountId(),
-                'marketplace' => $listing->getMarketplaceId(),
+                    'account'     => $listing->getAccountId(),
+                    'marketplace' => $listing->getMarketplaceId(),
                 )
             );
             $buttonBlock = $this->getLayout()
                 ->createBlock('adminhtml/widget_button')
                 ->setData(
                     array(
-                    'label'   => Mage::helper('M2ePro')->__('Back to 3rd Party Listing'),
-                    'onclick' => 'setLocation(\''.$url.'\');',
-                    'class' => 'save'
+                        'label'   => Mage::helper('M2ePro')->__('Back to 3rd Party Listing'),
+                        'onclick' => 'setLocation(\''.$url.'\');',
+                        'class' => 'save'
                     )
                 );
             $this->setChild('back_to_listing_other', $buttonBlock);

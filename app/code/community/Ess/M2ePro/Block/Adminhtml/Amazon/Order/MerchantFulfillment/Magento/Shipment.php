@@ -51,9 +51,9 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Order_MerchantFulfillment_Magento_Shipme
 
     public function canShowNotificationPopup()
     {
-        $registry = Mage::getModel('M2ePro/Registry');
-        $registry->load('/amazon/order/merchant_fulfillment/disable_notification_popup/', 'key');
-        return !$registry->getValue();
+        return !Mage::helper('M2ePro/Module')->getRegistry()->getValue(
+            '/amazon/order/merchant_fulfillment/disable_notification_popup/'
+        );
     }
 
     //########################################

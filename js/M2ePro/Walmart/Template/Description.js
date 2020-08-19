@@ -257,10 +257,6 @@ window.WalmartTemplateDescription = Class.create(WalmartTemplateEdit, {
 
     description_mode_change: function()
     {
-        if (this.value !== '' && this.options[0].value === '') {
-            this.removeChild(this.options[0]);
-        }
-
         this.value == M2ePro.php.constant('Ess_M2ePro_Model_Walmart_Template_Description::DESCRIPTION_MODE_CUSTOM')
             ? $$('.c-custom_description_tr').invoke('show')
             : $$('.c-custom_description_tr').invoke('hide');

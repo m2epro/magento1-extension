@@ -957,27 +957,19 @@ class Ess_M2ePro_Model_Amazon_Listing extends Ess_M2ePro_Model_Component_Child_A
     /**
      * @param Ess_M2ePro_Model_Listing_Other $listingOtherProduct
      * @param int $initiator
-     * @param bool $checkingMode
-     * @param bool $checkHasProduct
      * @return bool|Ess_M2ePro_Model_Listing_Product
      * @throws Ess_M2ePro_Model_Exception_Logic
      */
     public function addProductFromOther(
         Ess_M2ePro_Model_Listing_Other $listingOtherProduct,
-        $initiator = Ess_M2ePro_Helper_Data::INITIATOR_UNKNOWN,
-        $checkingMode = false,
-        $checkHasProduct = true
+        $initiator = Ess_M2ePro_Helper_Data::INITIATOR_UNKNOWN
     ) {
         if (!$listingOtherProduct->getProductId()) {
             return false;
         }
 
         $productId = $listingOtherProduct->getProductId();
-        $result = $this->getParentObject()->addProduct($productId, $initiator, $checkingMode, $checkHasProduct);
-
-        if ($checkingMode) {
-            return $result;
-        }
+        $result = $this->getParentObject()->addProduct($productId, $initiator, false, true);
 
         if (!($result instanceof Ess_M2ePro_Model_Listing_Product)) {
             return false;

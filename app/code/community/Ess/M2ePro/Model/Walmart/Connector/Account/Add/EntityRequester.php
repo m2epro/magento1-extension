@@ -28,7 +28,6 @@ class Ess_M2ePro_Model_Walmart_Connector_Account_Add_EntityRequester
         } else {
             $requestData = array(
                 'title'          => $this->_account->getTitle(),
-                'consumer_id'    => $this->_params['consumer_id'],
                 'client_id'      => $this->_params['client_id'],
                 'client_secret'  => $this->_params['client_secret'],
                 'marketplace_id' => $marketplaceObject->getNativeId(),

@@ -125,10 +125,6 @@
             For Walmart US, please ensure to provide M2E Pro with full access permissions to all API sections and enter valid Consumer ID, Client ID, and Client Secret.'
         ),
         'M2E Pro was not able to get access to the Walmart Account. Reason: %error_message%' => Mage::helper('M2ePro')->__('M2E Pro was not able to get access to the Walmart Account. Reason: %error_message%'),
-        'The specified Consumer ID / Partner ID is not valid' => Mage::helper('M2ePro')->__(
-            'The specified Consumer ID / Partner ID is not valid. Please find the instruction on how to get it <a target="_blank" href="%url%">here</a>.',
-            Mage::helper('M2ePro/Module_Support')->getSupportUrl('how-to-guide/1570387-how-to-get-my-consumer-id-partner-id-to-auth-m2e-on-walmart-us')
-        )
     )); ?>);
 
     M2ePro.formData.title = '<?php echo Mage::helper('M2ePro')->escapeJs(Mage::helper('M2ePro')->escapeHtml($formData['title'])); ?>';
@@ -177,7 +173,7 @@
                                 Authentication based on the Private Key is deprecated. You need to grant M2E Pro access based on the new Walmart Access Token based Authentication.<br>
                                 To reauthorize M2E Pro, please generate <i>Client ID</i> and <i>Client Secret</i> following the instruction in the Help block above.
                             </p>
-                            <p>Important: Your <i>Consumer ID / Partner ID</i> must not be changed once it is obtain. <i>Consumer ID / Partner ID</i> is unique seller identifier M2E Pro requires to act on your behalf.</p>'
+                            <p>Important: Your <i>Consumer ID</i> must not be changed once it is obtain. <i>Consumer ID</i> is unique seller identifier M2E Pro requires to act on your behalf.</p>'
                         ); ?>
                     </li>
                 </ul>
@@ -235,23 +231,15 @@
 
                 <?php } ?>
 
-                <tr class="marketplace-required-field marketplace-required-field-id-not-null">
+                <tr class="marketplace-required-field marketplace-required-field-id<?php echo Ess_M2ePro_Helper_Component_Walmart::MARKETPLACE_CA; ?>">
                     <td class="label">
-                        <label class="marketplace-required-field marketplace-required-field-id<?php echo Ess_M2ePro_Helper_Component_Walmart::MARKETPLACE_CA; ?>"><?php echo Mage::helper('M2ePro')->__('Consumer ID'); ?>: <span class="required">*</span></label>
-                        <label class="marketplace-required-field marketplace-required-field-id<?php echo Ess_M2ePro_Helper_Component_Walmart::MARKETPLACE_US; ?>"><?php echo Mage::helper('M2ePro')->__('Consumer ID / Partner ID'); ?>: <span class="required">*</span></label>
+                        <label><?php echo Mage::helper('M2ePro')->__('Consumer ID'); ?>: <span class="required">*</span></label>
                     </td>
                     <td class="value">
-                        <input id="consumer_id" type="text" name="consumer_id" value="<?php echo $formData['consumer_id']; ?>" class="input-text required-entry M2ePro-required-when-visible" />
+                        <input id="consumer_id" type="text" name="consumer_id" value="<?php echo $formData['consumer_id']; ?>" class="input-text M2ePro-required-when-visible" />
                         <p class="note">
-                            <span class="marketplace-required-field marketplace-required-field-id<?php echo Ess_M2ePro_Helper_Component_Walmart::MARKETPLACE_CA; ?>">
+                            <span>
                                 <?php echo Mage::helper('M2ePro')->__('A unique seller identifier on the website.'); ?>
-                            </span>
-                            <span class="marketplace-required-field marketplace-required-field-id<?php echo Ess_M2ePro_Helper_Component_Walmart::MARKETPLACE_US; ?>">
-                                <?php echo Mage::helper('M2ePro')->__(
-                                    'A unique seller identifier on the website.<br>
-                                    <b>Note:</b> You can find the instruction on how to get the Consumer ID / Partner ID <a target="_blank" href="%url%">here</a>.',
-                                    Mage::helper('M2ePro/Module_Support')->getSupportUrl('how-to-guide/1570387-how-to-get-my-consumer-id-partner-id-to-auth-m2e-on-walmart-us')
-                                ); ?>
                             </span>
                         </p>
 
@@ -266,7 +254,7 @@
                         <label><?php echo Mage::helper('M2ePro')->__('Private Key'); ?>: <span class="required">*</span></label>
                     </td>
                     <td class="value">
-                        <textarea name="old_private_key" id="old_private_key" cols="50" rows="10" class="input-text M2ePro-required-when-visible M2ePro-marketplace-merchant" style="height: 15em;"><?php echo Mage::helper('M2ePro')->escapeHtml($formData['old_private_key']); ?></textarea>
+                        <textarea name="private_key" id="private_key" cols="50" rows="10" class="input-text M2ePro-required-when-visible M2ePro-marketplace-merchant" style="height: 15em;"><?php echo Mage::helper('M2ePro')->escapeHtml($formData['private_key']); ?></textarea>
                         <p class="note">
                             <span><?php echo Mage::helper('M2ePro')->__('Walmart Private Key generated from your Seller Center Account.'); ?></span>
                         </p>

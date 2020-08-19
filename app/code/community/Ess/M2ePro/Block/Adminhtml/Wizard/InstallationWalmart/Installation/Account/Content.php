@@ -118,35 +118,19 @@ HTML
             array(
                 'container_id' => 'marketplaces_consumer_id_container',
                 'name'         => 'consumer_id',
-                'label'        => Mage::helper('M2ePro')->__('Consumer ID / Partner ID'),
+                'label'        => Mage::helper('M2ePro')->__('Consumer ID'),
                 'required'     => true,
-                'class'        => 'M2ePro-marketplace-consumer-id marketplace-required-field '
-                                . 'marketplace-required-field-id-not-null',
-                'tooltip'      => Mage::helper('M2ePro')->__(
-                    <<<HTML
-<span class="marketplace-required-field marketplace-required-field-id{$marketplaceCA}">
-    A unique seller identifier on the website.
-</span>
-<span class="marketplace-required-field marketplace-required-field-id{$marketplaceUS}">
-    A unique seller identifier on the website.<br>
-    <b>Note:</b> You can find the instruction on how to get the Consumer ID / Partner ID 
-    <a target="_blank" href="%url%">here</a>.
-</span>
-HTML
-                    ,
-                    Mage::helper('M2ePro/Module_Support')->getSupportUrl(
-                        'how-to-guide/1570387-how-to-get-my-consumer-id-partner-id-to-auth-m2e-on-walmart-us'
-                    )
-                )
+                'class'        => "marketplace-required-field marketplace-required-field-id{$marketplaceCA}",
+                'tooltip'      => Mage::helper('M2ePro')->__('A unique seller identifier on the website.'),
             )
         );
 
         $fieldset->addField(
-            'old_private_key',
+            'private_key',
             'textarea',
             array(
-                'container_id' => 'marketplaces_old_private_key_container',
-                'name'         => 'old_private_key',
+                'container_id' => 'marketplaces_private_key_container',
+                'name'         => 'private_key',
                 'label'        => Mage::helper('M2ePro')->__('Private Key'),
                 'required'     => true,
                 'class'        => "M2ePro-marketplace-merchant marketplace-required-field "
