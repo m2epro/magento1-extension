@@ -38,6 +38,7 @@ class Ess_M2ePro_Model_Amazon_Order_Shipment_Handler extends Ess_M2ePro_Model_Or
         $shipmentItems = array();
         $qtyAvailable = (int)$shipmentItem->getQty();
 
+        $itemsCollection = $order->getItemsCollection();
         foreach ($additionalData[Helper::CUSTOM_IDENTIFIER]['items'] as &$data) {
             if ($qtyAvailable <= 0 || !isset($data['order_item_id'])) {
                 continue;
@@ -45,7 +46,8 @@ class Ess_M2ePro_Model_Amazon_Order_Shipment_Handler extends Ess_M2ePro_Model_Or
 
             /** @var Ess_M2ePro_Model_Order_Item $item */
             $orderItemId = $data['order_item_id'];
-            $item = $order->getItemsCollection()->getItemByColumnValue('amazon_order_item_id', $orderItemId);
+            $itemsCollection->clear()->getSelect()->reset(Zend_Db_Select::WHERE);
+            $item = $itemsCollection->addFieldToFilter('amazon_order_item_id', $orderItemId)->getFirstItem();
             if ($item === null) {
                 continue;
             }

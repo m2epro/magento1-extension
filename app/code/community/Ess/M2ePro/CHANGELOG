@@ -1,4 +1,8 @@
-* 6.8.0 (r15569) (19/08/2020) 
+* 6.8.1 (r15719) (02/10/2020)
+
+Common: [Fixed] Not all item qty is sent along with shipment info
+
+* 6.8.0 (r15567) (19/08/2020)
 
 Common: [Added] Registry Manager
 Common: [Added] Freshdesk widget
