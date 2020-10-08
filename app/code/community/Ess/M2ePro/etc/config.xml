@@ -1317,6 +1317,7 @@
                 <class>Ess_M2ePro_Helper</class>
             </M2ePro>
         </helpers>
+        <!--
         <sales>
             <quote>
                 <totals>
@@ -1328,6 +1329,7 @@
                 </totals>
             </quote>
         </sales>
+        -->
     </global>
     <crontab>
         <jobs>
