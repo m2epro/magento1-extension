@@ -347,7 +347,12 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
             return array();
         }
 
-        return Zend_Serializer::unserialize($data);
+       	try{
+			return Zend_Serializer::unserialize($data);
+		}catch(Exception $e){
+			Mage::log("M2epro: Error unserialize data");
+			return array();
+		}
     }
 
     //########################################
