@@ -54,26 +54,20 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Variation_Product_Manage_Tabs_Va
     {
         parent::__construct();
 
-        // Initialization block
-        // ---------------------------------------
         $this->setId('amazonVariationProductManageGrid');
         $this->setDefaultSort('id');
         $this->setDefaultDir('ASC');
         $this->setUseAjax(true);
-        // ---------------------------------------
     }
 
     //########################################
 
     protected function _prepareCollection()
     {
-        // Get collection
-        // ---------------------------------------
         /** @var Ess_M2ePro_Model_Resource_Amazon_Listing_Product_Collection $collection */
         $collection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Product');
         $collection->getSelect()->distinct();
         $collection->getSelect()->where("`second_table`.`variation_parent_id` = ?", (int)$this->getListingProductId());
-        // ---------------------------------------
 
         $collection->getSelect()->columns(
             array(
@@ -124,7 +118,13 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Variation_Product_Manage_Tabs_Va
             )
         );
 
-        // Set collection to grid
+        if ($this->getParam($this->getVarNameFilter()) == 'searched_by_child'){
+            $collection->addFieldToFilter(
+                'second_table.listing_product_id',
+                array('in' => explode(',', $this->getRequest()->getParam('listing_product_id_filter')))
+            );
+        }
+
         $this->setCollection($collection);
 
         return parent::_prepareCollection();
@@ -178,12 +178,12 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Variation_Product_Manage_Tabs_Va
         );
 
         $this->addColumn(
-            'sku', array(
+            'amazon_sku', array(
                 'header'       => Mage::helper('M2ePro')->__('SKU'),
                 'align'        => 'left',
                 'type'         => 'text',
-                'index'        => 'sku',
-                'filter_index' => 'sku',
+                'index'        => 'amazon_sku',
+                'filter_index' => 'amazon_sku',
                 'renderer'     => 'M2ePro/adminhtml_amazon_grid_column_renderer_sku',
             )
         );
@@ -258,14 +258,9 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Variation_Product_Manage_Tabs_Va
 
     protected function _prepareMassaction()
     {
-        // Set massaction identifiers
-        // ---------------------------------------
         $this->setMassactionIdField('id');
         $this->setMassactionIdFieldOnlyIndexValue(true);
-        // ---------------------------------------
 
-        // Set mass-action
-        // ---------------------------------------
         $this->getMassactionBlock()->addItem(
             'list', array(
                 'label'   => Mage::helper('M2ePro')->__('List Item(s)'),
@@ -313,8 +308,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Variation_Product_Manage_Tabs_Va
                 'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
             )
         );
-
-        // ---------------------------------------
 
         return parent::_prepareMassaction();
     }

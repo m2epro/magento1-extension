@@ -180,6 +180,11 @@ class Ess_M2ePro_Model_Ebay_Template_Manager
         );
     }
 
+    public function getNotMarketplaceDependentTemplates()
+    {
+        return array_diff($this->getAllTemplates(), $this->getMarketplaceDependentTemplates());
+    }
+
     //########################################
 
     /**

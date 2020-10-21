@@ -26,7 +26,7 @@ class Ess_M2ePro_Block_Adminhtml_Wizard_InstallationAmazon_Installation_ListingT
                 <<<HTML
 <div class="wizard_block">
     <h2>
-        Congratulations! You have successfully registered your M2E Pro Extension and linked your Amazon Account to it.
+        Congratulations! You have registered your M2E Pro Extension and linked your Amazon Account to it.
     </h2>
 
     <p>

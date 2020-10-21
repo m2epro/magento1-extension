@@ -147,95 +147,86 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_View_Item extends Mage_Adminhtml_Blo
     //########################################
 
     /**
-     * @param $value
-     * @param $row Ess_M2ePro_Model_Order_Item
-     * @param $column
-     * @param $isExport
+     * @param string $value
+     * @param Ess_M2ePro_Model_Order_Item $row
+     * @param Mage_Adminhtml_Block_Widget_Grid_Column $column
+     * @param bool $isExport
      *
      * @return string
+     * @throws Ess_M2ePro_Model_Exception_Logic
      */
     public function callbackColumnProduct($value, $row, $column, $isExport)
     {
-        $html = '<b>'.Mage::helper('M2ePro')->escapeHtml($row->getTitle()).'</b><br/>';
+        $dataHelper = Mage::helper('M2ePro');
+        $eBayOrderItem = $row->getChildObject();
 
-        $variation = $row->getChildObject()->getVariationOptions();
+        $variationHtml = '';
+        $variation = $eBayOrderItem->getVariationOptions();
         if (!empty($variation)) {
             foreach ($variation as $optionName => $optionValue) {
-                $optionNameHtml = Mage::helper('M2ePro')->escapeHtml($optionName);
-                $optionValueHtml = Mage::helper('M2ePro')->escapeHtml($optionValue);
-
-                $html .= <<<HTML
+                $variationHtml .= <<<HTML
 <span style="font-weight: bold; font-style: italic; padding-left: 10px;">
-{$optionNameHtml}:&nbsp;
+{$dataHelper->escapeHtml($optionName)}:&nbsp;
 </span>
-{$optionValueHtml}<br/>
+{$dataHelper->escapeHtml($optionValue)}<br/>
 HTML;
             }
         }
 
         $itemUrl = Mage::helper('M2ePro/Component_Ebay')->getItemUrl(
-            $row->getItemId(),
+            $eBayOrderItem->getItemId(),
             $this->_order->getAccount()->getChildObject()->getMode(),
             $this->_order->getMarketplaceId()
         );
-
-        $itemLink = '<a href="'.$itemUrl.'" target="_blank">'.Mage::helper('M2ePro')->__('View on eBay').'</a>';
-
-        $productLink = '';
-
-        if ($productId = $row->getData('product_id')) {
-            $productUrl = $this->getUrl(
-                'adminhtml/catalog_product/edit', array(
-                'id'    => $productId,
-                'store' => $row->getOrder()->getStoreId()
-                )
-            );
-            $productLink .= ' | <a href="'.$productUrl.'" target="_blank">'.Mage::helper('M2ePro')->__('View').'</a>';
-        }
-
-        $html .= <<<HTML
-<div style="float: left;">
-{$itemLink}{$productLink}
-</div>
+        $eBayLink = <<<HTML
+<a href="{$itemUrl}" target="_blank">{$dataHelper->__('View on eBay')}</a>
 HTML;
 
-        $orderItemId = (int)$row->getId();
-        $gridId = $this->getId();
+        $productLink = '';
+        if ($row->getProductId()) {
+            $productUrl = $this->getUrl('adminhtml/catalog_product/edit', array(
+                'id'    => $row->getProductId(),
+                'store' => $row->getOrder()->getStoreId()
+            ));
+            $productLink = <<<HTML
+<a href="{$productUrl}" target="_blank">{$dataHelper->__('View')}</a>
+HTML;
+        }
+
+        $eBayLink && $productLink && $eBayLink .= '&nbsp;|&nbsp;';
+        $jsTemplate = <<<HTML
+<a class="gray" href="javascript:void(0);" onclick="
+{OrderEditItemObj.%s('{$this->getId()}', {$row->getId()});}
+">%s</a>
+HTML;
 
         $editLink = '';
-        if (!$row->getProductId() || $row->getMagentoProduct()->isProductWithVariations()) {
-            if (!$row->getProductId()) {
-                $action = Mage::helper('M2ePro')->__('Map to Magento Product');
-            } else {
-                $action = Mage::helper('M2ePro')->__('Set Options');
-            }
+        if (!$row->getProductId()) {
+            $editLink = sprintf($jsTemplate, 'edit', $dataHelper->__('Map to Magento Product'));
+        }
 
-            $class = 'class="gray"';
+        $isPretendedToBeSimple = false;
+        if ($eBayOrderItem->getParentObject()->getMagentoProduct() !== null &&
+            $eBayOrderItem->getParentObject()->getMagentoProduct()->isGroupedType() &&
+            $eBayOrderItem->getChannelItem() !== null) {
+            $isPretendedToBeSimple = $eBayOrderItem->getChannelItem()->isGroupedProductModeSet();
+        }
 
-            $js = "{OrderEditItemObj.edit('{$gridId}', {$orderItemId});}";
-            $editLink = '<a href="javascript:void(0);" onclick="'.$js.'" '.$class.'>'.$action.'</a>';
+        if ($row->getProductId() && $row->getMagentoProduct()->isProductWithVariations() && !$isPretendedToBeSimple) {
+            $editLink = sprintf($jsTemplate, 'edit', $dataHelper->__('Set Options')) . '&nbsp;|&nbsp;';
         }
 
         $discardLink = '';
         if ($row->getProductId()) {
-            $action = Mage::helper('M2ePro')->__('Unmap');
-
-            $js = "{OrderEditItemObj.unassignProduct('{$gridId}', {$orderItemId});}";
-            $discardLink = '<a href="javascript:void(0);" onclick="'.$js.'" class="gray">'.$action.'</a>';
-
-            if ($editLink) {
-                $discardLink = '&nbsp;|&nbsp;' . $discardLink;
-            }
+            $discardLink = sprintf($jsTemplate, 'unassignProduct', $dataHelper->__('Unmap'));
         }
 
-        $html .= <<<HTML
-<div style="float: right;">
-{$editLink}{$discardLink}
-</div>
-<div style="clear: both;"></div>
+        return <<<HTML
+<b>{$dataHelper->escapeHtml($eBayOrderItem->getTitle())}</b><br/>
+{$variationHtml}
+<div style="float: left;">{$eBayLink}{$productLink}</div>
+<div style="float: right;">{$editLink}{$discardLink}</div>
 HTML;
-
-        return $html;
     }
 
     public function callbackColumnStockAvailability($value, $row, $column, $isExport)

@@ -156,6 +156,14 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View extends Mage_Adminhtml_Bloc
         $urls[$path] = $this->getUrl('*/' . $path);
 
         $urls = array_merge(
+            $urls,
+            Mage::helper('M2ePro')->getControllerActions(
+                'adminhtml_amazon_listing_transferring',
+                array('listing_id' => $this->_listing->getId())
+            )
+        );
+
+        $urls = array_merge(
             $urls, Mage::helper('M2ePro')->getControllerActions(
                 'adminhtml_amazon_listing_repricing',
                 array(
@@ -164,6 +172,10 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View extends Mage_Adminhtml_Bloc
                 )
             )
         );
+
+        $urls['moveToListingPopupHtml'] = $this->getUrl('*/adminhtml_listing_moving/moveToListingPopupHtml');
+        $urls['prepareMoveToListing'] = $this->getUrl('*/adminhtml_listing_moving/prepareMoveToListing');
+        $urls['moveToListing'] = $this->getUrl('*/adminhtml_listing_moving/moveToListing');
 
         $urls = Mage::helper('M2ePro')->jsonEncode($urls);
         // ---------------------------------------
@@ -198,11 +210,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View extends Mage_Adminhtml_Bloc
         $runStopProducts = $this->getUrl('*/adminhtml_amazon_listing/runStopProducts');
         $runStopAndRemoveProducts = $this->getUrl('*/adminhtml_amazon_listing/runStopAndRemoveProducts');
         $runDeleteAndRemoveProducts = $this->getUrl('*/adminhtml_amazon_listing/runDeleteAndRemoveProducts');
-
-        $prepareData = $this->getUrl('*/adminhtml_listing_moving/prepareMoveToListing');
-        $getMoveToListingGridHtml = $this->getUrl('*/adminhtml_listing_moving/moveToListingGrid');
-
-        $moveToListing = $this->getUrl('*/adminhtml_listing_moving/moveToListing');
 
         $marketplaceSynchUrl = $this->getUrl(
             '*/adminhtml_amazon_marketplace/index'
@@ -394,14 +401,14 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View extends Mage_Adminhtml_Bloc
 
         $emptySkuError = $helper->escapeJs($helper->__('Please enter Amazon Parent Product SKU.'));
 
-        $translations = Mage::helper('M2ePro')->jsonEncode(
-            array(
+        $translations = Mage::helper('M2ePro')->jsonEncode(array(
             'Auto Add/Remove Rules' => $helper->__('Auto Add/Remove Rules'),
             'Based on Magento Categories' => $helper->__('Based on Magento Categories'),
             'You must select at least 1 Category.' => $helper->__('You must select at least 1 Category.'),
-            'Rule with the same Title already exists.' => $helper->__('Rule with the same Title already exists.')
-            )
-        );
+            'Rule with the same Title already exists.' => $helper->__('Rule with the same Title already exists.'),
+            'Sell on Another Marketplace' => $helper->__('Sell on Another Marketplace'),
+            'Create new' => $helper->__('Create new')
+        ));
 
         $constants = Mage::helper('M2ePro')
             ->getClassConstantAsJson('Ess_M2ePro_Model_Amazon_Account');
@@ -409,9 +416,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View extends Mage_Adminhtml_Bloc
         $javascriptsMain = <<<HTML
 <script type="text/javascript">
 
-    M2ePro.php.setConstants(
-        {$constants}, 'Ess_M2ePro_Model_Amazon_Account'
-    );
+    M2ePro.php.setConstants({$constants}, 'Ess_M2ePro_Model_Amazon_Account');
 
     M2ePro.url.add({$urls});
     M2ePro.translator.add({$translations});
@@ -475,11 +480,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View extends Mage_Adminhtml_Bloc
     M2ePro.url.unassignProductTaxCode = '{$unassignProductTaxCode}';
     M2ePro.url.viewProductTaxCodePopup = '{$viewProductTaxCodePopup}';
     M2ePro.url.viewProductTaxCodeGrid = '{$viewProductTaxCodeGrid}';
-
-    M2ePro.url.prepareData = '{$prepareData}';
-    M2ePro.url.getGridHtml = '{$getMoveToListingGridHtml}';
-
-    M2ePro.url.moveToListing = '{$moveToListing}';
 
     M2ePro.url.marketplace_synch = '{$marketplaceSynchUrl}';
 
@@ -545,16 +545,12 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View extends Mage_Adminhtml_Bloc
 
     Event.observe(window, 'load', function() {
 
-        ListingGridObj = new AmazonListingGrid(
-            '{$gridId}',
-            {$this->_listing->getId()}
-        );
+        ListingGridObj = new AmazonListingGrid('{$gridId}', {$this->_listing->getId()});
 
         ListingProgressBarObj = new ProgressBar('listing_view_progress_bar');
         GridWrapperObj = new AreaWrapper('listing_view_content_container');
 
-        ListingProductVariationObj = new AmazonListingProductVariation(M2ePro,
-                                                                               ListingGridObj);
+        ListingProductVariationObj = new AmazonListingProductVariation(M2ePro, ListingGridObj);
 
         if (M2ePro.productsIdsForList) {
             ListingGridObj.getGridMassActionObj().checkedString = M2ePro.productsIdsForList;
@@ -568,9 +564,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View extends Mage_Adminhtml_Bloc
 
         AmazonListingAfnQtyObj = new AmazonListingAfnQty();
         AmazonListingRepricingPriceObj = new AmazonListingRepricingPrice();
-
     });
-
 </script>
 HTML;
 

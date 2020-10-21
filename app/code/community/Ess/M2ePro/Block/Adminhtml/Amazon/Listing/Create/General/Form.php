@@ -41,13 +41,15 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Create_General_Form extends Mage
 
         $title = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing')->getSize() == 0 ? 'Default' : '';
         $accountId = '';
+        $marketplaceId = '';
         $storeId = '';
 
-        $sessionKey = 'amazon_listing_create';
-        $sessionData = Mage::helper('M2ePro/Data_Session')->getValue($sessionKey);
-
-        isset($sessionData['title']) && $title = $sessionData['title'];
+        $sessionData = Mage::helper('M2ePro/Data_Session')->getValue(
+            Ess_M2ePro_Model_Amazon_Listing::CREATE_LISTING_SESSION_DATA
+        );
+        isset($sessionData['title'])  && $title = $sessionData['title'];
         isset($sessionData['account_id']) && $accountId = $sessionData['account_id'];
+        isset($sessionData['marketplace_id']) && $marketplaceId = $sessionData['marketplace_id'];
         isset($sessionData['store_id']) && $storeId = $sessionData['store_id'];
 
         $fieldset->addField(
@@ -139,20 +141,6 @@ HTML
             )
         );
 
-        $marketplacesCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Marketplace')
-            ->setOrder('sorder', 'ASC')
-            ->setOrder('title', 'ASC');
-
-        /** @var $marketplacesCollection Ess_M2ePro_Model_Resource_Collection_Abstract */
-        $marketplacesCollection->resetByType(
-            Zend_Db_Select::COLUMNS,
-            array(
-                'value' => 'id',
-                'label' => 'title',
-                'url'   => 'url'
-            )
-        );
-
         $fieldset->addField(
             'marketplace_info',
             Ess_M2ePro_Block_Adminhtml_Magento_Form_Element_Form::CUSTOM_CONTAINER,
@@ -167,7 +155,8 @@ HTML
             'marketplace_id',
             'hidden',
             array(
-                'value' => ''
+                'name' => 'marketplace_id',
+                'value' => $marketplaceId
             )
         );
 

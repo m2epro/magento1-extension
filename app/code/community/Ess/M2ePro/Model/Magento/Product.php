@@ -6,6 +6,8 @@
  * @license    Commercial use is forbidden
  */
 
+use Mage_Catalog_Model_Product_Status as ProductStatus;
+
 class Ess_M2ePro_Model_Magento_Product
 {
     const TYPE_SIMPLE_ORIGIN       = 'simple';
@@ -70,6 +72,8 @@ class Ess_M2ePro_Model_Magento_Product
     protected $_isIgnoreVariationFilterAttributes = false;
 
     public $notFoundAttributes = array();
+
+    protected $_isGroupedProductMode = Ess_M2ePro_Model_Listing_Product::GROUPED_PRODUCT_MODE_OPTIONS;
 
     //########################################
 
@@ -241,6 +245,16 @@ class Ess_M2ePro_Model_Magento_Product
     }
 
     // ---------------------------------------
+
+    /**
+     * @param int $isGroupedProductMode
+     * @return Ess_M2ePro_Model_Magento_Product
+     */
+    public function setGroupedProductMode($isGroupedProductMode)
+    {
+        $this->_isGroupedProductMode = $isGroupedProductMode;
+        return $this;
+    }
 
     /**
      * @return Mage_Catalog_Model_Product_Type_Abstract
@@ -687,20 +701,30 @@ class Ess_M2ePro_Model_Magento_Product
      */
     public function isStatusEnabled()
     {
+        if (Ess_M2ePro_Model_Listing_Product::GROUPED_PRODUCT_MODE_SET == $this->_isGroupedProductMode) {
+            foreach ($this->getTypeInstance()->getAssociatedProducts() as $childProduct) {
+                /** @var Mage_Catalog_Model_Product $childProduct */
+                if ($childProduct->getStatus() == ProductStatus::STATUS_ENABLED) {
+                    continue;
+                }
+
+                return false;
+            }
+        }
+
         if (!$this->_productModel && $this->_productId > 0) {
             $status = Mage::getSingleton('M2ePro/Magento_Product_Status')
                             ->getProductStatus($this->_productId, $this->_storeId);
 
             if (is_array($status) && isset($status[$this->_productId])) {
                 $status = (int)$status[$this->_productId];
-                if ($status == Mage_Catalog_Model_Product_Status::STATUS_DISABLED ||
-                    $status == Mage_Catalog_Model_Product_Status::STATUS_ENABLED) {
-                    return $status == Mage_Catalog_Model_Product_Status::STATUS_ENABLED;
+                if ($status == ProductStatus::STATUS_DISABLED || $status == ProductStatus::STATUS_ENABLED) {
+                    return $status == ProductStatus::STATUS_ENABLED;
                 }
             }
         }
 
-        return (int)$this->getProduct()->getStatus() == Mage_Catalog_Model_Product_Status::STATUS_ENABLED;
+        return (int)$this->getProduct()->getStatus() == ProductStatus::STATUS_ENABLED;
     }
 
     /**
@@ -709,6 +733,28 @@ class Ess_M2ePro_Model_Magento_Product
      */
     public function isStockAvailability()
     {
+        if (Ess_M2ePro_Model_Listing_Product::GROUPED_PRODUCT_MODE_SET == $this->_isGroupedProductMode) {
+            foreach ($this->getTypeInstance()->getAssociatedProducts() as $childProduct) {
+                /** @var Mage_Catalog_Model_Product $childProduct */
+
+                $stockItem = Mage::getModel('cataloginventory/stock_item')
+                    ->setStockId(Mage::helper('M2ePro/Magento_Store')->getStockId($this->getStoreId()))
+                    ->loadByProduct($childProduct);
+
+                $isInStock = self::calculateStockAvailability(
+                    $stockItem->getData('is_in_stock'),
+                    $stockItem->getData('manage_stock'),
+                    $stockItem->getData('use_config_manage_stock')
+                );
+
+                if ($isInStock) {
+                    continue;
+                }
+
+                return false;
+            }
+        }
+
         return self::calculateStockAvailability(
             $this->getStockItem()->getData('is_in_stock'),
             $this->getStockItem()->getData('manage_stock'),
@@ -962,8 +1008,7 @@ class Ess_M2ePro_Model_Magento_Product
                 $stockItem->getUseConfigBackorders()
             );
 
-            if ($lifeMode &&
-                (!$isInStock || $childProduct->getStatus() != Mage_Catalog_Model_Product_Status::STATUS_ENABLED)) {
+            if ($lifeMode && (!$isInStock || $childProduct->getStatus() != ProductStatus::STATUS_ENABLED)) {
                 continue;
             }
 
@@ -973,11 +1018,19 @@ class Ess_M2ePro_Model_Magento_Product
         return $totalQty;
     }
 
-    protected function getGroupedQty($lifeMode = false)
+    /**
+     * @param bool $lifeMode
+     *
+     * @return int
+     * @throws Ess_M2ePro_Model_Exception
+     */
+    protected function getGroupedQty($lifeMode = false)    
     {
-        $totalQty = 0;
+        $value = 0;
 
         foreach ($this->getTypeInstance()->getAssociatedProducts() as $childProduct) {
+            /** @var Mage_Catalog_Model_Product $childProduct */
+
             $stockItem = Mage::getModel('cataloginventory/stock_item')
                 ->setStockId(Mage::helper('M2ePro/Magento_Store')->getStockId($this->getStoreId()))
                 ->loadByProduct($childProduct);
@@ -988,6 +1041,14 @@ class Ess_M2ePro_Model_Magento_Product
                 $stockItem->getData('use_config_manage_stock')
             );
 
+            if ($lifeMode && (!$isInStock || $childProduct->getStatus() != ProductStatus::STATUS_ENABLED)) {
+                if (Ess_M2ePro_Model_Listing_Product::GROUPED_PRODUCT_MODE_SET == $this->_isGroupedProductMode) {
+                    return 0; // not sellable product if any child "Out Of Stock" or Disable
+                }
+
+                continue;
+            }
+
             $qty = $this->calculateQty(
                 $stockItem->getQty(),
                 $stockItem->getData('manage_stock'),
@@ -996,15 +1057,29 @@ class Ess_M2ePro_Model_Magento_Product
                 $stockItem->getUseConfigBackorders()
             );
 
-            if ($lifeMode &&
-                (!$isInStock || $childProduct->getStatus() != Mage_Catalog_Model_Product_Status::STATUS_ENABLED)) {
+            if (Ess_M2ePro_Model_Listing_Product::GROUPED_PRODUCT_MODE_OPTIONS == $this->_isGroupedProductMode) {
+                $value += $qty;
                 continue;
             }
 
-            $totalQty += $qty;
+            $defaultQty = $childProduct->getQty();
+            if ($defaultQty <= 0 || $qty <= 0) {
+                continue;
+            }
+
+            $qty = floor($qty / $defaultQty);
+            if ($qty < 1) {
+                return 0; // not sellable product if any child "Out Of Stock" or Disable
+            }
+
+            if ($value < $qty && $value != 0) { // where "0" is default $value
+                continue;
+            }
+
+            $value = $qty;
         }
 
-        return $totalQty;
+        return $value;
     }
 
     protected function getBundleQty($lifeMode = false)
@@ -1047,8 +1122,7 @@ class Ess_M2ePro_Model_Magento_Product
                 $itemInfoAsArray['stock_item']['use_config_backorders']
             );
 
-            if ($lifeMode &&
-                (!$isInStock || $itemInfoAsArray['status'] != Mage_Catalog_Model_Product_Status::STATUS_ENABLED)) {
+            if ($lifeMode && (!$isInStock || $itemInfoAsArray['status'] != ProductStatus::STATUS_ENABLED)) {
                 continue;
             }
 

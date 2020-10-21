@@ -467,4 +467,34 @@ class Ess_M2ePro_Model_Order_Item extends Ess_M2ePro_Model_Component_Parent_Abst
     }
 
     //########################################
+
+    /**
+     * @return bool
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
+    public function pretendedToBeSimple()
+    {
+        if ($this->getMagentoProduct() === null || $this->getChildObject()->getChannelItem() === null) {
+            return false;
+        }
+
+        if ($this->getMagentoProduct()->isGroupedType()) {
+            return $this->getChildObject()->getChannelItem()->isGroupedProductModeSet();
+        }
+
+        return false;
+    }
+
+    //########################################
+
+    /**
+     * @return array
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
+    public function getAdditionalData()
+    {
+        return $this->getSettings('additional_data');
+    }
+
+    //########################################
 }

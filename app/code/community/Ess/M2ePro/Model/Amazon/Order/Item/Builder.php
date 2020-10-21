@@ -33,15 +33,8 @@ class Ess_M2ePro_Model_Amazon_Order_Item_Builder extends Mage_Core_Model_Abstrac
         $this->setData('discount_details', Mage::helper('M2ePro')->jsonEncode($data['discount_details']));
         $this->setData('qty_purchased', (int)$data['qty_purchased']);
         $this->setData('qty_shipped', (int)$data['qty_shipped']);
-        $this->setData('tax_details', Mage::helper('M2ePro')->jsonEncode($data['tax_details']));
+        $this->setData('tax_details', Mage::helper('M2ePro')->jsonEncode($this->prepareTaxDetails($data)));
         // ---------------------------------------
-    }
-
-    //########################################
-
-    public function process()
-    {
-        return $this->createOrderItem();
     }
 
     //########################################
@@ -49,18 +42,52 @@ class Ess_M2ePro_Model_Amazon_Order_Item_Builder extends Mage_Core_Model_Abstrac
     /**
      * @return Ess_M2ePro_Model_Order_Item
      */
-    protected function createOrderItem()
+    public function process()
     {
+        /** @var Ess_M2ePro_Model_Order_Item $existItem */
         $existItem = Mage::helper('M2ePro/Component_Amazon')->getCollection('Order_Item')
             ->addFieldToFilter('amazon_order_item_id', $this->getData('amazon_order_item_id'))
             ->addFieldToFilter('order_id', $this->getData('order_id'))
             ->addFieldToFilter('sku', $this->getData('sku'))
             ->getFirstItem();
 
-        $existItem->addData($this->getData());
-        $existItem->save();
+        foreach ($this->getData() as $key => $value) {
+            if (!$existItem->getId() || ($existItem->hasData($key) && $existItem->getData($key) != $value)) {
+                $existItem->addData($this->getData());
+                $existItem->save();
+                break;
+            }
+        }
 
         return $existItem;
+    }
+
+    //########################################
+
+    protected function prepareTaxDetails($data)
+    {
+        if ($this->isTaxSkippedInOrder($data)) {
+            $data['tax_details']['product']['value'] = 0;
+            $data['tax_details']['shipping']['value'] = 0;
+            $data['tax_details']['gift']['value'] = 0;
+            $data['tax_details']['total']['value'] = 0;
+        }
+
+        return $data['tax_details'];
+    }
+
+    protected function isTaxSkippedInOrder($data)
+    {
+        /** @var Ess_M2ePro_Model_Order $order */
+        $order = Mage::helper('M2ePro/Component_Amazon')->getObject('Order', $data['order_id']);
+
+        foreach ($order->getChildObject()->getTaxDetails() as $tax) {
+            if ($tax != 0) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     //########################################

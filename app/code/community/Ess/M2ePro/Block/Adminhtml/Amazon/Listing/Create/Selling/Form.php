@@ -10,7 +10,6 @@ use Ess_M2ePro_Model_Amazon_Listing as AmazonListing;
 
 class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Create_Selling_Form extends Mage_Adminhtml_Block_Widget_Form
 {
-    protected $_sessionKey = 'amazon_listing_create';
     protected $_useFormContainer = true;
 
     /** @var Ess_M2ePro_Model_Listing */
@@ -1249,7 +1248,9 @@ HTML;
         if ($this->getRequest()->getParam('id') !== null) {
             $data = $this->getListing()->getData();
         } else {
-            $data = Mage::helper('M2ePro/Data_Session')->getValue($this->_sessionKey);
+            $data = Mage::helper('M2ePro/Data_Session')->getValue(
+                Ess_M2ePro_Model_Amazon_Listing::CREATE_LISTING_SESSION_DATA
+            );
             $data = array_merge($this->getDefaultFieldsValues(), $data);
         }
 

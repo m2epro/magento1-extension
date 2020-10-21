@@ -41,7 +41,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Amazon_Grid
             'additional_data', 'hide_switch_to_parent_confirm', 0
         );
 
-        $this->setId('amazonListingViewAmazonGrid' . $this->_listing->getId());
+        $this->setId('amazonListingViewGrid' . $this->_listing->getId());
 
         $this->_showAdvancedFilterProductsOption = false;
 
@@ -110,7 +110,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Amazon_Grid
                 'search_settings_status'         => 'search_settings_status',
                 'search_settings_data'           => 'search_settings_data',
                 'variation_child_statuses'       => 'variation_child_statuses',
-                'sku'                            => 'sku',
+                'amazon_sku'                     => 'sku',
                 'online_qty'                     => 'online_qty',
                 'online_regular_price'           => 'online_regular_price',
                 'online_regular_sale_price'      => 'IF(
@@ -215,13 +215,13 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Amazon_Grid
         );
 
         $this->addColumn(
-            'sku', array(
+            'amazon_sku', array(
                 'header'         => Mage::helper('M2ePro')->__('SKU'),
                 'align'          => 'left',
                 'width'          => '150px',
                 'type'           => 'text',
-                'index'          => 'sku',
-                'filter_index'   => 'sku',
+                'index'          => 'amazon_sku',
+                'filter_index'   => 'amazon_sku',
                 'renderer'       => 'M2ePro/adminhtml_amazon_grid_column_renderer_sku'
             )
         );
@@ -241,7 +241,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Amazon_Grid
         );
 
         $this->addColumn(
-            'online_qty', array(
+            'qty', array(
                 'header'                    => Mage::helper('M2ePro')->__('QTY'),
                 'align'                     => 'right',
                 'width'                     => '70px',
@@ -400,19 +400,19 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Amazon_Grid
 
     public function callbackColumnProductTitle($productTitle, $row, $column, $isExport)
     {
-        $productTitle = Mage::helper('M2ePro')->escapeHtml($productTitle);
+        $helper = Mage::helper('M2ePro');
+
+        $productTitle = $helper->escapeHtml($productTitle);
 
         $value = '<span>'.$productTitle.'</span>';
 
-        $tempSku = $row->getData('sku');
+        $tempSku = $row->getData('amazon_sku');
 
         if ($tempSku === null) {
-            $tempSku = Mage::getModel('M2ePro/Magento_Product')->setProductId($row->getData('entity_id'))
-                                                               ->getSku();
+            $tempSku = $row->getData('sku');
         }
 
-        $value .= '<br/><strong>'.Mage::helper('M2ePro')->__('SKU') .
-            ':</strong> '.Mage::helper('M2ePro')->escapeHtml($tempSku) . '<br/>';
+        $value .= '<br/><strong>' . $helper->__('SKU') . ':</strong> ' . $helper->escapeHtml($tempSku) . '<br/>';
 
         $listingProductId = (int)$row->getData('id');
         /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
@@ -458,15 +458,15 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Amazon_Grid
             if (empty($generalId) && !$amazonListingProduct->isGeneralIdOwner() &&
                 !empty($productAttributes) && $variationManager->getTypeModel()->isActualProductAttributes()
             ) {
-                $popupTitle = Mage::helper('M2ePro')->escapeJs(
-                    Mage::helper('M2ePro')->escapeHtml(
-                        Mage::helper('M2ePro')->__('Manage Magento Product Variations')
+                $popupTitle = $helper->escapeJs(
+                    $helper->escapeHtml(
+                        $helper->__('Manage Magento Product Variations')
                     )
                 );
 
-                $linkTitle = Mage::helper('M2ePro')->escapeJs(
-                    Mage::helper('M2ePro')->escapeHtml(
-                        Mage::helper('M2ePro')->__('Change "Magento Variations" Mode')
+                $linkTitle = $helper->escapeJs(
+                    $helper->escapeHtml(
+                        $helper->__('Change "Magento Variations" Mode')
                     )
                 );
 
@@ -502,10 +502,10 @@ HTML;
                 /** @var Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Parent $parentType */
                 $parentType = $variationManager->getTypeModel();
 
-                $linkContent = Mage::helper('M2ePro')->__('Manage Variations');
-                $vpmt = Mage::helper('M2ePro')->__('Manage Variations of &quot;%s&quot; ', $productTitle);
-                $vpmt = addslashes($vpmt);
-
+                $linkContent = $helper->__('Manage Variations');
+                $vpmt = $helper->escapeJs(
+                    $helper->__('Manage Variations of "%s" ', $productTitle)
+                );
                 if (!empty($generalId)) {
                     $vpmt .= '('. $generalId .')';
                 }
@@ -513,11 +513,11 @@ HTML;
                 $problemStyle = '';
                 $problemIcon = '';
 
-                $linkTitle = Mage::helper('M2ePro')->__('Open Manage Variations Tool');
+                $linkTitle = $helper->__('Open Manage Variations Tool');
 
                 if (empty($generalId) && $amazonListingProduct->isGeneralIdOwner()) {
                     if (!$parentType->hasChannelTheme() || !$parentType->hasMatchedAttributes()) {
-                        $linkTitle = Mage::helper('M2ePro')->__('Action Required');
+                        $linkTitle = $helper->__('Action Required');
                         $problemStyle = 'style="font-weight: bold; color: #FF0000;" ';
                         $iconPath = $this->getSkinUrl('M2ePro/images/error.png');
                         $problemIcon = '<img style="vertical-align: middle;" src="'
@@ -525,7 +525,7 @@ HTML;
                     }
                 } elseif (!empty($generalId)) {
                     if (!$parentType->hasMatchedAttributes()) {
-                        $linkTitle = Mage::helper('M2ePro')->__('Action Required');
+                        $linkTitle = $helper->__('Action Required');
                         $problemStyle = 'style="font-weight: bold;color: #FF0000;" ';
                         $iconPath = $this->getSkinUrl('M2ePro/images/error.png');
                         $problemIcon = '<img style="vertical-align: middle;" src="'
@@ -533,7 +533,7 @@ HTML;
                     } elseif (($listingProduct->getChildObject()->isGeneralIdOwner() &&
                               !$parentType->hasChannelTheme()) ||
                               $this->hasChildWithWarning($listingProductId)) {
-                        $linkTitle = Mage::helper('M2ePro')->__('Action Required');
+                        $linkTitle = $helper->__('Action Required');
                         $problemStyle = 'style="font-weight: bold;" ';
                         $iconPath = $this->getSkinUrl('M2ePro/images/warning.png');
                         $problemIcon = '<img style="vertical-align: middle;" src="'
@@ -544,10 +544,26 @@ HTML;
                 $value .= <<<HTML
 <div style="float: left; margin: 0 0 0 7px">
     <a {$problemStyle}href="javascript:"
-    onclick="ListingGridObj.variationProductManageHandler.openPopUp({$listingProductId}, '{$vpmt}')"
+    onclick="ListingGridObj.variationProductManageHandler.openPopUp(
+            {$listingProductId},'{$helper->escapeHtml($vpmt)}'
+        )"
     title="{$linkTitle}">{$linkContent}</a>&nbsp;{$problemIcon}
 </div>
 HTML;
+
+                if ($childListingProductIds = $this->getRequest()->getParam('child_listing_product_ids')) {
+                    $value .= <<<HTML
+<script type="text/javascript">
+
+    Event.observe(window, 'load', function() {
+        ListingGridObj.variationProductManageHandler.openPopUp(
+                {$listingProductId}, '{$vpmt}', 'searched_by_child', '{$childListingProductIds}'
+            )
+    });
+
+</script>
+HTML;
+                }
             }
 
             return $value;
@@ -559,8 +575,8 @@ HTML;
             $value .= '<div style="font-size: 11px; color: grey; margin-left: 7px"><br/>';
             foreach ($productOptions as $attribute => $option) {
                 !$option && $option = '--';
-                $value .= '<strong>' . Mage::helper('M2ePro')->escapeHtml($attribute) .
-                    '</strong>:&nbsp;' . Mage::helper('M2ePro')->escapeHtml($option) . '<br/>';
+                $value .= '<strong>' . $helper->escapeHtml($attribute) .
+                    '</strong>:&nbsp;' . $helper->escapeHtml($option) . '<br/>';
             }
 
             $value .= '</div>';
@@ -572,8 +588,8 @@ HTML;
         // ---------------------------------------
 
         if (!$hasInActionLock) {
-            $popupTitle = Mage::helper('M2ePro')->__('Manage Magento Product Variation');
-            $linkTitle  = Mage::helper('M2ePro')->__('Edit Variation');
+            $popupTitle = $helper->__('Manage Magento Product Variation');
+            $linkTitle  = $helper->__('Edit Variation');
             $linkContent = '<img width="12" height="12" src="'.$this->getSkinUrl('M2ePro/images/pencil.png').'">';
 
             $value .= <<<HTML
@@ -588,8 +604,8 @@ HTML;
 HTML;
         }
 
-        $popupTitle = Mage::helper('M2ePro')->__('Manage Magento Product Variations');
-        $linkTitle  = Mage::helper('M2ePro')->__('Add Another Variation(s)');
+        $popupTitle = $helper->__('Manage Magento Product Variations');
+        $linkTitle  = $helper->__('Add Another Variation(s)');
         $linkContent = '<img width="12" height="12" src="'.$this->getSkinUrl('M2ePro/images/add.png').'">';
 
         $value.= <<<HTML
@@ -603,9 +619,9 @@ HTML;
 HTML;
 
         if (empty($generalId) && !$amazonListingProduct->isGeneralIdOwner()) {
-            $linkTitle = Mage::helper('M2ePro')->escapeJs(
-                Mage::helper('M2ePro')->escapeHtml(
-                    Mage::helper('M2ePro')->__('Change "Magento Variations" Mode')
+            $linkTitle = $helper->escapeJs(
+                $helper->escapeHtml(
+                    $helper->__('Change "Magento Variations" Mode')
                 )
             );
 
@@ -841,7 +857,7 @@ HTML;
             !$row->getData('is_variation_parent')
         ) {
             $accountId = $this->_listing->getAccountId();
-            $sku = $row->getData('sku');
+            $sku = $row->getData('amazon_sku');
 
             $regularPriceValue =<<<HTML
 <a id="m2epro_repricing_price_value_{$sku}"
@@ -977,8 +993,9 @@ HTML;
 
         $collection->addFieldToFilter(
             array(
-                array('attribute'=>'sku','like'=>'%'.$value.'%'),
-                array('attribute'=>'name', 'like'=>'%'.$value.'%')
+                array('attribute' => 'sku', 'like' => '%'.$value.'%'),
+                array('attribute' => 'amazon_sku', 'like' => '%'.$value.'%'),
+                array('attribute' => 'name', 'like' => '%'.$value.'%')
             )
         );
     }

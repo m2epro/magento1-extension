@@ -46,8 +46,6 @@ class Ess_M2ePro_Adminhtml_Ebay_ListingController extends Ess_M2ePro_Controller_
             ->addJs('M2ePro/Ebay/Listing/VariationProductManage.js')
             ->addJs('M2ePro/Ebay/Listing/Ebay/Grid.js')
             ->addJs('M2ePro/Ebay/Listing/Settings/Grid.js')
-            ->addJs('M2ePro/Ebay/Listing/Transferring/Payment.js')
-            ->addJs('M2ePro/Ebay/Listing/Transferring/Info.js')
             ->addJs('M2ePro/Ebay/Listing/EditCompatibilityMode.js')
             ->addJs('M2ePro/Ebay/Motors.js')
             ->addJs('M2ePro/Ebay/Motor/Add/Item/Grid.js')
@@ -241,7 +239,10 @@ class Ess_M2ePro_Adminhtml_Ebay_ListingController extends Ess_M2ePro_Controller_
                 )
             );
 
-            return $this->_redirect('*/adminhtml_ebay_listing_productAdd', array('listing_id' => $id, 'step' => 2));
+            return $this->_redirect(
+                '*/adminhtml_ebay_listing_categorySettings',
+                array('listing_id' => $id, 'step' => 1)
+            );
         }
 
         $this->_initAction();
@@ -273,9 +274,7 @@ class Ess_M2ePro_Adminhtml_Ebay_ListingController extends Ess_M2ePro_Controller_
             ->addJs('M2ePro/SynchProgress.js')
             ->addJs('M2ePro/Ebay/Marketplace/SynchProgress.js')
             ->addJs('M2ePro/Marketplace.js')
-            ->addJs('M2ePro/Ebay/Listing/Transferring.js')
-            ->addJs('M2ePro/Ebay/Listing/Transferring/Action.js')
-            ->addJs('M2ePro/Ebay/Listing/Transferring/Breadcrumb.js');
+            ->addJs('M2ePro/Ebay/Listing/Transferring.js');
 
         if (Mage::helper('M2ePro/Magento')->isTinyMceAvailable()) {
             $this->getLayout()->getBlock('head')->setCanLoadTinyMce(true);
@@ -333,7 +332,7 @@ class Ess_M2ePro_Adminhtml_Ebay_ListingController extends Ess_M2ePro_Controller_
             }
         }
 
-        $tempString = Mage::helper('M2ePro')->__('%amount% Listing(s) were successfully deleted', $deleted);
+        $tempString = Mage::helper('M2ePro')->__('%amount% Listing(s) were deleted', $deleted);
         $deleted && $this->_getSession()->addSuccess($tempString);
 
         $tempString = Mage::helper('M2ePro')->__(

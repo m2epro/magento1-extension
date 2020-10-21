@@ -43,26 +43,25 @@ class Ess_M2ePro_Model_Ebay_Order_Item_Builder extends Mage_Core_Model_Abstract
 
     //########################################
 
-    public function process()
-    {
-        return $this->createOrderItem();
-    }
-
-    //########################################
-
     /**
      * @return Ess_M2ePro_Model_Order_Item
      */
-    protected function createOrderItem()
+    public function process()
     {
+        /** @var Ess_M2ePro_Model_Order_Item $item */
         $item = Mage::helper('M2ePro/Component_Ebay')->getCollection('Order_Item')
             ->addFieldToFilter('order_id', $this->getData('order_id'))
             ->addFieldToFilter('item_id', $this->getData('item_id'))
             ->addFieldToFilter('transaction_id', $this->getData('transaction_id'))
             ->getFirstItem();
 
-        $item->addData($this->getData());
-        $item->save();
+        foreach ($this->getData() as $key => $value) {
+            if (!$item->getId() || ($item->hasData($key) && $item->getData($key) != $value)) {
+                $item->addData($this->getData());
+                $item->save();
+                break;
+            }
+        }
 
         return $item;
     }

@@ -20,8 +20,8 @@ class Ess_M2ePro_Model_Cron_Task_System_Processing_ProcessResult extends Ess_M2e
         $this->removeMissedProcessingLocks();
         $this->removeExpired();
 
-        $this->processCompletedSingle();
-        $this->processCompletedPartial();
+        $this->processCompleted(Ess_M2ePro_Model_Processing::TYPE_SINGLE, self::SINGLE_PROCESSINGS_PER_CRON_COUNT);
+        $this->processCompleted(Ess_M2ePro_Model_Processing::TYPE_PARTIAL, self::PARTIAL_PROCESSINGS_PER_CRON_COUNT);
     }
 
     //########################################
@@ -90,64 +90,13 @@ class Ess_M2ePro_Model_Cron_Task_System_Processing_ProcessResult extends Ess_M2e
 
     //----------------------------------------
 
-    protected function processCompletedSingle()
-    {
-        /** @var Ess_M2ePro_Model_Resource_Processing_Collection $processingCollection */
-        $processingCollection = Mage::getResourceModel('M2ePro/Processing_Collection');
-        $processingCollection->addFieldToFilter('is_completed', 1);
-        $processingCollection->addFieldToFilter('type', Ess_M2ePro_Model_Processing::TYPE_SINGLE);
-        $processingCollection->getSelect()->order('main_table.id ASC');
-        $processingCollection->getSelect()->limit(self::SINGLE_PROCESSINGS_PER_CRON_COUNT);
-
-        /** @var Ess_M2ePro_Model_Processing[] $processingObjects */
-        $processingObjects = $processingCollection->getItems();
-        if (empty($processingObjects)) {
-            return;
-        }
-
-        $iteration = 0;
-        $percentsForOneAction = 50 / count($processingObjects);
-
-        foreach ($processingObjects as $processingObject) {
-            if ($iteration % 10 == 0) {
-                Mage::dispatchEvent(
-                    Ess_M2ePro_Model_Cron_Strategy_Abstract::PROGRESS_SET_DETAILS_EVENT_NAME,
-                    array(
-                        'progress_nick' => self::NICK,
-                        'percentage'    => ceil($percentsForOneAction * $iteration),
-                        'total'         => count($processingObjects)
-                    )
-                );
-            }
-
-            try {
-                if (!class_exists(Mage::getConfig()->getModelClassName($processingObject->getModel()))) {
-                    throw new Ess_M2ePro_Model_Exception(
-                        sprintf('Responser runner model class "%s" does not exists', $processingObject->getModel())
-                    );
-                }
-
-                /** @var Ess_M2ePro_Model_Processing_Runner $processingRunner */
-                $processingRunner = Mage::getModel($processingObject->getModel());
-                $processingRunner->setProcessingObject($processingObject);
-
-                $processingRunner->processSuccess() && $processingRunner->complete();
-            } catch (Exception $exception) {
-                $processingObject->forceRemove();
-                Mage::helper('M2ePro/Module_Exception')->process($exception);
-            }
-
-            $iteration++;
-        }
-    }
-
-    protected function processCompletedPartial()
+    protected function processCompleted($type, $limit)
     {
         $processingCollection = Mage::getResourceModel('M2ePro/Processing_Collection');
         $processingCollection->addFieldToFilter('is_completed', 1);
-        $processingCollection->addFieldToFilter('type', Ess_M2ePro_Model_Processing::TYPE_PARTIAL);
+        $processingCollection->addFieldToFilter('type', $type);
         $processingCollection->getSelect()->order('main_table.id ASC');
-        $processingCollection->getSelect()->limit(self::PARTIAL_PROCESSINGS_PER_CRON_COUNT);
+        $processingCollection->getSelect()->limit($limit);
 
         /** @var Ess_M2ePro_Model_Processing[] $processingObjects */
         $processingObjects = $processingCollection->getItems();

@@ -68,6 +68,7 @@ HTML;
         $helper = Mage::helper('M2ePro');
         $testUrl = Mage::helper('adminhtml')->getUrl('*/adminhtml_support/testExecutionTime');
         $testResultUrl = Mage::helper('adminhtml')->getUrl('*/adminhtml_support/testExecutionTimeResult');
+        $knowledgeBaseUrl = Mage::helper('M2ePro/Module_Support')->getKnowledgeBaseUrl('1535371');
 
         return <<<HTML
 <script>
@@ -102,11 +103,11 @@ function executionTimeTest(seconds)
                         MessageObj.addWarning(
                             '{$this->getTestWarningMessage()}'
                             .replace('%value%', response['result'])
-                            .replace('%min-value%', '{$this->getCheckObject()->getMin()}')
+                            .replace('%url%', '{$knowledgeBaseUrl}')
                         );
                     } else {
                         MessageObj.addSuccess(
-                            '{$helper->__('Max execution time of %value% sec. is tested.')}'
+                            '{$helper->__('Actual max execution time is %value% sec.')}'
                             .replace('%value%', response['result'])
                         );
                     }
@@ -136,6 +137,12 @@ function openExecutionTimeTestPopup()
     popup.options.destroyOnClose = true;
     CommonObj.autoHeightFix();
 }
+
+function checkExecutionTimeValue(el) {
+  if (Number(el.value) < Number('{$this->getCheckObject()->getMin()}')) {
+        el.value = '{$this->getCheckObject()->getMin()}';
+    }
+}
 </script>
 
 <a class="button-link button-link-grey" href="#" onclick="openExecutionTimeTestPopup()">{$helper->__('Check')}</a>&nbsp;
@@ -154,14 +161,15 @@ HTML;
         return $helper->escapeJs(<<<HTML
 <div style="margin-top: 10px;">
     {$helper->__(
-        'Enter the time you want to test. The minimum recommended value is %min% sec.<br>
-        The Module interface will be unavailable during the check.
+        'Enter the time you want to test. The minimum required value is %min% sec.<br><br>
+        <strong>Note:</strong> Module interface will be unavailable during the check. 
         Synchronization processes won’t be affected.',
         $this->getCheckObject()->getMin()
     )}
     <br><br>
     <label>{$helper->__('Seconds')}</label>:&nbsp;
-    <input type="text" id="execution_time_value" value="{$this->getCheckObject()->getMin()}" />
+    <input type="text" id="execution_time_value" value="{$this->getCheckObject()->getMin()}"
+     onchange="return checkExecutionTimeValue(this);" />
 </div>
 
 <div style="margin-top: 10px; margin-bottom: 20px; text-align: right;">
@@ -175,8 +183,9 @@ HTML
     {
         return Mage::helper('M2ePro')->escapeJs(
             Mage::helper('M2ePro')->__(
-                'Max execution time of %value% sec. is tested. To ensure your execution time limit is
-                sufficient, the test should be run for at least %min-value% sec.'
+                'Actual max execution time is %value% sec. 
+                The value must be increased on your server for the proper synchronization work. 
+                Read <a href="%url%" target="_blank">here</a> how to do it.'
             )
         );
     }

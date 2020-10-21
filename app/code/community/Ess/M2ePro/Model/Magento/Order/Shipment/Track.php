@@ -109,7 +109,7 @@ class Ess_M2ePro_Model_Magento_Order_Shipment_Track
         // ---------------------------------------
         foreach ($this->_magentoOrder->getTracksCollection() as $track) {
             foreach ($this->_trackingDetails as $key => $trackingDetail) {
-                if ($track->getData('number') == $trackingDetail['number']) {
+                if (strtolower($track->getData('number')) == strtolower($trackingDetail['number'])) {
                     unset($this->_trackingDetails[$key]);
                 }
             }

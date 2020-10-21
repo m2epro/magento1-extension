@@ -36,7 +36,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Log_Listing_AbstractGrid extends Ess_M
         $notification = Mage::helper('M2ePro')->__(
             'Using a Grouped View Mode, the logs records which are not older than %date% are
             displayed here in order to prevent any possible Performance-related issues.',
-            $this->formatDate($date, IntlDateFormatter::MEDIUM, true)
+            $this->formatDate($date, Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM, true)
         );
 
         $this->getMessagesBlock()->addNotice($notification);

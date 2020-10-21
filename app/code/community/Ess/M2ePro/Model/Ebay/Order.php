@@ -982,16 +982,16 @@ class Ess_M2ePro_Model_Ebay_Order extends Ess_M2ePro_Model_Component_Child_Ebay_
 
     /**
      * @param array $trackingDetails
+     * @param array $items
+     *
      * @return bool
      * @throws Ess_M2ePro_Model_Exception_Logic
      */
-    public function updateShippingStatus(array $trackingDetails = array())
+    public function updateShippingStatus(array $trackingDetails = array(), array $items = array())
     {
         if (!$this->canUpdateShippingStatus($trackingDetails)) {
             return false;
         }
-
-        $params = array();
 
         if (!empty($trackingDetails['carrier_code'])) {
             $trackingDetails['carrier_title'] = Mage::helper('M2ePro/Component_Ebay')->getCarrierTitle(
@@ -1002,8 +1002,7 @@ class Ess_M2ePro_Model_Ebay_Order extends Ess_M2ePro_Model_Component_Child_Ebay_
 
         if (!empty($trackingDetails['carrier_title'])) {
             if ($trackingDetails['carrier_title'] == Ess_M2ePro_Model_Order_Shipment_Handler::CUSTOM_CARRIER_CODE &&
-                !empty($trackingDetails['shipping_method']))
-            {
+                !empty($trackingDetails['shipping_method'])) {
                 $trackingDetails['carrier_title'] = $trackingDetails['shipping_method'];
             }
 
@@ -1013,15 +1012,56 @@ class Ess_M2ePro_Model_Ebay_Order extends Ess_M2ePro_Model_Component_Child_Ebay_
             );
         }
 
-        $params = array_merge($params, $trackingDetails);
+        $params = $trackingDetails;
+        foreach ($items as $item) {
+            /** @var Ess_M2ePro_Model_Order_Item $item */
+            $params['items'][] = array(
+                'item_id' => $item->getId()
+            );
+        }
 
-        Mage::getModel('M2ePro/Order_Change')->create(
-            $this->getId(),
-            Ess_M2ePro_Model_Order_Change::ACTION_UPDATE_SHIPPING,
-            $this->getParentObject()->getLog()->getInitiator(),
-            Ess_M2ePro_Helper_Component_Ebay::NICK,
-            $params
-        );
+        /** @var Ess_M2ePro_Model_Order_Change $change */
+        $change = Mage::getModel('M2ePro/Order_Change')->getCollection()
+            ->addFieldToFilter('order_id', $this->getParentObject()->getId())
+            ->addFieldToFilter('action', Ess_M2ePro_Model_Order_Change::ACTION_UPDATE_SHIPPING)
+            ->addFieldToFilter('processing_attempt_count', 0)
+            ->getFirstItem();
+
+        $existingParams = $change->getParams();
+
+        $newTrackingNumber = !empty($trackingDetails['tracking_number']) ? $trackingDetails['tracking_number'] : '';
+        $oldTrackingNumber = !empty($existingParams['tracking_number']) ? $existingParams['tracking_number'] : '';
+
+        if (!$change->getId() || $newTrackingNumber !== $oldTrackingNumber) {
+            $change::create(
+                $this->getParentObject()->getId(),
+                Ess_M2ePro_Model_Order_Change::ACTION_UPDATE_SHIPPING,
+                $this->getParentObject()->getLog()->getInitiator(),
+                Ess_M2ePro_Helper_Component_Ebay::NICK,
+                $params
+            );
+            return true;
+        }
+
+        $existingItems = array();
+        if (isset($existingParams['items'])) {
+            $existingItems = $existingParams['items'];
+        }
+
+        foreach ($params['items'] as $newItem) {
+            foreach ($existingItems as $existingItem) {
+                if ($newItem['item_id'] === $existingItem['item_id']) {
+                    continue 2;
+                }
+            }
+
+            $existingItems[] = $newItem;
+        }
+
+        $existingParams['items'] = $existingItems;
+
+        $change->setData('params', Mage::helper('M2ePro')->jsonEncode($existingParams));
+        $change->save();
 
         return true;
     }

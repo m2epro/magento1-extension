@@ -167,7 +167,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_OtherController extends Ess_M2ePro_Contr
                 )
             );
         } else {
-            $this->getSession()->addSuccess(Mage::helper('M2ePro')->__('Product(s) was successfully Moved.'));
+            $this->getSession()->addSuccess(Mage::helper('M2ePro')->__('Product(s) was Moved.'));
         }
 
         return $this->getResponse()->setBody(

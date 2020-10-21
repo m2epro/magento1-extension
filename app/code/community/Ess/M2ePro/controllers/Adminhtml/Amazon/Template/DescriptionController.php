@@ -208,7 +208,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Template_DescriptionController
 
         // ---------------------------------------
 
-        $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Policy was successfully saved'));
+        $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Policy was saved'));
         return $this->_redirectUrl(
             Mage::helper('M2ePro')->getBackUrl('list', array(), array('edit' => array('id' => $id)))
         );
@@ -314,7 +314,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Template_DescriptionController
             }
         }
 
-        $tempString = Mage::helper('M2ePro')->__('%s record(s) were successfully deleted.', $deleted);
+        $tempString = Mage::helper('M2ePro')->__('%s record(s) were deleted.', $deleted);
         $deleted && $this->_getSession()->addSuccess($tempString);
 
         $tempString  = Mage::helper('M2ePro')->__('%s record(s) are used in Listing(s).', $locked) . ' ';

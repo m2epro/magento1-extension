@@ -48,12 +48,11 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Updater
     {
         /** @var Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager $variationManager */
         $variationManager = $listingProduct->getChildObject()->getVariationManager();
-        $magentoProduct = $listingProduct->getMagentoProduct();
-
-        if (!$magentoProduct->isProductWithVariations() || $variationManager->isVariationProduct()) {
+        if ($variationManager->isVariationProduct() || !$listingProduct->getChildObject()->isVariationMode()) {
             return false;
         }
 
+        $magentoProduct = $listingProduct->getMagentoProduct();
         if ($magentoProduct->isSimpleTypeWithCustomOptions() ||
             $magentoProduct->isBundleType() ||
             $magentoProduct->isDownloadableTypeWithSeparatedLinks()
@@ -64,7 +63,9 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Updater
             $listingProduct->setData('template_description_id', null);
         }
 
+        // need to be added to parent
         $listingProduct->setData('is_variation_product', 1);
+
         $variationManager->setIndividualType();
         $variationManager->getTypeModel()->resetProductVariation();
 
@@ -75,15 +76,13 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Updater
     {
         /** @var Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager $variationManager */
         $variationManager = $listingProduct->getChildObject()->getVariationManager();
-        $isVariationMagentoProduct = $listingProduct->getMagentoProduct()->isProductWithVariations();
-
-        if ($isVariationMagentoProduct || !$variationManager->isVariationProduct()) {
+        if (!$variationManager->isVariationProduct() || $listingProduct->getChildObject()->isVariationMode()) {
             return false;
         }
 
         $variationManager->getTypeModel()->clearTypeData();
 
-        if ($variationManager->isRelationParentType()) {
+        if ($variationManager->isRelationParentType() && !$listingProduct->isGroupedProductModeSet()) {
             $listingProduct->setData('general_id', null);
             $listingProduct->setData(
                 'is_general_id_owner', Ess_M2ePro_Model_Amazon_Listing_Product::IS_GENERAL_ID_OWNER_NO

@@ -154,7 +154,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Log_Grid_LastActions extends Mage_Admi
         if (count($actionLogs) > 1) {
             $row = array_reduce(
                 $actionLogs, function ($a, $b) {
-                    return strtotime($a['create_date']) > strtotime($b['create_date']) ? $a : $b;
+                return ($a === null || strtotime($a['create_date']) < strtotime($b['create_date'])) ? $b : $a;
                 }
             );
         } else {
@@ -220,7 +220,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Log_Grid_LastActions extends Mage_Admi
     {
         if (!$this->hasData('tips') || !is_array($this->getData('tips'))) {
             return array(
-                LogModel::TYPE_SUCCESS  => 'Last Action was completed successfully.',
+                LogModel::TYPE_SUCCESS  => 'Last Action was completed.',
                 LogModel::TYPE_ERROR    => 'Last Action was completed with error(s).',
                 LogModel::TYPE_WARNING  => 'Last Action was completed with warning(s).',
                 LogModel::TYPE_NOTICE   => 'Last Action was completed with notice(s).'
@@ -246,7 +246,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Log_Grid_LastActions extends Mage_Admi
 
     protected function getDefaultTip()
     {
-        return $this->__('Last Action was completed successfully.');
+        return $this->__('Last Action was completed.');
     }
 
     protected function getTipByType($type)

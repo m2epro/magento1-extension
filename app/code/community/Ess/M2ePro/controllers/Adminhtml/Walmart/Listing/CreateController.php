@@ -108,7 +108,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_CreateController
             Ess_M2ePro_Helper_Data::INITIATOR_USER,
             $actionId,
             Ess_M2ePro_Model_Listing_Log::ACTION_ADD_LISTING,
-            'Listing was successfully Added',
+            'Listing was Added',
             Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE
         );
         // ---------------------------------------

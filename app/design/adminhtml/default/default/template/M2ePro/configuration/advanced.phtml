@@ -21,121 +21,13 @@
     });
 </script>
 
-<?php
-$toggleModuleButtonText = 'Module Interface and Automatic Synchronization';
-$toggleCronButtonText = 'Automatic Synchronization';
-$isModuleDisabled = Mage::helper('M2ePro/Module')->isDisabled();
-
-if ($isModuleDisabled) {
-    $confirmContent = 'Are you sure ?';
-} else {
-    $confirmContent = <<<HTML
-<p>In case you confirm the Module disabling, the M2E Pro dynamic tasks run by
-    Cron will be stopped and the M2E Pro Interface will be blocked.</p>
-
-<p><b>Note</b>: You can re-enable it anytime you would like by clicking on the <strong>Proceed</strong>
-    button for <strong>Enable Module and Automatic Synchronization</strong> option.</p>
-HTML;
-}
-
-?>
-
-<div class="entry-edit" id="magento_block_configuration_advanced_data" collapseable="no">
-
-    <div class="entry-edit-head">
-        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Module'); ?></h4>
-    </div>
-
-    <div class="fieldset">
-
-        <?php if (!$isModuleDisabled): ?>
-        <div class="hor-scroll">
-
-            <table class="form-list" cellspacing="0" cellpadding="0">
-
-                <tbody>
-
-                <tr>
-                    <td class="label" style="width: auto">
-                        <label style="width: auto"><?php echo Mage::helper('M2ePro')->__($toggleCronButtonText); ?>: </label>
-                    </td>
-
-                    <td class="value">
-                        <?php echo $this->getChildHtml('change_cron_mode_button'); ?>
-                    </td>
-                    <td>
-                        <p class="note">
-                            <span>
-                                <?php echo Mage::helper('M2ePro')->__(
-                                        'Inventory and Order synchronization stops. The Module interface remains available.'
-                                ) ?>
-                            </span>
-                        </p>
-                    </td>
-                </tr>
-
-                </tbody>
-
-            </table>
-
-        </div>
-        <?php endif; ?>
-
-        <div class="hor-scroll">
-
-            <table class="form-list" cellspacing="0" cellpadding="0">
-
-                <tbody>
-
-                <tr>
-                    <td class="label" style="width: auto">
-                        <label style="width: auto"><?php echo Mage::helper('M2ePro')->__($toggleModuleButtonText); ?>: </label>
-                    </td>
-
-                    <td class="value">
-                        <?php echo $this->getChildHtml('proceed_module_mode_button'); ?>
-                    </td>
-
-                    <td>
-                        <p class="note">
-                            <span>
-                                <?php echo Mage::helper('M2ePro')->__(
-                                    'Inventory and Order synchronization stops. The Module interface becomes unavailable.'
-                                ) ?>
-                            </span>
-                        </p>
-                    </td>
-                </tr>
-
-                </tbody>
-
-            </table>
-
-        </div>
-    </div>
+<div id="block_notice_configuration_advanced" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Migration to Magento v2.x'); ?>">
+    <p><?php echo Mage::helper('M2ePro')->__('
+                Here you can start M2E Pro data migration to Magento v2.x.
+                Read the <a href="%url%" target="_blank">Migration Guide</a> for more details.',
+            Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'x/EgA9AQ')
+        ); ?></p>
 </div>
-
-<script type="M2ePro/template" id="module_mode_information_content">
-
-    <div class="entry-edit" id="magento_block_configuration_advanced_data" collapseable="no">
-
-        <div style="margin-top: 10px">
-            <p>
-                <?php echo Mage::helper('M2ePro')->__($confirmContent); ?>
-            </p>
-        </div>
-
-        <div style="float: right; margin: 0 0 1em;">
-            <a href="#" onclick="moduleModePopup.close();">Close</a>
-            &nbsp;
-            &nbsp;
-            &nbsp;
-            <?php echo $this->getChildHtml('confirm_module_mode_button');?>
-        </div>
-
-    </div>
-
-</script>
 
 <div class="entry-edit" id="magento_block_configuration_advanced_data" collapseable="no">
 

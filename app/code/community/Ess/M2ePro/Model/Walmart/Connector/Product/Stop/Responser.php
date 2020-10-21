@@ -16,7 +16,7 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_Stop_Responser
 
     protected function getSuccessfulMessage()
     {
-        return 'Item was successfully Stopped';
+        return 'Item was Stopped';
     }
 
     //########################################

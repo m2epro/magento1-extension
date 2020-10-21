@@ -566,4 +566,40 @@ COMMENT;
     }
 
     //########################################
+
+    /**
+     * @throws Ess_M2ePro_Model_Exception
+     */
+    public function initializeShippingMethodDataPretendedToBeSimple()
+    {
+        foreach ($this->_order->getParentObject()->getItemsCollection() as $item) {
+            /** @var Ess_M2ePro_Model_Order_Item $item */
+            if (!$item->pretendedToBeSimple()) {
+                continue;
+            }
+
+            $shippingItems = array();
+            foreach ($item->getMagentoProduct()->getTypeInstance()->getAssociatedProducts() as $associatedProduct) {
+                /** @var Mage_Catalog_Model_Product $associatedProduct */
+                if ($associatedProduct->getQty() <= 0) { // skip product if default qty zero
+                    continue;
+                }
+
+                $total = (int)($associatedProduct->getQty() * $item->getChildObject()->getQtyPurchased());
+                $shippingItems[$associatedProduct->getId()]['total'] = $total;
+                $shippingItems[$associatedProduct->getId()]['shipped'] = array();
+            }
+
+            $shippingInfo = array();
+            $shippingInfo['items'] = $shippingItems;
+            $shippingInfo['send'] = $item->getChildObject()->getQtyPurchased();
+
+            $additionalData = $item->getAdditionalData();
+            $additionalData['shipping_info'] = $shippingInfo;
+            $item->setSettings('additional_data', $additionalData);
+            $item->save();
+        }
+    }
+
+    //########################################
 }

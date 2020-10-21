@@ -69,6 +69,23 @@ class Ess_M2ePro_Helper_Module_Configuration extends Mage_Core_Helper_Abstract
         return $this->getListingProductInspectorMode() == 1;
     }
 
+    public function getGroupedProductMode()
+    {
+        return (int)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
+            self::CONFIG_GROUP, 'grouped_product_mode'
+        );
+    }
+
+    public function isGroupedProductModeOptions()
+    {
+        return $this->getGroupedProductMode() == Ess_M2ePro_Model_Listing_Product::GROUPED_PRODUCT_MODE_OPTIONS;
+    }
+
+    public function isGroupedProductModeSet()
+    {
+        return $this->getGroupedProductMode() == Ess_M2ePro_Model_Listing_Product::GROUPED_PRODUCT_MODE_SET;
+    }
+
     //########################################
 
     public function getSecureImageUrlInItemDescriptionMode()
@@ -169,6 +186,14 @@ class Ess_M2ePro_Helper_Module_Configuration extends Mage_Core_Helper_Abstract
                 self::CONFIG_GROUP,
                 'listing_product_inspector_mode',
                 $values['listing_product_inspector_mode']
+            );
+        }
+
+        if (isset($values['grouped_product_mode'])) {
+            Mage::helper('M2ePro/Module')->getConfig()->setGroupValue(
+                self::CONFIG_GROUP,
+                'grouped_product_mode',
+                $values['grouped_product_mode']
             );
         }
     }

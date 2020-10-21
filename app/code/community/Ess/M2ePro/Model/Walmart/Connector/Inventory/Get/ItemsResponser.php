@@ -7,7 +7,7 @@
  */
 
 abstract class Ess_M2ePro_Model_Walmart_Connector_Inventory_Get_ItemsResponser
-    extends Ess_M2ePro_Model_Walmart_Connector_Command_Pending_Responser
+    extends Ess_M2ePro_Model_Connector_Command_Pending_Responser
 {
     //########################################
 
@@ -19,9 +19,7 @@ abstract class Ess_M2ePro_Model_Walmart_Connector_Inventory_Get_ItemsResponser
 
     protected function prepareResponseData()
     {
-        $preparedData = array(
-            'data' => array(),
-        );
+        $preparedData = array();
 
         $responseData = $this->getResponse()->getData();
 
@@ -30,7 +28,7 @@ abstract class Ess_M2ePro_Model_Walmart_Connector_Inventory_Get_ItemsResponser
                 continue;
             }
 
-            $preparedData['data'][$receivedItem['wpid']] = $receivedItem;
+            $preparedData[$receivedItem['wpid']] = $receivedItem;
         }
 
         $this->_preparedResponseData = $preparedData;

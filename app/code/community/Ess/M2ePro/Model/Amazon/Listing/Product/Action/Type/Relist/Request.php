@@ -11,6 +11,20 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Relist_Request
 {
     //########################################
 
+    protected function beforeBuildDataEvent()
+    {
+        parent::beforeBuildDataEvent();
+
+        $additionalData = $this->getListingProduct()->getAdditionalData();
+
+        unset($additionalData['synch_template_list_rules_note']);
+
+        $this->getListingProduct()->setSettings('additional_data', $additionalData);
+        $this->getListingProduct()->save();
+    }
+
+    //########################################
+
     protected function getActionData()
     {
         $data = array_merge(

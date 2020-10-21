@@ -18,13 +18,13 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Magento_Grid
     {
         parent::__construct();
 
-        $this->setId('ebayListingViewGridMagento');
-
         $this->hideMassactionColumn              = true;
         $this->_hideMassactionDropDown           = true;
         $this->_showAdvancedFilterProductsOption = false;
 
         $this->_listing = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
+
+        $this->setId('ebayListingViewGrid' . $this->_listing->getId());
     }
 
     //########################################
@@ -168,7 +168,9 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Magento_Grid
                 'type'      => 'text',
                 'index'     => 'name',
                 'filter_index' => 'name',
-                'frame_callback' => array($this, 'callbackColumnProductTitle')
+                'filter'    => 'M2ePro/adminhtml_ebay_listing_view_columnFilter',
+                'frame_callback' => array($this, 'callbackColumnProductTitle'),
+                'filter_condition_callback' => array($this, 'callbackFilterTitle')
             )
         );
 
@@ -312,6 +314,25 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Magento_Grid
     }
 
     //########################################
+
+    protected function callbackFilterTitle($collection, $column)
+    {
+        $value = $column->getFilter()->getValue();
+
+        if ($value == null) {
+            return;
+        }
+
+        if (is_array($value) && isset($value['input'])) {
+            $value = $value['input'];
+        }
+
+        $collection->addFieldToFilter(
+            array(
+                array('attribute'=>'name', 'like'=>'%'.$value.'%'),
+            )
+        );
+    }
 
     protected function _addColumnFilterToCollection($column)
     {

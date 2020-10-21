@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Ess_M2ePro>
-            <version>6.8.1</version>
+            <version>6.9.0</version>
         </Ess_M2ePro>
     </modules>
     <default>
@@ -1189,6 +1189,10 @@
                         <table>m2epro_amazon_item</table>
                     </Amazon_Item>
 
+                    <Amazon_Inventory_Sku>
+                        <table>m2epro_amazon_inventory_sku</table>
+                    </Amazon_Inventory_Sku>
+
                     <Amazon_Template_SellingFormat_BusinessDiscount>
                         <table>m2epro_amazon_template_selling_format_business_discount</table>
                     </Amazon_Template_SellingFormat_BusinessDiscount>
@@ -1212,6 +1216,10 @@
                     <Walmart_Item>
                         <table>m2epro_walmart_item</table>
                     </Walmart_Item>
+
+                    <Walmart_Inventory_Wpid>
+                        <table>m2epro_walmart_inventory_wpid</table>
+                    </Walmart_Inventory_Wpid>
 
                     <Walmart_Template_Category>
                         <table>m2epro_walmart_template_category</table>

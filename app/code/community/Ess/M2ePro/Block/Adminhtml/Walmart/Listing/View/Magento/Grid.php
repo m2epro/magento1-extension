@@ -20,7 +20,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View_Magento_Grid
 
         $this->_listing = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
 
-        $this->setId('walmartListingViewMagentoGrid' . $this->_listing->getId());
+        $this->setId('walmartListingViewGrid' . $this->_listing->getId());
 
         $this->hideMassactionColumn              = true;
         $this->_hideMassactionDropDown           = true;

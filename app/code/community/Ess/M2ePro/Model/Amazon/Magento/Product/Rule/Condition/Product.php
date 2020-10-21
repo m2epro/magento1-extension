@@ -14,7 +14,7 @@ class Ess_M2ePro_Model_Amazon_Magento_Product_Rule_Condition_Product
     protected function getCustomFilters()
     {
         $amazonFilters = array(
-            'sku'                         => 'AmazonSku',
+            'amazon_sku'                         => 'AmazonSku',
             'amazon_general_id'           => 'AmazonGeneralId',
             'is_general_id_owner'         => 'AmazonGeneralIdOwner',
             'amazon_online_qty'           => 'AmazonOnlineQty',

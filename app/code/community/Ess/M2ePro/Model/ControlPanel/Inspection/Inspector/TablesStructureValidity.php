@@ -17,10 +17,10 @@ class Ess_M2ePro_Model_ControlPanel_Inspection_Inspector_TablesStructureValidity
     const COLUMN_REDUNDANT = 'column_redundant';
     const COLUMN_DIFFERENT = 'column_different';
 
-    const FIX_INDEX   = 'index';
-    const FIX_COLUMN  = 'properties';
-    const DROP_COLUMN = 'drop';
-    const CRETE_TABLE = 'create_table';
+    const FIX_INDEX    = 'index';
+    const FIX_COLUMN   = 'properties';
+    const DROP_COLUMN  = 'drop';
+    const CREATE_TABLE = 'create_table';
 
     //########################################
 
@@ -131,7 +131,7 @@ HTML;
                 $columnInfo['column_info'] = $resultInfo['original_data'];
 
                 if ($resultRow['problem'] === self::TABLE_MISSING) {
-                    $columnInfo['repair_mode'] = self::CRETE_TABLE;
+                    $columnInfo['repair_mode'] = self::CREATE_TABLE;
                 } elseif ($resultRow['problem'] === self::COLUMN_MISSING) {
                     $columnInfo['repair_mode'] = self::FIX_COLUMN;
                 } elseif ($resultRow['problem'] === self::COLUMN_REDUNDANT) {
@@ -155,7 +155,7 @@ HTML;
             }
         }
 
-        $html .= '<button type="submit">Repair</button>
+        $html .= '<button type="button" onclick="ControlPanelInspectionObj.removeRow(this)">Repair</button>
 </table>
 </form>';
         return $html;
@@ -173,8 +173,8 @@ HTML;
             case self::DROP_COLUMN:
                 $this->dropColumn($data['table_name'], $data['column_info']);
                 break;
-            case self::CRETE_TABLE:
-                $this->creteTable($data['table_name'], $data['column_info']);
+            case self::CREATE_TABLE:
+                $this->createTable($data['table_name'], $data['column_info']);
                 break;
         }
     }
@@ -236,7 +236,7 @@ HTML;
         $writeConnection->dropColumn($tableName, $columnInfo['name']);
     }
 
-    protected function creteTable($tableName, $columnsInfo)
+    protected function createTable($tableName, $columnsInfo)
     {
         /** @var Varien_Db_Adapter_Interface $connection */
         $connection = Mage::getSingleton('core/resource')->getConnection('core_setup');

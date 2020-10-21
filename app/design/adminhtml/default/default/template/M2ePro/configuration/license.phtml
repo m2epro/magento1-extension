@@ -12,27 +12,22 @@
 ?>
 
 <div id="block_notice_configuration_license" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Billing Info'); ?>">
-    <?php
-    $urlComponents = Mage::helper('M2ePro/Component')->getEnabledComponents();
-    $componentForUrl = count($urlComponents) == 1 ? array_shift($urlComponents) : Ess_M2ePro_Helper_Component_Ebay::NICK;
-
-    $countries = Mage::getModel('adminhtml/system_config_source_country')->toOptionArray();
-    unset($countries[0]);
-
-    $email = '<a href="mailto:support@m2epro.com">support@m2epro.com</a>';
-
-    $tempString = Mage::helper('M2ePro')->__('
-    To use M2E Pro Extension, the Clients Portal Account and Extension Key are required.<br/><br/>
-    Clients Portal Account is created automatically based on the email address provided during the initial configuration of your M2E Pro Instance. After you log into Account, you will be able to manage your Subscription and Billing information.<br/><br/>
-
-    Extension Key is a unique identifier of M2E Pro instance which is generated automatically and strictly associated with the current IP and Domain of your Magento.<br/><br/>
-
-    The same Extension Key cannot be used for different domains, sub-domains or IPs. If your Magento Server changes its location, the new Extension Key must be obtained on the <a href="%url%" target="_blank" >Clients Portal</a> and provided to M2E Pro ‘Billing Info’ section. Save Config to apply the changes. <br><br>
-
-    <strong>Note:</strong> if you need some assistance to activate your M2E Pro Instance, contact our Support Team.',
-    Mage::helper('M2ePro/Module_Support')->getClientsPortalUrl());
-    echo $tempString;
-    ?>
+    <?php echo Mage::helper('M2ePro')->__(
+        'To use M2E Pro, you need:
+        <ul class="list">
+            <li><strong>Clients Portal Account.</strong> It is created automatically based on the email address you entered on the initial M2E Pro set-up. 
+            There can manage your Subscription and Billing information. 
+            Read the <a href="%url%" target="_blank">User Guide</a> for more details.</li>
+            <li><strong>Extension Key.</strong> It is a unique Module identifier and cannot be used for different domains, sub-domains, or IPs. 
+            Find more details in <a href="%url2%" target="_blank">this article</a></li>
+        </ul>
+        <br>
+        Click <strong>Save Config</strong> if you make any changes.
+        <br><br>
+        If you need assistance, contact Billing at <a href="mailto:billing@m2epro.com">billing@m2epro.com</a>.',
+        Mage::helper('M2ePro/Module_Support')->getClientsPortalDocumentationUrl(),
+        Mage::helper('M2ePro/Module_Support')->getKnowledgeBaseUrl('1566755')
+    ); ?>
 </div>
 
 <script type="text/javascript">

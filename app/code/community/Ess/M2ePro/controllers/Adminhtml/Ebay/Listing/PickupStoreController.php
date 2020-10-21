@@ -148,7 +148,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_PickupStoreController
 
             $messages[] = array(
                 'type' => 'success',
-                'text' => Mage::helper('M2ePro')->__('Stores have been successfully assigned.')
+                'text' => Mage::helper('M2ePro')->__('Stores have been assigned.')
             );
         }
 
@@ -185,7 +185,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_PickupStoreController
             '`id` IN ('.implode(',', $listingProductPickupStoreIds).')'
         );
 
-        $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Stores have been successfully unassigned.'));
+        $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Stores have been unassigned.'));
         return $this->_redirect('*/*/index', array('id' => $listingId));
     }
 

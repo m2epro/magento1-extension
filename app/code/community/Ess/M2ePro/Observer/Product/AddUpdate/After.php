@@ -48,6 +48,7 @@ class Ess_M2ePro_Observer_Product_AddUpdate_After extends Ess_M2ePro_Observer_Pr
                 $this->performSpecialPriceToDateChanges();
                 $this->performTierPriceChanges();
                 $this->performTrackingAttributesChanges();
+                $this->performDefaultQtyChanges();
 
                 $this->addListingProductInstructions();
 
@@ -302,6 +303,58 @@ class Ess_M2ePro_Observer_Product_AddUpdate_After extends Ess_M2ePro_Observer_Pr
                     $listingProduct,
                     Ess_M2ePro_Model_Listing_Log::ACTION_CHANGE_CUSTOM_ATTRIBUTE,
                     $oldValue, $newValue, 'of attribute "'.$attributeCode.'"'
+                );
+            }
+        }
+    }
+
+    // ---------------------------------------
+
+    protected function performDefaultQtyChanges()
+    {
+        if (!Mage::helper('M2ePro/Magento_Product')->isGroupedType($this->getProduct()->getTypeId())) {
+            return;
+        }
+
+        $values = $this->getProxy()->getData('default_qty');
+        foreach ($this->getProduct()->getTypeInstance()->getAssociatedProducts() as $childProduct) {
+
+            $sku = $childProduct->getSku();
+            $newValue = (int)$childProduct->getQty();
+            $oldValue = isset($values[$sku]) ? (int)$values[$sku] : 0;
+
+            unset($values[$sku]);
+            if ($oldValue == $newValue) {
+                continue;
+            }
+
+            foreach ($this->getAffectedListingsProducts() as $listingProduct) {
+
+                $this->_listingsProductsChangedAttributes[$listingProduct->getId()][] = 'qty';
+
+                $this->logListingProductMessage(
+                    $listingProduct,
+                    Ess_M2ePro_Model_Listing_Log::ACTION_CHANGE_PRODUCT_QTY,
+                    $oldValue,
+                    $newValue,
+                    "SKU {$sku}: Default QTY was changed."
+                );
+            }
+        }
+
+        //----------------------------------------
+
+        foreach ($values as $sku => $defaultQty) {
+            foreach ($this->getAffectedListingsProducts() as $listingProduct) {
+
+                $this->_listingsProductsChangedAttributes[$listingProduct->getId()][] = 'qty';
+
+                $this->logListingProductMessage(
+                    $listingProduct,
+                    Ess_M2ePro_Model_Listing_Log::ACTION_CHANGE_PRODUCT_QTY,
+                    $defaultQty,
+                    0,
+                    "SKU {$sku} was removed from the Product Set."
                 );
             }
         }

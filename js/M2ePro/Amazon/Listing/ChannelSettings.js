@@ -80,8 +80,6 @@ window.AmazonListingChannelSettings = Class.create(Common, {
 
         if ($('sku_modification_mode').value == self.SKU_MODIFICATION_MODE_TEMPLATE) {
             $('sku_modification_custom_value').value = '%value%';
-        } else {
-            $('sku_modification_custom_value').value = '';
         }
 
         if ($('sku_modification_mode').value == self.SKU_MODIFICATION_MODE_NONE) {

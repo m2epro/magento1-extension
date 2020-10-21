@@ -43,26 +43,25 @@ class Ess_M2ePro_Model_Walmart_Order_Item_Builder extends Mage_Core_Model_Abstra
 
     //########################################
 
-    public function process()
-    {
-        return $this->createOrderItem();
-    }
-
-    //########################################
-
     /**
      * @return Ess_M2ePro_Model_Order_Item
      */
-    protected function createOrderItem()
+    public function process()
     {
+        /** @var Ess_M2ePro_Model_Order_Item $existItem */
         $existItem = Mage::helper('M2ePro/Component_Walmart')->getCollection('Order_Item')
             ->addFieldToFilter('walmart_order_item_id', $this->getData('walmart_order_item_id'))
             ->addFieldToFilter('order_id', $this->getData('order_id'))
             ->addFieldToFilter('sku', $this->getData('sku'))
             ->getFirstItem();
 
-        $existItem->addData($this->getData());
-        $existItem->save();
+        foreach ($this->getData() as $key => $value) {
+            if (!$existItem->getId() || ($existItem->hasData($key) && $existItem->getData($key) != $value)) {
+                $existItem->addData($this->getData());
+                $existItem->save();
+                break;
+            }
+        }
 
         return $existItem;
     }

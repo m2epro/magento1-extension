@@ -108,21 +108,12 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_ProductAddController
 
         $this->setListingData();
 
-        $step = (int)$this->getRequest()->getParam('step');
-
-        switch ($step) {
+        switch ((int)$this->getRequest()->getParam('step')) {
             case 1:
-                $action = 'stepOne';
-                break;
-            case 2:
-                $action = 'stepTwo';
-                break;
-            // ....
-            default:
-                return $this->_redirect('*/*/index', array('_current' => true,'step' => 1));
+                return $this->stepOne();
         }
 
-        return $this->$action();
+        return $this->_redirect('*/*/index', array('_current' => true,'step' => 1));
     }
 
     //########################################
@@ -149,12 +140,19 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_ProductAddController
                     (Mage::helper('M2ePro')->jsonEncode(
                         array(
                         'ajaxExpired' => 1,
-                        'ajaxRedirect' => $this->getUrl('*/*/index', array('_current' => true,'step' => 2))
+                        'ajaxRedirect' => $this->getUrl('*/*/index', array('_current' => true,'step' => 1))
                         )
                     ))
                 );
             } else {
-                return $this->_redirect('*/*/index', array('_current' => true,'step' => 2));
+                $urlParams = array(
+                    '_current'   => true,
+                    'step'       => 1,
+                    'listing_id' => $this->getRequest()->getParam('listing_id')
+                );
+                $this->getRequest()->getParam('wizard') && $urlParams['wizard'] = true;
+
+                return $this->_redirect('*/adminhtml_ebay_listing_categorySettings/', $urlParams);
             }
         }
 
@@ -389,49 +387,6 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_ProductAddController
 
     //########################################
 
-    protected function stepTwo()
-    {
-        $ids = $this->getListingFromRequest()->getChildObject()->getAddedListingProductsIds();
-        $urlParams = array(
-            'step'       => 1,
-            'listing_id' => $this->getRequest()->getParam('listing_id')
-        );
-        $this->getRequest()->getParam('wizard') && $urlParams['wizard'] = true;
-
-        if (empty($ids)) {
-            return $this->_redirect('*/*/index', $urlParams);
-        }
-
-        $listingAdditionalData = $this->getListingFromRequest()->getSettings('additional_data');
-
-        if ($this->getSessionValue('show_settings_step') !== null) {
-            if (!$this->getSessionValue('show_settings_step')) {
-                return $this->_redirect('*/adminhtml_ebay_listing_categorySettings/', $urlParams);
-            }
-        } elseif (isset($listingAdditionalData['show_settings_step'])) {
-            if (!$listingAdditionalData['show_settings_step']) {
-                return $this->_redirect('*/adminhtml_ebay_listing_categorySettings/', $urlParams);
-            }
-        }
-
-        $this->setWizardStep('productSettings');
-
-        // Set rule model
-        // ---------------------------------------
-        $this->setRuleData('ebay_product_add_step_two');
-        // ---------------------------------------
-
-        $this->_initAction();
-
-        $this->setPageHelpLink(null, null, "x/MwAJAQ");
-
-        $this->_title(Mage::helper('M2ePro')->__('Set Products Settings'))
-             ->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_ebay_listing_settings'))
-             ->renderLayout();
-    }
-
-    //########################################
-
     protected function setListingData()
     {
         $listingData = Mage::helper('M2ePro/Component_Ebay')
@@ -482,22 +437,6 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_ProductAddController
         $prefix .= '_listing_product';
 
         return $prefix;
-    }
-
-    //########################################
-
-    public function stepTwoGridAction()
-    {
-        $this->setListingData();
-
-        // Set rule model
-        // ---------------------------------------
-        $this->setRuleData('ebay_product_add_step_two');
-        // ---------------------------------------
-
-        $response = $this->loadLayout()->getLayout()
-                         ->createBlock('M2ePro/adminhtml_ebay_listing_settings_grid')->toHtml();
-        $this->getResponse()->setBody($response);
     }
 
     //########################################
@@ -599,26 +538,6 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_ProductAddController
     public function setAutoActionPopupShownAction()
     {
         Mage::helper('M2ePro/Module')->getRegistry()->setValue('/ebay/listing/autoaction_popup/is_shown/', 1);
-    }
-
-    //########################################
-
-    public function setShowSettingsStepAction()
-    {
-        $showSettingsStep = $this->getRequest()->getParam('show_settings_step');
-        $this->setSessionValue('show_settings_step', (bool)$showSettingsStep);
-
-        $remember = $this->getRequest()->getParam('remember');
-        if (!$remember) {
-            return;
-        }
-
-        $listing = $this->getListingFromRequest();
-        $additionalData = $listing->getSettings('additional_data');
-        $additionalData['show_settings_step'] = (bool)$showSettingsStep;
-
-        $listing->setSettings('additional_data', $additionalData);
-        $listing->save();
     }
 
     //########################################

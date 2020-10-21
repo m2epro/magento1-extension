@@ -31,7 +31,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Sellercentral_Grid
 
         $this->_listing = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
 
-        $this->setId('amazonListingViewSellercentralGrid' . $this->_listing->getId());
+        $this->setId('amazonListingViewGrid' . $this->_listing->getId());
 
         $this->_showAdvancedFilterProductsOption = false;
 
@@ -103,7 +103,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Sellercentral_Grid
             array(
                 'general_id'                     => 'general_id',
                 'search_settings_status'         => 'search_settings_status',
-                'sku'                            => 'sku',
+                'amazon_sku'                     => 'sku',
                 'online_qty'                     => 'online_qty',
                 'online_regular_price'           => 'online_regular_price',
                 'online_regular_sale_price'      => 'IF(
@@ -233,13 +233,13 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Sellercentral_Grid
         );
 
         $this->addColumn(
-            'sku', array(
+            'amazon_sku', array(
                 'header'       => Mage::helper('M2ePro')->__('SKU'),
                 'align'        => 'left',
                 'width'        => '150px',
                 'type'         => 'text',
-                'index'        => 'sku',
-                'filter_index' => 'sku',
+                'index'        => 'amazon_sku',
+                'filter_index' => 'amazon_sku',
                 'renderer'     => 'M2ePro/adminhtml_amazon_grid_column_renderer_sku'
             )
         );
@@ -259,7 +259,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Sellercentral_Grid
         );
 
         $this->addColumn(
-            'online_qty', array(
+            'qty', array(
                 'header'                    => Mage::helper('M2ePro')->__('QTY'),
                 'align'                     => 'right',
                 'width'                     => '70px',
@@ -435,11 +435,10 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Sellercentral_Grid
 
         $value = '<span>'.$productTitle.'</span>';
 
-        $tempSku = $row->getData('sku');
+        $tempSku = $row->getData('amazon_sku');
 
         if ($tempSku === null) {
-            $tempSku = Mage::getModel('M2ePro/Magento_Product')->setProductId($row->getData('entity_id'))
-                                                               ->getSku();
+            $tempSku = $row->getData('sku');
         }
 
         $value .= '<br/><strong>'.Mage::helper('M2ePro')->__('SKU') .
@@ -728,8 +727,9 @@ HTML;
 
         $collection->addFieldToFilter(
             array(
-                array('attribute'=>'sku','like'=>'%'.$value.'%'),
-                array('attribute'=>'name', 'like'=>'%'.$value.'%')
+                array('attribute' => 'sku','like' => '%'.$value.'%'),
+                array('attribute' => 'amazon_sku', 'like' => '%'.$value.'%'),
+                array('attribute' => 'name', 'like' => '%'.$value.'%')
             )
         );
     }

@@ -316,9 +316,6 @@ abstract class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Product_Grid
         $path = 'adminhtml_ebay_listing_productAdd/add';
         $urls[$path] = $this->getUrl('*/' . $path, array('_current' => true));
 
-        $path = 'adminhtml_ebay_listing_productAdd/setShowSettingsStep';
-        $urls[$path] = $this->getUrl('*/' . $path, array('_current' => true));
-
         $path = 'adminhtml_ebay_listing_productAdd/setAutoActionPopupShown';
         $urls[$path] = $this->getUrl('*/' . $path, array('_current' => true));
 
@@ -359,22 +356,6 @@ abstract class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Product_Grid
         $showAutoActionPopup = Mage::helper('M2ePro')->jsonEncode(
             !Mage::helper('M2ePro/Module')->getRegistry()->getValue('/ebay/listing/autoaction_popup/is_shown/')
         );
-
-        $sessionData = Mage::helper('M2ePro/Data_Session')->getValue($this->_sessionKey . $this->getListing()->getId());
-
-        if (isset($sessionData['show_settings_step'])) {
-            $showSettingsStep  = (bool)$sessionData['show_settings_step'];
-        } elseif (isset($listingAdditionalData['show_settings_step'])) {
-            $showSettingsStep  = (bool)$listingAdditionalData['show_settings_step'];
-        } else {
-            $showSettingsStep  = true;
-        }
-
-        $showSettingsPopup = !isset($listingAdditionalData['show_settings_step']);
-
-        $showSettingsStep  = Mage::helper('M2ePro')->jsonEncode($showSettingsStep);
-        $showSettingsPopup = Mage::helper('M2ePro')->jsonEncode($showSettingsPopup);
-
         // ---------------------------------------
 
         $js = <<<HTML
@@ -389,8 +370,6 @@ abstract class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Product_Grid
         ProgressBarObj = new ProgressBar('add_products_progress_bar');
 
         ListingProductAddObj = new EbayListingProductAdd({
-            show_settings_step: {$showSettingsStep},
-            show_settings_popup: {$showSettingsPopup},
             show_autoaction_popup: {$showAutoActionPopup},
 
             get_selected_products: {$this->getSelectedProductsCallback()}

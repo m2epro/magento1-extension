@@ -20,6 +20,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Response
 
         $data = array(
             'status' => Ess_M2ePro_Model_Listing_Product::STATUS_LISTED,
+            'list_date' => Mage::helper('M2ePro')->getCurrentGmtDate()
         );
 
         $data = $this->appendStatusChangerValue($data);
@@ -44,9 +45,6 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Response
 
         $this->getListingProduct()->addData($data);
         $this->setVariationData($generalId);
-        $this->getListingProduct()->setSetting(
-            'additional_data', 'list_date', Mage::helper('M2ePro')->getCurrentGmtDate()
-        );
 
         $this->getListingProduct()->save();
 

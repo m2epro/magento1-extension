@@ -154,6 +154,7 @@ class Ess_M2ePro_Model_Magento_Product_Cache extends Ess_M2ePro_Model_Magento_Pr
     public function getQty($lifeMode = false)
     {
         $args = func_get_args();
+        $args[] = $this->_isGroupedProductMode;
         return $this->getMethodData(__FUNCTION__, $args);
     }
 

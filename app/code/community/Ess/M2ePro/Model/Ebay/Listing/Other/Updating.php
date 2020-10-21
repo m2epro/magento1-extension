@@ -33,15 +33,19 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Updating
     {
         $this->updateToTimeLastSynchronization($responseData);
 
-        if (!isset($responseData['items']) || !is_array($responseData['items']) ||
-            empty($responseData['items'])) {
+        if (!isset($responseData['items']) || !is_array($responseData['items']) || empty($responseData['items'])) {
             return;
         }
 
         $responseData['items'] = $this->filterReceivedOnlyOtherListings($responseData['items']);
 
-        /** @var $mappingModel Ess_M2ePro_Model_Ebay_Listing_Other_Mapping */
-        $mappingModel = Mage::getModel('M2ePro/Ebay_Listing_Other_Mapping');
+        $isMappingEnabled = $this->getAccount()->getChildObject()->isOtherListingsMappingEnabled();
+
+        if ($isMappingEnabled) {
+            /** @var $mappingModel Ess_M2ePro_Model_Ebay_Listing_Other_Mapping */
+            $mappingModel = Mage::getModel('M2ePro/Ebay_Listing_Other_Mapping');
+            $mappingModel->initialize($this->getAccount());
+        }
 
         foreach ($responseData['items'] as $receivedItem) {
 
@@ -162,12 +166,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Updating
             $listingOtherModel = Mage::helper('M2ePro/Component_Ebay')->getModel('Listing_Other');
             $listingOtherModel->setData($newData)->save();
 
-            if (!$existsId) {
-                if (!$this->getAccount()->getChildObject()->isOtherListingsMappingEnabled()) {
-                    continue;
-                }
-
-                $mappingModel->initialize($this->getAccount());
+            if (!$existsId && $isMappingEnabled) {
                 $mappingModel->autoMapOtherListingProduct($listingOtherModel);
             }
         }
@@ -220,10 +219,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Updating
         }
 
         foreach (array_chunk($receivedItemsIds, 500, true) as $partReceivedItemsIds) {
-            if (empty($partReceivedItemsIds)) {
-                continue;
-            }
-
             /** @var $collection Mage_Core_Model_Resource_Db_Collection_Abstract */
             $collection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Listing_Product');
             $collection->getSelect()->reset(Zend_Db_Select::COLUMNS);

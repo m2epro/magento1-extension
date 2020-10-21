@@ -105,7 +105,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Template_ProductTaxCodeController
             $diff, $affectedListingsProducts->getData(array('id', 'status'), array('only_physical_units' => true))
         );
 
-        $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Policy was successfully saved'));
+        $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Policy was saved'));
         return $this->_redirectUrl(
             Mage::helper('M2ePro')->getBackUrl(
                 '*/adminhtml_amazon_template/index', array(),
@@ -141,7 +141,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Template_ProductTaxCodeController
             }
         }
 
-        $tempString = Mage::helper('M2ePro')->__('%amount% record(s) were successfully deleted.', $deleted);
+        $tempString = Mage::helper('M2ePro')->__('%amount% record(s) were deleted.', $deleted);
         $deleted && $this->_getSession()->addSuccess($tempString);
 
         $tempString  = Mage::helper('M2ePro')->__('%amount% record(s) are used in Listing(s).', $locked) . ' ';
@@ -255,7 +255,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Template_ProductTaxCodeController
         if (!empty($productsIdsLocked)) {
             $messages[] = array(
                 'type' => 'success',
-                'text' => Mage::helper('M2ePro')->__('Product Tax Code Policy was successfully assigned.')
+                'text' => Mage::helper('M2ePro')->__('Product Tax Code Policy was assigned.')
             );
 
             $this->setProductTaxCodeTemplateForProducts($productsIdsLocked, $templateId);
@@ -299,7 +299,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Template_ProductTaxCodeController
         if (!empty($productsIdsLocked)) {
             $messages[] = array(
                 'type' => 'success',
-                'text' => Mage::helper('M2ePro')->__('Product Tax Code Policy was successfully unassigned.')
+                'text' => Mage::helper('M2ePro')->__('Product Tax Code Policy was unassigned.')
             );
 
             $this->setProductTaxCodeTemplateForProducts($productsIdsLocked, null);

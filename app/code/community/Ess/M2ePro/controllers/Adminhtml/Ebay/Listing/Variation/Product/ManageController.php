@@ -43,8 +43,6 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_Variation_Product_ManageController
             ->addJs('M2ePro/Ebay/Listing/VariationProductManageVariationsGrid.js')
             ->addJs('M2ePro/Ebay/Listing/Ebay/Grid.js')
             ->addJs('M2ePro/Ebay/Listing/Settings/Grid.js')
-            ->addJs('M2ePro/Ebay/Listing/Transferring/Payment.js')
-            ->addJs('M2ePro/Ebay/Listing/Transferring/Info.js')
             ->addJs('M2ePro/Ebay/Motors.js');
 
         $this->_initPopUp();
@@ -111,6 +109,12 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_Variation_Product_ManageController
 
         $help = $this->loadLayout()->getLayout()
             ->createBlock('M2ePro/adminhtml_ebay_listing_variation_product_manage_view_help');
+
+        if ($this->getRequest()->getParam('variation_id_filter')) {
+            $this->_getSession()->addNotice(Mage::helper('M2ePro')->__(
+                'This list includes a Product you are searching for.'
+            ));
+        }
 
         $this->_initAction();
         $this->getLayout()->getBlock('head')

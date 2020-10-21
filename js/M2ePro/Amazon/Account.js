@@ -176,12 +176,7 @@ window.AmazonAccount = Class.create(Common, {
         $('marketplaces_token_container').show();
 
         self.showGetAccessData(id);
-
-//        if ($('marketplace_current_mode_'+id).value == 0) {
-//            $('marketplaces_register_url_container_'+id).show();
-//            $('marketplaces_application_name_container_'+id).show();
-//            $('marketplaces_developer_key_container_'+id).show();
-//        }
+        self.magentoOrdersTaxModeChange();
     },
 
     showGetAccessData: function(id)
@@ -386,7 +381,7 @@ window.AmazonAccount = Class.create(Common, {
         if (customerMode == M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_CUSTOMER_MODE_PREDEFINED')) {
             $('magento_orders_customer_id_container').show();
             $('magento_orders_customer_id').addClassName('M2ePro-account-product-id');
-        } else {  // M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account::ORDERS_CUSTOMER_MODE_GUEST') || M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account::ORDERS_CUSTOMER_MODE_NEW')
+        } else {
             $('magento_orders_customer_id_container').hide();
             $('magento_orders_customer_id').removeClassName('M2ePro-account-product-id');
         }
@@ -400,7 +395,79 @@ window.AmazonAccount = Class.create(Common, {
         $('magento_orders_customer_new_website_id').value = '';
         $('magento_orders_customer_new_group_id').value = '';
         $('magento_orders_customer_new_notifications').value = '';
-//        $('magento_orders_customer_new_newsletter_mode').value = 0;
+    },
+
+    openExcludedStatesPopup: function()
+    {
+        var self = this;
+
+        new Ajax.Request(M2ePro.url.get('adminhtml_amazon_account/getExcludedStatesPopupHtml'), {
+            method: 'post',
+            parameters: {
+                selected_states: $('magento_orders_tax_excluded_states').value
+            },
+            onSuccess: function(transport) {
+
+                var popup = Dialog.info(null, {
+                    draggable: true,
+                    resizable: true,
+                    closable: true,
+                    className: "magento",
+                    windowClassName: "popup-window",
+                    title: M2ePro.translator.translate('Select States where Amazon is responsible for tax calculation/collection'),
+                    width: 600,
+                    height: 600,
+                    zIndex: 100,
+                    border: false,
+                    hideEffect: Element.hide,
+                    showEffect: Element.show,
+                });
+
+                popup.options.destroyOnClose = true;
+
+                $('modal_dialog_message').update(transport.responseText);
+                self.autoHeightFix();
+            }
+        });
+    },
+
+    confirmExcludedStates: function()
+    {
+        var excludedStates = [];
+
+        $$('.excluded_state_checkbox').each(function(element) {
+            if (element.checked) {
+                excludedStates.push(element.value);
+            }
+        });
+
+        $('magento_orders_tax_excluded_states').value = excludedStates.toString();
+
+        Windows.getFocusedWindow().close();
+    },
+
+    magentoOrdersTaxModeChange: function()
+    {
+        if ($('marketplace_id').value != M2ePro.php.constant('Ess_M2ePro_Helper_Component_Amazon::MARKETPLACE_US')) {
+            $('tr_magento_orders_tax_excluded_states').hide();
+            return;
+        }
+
+        if ($('magento_orders_tax_mode').value == M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_TAX_MODE_CHANNEL') ||
+            $('magento_orders_tax_mode').value == M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_TAX_MODE_MIXED')) {
+            $('tr_magento_orders_tax_excluded_states').show();
+        } else {
+            $('tr_magento_orders_tax_excluded_states').hide();
+        }
+    },
+
+    magentoOrdersTaxAmazonCollectsChange: function()
+    {
+        if ($('magento_orders_tax_amazon_collects').value == 1) {
+            $('show_excluded_states_button').show();
+        } else {
+            $('show_excluded_states_button').hide();
+        }
     },
 
     magentoOrdersStatusMappingModeChange: function()

@@ -159,7 +159,7 @@ class Ess_M2ePro_Adminhtml_Ebay_AccountController extends Ess_M2ePro_Controller_
             $data = $this->sendDataToServer($accountId, $data);
             $id = $this->updateAccount($accountId, $data);
 
-            $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Token was successfully saved'));
+            $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Token was saved'));
             $this->_redirect('*/*/edit', array('id' => $id, '_current' => true));
         }
 
@@ -228,7 +228,7 @@ class Ess_M2ePro_Adminhtml_Ebay_AccountController extends Ess_M2ePro_Controller_
             $this->_redirect('*/*/index');
         }
 
-        $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Sell API token was successfully obtained'));
+        $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Sell API token was obtained'));
         $this->_redirect('*/*/edit', array('id' => $accountId, '_current' => true));
         // ---------------------------------------
     }
@@ -245,13 +245,26 @@ class Ess_M2ePro_Adminhtml_Ebay_AccountController extends Ess_M2ePro_Controller_
 
         $data = $this->sendDataToServer($id, $post);
 
+        $accountExists = $this->getExistsAccount($data['user_id']);
+        if (empty($id) && !empty($accountExists)) {
+            $data['title'] = $accountExists->getTitle();
+            $this->updateAccount($accountExists->getAccountId(), $data);
+
+            $this->_getSession()->addError(
+                Mage::helper('M2ePro')->__('An account with the same eBay User ID already exists.')
+            );
+
+            $this->_redirect('*/*/new');
+            return;
+        }
+
         $id = $this->updateAccount($id, $data);
 
-        $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Account was successfully saved'));
+        $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Account was saved'));
 
         $this->_redirectUrl(
             Mage::helper('M2ePro')->getBackUrl(
-                'list', array(), array('edit'=>array('id'=>$id))
+                'list', array(), array('edit' => array('id' => $id))
             )
         );
     }
@@ -299,7 +312,7 @@ class Ess_M2ePro_Adminhtml_Ebay_AccountController extends Ess_M2ePro_Controller_
             $deleted++;
         }
 
-        $tempString = Mage::helper('M2ePro')->__('%amount% record(s) were successfully deleted.', $deleted);
+        $tempString = Mage::helper('M2ePro')->__('%amount% record(s) were deleted.', $deleted);
         $deleted && $this->_getSession()->addSuccess($tempString);
 
         $tempString  = Mage::helper('M2ePro')->__('%amount% record(s) are used in M2E Pro Listing(s).', $locked) . ' ';
@@ -529,6 +542,22 @@ class Ess_M2ePro_Adminhtml_Ebay_AccountController extends Ess_M2ePro_Controller_
         );
 
         return 'MessageObj.addError(\''.$errorMessage.'\');';
+    }
+
+    //########################################
+
+    protected function getExistsAccount($userId)
+    {
+        /** @var Ess_M2ePro_Model_Resource_Account_Collection $account */
+        $account = Mage::helper('M2ePro/Component_Ebay')->getCollection('Account')
+            ->addFieldToSelect('title')
+            ->addFieldToFilter('user_id', $userId);
+
+        if (!$account->getSize()) {
+            return null;
+        }
+
+        return $account->getFirstItem();
     }
 
     //########################################

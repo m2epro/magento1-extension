@@ -79,6 +79,17 @@ class Ess_M2ePro_Block_Adminhtml_ControlPanel_Tabs_Tools extends Mage_Adminhtml_
             )
         );
 
+        $this->setChild(
+            'controlPanel_module_integration_walmart',
+            $this->getLayout()->createBlock(
+                'M2ePro/adminhtml_controlPanel_tabs_command_group',
+                '',
+                array(
+                    'controller_name' => DevelopmentCommand::CONTROLLER_MODULE_INTEGRATION_WALMART
+                )
+            )
+        );
+
         return parent::_beforeToHtml();
     }
 

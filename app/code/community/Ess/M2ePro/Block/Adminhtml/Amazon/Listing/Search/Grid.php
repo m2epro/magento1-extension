@@ -76,7 +76,8 @@ abstract class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Search_Grid extends Mag
                 'type'           => 'text',
                 'index'          => 'general_id',
                 'filter_index'   => 'general_id',
-                'frame_callback' => array($this, 'callbackColumnGeneralId')
+                'frame_callback' => array($this, 'callbackColumnGeneralId'),
+                'filter_condition_callback' => array($this, 'callbackFilterAsinIsbn')
             )
         );
 
@@ -143,7 +144,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Search_Grid extends Mag
             'goto_listing_item', array(
                 'header'         => Mage::helper('M2ePro')->__('Manage'),
                 'align'          => 'center',
-                'width'          => '50px',
+                'width'          => '80px',
                 'type'           => 'text',
                 'filter'         => false,
                 'sortable'       => false,
@@ -587,6 +588,7 @@ HTML;
     abstract protected function callbackFilterProductId($collection, $column);
     abstract protected function callbackFilterTitle($collection, $column);
     abstract protected function callbackFilterOnlineSku($collection, $column);
+    abstract protected function callbackFilterAsinIsbn($collection, $column);
     abstract protected function callbackFilterQty($collection, $column);
     abstract protected function callbackFilterPrice($collection, $column);
     abstract protected function callbackFilterStatus($collection, $column);

@@ -122,14 +122,14 @@ JS
 
                 'Settings have been saved.',
                 'Preparing to start. Please wait ...',
-                'Marketplace synchronization was completed successfully.',
+                'Marketplace synchronization was completed.',
                 'Synchronization ended with errors.',
                 $synchWarningMessage,
                 $synchErrorMessage,
 
                 'Task completed. Please wait ...',
-                '"%task_title%" Task was completed successfully.',
-                '"%task_title%" Task was successfully submitted to be processed.',
+                '"%task_title%" Task was completed.',
+                '"%task_title%" Task was submitted to be processed.',
 
                 'Show Advanced Filter',
                 'Hide Advanced Filter',

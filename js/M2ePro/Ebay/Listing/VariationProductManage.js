@@ -13,7 +13,7 @@ window.EbayListingVariationProductManage = Class.create(Action,{
 
     // ---------------------------------------
 
-    openPopUp: function(productId, title, filter)
+    openPopUp: function(productId, title, filter, variationIdFilter)
     {
         MessageObj.clearAll();
 
@@ -21,7 +21,8 @@ window.EbayListingVariationProductManage = Class.create(Action,{
             method: 'post',
             parameters: {
                 product_id : productId,
-                filter: filter
+                filter: filter,
+                variation_id_filter : variationIdFilter
             },
             onSuccess: function (transport) {
 
@@ -70,7 +71,7 @@ window.EbayListingVariationProductManage = Class.create(Action,{
             src: $('ebayVariationsProductManageVariationsGridIframeUrl').value,
             width: '100%',
             height: '100%',
-            style: 'border: none;',
+            style: 'border: none; min-height: inherit',
             'parent-container': 'ebayVariationsProductManageVariationsGrid'
         });
 
@@ -78,9 +79,6 @@ window.EbayListingVariationProductManage = Class.create(Action,{
 
         Event.observe($('ebayVariationsProductManageVariationsGridIframe'), 'load', function() {
             $('loading-mask').hide();
-            GridFrameObj.autoHeightFrameByContent(
-                $('ebayVariationsProductManageVariationsGrid'), this
-            );
         });
     },
 

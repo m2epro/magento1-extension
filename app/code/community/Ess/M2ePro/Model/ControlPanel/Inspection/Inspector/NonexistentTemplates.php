@@ -160,9 +160,15 @@ HTML;
                         $params
                     );
                     $onClick = <<<JS
-var result = prompt('Enter Template ID');
+var elem   = $(this),
+    result = prompt('Enter Template ID');
+
 if (result) {
-    window.location.href = '{$url}' + '?template_id=' + result;
+    elem.up('tr').remove();
+    new Ajax.Request( '{$url}'+ '?template_id=' + result , {
+    method: 'get',
+    asynchronous : true,
+});
 }
 return false;
 JS;
@@ -179,9 +185,15 @@ HTML;
                         $params
                     );
                     $onClick = <<<JS
-var result = prompt('Enter Template ID');
+var elem   = $(this),
+    result = prompt('Enter Template ID');
+
 if (result) {
-    window.location.href = '{$url}' + '?template_id=' + result;
+    elem.up('tr').remove();
+    new Ajax.Request( '{$url}'+ '?template_id=' + result , {
+    method: 'get',
+    asynchronous : true,
+});
 }
 return false;
 JS;

@@ -14,14 +14,8 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_Advanced_Form extends Ess_M2ePro_
     {
         parent::__construct();
 
-        // Initialization block
-        // ---------------------------------------
         $this->setId('configurationAdvancedForm');
-        // ---------------------------------------
-
         $this->setTemplate('M2ePro/configuration/advanced.phtml');
-
-        // ---------------------------------------
     }
 
     //########################################
@@ -37,7 +31,6 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_Advanced_Form extends Ess_M2ePro_
 
     protected function _beforeToHtml()
     {
-        // ---------------------------------------
         $data = array(
             'label'   => Mage::helper('M2ePro')->__('Proceed'),
             'onclick' => 'AdvancedObj.informationPopup()',
@@ -45,9 +38,7 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_Advanced_Form extends Ess_M2ePro_
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('proceed_button', $buttonBlock);
-        // ---------------------------------------
 
-        // ---------------------------------------
         $data = array(
             'label'   => Mage::helper('M2ePro')->__('Confirm'),
             'onclick' => 'setLocation(\''.$this->getUrl('M2ePro/adminhtml_migrationToMagento2/disableModule').'\')',
@@ -55,94 +46,8 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_Advanced_Form extends Ess_M2ePro_
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('confirm_button', $buttonBlock);
-        // ---------------------------------------
-
-        $confirmBtnText = 'Confirm';
-        $isModuleDisabled = Mage::helper('M2ePro/Module')->isDisabled();
-        $popupTitle = $isModuleDisabled ? 'Enable Module' : 'Disable Module';
-        $buttonText = $isModuleDisabled ? 'Enable' : 'Disable';
-
-        if ($isModuleDisabled) {
-            $confirmBtnText = 'Ok';
-            $popupTitle = 'Confirmation';
-        }
-
-        // ---------------------------------------
-        $data = array(
-            'label'   => Mage::helper('M2ePro')->__($buttonText),
-            'onclick' => 'AdvancedObj.moduleModePopup(\''.Mage::helper('M2ePro')->__($popupTitle).'\')',
-            'class'   => 'proceed_button'
-        );
-        $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
-        $this->setChild('proceed_module_mode_button', $buttonBlock);
-        // ---------------------------------------
-
-        // ---------------------------------------
-        $data = array(
-            'label'   => Mage::helper('M2ePro')->__($confirmBtnText),
-            'onclick' => 'setLocation(\''.$this->getUrl(
-                'M2ePro/adminhtml_configuration_advanced/changeModuleMode', array(
-                    'module_mode' => (int)!$isModuleDisabled
-                )
-            ).'\')',
-            'class'   => 'proceed_button'
-        );
-        $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
-        $this->setChild('confirm_module_mode_button', $buttonBlock);
-        // ---------------------------------------
-
-        $isCronEnabled = Mage::helper('M2ePro/Module_Cron')->isModeEnabled();
-        $disableCronButtonText = $isCronEnabled ? 'Disable' : 'Enable';
-
-        $data = array(
-            'label'   => Mage::helper('M2ePro')->__($disableCronButtonText),
-            'onclick' => 'setLocation(\''.$this->getUrl(
-                    'M2ePro/adminhtml_configuration_advanced/changeCronMode', array(
-                        'cron_mode' => (int)!$isCronEnabled
-                    )
-                ).'\')',
-            'class'   => 'proceed_button'
-        );
-        $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
-        $this->setChild('change_cron_mode_button', $buttonBlock);
 
         return parent::_beforeToHtml();
-    }
-
-    //########################################
-
-    protected function initPopUp()
-    {
-        $themeFileName = 'prototype/windows/themes/magento.css';
-        $themeLibFileName = 'lib/'.$themeFileName;
-        $themeFileFound = false;
-        $skinBaseDir = Mage::getDesign()->getSkinBaseDir(
-            array(
-                '_package' => Mage_Core_Model_Design_Package::DEFAULT_PACKAGE,
-                '_theme' => Mage_Core_Model_Design_Package::DEFAULT_THEME,
-            )
-        );
-
-        if (!$themeFileFound && is_file($skinBaseDir .'/'.$themeLibFileName)) {
-            $themeFileFound = true;
-            $this->getLayout()->getBlock('head')->addCss($themeLibFileName);
-        }
-
-        if (!$themeFileFound && is_file(Mage::getBaseDir().'/js/'.$themeFileName)) {
-            $themeFileFound = true;
-            $this->getLayout()->getBlock('head')->addItem('js_css', $themeFileName);
-        }
-
-        if (!$themeFileFound) {
-            $this->getLayout()->getBlock('head')->addCss($themeLibFileName);
-            $this->getLayout()->getBlock('head')->addItem('js_css', $themeFileName);
-        }
-
-        $this->getLayout()->getBlock('head')
-            ->addJs('prototype/window.js')
-            ->addItem('js_css', 'prototype/windows/themes/default.css');
-
-        return $this;
     }
 
     //########################################

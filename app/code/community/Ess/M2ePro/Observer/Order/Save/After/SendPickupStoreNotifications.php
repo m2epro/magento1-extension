@@ -49,7 +49,7 @@ class Ess_M2ePro_Observer_Order_Save_After_SendPickupStoreNotifications extends 
         if ($magentoOrder->getState() == Mage_Sales_Model_Order::STATE_CANCELED &&
             $this->sendNotification($order->getAccount(), 'cancelled', $ebayOrder->getEbayOrderId())
         ) {
-            $order->addSuccessLog(Mage::helper('M2ePro')->__('Order was successfully marked as Cancelled'));
+            $order->addSuccessLog(Mage::helper('M2ePro')->__('Order was marked as Cancelled'));
             return;
         }
 
@@ -57,14 +57,14 @@ class Ess_M2ePro_Observer_Order_Save_After_SendPickupStoreNotifications extends 
         if ($readyForPickupStatus == $magentoOrder->getStatus() &&
             $this->sendNotification($order->getAccount(), 'ready_for_pickup', $ebayOrder->getEbayOrderId())
         ) {
-            $order->addSuccessLog(Mage::helper('M2ePro')->__('Order was successfully marked as Ready For Pickup'));
+            $order->addSuccessLog(Mage::helper('M2ePro')->__('Order was marked as Ready For Pickup'));
         }
 
         $pickedUpStatus = $ebayAccount->getMagentoOrdersInStorePickupStatusPickedUp();
         if ($pickedUpStatus == $magentoOrder->getStatus() &&
             $this->sendNotification($order->getAccount(), 'picked_up', $ebayOrder->getEbayOrderId())
         ) {
-            $order->addSuccessLog(Mage::helper('M2ePro')->__('Order was successfully marked as Picked Up'));
+            $order->addSuccessLog(Mage::helper('M2ePro')->__('Order was marked as Picked Up'));
         }
     }
 

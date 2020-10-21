@@ -22,9 +22,9 @@ window.ListingOtherRemoving = Class.create(Action, {
                 MessageObj.clearAll();
 
                 if (transport.responseText == '1') {
-                    MessageObj.addSuccess(M2ePro.text.successfully_removed);
+                    MessageObj.addSuccess(M2ePro.translator.translate('Product(s) was Removed.'));
                 } else {
-                    MessageObj.addError(M2ePro.text.not_enough_data);
+                    MessageObj.addError(M2ePro.translator.translate('Not enough data'));
                 }
 
                 this.gridHandler.unselectAllAndReload();

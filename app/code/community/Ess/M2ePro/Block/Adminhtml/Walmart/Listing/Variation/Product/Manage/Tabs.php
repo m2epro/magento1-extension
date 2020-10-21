@@ -13,6 +13,9 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs
 
     protected $_errorsCount;
 
+    /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
+    protected $_listingProduct;
+
     //########################################
 
     /**
@@ -41,12 +44,12 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs
      */
     public function getListingProduct()
     {
-        if (empty($this->listingProduct)) {
-            $this->listingProduct = Mage::helper('M2ePro/Component_Walmart')
+        if (empty($this->_listingProduct)) {
+            $this->_listingProduct = Mage::helper('M2ePro/Component_Walmart')
                 ->getObject('Listing_Product', $this->getListingProductId());
         }
 
-        return $this->listingProduct;
+        return $this->_listingProduct;
     }
 
     // ---------------------------------------
@@ -55,10 +58,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs
     {
         parent::__construct();
 
-        // Initialization block
-        // ---------------------------------------
         $this->setId('walmartVariationProductManageTabs');
-        // ---------------------------------------
 
         $this->setTemplate('widget/tabshoriz.phtml');
         $this->setDestElementId('variation_product_manage_tabs_container');
@@ -75,6 +75,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs
             'content' => $this->getLayout()
                 ->createBlock('M2ePro/adminhtml_walmart_listing_variation_product_manage_tabs_variations')
                 ->setListingProductId($this->getListingProductId())
+                ->setListingProductIdForFilter($this->getRequest()->getParam('listing_product_id_filter'))
                 ->toHtml()
             )
         );

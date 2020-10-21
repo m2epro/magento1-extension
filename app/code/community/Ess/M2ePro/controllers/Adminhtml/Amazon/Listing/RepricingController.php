@@ -159,7 +159,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_RepricingController
         $repricingSynchronization->run($skus);
 
         $this->_getSession()->addSuccess(
-            Mage::helper('M2ePro')->__('Amazon Products have been successfully added to the Amazon Repricing Tool.')
+            Mage::helper('M2ePro')->__('Amazon Products have been added to the Amazon Repricing Tool.')
         );
 
         return $this->indexAction();
@@ -423,7 +423,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_RepricingController
         $repricingSynchronization->run($skus);
 
         $this->_getSession()->addSuccess(
-            Mage::helper('M2ePro')->__('Amazon Products have been successfully removed from the Amazon Repricing Tool.')
+            Mage::helper('M2ePro')->__('Amazon Products have been removed from the Amazon Repricing Tool.')
         );
         return $this->indexAction();
     }

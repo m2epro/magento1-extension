@@ -13,28 +13,41 @@ class Ess_M2ePro_Adminhtml_Configuration_ComponentsController
 
     public function saveAction()
     {
-        $ebayMode = (int)$this->getRequest()->getParam('component_ebay_mode');
-        $amazonMode = (int)$this->getRequest()->getParam('component_amazon_mode');
-        $walmartMode = (int)$this->getRequest()->getParam('component_walmart_mode');
+        $this->_redirectUrl($this->_getRefererUrl());
+    }
 
-        Mage::helper('M2ePro/Module')->getConfig()->setGroupValue(
-            '/component/ebay/', 'mode',
-            $ebayMode
-        );
-        Mage::helper('M2ePro/Module')->getConfig()->setGroupValue(
-            '/component/amazon/', 'mode',
-            $amazonMode
-        );
-        Mage::helper('M2ePro/Module')->getConfig()->setGroupValue(
-            '/component/walmart/', 'mode',
-            $walmartMode
-        );
+    //########################################
+
+    public function changeModuleModeAction()
+    {
+        $moduleMode = (int)$this->getRequest()->getParam('module_mode');
+
+        Mage::helper('M2ePro/Module')->getConfig()->setGroupValue('/', 'is_disabled', $moduleMode);
 
         Mage::helper('M2ePro/Magento')->clearMenuCache();
 
-        $this->_getSession()->addSuccess(
-            Mage::helper('M2ePro')->__('The global Settings have been successfully saved.')
-        );
+        $this->_redirectUrl($this->_getRefererUrl());
+    }
+
+    public function changeCronModeAction()
+    {
+        $cronMode = (int)$this->getRequest()->getParam('cron_mode');
+
+        Mage::helper('M2ePro/Module')->getConfig()->setGroupValue('/cron/', 'mode', $cronMode);
+
+        Mage::helper('M2ePro/Magento')->clearMenuCache();
+
+        $this->_redirectUrl($this->_getRefererUrl());
+    }
+
+    public function changeChannelModeAction()
+    {
+        $mode = (int)$this->getRequest()->getParam('mode');
+        $channel = $this->getRequest()->getParam('channel');
+
+        Mage::helper('M2ePro/Module')->getConfig()->setGroupValue('/component/' . $channel . '/', 'mode', $mode);
+
+        Mage::helper('M2ePro/Magento')->clearMenuCache();
 
         $this->_redirectUrl($this->_getRefererUrl());
     }

@@ -69,7 +69,7 @@
             </groups>
         </payment>
         <m2epro_components translate="label" module="M2ePro">
-            <label>Channels</label>
+            <label><![CDATA[Module & Channels]]></label>
             <tab>m2epro</tab>
             <frontend_type>text</frontend_type>
             <sort_order>10</sort_order>
@@ -109,7 +109,7 @@
             <frontend_model>M2ePro/adminhtml_configuration_license_form</frontend_model>
         </m2epro_license>
         <m2epro_advanced translate="label" module="M2ePro">
-            <label>Advanced</label>
+            <label>Migration to Magento v2.x</label>
             <tab>m2epro</tab>
             <frontend_type>text</frontend_type>
             <sort_order>50</sort_order>

@@ -91,7 +91,7 @@ class Ess_M2ePro_Adminhtml_Ebay_CategoryController extends Ess_M2ePro_Controller
             $deleted++;
         }
 
-        $tempString = Mage::helper('M2ePro')->__('%s record(s) were successfully deleted.', $deleted);
+        $tempString = Mage::helper('M2ePro')->__('%s record(s) were deleted.', $deleted);
         $deleted && $this->_getSession()->addSuccess($tempString);
 
         $tempString  = Mage::helper('M2ePro')->__(

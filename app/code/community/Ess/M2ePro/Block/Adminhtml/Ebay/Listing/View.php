@@ -263,12 +263,10 @@ HTML;
                     array('listing_id' => $this->getRequest()->getParam('id'))
                 ),
                 array(
-                    'adminhtml_system_store/index' => Mage::helper('adminhtml')->getUrl('adminhtml/system_store/'),
                     'logViewUrl' => $this->getUrl(
                         'M2ePro/adminhtml_ebay_log/synchronization',
                         array('back'=>$helper->makeBackUrlParam('*/adminhtml_ebay_synchronization/index'))
                     ),
-                    'runSynchNow' => $this->getUrl('M2ePro/adminhtml_ebay_marketplace/runSynchNow'),
                     'variationProductManage' => $this->getUrl(
                         '*/adminhtml_ebay_listing_variation_product_manage/index'
                     ),
@@ -281,32 +279,13 @@ HTML;
         // ---------------------------------------
         $translations = Mage::helper('M2ePro')->jsonEncode(
             array(
-            'Auto Add/Remove Rules' => $helper->__('Auto Add/Remove Rules'),
-            'Based on Magento Categories' => $helper->__('Based on Magento Categories'),
-            'You must select at least 1 Category.' => $helper->__('You must select at least 1 Category.'),
-            'Rule with the same Title already exists.' => $helper->__('Rule with the same Title already exists.'),
-            'Compatibility Attribute' => $helper->__('Compatibility Attribute'),
-            'Sell on Another Marketplace' => $helper->__('Sell on Another Marketplace'),
-            'Product' => $helper->__('Product'),
-            'You must select at least 1 Listing.' => $helper->__('You must select at least 1 Listing.'),
-            'Data migration.' => $helper->__('Data migration...'),
-            'Creating Policies in process. Please wait...' =>
-                $helper->__('Creating Policies in process. Please wait...'),
-            'Creating Listing in process. Please wait...' =>
-                $helper->__('Creating Listing in process. Please wait...'),
-            'Adding Products in process. Please wait...' =>
-                $helper->__('Adding Products in process. Please wait...'),
-            'Products failed to add' => $helper->__('Failed Products'),
-            'Migration success.' => $helper->__('The Products have been successfully added into Destination Listing.'),
-            'Migration error.' => $helper->__(
-                'The Products have not been added into Destination Listing'
-                .' because Products with the same Magento Product IDs already exist there.'
-            ),
-            'Some Products Categories Settings are not set or Attributes for Title or Description are empty.' =>
-                $helper->__(
-                    'Some Products Categories Settings are not set'
-                    .' or Attributes for Title or Description are empty.'
-                ),
+                'Auto Add/Remove Rules'                    => $helper->__('Auto Add/Remove Rules'),
+                'Based on Magento Categories'              => $helper->__('Based on Magento Categories'),
+                'You must select at least 1 Category.'     => $helper->__('You must select at least 1 Category.'),
+                'Rule with the same Title already exists.' => $helper->__('Rule with the same Title already exists.'),
+                'Compatibility Attribute'                  => $helper->__('Compatibility Attribute'),
+                'Sell on Another Marketplace'              => $helper->__('Sell on Another Marketplace'),
+                'Create new'                               => $helper->__('Create new'),
             )
         );
         // ---------------------------------------

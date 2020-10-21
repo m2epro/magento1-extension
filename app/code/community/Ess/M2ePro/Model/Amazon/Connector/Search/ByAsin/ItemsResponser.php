@@ -7,7 +7,7 @@
  */
 
 abstract class Ess_M2ePro_Model_Amazon_Connector_Search_ByAsin_ItemsResponser
-    extends Ess_M2ePro_Model_Amazon_Connector_Command_Pending_Responser
+    extends Ess_M2ePro_Model_Connector_Command_Pending_Responser
 {
     //########################################
 

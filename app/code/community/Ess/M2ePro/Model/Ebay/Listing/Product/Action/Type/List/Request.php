@@ -22,6 +22,11 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_List_Request
 
         $additionalData = $this->getListingProduct()->getAdditionalData();
 
+        if ($this->getListingProduct()->getMagentoProduct()->isGroupedType()) {
+            $additionalData['grouped_product_mode'] = Mage::helper('M2ePro/Module_Configuration')
+                ->getGroupedProductMode();
+        }
+
         unset($additionalData['synch_template_list_rules_note']);
         unset($additionalData['item_duplicate_action_required']);
 

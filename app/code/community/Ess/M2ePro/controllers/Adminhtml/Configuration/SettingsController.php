@@ -15,7 +15,7 @@ class Ess_M2ePro_Adminhtml_Configuration_SettingsController
     {
         Mage::helper('M2ePro/Module_Configuration')->setConfigValues($this->getRequest()->getPost());
 
-        $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Global Settings was successfully saved.'));
+        $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Global Settings was saved.'));
         $this->_redirectUrl($this->_getRefererUrl());
     }
 
@@ -29,7 +29,6 @@ class Ess_M2ePro_Adminhtml_Configuration_SettingsController
             $additionalData = $listing->getSettings('additional_data');
 
             if ($listing->isComponentModeEbay()) {
-                unset($additionalData['show_settings_step']);
                 unset($additionalData['mode_same_category_data']);
             }
 

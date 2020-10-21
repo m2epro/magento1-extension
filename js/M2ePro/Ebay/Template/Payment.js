@@ -6,6 +6,10 @@ window.EbayTemplatePayment = Class.create(Common, {
     {
         Validation.add('M2ePro-validate-payment-methods', M2ePro.translator.translate('Payment method should be specified.'), function(value) {
 
+            if ($('managed_payments_mode') && $('managed_payments_mode').checked) {
+                return true;
+            }
+
             if ($('pay_pal_mode').checked) {
                 return true;
             }
@@ -14,6 +18,31 @@ window.EbayTemplatePayment = Class.create(Common, {
                 return o.checked;
             });
         });
+    },
+
+    // ---------------------------------------
+
+    managedPaymentsModeChange: function()
+    {
+        if (this.checked) {
+            $('pay_pal_mode').checked = false;
+            $('pay_pal_mode').simulate('change');
+            $('pay_pal_mode').setAttribute('disabled', 'disabled');
+
+            $('pay_pal_immediate_payment').setAttribute('disabled', 'disabled');
+
+            $$('input[name="payment[services][]"]').each(function(payment) {
+                payment.checked = false;
+                payment.setAttribute('disabled', 'disabled');
+            });
+        } else {
+            $('pay_pal_mode').removeAttribute('disabled');
+            $('pay_pal_immediate_payment').removeAttribute('disabled');
+
+            $$('input[name="payment[services][]"]').each(function(payment) {
+                payment.removeAttribute('disabled');
+            });
+        }
     },
 
     // ---------------------------------------
@@ -39,7 +68,7 @@ window.EbayTemplatePayment = Class.create(Common, {
         if (this.checked) {
             $('magento_block_ebay_template_payment_form_data_additional_service').hide();
 
-            $$('input.additional-payment-service').each(function(payment) {
+            $$('input[name="payment[services][]"]').each(function(payment) {
                 payment.checked = false;
             });
         } else {

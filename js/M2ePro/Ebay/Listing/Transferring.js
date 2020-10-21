@@ -1,652 +1,249 @@
 window.EbayListingTransferring = Class.create(Common, {
 
+    progressBarObj: null,
+    listingId: null,
+
     // ---------------------------------------
 
-    initialize: function()
+    initialize: function(listingId)
     {
-        this.actionHandler = new EbayListingTransferringAction();
-        this.breadcrumbHandler = new EbayListingTransferringBreadcrumb();
-        this.marketplaceProgressObj = null;
+        this.listingId = listingId;
     },
 
-    // ---------------------------------------
+    //----------------------------------------
 
-    loadActionHtml: function(selectedProductsIds, callback, productName)
+    getSourceAccount: function()
     {
-        this.actionHandler.setProductsIds(selectedProductsIds);
-        new Ajax.Request(M2ePro.url.get('adminhtml_ebay_listing_transferring/index'), {
+        return $('from_account_id').value;
+    },
+
+    getTargetAccount: function()
+    {
+        return $('to_account_id').value;
+    },
+
+    getSourceMarketplace: function()
+    {
+        return $('from_marketplace_id').value;
+    },
+
+    getSourceListing: function()
+    {
+        return $('from_listing_id').value;
+    },
+
+    //----------------------------------------
+
+    getTargetMarketplace: function()
+    {
+        return $('to_marketplace_id').value;
+    },
+
+    getTargetStore: function()
+    {
+        return $('to_store_id').value;
+    },
+
+    getTargetListing: function()
+    {
+        return $('to_listing_id').value;
+    },
+
+    //----------------------------------------
+
+    popupShow: function(selectedProductsIds)
+    {
+        new Ajax.Request(M2ePro.url.get('adminhtml_ebay_listing_transferring/index', {step: 1}), {
             method: 'post',
             asynchronous: true,
             parameters: {
-                products_ids: [this.actionHandler.getProductsIds()]
+                products_ids: selectedProductsIds.join(',')
             },
             onSuccess: function(transport) {
 
-                var content = transport.responseText;
-                var title = M2ePro.translator.translate('Sell on Another Marketplace');
+                Dialog.info(null, config = {
+                    draggable: true,
+                    resizable: true,
+                    closable: true,
+                    className: "magento",
+                    windowClassName: "popup-window",
+                    title: M2ePro.translator.translate('Sell on Another Marketplace'),
+                    top: 50,
+                    minWidth: 1000,
+                    maxHeight: 500,
+                    width: 1000,
+                    zIndex: 100,
+                    recenterAuto: true,
+                    hideEffect: Element.hide,
+                    showEffect: Element.show
+                });
 
-                if (productName) {
-                    title += '&nbsp;' + M2ePro.translator.translate('Product') + '&nbsp;"' + productName + '"';
-                }
+                $('modal_dialog_message').innerHTML = transport.responseText;
+                $('modal_dialog_message').innerHTML.evalScripts();
 
-                this.openPopUp(title, content);
-
-                callback && callback();
+                this.autoHeightFix();
 
             }.bind(this)
         });
     },
 
-    // ---------------------------------------
-
-    openPopUp: function(title, content, clearMessages)
+    popupContinue: function()
     {
-        var config = {
-            draggable: true,
-            resizable: true,
-            closable: true,
-            className: "magento",
-            windowClassName: "popup-window",
-            title: title,
-            top: 50,
-            minWidth: 820,
-            maxHeight: 500,
-            width: 820,
-            zIndex: 100,
-            recenterAuto: true,
-            hideEffect: Element.hide,
-            showEffect: Element.show,
-            closeCallback: function() {
-                EbayListingTransferringObj.actionHandler.clear();
-                EbayListingTransferringObj.marketplaceProgressObj = null;
-
-                $('excludeListPopup') && Windows.getWindow('excludeListPopup').destroy();
-
-                return true;
-            }
-        };
-
-        try {
-            this.popUp = Windows.getFocusedWindow() || Dialog.info(null, config);
-            $('modal_dialog_message').innerHTML = content;
-            $('modal_dialog_message').innerHTML.evalScripts();
-        } catch (ignored) {}
-
-        clearMessages || MessageObj.clearAll();
-        setTimeout(function() {
-            Windows.getFocusedWindow().content.style.height = '';
-            Windows.getFocusedWindow().content.style.maxHeight = '500px';
-        }, 50);
-    },
-
-    // ---------------------------------------
-
-    showStep: function(refreshBreadcrumb, refreshButtons)
-    {
-        // need for correct render helper-blocks
-        initializationMagentoBlocks();
-
-        var itemStep = this.actionHandler.getItemStep();
-        ['tutorial', 'destination', 'policy', 'translation'].forEach(function(el) {
-            if ($('data_container_step_' + el)) {
-                if (el == itemStep) {
-                    $('data_container_step_' + el).show();
-                } else {
-                    $('data_container_step_' + el).hide();
-                }
-            }
-        });
-
-        (!!refreshBreadcrumb || true) && this.refreshBreadcrumb();
-        (!!refreshButtons    || true) && this.refreshButtons();
-    },
-
-    back: function()
-    {
-        if (!this.actionHandler.isBackAllowed()) {
+        if (!Validation.validate($('to_account_id')) ||
+            !Validation.validate($('to_marketplace_id')) ||
+            !Validation.validate($('to_store_id')) ||
+            !Validation.validate($('to_listing_id'))
+        ) {
             return;
         }
 
-        this.actionHandler.popStep();
-        this.showStep(true, false);
+        setLocation(
+            M2ePro.url.get(
+                'adminhtml_ebay_listing_transferring/index',
+                {
+                    step           : 2,
+                    account_id     : this.getTargetAccount(),
+                    marketplace_id : this.getTargetMarketplace(),
+                    store_id       : this.getTargetStore(),
+                    to_listing_id  : this.getTargetListing()
+                }
+            )
+        );
     },
 
     // ---------------------------------------
 
-    go: function(callback)
+    accountIdChange: function()
     {
-        callback = callback || this.renderStepDestination.bind(this);
-        this.actionHandler.setShownTutorial(callback);
-    },
-
-    // ---------------------------------------
-
-    renderStepTutorial: function()
-    {
-        this.actionHandler.pushStep('tutorial');
-        this.showStep(true, true);
-    },
-
-    // ---------------------------------------
-
-    renderStepDestination: function()
-    {
-        this.actionHandler.pushStep('destination');
-        this.showStep(true, true);
         this.refreshMarketplaces();
+        this.refreshListings();
     },
+
+    marketplaceIdChange: function()
+    {
+        this.refreshListings();
+    },
+
+    storeIdChange: function()
+    {
+        this.refreshListings();
+    },
+
+    //----------------------------------------
 
     refreshMarketplaces: function()
     {
-        if (!$('transferring_marketplace_id')) {
-            return;
+        $$('#to_marketplace_id option.value').invoke('show');
+        $('to_marketplace_id').value = -1;
+
+        if (this.getSourceAccount() == this.getTargetAccount()) {
+            $$('#to_marketplace_id option[value="'+this.getSourceMarketplace()+'"]').invoke('hide');
         }
-
-        var isSourceAccount = !this.actionHandler.isDifferentAccount();
-        var marketplaceSelector = $('transferring_marketplace_id');
-
-        var length = marketplaceSelector.length;
-        for (var i = 0; i < length; i++) {
-            var option = marketplaceSelector.options[i];
-            if (isSourceAccount && !this.actionHandler.isDifferentMarketplace(option.value)) {
-                option.hide();
-                if (option.selected) {
-                    $('transferring_marketplace_url_note') && $('transferring_marketplace_url_note').hide();
-                    marketplaceSelector.insertBefore(
-                        new Element('option', {value: '', text: '', selected: true}),
-                        marketplaceSelector.firstChild
-                    );
-                }
-            } else {
-                option.show();
-            }
-        }
-        this.refreshBreadcrumb();
-        this.refreshButtons();
-    },
-
-    refreshAccounts: function(callback)
-    {
-        var self = this;
-
-        new Ajax.Request(M2ePro.url.get('adminhtml_ebay_listing_transferring/getAccounts'), {
-            method: 'get',
-            onSuccess: function(transport) {
-
-                var accountSelector = $('transferring_account_id');
-
-                if (accountSelector) {
-                    var accounts = transport.responseText.evalJSON();
-
-                    accountSelector.update();
-                    accounts.each(function(account) {
-                        var attributes = {
-                            value: account.id,
-                            data:  account.translation_hash
-                        };
-
-                        if (!self.actionHandler.isDifferentAccount(account.id)) {
-                            attributes.selected = true;
-                        }
-
-                        accountSelector.appendChild(new Element('option', attributes)).insert(account.title);
-                    });
-                }
-
-                self.refreshListings();
-
-                self.refreshBreadcrumb();
-                self.refreshButtons();
-
-                callback && callback();
-            }
-        });
-    },
-
-    refreshStores: function(callback)
-    {
-        var self = this;
-
-        new Ajax.Request(M2ePro.url.get('adminhtml_ebay_listing_transferring/getStores'), {
-            method: 'get',
-            onSuccess: function(transport) {
-                $('transferring_store_id') && $('transferring_store_id').update(transport.responseText);
-
-                callback && callback();
-            }
-        });
     },
 
     refreshListings: function()
     {
-        var accountId     = this.actionHandler.getTargetAccount();
-        var marketplaceId = this.actionHandler.getTargetMarketplace();
-        var storeId       = this.actionHandler.getTargetStore();
-
-        var self = this;
-
-        this.actionHandler.loadTargetListings(accountId, marketplaceId, storeId, function() {
-            var listingsSelector = $('transferring_existing_listing');
-
-            if (listingsSelector) {
-                listingsSelector.update();
-
-                var listings = self.actionHandler.getTargetListings(accountId, marketplaceId, storeId);
-
-                if (listings.length) {
-                    listings.each(function(listing) {
-                        listingsSelector.appendChild(new Element('option', {value: listing.id})).insert(listing.title);
-                    });
-
-                    listingsSelector.options.add(new Element('option', {value: '', text: '', selected: true}), 0);
-
-                    $('transferring_new_listing_block')       && $('transferring_new_listing_block').hide();
-                    $('transferring_existing_listing_choose') && $('transferring_existing_listing_choose').show();
-                    $('transferring_existing_listing_block')  && $('transferring_existing_listing_block').show();
-                } else {
-                    $('transferring_existing_listing_choose') && $('transferring_existing_listing_choose').hide();
-                    $('transferring_existing_listing_block')  && $('transferring_existing_listing_block').hide();
-                    $('transferring_new_listing_block')       && $('transferring_new_listing_block').show();
-                }
-
-                $('transferring_listing_row') && $('transferring_listing_row').show();
-            }
-
-            self.refreshAutoActionWarning();
-            self.refreshStoreNote();
-
-            self.refreshBreadcrumb();
-            self.refreshButtons();
-        });
-    },
-
-    // ---------------------------------------
-
-    renderStepPolicy: function()
-    {
-        var accountId     = this.actionHandler.getTargetAccount();
-        var marketplaceId = this.actionHandler.getTargetMarketplace();
-        var storeId       = this.actionHandler.getTargetStore();
-
-        var self = this;
-
-        this.actionHandler.loadDataStepPolicy(accountId, marketplaceId, storeId, function() {
-
-            self.actionHandler.pushStep('policy');
-
-            $('data_container_step_policy') && $('data_container_step_policy')
-                .update(self.actionHandler.getDataStepPolicy(accountId, marketplaceId, storeId));
-
-            self.showStep(true, true);
-        });
-    },
-
-    // ---------------------------------------
-
-    refreshBreadcrumb: function()
-    {
-        if ($('transferring_use_custom_settings')) {
-            if (this.actionHandler.isShowCustomSettingsWarning()) {
-                $('transferring_use_custom_settings').show();
-            } else {
-                $('transferring_use_custom_settings').hide();
-            }
-        }
-
-        if (this.actionHandler.isShowBreadcrumb()) {
-            var itemStep = this.actionHandler.getItemStep();
-            var breadcrumbs = ['destination'];
-
-            (itemStep == 'policy' || this.actionHandler.isNeedManagePolicy()) && breadcrumbs.push('policy');
-
-            if (breadcrumbs.length > 1) {
-                this.breadcrumbHandler.showSteps(breadcrumbs);
-                this.breadcrumbHandler.highlightStep(itemStep);
-            } else {
-                this.breadcrumbHandler.hideAll();
-            }
-        } else {
-            this.breadcrumbHandler.hideAll();
-        }
-    },
-
-    // ---------------------------------------
-
-    refreshButtons: function()
-    {
-        var itemStep = this.actionHandler.getItemStep();
-        var nextStepAllowed = false;
-
-        if ($('back_button_' + itemStep)) {
-            if (this.actionHandler.isBackAllowed()) {
-                $('back_button_' + itemStep).show();
-            } else {
-                $('back_button_' + itemStep).hide();
-            }
-        }
-
-        var self = this;
-
-        if (itemStep == 'destination' && $('continue_button_destination')) {
-
-            if (this.actionHandler.isNeedManagePolicy()) {
-                nextStepAllowed = true;
-                $('continue_button_destination')
-                    .stopObserving('click')
-                    .observe('click', function() {
-                        self.validate() && self.synchronizeMarketplace('EbayListingTransferringObj.renderStepPolicy();');
-                    });
-            } else if (this.actionHandler.isNeedManageCategories() &&
-                !$('transferring_existing_listing').hasChildNodes()) {
-
-                nextStepAllowed = true;
-                $('continue_button_destination')
-                    .stopObserving('click')
-                    .observe('click', function() {
-                        self.validate() && self.synchronizeMarketplace(self.confirm.bind(self, true));
-                    });
-            }
-
-        } else if (itemStep == 'policy' && $('continue_button_policy')) {
-
-            if (this.actionHandler.isNeedManageCategories()) {
-                nextStepAllowed = true;
-                $('continue_button_policy')
-                    .stopObserving('click')
-                    .observe('click', function () {
-                        self.validate() && self.actionHandler.createTemplates(self.confirm.bind(self, true))
-                    });
-            }
-        }
-
-        if (nextStepAllowed) {
-            $('confirm_button_' + itemStep)  && $('confirm_button_' + itemStep).hide();
-            $('continue_button_' + itemStep) && $('continue_button_' + itemStep).show();
-        } else {
-            $('continue_button_' + itemStep) && $('continue_button_' + itemStep).hide();
-            $('confirm_button_' + itemStep)  && $('confirm_button_' + itemStep).show();
-        }
-    },
-
-    refreshAutoActionWarning: function()
-    {
-        if ($('transferring_auto_categories_warning')) {
-            if (this.actionHandler.isDifferentMarketplace() && this.actionHandler.isNeedCreateListing()) {
-                $('transferring_auto_categories_warning').show();
-            } else {
-                $('transferring_auto_categories_warning').hide();
-            }
-        }
-    },
-
-    refreshStoreNote: function()
-    {
-        var marketplaceSelect = $('transferring_marketplace_id');
-        var storeNote         = $('transferring_store_note');
-
-        if (!storeNote || !marketplaceSelect) {
+        if (!this.getTargetAccount() || !this.getTargetMarketplace() || !this.getTargetStore()) {
             return;
         }
 
-        var selectedIndex = marketplaceSelect.selectedIndex;
-        storeNote.show();
-    },
-
-    synchronizeMarketplace: function(callback)
-    {
-        var marketplaceSelect = $('transferring_marketplace_id');
-
-        if (!marketplaceSelect) {
-            return;
-        }
-
-        if (!this.marketplaceProgressObj) {
-            var ProgressBarObj = new ProgressBar('data_container_progress');
-            var WrapperObj = new AreaWrapper('data_container');
-            this.marketplaceProgressObj = new EbayMarketplaceSynchProgress(ProgressBarObj, WrapperObj);
-        }
-
-        var selectedIndex = marketplaceSelect.selectedIndex;
-        var marketplaceData = marketplaceSelect.options[selectedIndex].getAttribute('data');
-
-        if (parseInt(marketplaceData) || !marketplaceSelect.value) {
-            return callback && eval(callback);
-        }
-
-        var marketplaceId = this.actionHandler.getTargetMarketplace();
-
-        var params = {};
-        params['status_' + marketplaceId] = 1;
-
-        new Ajax.Request(M2ePro.url.get('adminhtml_ebay_marketplace/save'), {
+        new Ajax.Request(M2ePro.url.get('adminhtml_ebay_listing_transferring/getListings'), {
             method: 'post',
-            parameters: params,
-            onSuccess: function() {
+            asynchronous: true,
+            parameters: {
+                account_id     : this.getTargetAccount(),
+                marketplace_id : this.getTargetMarketplace(),
+                store_id       : this.getTargetStore()
+            },
+            onSuccess: function(transport) {
 
-                var option = $('transferring_marketplace_id').down('option[value='+marketplaceId+']');
-                var title = 'eBay ' + option.innerHTML;
+                $('to_listing_id').update();
 
-                this.marketplaceProgressObj.runTask(
-                    title,
-                    M2ePro.url.get('runSynchNow', {'marketplace_id': marketplaceId}),
-                    M2ePro.url.get('adminhtml_ebay_marketplace/synchGetExecutingInfo'),
-                    'self.end();' + callback
-                );
+                var listings = transport.responseText.evalJSON(),
+                    listingsSelector = $('to_listing_id');
 
+                listingsSelector.appendChild(new Element('option', {value: '', class: 'empty', selected: true}));
+                listings.each(function(listing) {
+                    listingsSelector.appendChild(new Element('option', {value: listing.id}))
+                                    .update(listing.title);
+                });
+                listingsSelector.appendChild(new Element('option', {value: 'create-new', style: 'color: brown;'}))
+                                .update(M2ePro.translator.translate('Create new'));
             }.bind(this)
         });
     },
 
-    // ---------------------------------------
+    //----------------------------------------
 
-    validate: function()
+    addProducts: function(progressBatId, products, callback)
     {
-        var validationResult = [];
+        var parts = this.makeProductsParts(products, 100);
 
-        if (this.actionHandler.getItemStep() == 'destination') {
-            $('transferring_account_id') &&
-                validationResult.push(Validation.validate($('transferring_account_id')));
-            $('transferring_marketplace_id') &&
-                validationResult.push(Validation.validate($('transferring_marketplace_id')));
+        this.progressBarObj = new ProgressBar(progressBatId);
 
-            if (this.actionHandler.isNeedCreateListing()) {
-                $('transferring_new_listing_title') &&
-                    validationResult.push(Validation.validate($('transferring_new_listing_title')));
-            } else {
-                $('transferring_existing_listing') &&
-                    validationResult.push(Validation.validate($('transferring_existing_listing')));
-            }
-        }
+        this.progressBarObj.reset();
+        this.progressBarObj.setTitle(M2ePro.translator.translate('Sell on Another Marketplace'));
+        this.progressBarObj.setStatus(M2ePro.translator.translate('Adding Products in process. Please wait...'));
+        this.progressBarObj.show();
 
-        if (validationResult.indexOf(false) != -1) {
-            return false;
-        }
-
-        return true;
+        this.sendPartsProducts(parts, parts.length, callback);
     },
 
-    // ---------------------------------------
-
-    confirm: function(needToSetCategoryPolicies)
+    makeProductsParts: function(products, partSize)
     {
-        if (!this.validate()) {
+        var productsArray = products;
+        var parts = new Array();
+
+        if (productsArray.length < partSize) {
+            parts[0] = productsArray;
+            return parts;
+        }
+
+        var result = new Array();
+        for (var i = 0; i < productsArray.length; i++) {
+            if (result.length == 0 || result[result.length-1].length == partSize) {
+                result[result.length] = new Array();
+            }
+            result[result.length-1][result[result.length-1].length] = productsArray[i];
+        }
+
+        return result;
+    },
+
+    sendPartsProducts: function(parts, partsCount, callback)
+    {
+        if (parts.length == 0) {
             return;
         }
 
-        $('data_container') && $('data_container').hide();
+        var isLastPart  = parts.length === 1 ? 1 : 0;
+        var part = parts.splice(0, 1)[0];
 
-        setTimeout(function() {
-            Windows.getFocusedWindow().content.style.height = '160px';
-            Windows.getFocusedWindow().content.style.maxHeight = '200px';
-        }, 50);
+        new Ajax.Request(M2ePro.url.get('adminhtml_ebay_listing_transferring/addProducts'), {
+            method: 'post',
+            parameters: {
+                listing_id   : this.listingId,
+                products     : implode(',', part),
+                is_last_part : isLastPart
+            },
+            onSuccess: function(transport) {
 
-        var progressBarObj = new ProgressBar('data_container_progress');
-        var wrapperObj = new AreaWrapper('data_container');
-
-        $('loading-mask').setStyle({visibility: 'hidden'});
-
-        this.actionHandler.setNeedToSetCatalogPolicy(needToSetCategoryPolicies);
-        var callback = function() {
-
-            if (EbayListingTransferringObj.actionHandler.hasSuccessProducts()) {
-                if (EbayListingTransferringObj.actionHandler.isNeedToSetCatalogPolicy()) {
-                    EbayListingTransferringObj.actionHandler.redirectToCategorySettings();
-                } else if (EbayListingTransferringObj.actionHandler.hasTargetListing()) {
-
-                    window.open(
-                        M2ePro.url.get(
-                            'adminhtml_ebay_listing/getTransferringUrl',
-                            {
-                                id: EbayListingTransferringObj.actionHandler.getTargetListing(),
-                                view_mode: 'ebay'
-                            }
-                        )
-                    );
-                    EbayListingTransferringObj.popUp.close();
+                var percents = ((100 - this.progressBarObj.getPercents()) / parts.length) + this.progressBarObj.getPercents();
+                if (percents >= 100) {
+                    this.progressBarObj.setPercents(100, 0);
+                    this.progressBarObj.setStatus('Adding has been completed');
+                    callback();
+                    return;
+                } else {
+                    this.progressBarObj.setPercents(percents, 1);
                 }
-            } else {
-                EbayListingTransferringObj.popUp.close();
-            }
 
-            $('loading-mask').setStyle({visibility: 'visible'});
-
-            if (window.location.href.charAt(window.location.href.length-1) == '#') {
-                setLocation(location.href);
-            } else {
-                setLocation(location.href + '#');
-            }
-
-        }.bind(this);
-
-        this.actionHandler.confirm(callback, progressBarObj, wrapperObj, true);
-    },
-
-    // ---------------------------------------
-
-    addAccountClick: function()
-    {
-        var win = window.open(M2ePro.url.get('adminhtml_ebay_account/new', {close_on_save: true, wizard: false}));
-
-        var intervalId = setInterval(function() {
-            if (!win.closed) { return; }
-            clearInterval(intervalId);
-
-            if ($('transferring_account_id')) {
-                var targetAccount = $('transferring_account_id').value;
-                var countAccounts = $('transferring_account_id').options.length;
-            }
-
-            EbayListingTransferringObj.refreshAccounts(function() {
-                if ($('transferring_account_id')) {
-                    var selectAccount = $('transferring_account_id');
-                    if (selectAccount.options.length != countAccounts) {
-                        var maxValue = 0;
-                        $A(selectAccount.options).each(function(el) {
-                            if (parseInt(el.value) > maxValue) { maxValue = parseInt(el.value); el.selected = true; }
-                        });
-                    } else {
-                        $A(selectAccount.options).each(function(el) {
-                            if (el.value == targetAccount) { el.selected = true; }
-                        });
-                    }
-                    EbayListingTransferringObj.accountIdChange();
-                }
-            });
-        }, 1000);
-    },
-
-    accountIdChange: function(el)
-    {
-        this.refreshMarketplaces();
-        this.refreshListings();
-    },
-
-    marketplaceIdChange: function(el)
-    {
-        if (!el.value) { return; }
-
-        $A(el.options).each(function(el) {
-            if (!el.value) { el.remove(); }
+                setTimeout(function() {
+                    this.sendPartsProducts(parts, partsCount);
+                }, 500);
+            }.bind(this)
         });
-        var marketplaceUrl = this.actionHandler.getMarketplaceUrl(el.value);
-        $('transferring_marketplace_url_note') && $('transferring_marketplace_url_note').update(marketplaceUrl).show();
-
-        if ($('transferring_new_listing_title')) {
-            $('transferring_new_listing_title').value = this.actionHandler.getNewListingTitle();
-        }
-
-        this.refreshListings();
-    },
-
-    addStoreClick: function()
-    {
-        var win = window.open(M2ePro.url.get('adminhtml_system_store/index', {}));
-
-        if ($('transferring_store_id')) {
-            var targetStore = $('transferring_store_id').value;
-            var countStores = $('transferring_store_id').options.length;
-        }
-
-        var intervalId = setInterval(function() {
-            if (!win.closed) { return; }
-            clearInterval(intervalId);
-            EbayListingTransferringObj.refreshStores(function() {
-                if ($('transferring_store_id')) {
-                    var selectStore = $('transferring_store_id');
-                    if (selectStore.options.length != countStores) {
-                        var maxValue = 0;
-                        $A(selectStore.options).each(function(el) {
-                        if (parseInt(el.value) > maxValue) { maxValue = parseInt(el.value); el.selected = true; }
-                    });
-                    } else {
-                        $A(selectStore.options).each(function(el) {
-                            if (el.value == targetStore) { el.selected = true; }
-                        });
-                    }
-                }
-
-                EbayListingTransferringObj.refreshListings();
-
-                EbayListingTransferringObj.refreshBreadcrumb();
-                EbayListingTransferringObj.refreshButtons();
-
-            });
-        }, 1000);
-    },
-
-    existingListingChange: function(el)
-    {
-        if (!el.value) { return; }
-        el.childElements().each(function(el) {
-            if (!el.value) { el.remove(); }
-        });
-        this.refreshBreadcrumb();
-        this.refreshButtons();
-    },
-
-    existingListingLinkClick: function()
-    {
-        $('transferring_new_listing_title')      && Validation.reset($('transferring_new_listing_title'));
-        $('transferring_new_listing_block')      && $('transferring_new_listing_block').hide();
-        $('transferring_existing_listing_block') && $('transferring_existing_listing_block').show();
-
-        EbayListingTransferringObj.refreshAutoActionWarning();
-
-        EbayListingTransferringObj.refreshBreadcrumb();
-        EbayListingTransferringObj.refreshButtons();
-    },
-
-    newListingLinkClick: function()
-    {
-        $('transferring_existing_listing')       && Validation.reset($('transferring_existing_listing'));
-        $('transferring_existing_listing_block') && $('transferring_existing_listing_block').hide();
-        $('transferring_new_listing_block')      && $('transferring_new_listing_block').show();
-
-        EbayListingTransferringObj.refreshAutoActionWarning();
-
-        EbayListingTransferringObj.refreshBreadcrumb();
-        EbayListingTransferringObj.refreshButtons();
     }
 
-    // ---------------------------------------
+    //---------------------------------------
 });

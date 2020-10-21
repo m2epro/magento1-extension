@@ -37,7 +37,7 @@ class Ess_M2ePro_Adminhtml_ControlPanel_Module_Integration_AmazonController
                 array('listing_id',
                               'product_id',
                               new Zend_Db_Expr('COUNT(product_id) - 1 AS count_of_duplicates'),
-                              new Zend_Db_Expr('MAX(mlp.id) AS save_this_id'),
+                              new Zend_Db_Expr('MIN(mlp.id) AS save_this_id'),
                 )
             )
             ->group(array('mlp.listing_id', 'malp.sku'))

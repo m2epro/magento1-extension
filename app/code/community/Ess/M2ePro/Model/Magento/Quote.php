@@ -188,63 +188,117 @@ class Ess_M2ePro_Model_Magento_Quote
 
     //########################################
 
+    /**
+     * @param Ess_M2ePro_Model_Order_Item_Proxy $item
+     * @param Ess_M2ePro_Model_Magento_Quote_Item $quoteItemBuilder
+     * @param Mage_Catalog_Model_Product $product
+     * @param Varien_Object $request
+     * @throws Ess_M2ePro_Model_Exception
+     */
+    protected function initializeQuoteItem($item, $quoteItemBuilder, $product, $request)
+    {
+        // ---------------------------------------
+        $productOriginalPrice = (float)$product->getPrice();
+
+        $price = $item->getBasePrice();
+        $product->setPrice($price);
+        $product->setSpecialPrice($price);
+        // ---------------------------------------
+
+        // see Mage_Sales_Model_Observer::substractQtyFromQuotes
+        $this->_quote->setItemsCount($this->_quote->getItemsCount() + 1);
+        $this->_quote->setItemsQty((float)$this->_quote->getItemsQty() + $request->getQty());
+
+        $result = $this->_quote->addProduct($product, $request);
+        if (is_string($result)) {
+            throw new Ess_M2ePro_Model_Exception($result);
+        }
+
+        $quoteItem = $this->_quote->getItemByProduct($product);
+        if ($quoteItem === false) {
+            return;
+        }
+
+        $weight = $product->getTypeInstance()->getWeight();
+        if ($product->isConfigurable()) {
+            // hack: for child product weight was not load
+            $simpleProductId = $product->getCustomOption('simple_product')->getProductId();
+            $weight = Mage::getResourceModel('catalog/product')->getAttributeRawValue(
+                $simpleProductId, 'weight', 0
+            );
+        }
+
+        $quoteItem->setStoreId($this->_quote->getStoreId());
+        $quoteItem->setOriginalCustomPrice($item->getPrice());
+        $quoteItem->setOriginalPrice($productOriginalPrice);
+        $quoteItem->setBaseOriginalPrice($productOriginalPrice);
+        $quoteItem->setWeight($weight);
+        $quoteItem->setNoDiscount(1);
+
+        $giftMessageId = $quoteItemBuilder->getGiftMessageId();
+        if (!empty($giftMessageId)) {
+            $quoteItem->setGiftMessageId($giftMessageId);
+        }
+
+        $quoteItem->setAdditionalData($quoteItemBuilder->getAdditionalData($quoteItem));
+
+        $quoteItem->setWasteRecyclingFee($item->getWasteRecyclingFee() / $item->getQty());
+        $quoteItem->save();
+    }
+
+    /**
+     * @throws Ess_M2ePro_Model_Exception
+     */
     protected function initializeQuoteItems()
     {
         foreach ($this->_proxyOrder->getItems() as $item) {
             $this->clearQuoteItemsCache();
 
-            /** @var $quoteItemBuilder Ess_M2ePro_Model_Magento_Quote_Item */
+            /** @var Ess_M2ePro_Model_Magento_Quote_Item $quoteItemBuilder */
             $quoteItemBuilder = Mage::getModel('M2ePro/Magento_Quote_Item');
             $quoteItemBuilder->init($this->_quote, $item);
 
             $product = $quoteItemBuilder->getProduct();
-            $request = $quoteItemBuilder->getRequest();
 
-            // ---------------------------------------
-            $productOriginalPrice = (float)$product->getPrice();
-
-            $price = $item->getBasePrice();
-            $product->setPrice($price);
-            $product->setSpecialPrice($price);
-            // ---------------------------------------
-
-            // see Mage_Sales_Model_Observer::substractQtyFromQuotes
-            $this->_quote->setItemsCount($this->_quote->getItemsCount() + 1);
-            $this->_quote->setItemsQty((float)$this->_quote->getItemsQty() + $request->getQty());
-
-            $result = $this->_quote->addProduct($product, $request);
-            if (is_string($result)) {
-                throw new Ess_M2ePro_Model_Exception($result);
+            if (!$item->pretendedToBeSimple()) {
+                $this->initializeQuoteItem($item, $quoteItemBuilder, $product, $quoteItemBuilder->getRequest());
+                continue;
             }
 
-            $quoteItem = $this->_quote->getItemByProduct($product);
+            // ---------------------------------------
 
-            if ($quoteItem !== false) {
-                $weight = $product->getTypeInstance()->getWeight();
-                if ($product->isConfigurable()) {
-                    // hack: for child product weight was not load
-                    $simpleProductId = $product->getCustomOption('simple_product')->getProductId();
-                    $weight = Mage::getResourceModel('catalog/product')->getAttributeRawValue(
-                        $simpleProductId, 'weight', 0
-                    );
+            $totalPrice = 0;
+            $products = array();
+            foreach ($product->getTypeInstance()->getAssociatedProducts() as $associatedProduct) {
+                /** @var Mage_Catalog_Model_Product $associatedProduct */
+                if ($associatedProduct->getQty() <= 0) { // skip product if default qty zero
+                    continue;
                 }
 
-                $quoteItem->setStoreId($this->_quote->getStoreId());
-                $quoteItem->setOriginalCustomPrice($item->getPrice());
-                $quoteItem->setOriginalPrice($productOriginalPrice);
-                $quoteItem->setBaseOriginalPrice($productOriginalPrice);
-                $quoteItem->setWeight($weight);
-                $quoteItem->setNoDiscount(1);
+                $totalPrice += $associatedProduct->getPrice();
+                $products[] = $associatedProduct;
+            }
 
-                $giftMessageId = $quoteItemBuilder->getGiftMessageId();
-                if (!empty($giftMessageId)) {
-                    $quoteItem->setGiftMessageId($giftMessageId);
-                }
+            // ---------------------------------------
 
-                $quoteItem->setAdditionalData($quoteItemBuilder->getAdditionalData($quoteItem));
+            foreach ($products as $associatedProduct) {
 
-                $quoteItem->setWasteRecyclingFee($item->getWasteRecyclingFee() / $item->getQty());
-                $quoteItem->save();
+                $item->setQty($associatedProduct->getQty() * $item->getOriginalQty());
+
+                $productPriceInSetPercent = ($associatedProduct->getPrice() / $totalPrice) * 100;
+                $productPriceInItem = (($item->getOriginalPrice() * $productPriceInSetPercent) / 100);
+                $item->setPrice($productPriceInItem / $associatedProduct->getQty());
+
+                $associatedProduct->setTaxClassId($product->getTaxClassId());
+
+                $quoteItemBuilder->init($this->_quote, $item);
+
+                $this->initializeQuoteItem(
+                    $item,
+                    $quoteItemBuilder,
+                    $associatedProduct,
+                    $quoteItemBuilder->getRequest()
+                );
             }
         }
     }
@@ -271,6 +325,8 @@ class Ess_M2ePro_Model_Magento_Quote
     {
         Mage::helper('M2ePro/Data_Global')->unsetValue('shipping_data');
         Mage::helper('M2ePro/Data_Global')->setValue('shipping_data', $this->_proxyOrder->getShippingData());
+
+        $this->_proxyOrder->initializeShippingMethodDataPretendedToBeSimple();
     }
 
     //########################################

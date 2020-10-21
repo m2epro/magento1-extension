@@ -191,7 +191,7 @@ class Ess_M2ePro_Adminhtml_Ebay_TemplateController extends Ess_M2ePro_Controller
 
         $template = array_shift($templates);
 
-        $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Policy was successfully saved.'));
+        $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Policy was saved.'));
 
         $extendedRoutersParams = array('edit' => array('id' => $template['id'], 'nick' => $template['nick']));
 
@@ -347,7 +347,7 @@ class Ess_M2ePro_Adminhtml_Ebay_TemplateController extends Ess_M2ePro_Controller
             $template->deleteInstance();
 
             $this->_getSession()->addSuccess(
-                Mage::helper('M2ePro')->__('Policy was successfully deleted.')
+                Mage::helper('M2ePro')->__('Policy was deleted.')
             );
         } else {
             $this->_getSession()->addError(
@@ -489,7 +489,7 @@ class Ess_M2ePro_Adminhtml_Ebay_TemplateController extends Ess_M2ePro_Controller
 
         // ---------------------------------------
 
-        $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('The Listing was successfully saved.'));
+        $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('The Listing was saved.'));
 
         $extendedParams = array(
             '*/adminhtml_ebay_template/editListing' => array(

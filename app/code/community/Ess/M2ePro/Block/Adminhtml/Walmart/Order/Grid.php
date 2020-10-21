@@ -297,7 +297,7 @@ HTML;
 
         $returnString = Mage::helper('M2ePro')->__('N/A');
 
-        if ($row['magento_order_id']) {
+        if ($magentoOrderId !== null) {
             if ($row['magento_order_num']) {
                 $orderUrl = $this->getUrl('adminhtml/sales_order/view', array('order_id' => $magentoOrderId));
                 $returnString = '<a href="' . $orderUrl . '" target="_blank">' . $magentoOrderNumber . '</a>';
@@ -374,7 +374,7 @@ STRING;
             $itemTitle = Mage::helper('M2ePro')->escapeHtml($item->getTitle());
             $qtyLabel = Mage::helper('M2ePro')->__('QTY');
             $qtyHtml = <<<HTML
-<span style="padding-left: 10px;"><b>{$qtyLabel}:</b> {$item->getQty()}</span>
+<span style="padding-left: 10px;"><b>{$qtyLabel}:</b> {$item->getQtyPurchased()}</span>
 HTML;
 
             $html .= <<<HTML

@@ -46,6 +46,12 @@ $marketplaceData = $this->getMarketplaceData();
             return Validation.get('validate-email').test(value,el);
         });
 
+        if ($('managed_payments_mode')) {
+            $('managed_payments_mode')
+                .observe('change', EbayTemplatePaymentObj.managedPaymentsModeChange)
+                .simulate('change');
+        }
+
         $('pay_pal_mode')
             .observe('change', EbayTemplatePaymentObj.payPalModeChange)
             .simulate('change');
@@ -66,6 +72,37 @@ $marketplaceData = $this->getMarketplaceData();
 <input type="hidden" name="payment[title]" value="<?php echo Mage::helper('M2ePro')->escapeHtml($this->getTitle()); ?>" />
 <input type="hidden" name="payment[marketplace_id]" value="<?php echo (int)$marketplaceData['id']; ?>" />
 <input type="hidden" name="payment[is_custom_template]" value="<?php echo $this->isCustom() ? 1 : 0; ?>" />
+
+<?php if ($marketplaceData['managed_payments_allowed']): ?>
+    <div class="entry-edit" id="magento_block_ebay_template_payment_form_data_managed_payments">
+
+        <div class="entry-edit-head">
+            <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Managed Payments'); ?></h4>
+        </div>
+
+        <div class="fieldset">
+            <div class="hor-scroll">
+
+                <table class="form-list" cellspacing="0" cellpadding="0">
+
+                    <tr>
+                        <td class="label">
+                            <label><?php echo Mage::helper('M2ePro')->__('Use eBay Managed Payments'); ?>:</label>
+                        </td>
+                        <td class="value">
+                            <label>
+                                <input id="managed_payments_mode" name="payment[managed_payments_mode]" value="1" type="checkbox" onclick="" class="M2ePro-validate-payment-methods" <?php if ($formData['managed_payments_mode']): echo ' checked="checked"'; endif; ?>>
+                            </label>
+                        </td>
+                    </tr>
+
+                </table>
+
+            </div>
+        </div>
+
+    </div>
+<?php endif; ?>
 
 <div class="entry-edit" id="magento_block_ebay_template_payment_form_data_paypal">
 
@@ -156,7 +193,7 @@ $marketplaceData = $this->getMarketplaceData();
                                             type="checkbox"
                                             name="payment[services][]"
                                             value="<?php echo $service['ebay_id'] ?>"
-                                            class="M2ePro-validate-payment-methods additional-payment-service"
+                                            class="M2ePro-validate-payment-methods"
                                             <?php if (in_array($service['ebay_id'], $formData['services'])): ?>checked="checked"<?php endif; ?>
                                         />&nbsp;
                                         <?php if ((int)$marketplaceData['id'] == Ess_M2ePro_Helper_Component_Ebay::MARKETPLACE_AU &&

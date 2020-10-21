@@ -48,6 +48,7 @@ HTML;
         $helper = Mage::helper('M2ePro');
         $testUrl = Mage::helper('adminhtml')->getUrl('*/adminhtml_support/testMemoryLimit');
         $testResultUrl = Mage::helper('adminhtml')->getUrl('*/adminhtml_support/testMemoryLimitResult');
+        $knowledgeBaseUrl = Mage::helper('M2ePro/Module_Support')->getKnowledgeBaseUrl('1535371');
 
         return <<<HTML
 <script>
@@ -75,7 +76,7 @@ function memoryLimitTest()
                         MessageObj.addWarning(
                             '{$this->getTestWarningMessage()}'
                             .replace('%value%', response['result'])
-                            .replace('%min-value%', '{$this->getCheckObject()->getMin()}')
+                            .replace('%url%', '{$knowledgeBaseUrl}')
                         );
                     } else {
                         MessageObj.addSuccess(
@@ -99,8 +100,9 @@ HTML;
     {
         return Mage::helper('M2ePro')->escapeJs(
             Mage::helper('M2ePro')->__(
-                'Actual memory limit is %value% Mb. It should be increased to at least %min-value% Mb
-                for uninterrupted synchronization work.'
+                'Actual memory limit is %value% Mb. 
+                The value must be increased on your server for the proper synchronization work. 
+                Read <a href="%url%" target="_blank">here</a> how to do it.'
             )
         );
     }

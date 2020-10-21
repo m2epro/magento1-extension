@@ -131,7 +131,7 @@ HTML;
     public function clearMagentoCacheAction()
     {
         Mage::helper('M2ePro/Magento')->clearCache();
-        $this->_getSession()->addSuccess('Magento cache was successfully cleared.');
+        $this->_getSession()->addSuccess('Magento cache was cleared.');
         $this->_redirectUrl(Mage::helper('M2ePro/View_ControlPanel')->getPageToolsTabUrl());
     }
 

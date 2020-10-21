@@ -65,7 +65,7 @@ class Ess_M2ePro_Adminhtml_Ebay_ConfigurationController extends Ess_M2ePro_Contr
 
             Mage::helper('M2ePro/Component_Ebay_Configuration')->setConfigValues($this->getRequest()->getPost());
 
-            $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Settings was successfully saved.'));
+            $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Settings was saved.'));
 
         } catch (Ess_M2ePro_Model_Exception_Logic $e) {
             $this->_getSession()->addError(Mage::helper('M2ePro')->__($e->getMessage()));
@@ -114,7 +114,7 @@ class Ess_M2ePro_Adminhtml_Ebay_ConfigurationController extends Ess_M2ePro_Contr
             $connWrite->insert($tableName, $insertsData);
         }
 
-        $this->_getSession() ->addSuccess("Successfully added '{$added}' compatibility records.");
+        $this->_getSession() ->addSuccess("Added '{$added}' compatibility records.");
         return $this->_redirect('*/*/index');
     }
 

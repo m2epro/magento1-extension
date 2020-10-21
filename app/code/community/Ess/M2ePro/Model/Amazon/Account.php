@@ -668,6 +668,24 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
     // ---------------------------------------
 
     /**
+     * @return boolean
+     */
+    public function isAmazonCollectsEnabled()
+    {
+        return (bool)$this->getSetting('magento_orders_settings', array('tax', 'amazon_collects'), 0);
+    }
+
+    /**
+     * @return array
+     */
+    public function getExcludedStates()
+    {
+        return $this->getSetting('magento_orders_settings', array('tax', 'excluded_states'), array());
+    }
+
+    // ---------------------------------------
+
+    /**
      * @return bool
      */
     public function isMagentoOrdersCustomerGuest()

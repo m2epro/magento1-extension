@@ -192,6 +192,14 @@ class Ess_M2ePro_Model_Walmart_Account extends Ess_M2ePro_Model_Component_Child_
     }
 
     /**
+     * @return string
+     */
+    public function getInventoryLastSynchronization()
+    {
+        return $this->getData('inventory_last_synchronization');
+    }
+
+    /**
      * @return int
      */
     public function getOtherListingsMappingMode()

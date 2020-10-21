@@ -139,7 +139,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Search_Grid extends Ma
             'goto_listing_item', array(
                 'header'    => Mage::helper('M2ePro')->__('Manage'),
                 'align'     => 'center',
-                'width'     => '50px',
+                'width'     => '80px',
                 'type'      => 'text',
                 'filter'    => false,
                 'sortable'  => false,

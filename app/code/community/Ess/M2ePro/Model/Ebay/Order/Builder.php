@@ -76,7 +76,6 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
         $this->setData('account_id', $this->_account->getId());
 
         $this->setData('ebay_order_id', $data['identifiers']['ebay_order_id']);
-        $this->setData('extended_order_id', $data['identifiers']['extended_order_id']);
         $this->setData('selling_manager_id', $data['identifiers']['selling_manager_id']);
 
         $this->setData('order_status', $this->_helper->getOrderStatus($data['statuses']['order']));
@@ -498,8 +497,13 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
         $this->setData('shipping_details', Mage::helper('M2ePro')->jsonEncode($this->getData('shipping_details')));
         $this->setData('payment_details', Mage::helper('M2ePro')->jsonEncode($this->getData('payment_details')));
 
-        $this->_order->addData($this->getData());
-        $this->_order->save();
+        foreach ($this->getData() as $key => $value) {
+            if (!$this->_order->getId() || ($this->_order->hasData($key) && $this->_order->getData($key) != $value)) {
+                $this->_order->addData($this->getData());
+                $this->_order->save();
+                break;
+            }
+        }
 
         $this->_order->setAccount($this->_account);
 

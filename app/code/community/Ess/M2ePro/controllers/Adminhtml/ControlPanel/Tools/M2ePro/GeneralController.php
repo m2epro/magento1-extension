@@ -19,15 +19,12 @@ class Ess_M2ePro_Adminhtml_ControlPanel_Tools_M2ePro_GeneralController
         $tableNames = $this->getRequest()->getParam('table', array());
 
         if (empty($tableNames)) {
-            $this->_getSession()->addError('Required params are not presented.');
-            return $this->_redirectUrl($this->_getRefererUrl());
+            return;
         }
 
         $inspection = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Manager')
             ->getInspection('Ess_M2ePro_Model_ControlPanel_Inspection_Inspector_BrokenTables');
         $inspection->fix($tableNames);
-
-        return $this->_redirectUrl($this->_getRefererUrl());
     }
 
     /**
@@ -92,7 +89,7 @@ class Ess_M2ePro_Adminhtml_ControlPanel_Tools_M2ePro_GeneralController
         $repairInfo = $this->getRequest()->getPost('repair_info');
 
         if (empty($repairInfo)) {
-            $this->_redirectUrl($this->_getRefererUrl());
+            return;
         }
 
         $dataForRepair = array();
@@ -104,8 +101,6 @@ class Ess_M2ePro_Adminhtml_ControlPanel_Tools_M2ePro_GeneralController
         $inspector = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Manager')
             ->getInspection('Ess_M2ePro_Model_ControlPanel_Inspection_Inspector_ListingProductStructure');
         $inspector->fix($dataForRepair);
-
-        $this->_redirectUrl($this->_getRefererUrl());
     }
 
     /**
@@ -116,7 +111,7 @@ class Ess_M2ePro_Adminhtml_ControlPanel_Tools_M2ePro_GeneralController
         $repairInfo = $this->getRequest()->getPost('repair_info');
 
         if (empty($repairInfo)) {
-            $this->_redirectUrl($this->_getRefererUrl());
+            return;
         }
 
         $dataForRepair = (array)Mage::helper('M2ePro')->jsonDecode($repairInfo);
@@ -124,8 +119,6 @@ class Ess_M2ePro_Adminhtml_ControlPanel_Tools_M2ePro_GeneralController
         $inspector = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Manager')
             ->getInspection('Ess_M2ePro_Model_ControlPanel_Inspection_Inspector_OrderItemStructure');
         $inspector->fix($dataForRepair);
-
-        $this->_redirectUrl($this->_getRefererUrl());
     }
 
     /**
@@ -136,16 +129,14 @@ class Ess_M2ePro_Adminhtml_ControlPanel_Tools_M2ePro_GeneralController
         $ids = $this->getRequest()->getPost('repair_info');
 
         if (empty($ids)) {
-            $this->_redirectUrl($this->_getRefererUrl());
+            return;
         }
 
         $dataForRepair = (array)Mage::helper('M2ePro')->jsonDecode($ids);
 
         $inspector = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Manager')
-            ->getInspection('Ess_M2ePro_Model_ControlPanel_Inspection_Inspector_EbayItemIdUnknow');
+            ->getInspection('Ess_M2ePro_Model_ControlPanel_Inspection_Inspector_EbayItemIdStructure');
         $inspector->fix($dataForRepair);
-
-        $this->_redirectUrl($this->_getRefererUrl());
     }
 
     /**
@@ -156,7 +147,7 @@ class Ess_M2ePro_Adminhtml_ControlPanel_Tools_M2ePro_GeneralController
         $ids = $this->getRequest()->getPost('repair_info');
 
         if (empty($ids)) {
-            $this->_redirectUrl($this->_getRefererUrl());
+            return;
         }
 
         $dataForRepair = (array)Mage::helper('M2ePro')->jsonDecode($ids);
@@ -164,8 +155,6 @@ class Ess_M2ePro_Adminhtml_ControlPanel_Tools_M2ePro_GeneralController
         $inspector = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Manager')
             ->getInspection('Ess_M2ePro_Model_ControlPanel_Inspection_Inspector_AmazonProductsWithoutVariations');
         $inspector->fix($dataForRepair);
-
-        $this->_redirectUrl($this->_getRefererUrl());
     }
 
     //########################################

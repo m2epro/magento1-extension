@@ -95,6 +95,13 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_V
             )
         );
 
+        if ($this->getParam($this->getVarNameFilter()) == 'searched_by_child'){
+            $collection->addFieldToFilter(
+                'second_table.listing_product_id',
+                array('in' => explode(',', $this->getRequest()->getParam('listing_product_id_filter')))
+            );
+        }
+
         $this->setCollection($collection);
 
         return parent::_prepareCollection();
@@ -889,16 +896,16 @@ HTML;
             'Edit SKU'         => $helper->__('Edit SKU'),
             'Edit Identifiers' => $helper->__('Edit Identifiers'),
 
-            'Updating SKU has successfully submitted to be processed.'  =>
-                $helper->__('Updating SKU has successfully submitted to be processed.'),
-            'Updating GTIN has successfully submitted to be processed.' =>
-                $helper->__('Updating GTIN has successfully submitted to be processed.'),
-            'Updating UPC has successfully submitted to be processed.'  =>
-                $helper->__('Updating UPC has successfully submitted to be processed.'),
-            'Updating EAN has successfully submitted to be processed.'  =>
-                $helper->__('Updating EAN has successfully submitted to be processed.'),
-            'Updating ISBN has successfully submitted to be processed.' =>
-                $helper->__('Updating ISBN has successfully submitted to be processed.'),
+            'Updating SKU has submitted to be processed.'  =>
+                $helper->__('Updating SKU has submitted to be processed.'),
+            'Updating GTIN has submitted to be processed.' =>
+                $helper->__('Updating GTIN has submitted to be processed.'),
+            'Updating UPC has submitted to be processed.'  =>
+                $helper->__('Updating UPC has submitted to be processed.'),
+            'Updating EAN has submitted to be processed.'  =>
+                $helper->__('Updating EAN has submitted to be processed.'),
+            'Updating ISBN has submitted to be processed.' =>
+                $helper->__('Updating ISBN has submitted to be processed.'),
 
             'Required at least one identifier' => $helper->__('Required at least one identifier'),
 

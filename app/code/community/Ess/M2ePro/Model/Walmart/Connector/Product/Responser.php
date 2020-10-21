@@ -7,7 +7,7 @@
  */
 
 abstract class Ess_M2ePro_Model_Walmart_Connector_Product_Responser
-    extends Ess_M2ePro_Model_Walmart_Connector_Command_Pending_Responser
+    extends Ess_M2ePro_Model_Connector_Command_Pending_Responser
 {
     /**
      * @var Ess_M2ePro_Model_Listing_Product $_listingProduct
@@ -42,9 +42,8 @@ abstract class Ess_M2ePro_Model_Walmart_Connector_Product_Responser
     {
         parent::__construct($params, $response);
 
-        $listingProductId      = $this->_params['product']['id'];
         $this->_listingProduct = Mage::helper('M2ePro/Component_Walmart')
-                                     ->getObject('Listing_Product', $listingProductId);
+                                     ->getObject('Listing_Product', $this->_params['product']['id']);
     }
 
     //########################################
@@ -297,23 +296,10 @@ abstract class Ess_M2ePro_Model_Walmart_Connector_Product_Responser
 
     //########################################
 
-    /**
-     * @return Ess_M2ePro_Model_Account
-     */
-    protected function getAccount()
+    protected function getAccountId()
     {
-        return $this->getObjectByParam('Account', 'account_id');
+        return (int)$this->_params['account_id'];
     }
-
-    /**
-     * @return Ess_M2ePro_Model_Marketplace
-     */
-    protected function getMarketplace()
-    {
-        return $this->getAccount()->getChildObject()->getMarketplace();
-    }
-
-    //---------------------------------------
 
     protected function getActionType()
     {

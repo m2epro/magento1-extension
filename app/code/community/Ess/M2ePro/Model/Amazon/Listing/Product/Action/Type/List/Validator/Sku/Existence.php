@@ -257,7 +257,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Validator_Sku_Exi
         if ($linkingObject->link()) {
             $this->addMessage(
                 Mage::helper('M2ePro/Module_Log')->encodeDescription(
-                    'Product has been found by SKU "%sku%" in your Inventory and successfully linked.',
+                    'Product has been found by SKU "%sku%" in your Inventory and linked.',
                     array('!sku' => $sku)
                 ),
                 Ess_M2ePro_Model_Connector_Connection_Response_Message::TYPE_SUCCESS

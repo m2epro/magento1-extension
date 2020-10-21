@@ -16,7 +16,10 @@ class Ess_M2ePro_Model_Amazon_Search_Settings_ByAsin_Responser
      */
     protected function getListingProduct()
     {
-        return $this->getObjectByParam('Listing_Product', 'listing_product_id');
+        return Mage::helper('M2ePro/Component_Amazon')->getObject(
+            'Listing_Product',
+            $this->_params['listing_product_id']
+        );
     }
 
     //########################################
@@ -25,14 +28,16 @@ class Ess_M2ePro_Model_Amazon_Search_Settings_ByAsin_Responser
     {
         parent::failDetected($messageText);
 
+        $listingProduct = $this->getListingProduct();
+
         $logModel = Mage::getModel('M2ePro/Listing_Log');
         $logModel->setComponentMode(Ess_M2ePro_Helper_Component_Amazon::NICK);
         $actionId = $logModel->getResource()->getNextActionId();
 
         $logModel->addProductMessage(
-            $this->getListingProduct()->getListingId(),
-            $this->getListingProduct()->getProductId(),
-            $this->getListingProduct()->getId(),
+            $listingProduct->getListingId(),
+            $listingProduct->getProductId(),
+            $listingProduct->getId(),
             Ess_M2ePro_Helper_Data::INITIATOR_UNKNOWN,
             $actionId,
             Ess_M2ePro_Model_Listing_Log::ACTION_UNKNOWN,
@@ -40,9 +45,9 @@ class Ess_M2ePro_Model_Amazon_Search_Settings_ByAsin_Responser
             Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR
         );
 
-        $this->getListingProduct()->setData('search_settings_status', null);
-        $this->getListingProduct()->setData('search_settings_data', null);
-        $this->getListingProduct()->save();
+        $listingProduct->setData('search_settings_status', null);
+        $listingProduct->setData('search_settings_data', null);
+        $listingProduct->save();
     }
 
     //########################################

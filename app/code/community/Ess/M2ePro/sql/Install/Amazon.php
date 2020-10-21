@@ -22,6 +22,7 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_account')}` (
   `other_listings_synchronization` TINYINT(2) UNSIGNED NOT NULL DEFAULT 1,
   `other_listings_mapping_mode` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `other_listings_mapping_settings` VARCHAR(255) DEFAULT NULL,
+  `inventory_last_synchronization` DATETIME DEFAULT NULL,
   `magento_orders_settings` TEXT NOT NULL,
   `auto_invoicing` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `is_magento_invoice_creation_disabled` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
@@ -155,6 +156,18 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_amazon_inventory_sku')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_inventory_sku')}` (
+  `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `account_id` INT(11) UNSIGNED NOT NULL,
+  `sku` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `account_id__sku` (`account_id`, `sku`)
+)
+ENGINE = INNODB
+CHARACTER SET utf8
+COLLATE utf8_general_ci;
+
 DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_amazon_item')}`;
 CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_item')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -165,6 +178,7 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_item')}` (
   `store_id` INT(11) UNSIGNED NOT NULL,
   `variation_product_options` TEXT DEFAULT NULL,
   `variation_channel_options` TEXT DEFAULT NULL,
+  `additional_data` TEXT NULL DEFAULT NULL,
   `update_date` DATETIME DEFAULT NULL,
   `create_date` DATETIME DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -215,6 +229,7 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_listing')}` (
   `restock_date_mode` TINYINT(2) UNSIGNED NOT NULL DEFAULT 1,
   `restock_date_value` DATETIME NOT NULL,
   `restock_date_custom_attribute` VARCHAR(255) NOT NULL,
+  `product_add_ids` TEXT DEFAULT NULL,
   PRIMARY KEY (`listing_id`),
   INDEX `auto_global_adding_description_template_id` (`auto_global_adding_description_template_id`),
   INDEX `auto_website_adding_description_template_id` (`auto_website_adding_description_template_id`),
@@ -242,7 +257,7 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_listing_other')}` (
   `listing_other_id` INT(11) UNSIGNED NOT NULL,
   `general_id` VARCHAR(255) NOT NULL,
   `sku` VARCHAR(255) NOT NULL,
-  `title` VARCHAR(255) DEFAULT NULL,
+  `title` TEXT DEFAULT NULL,
   `online_price` DECIMAL(12, 4) UNSIGNED NOT NULL DEFAULT 0.0000,
   `online_qty` INT(11) UNSIGNED DEFAULT NULL,
   `is_afn_channel` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
@@ -260,7 +275,7 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_listing_other')}` (
   INDEX `online_price` (`online_price`),
   INDEX `online_qty` (`online_qty`),
   INDEX `sku` (`sku`),
-  INDEX `title` (`title`)
+  INDEX `title` (`title`(255))
 )
 ENGINE = INNODB
 CHARACTER SET utf8
@@ -302,6 +317,7 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_listing_product')}` (
   `variation_parent_afn_state` SMALLINT(4) UNSIGNED DEFAULT NULL,
   `variation_parent_repricing_state` SMALLINT(4) UNSIGNED DEFAULT NULL,
   `defected_messages` TEXT DEFAULT NULL,
+  `list_date` DATETIME DEFAULT NULL,
   PRIMARY KEY (`listing_product_id`),
   INDEX `general_id` (`general_id`),
   INDEX `search_settings_status` (`search_settings_status`),
@@ -324,7 +340,8 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_listing_product')}` (
   INDEX `variation_parent_repricing_state` (`variation_parent_repricing_state`),
   INDEX `template_shipping_id` (`template_shipping_id`),
   INDEX `template_product_tax_code_id` (`template_product_tax_code_id`),
-  INDEX `template_description_id` (`template_description_id`)
+  INDEX `template_description_id` (`template_description_id`),
+  INDEX `list_date` (`list_date`)
 )
 ENGINE = INNODB
 CHARACTER SET utf8
@@ -829,7 +846,9 @@ INSERT INTO `{$this->_installer->getTable('m2epro_marketplace')}` VALUES
   (31, 8, 'Italy', 'IT', 'amazon.it', 0, 5, 'Europe', 'amazon', NOW(), NOW()),
   (34, 9, 'Mexico', 'MX', 'amazon.com.mx', 0, 10, 'America', 'amazon', NOW(), NOW()),
   (35, 10, 'Australia', 'AU', 'amazon.com.au', 0, 11, 'Australia Region', 'amazon', NOW(), NOW()),
-  (39, 11, 'Netherlands', 'NL', 'amazon.nl', 0, 12, 'Europe', 'amazon', NOW(), NOW());
+  (39, 11, 'Netherlands', 'NL', 'amazon.nl', 0, 12, 'Europe', 'amazon', NOW(), NOW()),
+  (40, 12, 'Turkey', 'TR', 'amazon.com.tr', 0, 14, 'Europe', 'amazon', NOW(), NOW()),
+  (41, 13, 'Sweden', 'SE', 'amazon.se', 0, 15, 'Europe', 'amazon', NOW(), NOW());
 
 INSERT INTO `{$this->_installer->getTable('m2epro_amazon_marketplace')}` VALUES
   (24, '8636-1433-4377', 'CAD',1,0,0,0,0,1,0),
@@ -841,7 +860,9 @@ INSERT INTO `{$this->_installer->getTable('m2epro_amazon_marketplace')}` VALUES
   (31, '7078-7205-1944', 'EUR',1,0,1,1,1,1,1),
   (34, '8636-1433-4377', 'MXN',1,0,0,0,0,1,0),
   (35, '2770-5005-3793', 'AUD',1,0,0,0,0,1,0),
-  (39, '7078-7205-1944', 'EUR',1,1,1,1,1,1,0);
+  (39, '7078-7205-1944', 'EUR',1,1,1,1,1,1,0),
+  (40, '7078-7205-1944', 'TRY',1,1,0,0,0,1,0),
+  (41, '7078-7205-1944', 'SEK',1,1,0,0,0,1,0);
 
 SQL
         );

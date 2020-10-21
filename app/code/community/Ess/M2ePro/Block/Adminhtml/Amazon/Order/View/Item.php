@@ -196,39 +196,36 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Order_View_Item extends Mage_Adminhtml_B
     public function callbackColumnProduct($value, $row, $column, $isExport)
     {
         $dataHelper = Mage::helper('M2ePro');
+        $amazonOrderItem = $row->getChildObject();
 
         $skuHtml = '';
-        if ($row->getChildObject()->getSku()) {
+        if ($amazonOrderItem->getSku()) {
             $skuHtml = <<<HTML
-<b>{$dataHelper->__('SKU')}:</b> {$dataHelper->escapeHtml($row->getChildObject()->getSku())}&nbsp;
+<b>{$dataHelper->__('SKU')}:</b> {$dataHelper->escapeHtml($amazonOrderItem->getSku())}&nbsp;&nbsp;&nbsp;
 HTML;
         }
 
-        $generalIdLabel = $dataHelper->__($row->getChildObject()->getIsIsbnGeneralId() ? 'ISBN' : 'ASIN');
+        $generalIdLabel = $dataHelper->__($amazonOrderItem->getIsIsbnGeneralId() ? 'ISBN' : 'ASIN');
         $generalIdHtml = <<<HTML
-<b>{$generalIdLabel}:</b> {$dataHelper->escapeHtml($row->getChildObject()->getGeneralId())}<br/>
+<b>{$generalIdLabel}:</b> {$dataHelper->escapeHtml($amazonOrderItem->getGeneralId())}&nbsp;&nbsp;&nbsp;
 HTML;
 
         $afnWarehouseHtml = '';
         if ($row->getOrder()->getChildObject()->isFulfilledByAmazon()) {
-            $fulfillmentCenterId = $row->getChildObject()->getFulfillmentCenterId();
-            $fulfillmentCenterId = empty($fulfillmentCenterId) ? 'Pending' : $fulfillmentCenterId;
+            $fulfillmentCenterId = $amazonOrderItem->getFulfillmentCenterId() ?: 'Pending';
             $afnWarehouseHtml = <<<HTML
 <b>{$dataHelper->__('AFN Warehouse')}:</b> {$dataHelper->escapeHtml($fulfillmentCenterId)}<br/>
 HTML;
         }
 
-        if ($row->getChildObject()->getIsIsbnGeneralId() &&
-            !$dataHelper->isISBN($row->getChildObject()->getGeneralId())) {
-            $amazonLink = '';
-        } else {
+        $amazonLink = '';
+        if (!$amazonOrderItem->getIsIsbnGeneralId() || !$dataHelper->isISBN($amazonOrderItem->getGeneralId())) {
             $itemUrl = Mage::helper('M2ePro/Component_Amazon')->getItemUrl(
-                $row->getChildObject()->getGeneralId(),
-                $this->_order->getData('marketplace_id')
+                $amazonOrderItem->getGeneralId(),
+                $this->_order->getMarketplaceId()
             );
-
             $amazonLink = <<<HTML
-<a href="{$itemUrl}" target="_blank">{$dataHelper->__('View on Amazon')}</a>&nbsp;|&nbsp;
+<a href="{$itemUrl}" target="_blank">{$dataHelper->__('View on Amazon')}</a>
 HTML;
         }
 
@@ -243,40 +240,38 @@ HTML;
 HTML;
         }
 
-        $orderItemId = (int)$row->getId();
-        $gridId = $this->getId();
+        $amazonLink && $productLink && $amazonLink .= '&nbsp;|&nbsp;';
+        $jsTemplate = <<<HTML
+<a class="gray" href="javascript:void(0);" onclick="
+{OrderEditItemObj.%s('{$this->getId()}', {$row->getId()});}
+">%s</a>
+HTML;
 
         $editLink = '';
-        if (!$row->getProductId() || $row->getMagentoProduct()->isProductWithVariations()) {
-            if (!$row->getProductId()) {
-                $action = $dataHelper->__('Map to Magento Product');
-            } else {
-                $action = $dataHelper->__('Set Options');
-            }
+        if (!$row->getProductId()) {
+            $editLink = sprintf($jsTemplate, 'edit', $dataHelper->__('Map to Magento Product'));
+        }
 
-            $class = 'class="gray"';
+        $isPretendedToBeSimple = false;
+        if ($amazonOrderItem->getParentObject()->getMagentoProduct() !== null &&
+            $amazonOrderItem->getParentObject()->getMagentoProduct()->isGroupedType() &&
+            $amazonOrderItem->getChannelItem() !== null) {
+            $isPretendedToBeSimple = $amazonOrderItem->getChannelItem()->isGroupedProductModeSet();
+        }
 
-            $js = "{OrderEditItemObj.edit('{$gridId}', {$orderItemId});}";
-            $editLink = '<a href="javascript:void(0);" onclick="'.$js.'" '.$class.'>'.$action.'</a>';
+        if ($row->getProductId() && $row->getMagentoProduct()->isProductWithVariations() && !$isPretendedToBeSimple) {
+            $editLink = sprintf($jsTemplate, 'edit', $dataHelper->__('Set Options')) . '&nbsp;|&nbsp;';
         }
 
         $discardLink = '';
         if ($row->getProductId()) {
-            $action = $dataHelper->__('Unmap');
-
-            $js = "{OrderEditItemObj.unassignProduct('{$gridId}', {$orderItemId});}";
-            $discardLink = '<a href="javascript:void(0);" onclick="'.$js.'" class="gray">'.$action.'</a>';
-
-            if ($editLink) {
-                $discardLink = '&nbsp;|&nbsp;' . $discardLink;
-            }
+            $discardLink = sprintf($jsTemplate, 'unassignProduct', $dataHelper->__('Unmap'));
         }
 
         return <<<HTML
-<b>{$dataHelper->escapeHtml($row->getChildObject()->getTitle())}</b><br/>
+<b>{$dataHelper->escapeHtml($amazonOrderItem->getTitle())}</b><br/>
 <div style="padding-left: 10px;">
-    {$skuHtml}
-    {$generalIdHtml}
+    {$skuHtml}{$generalIdHtml}
     {$afnWarehouseHtml}
 </div>
 <div style="float: left;">{$amazonLink}{$productLink}</div>

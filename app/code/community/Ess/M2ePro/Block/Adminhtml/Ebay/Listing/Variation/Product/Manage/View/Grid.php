@@ -62,29 +62,21 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Variation_Product_Manage_View_Grid
     {
         parent::__construct();
 
-        // Initialization block
-        // ---------------------------------------
         $this->setId('ebayVariationProductManageGrid');
         $this->setDefaultSort('id');
         $this->setDefaultDir('ASC');
         $this->setUseAjax(true);
-        // ---------------------------------------
     }
 
     //########################################
 
     protected function _prepareCollection()
     {
-        // Get collection
-        // ---------------------------------------
         /** @var Ess_M2ePro_Model_Resource_Ebay_Listing_Product_Collection $collection */
         $collection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Listing_Product_Variation');
         $collection->getSelect()->where('main_table.listing_product_id = ?', (int)$this->getListingProductId());
         $collection->getSelect()->group('main_table.id');
-        // ---------------------------------------
 
-        // Join variation option tables
-        // ---------------------------------------
         $collection->getSelect()->join(
             array('mlpvo' => Mage::getResourceModel('M2ePro/Listing_Product_Variation_Option')->getMainTable()),
             '`mlpvo`.`listing_product_variation_id`=`main_table`.`id`',
@@ -128,7 +120,13 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Variation_Product_Manage_View_Grid
             )
         );
 
-        // Set collection to grid
+        if ($this->getParam($this->getVarNameFilter()) == 'searched_by_child'){
+            $collection->addFieldToFilter(
+                'main_table.id',
+                array('in' => explode(',', $this->getRequest()->getParam('variation_id_filter')))
+            );
+        }
+
         $this->setCollection($resultCollection);
 
         return parent::_prepareCollection();

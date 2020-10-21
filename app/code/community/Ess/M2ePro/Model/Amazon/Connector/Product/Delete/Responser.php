@@ -16,7 +16,7 @@ class Ess_M2ePro_Model_Amazon_Connector_Product_Delete_Responser
 
     protected function getSuccessfulMessage()
     {
-        return 'Item was successfully Deleted';
+        return 'Item was Deleted';
     }
 
     //########################################

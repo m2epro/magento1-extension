@@ -198,11 +198,6 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Service extends Ess_M2ePro_Model_C
         return $this->getData('cost_additional_value');
     }
 
-    public function getCostSurchargeValue()
-    {
-        return $this->getData('cost_surcharge_value');
-    }
-
     // ---------------------------------------
 
     /**
@@ -228,20 +223,6 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Service extends Ess_M2ePro_Model_C
 
         if ($this->isCostModeCustomAttribute()) {
             $attributes[] = $this->getCostAdditionalValue();
-        }
-
-        return $attributes;
-    }
-
-    /**
-     * @return array
-     */
-    public function getCostSurchargeAttributes()
-    {
-        $attributes = array();
-
-        if ($this->isCostModeCustomAttribute()) {
-            $attributes[] = $this->getCostSurchargeValue();
         }
 
         return $attributes;

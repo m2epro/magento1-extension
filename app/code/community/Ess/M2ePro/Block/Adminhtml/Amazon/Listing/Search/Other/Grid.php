@@ -17,17 +17,11 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Search_Other_Grid
     {
         parent::__construct();
 
-        // Initialization block
-        // ---------------------------------------
         $this->setId('amazonListingSearchOtherGrid');
-        // ---------------------------------------
 
-        // Set default values
-        // ---------------------------------------
         $this->setDefaultSort(false);
         $this->setSaveParametersInSession(true);
         $this->setUseAjax(true);
-        // ---------------------------------------
     }
 
     protected function _prepareColumns()
@@ -233,6 +227,17 @@ HTML;
         }
 
         $collection->getSelect()->where('second_table.sku LIKE ?', '%'.$value.'%');
+    }
+
+    protected function callbackFilterAsinIsbn($collection, $column)
+    {
+        $value = $column->getFilter()->getValue();
+
+        if ($value == null) {
+            return;
+        }
+
+        $collection->addFieldToFilter('general_id', array('like' => '%'.$value.'%'));
     }
 
     protected function callbackFilterPrice($collection, $column)

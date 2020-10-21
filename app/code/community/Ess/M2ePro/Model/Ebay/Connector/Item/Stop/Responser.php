@@ -13,7 +13,7 @@ class Ess_M2ePro_Model_Ebay_Connector_Item_Stop_Responser
 
     protected function getSuccessfulMessage()
     {
-        return 'Item was successfully Stopped';
+        return 'Item was Stopped';
     }
 
     //########################################

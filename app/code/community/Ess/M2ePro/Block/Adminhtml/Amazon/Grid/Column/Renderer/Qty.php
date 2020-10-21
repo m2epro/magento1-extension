@@ -28,7 +28,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Grid_Column_Renderer_Qty
             }
 
             if ((bool)$row->getData('is_afn_channel')) {
-                $sku = $row->getData('sku');
+                $sku = $row->getData('amazon_sku');
 
                 if (empty($sku)) {
                     return Mage::helper('M2ePro')->__('AFN');

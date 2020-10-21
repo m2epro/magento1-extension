@@ -3,8 +3,6 @@ window.EbayListingProductAdd = Class.create(Common, {
     // ---------------------------------------
 
     options: {
-        show_settings_step: true,
-        show_settings_popup: false,
         show_autoaction_popup: false,
 
         get_selected_products: function(callback) {}
@@ -29,10 +27,6 @@ window.EbayListingProductAdd = Class.create(Common, {
 
             if (this.options.show_autoaction_popup) {
                 return this.showAutoactionPopup();
-            }
-
-            if (this.options.show_settings_popup) {
-                return this.showSettingsPopup();
             }
 
             this.add(selectedProducts);
@@ -118,14 +112,7 @@ window.EbayListingProductAdd = Class.create(Common, {
                     ProgressBarObj.setPercents(100,0);
                     ProgressBarObj.setStatus('Adding has been completed.');
 
-                    var url;
-                    if (self.options.show_settings_step) {
-                        url = M2ePro.url.get('adminhtml_ebay_listing_productAdd', {step: 2});
-                    } else {
-                        url = M2ePro.url.get('adminhtml_ebay_listing_categorySettings', {step: 1});
-                    }
-
-                    setLocation(url);
+                    setLocation(M2ePro.url.get('adminhtml_ebay_listing_categorySettings', {step: 1}));
                 } else {
                     ProgressBarObj.setPercents(percents,1);
                 }
@@ -172,68 +159,6 @@ window.EbayListingProductAdd = Class.create(Common, {
     {
         this.autoactionPopup.hide();
         this.continue();
-    },
-
-    // ---------------------------------------
-
-    showSettingsPopup: function()
-    {
-        this.settingsPopup = Dialog.info(null, {
-            draggable: true,
-            resizable: true,
-            closable: true,
-            className: "magento",
-            windowClassName: "popup-window",
-            title: M2ePro.translator.translate('Listing Settings Customization'),
-            width: 430,
-            height: 200,
-            zIndex: 100,
-            hideEffect: Element.hide,
-            showEffect: Element.show
-        });
-
-        this.settingsPopup.options.destroyOnClose = false;
-        $('modal_dialog_message').insert($('settings_popup_content').show());
-    },
-
-    // ---------------------------------------
-
-    settingsPopupYesClick: function()
-    {
-        this.setShowSettingsStep(
-            true,
-            this.continue.bind(this)
-        );
-
-        this.options.show_settings_popup = false;
-    },
-
-    settingsPopupNoClick: function()
-    {
-        this.setShowSettingsStep(
-            false,
-            this.continue.bind(this)
-        );
-
-        this.options.show_settings_popup = false;
-    },
-
-    setShowSettingsStep: function(showSettingsStep,callback)
-    {
-        this.settingsPopup.hide();
-        this.options.show_settings_step = showSettingsStep;
-
-        var url = M2ePro.url.get('adminhtml_ebay_listing_productAdd/setShowSettingsStep', {});
-        new Ajax.Request(url, {
-            method: 'post',
-            parameters: {
-                show_settings_step: +showSettingsStep,
-                remember: +$('remember_checkbox').checked
-            },
-            onSuccess: function() {
-                callback && callback()
-            }
-        });
     }
 
     // ---------------------------------------

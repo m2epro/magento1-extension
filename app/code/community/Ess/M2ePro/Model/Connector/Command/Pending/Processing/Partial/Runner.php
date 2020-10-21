@@ -9,6 +9,8 @@
 class Ess_M2ePro_Model_Connector_Command_Pending_Processing_Partial_Runner
     extends Ess_M2ePro_Model_Connector_Command_Pending_Processing_Runner
 {
+    const MAX_PARTS_PER_RUN = 5;
+
     /** @var Ess_M2ePro_Model_Request_Pending_Partial $_requestPendingPartial */
     protected $_requestPendingPartial;
 
@@ -42,21 +44,25 @@ class Ess_M2ePro_Model_Connector_Command_Pending_Processing_Partial_Runner
     public function processSuccess()
     {
         try {
-            $data = $this->getNextData();
+            for ($i = 0; $i < self::MAX_PARTS_PER_RUN; $i++) {
+                $data = $this->getNextData();
 
-            if (empty($data)) {
-                if ($this->getMessages()) {
-                    $this->getResponse()->initFromPreparedResponse(array(), $this->getMessages());
-                    $this->getResponser(true)->process();
+                if (empty($data)) {
+                    if ($this->getMessages()) {
+                        $this->getResponse()->initFromPreparedResponse(array(), $this->getMessages());
+                        $this->getResponser(true)->process();
+                    } else {
+                        $this->afterLastDataPartProcessed();
+                    }
+
+                    return true;
                 }
 
-                return true;
+                $this->getResponse()->initFromPreparedResponse($data);
+                $this->getResponser(true)->process();
+
+                $this->incrementNextDataPartNumber();
             }
-
-            $this->getResponse()->initFromPreparedResponse($data);
-            $this->getResponser(true)->process();
-
-            $this->incrementNextDataPartNumber();
         } catch (Exception $exception) {
             $this->getResponser()->failDetected($exception->getMessage());
             return true;
@@ -120,6 +126,11 @@ class Ess_M2ePro_Model_Connector_Command_Pending_Processing_Partial_Runner
         );
 
         $requesterPartial->save();
+    }
+
+    protected function afterLastDataPartProcessed()
+    {
+        return null;
     }
 
     //##################################

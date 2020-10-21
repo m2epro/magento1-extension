@@ -101,7 +101,7 @@ window.ListingOtherMapping = Class.create(Common, {
                     self.gridHandler.unselectAllAndReload();
                     self.popUp.close();
                     self.scroll_page_to_top();
-                    MessageObj.addSuccess(M2ePro.translator.translate('Product(s) was successfully Mapped.'));
+                    MessageObj.addSuccess(M2ePro.translator.translate('Product(s) was Mapped.'));
                 } else if (transport.responseText == 1) {
                     alert(M2ePro.translator.translate('Product does not exist.'));
                 } else if (transport.responseText == 2) {

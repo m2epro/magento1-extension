@@ -140,7 +140,10 @@ class Ess_M2ePro_Model_Cron_Task_System_ArchiveOldOrders extends Ess_M2ePro_Mode
         unset($data);
 
         $connWrite = $coreResource->getConnection('core_write');
-        $connWrite->insertMultiple($dbHelper->getTableNameWithPrefix('M2ePro/ArchivedEntity'), $insertsData);
+
+        foreach (array_chunk($insertsData, 200) as $dataPart) {
+            $connWrite->insertMultiple($dbHelper->getTableNameWithPrefix('M2ePro/ArchivedEntity'), $dataPart);
+        }
 
         $connWrite->delete($mainOrderTable, array('id IN (?)' => $componentOrdersIds));
         $connWrite->delete($componentOrderTable, array('order_id IN (?)' => $componentOrdersIds));

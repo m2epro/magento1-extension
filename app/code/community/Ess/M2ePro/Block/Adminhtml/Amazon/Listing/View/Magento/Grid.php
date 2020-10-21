@@ -20,7 +20,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Magento_Grid
 
         $this->_listing = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
 
-        $this->setId('amazonListingViewMagentoGrid' . $this->_listing->getId());
+        $this->setId('amazonListingViewGrid' . $this->_listing->getId());
 
         $this->hideMassactionColumn              = true;
         $this->_hideMassactionDropDown           = true;
@@ -75,7 +75,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Magento_Grid
             'listing_product_id=id',
             array(
                 'general_id'                => 'general_id',
-                'sku'                => 'sku',
+                'amazon_sku'                => 'sku',
                 'online_qty'                => 'online_qty',
                 'online_regular_price'      => 'online_regular_price',
                 'online_regular_sale_price' => 'online_regular_sale_price',
@@ -181,8 +181,8 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Magento_Grid
                 'align'     => 'left',
                 'width'     => '90px',
                 'type'      => 'text',
-                'index'     => 'sku',
-                'filter_index' => 'sku'
+                'index'     => 'amazon_sku',
+                'filter_index' => 'amazon_sku'
             )
         );
 

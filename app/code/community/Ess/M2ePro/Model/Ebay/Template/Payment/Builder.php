@@ -51,6 +51,12 @@ class Ess_M2EPro_Model_Ebay_Template_Payment_Builder
 
         $data['marketplace_id'] = (int)$this->_rawData['marketplace_id'];
 
+        if (isset($this->_rawData['managed_payments_mode'])) {
+            $data['managed_payments_mode'] = (int)(bool)$this->_rawData['managed_payments_mode'];
+        } else {
+            $data['managed_payments_mode'] = 0;
+        }
+
         if (isset($this->_rawData['pay_pal_mode'])) {
             $data['pay_pal_mode'] = (int)(bool)$this->_rawData['pay_pal_mode'];
         } else {
@@ -90,6 +96,7 @@ class Ess_M2EPro_Model_Ebay_Template_Payment_Builder
     public function getDefaultData()
     {
         return array(
+            'managed_payments_mode'     => 0,
             'pay_pal_mode'              => 0,
             'pay_pal_email_address'     => '',
             'pay_pal_immediate_payment' => 0,

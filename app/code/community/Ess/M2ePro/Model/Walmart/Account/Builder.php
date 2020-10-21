@@ -244,9 +244,7 @@ class Ess_M2ePro_Model_Walmart_Account_Builder extends Ess_M2ePro_Model_ActiveRe
         );
         $tempSettings = !empty($tempSettings['notifications']) ? $tempSettings['notifications'] : array();
         foreach ($notificationsKeys as $key) {
-            if (in_array($key, $tempSettings)) {
-                $data['magento_orders_settings'][$tempKey]['notifications'][$key] = true;
-            }
+            $data['magento_orders_settings'][$tempKey]['notifications'][$key] = in_array($key, $tempSettings);
         }
 
         // status mapping settings

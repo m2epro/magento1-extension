@@ -14,7 +14,7 @@ class Ess_M2ePro_Model_Cron_Task_System_RequestPending_ProcessPartial extends Es
     const STATUS_COMPLETE   = 'completed';
     const STATUS_PROCESSING = 'processing';
 
-    const MAX_PARTS_PER_ONE_ITERATION = 3;
+    const MAX_PARTS_PER_ONE_ITERATION = 5;
 
     //####################################
 

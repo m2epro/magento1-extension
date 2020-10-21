@@ -110,7 +110,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Template_SellingFormatController
             )
         );
 
-        $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Policy was successfully saved'));
+        $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Policy was saved'));
 
         $params = array('id' => $model->getId());
         if ($this->getRequest()->getParam('marketplace_locked')) {
@@ -198,7 +198,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Template_SellingFormatController
             }
         }
 
-        $tempString = Mage::helper('M2ePro')->__('%amount% record(s) were successfully deleted.', $deleted);
+        $tempString = Mage::helper('M2ePro')->__('%amount% record(s) were deleted.', $deleted);
         $deleted && $this->_getSession()->addSuccess($tempString);
 
         $tempString  = Mage::helper('M2ePro')->__('%amount% record(s) are used in Listing(s).', $locked) . ' ';

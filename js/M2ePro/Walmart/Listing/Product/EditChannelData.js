@@ -90,7 +90,7 @@ window.WalmartListingProductEditChannelData = Class.create(Common, {
                 self.cancelEditIdentifier();
 
                 self.getAppropriateMessageObj().addSuccess(
-                    M2ePro.translator.translate("Updating "+identifierName+" has successfully submitted to be processed.")
+                    M2ePro.translator.translate("Updating "+identifierName+" has submitted to be processed.")
                 );
                 self.getAppropriateGridObj().reload();
             }
@@ -173,7 +173,7 @@ window.WalmartListingProductEditChannelData = Class.create(Common, {
                 self.cancelEditSku();
 
                 self.getAppropriateMessageObj().addSuccess(
-                    M2ePro.translator.translate('Updating SKU has successfully submitted to be processed.')
+                    M2ePro.translator.translate('Updating SKU has submitted to be processed.')
                 );
 
                 self.getAppropriateGridObj().reload();

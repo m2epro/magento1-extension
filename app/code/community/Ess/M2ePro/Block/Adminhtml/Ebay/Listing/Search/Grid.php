@@ -149,7 +149,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Search_Grid extends Mage_
             'goto_listing_item', array(
                 'header'    => $helper->__('Manage'),
                 'align'     => 'center',
-                'width'     => '50px',
+                'width'     => '80px',
                 'type'      => 'text',
                 'filter'    => false,
                 'sortable'  => false,

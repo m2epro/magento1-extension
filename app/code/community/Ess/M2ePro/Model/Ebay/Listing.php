@@ -16,6 +16,8 @@ class Ess_M2ePro_Model_Ebay_Listing extends Ess_M2ePro_Model_Component_Child_Eba
     const PARTS_COMPATIBILITY_MODE_EPIDS  = 'epids';
     const PARTS_COMPATIBILITY_MODE_KTYPES = 'ktypes';
 
+    const CREATE_LISTING_SESSION_DATA = 'ebay_listing_create';
+
     /**
      * @var Ess_M2ePro_Model_Ebay_Template_Category
      */
@@ -773,7 +775,6 @@ class Ess_M2ePro_Model_Ebay_Listing extends Ess_M2ePro_Model_Component_Child_Eba
 
         $logModel = Mage::getModel('M2ePro/Listing_Log');
         $logModel->setComponentMode($this->getComponentMode());
-        $actionId = $logModel->getResource()->getNextActionId();
 
         if ($listingProduct instanceof Ess_M2ePro_Model_Listing_Product) {
             $logModel->addProductMessage(
@@ -781,11 +782,33 @@ class Ess_M2ePro_Model_Ebay_Listing extends Ess_M2ePro_Model_Component_Child_Eba
                 $sourceListingProduct->getProductId(),
                 $sourceListingProduct->getId(),
                 Ess_M2ePro_Helper_Data::INITIATOR_USER,
-                $actionId,
-                Ess_M2ePro_Model_Listing_Log::ACTION_SELL_ON_ANOTHER_EBAY_SITE,
+                $logModel->getResource()->getNextActionId(),
+                Ess_M2ePro_Model_Listing_Log::ACTION_SELL_ON_ANOTHER_SITE,
                 'Item was added to the selected Listing',
                 Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE
             );
+
+            if ($sourceListing->getMarketplaceId() == $this->getParentObject()->getMarketplaceId()) {
+                $listingProduct->getChildObject()->setData(
+                    'template_category_id',
+                    $sourceListingProduct->getChildObject()->getTemplateCategoryId()
+                );
+                $listingProduct->getChildObject()->setData(
+                    'template_category_secondary_id',
+                    $sourceListingProduct->getChildObject()->getTemplateCategorySecondaryId()
+                );
+                $listingProduct->getChildObject()->setData(
+                    'template_store_category_id',
+                    $sourceListingProduct->getChildObject()->getTemplateStoreCategoryId()
+                );
+                $listingProduct->getChildObject()->setData(
+                    'template_store_category_secondary_id',
+                    $sourceListingProduct->getChildObject()->getTemplateStoreCategorySecondaryId()
+                );
+
+                // @codingStandardsIgnoreLine
+                $listingProduct->getChildObject()->save();
+            }
 
             return $listingProduct;
         }
@@ -795,8 +818,8 @@ class Ess_M2ePro_Model_Ebay_Listing extends Ess_M2ePro_Model_Component_Child_Eba
             $sourceListingProduct->getProductId(),
             $sourceListingProduct->getId(),
             Ess_M2ePro_Helper_Data::INITIATOR_USER,
-            $actionId,
-            Ess_M2ePro_Model_Listing_Log::ACTION_SELL_ON_ANOTHER_EBAY_SITE,
+            $logModel->getResource()->getNextActionId(),
+            Ess_M2ePro_Model_Listing_Log::ACTION_SELL_ON_ANOTHER_SITE,
             'Product already exists in the selected Listing',
             Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR
         );

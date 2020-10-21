@@ -204,8 +204,7 @@ class Ess_M2ePro_Model_Ebay_Magento_Product_ChangeProcessor
             $attributes = array_merge(
                 $attributes, array_merge(
                     $service->getCostAttributes(),
-                    $service->getCostAdditionalAttributes(),
-                    $service->getCostSurchargeAttributes()
+                    $service->getCostAdditionalAttributes()
                 )
             );
         }

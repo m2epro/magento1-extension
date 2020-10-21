@@ -109,7 +109,7 @@ class Ess_M2ePro_Model_Listing extends Ess_M2ePro_Model_Component_Parent_Abstrac
             Ess_M2ePro_Helper_Data::INITIATOR_UNKNOWN,
             $actionId,
             Ess_M2ePro_Model_Listing_Log::ACTION_DELETE_LISTING,
-            'Listing was successfully deleted',
+            'Listing was deleted',
             Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE
         );
 
@@ -499,7 +499,7 @@ class Ess_M2ePro_Model_Listing extends Ess_M2ePro_Model_Component_Parent_Abstrac
             $initiator,
             $actionId,
             Ess_M2ePro_Model_Listing_Log::ACTION_ADD_PRODUCT_TO_LISTING,
-            'Product was successfully Added',
+            'Product was Added',
             Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE,
             $logAdditionalInfo
         );
@@ -645,7 +645,7 @@ class Ess_M2ePro_Model_Listing extends Ess_M2ePro_Model_Component_Parent_Abstrac
             Ess_M2ePro_Helper_Data::INITIATOR_USER,
             $actionId,
             Ess_M2ePro_Model_Listing_Log::ACTION_MOVE_TO_LISTING,
-            'Item was successfully Moved',
+            'Item was Moved',
             Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE
         );
 
@@ -656,7 +656,7 @@ class Ess_M2ePro_Model_Listing extends Ess_M2ePro_Model_Component_Parent_Abstrac
             Ess_M2ePro_Helper_Data::INITIATOR_USER,
             $actionId,
             Ess_M2ePro_Model_Listing_Log::ACTION_MOVE_TO_LISTING,
-            'Item was successfully Moved',
+            'Item was Moved',
             Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE
         );
 

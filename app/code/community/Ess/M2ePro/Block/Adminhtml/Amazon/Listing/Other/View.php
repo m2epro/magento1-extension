@@ -72,10 +72,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_View extends Mage_Adminhtm
         $helper = Mage::helper('M2ePro');
         $componentMode = Ess_M2ePro_Helper_Component_Amazon::NICK;
 
-        $prepareData = $this->getUrl('*/adminhtml_listing_other_moving/prepareMoveToListing');
-        $getMoveToListingGridHtml = $this->getUrl('*/adminhtml_listing_other_moving/moveToListingGrid');
-        $moveToListing = $this->getUrl('*/adminhtml_amazon_listing_other/moveToListing');
-
         $mapAutoToProductUrl = $this->getUrl('*/adminhtml_listing_other_mapping/autoMap');
 
         $removingProductsUrl = $this->getUrl('*/adminhtml_amazon_listing_other/removing');
@@ -91,7 +87,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_View extends Mage_Adminhtm
         $someProductsWereNotMappedMessage .= 'or try to map manually.';
         $someProductsWereNotMappedMessage = $helper->escapeJs($helper->__($someProductsWereNotMappedMessage));
 
-        $successfullyMappedMessage = $helper->escapeJs($helper->__('Product was successfully Mapped.'));
 
         $createListing = $helper->escapeJs(
             $helper->__(
@@ -101,49 +96,48 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_View extends Mage_Adminhtm
         $createListing .= $helper->escapeJs($helper->__('Would you like to create one with Default Settings ?'));
         $popupTitle = $helper->escapeJs($helper->__('Moving Amazon Items'));
 
-        $notEnoughDataMessage = $helper->escapeJs($helper->__('Not enough data'));
-        $successfullyUnmappedMessage = $helper->escapeJs($helper->__('Product(s) was successfully Unmapped.'));
-        $successfullyRemovedMessage = $helper->escapeJs($helper->__('Product(s) was successfully Removed.'));
-
         $processingDataMessage = $helper->escapeJs($helper->__('Processing %product_title% Product(s).'));
 
         $autoMapProgressTitle = $helper->escapeJs($helper->__('Map Item(s) to Products'));
 
         $translations = Mage::helper('M2ePro')->jsonEncode(
             array(
+                'Product was Mapped.' => $helper->__('Product was Mapped.'),
+                'Product(s) was Mapped.' => $helper->__('Product(s) was Mapped.'),
+                'Product(s) was Unmapped.' => $helper->__('Product(s) was Unmapped.'),
+                'Product(s) was Removed.' => $helper->__('Product(s) was Removed.'),
+                'Not enough data' => $helper->__('Not enough data'),
 
-            'Mapping Product' => $helper->__('Mapping Product'),
-            'Product does not exist.' => $helper->__('Product does not exist.'),
-            'Please enter correct Product ID.' => $helper->__('Please enter correct Product ID.'),
-            'Product(s) was successfully Mapped.' => $helper->__('Product(s) was successfully Mapped.'),
-            'Please enter correct Product ID or SKU' => $helper->__('Please enter correct Product ID or SKU'),
+                'Mapping Product' => $helper->__('Mapping Product'),
+                'Product does not exist.' => $helper->__('Product does not exist.'),
+                'Please enter correct Product ID.' => $helper->__('Please enter correct Product ID.'),
+                'Please enter correct Product ID or SKU' => $helper->__('Please enter correct Product ID or SKU'),
 
-            'Current version only supports Simple Products. Please, choose Simple Product.' => $helper->__(
-                'Current version only supports Simple Products. Please, choose Simple Product.'
-            ),
+                'Current version only supports Simple Products. Please, choose Simple Product.' => $helper->__(
+                    'Current version only supports Simple Products. Please, choose Simple Product.'
+                ),
 
-            'Item was not Mapped as the chosen %product_id% Simple Product has Custom Options.' => $helper->__(
-                'Item was not Mapped as the chosen %product_id% Simple Product has Custom Options.'
-            )
+                'Item was not Mapped as the chosen %product_id% Simple Product has Custom Options.' => $helper->__(
+                    'Item was not Mapped as the chosen %product_id% Simple Product has Custom Options.'
+                )
 
-            )
-        );
-
-        $urls = Mage::helper('M2ePro')->jsonEncode(
-            array(
-            'adminhtml_listing_other_mapping/map' => $this->getUrl('*/adminhtml_listing_other_mapping/map')
             )
         );
+
+        $urls = array();
+        $urls['adminhtml_listing_other_mapping/map'] = $this->getUrl('*/adminhtml_listing_other_mapping/map');
+
+        $urls['moveToListingPopupHtml'] = $this->getUrl('*/adminhtml_listing_other_moving/moveToListingGrid');
+        $urls['prepareMoveToListing'] = $this->getUrl('*/adminhtml_listing_other_moving/prepareMoveToListing');
+        $urls['moveToListing'] = $this->getUrl('*/adminhtml_amazon_listing_other/moveToListing');
+
+        $urls = Mage::helper('M2ePro')->jsonEncode($urls);
 
         $javascriptsMain = <<<HTML
 <script type="text/javascript">
 
     M2ePro.url.add({$urls});
     M2ePro.translator.add({$translations});
-
-    M2ePro.url.prepareData = '{$prepareData}';
-    M2ePro.url.getGridHtml = '{$getMoveToListingGridHtml}';
-    M2ePro.url.moveToListing = '{$moveToListing}';
 
     M2ePro.url.mapAutoToProduct = '{$mapAutoToProductUrl}';
 
@@ -156,13 +150,8 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_View extends Mage_Adminhtm
     M2ePro.text.create_listing = '{$createListing}';
     M2ePro.text.popup_title = '{$popupTitle}';
 
-    M2ePro.text.not_enough_data = '{$notEnoughDataMessage}';
-    M2ePro.text.successfully_unmapped = '{$successfullyUnmappedMessage}';
-    M2ePro.text.successfully_removed = '{$successfullyRemovedMessage}';
-
     M2ePro.text.automap_progress_title = '{$autoMapProgressTitle}';
     M2ePro.text.processing_data_message = '{$processingDataMessage}';
-    M2ePro.text.successfully_mapped = '{$successfullyMappedMessage}';
     M2ePro.text.failed_mapped = '{$someProductsWereNotMappedMessage}';
 
     M2ePro.customData.componentMode = '{$componentMode}';

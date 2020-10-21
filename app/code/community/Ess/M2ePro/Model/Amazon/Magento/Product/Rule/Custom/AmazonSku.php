@@ -16,7 +16,7 @@ class Ess_M2ePro_Model_Amazon_Magento_Product_Rule_Custom_AmazonSku
      */
     public function getAttributeCode()
     {
-        return 'sku';
+        return 'amazon_sku';
     }
 
     /**
@@ -33,7 +33,7 @@ class Ess_M2ePro_Model_Amazon_Magento_Product_Rule_Custom_AmazonSku
      */
     public function getValueByProductInstance(Mage_Catalog_Model_Product $product)
     {
-        return $product->getData('sku');
+        return $product->getData('amazon_sku');
     }
 
     //########################################

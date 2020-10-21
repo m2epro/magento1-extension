@@ -173,7 +173,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_OtherController
                 )
             );
         } else {
-            $this->getSession()->addSuccess(Mage::helper('M2ePro')->__('Product(s) was successfully Moved.'));
+            $this->getSession()->addSuccess(Mage::helper('M2ePro')->__('Product(s) was Moved.'));
         }
 
         return $this->getResponse()->setBody(

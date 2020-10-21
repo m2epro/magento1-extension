@@ -28,7 +28,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Settings_Grid
             $this->_listing->getAccountId()
         );
 
-        $this->setId('amazonListingViewSettingsGrid' . $this->_listing->getId());
+        $this->setId('amazonListingViewGrid' . $this->_listing->getId());
 
         $this->_showAdvancedFilterProductsOption = false;
     }
@@ -94,7 +94,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Settings_Grid
                 'search_settings_status'         => 'search_settings_status',
                 'search_settings_data'           => 'search_settings_data',
                 'variation_child_statuses'       => 'variation_child_statuses',
-                'sku'                            => 'sku',
+                'amazon_sku'                     => 'sku',
                 'online_qty'                     => 'online_qty',
                 'online_regular_price'           => 'online_regular_price',
                 'online_regular_sale_price'              => 'IF(
@@ -205,8 +205,8 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Settings_Grid
                 'align'                  => 'left',
                 'width'                  => '150px',
                 'type'                   => 'text',
-                'index'                  => 'sku',
-                'filter_index'           => 'sku',
+                'index'                  => 'amazon_sku',
+                'filter_index'           => 'amazon_sku',
                 'show_defected_messages' => false,
                 'renderer'               => 'M2ePro/adminhtml_amazon_grid_column_renderer_sku'
             )
@@ -220,7 +220,9 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Settings_Grid
                 'type'           => 'text',
                 'index'          => 'general_id',
                 'filter_index'   => 'general_id',
-                'frame_callback' => array($this, 'callbackColumnGeneralId')
+                'filter'         => 'M2ePro/adminhtml_amazon_grid_column_filter_generalId',
+                'frame_callback' => array($this, 'callbackColumnGeneralId'),
+                'filter_condition_callback' => array($this, 'callbackFilterGeneralId')
             )
         );
 
@@ -445,6 +447,16 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Settings_Grid
             'url'      => '',
             'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
             ), 'other'
+        );
+
+        $this->getMassactionBlock()->addItem(
+            'transferring',
+            array(
+                'label' => Mage::helper('M2ePro')->__('Sell on Another Marketplace'),
+                'url'   => '',
+                'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
+            ),
+            'other'
         );
         // ---------------------------------------
 
@@ -695,6 +707,19 @@ HTML;
         );
     }
 
+    protected function callbackFilterGeneralId($collection, $column)
+    {
+        $inputValue = $column->getFilter()->getValue('input');
+        if ($inputValue !== null) {
+            $collection->addFieldToFilter('general_id', array('like' => '%' . $inputValue . '%'));
+        }
+
+        $selectValue = $column->getFilter()->getValue('select');
+        if ($selectValue !== null) {
+            $collection->addFieldToFilter('is_general_id_owner', $selectValue);
+        }
+    }
+
     //########################################
 
     public function getGridUrl()
@@ -719,6 +744,8 @@ HTML;
     }
 
     Event.observe(window, 'load', function() {
+        AmazonListingTransferringObj = new AmazonListingTransferring({$this->_listing->getId()});
+
         setTimeout(function() {
             ListingGridObj.afterInitPage();
         }, 350);

@@ -106,7 +106,7 @@ window.EbayFeedback = Class.create(Common, {
                     var result = transport.responseText.evalJSON()['result'];
 
                     if (result == 'success') {
-                        MessageObj.addSuccess(M2ePro.translator.translate('Feedback has been successfully sent.'));
+                        MessageObj.addSuccess(M2ePro.translator.translate('Feedback has been sent.'));
                     } else {
                         MessageObj.addError(M2ePro.translator.translate('Feedback was not sent.'));
                     }

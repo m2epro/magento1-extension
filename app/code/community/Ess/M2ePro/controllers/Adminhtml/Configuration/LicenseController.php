@@ -15,7 +15,7 @@ class Ess_M2ePro_Adminhtml_Configuration_LicenseController
     {
         if (!$this->getRequest()->isAjax() || !$this->getRequest()->isPost()) {
             $this->_getSession()->addSuccess(
-                Mage::helper('M2ePro')->__('Configurations saved successfully.')
+                Mage::helper('M2ePro')->__('Configurations saved.')
             );
             return $this->_redirectUrl($this->_getRefererUrl());
         }
@@ -37,7 +37,7 @@ class Ess_M2ePro_Adminhtml_Configuration_LicenseController
         }
 
         $this->_getSession()->addSuccess(
-            Mage::helper('M2ePro')->__('Extension Key updated successfully.')
+            Mage::helper('M2ePro')->__('Extension Key updated.')
         );
 
         return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('success' => true)));
@@ -60,7 +60,7 @@ class Ess_M2ePro_Adminhtml_Configuration_LicenseController
         }
 
         $this->_getSession()->addSuccess(
-            Mage::helper('M2ePro')->__('Extension Key refreshed successfully.')
+            Mage::helper('M2ePro')->__('Extension Key refreshed.')
         );
 
         $this->_redirectUrl($this->_getRefererUrl());

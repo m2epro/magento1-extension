@@ -700,12 +700,6 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
             $trackingDetails['fulfillment_date'] = Mage::helper('M2ePro')->getCurrentGmtDate();
         }
 
-        $params = array(
-            'amazon_order_id'  => $this->getAmazonOrderId(),
-            'fulfillment_date' => $trackingDetails['fulfillment_date'],
-            'items'            => array()
-        );
-
         if (!empty($trackingDetails['carrier_code'])) {
             $trackingDetails['carrier_title'] = Mage::helper('M2ePro/Component_Amazon')->getCarrierTitle(
                 $trackingDetails['carrier_code'],
@@ -721,7 +715,11 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
             }
         }
 
-        $params = array_merge($params, $trackingDetails);
+        $params = array_merge(array(
+            'amazon_order_id'  => $this->getAmazonOrderId(),
+            'fulfillment_date' => $trackingDetails['fulfillment_date'],
+            'items'            => array()
+        ), $trackingDetails);
 
         foreach ($items as $item) {
             if (!isset($item['amazon_order_item_id']) || !isset($item['qty'])) {
@@ -738,20 +736,22 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
             );
         }
 
-        $orderId     = $this->getParentObject()->getId();
-        $action      = Ess_M2ePro_Model_Order_Change::ACTION_UPDATE_SHIPPING;
-
         /** @var Ess_M2ePro_Model_Order_Change $change */
         $change = Mage::getModel('M2ePro/Order_Change')->getCollection()
-           ->addFieldToFilter('order_id', $orderId)
-           ->addFieldToFilter('action', $action)
+           ->addFieldToFilter('order_id', $this->getParentObject()->getId())
+           ->addFieldToFilter('action', Ess_M2ePro_Model_Order_Change::ACTION_UPDATE_SHIPPING)
            ->addFieldToFilter('processing_attempt_count', 0)
            ->getFirstItem();
 
-        if (!$change->getId() || !empty($trackingDetails['tracking_number'])) {
+        $existingParams = $change->getParams();
+
+        $newTrackingNumber = !empty($trackingDetails['tracking_number']) ? $trackingDetails['tracking_number'] : '';
+        $oldTrackingNumber = !empty($existingParams['tracking_number']) ? $existingParams['tracking_number'] : '';
+
+        if (!$change->getId() || $newTrackingNumber !== $oldTrackingNumber) {
             $change::create(
-                $orderId,
-                $action,
+                $this->getParentObject()->getId(),
+                Ess_M2ePro_Model_Order_Change::ACTION_UPDATE_SHIPPING,
                 $this->getParentObject()->getLog()->getInitiator(),
                 Ess_M2ePro_Helper_Component_Amazon::NICK,
                 $params
@@ -759,7 +759,6 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
             return true;
         }
 
-        $existingParams = $change->getParams();
         foreach ($params['items'] as $newItem) {
             foreach ($existingParams['items'] as &$existingItem) {
                 if ($newItem['amazon_order_item_id'] === $existingItem['amazon_order_item_id']) {

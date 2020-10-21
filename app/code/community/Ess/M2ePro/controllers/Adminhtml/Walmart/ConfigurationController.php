@@ -50,7 +50,7 @@ class Ess_M2ePro_Adminhtml_Walmart_ConfigurationController
     {
         Mage::helper('M2ePro/Component_Walmart_Configuration')->setConfigValues($this->getRequest()->getPost());
 
-        $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Settings was successfully saved.'));
+        $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Settings was saved.'));
         $this->_redirectUrl($this->_getRefererUrl());
     }
 

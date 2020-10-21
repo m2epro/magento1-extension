@@ -233,7 +233,7 @@ class Ess_M2ePro_Adminhtml_Ebay_AccountPickupStoreController
 
         $model->save();
 
-        $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Store was successfully saved.'));
+        $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Store was saved.'));
         $this->_redirectUrl(
             Mage::helper('M2ePro')->getBackUrl(
                 'list', array(), array('edit' => array('id' => $model->getId()))
@@ -292,7 +292,7 @@ class Ess_M2ePro_Adminhtml_Ebay_AccountPickupStoreController
         $model->deleteInstance();
 
         $this->_getSession()->addSuccess(
-            Mage::helper('M2ePro')->__('Store was successfully deleted.')
+            Mage::helper('M2ePro')->__('Store was deleted.')
         );
 
         return $this->_redirect('*/adminhtml_ebay_accountPickupStore/index');

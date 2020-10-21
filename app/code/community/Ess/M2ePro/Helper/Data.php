@@ -338,7 +338,8 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
 
     public function serialize($data)
     {
-        return Zend_Serializer::serialize($data);
+        // @codingStandardsIgnoreLine
+        return serialize($data);
     }
 
     public function unserialize($data)
@@ -347,7 +348,8 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
             return array();
         }
 
-        return Zend_Serializer::unserialize($data);
+        // @codingStandardsIgnoreLine
+        return unserialize($data);
     }
 
     //########################################

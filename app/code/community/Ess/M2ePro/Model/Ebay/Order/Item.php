@@ -443,55 +443,6 @@ class Ess_M2ePro_Model_Ebay_Order_Item extends Ess_M2ePro_Model_Component_Child_
 
     //########################################
 
-    /**
-     * @param array $trackingDetails
-     * @return bool
-     */
-    public function updateShippingStatus(array $trackingDetails = array())
-    {
-        if (!$this->getEbayOrder()->canUpdateShippingStatus($trackingDetails)) {
-            return false;
-        }
-
-        $params = array(
-            'item_id' => $this->getId(),
-        );
-
-        if (!empty($trackingDetails['carrier_code'])) {
-            $trackingDetails['carrier_title'] = Mage::helper('M2ePro/Component_Ebay')->getCarrierTitle(
-                $trackingDetails['carrier_code'],
-                isset($trackingDetails['carrier_title']) ? $trackingDetails['carrier_title'] : ''
-            );
-        }
-
-        if (!empty($trackingDetails['carrier_title'])) {
-            if ($trackingDetails['carrier_title'] == Ess_M2ePro_Model_Order_Shipment_Handler::CUSTOM_CARRIER_CODE &&
-                !empty($trackingDetails['shipping_method']))
-            {
-                $trackingDetails['carrier_title'] = $trackingDetails['shipping_method'];
-            }
-
-            // remove unsupported by eBay symbols
-            $trackingDetails['carrier_title'] = str_replace(
-                array('\'', '"', '+', '(', ')'), array(), $trackingDetails['carrier_title']
-            );
-        }
-
-        $params = array_merge($params, $trackingDetails);
-
-        $action    = Ess_M2ePro_Model_Order_Change::ACTION_UPDATE_SHIPPING;
-        $creator   = $this->getEbayOrder()->getParentObject()->getLog()->getInitiator();
-        $component = Ess_M2ePro_Helper_Component_Ebay::NICK;
-
-        Mage::getModel('M2ePro/Order_Change')->create(
-            $this->getParentObject()->getOrderId(), $action, $creator, $component, $params
-        );
-
-        return true;
-    }
-
-    //########################################
-
     public function deleteInstance()
     {
         return $this->delete();

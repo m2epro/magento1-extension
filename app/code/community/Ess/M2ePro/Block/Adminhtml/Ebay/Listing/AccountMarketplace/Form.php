@@ -81,9 +81,9 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_AccountMarketplace_Form extends Ma
 
         $this->setChild('add_account_button', $buttonBlock);
 
-        $sessionKey = 'ebay_listing_create';
-        $sessionData = Mage::helper('M2ePro/Data_Session')->getValue($sessionKey);
-
+        $sessionData = Mage::helper('M2ePro/Data_Session')->getValue(
+            Ess_M2ePro_Model_Ebay_Listing::CREATE_LISTING_SESSION_DATA
+        );
         isset($sessionData['listing_title'])  && $this->setData('title', $sessionData['listing_title']);
         isset($sessionData['account_id'])     && $this->setData('account_id', $sessionData['account_id']);
         isset($sessionData['marketplace_id']) && $this->setData('marketplace_id', $sessionData['marketplace_id']);

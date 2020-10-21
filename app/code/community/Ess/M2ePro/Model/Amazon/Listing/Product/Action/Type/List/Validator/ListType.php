@@ -69,7 +69,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Validator_ListTyp
                 if ($linkingObject->link()) {
                     $this->addMessage(
                         Mage::helper('M2ePro/Module_Log')->encodeDescription(
-                            'Magento Parent Product was successfully linked
+                            'Magento Parent Product was linked
                              to Amazon Parent Product by %general_id_type% "%general_id%" via Search Settings.',
                             array('!general_id_type' => $generalIdType, '!general_id' => $generalId)
                         ),
@@ -79,7 +79,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Validator_ListTyp
                     $this->addMessage(
                         Mage::helper('M2ePro/Module_Log')->encodeDescription(
                             'Unexpected error has occurred while trying to link Magento Parent Product,
-                             although the %general_id_type% "%general_id%" was successfully found on Amazon.',
+                             although the %general_id_type% "%general_id%" was found on Amazon.',
                             array('general_id' => $generalId, 'general_id_type' => $generalIdType)
                         )
                     );

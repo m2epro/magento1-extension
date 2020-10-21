@@ -139,10 +139,11 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_RemovePotentialDuplicates
                     ->getCode();
 
                 $duplicatedItem = $this->getDuplicateItemFromPossible(
-                    $possibleDuplicates, array(
-                    'title' => $lastFailedActionData['native_request_data']['title'],
-                    'sku' => $lastFailedActionData['native_request_data']['sku'],
-                    'marketplace' => $marketplaceCode,
+                    $possibleDuplicates,
+                    array(
+                        'title' => $lastFailedActionData['native_request_data']['title'],
+                        'sku' => $lastFailedActionData['native_request_data']['sku'],
+                        'marketplace' => $marketplaceCode,
                     )
                 );
 
@@ -309,9 +310,9 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_RemovePotentialDuplicates
 
         $listingProduct->addData(
             array(
-            'status'          => $status,
-            'status_changer'  => Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_COMPONENT,
-            'additional_data' => Mage::helper('M2ePro')->jsonEncode($additionalData),
+                'status'          => $status,
+                'status_changer'  => Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_COMPONENT,
+                'additional_data' => Mage::helper('M2ePro')->jsonEncode($additionalData),
             )
         )->save();
 
@@ -349,7 +350,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_RemovePotentialDuplicates
 
         if (!empty($statusChangedFrom) && !empty($statusChangedTo)) {
             $message = Mage::helper('M2ePro')->__(
-                'Item Status was successfully changed from "%from%" to "%to%" .',
+                'Item Status was changed from "%from%" to "%to%" .',
                 $statusChangedFrom,
                 $statusChangedTo
             );

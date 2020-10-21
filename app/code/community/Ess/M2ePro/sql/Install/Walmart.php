@@ -26,6 +26,7 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_walmart_account')}` (
   `other_listings_mapping_settings` TEXT DEFAULT NULL,
   `magento_orders_settings` TEXT NOT NULL,
   `orders_last_synchronization` DATETIME DEFAULT NULL,
+  `inventory_last_synchronization` DATETIME DEFAULT NULL,
   `info` TEXT DEFAULT NULL,
   PRIMARY KEY (`account_id`)
 )
@@ -116,6 +117,7 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_walmart_item')}` (
   `store_id` INT(11) UNSIGNED NOT NULL,
   `variation_product_options` TEXT DEFAULT NULL,
   `variation_channel_options` TEXT DEFAULT NULL,
+  `additional_data` TEXT NULL DEFAULT NULL,
   `update_date` DATETIME DEFAULT NULL,
   `create_date` DATETIME DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -124,6 +126,18 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_walmart_item')}` (
   INDEX `product_id` (`product_id`),
   INDEX `sku` (`sku`),
   INDEX `store_id` (`store_id`)
+)
+ENGINE = INNODB
+CHARACTER SET utf8
+COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_walmart_inventory_wpid')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_walmart_inventory_wpid')}` (
+    `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `account_id` INT(11) UNSIGNED NOT NULL,
+    `wpid` VARCHAR(255) NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `account_id__wpid` (`account_id`, `wpid`)
 )
 ENGINE = INNODB
 CHARACTER SET utf8
@@ -458,8 +472,8 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_walmart_template_description'
   `other_features_mode` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `other_features` TEXT NOT NULL,
   `keywords_mode` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
-  `keywords_custom_value` VARCHAR(255) DEFAULT NULL,
-  `keywords_custom_attribute` VARCHAR(255) DEFAULT NULL,
+  `keywords_custom_value` VARCHAR(4000) DEFAULT NULL,
+  `keywords_custom_attribute` VARCHAR(4000) DEFAULT NULL,
   `attributes_mode` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `attributes` TEXT NOT NULL,
   PRIMARY KEY (`template_description_id`)

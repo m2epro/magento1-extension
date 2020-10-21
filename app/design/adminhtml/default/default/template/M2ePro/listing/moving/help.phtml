@@ -1,0 +1,25 @@
+<?php
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
+ */
+
+// @codingStandardsIgnoreFile
+
+/** @var $this Ess_M2ePro_Block_Adminhtml_Listing_Moving_Help */
+
+?>
+
+<div id="block_notice_listing_moving_grid" class="block_notices_module"
+     title="<?php echo Mage::helper('M2ePro')->__("Moving {$this->getComponentTitle()} Items"); ?>">
+
+    <?php echo Mage::helper('M2ePro')->__(
+        "Item(s) can be moved to a Listing within the same {$this->getComponentTitle()} Account and Marketplace.<br>
+        You can select an existing M2E Pro Listing or create a new one.<br><br>
+
+        <strong>Note:</strong> Once the Items are moved, they will be updated
+         based on the new Listing settings."
+    ); ?>
+
+</div>

@@ -107,11 +107,11 @@ class Ess_M2ePro_Model_Resource_Amazon_Listing_Other
 
         foreach ($accountsCollection->getItems() as $account) {
             $additionalData = (array)Mage::helper('M2ePro')->jsonDecode($account->getAdditionalData());
-            unset(
-                $additionalData['is_amazon_other_listings_full_items_data_already_received'],
-                $additionalData['last_other_listing_products_synchronization']
-            );
-            $account->setSettings('additional_data', $additionalData)->save();
+            unset($additionalData['is_amazon_other_listings_full_items_data_already_received']);
+
+            $account->setSettings('additional_data', $additionalData)
+                    ->addData('inventory_last_synchronization', null)
+                    ->save();
         }
     }
 

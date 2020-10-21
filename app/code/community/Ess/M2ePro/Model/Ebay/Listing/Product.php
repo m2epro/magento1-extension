@@ -916,7 +916,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product extends Ess_M2ePro_Model_Component_C
             return $this->getData(__METHOD__);
         }
 
-        if (!$this->isSetCategoryTemplate()) {
+        if (!$this->isSetCategoryTemplate() || $this->getParentObject()->isGroupedProductModeSet()) {
             $this->setData(__METHOD__, false);
             return false;
         }

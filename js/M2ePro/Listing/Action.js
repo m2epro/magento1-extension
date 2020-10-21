@@ -94,9 +94,9 @@ window.ListingAction = Class.create(Action, {
             } else {
 
                 if (requestParams['is_realtime']) {
-                    var message = M2ePro.translator.translate('"%task_title%" Task was completed successfully.');
+                    var message = M2ePro.translator.translate('"%task_title%" Task was completed.');
                 } else {
-                    var message = M2ePro.translator.translate('"%task_title%" Task was successfully submitted to be processed.');
+                    var message = M2ePro.translator.translate('"%task_title%" Task was submitted to be processed.');
                 }
                 message = message.replace('%task_title%', ListingProgressBarObj.getTitle());
 

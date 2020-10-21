@@ -65,7 +65,9 @@ class Ess_M2ePro_Adminhtml_Amazon_ListingController
             ->addJs('M2ePro/Listing/Other/AutoMapping.js')
             ->addJs('M2ePro/Listing/Other/Mapping.js')
             ->addJs('M2ePro/Listing/Other/Removing.js')
-            ->addJs('M2ePro/Listing/Other/Unmapping.js');
+            ->addJs('M2ePro/Listing/Other/Unmapping.js')
+
+            ->addJs('M2ePro/Amazon/Listing/Transferring.js');
 
         $this->_initPopUp();
 
@@ -390,7 +392,7 @@ class Ess_M2ePro_Adminhtml_Amazon_ListingController
         $this->processSellingFormatTemplateChange($oldData, $newData, $affectedListingsProductsData);
         $this->processSynchronizationTemplateChange($oldData, $newData, $affectedListingsProductsData);
 
-        $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('The Listing was successfully saved.'));
+        $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('The Listing was saved.'));
 
         $this->_redirectUrl(Mage::helper('M2ePro')->getBackUrl('list', array(), array('edit'=>array('id'=>$id))));
     }
@@ -416,7 +418,7 @@ class Ess_M2ePro_Adminhtml_Amazon_ListingController
             }
         }
 
-        $tempString = Mage::helper('M2ePro')->__('%amount% Listing(s) were successfully deleted', $deleted);
+        $tempString = Mage::helper('M2ePro')->__('%amount% Listing(s) were deleted', $deleted);
         $deleted && $this->_getSession()->addSuccess($tempString);
 
         $tempString = Mage::helper('M2ePro')->__(
@@ -846,7 +848,7 @@ class Ess_M2ePro_Adminhtml_Amazon_ListingController
             Mage::helper('M2ePro')->jsonEncode(
                 array(
                 'type' => 'success',
-                'message' => Mage::helper('M2ePro')->__('Variation has been successfully edited.')
+                'message' => Mage::helper('M2ePro')->__('Variation has been edited.')
                 )
             )
         );
@@ -938,7 +940,7 @@ class Ess_M2ePro_Adminhtml_Amazon_ListingController
             Mage::helper('M2ePro')->jsonEncode(
                 array(
                 'type' => 'success',
-                'message' => Mage::helper('M2ePro')->__('Variation(s) has been successfully saved.')
+                'message' => Mage::helper('M2ePro')->__('Variation(s) has been saved.')
                 )
             )
         );
@@ -1121,7 +1123,7 @@ class Ess_M2ePro_Adminhtml_Amazon_ListingController
             Mage::helper('M2ePro')->jsonEncode(
                 array(
                 'type' => 'success',
-                'message' => Mage::helper('M2ePro')->__('The Items were successfully duplicated.')
+                'message' => Mage::helper('M2ePro')->__('The Items were duplicated.')
                 )
             )
         );
@@ -1716,7 +1718,7 @@ class Ess_M2ePro_Adminhtml_Amazon_ListingController
             $productsIds = explode(',', $productsIds);
         }
 
-        $message = Mage::helper('M2ePro')->__('ASIN(s)/ISBN(s) was successfully unassigned.');
+        $message = Mage::helper('M2ePro')->__('ASIN(s)/ISBN(s) was unassigned.');
         $type = 'success';
 
         foreach ($productsIds as $productId) {
@@ -1898,7 +1900,7 @@ class Ess_M2ePro_Adminhtml_Amazon_ListingController
                 array(
                     'type' => 'success',
                     'text' => Mage::helper('M2ePro')->__(
-                        'New ASIN/ISBN creation feature was successfully added to %count% Products.',
+                        'New ASIN/ISBN creation feature was added to %count% Products.',
                         count($filteredProductsIdsByParent)
                     )
                 )
@@ -1983,7 +1985,7 @@ class Ess_M2ePro_Adminhtml_Amazon_ListingController
         $this->runProcessorForParents($filteredProductsIdsByType);
 
         $messages[] = Mage::helper('M2ePro')->__(
-            'Description Policy was successfully assigned to %count% Products',
+            'Description Policy was assigned to %count% Products',
             count($filteredProductsIdsByType)
         );
 
@@ -2039,7 +2041,7 @@ class Ess_M2ePro_Adminhtml_Amazon_ListingController
         if (!empty($productsIdsLocked)) {
             $messages[] = array(
                 'type' => 'success',
-                'text' => Mage::helper('M2ePro')->__('Description Policy was successfully unassigned.')
+                'text' => Mage::helper('M2ePro')->__('Description Policy was unassigned.')
             );
 
             $this->setDescriptionTemplateFroProductsByChunks($productsIdsLocked, null);
@@ -2298,7 +2300,7 @@ class Ess_M2ePro_Adminhtml_Amazon_ListingController
         if (!empty($productsIdsLocked)) {
             $messages[] = array(
                 'type' => 'success',
-                'text' => Mage::helper('M2ePro')->__('Shipping Policy was successfully assigned.')
+                'text' => Mage::helper('M2ePro')->__('Shipping Policy was assigned.')
             );
 
             $this->setShippingTemplateForProducts($productsIdsLocked, $templateId);
@@ -2342,7 +2344,7 @@ class Ess_M2ePro_Adminhtml_Amazon_ListingController
         if (!empty($productsIdsLocked)) {
             $messages[] = array(
                 'type' => 'success',
-                'text' => Mage::helper('M2ePro')->__('Shipping Policy was successfully unassigned.')
+                'text' => Mage::helper('M2ePro')->__('Shipping Policy was unassigned.')
             );
 
             $this->setShippingTemplateForProducts($productsIdsLocked, null);

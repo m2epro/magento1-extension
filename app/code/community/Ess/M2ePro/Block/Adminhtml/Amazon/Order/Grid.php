@@ -389,7 +389,7 @@ HTML;
 
         $returnString = Mage::helper('M2ePro')->__('N/A');
 
-        if ($row['magento_order_id']) {
+        if ($magentoOrderId !== null) {
             if ($row['magento_order_num']) {
                 $orderUrl = $this->getUrl('adminhtml/sales_order/view', array('order_id' => $magentoOrderId));
                 $returnString = '<a href="' . $orderUrl . '" target="_blank">' . $magentoOrderNumber . '</a>';

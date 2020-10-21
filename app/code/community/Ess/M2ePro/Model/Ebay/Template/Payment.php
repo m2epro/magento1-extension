@@ -166,6 +166,16 @@ class Ess_M2ePro_Model_Ebay_Template_Payment extends Ess_M2ePro_Model_Component_
     /**
      * @return bool
      */
+    public function isManagedPaymentsEnabled()
+    {
+        return (bool)$this->getData('managed_payments_mode');
+    }
+
+    //########################################
+
+    /**
+     * @return bool
+     */
     public function isPayPalEnabled()
     {
         return (bool)$this->getData('pay_pal_mode');
