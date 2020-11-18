@@ -33,10 +33,18 @@
 
     $defaults = Mage::getModel('M2ePro/Amazon_Account_Builder')->getDefaultData();
 
+    if (isset($formData['magento_orders_settings']['tax']['excluded_states'])) {
+        unset($defaults['magento_orders_settings']['tax']['excluded_states']);
+    }
+
     $isEdit = !!$this->getRequest()->getParam('id');
     $isEdit && $defaults['magento_orders_settings']['refund_and_cancellation']['refund_mode'] = 0;
 
     $formData = Mage::helper('M2ePro')->arrayReplaceRecursive($defaults, $formData);
+
+    if (is_array($formData['magento_orders_settings']['tax']['excluded_states'])) {
+        $formData['magento_orders_settings']['tax']['excluded_states'] = implode(',', $formData['magento_orders_settings']['tax']['excluded_states']);
+    }
 
 ?>
 
@@ -46,6 +54,7 @@
     //-----------------------------
     M2ePro.translator.add(<?php echo json_encode(array(
         'No Customer entry is found for specified ID.' => Mage::helper('M2ePro')->__('No Customer entry is found for specified ID.'),
+        'Select States where Amazon is responsible for tax calculation/collection' => Mage::helper('M2ePro')->__('Select States where Amazon is responsible for tax calculation/collection'),
     )); ?>);
 
     Event.observe(window, 'load', function() {
@@ -67,6 +76,8 @@
         $('magento_orders_fba_mode').observe('change', AmazonAccountObj.magentoOrdersFbaModeChange);
 
         $('magento_orders_customer_mode').observe('change', AmazonAccountObj.magentoOrdersCustomerModeChange);
+        $('magento_orders_tax_mode').observe('change', AmazonAccountObj.magentoOrdersTaxModeChange).simulate('change');
+        $('magento_orders_tax_amazon_collects').observe('change', AmazonAccountObj.magentoOrdersTaxAmazonCollectsChange).simulate('change');
         $('magento_orders_status_mapping_mode').observe('change', AmazonAccountObj.magentoOrdersStatusMappingModeChange);
     });
     //-----------------------------
@@ -505,7 +516,7 @@
                         </p>
                     </td>
                     <td class="value" style="display: none">
-                        <p class="note"">
+                        <p class="note">
                             <span>
                                 <?php echo Mage::helper('M2ePro')->__('There are several ways to specify a Customer for which Magento Orders will be created: <br/><br/>
                                     <b>Guest Account</b> - the System does not require a Customer Account to be created. Default Guest Account will be defined as a Customer. <br/>
@@ -653,6 +664,37 @@
                             <option value="<?php echo Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_TAX_MODE_MIXED; ?>"<?php if ($formData['magento_orders_settings']['tax']['mode'] == Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_TAX_MODE_MIXED) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Amazon & Magento'); ?></option>
                         </select>
                     </td>
+                </tr>
+
+                <tr id="tr_magento_orders_tax_excluded_states">
+                    <td class="label">
+                        <label for="magento_orders_tax_amazon_collects"><?php echo Mage::helper('M2ePro')->__('Amazon Collects Tax'); ?>:</label>
+                    </td>
+
+                    <td class="value" style="width: auto;">
+                        <select id="magento_orders_tax_amazon_collects" name="magento_orders_settings[tax][amazon_collects]" class="M2ePro-required-when-visible">
+                            <option value="1" <?php if ($formData['magento_orders_settings']['tax']['amazon_collects'] == 1) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
+                            <option value="0" <?php if ($formData['magento_orders_settings']['tax']['amazon_collects'] == 0): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
+                        </select>
+                    </td>
+
+                    <td class="value" style="display: none">
+                        <p class="note">
+                            <span>
+                                <?php echo Mage::helper('M2ePro')->__(
+                                    'Please specify if Amazon is responsible for tax calculation/collection in certain States.<br>
+                                    More information you can find <a href="%url%" target="_blank">here</a>.',
+                                    'https://www.amazon.com/gp/help/customer/display.html?nodeId=202211260'
+                                ); ?>
+                            </span>
+                        </p>
+                    </td>
+
+                    <td class="value" style="width: auto;" id="td_show_excluded_states_button">
+                        <button id="show_excluded_states_button" type="button" onclick="AmazonAccountObj.openExcludedStatesPopup()"><?php echo Mage::helper('M2ePro')->__('Show States'); ?></button>
+                    </td>
+
+                    <input type="hidden" id="magento_orders_tax_excluded_states" name="magento_orders_settings[tax][excluded_states]" value="<?php echo $formData['magento_orders_settings']['tax']['excluded_states']; ?>" />
                 </tr>
 
             </table>

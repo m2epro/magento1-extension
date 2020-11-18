@@ -105,7 +105,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Template_ShippingController
             $diff, $affectedListingsProducts->getData(array('id', 'status'), array('only_physical_units' => true))
         );
 
-        $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Policy was successfully saved'));
+        $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Policy was saved'));
         $this->_redirectUrl(
             Mage::helper('M2ePro')->getBackUrl(
                 '*/adminhtml_amazon_template/index', array(), array(
@@ -140,7 +140,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Template_ShippingController
             }
         }
 
-        $tempString = Mage::helper('M2ePro')->__('%amount% record(s) were successfully deleted.', $deleted);
+        $tempString = Mage::helper('M2ePro')->__('%amount% record(s) were deleted.', $deleted);
         $deleted && $this->_getSession()->addSuccess($tempString);
 
         $tempString  = Mage::helper('M2ePro')->__('%amount% record(s) are used in Listing(s).', $locked) . ' ';

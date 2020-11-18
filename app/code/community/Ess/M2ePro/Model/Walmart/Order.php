@@ -491,9 +491,8 @@ class Ess_M2ePro_Model_Walmart_Order extends Ess_M2ePro_Model_Component_Child_Wa
 
         if (empty($trackingDetails['tracking_number'])) {
             $this->getParentObject()->addErrorLog(
-                'Walmart Order was not shipped. Reason: %msg%',
-                array('msg' => 'Order status was not updated to Shipped on Walmart because a tracking number
-                                is missing. Please insert the valid tracking number into the Order shipment.')
+                'Order status was not updated to Shipped because tracking number is missing.
+                Please add the valid tracking number to the order.'
             );
             return false;
         }
@@ -539,25 +538,29 @@ class Ess_M2ePro_Model_Walmart_Order extends Ess_M2ePro_Model_Component_Child_Wa
                     'ship_date' => $trackingDetails['fulfillment_date'],
                     'method'    => $this->getShippingService(),
                     'carrier'   => $trackingDetails['carrier_title'],
-                    'number'    => $trackingDetails['tracking_number'],
-                ),
+                    'number'    => $trackingDetails['tracking_number']
+                )
             );
         }
 
-        $orderId     = $this->getParentObject()->getId();
-        $action      = Ess_M2ePro_Model_Order_Change::ACTION_UPDATE_SHIPPING;
-
         /** @var Ess_M2ePro_Model_Order_Change $change */
         $change = Mage::getModel('M2ePro/Order_Change')->getCollection()
-            ->addFieldToFilter('order_id', $orderId)
-            ->addFieldToFilter('action', $action)
+            ->addFieldToFilter('order_id', $this->getParentObject()->getId())
+            ->addFieldToFilter('action', Ess_M2ePro_Model_Order_Change::ACTION_UPDATE_SHIPPING)
             ->addFieldToFilter('processing_attempt_count', 0)
             ->getFirstItem();
 
-        if (!$change->getId()) {
+        $existingParams = $change->getParams();
+
+        $newTrackingNumber = !empty($trackingDetails['tracking_number']) ? $trackingDetails['tracking_number'] : '';
+        $oldTrackingNumber = !empty($existingParams['items'][0]['tracking_details']['number'])
+            ? $existingParams['items'][0]['tracking_details']['number']
+            : '';
+
+        if (!$change->getId() || $newTrackingNumber !== $oldTrackingNumber) {
             $change::create(
-                $orderId,
-                $action,
+                $this->getParentObject()->getId(),
+                Ess_M2ePro_Model_Order_Change::ACTION_UPDATE_SHIPPING,
                 $this->getParentObject()->getLog()->getInitiator(),
                 Ess_M2ePro_Helper_Component_Walmart::NICK,
                 $params
@@ -565,20 +568,30 @@ class Ess_M2ePro_Model_Walmart_Order extends Ess_M2ePro_Model_Component_Child_Wa
             return true;
         }
 
-        $existingParams = $change->getParams();
         foreach ($params['items'] as $newItem) {
             foreach ($existingParams['items'] as &$existingItem) {
                 if ($newItem['walmart_order_item_id'] === $existingItem['walmart_order_item_id']) {
-                    $newQtyTotal = $newItem['qty'] + $existingItem['qty'];
-
-                    $maxQtyTotal  = Mage::getModel('M2ePro/Walmart_Order_Item')->getCollection()
+                    /** @var Ess_M2ePro_Model_Order_Item $orderItem */
+                    $orderItem  = Mage::getModel('M2ePro/Walmart_Order_Item')->getCollection()
                         ->addFieldToFilter(
                             'walmart_order_item_id',
                             $existingItem['walmart_order_item_id']
                         )
-                        ->getFirstItem()
-                        ->getQtyPurchased();
+                        ->getFirstItem();
+                    /**
+                     * Walmart returns the same Order Item more than one time with single QTY.
+                     */
+                    $maxQtyTotal = 1;
+                    if ($orderItem->getId()) {
+                        $mergedIds = $orderItem->getChildObject()->getMergedWalmartOrderItemIds();
+                        if (empty($mergedIds)) {
+                            $maxQtyTotal = $orderItem->getChildObject()->getQtyPurchased();
+                        }
+                    }
+
+                    $newQtyTotal = $newItem['qty'] + $existingItem['qty'];
                     $newQtyTotal >= $maxQtyTotal && $newQtyTotal = $maxQtyTotal;
+
                     $existingItem['qty'] = $newQtyTotal;
                     continue 2;
                 }

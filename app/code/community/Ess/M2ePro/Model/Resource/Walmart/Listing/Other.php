@@ -78,6 +78,13 @@ class Ess_M2ePro_Model_Resource_Walmart_Listing_Other
         foreach (array_chunk($SKUs, 1000) as $chunkSKUs) {
             $writeConnection->delete($tableName, array('sku IN (?)' => $chunkSKUs));
         }
+
+        $accountsCollection = Mage::helper('M2ePro/Component_Walmart')->getCollection('Account');
+        $accountsCollection->addFieldToFilter('other_listings_synchronization', 1);
+
+        foreach ($accountsCollection->getItems() as $account) {
+            $account->setData('inventory_last_synchronization', null)->save();
+        }
     }
 
     //########################################

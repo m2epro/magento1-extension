@@ -31,6 +31,8 @@ class Ess_M2ePro_Model_Cron_Task_System_ClearOldLogs extends Ess_M2ePro_Model_Cr
 
         $this->clearSystemLog();
 
+        Mage::getModel('M2ePro/Cron_OperationHistory')->cleanOldData();
+
         return true;
     }
 

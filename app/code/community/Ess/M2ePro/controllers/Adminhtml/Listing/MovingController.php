@@ -6,38 +6,35 @@
  * @license    Commercial use is forbidden
  */
 
-// move from listing to listing
-
 class Ess_M2ePro_Adminhtml_Listing_MovingController
     extends Ess_M2ePro_Controller_Adminhtml_BaseController
 {
     //########################################
 
+    public function moveToListingPopupHtmlAction()
+    {
+        $block = $this->getLayout()->createBlock(
+            'M2ePro/adminhtml_listing_moving_view',
+            '',
+            array(
+                'grid_url' => $this->getUrl('*/adminhtml_listing_moving/moveToListingGrid', array('_current'=>true)),
+                'component_mode' => $this->getRequest()->getParam('componentMode'),
+                'moving_handler_js' => $this->getMovingHandlerJs()
+            )
+        );
+
+        $this->getResponse()->setBody($block->toHtml());
+    }
+
+    //########################################
+
     public function moveToListingGridAction()
     {
-        Mage::helper('M2ePro/Data_Global')->setValue(
-            'componentMode', $this->getRequest()->getParam('componentMode')
-        );
-        Mage::helper('M2ePro/Data_Global')->setValue(
-            'accountId', $this->getRequest()->getParam('accountId')
-        );
-        Mage::helper('M2ePro/Data_Global')->setValue(
-            'marketplaceId', $this->getRequest()->getParam('marketplaceId')
-        );
-        Mage::helper('M2ePro/Data_Global')->setValue(
-            'ignoreListings', Mage::helper('M2ePro')->jsonDecode($this->getRequest()->getParam('ignoreListings'))
-        );
-
-        $movingHandlerJs = 'ListingGridObj.movingHandler';
-        if ($this->getRequest()->getParam('componentMode') == Ess_M2ePro_Helper_Component_Ebay::NICK) {
-            $movingHandlerJs = 'EbayListingSettingsGridObj.movingHandler';
-        }
-
         $block = $this->loadLayout()->getLayout()->createBlock(
             'M2ePro/adminhtml_listing_moving_grid', '',
             array(
                 'grid_url' => $this->getUrl('*/adminhtml_listing_moving/moveToListingGrid', array('_current'=>true)),
-                'moving_handler_js' => $movingHandlerJs
+                'moving_handler_js' => $this->getMovingHandlerJs()
             )
         );
         $this->getResponse()->setBody($block->toHtml());
@@ -47,7 +44,6 @@ class Ess_M2ePro_Adminhtml_Listing_MovingController
 
     public function prepareMoveToListingAction()
     {
-        $dbHelper = Mage::helper('M2ePro/Module_Database_Structure');
         $sessionHelper = Mage::helper('M2ePro/Data_Session');
         $componentMode = $this->getRequest()->getParam('componentMode');
         $sessionKey = $componentMode . '_' . Ess_M2ePro_Helper_View::MOVING_LISTING_PRODUCTS_SELECTED_SESSION_KEY;
@@ -86,11 +82,13 @@ class Ess_M2ePro_Adminhtml_Listing_MovingController
         $row = $listingProductCollection
             ->getSelect()
             ->join(
-                array('listing' => $dbHelper->getTableNameWithPrefix('m2epro_listing')),
+                array('listing' =>
+                    Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('m2epro_listing')),
                 '`main_table`.`listing_id` = `listing`.`id`'
             )
             ->join(
-                array('cpe' => $dbHelper->getTableNameWithPrefix('catalog_product_entity')),
+                array('cpe' =>
+                    Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('catalog_product_entity')),
                 '`main_table`.`product_id` = `cpe`.`entity_id`'
             )
             ->group(array('listing.account_id', 'listing.marketplace_id'))
@@ -190,7 +188,7 @@ class Ess_M2ePro_Adminhtml_Listing_MovingController
                 )
             );
         } else {
-            $this->getSession()->addSuccess(Mage::helper('M2ePro')->__('Product(s) was successfully Moved.'));
+            $this->getSession()->addSuccess(Mage::helper('M2ePro')->__('Product(s) was Moved.'));
         }
 
         return $this->getResponse()->setBody(
@@ -200,6 +198,17 @@ class Ess_M2ePro_Adminhtml_Listing_MovingController
                 )
             )
         );
+    }
+
+    //########################################
+
+    protected function getMovingHandlerJs()
+    {
+        if ($this->getRequest()->getParam('componentMode') == Ess_M2ePro_Helper_Component_Ebay::NICK) {
+            return 'EbayListingSettingsGridObj.movingHandler';
+        }
+
+        return 'ListingGridObj.movingHandler';
     }
 
     //########################################

@@ -75,15 +75,24 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View extends Mage_Adminhtml_
             '*/adminhtml_ebay_listing_categorySettings/index', array('step' => 1)
         );
 
+        $urls['moveToListingPopupHtml'] = $this->getUrl('*/adminhtml_listing_other_moving/moveToListingGrid');
+        $urls['prepareMoveToListing'] = $this->getUrl('*/adminhtml_listing_other_moving/prepareMoveToListing');
+        $urls['moveToListing'] = $this->getUrl('*/adminhtml_ebay_listing_other/moveToListing');
+
         $urls = Mage::helper('M2ePro')->jsonEncode($urls);
 
         $translations = Mage::helper('M2ePro')->jsonEncode(
             array(
-            'Mapping Product' => $helper->__('Mapping Product'),
-            'Product does not exist.' => $helper->__('Product does not exist.'),
-            'Please enter correct Product ID.' => $helper->__('Please enter correct Product ID.'),
-            'Product(s) was successfully Mapped.' => $helper->__('Product(s) was successfully Mapped.'),
-            'Please enter correct Product ID or SKU' => $helper->__('Please enter correct Product ID or SKU')
+                'Product was Mapped.' => $helper->__('Product was Mapped.'),
+                'Product(s) was Mapped.' => $helper->__('Product(s) was Mapped.'),
+                'Product(s) was Unmapped.' => $helper->__('Product(s) was Unmapped.'),
+                'Product(s) was Removed.' => $helper->__('Product(s) was Removed.'),
+                'Not enough data' => $helper->__('Not enough data'),
+
+                'Mapping Product' => $helper->__('Mapping Product'),
+                'Product does not exist.' => $helper->__('Product does not exist.'),
+                'Please enter correct Product ID.' => $helper->__('Please enter correct Product ID.'),
+                'Please enter correct Product ID or SKU' => $helper->__('Please enter correct Product ID or SKU')
             )
         );
 
@@ -99,16 +108,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View extends Mage_Adminhtml_
         $someProductsWereNotMappedMessage .= 'or try to map manually.';
         $someProductsWereNotMappedMessage = $helper->escapeJs($helper->__($someProductsWereNotMappedMessage));
 
-        $prepareData = $this->getUrl('*/adminhtml_listing_other_moving/prepareMoveToListing');
-        $getMoveToListingGridHtml = $this->getUrl('*/adminhtml_listing_other_moving/moveToListingGrid');
-        $moveToListing = $this->getUrl('*/adminhtml_ebay_listing_other/moveToListing');
-
         $popupTitle = $helper->escapeJs($helper->__('Moving eBay Items'));
-
-        $successfullyMappedMessage = $helper->escapeJs($helper->__('Product was successfully Mapped.'));
-        $notEnoughDataMessage = $helper->escapeJs($helper->__('Not enough data.'));
-        $successfullyUnmappedMessage = $helper->escapeJs($helper->__('Product(s) was successfully Unmapped.'));
-        $successfullyRemovedMessage = $helper->escapeJs($helper->__('Product(s) was successfully Removed.'));
 
         $processingDataMessage = $helper->escapeJs($helper->__('Processing %product_title% Product(s).'));
         $autoMapProgressTitle = $helper->escapeJs($helper->__('Map Item(s) to Products'));
@@ -122,22 +122,13 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View extends Mage_Adminhtml_
     M2ePro.url.mapAutoToProduct = '{$mapAutoToProductUrl}';
     M2ePro.text.failed_mapped = '{$someProductsWereNotMappedMessage}';
 
-    M2ePro.url.prepareData = '{$prepareData}';
-    M2ePro.url.getGridHtml = '{$getMoveToListingGridHtml}';
-    M2ePro.url.moveToListing = '{$moveToListing}';
-
     M2ePro.url.removingProducts = '{$removingProductsUrl}';
     M2ePro.url.unmappingProducts = '{$unmappingProductsUrl}';
 
-    M2ePro.text.successfully_mapped = '{$successfullyMappedMessage}';
     M2ePro.text.automap_progress_title = '{$autoMapProgressTitle}';
     M2ePro.text.processing_data_message = '{$processingDataMessage}';
 
     M2ePro.text.popup_title = '{$popupTitle}';
-
-    M2ePro.text.not_enough_data = '{$notEnoughDataMessage}';
-    M2ePro.text.successfully_unmapped = '{$successfullyUnmappedMessage}';
-    M2ePro.text.successfully_removed = '{$successfullyRemovedMessage}';
 
     M2ePro.customData.componentMode = '{$component}';
     M2ePro.customData.gridId = 'ebayListingOtherGrid';

@@ -54,6 +54,7 @@ class Ess_M2ePro_Observer_Product_AddUpdate_Before extends Ess_M2ePro_Observer_P
         $this->getProxy()->setData('special_price_from_date', $this->getProduct()->getSpecialFromDate());
         $this->getProxy()->setData('special_price_to_date', $this->getProduct()->getSpecialToDate());
         $this->getProxy()->setData('tier_price', $this->getProduct()->getTierPrice());
+        $this->getProxy()->setData('default_qty', $this->getDefaultQty());
 
         $this->getProxy()->setAttributes($this->getTrackingAttributesWithValues());
     }
@@ -105,6 +106,22 @@ class Ess_M2ePro_Observer_Product_AddUpdate_Before extends Ess_M2ePro_Observer_P
         }
 
         self::$proxyStorage[$key] = $this->getProxy();
+    }
+
+    //########################################
+
+    protected function getDefaultQty()
+    {
+        if (!Mage::helper('M2ePro/Magento_Product')->isGroupedType($this->getProduct()->getTypeId())) {
+            return array();
+        }
+
+        $values = array();
+        foreach ($this->getProduct()->getTypeInstance()->getAssociatedProducts() as $childProduct) {
+            $values[$childProduct->getSku()] = $childProduct->getQty();
+        }
+
+        return $values;
     }
 
     //########################################

@@ -170,6 +170,10 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View extends Mage_Adminhtml_Blo
             '*/adminhtml_walmart_listing/runResetProducts'
         );
 
+        $urls['moveToListingPopupHtml'] = $this->getUrl('*/adminhtml_listing_moving/moveToListingPopupHtml');
+        $urls['prepareMoveToListing'] = $this->getUrl('*/adminhtml_listing_moving/prepareMoveToListing');
+        $urls['moveToListing'] = $this->getUrl('*/adminhtml_listing_moving/moveToListing');
+
         $urls = Mage::helper('M2ePro')->jsonEncode($urls);
         // ---------------------------------------
 
@@ -201,10 +205,6 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View extends Mage_Adminhtml_Blo
         $runStopAndRemoveProducts = $this->getUrl('*/adminhtml_walmart_listing/runStopAndRemoveProducts');
         $runDeleteAndRemoveProducts = $this->getUrl('*/adminhtml_walmart_listing/runDeleteAndRemoveProducts');
         $runResetProducts = $this->getUrl('*/adminhtml_walmart_listing/runResetProducts');
-
-        $prepareData = $this->getUrl('*/adminhtml_listing_moving/prepareMoveToListing');
-        $getMoveToListingGridHtml = $this->getUrl('*/adminhtml_listing_moving/moveToListingGrid');
-        $moveToListing = $this->getUrl('*/adminhtml_listing_moving/moveToListing');
 
         $marketplaceSynchUrl = $this->getUrl(
             '*/adminhtml_walmart_marketplace/index'
@@ -355,16 +355,16 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View extends Mage_Adminhtml_Blo
             'Edit SKU'        => $helper->__('Edit SKU'),
             'Edit Product ID' => $helper->__('Edit Product ID'),
 
-            'Updating SKU has successfully submitted to be processed.' =>
-                $helper->__('Updating SKU has successfully submitted to be processed.'),
-            'Updating GTIN has successfully submitted to be processed.' =>
-                $helper->__('Updating GTIN has successfully submitted to be processed.'),
-            'Updating UPC has successfully submitted to be processed.' =>
-                $helper->__('Updating UPC has successfully submitted to be processed.'),
-            'Updating EAN has successfully submitted to be processed.' =>
-                $helper->__('Updating EAN has successfully submitted to be processed.'),
-            'Updating ISBN has successfully submitted to be processed.' =>
-                $helper->__('Updating ISBN has successfully submitted to be processed.'),
+            'Updating SKU has submitted to be processed.'  =>
+                $helper->__('Updating SKU has submitted to be processed.'),
+            'Updating GTIN has submitted to be processed.' =>
+                $helper->__('Updating GTIN has submitted to be processed.'),
+            'Updating UPC has submitted to be processed.'  =>
+                $helper->__('Updating UPC has submitted to be processed.'),
+            'Updating EAN has submitted to be processed.'  =>
+                $helper->__('Updating EAN has submitted to be processed.'),
+            'Updating ISBN has submitted to be processed.' =>
+                $helper->__('Updating ISBN has submitted to be processed.'),
 
             'Required at least one identifier' => $helper->__('Required at least one identifier'),
             'At least one Variant Attribute must be selected.' =>
@@ -432,10 +432,6 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View extends Mage_Adminhtml_Blo
     M2ePro.url.unmapFromTemplateDescription = '{$unmapFromTemplateDescription}';
     M2ePro.url.validateProductsForTemplateCategoryAssign = '{$validateProductsForTemplateCategoryAssign}';
     M2ePro.url.viewTemplateCategoriesGrid = '{$viewTemplateCategoriesGrid}';
-
-    M2ePro.url.prepareData = '{$prepareData}';
-    M2ePro.url.getGridHtml = '{$getMoveToListingGridHtml}';
-    M2ePro.url.moveToListing = '{$moveToListing}';
 
     M2ePro.url.marketplace_synch = '{$marketplaceSynchUrl}';
 

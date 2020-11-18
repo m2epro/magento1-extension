@@ -19,17 +19,11 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Search_M2ePro_Grid
     {
         parent::__construct();
 
-        // Initialization block
-        // ---------------------------------------
         $this->setId('walmartListingSearchM2eProGrid');
-        // ---------------------------------------
 
-        // Set default values
-        // ---------------------------------------
         $this->setDefaultSort(false);
         $this->setSaveParametersInSession(true);
         $this->setUseAjax(true);
-        // ---------------------------------------
     }
 
     //########################################
@@ -310,15 +304,37 @@ HTML;
         $altTitle = Mage::helper('M2ePro')->escapeHtml(Mage::helper('M2ePro')->__('Go to Listing'));
         $iconSrc  = $this->getSkinUrl('M2ePro/images/goto_listing.png');
 
-        $manageUrl = $this->getUrl(
-            '*/adminhtml_walmart_listing/view/', array(
-            'id' => $row->getData('listing_id'),
+        $urlData = array(
+            'id'     => $row->getData('listing_id'),
             'filter' => base64_encode(
-                'product_id[from]='.(int)$row->getData('entity_id')
-                .'&product_id[to]='.(int)$row->getData('entity_id')
-            )
+                'product_id[from]=' . (int)$row->getData('entity_id')
+                . '&product_id[to]=' . (int)$row->getData('entity_id')
             )
         );
+
+        $searchedChildHtml = '';
+        if ($this->wasFoundByChild($row)) {
+            $urlData['child_listing_product_ids'] = $this->getChildListingProductIds($row);
+
+            $iconHelpPath = $this->getSkinUrl('M2ePro/images/i_logo.png');
+            $toolTipIconPath = $this->getSkinUrl('M2ePro/images/i_icon.png');
+            $titleChildOfItem  = Mage::helper('M2ePro')->__(
+                'A Product you are searching for is found as part of a Multi-Variational Product.' .
+                ' Click on the arrow icon to manage it individually.'
+            );
+
+            $searchedChildHtml = <<<HTML
+     <img class="tool-tip-image"
+     style="vertical-align: middle; margin-top: 4px; margin-left: 10px;"
+     src="{$toolTipIconPath}">
+     <span class="tool-tip-message tip-left" style="display:none; text-align: left; min-width: 140px;">
+        <img src="{$iconHelpPath}">
+        <span style="color:gray;">{$titleChildOfItem}</span>
+     </span>
+HTML;
+        }
+
+        $manageUrl = $this->getUrl('*/adminhtml_walmart_listing/view/', $urlData);
 
         $html = <<<HTML
 <div style="float:right; margin:5px 15px 0 0;">
@@ -326,7 +342,7 @@ HTML;
 </div>
 HTML;
 
-        return $html;
+        return $searchedChildHtml . $html;
     }
 
     public function callbackColumnPrice($value, $row, $column, $isExport)
@@ -542,41 +558,106 @@ HTML;
 
     protected function callbackFilterProductId($collection, $column)
     {
+        /** @var Ess_M2ePro_Model_Resource_Magento_Product_Collection $collection */
+
         $cond = $column->getFilter()->getCondition();
 
         if (empty($cond)) {
             return;
         }
 
-        $collection->addFieldToFilter('entity_id', $cond);
+        $childCollection = $this->getMagentoChildProductsCollection();
+        $childCollection->addFieldToFilter('product_id', $cond);
+
+        $collection->joinTable(
+            array('product_id_subQuery' => $childCollection->getSelect()),
+            'variation_parent_id=id',
+            array(
+                'product_id_child_listing_product_ids' => 'child_listing_product_ids',
+                'product_id_searched_by_child'         => 'searched_by_child'
+            ),
+            null,
+            'left'
+        );
+
+        $collection->addFieldToFilter(
+            array(
+                array('attribute' => 'entity_id', $cond),
+                array('attribute' => 'product_id_searched_by_child', 1)
+            )
+        );
     }
 
     protected function callbackFilterTitle($collection, $column)
     {
+        /** @var Ess_M2ePro_Model_Resource_Magento_Product_Collection $collection */
+
         $value = $column->getFilter()->getValue();
 
         if ($value == null) {
             return;
         }
 
+        $childCollection = $this->getMagentoChildProductsCollection();
+        $childCollection->getSelect()->joinLeft(
+            array('cpe' => Mage::helper('M2ePro/Module_Database_Structure')
+                ->getTableNameWithPrefix('catalog_product_entity')),
+            'cpe.entity_id=main_table.product_id',
+            array()
+        );
+        $childCollection->addFieldToFilter('cpe.sku', array('like' => '%'.$value.'%'));
+
+        $collection->joinTable(
+            array('product_sku_subQuery' => $childCollection->getSelect()),
+            'variation_parent_id=id',
+            array(
+                'product_sku_child_listing_product_ids' => 'child_listing_product_ids',
+                'product_sku_searched_by_child'         => 'searched_by_child'
+            ),
+            null,
+            'left'
+        );
+
         $collection->addFieldToFilter(
             array(
-                array('attribute'=>'sku','like'=>'%'.$value.'%'),
-                array('attribute'=>'name', 'like'=>'%'.$value.'%'),
-                array('attribute'=>'listing_title','like'=>'%'.$value.'%'),
+                array('attribute' => 'sku', 'like' => '%'.$value.'%'),
+                array('attribute' => 'name', 'like' => '%'.$value.'%'),
+                array('attribute' => 'listing_title', 'like' => '%'.$value.'%'),
+                array('attribute' => 'product_sku_searched_by_child', 1)
             )
         );
     }
 
     protected function callbackFilterOnlineSku($collection, $column)
     {
+        /** @var Ess_M2ePro_Model_Resource_Magento_Product_Collection $collection */
+
         $value = $column->getFilter()->getValue();
 
         if ($value == null) {
             return;
         }
 
-        $collection->getSelect()->where('wlp.sku LIKE ?', '%'.$value.'%');
+        $childCollection = $this->getChildProductsCollection();
+        $childCollection->addFieldToFilter('sku', array('like' => '%'.$value.'%'));
+
+        $collection->joinTable(
+            array('online_sku_subQuery' => $childCollection->getSelect()),
+            'variation_parent_id=id',
+            array(
+                'online_sku_child_listing_product_ids' => 'child_listing_product_ids',
+                'online_sku_searched_by_child'         => 'searched_by_child'
+            ),
+            null,
+            'left'
+        );
+
+        $collection->addFieldToFilter(
+            array(
+                array('attribute' => 'online_sku', 'like' => '%'.$value.'%'),
+                array('attribute' => 'online_sku_searched_by_child', 1)
+            )
+        );
     }
 
     protected function callbackFilterGtin($collection, $column)
@@ -588,15 +669,39 @@ HTML;
         }
 
         $where = <<<SQL
-wlp.gtin LIKE '%{$value}%' OR
-wlp.upc LIKE '%{$value}%' OR
-wlp.ean LIKE '%{$value}%' OR
-wlp.isbn LIKE '%{$value}%' OR
-wlp.wpid LIKE '%{$value}%' OR
-wlp.item_id LIKE '%{$value}%'
+main_table.gtin LIKE '%{$value}%' OR
+main_table.upc LIKE '%{$value}%' OR
+main_table.ean LIKE '%{$value}%' OR
+main_table.isbn LIKE '%{$value}%' OR
+main_table.wpid LIKE '%{$value}%' OR
+main_table.item_id LIKE '%{$value}%'
 SQL;
 
-        $collection->getSelect()->where($where);
+        $childCollection = $this->getChildProductsCollection();
+        $childCollection->getSelect()->where($where);
+
+        $collection->joinTable(
+            array('gtin_subQuery' => $childCollection->getSelect()),
+            'variation_parent_id=id',
+            array(
+                'gtin_child_listing_product_ids' => 'child_listing_product_ids',
+                'gtin_searched_by_child'         => 'searched_by_child'
+            ),
+            null,
+            'left'
+        );
+
+        $collection->addFieldToFilter(
+            array(
+                array('attribute' => 'gtin', 'like' => '%'.$value.'%'),
+                array('attribute' => 'upc', 'like' => '%'.$value.'%'),
+                array('attribute' => 'ean', 'like' => '%'.$value.'%'),
+                array('attribute' => 'isbn', 'like' => '%'.$value.'%'),
+                array('attribute' => 'wpid', 'like' => '%'.$value.'%'),
+                array('attribute' => 'item_id', 'like' => '%'.$value.'%'),
+                array('attribute' => 'gtin_searched_by_child', 1)
+            )
+        );
     }
 
     protected function callbackFilterQty($collection, $column)
@@ -664,6 +769,101 @@ SQL;
         $collection->getSelect()->where(
             "status = {$value} OR (variation_child_statuses REGEXP '\"{$value}\":[^0]') AND is_variation_parent = 1"
         );
+    }
+
+    //########################################
+
+    protected function getMagentoChildProductsCollection()
+    {
+        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Variation_Option_Collection $collection */
+        $collection = Mage::getModel('M2ePro/Listing_Product_Variation_Option')->getCollection()
+            ->addFieldToSelect('listing_product_variation_id')
+            ->addFieldToFilter('main_table.component_mode', Ess_M2ePro_Helper_Component_Walmart::NICK);
+
+        $collection->getSelect()->joinLeft(
+            array('lpv' => Mage::getResourceModel('M2ePro/Listing_Product_Variation')->getMainTable()),
+            'lpv.id=main_table.listing_product_variation_id',
+            array('listing_product_id')
+        );
+        $collection->getSelect()->joinLeft(
+            array('alp' => Mage::getResourceModel('M2ePro/Walmart_Listing_Product')->getMainTable()),
+            'alp.listing_product_id=lpv.listing_product_id',
+            array('variation_parent_id')
+        );
+        $collection->addFieldToFilter('variation_parent_id', array('notnull' => true));
+
+        $collection->getSelect()->reset(Zend_Db_Select::COLUMNS);
+        $collection->getSelect()->columns(
+            array(
+                'child_listing_product_ids' => new Zend_Db_Expr('GROUP_CONCAT(DISTINCT alp.listing_product_id)'),
+                'variation_parent_id'       => 'alp.variation_parent_id',
+                'searched_by_child'         => new Zend_Db_Expr('1')
+            )
+        );
+
+        $collection->getSelect()->group('alp.variation_parent_id');
+
+        return $collection;
+    }
+
+    protected function getChildProductsCollection()
+    {
+        /** @var Ess_M2ePro_Model_Resource_Walmart_Listing_Product_Collection $collection */
+        $collection = Mage::getModel('M2ePro/Walmart_Listing_Product')->getCollection()
+            ->addFieldToFilter('variation_parent_id', array('notnull' => true))
+            ->addFieldToFilter('is_variation_product', 1);
+
+        $collection->getSelect()->reset(Zend_Db_Select::COLUMNS);
+        $collection->getSelect()->columns(
+            array(
+                'child_listing_product_ids' => new Zend_Db_Expr('GROUP_CONCAT(listing_product_id)'),
+                'variation_parent_id'       => 'variation_parent_id',
+                'searched_by_child'         => new Zend_Db_Expr('1')
+            )
+        );
+        $collection->getSelect()->group('variation_parent_id');
+
+        return $collection;
+    }
+
+    //########################################
+
+    protected function wasFoundByChild($row)
+    {
+        foreach (array('product_id', 'product_sku', 'online_sku', 'gtin') as $item) {
+            $searchedByChild = $row->getData("{$item}_searched_by_child");
+            if (!empty($searchedByChild)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    protected function getChildListingProductIds($row)
+    {
+        $ids = array();
+
+        foreach (array('product_id', 'product_sku', 'online_sku', 'gtin') as $item) {
+            $itemIds = $row->getData("{$item}_child_listing_product_ids");
+            if (empty($itemIds)) {
+                continue;
+            }
+
+            foreach (explode(',', $itemIds) as $itemId) {
+                !isset($ids[$itemId]) && $ids[$itemId] = 0;
+                $ids[$itemId]++;
+            }
+        }
+
+        $maxCount = max($ids);
+        foreach ($ids as $id => $count) {
+            if ($count < $maxCount) {
+                unset($ids[$id]);
+            }
+        }
+
+        return implode(',', array_keys($ids));
     }
 
     //########################################

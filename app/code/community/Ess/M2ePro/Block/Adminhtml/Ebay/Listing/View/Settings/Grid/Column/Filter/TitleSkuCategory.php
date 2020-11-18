@@ -30,10 +30,19 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Settings_Grid_Column_Filter_T
             $optionsHtml .= $this->_renderOption($option, $value);
         }
 
+        $value = $this->getValue();
+        $inputValue = '';
+
+        if (is_array($value) && isset($value['input'])) {
+            $inputValue = $value['input'];
+        } elseif (is_string($value)) {
+            $inputValue = $value;
+        }
+
         $html = <<<HTML
 <div class="field-100">
     <input type="text" name="{$this->_getHtmlName()}[input]" id="{$this->_getHtmlId()}_input"
-           value="{$this->getEscapedValue('input')}" class="input-text no-changes"/>
+           value="{$this->escapeHtml($inputValue)}" class="input-text no-changes"/>
 </div>
 <div style="padding: 5px 0; text-align: right; font-weight: normal">
     <label>{$helper->__('eBay Primary Category Assigned')}</label> :

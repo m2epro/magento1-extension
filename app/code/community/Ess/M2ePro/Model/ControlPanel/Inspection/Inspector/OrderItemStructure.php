@@ -86,7 +86,7 @@ HTML;
 </tr>
 HTML;
         $html .= '</table>
-<input style="margin-top: 10px" type="submit" value="Delete broken items">
+<button type="button" onclick="ControlPanelInspectionObj.removeRow(this)">Delete broken items</button>
 </form>';
 
         return $html;

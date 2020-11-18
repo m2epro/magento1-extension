@@ -221,19 +221,24 @@ class Ess_M2ePro_Model_Walmart_Order_Builder extends Mage_Core_Model_Abstract
 
     //########################################
 
-    /**
-     * @return Ess_M2ePro_Model_Order
-     */
     protected function createOrUpdateOrder()
     {
         if (!$this->isNew() && $this->getData('status') == Ess_M2ePro_Model_Walmart_Order::STATUS_CANCELED) {
             $this->_order->setData('status', Ess_M2ePro_Model_Walmart_Order::STATUS_CANCELED);
             $this->_order->setData('purchase_update_date', $this->getData('purchase_update_date'));
+            $this->_order->save();
         } else {
-            $this->_order->addData($this->getData());
+            foreach ($this->getData() as $key => $value) {
+                if (!$this->_order->getId() ||
+                    ($this->_order->hasData($key) && $this->_order->getData($key) != $value)
+                ) {
+                    $this->_order->addData($this->getData());
+                    $this->_order->save();
+                    break;
+                }
+            }
         }
 
-        $this->_order->save();
         $this->_order->setAccount($this->_account);
     }
 
@@ -385,7 +390,7 @@ class Ess_M2ePro_Model_Walmart_Order_Builder extends Mage_Core_Model_Abstract
                     $listingProduct->setData('online_qty', $currentOnlineQty - $orderItem['qty']);
 
                     $tempLogMessage = Mage::helper('M2ePro')->__(
-                        'Item QTY was successfully changed from %from% to %to% .',
+                        'Item QTY was changed from %from% to %to% .',
                         $currentOnlineQty,
                         ($currentOnlineQty - $orderItem['qty'])
                     );
@@ -409,7 +414,7 @@ class Ess_M2ePro_Model_Walmart_Order_Builder extends Mage_Core_Model_Abstract
                 $listingProduct->setData('online_qty', 0);
 
                 $tempLogMessages = array(Mage::helper('M2ePro')->__(
-                    'Item QTY was successfully changed from %from% to %to% .',
+                    'Item QTY was changed from %from% to %to% .',
                     $currentOnlineQty, 0
                 ));
 
@@ -421,7 +426,7 @@ class Ess_M2ePro_Model_Walmart_Order_Builder extends Mage_Core_Model_Abstract
 
                     if (!empty($statusChangedFrom) && !empty($statusChangedTo)) {
                         $tempLogMessages[] = Mage::helper('M2ePro')->__(
-                            'Item Status was successfully changed from "%from%" to "%to%" .',
+                            'Item Status was changed from "%from%" to "%to%" .',
                             $statusChangedFrom,
                             $statusChangedTo
                         );

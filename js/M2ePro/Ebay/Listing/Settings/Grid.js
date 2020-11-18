@@ -188,14 +188,9 @@ window.EbayListingSettingsGrid = Class.create(EbayListingViewGrid, {
     transferring: function(id)
     {
         this.selectedProductsIds = id ? [id] : this.getSelectedProductsArray();
-        if (this.selectedProductsIds.length) {
-            this.unselectAll();
+        this.unselectAll();
 
-            var productName = this.selectedProductsIds.length == 1 ?
-                this.getProductNameByRowId(this.selectedProductsIds[0]) : null;
-
-            EbayListingTransferringObj.loadActionHtml(this.selectedProductsIds, null, productName);
-        }
+        EbayListingTransferringObj.popupShow(this.selectedProductsIds);
     },
 
     // ---------------------------------------

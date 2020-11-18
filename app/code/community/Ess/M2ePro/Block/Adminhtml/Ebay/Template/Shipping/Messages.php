@@ -156,8 +156,7 @@ HTML;
                 $attributes = array_merge(
                     $attributes,
                     $service->getCostAttributes(),
-                    $service->getCostAdditionalAttributes(),
-                    $service->getCostSurchargeAttributes()
+                    $service->getCostAdditionalAttributes()
                 );
             }
         } else {
@@ -169,11 +168,6 @@ HTML;
             $shippingCostAdditionalAttributes = $template->getData('shipping_cost_additional_attribute');
             if (!empty($shippingCostAdditionalAttributes)) {
                 $attributes = array_merge($attributes, $shippingCostAdditionalAttributes);
-            }
-
-            $shippingCostSurchargeAttributes = $template->getData('shipping_cost_surcharge_attribute');
-            if (!empty($shippingCostSurchargeAttributes)) {
-                $attributes = array_merge($attributes, $shippingCostSurchargeAttributes);
             }
         }
 

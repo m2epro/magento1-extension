@@ -54,7 +54,7 @@ class Ess_M2ePro_Observer_Magento_Configuration_Init extends Ess_M2ePro_Observer
                 continue;
             }
 
-            if (strtolower(trim($section->label)) == 'advanced') {
+            if (strtolower(trim($section->label)) == 'module & channels') {
                 continue;
             }
 

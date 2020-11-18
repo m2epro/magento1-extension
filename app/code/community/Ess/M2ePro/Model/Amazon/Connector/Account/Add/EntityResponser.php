@@ -7,7 +7,7 @@
  */
 
 class Ess_M2ePro_Model_Amazon_Connector_Account_Add_EntityResponser
-    extends Ess_M2ePro_Model_Amazon_Connector_Command_Pending_Responser
+    extends Ess_M2ePro_Model_Connector_Command_Pending_Responser
 {
     //########################################
 
@@ -26,7 +26,9 @@ class Ess_M2ePro_Model_Amazon_Connector_Account_Add_EntityResponser
         $responseData = $this->getPreparedResponseData();
 
         /** @var $amazonAccount Ess_M2ePro_Model_Amazon_Account */
-        $amazonAccount = $this->getAccount()->getChildObject();
+        $amazonAccount = Mage::helper('M2ePro/Component_Amazon')
+            ->getObject('Account', $this->_params['account_id'])
+            ->getChildObject();
 
         $dataForUpdate = array(
             'server_hash' => $responseData['hash'],
@@ -34,16 +36,6 @@ class Ess_M2ePro_Model_Amazon_Connector_Account_Add_EntityResponser
         );
 
         $amazonAccount->addData($dataForUpdate)->save();
-    }
-
-    //########################################
-
-    /**
-     * @return Ess_M2ePro_Model_Account
-     */
-    protected function getAccount()
-    {
-        return $this->getObjectByParam('Account', 'account_id');
     }
 
     //########################################

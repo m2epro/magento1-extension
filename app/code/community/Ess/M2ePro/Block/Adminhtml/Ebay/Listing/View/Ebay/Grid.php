@@ -21,10 +21,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Ebay_Grid
         parent::__construct();
 
         $this->setDefaultSort(false);
-        $this->setId('ebayListingViewGridEbay');
 
         $this->_showAdvancedFilterProductsOption = false;
         $this->_listing = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
+
+        $this->setId('ebayListingViewGrid'. $this->_listing->getId());
     }
 
     //########################################
@@ -148,6 +149,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Ebay_Grid
                 'type'      => 'text',
                 'index'     => 'online_title',
                 'frame_callback' => array($this, 'callbackColumnTitle'),
+                'filter'    => 'M2ePro/adminhtml_ebay_listing_view_columnFilter',
                 'filter_condition_callback' => array($this, 'callbackFilterTitle')
             )
         );
@@ -330,7 +332,9 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Ebay_Grid
         $onlineTitle = $row->getData('online_title');
         !empty($onlineTitle) && $title = $onlineTitle;
 
-        $title = Mage::helper('M2ePro')->escapeHtml($title);
+        $helper = Mage::helper('M2ePro');
+
+        $title = $helper->escapeHtml($title);
 
         $valueHtml = '<span class="product-title-value">' . $title . '</span>';
 
@@ -342,19 +346,15 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Ebay_Grid
         $onlineSku = $row->getData('online_sku');
         !empty($onlineSku) && $sku = $onlineSku;
 
-        $valueHtml .= '<br/>' .
-                      '<strong>' . Mage::helper('M2ePro')->__('SKU') . ':</strong>&nbsp;' .
-                      Mage::helper('M2ePro')->escapeHtml($sku);
+        $valueHtml .= '<br/>' . '<strong>' . $helper->__('SKU') . ':</strong>&nbsp;' . $helper->escapeHtml($sku);
 
         if ($category = $row->getData('online_main_category')) {
             $valueHtml .= '<br/><br/>' .
-                          '<strong>' . Mage::helper('M2ePro')->__('Category') . ':</strong>&nbsp;'.
-                          Mage::helper('M2ePro')->escapeHtml($category);
+                          '<strong>' . $helper->__('Category') . ':</strong>&nbsp;'.
+                           $helper->escapeHtml($category);
         }
 
-        $valueHtml .= '<br/>' .
-                      '<strong>' . Mage::helper('M2ePro')->__('eBay Fee') . ':</strong>&nbsp;' .
-                      $this->getItemFeeHtml($row);
+        $valueHtml .= '<br/><strong>' . $helper->__('eBay Fee') . ':</strong>&nbsp;' . $this->getItemFeeHtml($row);
 
         /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
         $listingProduct = Mage::helper('M2ePro/Component_Ebay')
@@ -364,7 +364,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Ebay_Grid
             return $valueHtml;
         }
 
-        $additionalData = (array)Mage::helper('M2ePro')->jsonDecode($row->getData('additional_data'));
+        $additionalData = (array)$helper->jsonDecode($row->getData('additional_data'));
 
         $productAttributes = isset($additionalData['variations_sets'])
             ? array_keys($additionalData['variations_sets']) : array();
@@ -373,9 +373,10 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Ebay_Grid
         $valueHtml .= implode(', ', $productAttributes);
         $valueHtml .= '</div>';
 
-        $linkContent = Mage::helper('M2ePro')->__('Manage Variations');
-        $vpmt = Mage::helper('M2ePro')->__('Manage Variations of &quot;%s&quot; ', $title);
-        $vpmt = addslashes($vpmt);
+        $linkContent = $helper->__('Manage Variations');
+        $vpmt = $helper->escapeJs(
+            $helper->__('Manage Variations of "%s" ', $title)
+        );
 
         $itemId = $this->getData('item_id');
 
@@ -383,16 +384,35 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Ebay_Grid
             $vpmt .= '('. $itemId .')';
         }
 
-        $linkTitle = Mage::helper('M2ePro')->__('Open Manage Variations Tool');
+        $linkTitle = $helper->__('Open Manage Variations Tool');
         $listingProductId = (int)$row->getData('listing_product_id');
 
         $valueHtml .= <<<HTML
 <div style="float: left; margin: 0 0 0 7px">
 <a href="javascript:"
-onclick="EbayListingEbayGridObj.variationProductManageHandler.openPopUp({$listingProductId}, '{$vpmt}')"
+onclick="EbayListingEbayGridObj.variationProductManageHandler.openPopUp(
+        {$listingProductId}, '{$helper->escapeHtml($vpmt)}'
+    )"
 title="{$linkTitle}">{$linkContent}</a>&nbsp;
 </div>
 HTML;
+
+        if ($childVariationIds = $this->getRequest()->getParam('child_variation_ids')) {
+
+            $valueHtml .= <<<HTML
+<script type="text/javascript">
+
+    Event.observe(window, 'load', function() {
+        setTimeout(function() {
+            EbayListingEbayGridObj.variationProductManageHandler.openPopUp(
+                    {$listingProductId}, '{$vpmt}', 'searched_by_child', '{$childVariationIds}'
+                )
+        }, 350);
+    });
+
+</script>
+HTML;
+        }
 
         return $valueHtml;
     }
@@ -435,6 +455,10 @@ HTML;
 
         if ($value == null) {
             return;
+        }
+
+        if (is_array($value) && isset($value['input'])) {
+            $value = $value['input'];
         }
 
         $collection->addFieldToFilter(

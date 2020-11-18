@@ -119,7 +119,7 @@ abstract class Ess_M2ePro_Model_Listing_Auto_Actions_Listing
             Ess_M2ePro_Helper_Data::INITIATOR_UNKNOWN,
             $actionId,
             Ess_M2ePro_Model_Listing_Log::ACTION_ADD_PRODUCT_TO_MAGENTO,
-            'Product was successfully Added',
+            'Product was Added',
             Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE
         );
     }

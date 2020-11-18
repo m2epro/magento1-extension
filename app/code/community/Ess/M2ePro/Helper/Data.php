@@ -338,7 +338,8 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
 
     public function serialize($data)
     {
-        return Zend_Serializer::serialize($data);
+        // @codingStandardsIgnoreLine
+        return serialize($data);
     }
 
     public function unserialize($data)
@@ -346,13 +347,13 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
         if (empty($data) || !is_string($data)) {
             return array();
         }
-
-       	try{
+    try{
+      // @codingStandardsIgnoreLine
 			return Zend_Serializer::unserialize($data);
 		}catch(Exception $e){
-			Mage::log("M2epro: Error unserialize data");
 			return array();
 		}
+
     }
 
     //########################################

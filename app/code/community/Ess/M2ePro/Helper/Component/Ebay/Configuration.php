@@ -120,29 +120,6 @@ class Ess_M2ePro_Helper_Component_Ebay_Configuration extends Mage_Core_Helper_Ab
         );
     }
 
-    /**
-     * @param string $value
-     *
-     * @return $this
-     */
-    public function setSellOnAnotherMarketplaceTutorialShown($value)
-    {
-        Mage::helper('M2ePro/Module')->getConfig()->setGroupValue(
-            self::CONFIG_GROUP,
-            'sell_on_another_marketplace_tutorial_shown',
-            $value
-        );
-
-        return $this;
-    }
-
-    public function getSellOnAnotherMarketplaceTutorialShown()
-    {
-        return Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
-            self::CONFIG_GROUP, 'sell_on_another_marketplace_tutorial_shown'
-        );
-    }
-
     //########################################
 
     public function getViewTemplateSellingFormatShowTaxCategory()

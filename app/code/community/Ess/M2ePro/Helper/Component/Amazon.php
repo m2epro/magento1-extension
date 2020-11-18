@@ -193,6 +193,39 @@ class Ess_M2ePro_Helper_Component_Amazon extends Mage_Core_Helper_Abstract
 
     //########################################
 
+    public function getStatesList()
+    {
+        $collection = Mage::getResourceModel('directory/region_collection');
+        $collection->addCountryFilter('US');
+
+        $collection->addFieldToFilter(
+            'default_name',
+            array(
+                'nin' => array(
+                    'Armed Forces Africa',
+                    'Armed Forces Americas',
+                    'Armed Forces Canada',
+                    'Armed Forces Europe',
+                    'Armed Forces Middle East',
+                    'Armed Forces Pacific',
+                    'Federated States Of Micronesia',
+                    'Marshall Islands',
+                    'Palau'
+                )
+            )
+        );
+
+        $states = array();
+
+        foreach ($collection->getItems() as $state) {
+            $states[$state->getCode()] = $state->getName();
+        }
+
+        return $states;
+    }
+
+    //########################################
+
     public function clearCache()
     {
         Mage::helper('M2ePro/Data_Cache_Permanent')->removeTagValues(self::NICK);

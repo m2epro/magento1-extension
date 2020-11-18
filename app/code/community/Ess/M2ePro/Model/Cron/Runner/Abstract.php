@@ -167,7 +167,6 @@ abstract class Ess_M2ePro_Model_Cron_Runner_Abstract
             'cron_runner', null, $this->getInitiator(), $this->getOperationHistoryData()
         );
         $this->getOperationHistory()->makeShutdownFunction();
-        $this->getOperationHistory()->cleanOldData();
     }
 
     protected function afterEnd()

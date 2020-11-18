@@ -165,7 +165,7 @@ window.SynchProgress = Class.create(Common, {
                 M2ePro.translator.translate('Marketplace synchronization was completed with warnings. <a target="_blank" href="%url%">View Log</a> for the details.')
             ));
         } else {
-            MessageObj.addSuccess(M2ePro.translator.translate('Marketplace synchronization was completed successfully.'));
+            MessageObj.addSuccess(M2ePro.translator.translate('Marketplace synchronization was completed.'));
         }
 
         self.result = null;

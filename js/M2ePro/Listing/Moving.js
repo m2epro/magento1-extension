@@ -95,7 +95,7 @@ window.ListingMoving = Class.create(Action, {
         var part = parts.splice(0, 1);
         var currentPart = part[0];
 
-        new Ajax.Request(M2ePro.url.prepareData, {
+        new Ajax.Request(M2ePro.url.get('prepareMoveToListing'), {
             method: 'post',
             parameters: {
                 componentMode: M2ePro.customData.componentMode,
@@ -146,7 +146,7 @@ window.ListingMoving = Class.create(Action, {
     {
         var self = this;
 
-        new Ajax.Request(M2ePro.url.getGridHtml, {
+        new Ajax.Request(M2ePro.url.get('moveToListingPopupHtml'), {
             method: 'get',
             parameters: {
                 componentMode : M2ePro.customData.componentMode,
@@ -165,7 +165,7 @@ window.ListingMoving = Class.create(Action, {
     {
         var self = this;
 
-        new Ajax.Request(M2ePro.url.moveToListing, {
+        new Ajax.Request(M2ePro.url.get('moveToListing'), {
             method: 'post',
             parameters: {
                 componentMode: M2ePro.customData.componentMode,

@@ -266,10 +266,6 @@ class Ess_M2EPro_Model_Ebay_Template_Shipping_Builder
             unset($this->_rawData['shipping_cost_value']['%i%']);
         }
 
-        if (isset($this->_rawData['shipping_cost_surcharge_value']['%i%'])) {
-            unset($this->_rawData['shipping_cost_surcharge_value']['%i%']);
-        }
-
         if (isset($this->_rawData['shipping_cost_additional_value']['%i%'])) {
             unset($this->_rawData['shipping_cost_additional_value']['%i%']);
         }
@@ -307,18 +303,6 @@ class Ess_M2EPro_Model_Ebay_Template_Shipping_Builder
                     : '';
             }
 
-            if ($costMode == Ess_M2ePro_Model_Ebay_Template_Shipping_Service::COST_MODE_CUSTOM_ATTRIBUTE) {
-                $costSurcharge = isset($this->_rawData['shipping_cost_surcharge_attribute'][$i])
-                    ? $this->_rawData['shipping_cost_surcharge_attribute'][$i]
-                    : '';
-            } else if ($costMode == Ess_M2ePro_Model_Ebay_Template_Shipping_Service::COST_MODE_CUSTOM_VALUE) {
-                $costSurcharge = isset($this->_rawData['shipping_cost_surcharge_value'][$i])
-                    ? $this->_rawData['shipping_cost_surcharge_value'][$i]
-                    : '';
-            } else {
-                $costSurcharge = '';
-            }
-
             $services[] = array(
                 'template_shipping_id'  => $templateShippingId,
                 'cost_mode'             => $costMode,
@@ -326,7 +310,6 @@ class Ess_M2EPro_Model_Ebay_Template_Shipping_Builder
                 'shipping_value'        => $this->_rawData['shipping_service'][$i],
                 'shipping_type'         => $shippingType,
                 'cost_additional_value' => $costAdditional,
-                'cost_surcharge_value'  => $costSurcharge,
                 'priority'              => $this->_rawData['shipping_priority'][$i],
                 'locations'             => Mage::helper('M2ePro')->jsonEncode($locations)
             );

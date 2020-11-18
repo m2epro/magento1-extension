@@ -201,7 +201,7 @@ class Ess_M2ePro_Adminhtml_Amazon_AccountController
             return $this->indexAction();
         }
 
-        $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Token was successfully saved'));
+        $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Token was saved'));
         $urlParams['id'] = $accountId;
         $this->_redirect('*/*/edit', $urlParams);
     }
@@ -214,7 +214,21 @@ class Ess_M2ePro_Adminhtml_Amazon_AccountController
             $this->_redirect('*/*/index');
         }
 
-        $model = $this->updateAccount($this->getRequest()->getParam('id'), $post);
+        $id = $this->getRequest()->getParam('id');
+
+        $accountExists = $this->getExistsAccount($post['merchant_id'], $post['marketplace_id']);
+        if (empty($id) && !empty($accountExists)) {
+            $this->_getSession()->addError(
+                Mage::helper('M2ePro')->__(
+                    'An account with the same Amazon Merchant ID and Marketplace already exists.'
+                )
+            );
+
+            $this->_redirect('*/*/new');
+            return;
+        }
+
+        $model = $this->updateAccount($id, $post);
 
         // Repricing
         // ---------------------------------------
@@ -269,7 +283,7 @@ class Ess_M2ePro_Adminhtml_Amazon_AccountController
             return $this->indexAction();
         }
 
-        $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Account was successfully saved'));
+        $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Account was saved'));
 
         /** @var $wizardHelper Ess_M2ePro_Helper_Module_Wizard */
         $wizardHelper = Mage::helper('M2ePro/Module_Wizard');
@@ -280,7 +294,7 @@ class Ess_M2ePro_Adminhtml_Amazon_AccountController
             $routerParams['wizard'] = true;
         }
 
-        $this->_redirectUrl(Mage::helper('M2ePro')->getBackUrl('list', array(), array('edit'=>$routerParams)));
+        $this->_redirectUrl(Mage::helper('M2ePro')->getBackUrl('list', array(), array('edit' => $routerParams)));
     }
 
     //########################################
@@ -340,7 +354,7 @@ class Ess_M2ePro_Adminhtml_Amazon_AccountController
         }
 
         $deleted && $this->_getSession()->addSuccess(
-            Mage::helper('M2ePro')->__('%amount% record(s) were successfully deleted.', $deleted)
+            Mage::helper('M2ePro')->__('%amount% record(s) were deleted.', $deleted)
         );
         $locked && $this->_getSession()->addError(
             Mage::helper('M2ePro')->__(
@@ -384,7 +398,7 @@ class Ess_M2ePro_Adminhtml_Amazon_AccountController
 
                 $result['result'] = isset($response['status']) ? $response['status'] : null;
                 if (isset($response['reason'])) {
-                    $result['reason'] = Mage::helper('M2ePro')->escapeJs($response['reason']);
+                    $result['reason'] = $response['reason'];
                 }
             } catch (Exception $exception) {
                 $result['result'] = false;
@@ -487,6 +501,36 @@ class Ess_M2ePro_Adminhtml_Amazon_AccountController
                 }
             }
         }
+    }
+
+    //########################################
+
+    protected function getExistsAccount($merchantId, $marketplaceId)
+    {
+        /** @var Ess_M2ePro_Model_Resource_Account_Collection $account */
+        $account = Mage::getModel('M2ePro/Amazon_Account')->getCollection()
+            ->addFieldToFilter('merchant_id', $merchantId)
+            ->addFieldToFilter('marketplace_id', $marketplaceId);
+
+        if (!$account->getSize()) {
+            return null;
+        }
+
+        return $account->getFirstItem();
+    }
+
+    //########################################
+
+    public function getExcludedStatesPopupHtmlAction()
+    {
+        /** @var Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit_Tabs_Order_ExcludedStates $block */
+        $block = $this->getLayout()->createBlock(
+            'M2ePro/adminhtml_amazon_account_edit_tabs_order_excludedStates',
+            '',
+            array('selected_states' => explode(',', $this->getRequest()->getParam('selected_states')))
+        );
+
+        $this->getResponse()->setBody($block->toHtml());
     }
 
     //########################################

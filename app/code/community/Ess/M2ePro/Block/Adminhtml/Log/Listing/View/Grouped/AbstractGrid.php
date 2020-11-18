@@ -154,7 +154,9 @@ abstract class Ess_M2ePro_Block_Adminhtml_Log_Listing_View_Grouped_AbstractGrid 
                 $messageType = $this->callbackColumnType(
                     '[' . $logTypeList[$log->getType()] . ']', $log, $column, $isExport
                 );
-                $createDate = $this->formatDate($log->getCreateDate(), IntlDateFormatter::MEDIUM, true);
+                $createDate = $this->formatDate(
+                    $log->getCreateDate(), Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM, true
+                );
             }
 
             $logDescription = parent::callbackColumnDescription(

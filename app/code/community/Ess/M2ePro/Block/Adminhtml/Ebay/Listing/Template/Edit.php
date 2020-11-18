@@ -148,8 +148,9 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Edit extends Mage_Adminht
 
             $nextStepBtnText = 'Next Step';
 
-            $sessionKey = 'ebay_listing_create';
-            $sessionData = Mage::helper('M2ePro/Data_Session')->getValue($sessionKey);
+            $sessionData = Mage::helper('M2ePro/Data_Session')->getValue(
+                Ess_M2ePro_Model_Ebay_Listing::CREATE_LISTING_SESSION_DATA
+            );
             if ($currentStep == 4 && isset($sessionData['creation_mode']) && $sessionData['creation_mode'] ===
                 Ess_M2ePro_Helper_View::LISTING_CREATION_MODE_LISTING_ONLY) {
                 $nextStepBtnText = 'Complete';

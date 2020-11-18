@@ -11,21 +11,6 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_List_Requester
 {
     //########################################
 
-    public function setListingProduct(Ess_M2ePro_Model_Listing_Product $listingProduct)
-    {
-        parent::setListingProduct($listingProduct);
-
-        $additionalData = $listingProduct->getAdditionalData();
-        unset($additionalData['synch_template_list_rules_note']);
-        $this->_listingProduct->setSettings('additional_data', $additionalData);
-
-        $this->_listingProduct->save();
-
-        return $this;
-    }
-
-    //########################################
-
     protected function getProcessingRunnerModelName()
     {
         return 'Walmart_Listing_Product_Action_List_ProcessingRunner';

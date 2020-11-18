@@ -13,6 +13,8 @@ abstract class Ess_M2ePro_Model_Order_Item_Proxy
 
     protected $_qty = null;
 
+    protected $_price = null;
+
     protected $_subtotal = null;
 
     protected $_additionalData = array();
@@ -24,6 +26,12 @@ abstract class Ess_M2ePro_Model_Order_Item_Proxy
         $this->_item     = $item;
         $this->_subtotal = $this->getOriginalPrice() * $this->getOriginalQty();
     }
+
+    //########################################
+
+    abstract public function getOriginalPrice();
+
+    abstract public function getOriginalQty();
 
     //########################################
 
@@ -96,6 +104,15 @@ abstract class Ess_M2ePro_Model_Order_Item_Proxy
         // ---------------------------------------
     }
 
+    /**
+     * @return bool
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
+    public function pretendedToBeSimple()
+    {
+        return $this->_item->getParentObject()->pretendedToBeSimple();
+    }
+
     //########################################
 
     public function getProduct()
@@ -132,14 +149,32 @@ abstract class Ess_M2ePro_Model_Order_Item_Proxy
         return $this->getProxyOrder()->convertPriceToBase($this->getPrice());
     }
 
-    public function getPrice()
+    /**
+     * @param float $price
+     * @return $this
+     */
+    public function setPrice($price)
     {
-        return $this->_subtotal / $this->getQty();
+        if ($price <= 0) {
+            throw new InvalidArgumentException('Price cannot be less than zero.');
+        }
+
+        $this->_price = $price;
+
+        return $this;
     }
 
-    abstract public function getOriginalPrice();
+    /**
+     * @return float
+     */
+    public function getPrice()
+    {
+        if ($this->_price !== null) {
+            return $this->_price;
+        }
 
-    abstract public function getOriginalQty();
+        return $this->_subtotal / $this->getQty();
+    }
 
     public function setQty($qty)
     {

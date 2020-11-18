@@ -7,7 +7,7 @@
  */
 
 class Ess_M2ePro_Model_Amazon_Connector_Account_Delete_EntityResponser
-    extends Ess_M2ePro_Model_Amazon_Connector_Command_Pending_Responser
+    extends Ess_M2ePro_Model_Connector_Command_Pending_Responser
 {
     //########################################
 

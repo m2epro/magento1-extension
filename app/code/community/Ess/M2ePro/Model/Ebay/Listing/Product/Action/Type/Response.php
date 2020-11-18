@@ -263,6 +263,13 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Response
             $data['variations'] = Mage::helper('M2ePro')->jsonEncode($variations);
         }
 
+        if ($this->getListingProduct()->getMagentoProduct()->isGroupedType()) {
+            $additionalData = $this->getListingProduct()->getAdditionalData();
+            $data['additional_data'] = Mage::helper('M2ePro')->jsonEncode(array(
+                'grouped_product_mode' => $additionalData['grouped_product_mode']
+            ));
+        }
+
         /** @var Ess_M2ePro_Model_Ebay_Item $object */
         $object = Mage::getModel('M2ePro/Ebay_Item');
         $object->setData($data)->save();

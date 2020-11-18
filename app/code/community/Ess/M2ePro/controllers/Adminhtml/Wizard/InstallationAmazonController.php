@@ -306,6 +306,10 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationAmazonController
         $data['magento_orders_settings']['listing_other']['store_id'] = Mage::helper('M2ePro/Magento_Store')
             ->getDefaultStoreId();
 
+        $data['magento_orders_settings']['tax']['excluded_states'] = implode(
+            ',', $data['magento_orders_settings']['tax']['excluded_states']
+        );
+
         return $data;
     }
 

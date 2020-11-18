@@ -48,13 +48,13 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Updater
     {
         /** @var Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager $variationManager */
         $variationManager = $listingProduct->getChildObject()->getVariationManager();
-        $magentoProduct = $listingProduct->getMagentoProduct();
-
-        if (!$magentoProduct->isProductWithVariations() || $variationManager->isVariationProduct()) {
+        if ($variationManager->isVariationProduct() || !$listingProduct->getChildObject()->isVariationMode()) {
             return false;
         }
 
+        // need to be added to parent
         $listingProduct->setData('is_variation_product', 1);
+
         $variationManager->setIndividualType();
         $variationManager->getTypeModel()->resetProductVariation();
 
@@ -65,15 +65,13 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Updater
     {
         /** @var Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager $variationManager */
         $variationManager = $listingProduct->getChildObject()->getVariationManager();
-        $isVariationMagentoProduct = $listingProduct->getMagentoProduct()->isProductWithVariations();
-
-        if ($isVariationMagentoProduct || !$variationManager->isVariationProduct()) {
+        if (!$variationManager->isVariationProduct() || $listingProduct->getChildObject()->isVariationMode()) {
             return false;
         }
 
         $variationManager->getTypeModel()->clearTypeData();
 
-        if ($variationManager->isRelationParentType()) {
+        if ($variationManager->isRelationParentType() && !$listingProduct->isGroupedProductModeSet()) {
             $listingProduct->setData('status', Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED);
             $listingProduct->deleteInstance();
             $listingProduct->isDeleted(true);

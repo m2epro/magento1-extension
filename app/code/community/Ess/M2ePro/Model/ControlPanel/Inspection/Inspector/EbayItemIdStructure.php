@@ -93,7 +93,7 @@ HTML;
 </tr>
 HTML;
         $html .= '</table>
-<input style="margin-top: 10px" type="submit" value="Repair">
+<button type="button" onclick="ControlPanelInspectionObj.removeRow(this)">Repair</button>
 </form>';
 
         return $html;

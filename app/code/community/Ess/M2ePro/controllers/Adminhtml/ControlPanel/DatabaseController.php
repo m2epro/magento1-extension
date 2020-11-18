@@ -53,7 +53,7 @@ class Ess_M2ePro_Adminhtml_ControlPanel_DatabaseController
             $this->afterTableAction($table);
         }
 
-        $this->_getSession()->addSuccess('Deleting Tables Rows was successfully completed.');
+        $this->_getSession()->addSuccess('Deleting Tables Rows was completed.');
 
         if (count($tables) == 1) {
             $this->redirectToTablePage($tables[0]);
@@ -76,7 +76,7 @@ class Ess_M2ePro_Adminhtml_ControlPanel_DatabaseController
             $this->afterTableAction($table);
         }
 
-        $this->_getSession()->addSuccess('Truncate Tables was successfully completed.');
+        $this->_getSession()->addSuccess('Truncate Tables was completed.');
 
         if (count($tables) == 1) {
             $this->redirectToTablePage($tables[0]);

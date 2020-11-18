@@ -268,19 +268,9 @@ class Ess_M2ePro_Model_Walmart_Order_Item extends Ess_M2ePro_Model_Component_Chi
     protected function createProduct()
     {
         if (!$this->getWalmartAccount()->isMagentoOrdersListingsOtherProductImportEnabled()) {
-            throw new Ess_M2ePro_Model_Exception(
-                Mage::helper('M2ePro')->__(
-                    'Product creation is disabled in "Account > Orders > Product Not Found". 
-                     Enable product creation <a href="%url%" target="_blank">here</a>',
-                    Mage::helper('adminhtml')->getUrl(
-                        'M2ePro/adminhtml_walmart_account/edit',
-                        array(
-                            'id' => $this->getWalmartAccount()->getId(),
-                            'tab' => Ess_M2ePro_Block_Adminhtml_Walmart_Account_Edit_Tabs::TAB_ID_ORDERS
-                        )
-                    )
-                )
-            );
+            throw new Ess_M2ePro_Model_Exception(Mage::helper('M2ePro')->__(
+                'Product creation is disabled in "Account > Orders > Product Not Found".'
+            ));
         }
 
         $storeId = $this->getWalmartAccount()->getMagentoOrdersListingsOtherStoreId();

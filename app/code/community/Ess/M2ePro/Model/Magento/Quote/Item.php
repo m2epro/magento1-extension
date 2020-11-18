@@ -42,7 +42,7 @@ class Ess_M2ePro_Model_Magento_Quote_Item
             return $this->_product;
         }
 
-        if ($this->_proxyItem->getMagentoProduct()->isGroupedType()) {
+        if ($this->_proxyItem->getMagentoProduct()->isGroupedType() && !$this->_proxyItem->pretendedToBeSimple()) {
             $this->_product = $this->getAssociatedGroupedProduct();
 
             if ($this->_product === null) {

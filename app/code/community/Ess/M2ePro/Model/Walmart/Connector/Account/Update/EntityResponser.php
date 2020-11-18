@@ -7,7 +7,7 @@
  */
 
 class Ess_M2ePro_Model_Walmart_Connector_Account_Update_EntityResponser
-    extends Ess_M2ePro_Model_Walmart_Connector_Command_Pending_Responser
+    extends Ess_M2ePro_Model_Connector_Command_Pending_Responser
 {
     //########################################
 
@@ -26,23 +26,15 @@ class Ess_M2ePro_Model_Walmart_Connector_Account_Update_EntityResponser
         $responseData = $this->getPreparedResponseData();
 
         /** @var $walmartAccount Ess_M2ePro_Model_Walmart_Account */
-        $walmartAccount = $this->getAccount()->getChildObject();
+        $walmartAccount = Mage::helper('M2ePro/Component_Walmart')
+            ->getObject('Account', $this->_params['account_id'])
+            ->getChildObject();
 
         $dataForUpdate = array(
             'info' => Mage::helper('M2ePro')->jsonEncode($responseData['info'])
         );
 
         $walmartAccount->addData($dataForUpdate)->save();
-    }
-
-    //########################################
-
-    /**
-     * @return Ess_M2ePro_Model_Account
-     */
-    protected function getAccount()
-    {
-        return $this->getObjectByParam('Account', 'account_id');
     }
 
     //########################################

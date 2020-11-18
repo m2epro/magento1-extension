@@ -83,7 +83,7 @@ class Ess_M2ePro_Adminhtml_ControlPanel_InspectionController
             Mage::helper('M2ePro/Module_Maintenance')->enable();
         }
 
-        $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Changed successfully.'));
+        $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Changed.'));
         return $this->_redirectUrl(Mage::helper('M2ePro/View_ControlPanel')->getPageUrl());
     }
 
@@ -119,7 +119,7 @@ class Ess_M2ePro_Adminhtml_ControlPanel_InspectionController
 
         Mage::helper('M2ePro/Magento')->clearCache();
 
-        $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Extension upgrade was successfully completed.'));
+        $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Extension upgrade was completed.'));
         return $this->_redirectUrl(Mage::helper('M2ePro/View_ControlPanel')->getPageUrl());
     }
 

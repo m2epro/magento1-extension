@@ -39,6 +39,7 @@ window.AmazonListingGrid = Class.create(ListingGrid, {
         this.actions = Object.extend(this.actions, {
 
             duplicateAction: this.duplicateProducts.bind(this),
+            transferringAction: this.transferring.bind(this),
 
             movingAction: this.movingHandler.run.bind(this.movingHandler),
             deleteAndRemoveAction: this.actionHandler.deleteAndRemoveAction.bind(this.actionHandler),
@@ -96,10 +97,15 @@ window.AmazonListingGrid = Class.create(ListingGrid, {
                 this.repricingHandler.removeFromRepricing(id);
             }).bind(this),
 
-            assignGeneralIdAction: (function() { this.productSearchHandler.searchGeneralIdAuto(this.getSelectedProductsString())}).bind(this),
-            newGeneralIdAction: (function() { this.productSearchHandler.addNewGeneralId(this.getSelectedProductsString())}).bind(this),
-            unassignGeneralIdAction: (function() { this.productSearchHandler.unmapFromGeneralId(this.getSelectedProductsString())}).bind(this)
-
+            assignGeneralIdAction: (function() {
+                this.productSearchHandler.searchGeneralIdAuto(this.getSelectedProductsString())
+            }).bind(this),
+            newGeneralIdAction: (function() {
+                this.productSearchHandler.addNewGeneralId(this.getSelectedProductsString())
+            }).bind(this),
+            unassignGeneralIdAction: (function() {
+                this.productSearchHandler.unmapFromGeneralId(this.getSelectedProductsString())
+            }).bind(this)
         });
 
     },
@@ -145,6 +151,14 @@ window.AmazonListingGrid = Class.create(ListingGrid, {
                 }
             }).bind(this)
         });
+    },
+
+    transferring: function(id)
+    {
+        this.selectedProductsIds = id ? [id] : this.getSelectedProductsArray();
+        this.unselectAll();
+
+        AmazonListingTransferringObj.popupShow(this.selectedProductsIds);
     },
 
     // ---------------------------------------

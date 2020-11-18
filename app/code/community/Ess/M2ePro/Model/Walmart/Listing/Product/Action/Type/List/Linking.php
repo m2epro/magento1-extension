@@ -102,6 +102,13 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_Linking
             }
         }
 
+        if ($this->getListingProduct()->getMagentoProduct()->isGroupedType()) {
+            $additionalData = $this->getListingProduct()->getAdditionalData();
+            $data['additional_data'] = Mage::helper('M2ePro')->jsonEncode(array(
+                'grouped_product_mode' => $additionalData['grouped_product_mode']
+            ));
+        }
+
         /** @var Ess_M2ePro_Model_Walmart_Item $object */
         $object = Mage::getModel('M2ePro/Walmart_Item');
         $object->setData($data);

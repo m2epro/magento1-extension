@@ -165,5 +165,25 @@ class Ess_M2ePro_Model_Ebay_Item extends Ess_M2ePro_Model_Component_Abstract
         return $this->getSettings('variations');
     }
 
+    /**
+     * @return int
+     */
+    public function getGroupedProductMode()
+    {
+        return (int)$this->getSetting(
+            'additional_data',
+            'grouped_product_mode',
+            Ess_M2ePro_Model_Listing_Product::GROUPED_PRODUCT_MODE_OPTIONS
+        );
+    }
+
+    /**
+     * @return bool
+     */
+    public function isGroupedProductModeSet()
+    {
+        return $this->getGroupedProductMode() == Ess_M2ePro_Model_Listing_Product::GROUPED_PRODUCT_MODE_SET;
+    }
+
     //########################################
 }

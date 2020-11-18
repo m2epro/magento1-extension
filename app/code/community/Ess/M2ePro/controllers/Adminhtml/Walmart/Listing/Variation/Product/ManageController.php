@@ -107,8 +107,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_Variation_Product_ManageController
             return $this->getResponse()->setBody('You should provide correct parameters.');
         }
 
-        $a = $this->hasChildWithWarning($productId);
-        if ($a) {
+        if ($this->hasChildWithWarning($productId)) {
             $message = Mage::helper('M2ePro')->__(
                 'For one of the Child Walmart Products the accordance of Magento
             Product Variation is not set. Please, specify a Variation for further work with this Child Product.'
@@ -122,6 +121,12 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_Variation_Product_ManageController
 
         $help = $this->getLayout()
             ->createBlock('M2ePro/adminhtml_walmart_listing_variation_product_manage_tabs_variations_help');
+
+        if ($this->getRequest()->getParam('listing_product_id_filter')) {
+            $this->_getSession()->addNotice(Mage::helper('M2ePro')->__(
+                'This list includes a Product you are searching for.'
+            ));
+        }
 
         $this->_initAction();
 
@@ -531,7 +536,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_Variation_Product_ManageController
 
         $result = array(
             'type' => 'success',
-            'msg'  => Mage::helper('M2ePro')->__('New Walmart Child Product was successfully created.')
+            'msg'  => Mage::helper('M2ePro')->__('New Walmart Child Product was created.')
         );
 
         return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode($result));

@@ -7,7 +7,7 @@
  */
 
 abstract class Ess_M2ePro_Model_Ebay_Connector_Item_Responser
-    extends Ess_M2ePro_Model_Ebay_Connector_Command_Pending_Responser
+    extends Ess_M2ePro_Model_Connector_Command_Pending_Responser
 {
     /**
      * @var Ess_M2ePro_Model_Listing_Product
@@ -40,8 +40,8 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Item_Responser
     {
         parent::__construct($params, $response);
 
-        $listingProductId      = $this->_params['product']['id'];
-        $this->_listingProduct = Mage::helper('M2ePro/Component_Ebay')->getObject('Listing_Product', $listingProductId);
+        $this->_listingProduct = Mage::helper('M2ePro/Component_Ebay')
+                                    ->getObject('Listing_Product', $this->_params['product']['id']);
     }
 
     //########################################
@@ -417,7 +417,10 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Item_Responser
                 'item_id' => $ebayListingProduct->getEbayItemIdReal(),
                 'parser_type' => 'standard',
                 'full_variations_mode' => true
-            ), 'result', $this->getMarketplace(), $this->getAccount()
+            ),
+            'result',
+            Mage::helper('M2ePro/Component_Ebay')->getObject('Marketplace', $this->getMarketplaceId()),
+            Mage::helper('M2ePro/Component_Ebay')->getObject('Account', $this->getAccountId())
         );
 
         try {
@@ -724,19 +727,19 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Item_Responser
     //########################################
 
     /**
-     * @return Ess_M2ePro_Model_Account
+     * @return int
      */
-    protected function getAccount()
+    protected function getAccountId()
     {
-        return $this->getObjectByParam('Account', 'account_id');
+        return (int)$this->_params['account_id'];
     }
 
     /**
-     * @return Ess_M2ePro_Model_Marketplace
+     * @return int
      */
-    protected function getMarketplace()
+    protected function getMarketplaceId()
     {
-        return $this->getObjectByParam('Account', 'marketplace_id');
+        return (int)$this->_params['marketplace_id'];
     }
 
     //---------------------------------------

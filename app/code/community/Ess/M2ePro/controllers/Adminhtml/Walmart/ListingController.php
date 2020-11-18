@@ -330,7 +330,7 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
         $this->processSellingFormatTemplateChange($oldData, $newData, $affectedListingsProductsData);
         $this->processSynchronizationTemplateChange($oldData, $newData, $affectedListingsProductsData);
 
-        $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('The Listing was successfully saved.'));
+        $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('The Listing was saved.'));
 
         $this->_redirectUrl(Mage::helper('M2ePro')->getBackUrl('list', array(), array('edit'=>array('id'=>$id))));
     }
@@ -356,7 +356,7 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
             }
         }
 
-        $tempString = Mage::helper('M2ePro')->__('%amount% Listing(s) were successfully deleted', $deleted);
+        $tempString = Mage::helper('M2ePro')->__('%amount% Listing(s) were deleted', $deleted);
         $deleted && $this->_getSession()->addSuccess($tempString);
 
         $tempString = Mage::helper('M2ePro')->__(
@@ -922,7 +922,7 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
             Mage::helper('M2ePro')->jsonEncode(
                 array(
                 'type' => 'success',
-                'message' => Mage::helper('M2ePro')->__('Variation has been successfully edited.')
+                'message' => Mage::helper('M2ePro')->__('Variation has been edited.')
                 )
             )
         );
@@ -1014,7 +1014,7 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
             Mage::helper('M2ePro')->jsonEncode(
                 array(
                 'type' => 'success',
-                'message' => Mage::helper('M2ePro')->__('Variation(s) has been successfully saved.')
+                'message' => Mage::helper('M2ePro')->__('Variation(s) has been saved.')
                 )
             )
         );
@@ -1197,7 +1197,7 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
             Mage::helper('M2ePro')->jsonEncode(
                 array(
                 'type' => 'success',
-                'message' => Mage::helper('M2ePro')->__('The Items were successfully duplicated.')
+                'message' => Mage::helper('M2ePro')->__('The Items were duplicated.')
                 )
             )
         );
@@ -1250,7 +1250,7 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
         $this->setCategoryTemplateFroProductsByChunks($productsIds, $templateId);
 
         $messages[] = Mage::helper('M2ePro')->__(
-            'Category Policy was successfully assigned to %count% Products',
+            'Category Policy was assigned to %count% Products',
             count($productsIds)
         );
 
@@ -1306,7 +1306,7 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
         if (!empty($productsIdsLocked)) {
             $messages[] = array(
                 'type' => 'success',
-                'text' => Mage::helper('M2ePro')->__('Category Policy was successfully unassigned.')
+                'text' => Mage::helper('M2ePro')->__('Category Policy was unassigned.')
             );
 
             $this->setCategoryTemplateFroProductsByChunks($productsIdsLocked, null);

@@ -116,34 +116,6 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Service_Source
         return round((float)$result, 2);
     }
 
-    /**
-     * @param null $storeForConvertingAttributeTypePrice
-     * @return float
-     */
-    public function getCostSurcharge($storeForConvertingAttributeTypePrice = null)
-    {
-        $result = 0;
-
-        switch ($this->getShippingServiceTemplate()->getCostMode()) {
-            case Ess_M2ePro_Model_Ebay_Template_Shipping_Service::COST_MODE_FREE:
-                $result = 0;
-                break;
-            case Ess_M2ePro_Model_Ebay_Template_Shipping_Service::COST_MODE_CUSTOM_VALUE:
-                $result = $this->getShippingServiceTemplate()->getCostSurchargeValue();
-                break;
-            case Ess_M2ePro_Model_Ebay_Template_Shipping_Service::COST_MODE_CUSTOM_ATTRIBUTE:
-                $result = $this->getMagentoProductAttributeValue(
-                    $this->getShippingServiceTemplate()->getCostSurchargeValue(),
-                    $storeForConvertingAttributeTypePrice
-                );
-                break;
-        }
-
-        is_string($result) && $result = str_replace(',', '.', $result);
-
-        return round((float)$result, 2);
-    }
-
     // ---------------------------------------
 
     protected function getMagentoProductAttributeValue($attributeCode, $store)

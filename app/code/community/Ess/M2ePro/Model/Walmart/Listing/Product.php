@@ -84,18 +84,45 @@ class Ess_M2ePro_Model_Walmart_Listing_Product extends Ess_M2ePro_Model_Componen
 
     //########################################
 
+    /**
+     * @return bool
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
+    public function isVariationMode()
+    {
+        if ($this->hasData(__METHOD__)) {
+            return $this->getData(__METHOD__);
+        }
+
+        $result = $this->getMagentoProduct()->isProductWithVariations();
+
+        if ($this->getParentObject()->isGroupedProductModeSet()) {
+            $result = false;
+        }
+
+        $this->setData(__METHOD__, $result);
+
+        return $result;
+    }
+
+    /**
+     * @throws Ess_M2ePro_Model_Exception
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function afterSaveNewEntity()
     {
         /** @var Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager $variationManager */
         $variationManager = $this->getVariationManager();
-        $magentoProduct = $this->getMagentoProduct();
-
-        if ($magentoProduct->isProductWithVariations() && !$variationManager->isVariationProduct()) {
-            $this->getParentObject()->setData('is_variation_product', 1);
-            $variationManager->setRelationParentType();
-            $variationManager->getTypeModel()->resetProductAttributes(false);
-            $variationManager->getTypeModel()->getProcessor()->process();
+        if ($variationManager->isVariationProduct() || !$this->isVariationMode()) {
+            return null;
         }
+
+        // m1 need to be added to parent
+        $this->getParentObject()->setData('is_variation_product', 1);
+
+        $variationManager->setRelationParentType();
+        $variationManager->getTypeModel()->resetProductAttributes(false);
+        $variationManager->getTypeModel()->getProcessor()->process();
     }
 
     //########################################
@@ -246,7 +273,8 @@ class Ess_M2ePro_Model_Walmart_Listing_Product extends Ess_M2ePro_Model_Componen
         }
 
         if ($this->getMagentoProduct()->isConfigurableType() ||
-            $this->getMagentoProduct()->isGroupedType()) {
+            $this->getMagentoProduct()->isGroupedType() &&
+            !$this->getParentObject()->isGroupedProductModeSet()) {
             $variations = $this->getVariations(true);
             if (empty($variations)) {
                 throw new Ess_M2ePro_Model_Exception_Logic(

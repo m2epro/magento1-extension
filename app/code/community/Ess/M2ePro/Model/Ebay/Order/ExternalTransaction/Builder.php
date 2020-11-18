@@ -25,25 +25,34 @@ class Ess_M2ePro_Model_Ebay_Order_ExternalTransaction_Builder extends Mage_Core_
 
     //########################################
 
-    public function process()
-    {
-        return $this->createOrderExternalTransaction();
-    }
-
-    //########################################
-
     /**
      * @return Ess_M2ePro_Model_Ebay_Order_ExternalTransaction
+     * @throws Exception
      */
-    protected function createOrderExternalTransaction()
+    public function process()
     {
+        /** @var Ess_M2ePro_Model_Ebay_Order_ExternalTransaction $transaction */
         $transaction = Mage::getModel('M2ePro/Ebay_Order_ExternalTransaction')->getCollection()
             ->addFieldToFilter('order_id', $this->getData('order_id'))
             ->addFieldToFilter('transaction_id', $this->getData('transaction_id'))
             ->getFirstItem();
 
-        $transaction->addData($this->getData());
-        $transaction->save();
+        foreach ($this->getData() as $key => $value) {
+            if ($transaction->getId() && (!$transaction->hasData($key) || $transaction->getData($key) == $value)) {
+                continue;
+            }
+
+            if ($key === 'transaction_date') {
+                $newDate = new DateTime($value, new DateTimeZone('UTC'));
+                if ($newDate->format('Y-m-d H:i:s') === $transaction->getData($key)) {
+                    continue;
+                }
+            }
+
+            $transaction->addData($this->getData());
+            $transaction->save();
+            break;
+        }
 
         return $transaction;
     }

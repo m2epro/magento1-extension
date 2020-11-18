@@ -15,19 +15,6 @@ class Ess_M2ePro_Adminhtml_Listing_Other_MovingController
 
     public function moveToListingGridAction()
     {
-        Mage::helper('M2ePro/Data_Global')->setValue(
-            'componentMode', $this->getRequest()->getParam('componentMode')
-        );
-        Mage::helper('M2ePro/Data_Global')->setValue(
-            'accountId', $this->getRequest()->getParam('accountId')
-        );
-        Mage::helper('M2ePro/Data_Global')->setValue(
-            'marketplaceId', $this->getRequest()->getParam('marketplaceId')
-        );
-        Mage::helper('M2ePro/Data_Global')->setValue(
-            'ignoreListings', Mage::helper('M2ePro')->jsonDecode($this->getRequest()->getParam('ignoreListings'))
-        );
-
         $component = ucfirst(strtolower($this->getRequest()->getParam('componentMode')));
         $movingHandlerJs = $component.'ListingOtherGridObj.movingHandler';
 

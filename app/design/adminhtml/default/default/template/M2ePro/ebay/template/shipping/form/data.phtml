@@ -267,14 +267,10 @@ $missingAttributes = $this->getMissingAttributes();
         width: 89%;
     }
 
-    .form-list td.value .shipping-cost-surcharge-ca select {
-        width: 200px;
-    }
-
     .shipping-priority {
         text-align: right;
     }
-    .shipping-cost-additional, .shipping-cost-surcharge {
+    .shipping-cost-additional {
         text-align: right;
     }
 
@@ -1627,35 +1623,6 @@ $missingAttributes = $this->getMissingAttributes();
         <tr id="shipping_variant_locations_%i%_tr" class="shipping-variant">
             <td colspan="5">
                 <!-- locations will be rendered here -->
-            </td>
-        </tr>
-
-    </tbody>
-
-</table>
-
-<table id="block_shipping_table_cost_surcharge_row_template_table" style="display: none;">
-
-    <tbody>
-
-        <tr id="shipping_variant_cost_surcharge_%i%_tr" class="shipping-variant" style="display: none;">
-            <td colspan="5">
-
-                <table class="form-list" cellspacing="0" cellpadding="0" style="width: auto; margin:5px 0;">
-
-                    <tr class="local-shipping-tr">
-                        <td class="label" style="width: auto;">
-                            <label style="width: auto;" for="shipping_cost_surcharge_value"><?php echo Mage::helper('M2ePro')->__('Add a surcharge for Alaska, Hawaii, and Puerto Rico'); ?>:</label>
-                        </td>
-                        <td class="value" style="width: auto;">
-                            <input style="width: 80px;" name="shipping[shipping_cost_surcharge_value][%i%]" type="text" style="display: none;" class="shipping-cost-surcharge input-text M2ePro-validation-float" />
-                            <span style="width: auto;" class="shipping-cost-surcharge-ca">
-                                <!-- shipping_cost_surcharge_attribute[%i%] -->
-                            </span>
-                        </td>
-                    </tr>
-                </table>
-
             </td>
         </tr>
 

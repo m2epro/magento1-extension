@@ -15,17 +15,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Search_Other_Grid
     {
         parent::__construct();
 
-        // Initialization block
-        // ---------------------------------------
         $this->setId('ebayListingSearchOtherGrid');
-        // ---------------------------------------
 
-        // Set default values
-        // ---------------------------------------
         $this->setDefaultSort(false);
         $this->setSaveParametersInSession(true);
         $this->setUseAjax(true);
-        // ---------------------------------------
     }
 
     //########################################

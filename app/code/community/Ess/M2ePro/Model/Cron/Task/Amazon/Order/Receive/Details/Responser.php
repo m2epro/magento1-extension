@@ -120,14 +120,6 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Receive_Details_Responser
     //########################################
 
     /**
-     * @return Ess_M2ePro_Model_Account
-     */
-    protected function getAccount()
-    {
-        return $this->getObjectByParam('Account', 'account_id');
-    }
-
-    /**
      * @return Ess_M2ePro_Model_Synchronization_Log
      */
     protected function getSynchronizationLog()

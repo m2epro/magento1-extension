@@ -251,17 +251,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Shipping
 
                 $tempDataMethod['cost_additional'] = $service->getSource($this->getMagentoProduct())
                                                              ->getCostAdditional($store);
-
-                if (!$this->getShippingTemplate()->isLocalShippingRateTableEnabled($this->getAccount()) &&
-                    in_array(
-                        $this->getShippingTemplate()->getMarketplaceId(), array(
-                        Ess_M2ePro_Helper_Component_Ebay::MARKETPLACE_US,
-                        Ess_M2ePro_Helper_Component_Ebay::MARKETPLACE_MOTORS,
-                        )
-                    ) && preg_match('/(FedEx|UPS)/', $service->getShippingValue())) {
-                    $tempDataMethod['cost_surcharge'] = $service->getSource($this->getMagentoProduct())
-                                                                ->getCostSurcharge($store);
-                }
             }
 
             if ($this->getShippingTemplate()->isLocalShippingCalculatedEnabled()) {

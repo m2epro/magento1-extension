@@ -459,16 +459,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Shipping_Edit_Form_Data extends M
                     $attributes['services'][$i][$code] = $label;
                 }
             }
-
-            $mode = 'cost_mode';
-            $code = 'cost_surcharge_value';
-
-            if ($service[$mode] == Ess_M2ePro_Model_Ebay_Template_Shipping_Service::COST_MODE_CUSTOM_ATTRIBUTE) {
-                if (!$this->isExistInAttributesArray($service[$code])) {
-                    $label = Mage::helper('M2ePro/Magento_Attribute')->getAttributeLabel($service[$code]);
-                    $attributes['services'][$i][$code] = $label;
-                }
-            }
         }
 
         // ---------------------------------------

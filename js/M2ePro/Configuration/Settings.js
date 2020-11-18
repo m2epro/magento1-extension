@@ -40,7 +40,7 @@ window.ConfigurationSettings = Class.create(Common, {
                 self.templateEditObj.forgetSkipSaveConfirmation();
 
                 MessageObj.addSuccess(
-                    M2ePro.translator.translate('Help Blocks have been successfully restored.')
+                    M2ePro.translator.translate('Help Blocks have been restored.')
                 );
             }
         });

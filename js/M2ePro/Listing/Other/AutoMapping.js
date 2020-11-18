@@ -52,7 +52,7 @@ window.ListingOtherAutoMapping = Class.create(Action, {
             if (isFailed == 1) {
                 MessageObj.addError(M2ePro.text.failed_mapped);
             } else {
-                MessageObj.addSuccess(M2ePro.text.successfully_mapped);
+                MessageObj.addSuccess(M2ePro.translator.translate('Product was Mapped.'));
             }
 
             ListingProgressBarObj.setStatus(M2ePro.translator.translate('Task completed. Please wait ...'));

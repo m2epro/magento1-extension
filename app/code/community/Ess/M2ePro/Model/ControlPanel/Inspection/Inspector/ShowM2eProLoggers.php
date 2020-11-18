@@ -72,13 +72,7 @@ class Ess_M2ePro_Model_ControlPanel_Inspection_Inspector_ShowM2eProLoggers
                 continue;
             }
 
-            $content = $splFileObject->fread($splFileObject->getSize());
-            if (strpos($content, 'M2ePro/Module_Logger') === false) {
-                continue;
-            }
-
-            $content = explode("\n", $content);
-            foreach ($content as $line => $contentRow) {
+            foreach ($splFileObject as $line => $contentRow) {
                 if (strpos($contentRow, 'M2ePro/Module_Logger') === false) {
                     continue;
                 }

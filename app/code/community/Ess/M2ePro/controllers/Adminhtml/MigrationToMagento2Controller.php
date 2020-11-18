@@ -32,7 +32,7 @@ class Ess_M2ePro_Adminhtml_MigrationToMagento2Controller
         $migration->complete();
 
         $this->getSession()->addSuccess(
-            Mage::helper('M2ePro')->__('M2E Pro was successfully disabled.')
+            Mage::helper('M2ePro')->__('M2E Pro was disabled.')
         );
         return $this->_redirect('adminhtml/dashboard');
     }

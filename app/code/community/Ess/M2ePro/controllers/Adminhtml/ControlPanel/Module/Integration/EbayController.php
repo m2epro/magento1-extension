@@ -107,7 +107,7 @@ class Ess_M2ePro_Adminhtml_ControlPanel_Module_Integration_EbayController
                            ->save();
         }
 
-        $this->_getSession()->addSuccess("Successfully set for {$affected} affected Products.");
+        $this->_getSession()->addSuccess("Set for {$affected} affected Products.");
         return $this->_redirectUrl(Mage::helper('M2ePro/View_ControlPanel')->getPageToolsTabUrl());
     }
 
@@ -129,8 +129,6 @@ class Ess_M2ePro_Adminhtml_ControlPanel_Module_Integration_EbayController
         $inspector = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Manager')
             ->getInspection('Ess_M2ePro_Model_ControlPanel_Inspection_Inspector_NonexistentTemplates');
         $inspector->fix($fixData);
-
-        $this->_redirectUrl($this->_getRefererUrl());
     }
 
     //########################################

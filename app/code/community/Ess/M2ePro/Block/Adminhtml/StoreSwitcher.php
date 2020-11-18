@@ -41,6 +41,11 @@ class Ess_M2ePro_Block_Adminhtml_StoreSwitcher extends Mage_Adminhtml_Block_Temp
         return $this->getData('display_default_store_mode') == self::DISPLAY_DEFAULT_STORE_MODE_DOWN;
     }
 
+    public function isSelectedDefaultStore()
+    {
+        return $this->getData('selected') === Mage_Catalog_Model_Abstract::DEFAULT_STORE_ID;
+    }
+
     //########################################
 
     public function isRequiredOption()
@@ -51,6 +56,11 @@ class Ess_M2ePro_Block_Adminhtml_StoreSwitcher extends Mage_Adminhtml_Block_Temp
     public function hasEmptyOption()
     {
         return $this->getData('empty_option') === true;
+    }
+
+    public function isDisabled()
+    {
+        return $this->getData('disabled') === true;
     }
 
     //########################################

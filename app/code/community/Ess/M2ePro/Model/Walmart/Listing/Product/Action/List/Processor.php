@@ -592,7 +592,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_Processor
 
         $message = Mage::getModel('M2ePro/Connector_Connection_Response_Message');
         $message->initFromPreparedData(
-            'The Item was listed successfully. However, some product data, i.e. product quantity, cannot yet
+            'The Item was listed. However, some product data, i.e. product quantity, cannot yet
             be submitted. It is caused by the technical limitations imposed by Walmart when adding a new offer
             on their website. M2E Pro will try to submit this product data later.',
             Ess_M2ePro_Model_Connector_Connection_Response_Message::TYPE_WARNING

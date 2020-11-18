@@ -70,8 +70,6 @@ window.AmazonListingCreateSelling = Class.create(Common, {
     sku_modification_mode_change: function () {
         if ($('sku_modification_mode').value == M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Listing::SKU_MODIFICATION_MODE_TEMPLATE')) {
             $('sku_modification_custom_value').value = '%value%';
-        } else {
-            $('sku_modification_custom_value').value = '';
         }
 
         if ($('sku_modification_mode').value == M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Listing::SKU_MODIFICATION_MODE_NONE')) {

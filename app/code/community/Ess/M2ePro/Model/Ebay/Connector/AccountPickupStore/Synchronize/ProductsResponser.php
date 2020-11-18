@@ -7,7 +7,7 @@
  */
 
 class Ess_M2ePro_Model_Ebay_Connector_AccountPickupStore_Synchronize_ProductsResponser
-    extends Ess_M2ePro_Model_Ebay_Connector_Command_Pending_Responser
+    extends Ess_M2ePro_Model_Connector_Command_Pending_Responser
 {
     /** @var Ess_M2ePro_Model_Ebay_Account_PickupStore_State[] $pickupStoreStateItems */
     protected $pickupStoreStateItems = array();
@@ -139,14 +139,14 @@ class Ess_M2ePro_Model_Ebay_Connector_AccountPickupStore_Synchronize_ProductsRes
         switch ($this->getLogsAction($stateItemData)) {
             case Ess_M2ePro_Model_Ebay_Account_PickupStore_Log::ACTION_ADD_PRODUCT:
                 $encodedDescription = Mage::helper('M2ePro/Module_Log')->encodeDescription(
-                    'The Product with %qty% quantity was successfully added to the Store.',
+                    'The Product with %qty% quantity was added to the Store.',
                     array('!qty' => $stateItemData['target_qty'])
                 );
                 break;
 
             case Ess_M2ePro_Model_Ebay_Account_PickupStore_Log::ACTION_DELETE_PRODUCT:
                 $encodedDescription = Mage::helper('M2ePro/Module_Log')->encodeDescription(
-                    'The Product was successfully deleted from the Store.'
+                    'The Product was deleted from the Store.'
                 );
                 break;
 
@@ -162,7 +162,7 @@ class Ess_M2ePro_Model_Ebay_Connector_AccountPickupStore_Synchronize_ProductsRes
                 }
 
                 $encodedDescription = Mage::helper('M2ePro/Module_Log')->encodeDescription(
-                    'The Product quantity was successfully changed from %stock_from%[%qty_from%]
+                    'The Product quantity was changed from %stock_from%[%qty_from%]
                     to %stock_to%[%qty_to%] for the Store.',
                     array(
                         '!qty_from'   => $stateItemData['online_qty'],

@@ -48,6 +48,9 @@ class Ess_M2ePro_Model_Listing_Product extends Ess_M2ePro_Model_Component_Parent
 
     const MOVING_LISTING_OTHER_SOURCE_KEY = 'moved_from_listing_other_id';
 
+    const GROUPED_PRODUCT_MODE_OPTIONS = 0;
+    const GROUPED_PRODUCT_MODE_SET     = 1;
+
     /**
      * It allows to delete an object without checking if it is isLocked()
      * @var bool
@@ -163,7 +166,7 @@ class Ess_M2ePro_Model_Listing_Product extends Ess_M2ePro_Model_Component_Parent
             Ess_M2ePro_Helper_Data::INITIATOR_UNKNOWN,
             $actionId,
             Ess_M2ePro_Model_Listing_Log::ACTION_DELETE_PRODUCT_FROM_LISTING,
-            'Item was successfully Deleted',
+            'Item was Deleted',
             Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE
         );
 
@@ -210,6 +213,10 @@ class Ess_M2ePro_Model_Listing_Product extends Ess_M2ePro_Model_Component_Parent
         if ($this->_magentoProductModel === null) {
             $this->_magentoProductModel = Mage::getModel('M2ePro/Magento_Product_Cache');
             $this->_magentoProductModel->setProductId($this->getProductId());
+
+            if ($this->_magentoProductModel->isGroupedType()) {
+                $this->_magentoProductModel->setGroupedProductMode($this->getGroupedProductMode());
+            }
         }
 
         return $this->prepareMagentoProduct($this->_magentoProductModel);
@@ -349,6 +356,32 @@ class Ess_M2ePro_Model_Listing_Product extends Ess_M2ePro_Model_Component_Parent
     public function getAdditionalData()
     {
         return $this->getSettings('additional_data');
+    }
+
+    //########################################
+
+    /**
+     * @return null|int
+     */
+    public function getGroupedProductMode()
+    {
+        if (!$this->getMagentoProduct()->isGroupedType()) {
+            return null;
+        }
+
+        if ($this->isListable()) {
+            return Mage::helper('M2ePro/Module_Configuration')->getGroupedProductMode();
+        }
+
+        return (int)$this->getSetting('additional_data', 'grouped_product_mode', self::GROUPED_PRODUCT_MODE_OPTIONS);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isGroupedProductModeSet()
+    {
+        return $this->getGroupedProductMode() === self::GROUPED_PRODUCT_MODE_SET;
     }
 
     //########################################

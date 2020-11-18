@@ -38,7 +38,7 @@ class Ess_M2ePro_Block_Adminhtml_Order_Log_Grid_LastActions extends Ess_M2ePro_B
                 'text'           => Mage::helper('M2ePro/View')->getModifiedLogMessage($log->getData('description')),
                 'initiator'      => $this->getInitiator(array($log)),
                 'date'           => $date = $log->getData('create_date'),
-                'localized_date' => $this->formatDate($date, IntlDateFormatter::MEDIUM, true)
+                'localized_date' => $this->formatDate($date, Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM, true)
             );
         }
 

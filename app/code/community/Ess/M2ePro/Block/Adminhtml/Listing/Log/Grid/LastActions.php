@@ -44,7 +44,7 @@ class Ess_M2ePro_Block_Adminhtml_Listing_Log_Grid_LastActions extends Ess_M2ePro
             $actions[] = array(
                 'type'           => $this->getMainType($actionLogs),
                 'date'           => $date = $this->getMainDate($actionLogs),
-                'localized_date' => $this->formatDate($date, IntlDateFormatter::MEDIUM, true),
+                'localized_date' => $this->formatDate($date, Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM, true),
                 'action'         => $this->getActionTitle($actionLogs),
                 'initiator'      => $this->getInitiator($actionLogs),
                 'items'          => $actionLogs

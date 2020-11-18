@@ -54,45 +54,40 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Variation_Product_Manage_Tabs_Va
     {
         parent::__construct();
 
-        // Initialization block
-        // ---------------------------------------
         $this->setId('amazonVariationProductManageGrid');
         $this->setDefaultSort('id');
         $this->setDefaultDir('ASC');
         $this->setUseAjax(true);
-        // ---------------------------------------
     }
 
     //########################################
 
     protected function _prepareCollection()
     {
-        // Get collection
-        // ---------------------------------------
         /** @var Ess_M2ePro_Model_Resource_Amazon_Listing_Product_Collection $collection */
         $collection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Product');
         $collection->getSelect()->distinct();
         $collection->getSelect()->where("`second_table`.`variation_parent_id` = ?", (int)$this->getListingProductId());
-        // ---------------------------------------
 
         $collection->getSelect()->columns(
             array(
-            'online_current_price' => new Zend_Db_Expr(
-                '
-                IF (
-                    `second_table`.`online_regular_price` IS NULL,
-                    `second_table`.`online_business_price`,
+                'amazon_sku' => 'second_table.sku',
+                'online_current_price' => new Zend_Db_Expr(
+                    '
                     IF (
-                        `second_table`.`online_regular_sale_price` IS NOT NULL AND
-                        `second_table`.`online_regular_sale_price_end_date` IS NOT NULL AND
-                        `second_table`.`online_regular_sale_price_start_date` <= CURRENT_DATE() AND
-                        `second_table`.`online_regular_sale_price_end_date` >= CURRENT_DATE(),
-                        `second_table`.`online_regular_sale_price`,
-                        `second_table`.`online_regular_price`
+                        `second_table`.`online_regular_price` IS NULL,
+                        `second_table`.`online_business_price`,
+                        IF (
+                            `second_table`.`online_regular_sale_price` IS NOT NULL AND
+                            `second_table`.`online_regular_sale_price_end_date` IS NOT NULL AND
+                            `second_table`.`online_regular_sale_price_start_date` <= CURRENT_DATE() AND
+                            `second_table`.`online_regular_sale_price_end_date` >= CURRENT_DATE(),
+                            `second_table`.`online_regular_sale_price`,
+                            `second_table`.`online_regular_price`
+                        )
                     )
+                '
                 )
-            '
-            )
             )
         );
 
@@ -124,7 +119,13 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Variation_Product_Manage_Tabs_Va
             )
         );
 
-        // Set collection to grid
+        if ($this->getParam($this->getVarNameFilter()) == 'searched_by_child'){
+            $collection->addFieldToFilter(
+                'second_table.listing_product_id',
+                array('in' => explode(',', $this->getRequest()->getParam('listing_product_id_filter')))
+            );
+        }
+
         $this->setCollection($collection);
 
         return parent::_prepareCollection();
@@ -178,12 +179,12 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Variation_Product_Manage_Tabs_Va
         );
 
         $this->addColumn(
-            'sku', array(
+            'amazon_sku', array(
                 'header'       => Mage::helper('M2ePro')->__('SKU'),
                 'align'        => 'left',
                 'type'         => 'text',
-                'index'        => 'sku',
-                'filter_index' => 'sku',
+                'index'        => 'amazon_sku',
+                'filter_index' => 'second_table.sku',
                 'renderer'     => 'M2ePro/adminhtml_amazon_grid_column_renderer_sku',
             )
         );
@@ -258,14 +259,9 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Variation_Product_Manage_Tabs_Va
 
     protected function _prepareMassaction()
     {
-        // Set massaction identifiers
-        // ---------------------------------------
         $this->setMassactionIdField('id');
         $this->setMassactionIdFieldOnlyIndexValue(true);
-        // ---------------------------------------
 
-        // Set mass-action
-        // ---------------------------------------
         $this->getMassactionBlock()->addItem(
             'list', array(
                 'label'   => Mage::helper('M2ePro')->__('List Item(s)'),
@@ -314,8 +310,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Variation_Product_Manage_Tabs_Va
             )
         );
 
-        // ---------------------------------------
-
         return parent::_prepareMassaction();
     }
 
@@ -339,7 +333,9 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Variation_Product_Manage_Tabs_Va
                 $sortedOptions = array();
 
                 foreach ($matchedAttributes as $magentoAttr => $amazonAttr) {
-                    $sortedOptions[$magentoAttr] = $productOptions[$magentoAttr];
+                    if (isset($productOptions[$magentoAttr])) {
+                        $sortedOptions[$magentoAttr] = $productOptions[$magentoAttr];
+                    }
                 }
 
                 $productOptions = $sortedOptions;
@@ -439,7 +435,9 @@ HTML;
                 $sortedOptions = array();
 
                 foreach ($matchedAttributes as $magentoAttr => $amazonAttr) {
-                    $sortedOptions[$amazonAttr] = $options[$amazonAttr];
+                    if (isset($options[$amazonAttr])) {
+                        $sortedOptions[$amazonAttr] = $options[$amazonAttr];
+                    }
                 }
 
                 $options = $sortedOptions;

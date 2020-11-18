@@ -86,7 +86,7 @@ window.AttributeCreator = Class.create({
                     title: M2ePro.translator.translate('Creation of New Magento Attribute'),
                     top: 50,
                     maxHeight: 520,
-                    width: 560,
+                    width: 670,
                     zIndex: 100,
                     hideEffect: Element.hide,
                     showEffect: Element.show,

@@ -15,9 +15,9 @@ $componentForUrl = count($urlComponents) == 1 ? array_shift($urlComponents) : Es
 ?>
 <div id="block_notice_configuration_logs_clearing" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Logs Clearing'); ?>">
     <?php echo Mage::helper('M2ePro')->__(
-        'Set preferences for automatic clearing of Log data then click <b>Save Config</b>.<br/><br/>
-        To clear a Log completely, click <b>Clear All</b>. To clear a Log of data more than a certain number of days old, choose the number of days then click <b>Run Now</b>.<br/><br/>
-        More detailed information about ability to work with this Page you can find <a href="%url%" target="_blank">here</a>.',
+        'Here you can set up an automatic Log clearing.
+        Read the <a href="%url%" target="_blank">article</a> for more details.<br><br>
+        Click <strong>Save Config</strong> if you make any changes.',
         Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, "x/CwAJAQ#GlobalSettings-LogsClearing")
     ); ?>
 </div>

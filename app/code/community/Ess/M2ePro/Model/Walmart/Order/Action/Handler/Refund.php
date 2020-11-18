@@ -112,7 +112,7 @@ class Ess_M2ePro_Model_Walmart_Order_Action_Handler_Refund
 
         $this->_orderChange->delete();
         $this->getOrder()->addSuccessLog(
-            Mage::helper('M2ePro')->__('Order was successfully cancelled.')
+            Mage::helper('M2ePro')->__('Order was cancelled.')
         );
     }
 

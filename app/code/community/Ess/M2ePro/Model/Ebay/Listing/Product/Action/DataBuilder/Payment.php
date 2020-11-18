@@ -20,6 +20,10 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Payment
 
     public function getData()
     {
+        if ($this->getPaymentTemplate()->isManagedPaymentsEnabled()) {
+            return array();
+        }
+
         $data = array(
             'methods' => $this->getMethodsData()
         );

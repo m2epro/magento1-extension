@@ -57,6 +57,7 @@
         'text' => $magentoAttributeHelper->filterByInputTypes($this->getData('all_attributes'), array('text')),
         'text_select' => $magentoAttributeHelper->filterByInputTypes($this->getData('all_attributes'), array('text', 'select')),
         'text_weight' => $magentoAttributeHelper->filterByInputTypes($this->getData('all_attributes'), array('text', 'weight')),
+        'text_keywords' => $magentoAttributeHelper->filterByInputTypes($this->getData('all_attributes'), array('text', 'select', 'textarea')),
         'text_images' => $magentoAttributeHelper->filterByInputTypes(
             $this->getData('all_attributes'),
             array('text', 'image', 'media_image', 'gallery', 'multiline', 'textarea', 'select', 'multiselect')
@@ -1004,13 +1005,13 @@
                     <td class="value">
                         <input type="hidden" id="keywords_custom_attribute" name="keywords_custom_attribute" value="<?php echo $formData['keywords_custom_attribute']; ?>" />
 
-                        <select id="keywords_mode" name="keywords_mode" class="select M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,select">
+                        <select id="keywords_mode" name="keywords_mode" class="select M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,select,textarea">
                             <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::KEYWORDS_MODE_NONE; ?>" <?php if ($formData['keywords_mode'] == Ess_M2ePro_Model_Walmart_Template_Description::KEYWORDS_MODE_NONE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('None'); ?></option>
                             <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::KEYWORDS_MODE_CUSTOM_VALUE; ?>" <?php if ($formData['keywords_mode'] == Ess_M2ePro_Model_Walmart_Template_Description::KEYWORDS_MODE_CUSTOM_VALUE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Custom Value'); ?></option>
 
                             <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
-                                <?php echo $this->getForceAddedAttributeOptionHtml($formData['keywords_custom_attribute'], $attributesByInputTypes['text_select'], Ess_M2ePro_Model_Walmart_Template_Description::KEYWORDS_MODE_CUSTOM_ATTRIBUTE); ?>
-                                <?php foreach($attributesByInputTypes['text_select'] as $attribute) : ?>
+                                <?php echo $this->getForceAddedAttributeOptionHtml($formData['keywords_custom_attribute'], $attributesByInputTypes['text_keywords'], Ess_M2ePro_Model_Walmart_Template_Description::KEYWORDS_MODE_CUSTOM_ATTRIBUTE); ?>
+                                <?php foreach($attributesByInputTypes['text_keywords'] as $attribute) : ?>
                                     <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::KEYWORDS_MODE_CUSTOM_ATTRIBUTE; ?>" <?php if ($attribute['code'] == $formData['keywords_custom_attribute']): ?>selected="selected"<?php endif; ?>>
                                         <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
                                     </option>
@@ -1028,7 +1029,7 @@
                         <label><?php echo Mage::helper('M2ePro')->__('Keywords Value'); ?>: <span class="required">*</span></label>
                     </td>
                     <td class="value">
-                        <textarea name="keywords_custom_value" id="keywords_custom_value" cols="30" rows="5" class="input-text M2ePro-required-when-visible" style="height: 5em;"><?php
+                        <textarea name="keywords_custom_value" id="keywords_custom_value" cols="30" rows="5" maxlength="4000" class="input-text M2ePro-required-when-visible" style="height: 5em;"><?php
                             echo Mage::helper('M2ePro')->escapeHtml($formData['keywords_custom_value']);
                         ?></textarea>
                     </td>

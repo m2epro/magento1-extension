@@ -155,19 +155,7 @@ class Ess_M2ePro_Model_Cron_Task_Repository
             'component' => Ess_M2ePro_Helper_Component_Amazon::NICK,
             'group'     => self::GROUP_AMAZON,
         ),
-        Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_Channel_SynchronizeData::NICK => array(
-            'component' => Ess_M2ePro_Helper_Component_Amazon::NICK,
-            'group'     => self::GROUP_AMAZON,
-        ),
-        Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_Channel_SynchronizeData_Blocked::NICK => array(
-            'component' => Ess_M2ePro_Helper_Component_Amazon::NICK,
-            'group'     => self::GROUP_AMAZON,
-        ),
-        Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData::NICK => array(
-            'component' => Ess_M2ePro_Helper_Component_Amazon::NICK,
-            'group'     => self::GROUP_AMAZON,
-        ),
-        Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_Blocked::NICK => array(
+        Ess_M2ePro_Model_Cron_Task_Amazon_Listing_SynchronizeInventory::NICK => array(
             'component' => Ess_M2ePro_Helper_Component_Amazon::NICK,
             'group'     => self::GROUP_AMAZON,
         ),
@@ -265,15 +253,7 @@ class Ess_M2ePro_Model_Cron_Task_Repository
 
         //----------------------------------------
 
-        Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Product_Channel_SynchronizeData::NICK => array(
-            'component' => Ess_M2ePro_Helper_Component_Walmart::NICK,
-            'group'     => self::GROUP_WALMART,
-        ),
-        Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Product_Channel_SynchronizeData_Blocked::NICK => array(
-            'component' => Ess_M2ePro_Helper_Component_Walmart::NICK,
-            'group'     => self::GROUP_WALMART,
-        ),
-        Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Other_Channel_SynchronizeData::NICK => array(
+        Ess_M2ePro_Model_Cron_Task_Walmart_Listing_SynchronizeInventory::NICK => array(
             'component' => Ess_M2ePro_Helper_Component_Walmart::NICK,
             'group'     => self::GROUP_WALMART,
         ),

@@ -236,12 +236,23 @@ class Ess_M2ePro_Model_Amazon_Account_Builder extends Ess_M2ePro_Model_ActiveRec
             ? $this->_rawData['magento_orders_settings'][$tempKey] : array();
 
         $keys = array(
-            'mode'
+            'mode',
+            'amazon_collects',
         );
         foreach ($keys as $key) {
             if (isset($tempSettings[$key])) {
                 $data['magento_orders_settings'][$tempKey][$key] = $tempSettings[$key];
             }
+        }
+
+        if (isset($tempSettings['excluded_states'])) {
+            $data['magento_orders_settings'][$tempKey]['excluded_states'] = explode(
+                ',', $tempSettings['excluded_states']
+            );
+        }
+
+        if (!$this->isNeedExcludeStates()) {
+            $data['magento_orders_settings'][$tempKey]['amazon_collects'] = 0;
         }
 
         // customer settings
@@ -269,9 +280,7 @@ class Ess_M2ePro_Model_Amazon_Account_Builder extends Ess_M2ePro_Model_ActiveRec
         );
         $tempSettings = !empty($tempSettings['notifications']) ? $tempSettings['notifications'] : array();
         foreach ($notificationsKeys as $key) {
-            if (in_array($key, $tempSettings)) {
-                $data['magento_orders_settings'][$tempKey]['notifications'][$key] = true;
-            }
+            $data['magento_orders_settings'][$tempKey]['notifications'][$key] = in_array($key, $tempSettings);
         }
 
         // status mapping settings
@@ -371,7 +380,9 @@ class Ess_M2ePro_Model_Amazon_Account_Builder extends Ess_M2ePro_Model_ActiveRec
                     'apply_to_amazon' => 0
                 ),
                 'tax' => array(
-                    'mode' => Account::MAGENTO_ORDERS_TAX_MODE_MIXED
+                    'mode' => Account::MAGENTO_ORDERS_TAX_MODE_MIXED,
+                    'amazon_collects' => 1,
+                    'excluded_states' => $this->getGeneralExcludedStates()
                 ),
                 'customer' => array(
                     'mode' => Account::MAGENTO_ORDERS_CUSTOMER_MODE_GUEST,
@@ -407,6 +418,34 @@ class Ess_M2ePro_Model_Amazon_Account_Builder extends Ess_M2ePro_Model_ActiveRec
             // vcs_upload_invoices
             'auto_invoicing' => 0,
             'is_magento_invoice_creation_disabled' => 0,
+        );
+    }
+
+    protected function isNeedExcludeStates()
+    {
+        if ($this->_rawData['marketplace_id'] != Ess_M2ePro_Helper_Component_Amazon::MARKETPLACE_US) {
+            return false;
+        }
+
+        if ($this->_rawData['magento_orders_settings']['listing']['mode'] == 0 &&
+            $this->_rawData['magento_orders_settings']['listing_other']['mode'] == 0) {
+            return false;
+        }
+
+        if (!isset($this->_rawData['magento_orders_settings']['tax']['excluded_states'])) {
+            return false;
+        }
+
+        return true;
+    }
+
+    protected function getGeneralExcludedStates()
+    {
+        return array(
+            'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DC', 'GA', 'HI', 'ID',
+            'IL', 'IN', 'IA', 'KY', 'LA', 'ME', 'MD', 'MA', 'MI', 'MN', 'MS',
+            'NE', 'NV', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'PA', 'PR',
+            'RI', 'SC', 'SD', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY',
         );
     }
 

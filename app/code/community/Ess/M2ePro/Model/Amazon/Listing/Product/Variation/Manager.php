@@ -113,8 +113,15 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager
     {
         $this->getListingProduct()->setData('is_variation_product', 0)
                                   ->setData('is_variation_parent', 0)
-                                  ->setData('variation_parent_id', null)
-                                  ->save();
+                                  ->setData('variation_parent_id', null);
+
+        if ($this->getListingProduct()->isGroupedProductModeSet()) {
+            $this->getListingProduct()
+                ->setData('general_id', null)
+                ->setData('is_general_id_owner', Ess_M2ePro_Model_Amazon_Listing_Product::IS_GENERAL_ID_OWNER_NO);
+        }
+
+        $this->getListingProduct()->save();
     }
 
     public function setIndividualType()

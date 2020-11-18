@@ -112,7 +112,7 @@ class Ess_M2ePro_Adminhtml_Walmart_TemplateController
             }
         }
 
-        $tempString = Mage::helper('M2ePro')->__('%amount% record(s) were successfully deleted.', $deleted);
+        $tempString = Mage::helper('M2ePro')->__('%amount% record(s) were deleted.', $deleted);
         $deleted && $this->_getSession()->addSuccess($tempString);
 
         $tempString  = Mage::helper('M2ePro')->__('%amount% record(s) are used in Listing(s).', $locked) . ' ';

@@ -19,7 +19,7 @@ class Ess_M2ePro_Adminhtml_ControlPanel_Tools_M2ePro_InstallController
         $repairInfo = $this->getRequest()->getPost('repair_info');
 
         if (empty($repairInfo)) {
-            $this->_redirectUrl($this->_getRefererUrl());
+           return;
         }
 
         foreach ($repairInfo as $item) {
@@ -32,8 +32,6 @@ class Ess_M2ePro_Adminhtml_ControlPanel_Tools_M2ePro_InstallController
         foreach ($columnsInfo as $columnInfo) {
             $inspector->fix($columnInfo);
         }
-
-        $this->_redirectUrl($this->_getRefererUrl());
     }
 
     /**

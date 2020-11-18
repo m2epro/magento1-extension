@@ -15,8 +15,9 @@
     <?php
     $url = $this->getUrl('*/adminhtml_amazon_listing_variation_product_manage/viewVariationsGrid',
         array(
-            'product_id' => $this->getListingProductId(),
-            'filter' => $this->getRequest()->getParam('filter')
+            'product_id'                => $this->getListingProductId(),
+            'listing_product_id_filter' => $this->getListingProductIdForFilter(),
+            'filter'                    => $this->getRequest()->getParam('filter')
         )
     );
     ?>

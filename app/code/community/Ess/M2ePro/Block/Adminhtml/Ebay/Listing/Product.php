@@ -97,8 +97,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Product extends Mage_Adminhtml_Blo
                parent::_toHtml() .
                '</div>' .
                $this->getVideoTutorialHtml() .
-               $this->getAutoactionPopupHtml() .
-               $this->getSettingsPopupHtml();
+               $this->getAutoactionPopupHtml();
     }
 
     //########################################
@@ -157,60 +156,6 @@ Click Start Configure to create a Rule<br/> or Cancel if you do not want to do i
         &nbsp;&nbsp;&nbsp;&nbsp;
         {$startConfigureButton->toHtml()}
     </div>
-</div>
-HTML;
-    }
-
-    protected function getSettingsPopupHtml()
-    {
-        $helper = Mage::helper('M2ePro');
-
-        // ---------------------------------------
-        $onclick = <<<JS
-ListingProductAddObj.settingsPopupYesClick();
-JS;
-        $data = array(
-            'label'   => Mage::helper('M2ePro')->__('Yes'),
-            'onclick' => $onclick
-        );
-        $yesButton = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
-        // ---------------------------------------
-
-        // ---------------------------------------
-        $onclick = <<<JS
-ListingProductAddObj.settingsPopupNoClick();
-JS;
-        $data = array(
-            'id'      => 'add_products_custom_settings_popup_no',
-            'label'   => Mage::helper('M2ePro')->__('No'),
-            'onclick' => $onclick
-        );
-        $noButton = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
-        // ---------------------------------------
-
-        return <<<HTML
-<div id="settings_popup_content" style="display: none">
-    <div style="margin: 10px; height: 150px">
-        <h3>{$helper->__('Do you want to customize the M2E Pro Listing Settings for some Products?')}</h3>
-        <br/>
-        <p>{$helper->__('Choose <b>Yes</b> if you want to override the Default Settings for this M2E Pro Listing '.
-                        'and to choose Different Settings for certain Products.')}</p>
-    </div>
-
-    <div class="clear"></div>
-    <div class="left">
-        <div style="margin-left: 20px">
-            <input id="remember_checkbox" type="checkbox">
-            &nbsp;&nbsp;
-            <label for="remember_checkbox">{$helper->__('Remember my choice')}</label>
-        </div>
-    </div>
-    <div class="right">
-        {$yesButton->toHtml()}
-        <div style="display: inline-block;"></div>
-        {$noButton->toHtml()}
-    </div>
-    <div class="clear"></div>
 </div>
 HTML;
     }

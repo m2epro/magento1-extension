@@ -9,8 +9,6 @@
 class Ess_M2ePro_Adminhtml_Amazon_Listing_CreateController
     extends Ess_M2ePro_Controller_Adminhtml_Amazon_MainController
 {
-    protected $_sessionKey = 'amazon_listing_create';
-
     //########################################
 
     protected function _initAction()
@@ -82,11 +80,17 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_CreateController
             // ---------------------------------------
 
             $this->setSessionValue('title', strip_tags($post['title']));
+            $this->setSessionValue('marketplace_id', (int)$post['marketplace_id']);
             $this->setSessionValue('account_id', (int)$post['account_id']);
             $this->setSessionValue('store_id', (int)$post['store_id']);
 
             $this->_redirect('*/*/index', array('_current' => true, 'step' => 2));
             return;
+        }
+
+        $listingOnlyMode = Ess_M2ePro_Helper_View::LISTING_CREATION_MODE_LISTING_ONLY;
+        if ($this->getRequest()->getParam('creation_mode') == $listingOnlyMode) {
+            $this->setSessionValue('creation_mode', $listingOnlyMode);
         }
 
         $this->setWizardStep('listingGeneral');
@@ -157,12 +161,33 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_CreateController
             }
 
             $listing = $this->createListing();
-            $this->clearSession();
+
+            //todo Transferring move in another place?
+            if ($listingId = $this->getRequest()->getParam('listing_id')) {
+                /** @var Ess_M2ePro_Model_Amazon_Listing_Transferring $transferring */
+                $transferring = Mage::getModel('M2ePro/Amazon_Listing_Transferring');
+                $transferring->setListing(
+                    Mage::helper('M2ePro/Component_Amazon')->getCachedObject('Listing', $listingId)
+                );
+
+                $this->clearSession();
+                $transferring->setTargetListingId($listing->getId());
+
+                return $this->_redirect(
+                    '*/adminhtml_amazon_listing_transferring/index',
+                    array(
+                        'listing_id' => $listingId,
+                        'step'       => 3,
+                    )
+                );
+            }
 
             if ($this->isCreationModeListingOnly()) {
                 // closing window for 3rd party products moving in new listing creation
                 return $this->getResponse()->setBody("<script>window.close();</script>");
             }
+
+            $this->clearSession();
 
             return $this->_redirect(
                 '*/adminhtml_amazon_listing_productAdd/index', array(
@@ -185,43 +210,45 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_CreateController
 
     //########################################
 
+    /**
+     * @return Ess_M2ePro_Model_Listing
+     * @throws Ess_M2ePro_Model_Exception
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     protected function createListing()
     {
-        $sessionData = $this->getSessionValue();
+        $data = $this->getSessionValue();
 
-        if ($sessionData['restock_date_value'] === '') {
-            $sessionData['restock_date_value'] = Mage::helper('M2ePro')->getCurrentGmtDate();
+        $data['title'] = $this->getSessionValue('title');
+        $data['account_id'] = $this->getSessionValue('account_id');
+        $data['marketplace_id'] = $this->getSessionValue('marketplace_id');
+        $data['store_id'] = $this->getSessionValue('store_id');
+
+        if ($this->getSessionValue('restock_date_value') === '') {
+            $data['restock_date_value'] = Mage::helper('M2ePro')->getCurrentGmtDate();
         } else {
-            $sessionData['restock_date_value'] = Mage::helper('M2ePro')->gmtDateToTimezone(
-                $sessionData['restock_date_value']
+            $data['restock_date_value'] = Mage::helper('M2ePro')->gmtDateToTimezone(
+                $this->getSessionValue('restock_date_value')
             );
         }
 
-        $listing = Mage::helper('M2ePro/Component')->getComponentModel('amazon', 'Listing')
-            ->addData($sessionData)
-            ->save();
+        /** @var Ess_M2ePro_Model_Listing $listing */
+        $listing = Mage::helper('M2ePro/Component_Amazon')->getModel('Listing');
+        $listing->addData($data);
+        $listing->save();
 
         $tempLog = Mage::getModel('M2ePro/Listing_Log');
-        $tempLog->setComponentMode($listing->getComponentMode());
-        $actionId = $tempLog->getResource()->getNextActionId();
+        $tempLog->setComponentMode(Ess_M2ePro_Helper_Component_Amazon::NICK);
         $tempLog->addListingMessage(
             $listing->getId(),
             Ess_M2ePro_Helper_Data::INITIATOR_USER,
-            $actionId,
+            $tempLog->getResource()->getNextActionId(),
             Ess_M2ePro_Model_Listing_Log::ACTION_ADD_LISTING,
-            'Listing was successfully Added',
+            'Listing was Added',
             Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE
         );
-        // ---------------------------------------
 
         return $listing;
-    }
-
-    //########################################
-
-    protected function getSessionKey()
-    {
-        return $this->_sessionKey;
     }
 
     //########################################
@@ -240,14 +267,19 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_CreateController
         $sessionData = $this->getSessionValue();
         $sessionData[$key] = $value;
 
-        Mage::helper('M2ePro/Data_Session')->setValue($this->getSessionKey(), $sessionData);
+        Mage::helper('M2ePro/Data_Session')->setValue(
+            Ess_M2ePro_Model_Amazon_Listing::CREATE_LISTING_SESSION_DATA,
+            $sessionData
+        );
 
         return $this;
     }
 
     protected function getSessionValue($key = null)
     {
-        $sessionData = Mage::helper('M2ePro/Data_Session')->getValue($this->getSessionKey());
+        $sessionData = Mage::helper('M2ePro/Data_Session')->getValue(
+            Ess_M2ePro_Model_Amazon_Listing::CREATE_LISTING_SESSION_DATA
+        );
 
         if ($sessionData === null) {
             $sessionData = array();
@@ -264,7 +296,10 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_CreateController
 
     protected function clearSession()
     {
-        Mage::helper('M2ePro/Data_Session')->setValue($this->getSessionKey(), null);
+        Mage::helper('M2ePro/Data_Session')->setValue(
+            Ess_M2ePro_Model_Amazon_Listing::CREATE_LISTING_SESSION_DATA,
+            null
+        );
     }
 
     //########################################
@@ -272,7 +307,6 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_CreateController
     protected function setWizardStep($step)
     {
         $wizardHelper = Mage::helper('M2ePro/Module_Wizard');
-
         if (!$wizardHelper->isActive(Ess_M2ePro_Helper_View_Amazon::WIZARD_INSTALLATION_NICK)) {
             return;
         }
@@ -284,8 +318,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_CreateController
 
     protected function isCreationModeListingOnly()
     {
-        return $this->getRequest()->getParam('creation_mode') ==
-            Ess_M2ePro_Helper_View::LISTING_CREATION_MODE_LISTING_ONLY;
+        return $this->getSessionValue('creation_mode') == Ess_M2ePro_Helper_View::LISTING_CREATION_MODE_LISTING_ONLY;
     }
 
     //########################################

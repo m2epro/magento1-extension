@@ -68,9 +68,13 @@ class Ess_M2ePro_Adminhtml_ControlPanel_Module_IntegrationController
                 /** @var Ess_M2ePro_Model_Walmart_Listing_Product_Action_Configurator $configurator */
                 $configurator = Mage::getModel('M2ePro/Walmart_Listing_Product_Action_Configurator');
 
+                /** @var Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_SkuResolver $skuResolver */
+                $skuResolver = Mage::getModel('M2ePro/Walmart_Listing_Product_Action_Type_List_SkuResolver');
+                $skuResolver->setListingProduct($lp);
+
                 /** @var Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Request $request */
                 $request = Mage::getModel("M2ePro/Walmart_Listing_Product_Action_Type_{$requestType}_Request");
-                $request->setParams(array());
+                $request->setParams(array('sku' => $skuResolver->resolve()));
                 $request->setListingProduct($lp);
                 $request->setConfigurator($configurator);
 

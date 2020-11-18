@@ -91,6 +91,10 @@ class Ess_M2ePro_Adminhtml_Order_UploadByUserController
             $this->getRequest()->getParam('to_date')
         );
 
+        if ($this->isMoreThanCurrentDate($toDate)) {
+            $toDate = Mage::helper('M2ePro')->getCurrentGmtDate();
+        }
+
         try {
             $manager->setFromToDates($fromDate, $toDate);
         } catch (Exception $e) {
@@ -108,6 +112,19 @@ class Ess_M2ePro_Adminhtml_Order_UploadByUserController
         }
 
         return $this->_addJsonContent(array('result' => true));
+    }
+
+    // ---------------------------------------
+
+    protected function isMoreThanCurrentDate($toDate)
+    {
+        $to  = new \DateTime($toDate, new \DateTimeZone('UTC'));
+
+        if ($to->getTimestamp() > Mage::helper('M2ePro')->getCurrentGmtDate(true)) {
+            return true;
+        }
+
+        return false;
     }
 
     //########################################

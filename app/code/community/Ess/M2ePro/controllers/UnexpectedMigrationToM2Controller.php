@@ -10,6 +10,14 @@ class Ess_M2ePro_UnexpectedMigrationToM2Controller extends Mage_Core_Controller_
 {
     //########################################
 
+    public function preDispatch()
+    {
+        $this->getLayout()->setArea(Mage_Core_Model_App_Area::AREA_FRONTEND);
+        parent::preDispatch();
+    }
+
+    //########################################
+
     public function prepareAction()
     {
         $licenseKey      = $this->getRequest()->getPost('license_key', false);

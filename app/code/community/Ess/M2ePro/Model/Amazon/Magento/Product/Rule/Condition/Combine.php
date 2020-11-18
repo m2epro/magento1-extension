@@ -42,7 +42,7 @@ class Ess_M2ePro_Model_Amazon_Magento_Product_Rule_Condition_Combine
     protected function getCustomOptionsAttributes()
     {
         return array(
-            'sku' => Mage::helper('M2ePro')->__('SKU'),
+            'amazon_sku' => Mage::helper('M2ePro')->__('SKU'),
             'amazon_general_id' => Mage::helper('M2ePro')->__('ASIN/ISBN Value'),
             'amazon_general_id_state' => Mage::helper('M2ePro')->__('ASIN/ISBN Status'),
             'is_general_id_owner' => Mage::helper('M2ePro')->__('ASIN/ISBN Creator'),

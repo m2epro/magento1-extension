@@ -121,6 +121,14 @@ class Ess_M2ePro_Model_Ebay_Marketplace extends Ess_M2ePro_Model_Component_Child
     /**
      * @return bool
      */
+    public function isManagedPaymentsEnabled()
+    {
+        return (bool)(int)$this->getData('is_managed_payments');
+    }
+
+    /**
+     * @return bool
+     */
     public function isCashOnDeliveryEnabled()
     {
         return (bool)(int)$this->getData('is_cash_on_delivery');

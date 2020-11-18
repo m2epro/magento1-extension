@@ -13,6 +13,13 @@ class Ess_M2ePro_Model_Walmart_Connector_Account_Update_EntityRequester
 
     public function getRequestData()
     {
+        /** @var Ess_M2ePro_Model_Marketplace $marketplaceObject */
+        $marketplaceObject = Mage::helper('M2ePro/Component_Walmart')->getCachedObject(
+            'Marketplace', $this->_params['marketplace_id']
+        );
+
+        $this->_params['marketplace_id'] = $marketplaceObject->getNativeId();
+
         return $this->_params;
     }
 

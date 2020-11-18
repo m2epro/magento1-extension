@@ -14,11 +14,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Payment_Edit_Form_Data extends Ma
     {
         parent::__construct();
 
-        // Initialization block
-        // ---------------------------------------
         $this->setId('ebayTemplatePaymentEditFormData');
-        // ---------------------------------------
-
         $this->setTemplate('M2ePro/ebay/template/payment/form/data.phtml');
     }
 
@@ -98,7 +94,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Payment_Edit_Form_Data extends Ma
 
         $data = array(
             'id' => $marketplace->getId(),
-            'services' => $marketplace->getChildObject()->getPaymentInfo()
+            'services' => $marketplace->getChildObject()->getPaymentInfo(),
+            'managed_payments_allowed' => $marketplace->getChildObject()->isManagedPaymentsEnabled()
         );
 
         $policyLocalization = $this->getData('policy_localization');

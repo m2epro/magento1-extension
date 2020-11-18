@@ -272,7 +272,7 @@ class Ess_M2ePro_Adminhtml_Ebay_OrderController extends Ess_M2ePro_Controller_Ad
     {
         if ($this->sendInStorePickupNotifications('ready_for_pickup')) {
             $this->_getSession()->addSuccess(
-                Mage::helper('M2ePro')->__('Orders were successfully marked as Ready For Pickup.')
+                Mage::helper('M2ePro')->__('Orders were marked as Ready For Pickup.')
             );
         } else {
             $this->_getSession()->addError(
@@ -287,7 +287,7 @@ class Ess_M2ePro_Adminhtml_Ebay_OrderController extends Ess_M2ePro_Controller_Ad
     {
         if ($this->sendInStorePickupNotifications('picked_up')) {
             $this->_getSession()->addSuccess(
-                Mage::helper('M2ePro')->__('Orders were successfully marked as Picked Up.')
+                Mage::helper('M2ePro')->__('Orders were marked as Picked Up.')
             );
         } else {
             $this->_getSession()->addError(
@@ -302,7 +302,7 @@ class Ess_M2ePro_Adminhtml_Ebay_OrderController extends Ess_M2ePro_Controller_Ad
     {
         if ($this->sendInStorePickupNotifications('cancelled')) {
             $this->_getSession()->addSuccess(
-                Mage::helper('M2ePro')->__('Orders were successfully marked as Cancelled.')
+                Mage::helper('M2ePro')->__('Orders were marked as Cancelled.')
             );
         } else {
             $this->_getSession()->addError(
@@ -327,15 +327,15 @@ class Ess_M2ePro_Adminhtml_Ebay_OrderController extends Ess_M2ePro_Controller_Ad
         $successMessage = '';
         switch ($type) {
             case 'ready_for_pickup':
-                $successMessage = Mage::helper('M2ePro')->__('Order was successfully marked as Ready For Pickup');
+                $successMessage = Mage::helper('M2ePro')->__('Order was marked as Ready For Pickup');
                 break;
 
             case 'picked_up':
-                $successMessage = Mage::helper('M2ePro')->__('Order was successfully marked as Picked Up');
+                $successMessage = Mage::helper('M2ePro')->__('Order was marked as Picked Up');
                 break;
 
             case 'cancelled':
-                $successMessage = Mage::helper('M2ePro')->__('Order was successfully marked as Cancelled');
+                $successMessage = Mage::helper('M2ePro')->__('Order was marked as Cancelled');
                 break;
         }
 

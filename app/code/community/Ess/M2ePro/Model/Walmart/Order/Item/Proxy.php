@@ -6,6 +6,8 @@
  * @license    Commercial use is forbidden
  */
 
+use Ess_M2ePro_Helper_Data as Helper;
+
 class Ess_M2ePro_Model_Walmart_Order_Item_Proxy extends Ess_M2ePro_Model_Order_Item_Proxy
 {
     //########################################
@@ -57,11 +59,13 @@ class Ess_M2ePro_Model_Walmart_Order_Item_Proxy extends Ess_M2ePro_Model_Order_I
 
     /**
      * @return array
+     * @throws Exception
      */
     public function getAdditionalData()
     {
         if (empty($this->_additionalData)) {
-            $this->_additionalData[Ess_M2ePro_Helper_Data::CUSTOM_IDENTIFIER]['items'][] = array(
+            $this->_additionalData[Helper::CUSTOM_IDENTIFIER]['pretended_to_be_simple'] = $this->pretendedToBeSimple();
+            $this->_additionalData[Helper::CUSTOM_IDENTIFIER]['items'][] = array(
                 'order_item_id' => $this->_item->getWalmartOrderItemId()
             );
         }

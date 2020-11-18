@@ -16,50 +16,113 @@
     }
 </style>
 
+<?php
+$isModuleDisabled = Mage::helper('M2ePro/Module')->isDisabled();
+
+if ($isModuleDisabled) {
+    $confirmContent = 'Are you sure ?';
+} else {
+    $confirmContent = <<<HTML
+<p>In case you confirm the Module disabling, the M2E Pro dynamic tasks run by
+    Cron will be stopped and the M2E Pro Interface will be blocked.</p>
+
+<p><b>Note</b>: You can re-enable it anytime you would like by clicking on the <strong>Proceed</strong>
+    button for <strong>Enable Module and Automatic Synchronization</strong> option.</p>
+HTML;
+}
+
+?>
+
+<script>
+    M2ePro.translator.add(<?php echo json_encode(array(
+        'Migration Information' => Mage::helper('M2ePro')->__('Migration Information')
+    )); ?>);
+
+    Event.observe(window, 'load', function() {
+        ModuleAndChannelsObj = new ConfigurationModuleAndChannels();
+    });
+</script>
+
+<div id="block_notice_configuration_module_channel" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Module & Channels'); ?>">
+    <p><?php echo Mage::helper('M2ePro')->__('
+                Here you can manage the Module and Automatic Synchronization running, enable Channels you want to sell on. 
+                Read the <a href="%url%" target="_blank">article</a> for more details.',
+            Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'x/CwAJAQ')
+        ); ?></p>
+</div>
+
 <form id="<?php echo $this->getForm()->getId(); ?>" action="<?php echo $this->getForm()->getData('action'); ?>" method="post" enctype="multipart/form-data">
 
     <input name="form_key" value="<?php echo $this->getFormKey(); ?>" type="hidden" />
 
-    <div id="magento_block_configuration_ebay_channel">
+    <div id="magento_block_configuration_module_channel">
 
-        <div id="block_notice_configuration_ebay_channel" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Channels'); ?>">
-            <p><?php echo Mage::helper('M2ePro')->__('
-                <b>Enable</b> the Channels you want to sell on, then click <b>Save Config</b>.<br/><br/>
-                More detailed information about ability to work with this Page you can find <a href="%url%" target="_blank">here</a>.',
-                Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'x/CwAJAQ#GlobalSettings-Channels')
-                ); ?></p>
-        </div>
-
-        <div class="entry-edit" id="magento_block_configuration_channel_status">
+        <div class="entry-edit" id="magento_block_configuration_module" collapseable="no">
 
             <div class="entry-edit-head">
-                <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('eBay Channel'); ?></h4>
+                <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Module'); ?></h4>
             </div>
 
             <div class="fieldset">
+
+                <?php if (!$isModuleDisabled): ?>
+                    <div class="hor-scroll">
+
+                        <table class="form-list" cellspacing="0" cellpadding="0">
+
+                            <tbody>
+
+                            <tr>
+                                <td class="label" style="width: auto">
+                                    <label style="width: auto"><?php echo Mage::helper('M2ePro')->__('Automatic Synchronization'); ?>: </label>
+                                </td>
+
+                                <td class="value">
+                                    <?php echo $this->getChildHtml('change_cron_mode_button'); ?>
+                                </td>
+                                <td>
+                                    <p class="note">
+                            <span>
+                                <?php echo Mage::helper('M2ePro')->__(
+                                    'Inventory and Order synchronization stops. The Module interface remains available.'
+                                ) ?>
+                            </span>
+                                    </p>
+                                </td>
+                            </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+                <?php endif; ?>
+
                 <div class="hor-scroll">
 
                     <table class="form-list" cellspacing="0" cellpadding="0">
 
-                        <colgroup class="label"></colgroup>
-                        <colgroup class="value"></colgroup>
-
                         <tbody>
 
-                            <tr>
-                                <td class="label">
-                                    <label><?php echo Mage::helper('M2ePro')->__('Status'); ?>: </label>
-                                </td>
-                                <td class="value">
-                                    <select id="component_ebay_mode" name="component_ebay_mode">
-                                        <option value="0" <?php if (!$this->component_ebay_mode) echo 'selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Disabled') ?></option>
-                                        <option value="1" <?php if ($this->component_ebay_mode) echo 'selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Enabled') ?></option>
-                                    </select>
-                                    <p class="note">
-                                        <span><?php echo Mage::helper('M2ePro')->__('eBay Channel Status.') ?></span>
-                                    </p>
-                                </td>
-                            </tr>
+                        <tr>
+                            <td class="label" style="width: auto">
+                                <label style="width: auto"><?php echo Mage::helper('M2ePro')->__('Module Interface and Automatic Synchronization'); ?>: </label>
+                            </td>
+
+                            <td class="value">
+                                <?php echo $this->getChildHtml('proceed_module_mode_button'); ?>
+                            </td>
+
+                            <td>
+                                <p class="note">
+                            <span>
+                                <?php echo Mage::helper('M2ePro')->__(
+                                    'Inventory and Order synchronization stops. The Module interface becomes unavailable.'
+                                ) ?>
+                            </span>
+                                </p>
+                            </td>
+                        </tr>
 
                         </tbody>
 
@@ -69,83 +132,82 @@
             </div>
         </div>
 
-    </div>
+        <script type="M2ePro/template" id="module_mode_information_content">
 
-    <div class="entry-edit" id="magento_block_configuration_settings_other">
+            <div class="entry-edit" id="magento_block_configuration_module_data" collapseable="no">
 
-        <div class="entry-edit-head">
-            <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Amazon Channel'); ?></h4>
-        </div>
+                <div style="margin-top: 10px">
+                    <p>
+                        <?php echo Mage::helper('M2ePro')->__($confirmContent); ?>
+                    </p>
+                </div>
 
-        <div class="fieldset">
-            <div class="hor-scroll">
-
-                <table class="form-list" cellspacing="0" cellpadding="0">
-
-                    <colgroup class="label"></colgroup>
-                    <colgroup class="value"></colgroup>
-
-                    <tbody>
-
-                        <tr>
-                            <td class="label">
-                                <label><?php echo Mage::helper('M2ePro')->__('Status'); ?>: </label>
-                            </td>
-                            <td class="value">
-                                <select id="component_amazon_mode" name="component_amazon_mode" class="M2ePro-component-other">
-                                    <option value="0" <?php if (!$this->component_amazon_mode) echo 'selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Disabled') ?></option>
-                                    <option value="1" <?php if ($this->component_amazon_mode) echo 'selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Enabled') ?></option>
-                                </select>
-                                <p class="note">
-                                    <span><?php echo Mage::helper('M2ePro')->__('Amazon Channel Status.') ?></span>
-                                </p>
-                            </td>
-                        </tr>
-
-                    </tbody>
-
-                </table>
+                <div style="float: right; margin: 0 0 1em;">
+                    <a href="#" onclick="moduleModePopup.close();">Close</a>
+                    &nbsp;
+                    &nbsp;
+                    &nbsp;
+                    <?php echo $this->getChildHtml('confirm_module_mode_button');?>
+                </div>
 
             </div>
-        </div>
 
-    </div>
+        </script>
 
-    <div class="entry-edit" id="magento_block_configuration_walmart_channel">
+        <div class="entry-edit" id="magento_block_configuration_channel_mode" collapseable="no">
 
-        <div class="entry-edit-head">
-            <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Walmart Channel'); ?></h4>
-        </div>
+            <div class="entry-edit-head">
+                <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Channels'); ?></h4>
+            </div>
 
-        <div class="fieldset">
-            <div class="hor-scroll">
+            <div class="fieldset">
+                <div class="hor-scroll">
 
-                <table class="form-list" cellspacing="0" cellpadding="0">
+                    <table class="form-list" cellspacing="0" cellpadding="0">
 
-                    <colgroup class="label"></colgroup>
-                    <colgroup class="value"></colgroup>
+                        <tbody>
 
-                    <tbody>
+                            <tr>
+                                <td class="label" style="width: auto">
+                                    <label style="width: auto"><?php echo Mage::helper('M2ePro')->__('eBay'); ?>: </label>
+                                </td>
+                                <td class="value">
+                                    <?php echo $this->getChildHtml('change_ebay_mode_button'); ?>
+                                    <p class="note">
+                                        <span><?php echo Mage::helper('M2ePro')->__('eBay Channel Status.') ?></span>
+                                    </p>
+                                </td>
+                            </tr>
 
-                        <tr>
-                            <td class="label">
-                                <label><?php echo Mage::helper('M2ePro')->__('Status'); ?>: </label>
-                            </td>
-                            <td class="value">
-                                <select id="component_walmart_mode" name="component_walmart_mode" class="M2ePro-component-other">
-                                    <option value="0" <?php if (!$this->component_walmart_mode) echo 'selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Disabled') ?></option>
-                                    <option value="1" <?php if ($this->component_walmart_mode) echo 'selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Enabled') ?></option>
-                                </select>
-                                <p class="note">
-                                    <span><?php echo Mage::helper('M2ePro')->__('Walmart Channel Status.') ?></span>
-                                </p>
-                            </td>
-                        </tr>
+                            <tr>
+                                <td class="label" style="width: auto">
+                                    <label style="width: auto"><?php echo Mage::helper('M2ePro')->__('Amazon'); ?>: </label>
+                                </td>
+                                <td class="value">
+                                    <?php echo $this->getChildHtml('change_amazon_mode_button'); ?>
+                                    <p class="note">
+                                        <span><?php echo Mage::helper('M2ePro')->__('Amazon Channel Status.') ?></span>
+                                    </p>
+                                </td>
+                            </tr>
 
-                    </tbody>
+                            <tr>
+                                <td class="label" style="width: auto">
+                                    <label style="width: auto"><?php echo Mage::helper('M2ePro')->__('Walmart'); ?>: </label>
+                                </td>
+                                <td class="value">
+                                    <?php echo $this->getChildHtml('change_walmart_mode_button'); ?>
+                                    <p class="note">
+                                        <span><?php echo Mage::helper('M2ePro')->__('Walmart Channel Status.') ?></span>
+                                    </p>
+                                </td>
+                            </tr>
 
-                </table>
+                        </tbody>
 
+                    </table>
+
+                </div>
             </div>
         </div>
 

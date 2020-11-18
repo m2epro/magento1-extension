@@ -59,7 +59,7 @@ class Ess_M2ePro_Model_Walmart_Order_Action_Handler_Acknowledge
         $this->getOrder()->save();
 
         $this->getOrder()->addSuccessLog(
-            Mage::helper('M2ePro')->__('Order was successfully acknowledged.')
+            Mage::helper('M2ePro')->__('Order was acknowledged.')
         );
     }
 
