@@ -474,7 +474,9 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Sellercentral_Grid
                 $sortedOptions = array();
 
                 foreach ($matchedAttributes as $magentoAttr => $amazonAttr) {
-                    $sortedOptions[$amazonAttr] = $channelOptions[$amazonAttr];
+                    if (isset($channelOptions[$amazonAttr])) {
+                        $sortedOptions[$amazonAttr] = $channelOptions[$amazonAttr];
+                    }
                 }
 
                 $channelOptions = $sortedOptions;

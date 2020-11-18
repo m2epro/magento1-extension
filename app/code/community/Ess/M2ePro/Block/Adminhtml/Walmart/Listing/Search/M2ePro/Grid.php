@@ -571,7 +571,7 @@ HTML;
 
         $collection->joinTable(
             array('product_id_subQuery' => $childCollection->getSelect()),
-            'product_id_subQuery.variation_parent_id=id',
+            'variation_parent_id=id',
             array(
                 'product_id_child_listing_product_ids' => 'child_listing_product_ids',
                 'product_id_searched_by_child'         => 'searched_by_child'
@@ -643,7 +643,7 @@ HTML;
 
         $collection->joinTable(
             array('online_sku_subQuery' => $childCollection->getSelect()),
-            'online_sku_subQuery.variation_parent_id=id',
+            'variation_parent_id=id',
             array(
                 'online_sku_child_listing_product_ids' => 'child_listing_product_ids',
                 'online_sku_searched_by_child'         => 'searched_by_child'
@@ -682,7 +682,7 @@ SQL;
 
         $collection->joinTable(
             array('gtin_subQuery' => $childCollection->getSelect()),
-            'gtin_subQuery.variation_parent_id=id',
+            'variation_parent_id=id',
             array(
                 'gtin_child_listing_product_ids' => 'child_listing_product_ids',
                 'gtin_searched_by_child'         => 'searched_by_child'

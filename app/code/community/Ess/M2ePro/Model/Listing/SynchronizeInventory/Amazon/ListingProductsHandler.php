@@ -48,6 +48,10 @@ class Ess_M2ePro_Model_Listing_SynchronizeInventory_Amazon_ListingProductsHandle
             $stmtTemp = $this->getPdoStatementExistingListings($skuPack);
 
             while ($existingItem = $stmtTemp->fetch()) {
+                if (!isset($this->_responseData[$existingItem['sku']])) {
+                    continue;
+                }
+
                 $receivedItem = $this->_responseData[$existingItem['sku']];
                 unset($this->_responseData[$existingItem['sku']]);
 

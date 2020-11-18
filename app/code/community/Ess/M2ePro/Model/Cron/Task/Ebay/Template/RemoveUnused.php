@@ -6,6 +6,8 @@
  * @license    Commercial use is forbidden
  */
 
+use Ess_M2ePro_Helper_Component_Ebay_Category as EbayCategory;
+
 class Ess_M2ePro_Model_Cron_Task_Ebay_Template_RemoveUnused extends Ess_M2ePro_Model_Cron_Task_Abstract
 {
     const NICK = 'ebay/template/remove_unused';
@@ -190,6 +192,30 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Template_RemoveUnused extends Ess_M2ePro_M
         $collection->getSelect()->where('is_custom_template = 1');
         $collection->getSelect()->where('create_date < ?', $minCreateDate);
 
+        $rememberTemplateIds = array();
+
+        $listingCollection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Listing');
+        foreach ($listingCollection->getItems() as $listing) {
+            $additionalData = $listing->getSettings('additional_data');
+            if (!isset($additionalData['mode_same_category_data'])) {
+                continue;
+            }
+
+            $sameCategoryData = $additionalData['mode_same_category_data'];
+
+            if (!empty($sameCategoryData[EbayCategory::TYPE_EBAY_MAIN])) {
+                $rememberTemplateIds[] = $sameCategoryData[EbayCategory::TYPE_EBAY_MAIN]['template_id'];
+            }
+
+            if (!empty($sameCategoryData[EbayCategory::TYPE_EBAY_SECONDARY])) {
+                $rememberTemplateIds[] = $sameCategoryData[EbayCategory::TYPE_EBAY_SECONDARY]['template_id'];
+            }
+        }
+
+        if (!empty($rememberTemplateIds)) {
+            $collection->getSelect()->where('id NOT IN (' . implode(',', $rememberTemplateIds) . ')');
+        }
+
         $unusedTemplates = $collection->getItems();
         foreach ($unusedTemplates as $unusedTemplate) {
             /**@var Ess_M2ePro_Model_Ebay_Template_Category $unusedTemplate */
@@ -285,6 +311,30 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Template_RemoveUnused extends Ess_M2ePro_M
         $collection = Mage::getModel('M2ePro/Ebay_Template_StoreCategory')->getCollection();
         $collection->getSelect()->where('id NOT IN ('.$unionSelect->__toString().')');
         $collection->getSelect()->where('create_date < ?', $minCreateDate);
+
+        $rememberTemplateIds = array();
+
+        $listingCollection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Listing');
+        foreach ($listingCollection->getItems() as $listing) {
+            $additionalData = $listing->getSettings('additional_data');
+            if (!isset($additionalData['mode_same_category_data'])) {
+                continue;
+            }
+
+            $sameCategoryData = $additionalData['mode_same_category_data'];
+
+            if (!empty($sameCategoryData[EbayCategory::TYPE_STORE_MAIN])) {
+                $rememberTemplateIds[] = $sameCategoryData[EbayCategory::TYPE_STORE_MAIN]['template_id'];
+            }
+
+            if (!empty($sameCategoryData[EbayCategory::TYPE_STORE_SECONDARY])) {
+                $rememberTemplateIds[] = $sameCategoryData[EbayCategory::TYPE_STORE_SECONDARY]['template_id'];
+            }
+        }
+
+        if (!empty($rememberTemplateIds)) {
+            $collection->getSelect()->where('id NOT IN (' . implode(',', $rememberTemplateIds) . ')');
+        }
 
         $unusedTemplates = $collection->getItems();
         foreach ($unusedTemplates as $unusedTemplate) {

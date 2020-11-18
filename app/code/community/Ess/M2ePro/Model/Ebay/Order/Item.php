@@ -364,19 +364,9 @@ class Ess_M2ePro_Model_Ebay_Order_Item extends Ess_M2ePro_Model_Component_Child_
     protected function createProduct()
     {
         if (!$this->getEbayAccount()->isMagentoOrdersListingsOtherProductImportEnabled()) {
-            throw new Ess_M2ePro_Model_Exception(
-                Mage::helper('M2ePro')->__(
-                    'Product creation is disabled in "Account > Orders > Product Not Found". 
-                     Enable product creation <a href="%url%" target="_blank">here</a>',
-                    Mage::helper('adminhtml')->getUrl(
-                        'M2ePro/adminhtml_ebay_account/edit',
-                        array(
-                            'id' => $this->getEbayAccount()->getId(),
-                            'tab' => Ess_M2ePro_Block_Adminhtml_Ebay_Account_Edit_Tabs::TAB_ID_ORDER
-                        )
-                    )
-                )
-            );
+            throw new Ess_M2ePro_Model_Exception(Mage::helper('M2ePro')->__(
+                'Product creation is disabled in "Account > Orders > Product Not Found".'
+            ));
         }
 
         $order = $this->getParentObject()->getOrder();

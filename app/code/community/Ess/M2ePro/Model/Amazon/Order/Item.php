@@ -353,19 +353,9 @@ class Ess_M2ePro_Model_Amazon_Order_Item extends Ess_M2ePro_Model_Component_Chil
     protected function createProduct()
     {
         if (!$this->getAmazonAccount()->isMagentoOrdersListingsOtherProductImportEnabled()) {
-            throw new Ess_M2ePro_Model_Exception(
-                Mage::helper('M2ePro')->__(
-                    'Product creation is disabled in "Account > Orders > Product Not Found". 
-                     Enable product creation <a href="%url%" target="_blank">here</a>',
-                    Mage::helper('adminhtml')->getUrl(
-                        'M2ePro/adminhtml_amazon_account/edit',
-                        array(
-                            'id' => $this->getAmazonAccount()->getId(),
-                            'tab' => Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit_Tabs::TAB_ID_ORDERS
-                        )
-                    )
-                )
-            );
+            throw new Ess_M2ePro_Model_Exception(Mage::helper('M2ePro')->__(
+                'Product creation is disabled in "Account > Orders > Product Not Found".'
+            ));
         }
 
         $storeId = $this->getAmazonAccount()->getMagentoOrdersListingsOtherStoreId();

@@ -333,7 +333,9 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_V
                 $sortedOptions = array();
 
                 foreach ($matchedAttributes as $magentoAttr => $walmartAttr) {
-                    $sortedOptions[$magentoAttr] = $productOptions[$magentoAttr];
+                    if (isset($productOptions[$magentoAttr])) {
+                        $sortedOptions[$magentoAttr] = $productOptions[$magentoAttr];
+                    }
                 }
 
                 $productOptions = $sortedOptions;
@@ -418,7 +420,9 @@ HTML;
             $sortedOptions = array();
 
             foreach ($matchedAttributes as $magentoAttr => $walmartAttr) {
-                $sortedOptions[$walmartAttr] = $options[$walmartAttr];
+                if (isset($options[$walmartAttr])) {
+                    $sortedOptions[$walmartAttr] = $options[$walmartAttr];
+                }
             }
 
             $options = $sortedOptions;

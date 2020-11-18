@@ -31,14 +31,10 @@ abstract class Ess_M2ePro_Model_Listing_SynchronizeInventory_AbstractExistingPro
     {
         $ids = array_map(function ($id) { return (string) $id; }, $ids);
 
-        $collection = $this->getPreparedProductsCollection();
+        $select = clone $this->getPreparedProductsCollection()->getSelect();
+        $select->where("`second_table`.`{$this->getInventoryIdentifier()}` IN (?)", $ids);
 
-        $collection->clear()->getSelect()->reset(Zend_Db_Select::WHERE);
-        $collection->getSelect()->where("`second_table`.`{$this->getInventoryIdentifier()}` IN (?)", $ids);
-
-        return Mage::getSingleton('core/resource')->getConnection('core_read')->query(
-            $collection->getSelect()->__toString()
-        );
+        return Mage::getSingleton('core/resource')->getConnection('core_read')->query($select->__toString());
     }
 
     /**

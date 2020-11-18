@@ -581,7 +581,7 @@ HTML;
 
         $collection->joinTable(
             array('online_sku_subQuery' => $childCollection->getSelect()),
-            'online_sku_subQuery.variation_parent_id=id',
+            'variation_parent_id=id',
             array(
                 'online_sku_child_listing_product_ids' => 'child_listing_product_ids',
                 'online_sku_searched_by_child'         => 'searched_by_child'
@@ -612,7 +612,7 @@ HTML;
 
         $collection->joinTable(
             array('asin_subQuery' => $childCollection->getSelect()),
-            'asin_subQuery.variation_parent_id=id',
+            'variation_parent_id=id',
             array(
                 'asin_child_listing_product_ids' => 'child_listing_product_ids',
                 'asin_searched_by_child'         => 'searched_by_child'

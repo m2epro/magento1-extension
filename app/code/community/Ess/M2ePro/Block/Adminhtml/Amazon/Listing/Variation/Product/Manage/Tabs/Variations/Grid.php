@@ -71,22 +71,23 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Variation_Product_Manage_Tabs_Va
 
         $collection->getSelect()->columns(
             array(
-            'online_current_price' => new Zend_Db_Expr(
-                '
-                IF (
-                    `second_table`.`online_regular_price` IS NULL,
-                    `second_table`.`online_business_price`,
+                'amazon_sku' => 'second_table.sku',
+                'online_current_price' => new Zend_Db_Expr(
+                    '
                     IF (
-                        `second_table`.`online_regular_sale_price` IS NOT NULL AND
-                        `second_table`.`online_regular_sale_price_end_date` IS NOT NULL AND
-                        `second_table`.`online_regular_sale_price_start_date` <= CURRENT_DATE() AND
-                        `second_table`.`online_regular_sale_price_end_date` >= CURRENT_DATE(),
-                        `second_table`.`online_regular_sale_price`,
-                        `second_table`.`online_regular_price`
+                        `second_table`.`online_regular_price` IS NULL,
+                        `second_table`.`online_business_price`,
+                        IF (
+                            `second_table`.`online_regular_sale_price` IS NOT NULL AND
+                            `second_table`.`online_regular_sale_price_end_date` IS NOT NULL AND
+                            `second_table`.`online_regular_sale_price_start_date` <= CURRENT_DATE() AND
+                            `second_table`.`online_regular_sale_price_end_date` >= CURRENT_DATE(),
+                            `second_table`.`online_regular_sale_price`,
+                            `second_table`.`online_regular_price`
+                        )
                     )
+                '
                 )
-            '
-            )
             )
         );
 
@@ -183,7 +184,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Variation_Product_Manage_Tabs_Va
                 'align'        => 'left',
                 'type'         => 'text',
                 'index'        => 'amazon_sku',
-                'filter_index' => 'amazon_sku',
+                'filter_index' => 'second_table.sku',
                 'renderer'     => 'M2ePro/adminhtml_amazon_grid_column_renderer_sku',
             )
         );
@@ -332,7 +333,9 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Variation_Product_Manage_Tabs_Va
                 $sortedOptions = array();
 
                 foreach ($matchedAttributes as $magentoAttr => $amazonAttr) {
-                    $sortedOptions[$magentoAttr] = $productOptions[$magentoAttr];
+                    if (isset($productOptions[$magentoAttr])) {
+                        $sortedOptions[$magentoAttr] = $productOptions[$magentoAttr];
+                    }
                 }
 
                 $productOptions = $sortedOptions;
@@ -432,7 +435,9 @@ HTML;
                 $sortedOptions = array();
 
                 foreach ($matchedAttributes as $magentoAttr => $amazonAttr) {
-                    $sortedOptions[$amazonAttr] = $options[$amazonAttr];
+                    if (isset($options[$amazonAttr])) {
+                        $sortedOptions[$amazonAttr] = $options[$amazonAttr];
+                    }
                 }
 
                 $options = $sortedOptions;
