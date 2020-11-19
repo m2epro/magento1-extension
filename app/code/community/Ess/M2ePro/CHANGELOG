@@ -1,4 +1,8 @@
-* 6.9.1 (r15852) (18/11/2020) 
+* 6.9.2 (r15865) (19/11/2020) 
+
+Amazon: [Fixed] Unknown column 'product_id_subQuery.product_id_subQuery.listing_product_id' on search by product id
+
+* 6.9.1 (r15847) (18/11/2020)
 
 Common: [Fixed] Exception occurred when switching between View Modes
 Common: [Fixed] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'asin_subQuery.asin_subQuery.variation_parent_id' in 'on clause'
