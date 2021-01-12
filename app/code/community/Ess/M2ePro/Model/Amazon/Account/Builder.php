@@ -29,7 +29,7 @@ class Ess_M2ePro_Model_Amazon_Account_Builder extends Ess_M2ePro_Model_ActiveRec
             }
         }
 
-        // tab: 3rd party listings
+        // tab: Unmanaged listings
         // ---------------------------------------
         $keys = array(
             'related_store_id',
@@ -138,7 +138,7 @@ class Ess_M2ePro_Model_Amazon_Account_Builder extends Ess_M2ePro_Model_ActiveRec
             }
         }
 
-        // 3rd party orders settings
+        // Unmanaged orders settings
         // ---------------------------------------
         $tempKey = 'listing_other';
         $tempSettings = !empty($this->_rawData['magento_orders_settings'][$tempKey])
@@ -245,14 +245,18 @@ class Ess_M2ePro_Model_Amazon_Account_Builder extends Ess_M2ePro_Model_ActiveRec
             }
         }
 
+        if (isset($tempSettings['amazon_collects'])) {
+            if ($this->isNeedExcludeStates()) {
+                $data['magento_orders_settings'][$tempKey]['amazon_collects'] = $tempSettings['amazon_collects'];
+            } else {
+                $data['magento_orders_settings'][$tempKey]['amazon_collects'] = 0;
+            }
+        }
+
         if (isset($tempSettings['excluded_states'])) {
             $data['magento_orders_settings'][$tempKey]['excluded_states'] = explode(
                 ',', $tempSettings['excluded_states']
             );
-        }
-
-        if (!$this->isNeedExcludeStates()) {
-            $data['magento_orders_settings'][$tempKey]['amazon_collects'] = 0;
         }
 
         // customer settings
@@ -300,40 +304,20 @@ class Ess_M2ePro_Model_Amazon_Account_Builder extends Ess_M2ePro_Model_ActiveRec
             }
         }
 
-        // invoice/shipment settings
-        // ---------------------------------------
-        $temp = Account::MAGENTO_ORDERS_STATUS_MAPPING_MODE_CUSTOM;
-        if (isset($this->_rawData['magento_orders_settings']['status_mapping']['mode']) &&
-            $this->_rawData['magento_orders_settings']['status_mapping']['mode'] == $temp
-        ) {
-            $data['magento_orders_settings']['invoice_mode']  = 1;
-            $data['magento_orders_settings']['shipment_mode'] = 1;
-
-            if (!isset($this->_rawData['magento_orders_settings']['invoice_mode'])) {
-                $data['magento_orders_settings']['invoice_mode'] = 0;
-            }
-
-            if (!isset($this->_rawData['magento_orders_settings']['shipment_mode'])) {
-                $data['magento_orders_settings']['shipment_mode'] = 0;
-            }
-        }
-
         $data['magento_orders_settings'] = Mage::helper('M2ePro')->jsonEncode($data['magento_orders_settings']);
 
         // tab: vat calculation service
         // ---------------------------------------
         $keys = array(
             'auto_invoicing',
-            'is_magento_invoice_creation_disabled',
+            'invoice_generation',
+            'create_magento_invoice',
+            'create_magento_shipment',
         );
         foreach ($keys as $key) {
             if (isset($this->_rawData[$key])) {
                 $data[$key] = $this->_rawData[$key];
             }
-        }
-
-        if (empty($data['auto_invoicing'])) {
-            $data['is_magento_invoice_creation_disabled'] = false;
         }
 
         return $data;
@@ -394,7 +378,7 @@ class Ess_M2ePro_Model_Amazon_Account_Builder extends Ess_M2ePro_Model_ActiveRec
                         'order_created' => false
                     ),
                     'billing_address_mode' =>
-                        Account::MAGENTO_ORDERS_BILLING_ADDRESS_MODE_SHIPPING_IF_SAME_CUSTOMER_AND_RECIPIENT
+                        Account::USE_SHIPPING_ADDRESS_AS_BILLING_IF_SAME_CUSTOMER_AND_RECIPIENT
                 ),
                 'status_mapping' => array(
                     'mode' => Account::MAGENTO_ORDERS_STATUS_MAPPING_MODE_DEFAULT,
@@ -410,14 +394,14 @@ class Ess_M2ePro_Model_Amazon_Account_Builder extends Ess_M2ePro_Model_ActiveRec
                 'fba' => array(
                     'mode'       => 1,
                     'stock_mode' => 0
-                ),
-                'invoice_mode'  => 1,
-                'shipment_mode' => 1
+                )
             ),
 
             // vcs_upload_invoices
             'auto_invoicing' => 0,
-            'is_magento_invoice_creation_disabled' => 0,
+            'invoice_generation' => 0,
+            'create_magento_invoice' => 1,
+            'create_magento_shipment' => 1
         );
     }
 

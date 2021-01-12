@@ -22,13 +22,12 @@ class Ess_M2ePro_Adminhtml_ControlPanel_Module_Integration_WalmartController
         $structureHelper = Mage::helper('M2ePro/Module_Database_Structure');
 
         $lp = $structureHelper->getTableNameWithPrefix('m2epro_listing_product');
-        $alp = $structureHelper->getTableNameWithPrefix('m2epro_walmart_listing_product');
-        $alpr = $structureHelper->getTableNameWithPrefix('m2epro_walmart_listing_product_repricing');
+        $wlp = $structureHelper->getTableNameWithPrefix('m2epro_walmart_listing_product');
 
         $subQuery = $writeConnection
             ->select()
             ->from(
-                array('malp' => $alp),
+                array('malp' => $wlp),
                 array('wpid','sku')
             )
             ->joinInner(
@@ -46,7 +45,7 @@ class Ess_M2ePro_Adminhtml_ControlPanel_Module_Integration_WalmartController
         $query = $writeConnection
             ->select()
             ->from(
-                array('malp' => $alp),
+                array('malp' => $wlp),
                 array('listing_product_id')
             )
             ->joinInner(
@@ -71,11 +70,7 @@ class Ess_M2ePro_Adminhtml_ControlPanel_Module_Integration_WalmartController
                 );
 
                 $writeConnection->delete(
-                    $alp, array('listing_product_id = ?' => $row['listing_product_id'])
-                );
-
-                $writeConnection->delete(
-                    $alpr, array('listing_product_id = ?' => $row['listing_product_id'])
+                    $wlp, array('listing_product_id = ?' => $row['listing_product_id'])
                 );
 
                 $removed++;

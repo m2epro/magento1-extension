@@ -183,7 +183,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_CreateController
             }
 
             if ($this->isCreationModeListingOnly()) {
-                // closing window for 3rd party products moving in new listing creation
+                // closing window for Unmanaged products moving in new listing creation
                 return $this->getResponse()->setBody("<script>window.close();</script>");
             }
 
@@ -218,11 +218,6 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_CreateController
     protected function createListing()
     {
         $data = $this->getSessionValue();
-
-        $data['title'] = $this->getSessionValue('title');
-        $data['account_id'] = $this->getSessionValue('account_id');
-        $data['marketplace_id'] = $this->getSessionValue('marketplace_id');
-        $data['store_id'] = $this->getSessionValue('store_id');
 
         if ($this->getSessionValue('restock_date_value') === '') {
             $data['restock_date_value'] = Mage::helper('M2ePro')->getCurrentGmtDate();

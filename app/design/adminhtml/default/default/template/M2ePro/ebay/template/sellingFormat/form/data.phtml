@@ -433,7 +433,6 @@ $taxCategories = $this->getTaxCategoriesInfo();
                     <td class="value" style="width: auto;">
                         <select id="qty_mode" name="selling_format[qty_mode]" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text">
                             <option value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_PRODUCT; ?>" <?php if (Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_PRODUCT == $formData['qty_mode']): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Product Quantity'); ?></option>
-                            <option value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_SINGLE; ?>" <?php if (Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_SINGLE == $formData['qty_mode']): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Single Item'); ?></option>
                             <option value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_NUMBER; ?>" <?php if (Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_NUMBER == $formData['qty_mode']): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Custom Value'); ?></option>
 
                             <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute" new_option_value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_ATTRIBUTE; ?>">
@@ -725,14 +724,16 @@ Otherwise, the Item will be Listed with Quantity according to the Settings in th
                             <option value="1" <?php if ($formData['price_increase_vat_percent']): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
                         </select>
                         <p class="note">
-                            <span><?php echo Mage::helper('M2ePro')->__(
-                                'Choose whether you want to add VAT to the Price when a Product is Listed on eBay, using the VAT Rate or eBay Tax Table in the Taxation Section above.<br/><br/>
-                                 <b>Example:</b> For a Product with Magento Price = £10, VAT Rate = 19%, Price change percentage increase = 2%, the final eBay Price will be £12.14.<br/>
-                                 Magento Price: £10<br/>
-                                 VAT 19%: £10 * 19% = £1.90<br/>
-                                 Magento Price + VAT = £10 + £1.90 = £11.90<br/>
-                                 add percentage increase 2% = £11.90 * 2% = £0.24<br/><br/>
-                                 <b>Final Price on eBay</b>: £11.90 + £0.24 = £12.14'
+                            <span><?php echo Mage::helper('M2ePro')->__(<<<HTML
+Choose whether you want to add VAT to the Price when a Product is listed on eBay, using the VAT Rate field or 
+eBay Tax Table in the Taxation section above.
+<br/>
+<br/>
+The final product price on eBay will be calculated according to the following formula:
+<br/>
+<br/>
+(Product Price + Price Change) + VAT Rate
+HTML
                             ); ?></span>
                         </p>
                     </td>

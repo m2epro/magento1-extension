@@ -31,7 +31,7 @@ class Ess_M2ePro_Model_Walmart_Account_Builder extends Ess_M2ePro_Model_ActiveRe
             }
         }
 
-        // tab: 3rd party listings
+        // tab: Unmanaged listings
         // ---------------------------------------
         $keys = array(
             'related_store_id',
@@ -167,7 +167,7 @@ class Ess_M2ePro_Model_Walmart_Account_Builder extends Ess_M2ePro_Model_ActiveRe
             }
         }
 
-        // 3rd party orders settings
+        // Unmanaged orders settings
         // ---------------------------------------
         $tempKey = 'listing_other';
         $tempSettings = !empty($this->_rawData['magento_orders_settings'][$tempKey])
@@ -264,26 +264,35 @@ class Ess_M2ePro_Model_Walmart_Account_Builder extends Ess_M2ePro_Model_ActiveRe
             }
         }
 
-        // invoice/shipment settings
+        $data['magento_orders_settings'] = Mage::helper('M2ePro')->jsonEncode($data['magento_orders_settings']);
+
+        // tab invoice and shipment
         // ---------------------------------------
-        $temp = Account::MAGENTO_ORDERS_STATUS_MAPPING_MODE_CUSTOM;
-        if (isset($this->_rawData['magento_orders_settings']['status_mapping']['mode']) &&
-            $this->_rawData['magento_orders_settings']['status_mapping']['mode'] == $temp
-        ) {
-            $data['magento_orders_settings']['invoice_mode']  = 1;
-            $data['magento_orders_settings']['shipment_mode'] = 1;
-
-            if (!isset($this->_rawData['magento_orders_settings']['invoice_mode'])) {
-                $data['magento_orders_settings']['invoice_mode'] = 0;
-            }
-
-            if (!isset($this->_rawData['magento_orders_settings']['shipment_mode'])) {
-                $data['magento_orders_settings']['shipment_mode'] = 0;
+        $keys = array(
+            'create_magento_invoice',
+            'create_magento_shipment'
+        );
+        foreach ($keys as $key) {
+            if (isset($this->_rawData[$key])) {
+                $data[$key] = $this->_rawData[$key];
             }
         }
 
-        // ---------------------------------------
-        $data['magento_orders_settings'] = Mage::helper('M2ePro')->jsonEncode($data['magento_orders_settings']);
+        if (isset($this->_rawData['other_carrier']) && isset($this->_rawData['other_carrier_url'])) {
+
+            $otherCarriers = array();
+            $carriers = array_filter($this->_rawData['other_carrier']);
+            $carrierURLs = array_filter($this->_rawData['other_carrier_url']);
+
+            foreach ($carriers as $index => $code) {
+                $otherCarriers[] = array(
+                    'code' => $code,
+                    'url' => isset($carrierURLs[$index]) ? $carrierURLs[$index] : ''
+                );
+            }
+
+            $data['other_carriers'] = Mage::helper('M2ePro')->jsonEncode($otherCarriers);
+        }
 
         return $data;
     }
@@ -339,10 +348,11 @@ class Ess_M2ePro_Model_Walmart_Account_Builder extends Ess_M2ePro_Model_ActiveRe
                     'mode' => Account::MAGENTO_ORDERS_STATUS_MAPPING_MODE_DEFAULT,
                     'processing' => Account::MAGENTO_ORDERS_STATUS_MAPPING_PROCESSING,
                     'shipped' => Account::MAGENTO_ORDERS_STATUS_MAPPING_SHIPPED,
-                ),
-                'invoice_mode'  => 1,
-                'shipment_mode' => 1
-            )
+                )
+            ),
+            'create_magento_invoice' => 1,
+            'create_magento_shipment' => 1,
+            'other_carriers' => array()
         );
     }
 

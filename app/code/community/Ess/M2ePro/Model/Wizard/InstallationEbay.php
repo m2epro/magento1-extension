@@ -13,10 +13,8 @@ class Ess_M2ePro_Model_Wizard_InstallationEbay extends Ess_M2ePro_Model_Wizard
         'account',
 
         'listingTutorial',
-        'listingAccount',
         'listingGeneral',
-        'listingSelling',
-        'listingSynchronization',
+        'listingTemplates',
 
         'sourceMode',
         'productSelection',

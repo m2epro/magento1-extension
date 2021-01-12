@@ -8,11 +8,12 @@
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Account_Edit_Tabs extends Ess_M2ePro_Block_Adminhtml_Widget_Tabs
 {
-    const TAB_ID_GENERAL       = 'general';
+    const TAB_ID_GENERAL = 'general';
     const TAB_ID_LISTING_OTHER = 'listingOther';
-    const TAB_ID_STORE         = 'store';
-    const TAB_ID_ORDER         = 'order';
-    const TAB_ID_FEEDBACK      = 'feedback';
+    const TAB_ID_STORE = 'store';
+    const TAB_ID_ORDER = 'order';
+    const TAB_ID_INVOICES_AND_SHIPMENTS = 'invoices_and_shipments';
+    const TAB_ID_FEEDBACK = 'feedback';
 
     //########################################
 
@@ -26,7 +27,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_Edit_Tabs extends Ess_M2ePro_Block
         $this->setDestElementId('edit_form');
     }
 
-    protected function _beforeToHtml()
+    protected function _prepareLayout()
     {
         $this->addTab(
             self::TAB_ID_GENERAL,
@@ -44,8 +45,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_Edit_Tabs extends Ess_M2ePro_Block
             $this->addTab(
                 self::TAB_ID_LISTING_OTHER,
                 array(
-                    'label'   => Mage::helper('M2ePro')->__('3rd Party Listings'),
-                    'title'   => Mage::helper('M2ePro')->__('3rd Party Listings'),
+                    'label'   => Mage::helper('M2ePro')->__('Unmanaged Listings'),
+                    'title'   => Mage::helper('M2ePro')->__('Unmanaged Listings'),
                     'content' => $this->getLayout()
                         ->createBlock('M2ePro/adminhtml_ebay_account_edit_tabs_listingOther')->toHtml()
                 )
@@ -54,19 +55,30 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_Edit_Tabs extends Ess_M2ePro_Block
             $this->addTab(
                 self::TAB_ID_STORE,
                 array(
-                     'label'   => Mage::helper('M2ePro')->__('eBay Store'),
-                     'title'   => Mage::helper('M2ePro')->__('eBay Store'),
-                     'content' => $this->getLayout()
-                                       ->createBlock('M2ePro/adminhtml_ebay_account_edit_tabs_store')->toHtml()
+                    'label'   => Mage::helper('M2ePro')->__('eBay Store'),
+                    'title'   => Mage::helper('M2ePro')->__('eBay Store'),
+                    'content' => $this->getLayout()
+                        ->createBlock('M2ePro/adminhtml_ebay_account_edit_tabs_store')->toHtml()
                 )
             );
             $this->addTab(
                 self::TAB_ID_ORDER,
                 array(
-                     'label'   => Mage::helper('M2ePro')->__('Orders'),
-                     'title'   => Mage::helper('M2ePro')->__('Orders'),
-                     'content' => $this->getLayout()
-                                       ->createBlock('M2ePro/adminhtml_ebay_account_edit_tabs_order')->toHtml()
+                    'label'   => Mage::helper('M2ePro')->__('Orders'),
+                    'title'   => Mage::helper('M2ePro')->__('Orders'),
+                    'content' => $this->getLayout()
+                        ->createBlock('M2ePro/adminhtml_ebay_account_edit_tabs_order')->toHtml()
+                )
+            );
+
+            $this->addTab(
+                self::TAB_ID_INVOICES_AND_SHIPMENTS,
+                array(
+                    'label'   => Mage::helper('M2ePro')->__('Invoices & Shipments'),
+                    'title'   => Mage::helper('M2ePro')->__('Invoices & Shipments'),
+                    'content' => $this->getLayout()
+                        ->createBlock('M2ePro/adminhtml_ebay_account_edit_tabs_InvoicesAndShipments_Form')
+                        ->toHtml()
                 )
             );
 
@@ -83,7 +95,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_Edit_Tabs extends Ess_M2ePro_Block
 
         $this->setActiveTab($this->getRequest()->getParam('tab', self::TAB_ID_GENERAL));
 
-        return parent::_beforeToHtml();
+        return parent::_prepareLayout();
     }
 
     //########################################

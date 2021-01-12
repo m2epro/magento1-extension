@@ -77,7 +77,7 @@ class Ess_M2ePro_Model_Listing_Log extends Ess_M2ePro_Model_Log_Abstract
     const _ACTION_MOVE_TO_LISTING = 'Move to another Listing';
 
     const ACTION_MOVE_FROM_OTHER_LISTING = 22;
-    const _ACTION_MOVE_FROM_OTHER_LISTING = 'Move from 3rd Party Listing';
+    const _ACTION_MOVE_FROM_OTHER_LISTING = 'Move from Unmanaged Listing';
 
     const ACTION_SELL_ON_ANOTHER_SITE = 33;
     const _ACTION_SELL_ON_ANOTHER_SITE = 'Sell On Another Marketplace';

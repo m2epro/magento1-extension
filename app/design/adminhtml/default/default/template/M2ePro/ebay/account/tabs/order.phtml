@@ -147,7 +147,7 @@
                             <option value="1" <?php if ($formData['magento_orders_settings']['listing_other']['mode'] == 1) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
                         </select>
                         <p class="note">
-                            <span><?php echo Mage::helper('M2ePro')->__('Choose whether a Magento Order should be created if an eBay Order is received for an eBay Item <b>not</b> Listed using M2E Pro.'); ?></span>
+                            <span><?php echo Mage::helper('M2ePro')->__('Choose whether a Magento Order should be created if an eBay Order is received for an item that does <b>not</b> belong to the M2E Pro Listing.'); ?></span>
                         </p>
                     </td>
                 </tr>
@@ -376,6 +376,37 @@
 
             </table>
 
+            <table class="form-list" cellspacing="0" cellpadding="0">
+
+                <tr>
+                    <td class="label">
+                        <label for="magento_orders_customer_billing_address_mode"><?php echo Mage::helper('M2ePro')->__('Billing Address Usage'); ?>:</label>
+                    </td>
+                    <td class="value" style="width: auto;">
+                        <select id="magento_orders_customer_billing_address_mode" name="magento_orders_settings[customer][billing_address_mode]" class="M2ePro-required-when-visible">
+                            <option value="<?php echo Ess_M2ePro_Model_Ebay_Account::USE_SHIPPING_ADDRESS_AS_BILLING_ALWAYS; ?>"
+                                <?php if ($formData['magento_orders_settings']['customer']['billing_address_mode'] == Ess_M2ePro_Model_Ebay_Account::USE_SHIPPING_ADDRESS_AS_BILLING_ALWAYS) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Always'); ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Ebay_Account::USE_SHIPPING_ADDRESS_AS_BILLING_IF_SAME_CUSTOMER_AND_RECIPIENT; ?>" <?php if ($formData['magento_orders_settings']['customer']['billing_address_mode'] == Ess_M2ePro_Model_Ebay_Account::USE_SHIPPING_ADDRESS_AS_BILLING_IF_SAME_CUSTOMER_AND_RECIPIENT) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Buyer & Recipient have the same name'); ?></option>
+                        </select>
+                        <p class="note note-no-tool-tip">
+                            <span><?php echo Mage::helper('M2ePro')->__('When to use shipping address as billing.'); ?></span>
+                        </p>
+                    </td>
+                    <td class="value"  style="display: none">
+                        <p class="note">
+                            <span>
+                                <?php echo Mage::helper('M2ePro')->__('The eBay does not supply the complete billing Buyer information, only the Buyer\'s name and email address. The only way to fill in billing address in the Customer\'s invoice is to use information from shipping address.<br/><br/>
+                                You should select the appropriate Option how to handle billing address for imported Customer:<br/>
+                                <br/>
+                                <strong>Always</strong> - the shipping address is always used as billing address. <br/>
+                                <strong>Buyer & Recipient have the same name</strong> - the shipping address is used as billing address, only when Buyer\'s name and Recipient\'s name are the same. Otherwise, billing address fields will be empty and next message will appear in the city field: "The eBay does not supply the complete billing Buyer information". <br/>'); ?>
+                            </span>
+                        </p>
+                    </td>
+                </tr>
+
+            </table>
+
         </div>
     </div>
 
@@ -580,9 +611,6 @@
                         $formData['magento_orders_settings']['status_mapping']['new'] = Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_STATUS_MAPPING_NEW;
                         $formData['magento_orders_settings']['status_mapping']['paid'] = Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_STATUS_MAPPING_PAID;
                         $formData['magento_orders_settings']['status_mapping']['shipped'] = Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_STATUS_MAPPING_SHIPPED;
-
-                        $formData['magento_orders_settings']['invoice_mode'] = 1;
-                        $formData['magento_orders_settings']['shipment_mode'] = 1;
                     }
                 ?>
 
@@ -610,10 +638,6 @@
                             <?php } ?>
                         </select>
                     </td>
-                    <td class="value">
-                        <input id="magento_orders_invoice_mode" name="magento_orders_settings[invoice_mode]" type="checkbox" <?php if ($formData['magento_orders_settings']['status_mapping']['mode'] == Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_STATUS_MAPPING_MODE_DEFAULT || $formData['magento_orders_settings']['invoice_mode'] == 1) echo 'checked="checked"'; ?> <?php echo $isDisabledStatusStyle; ?>>
-                        <label for="magento_orders_invoice_mode"><?php echo Mage::helper('M2ePro')->__('Automatic Invoice Creation'); ?></label>
-                    </td>
                 </tr>
 
                 <tr id="magento_orders_status_mapping_shipped_container" <?php echo $isDisabledStatusStyle; ?>>
@@ -626,10 +650,6 @@
                                 <option value="<?php echo $statusKey; ?>" <?php if ($formData['magento_orders_settings']['status_mapping']['shipped'] == $statusKey) echo 'selected="selected"'; ?>><?php echo $statusValue; ?></option>
                             <?php } ?>
                         </select>
-                    </td>
-                    <td class="value">
-                        <input id="magento_orders_shipment_mode" name="magento_orders_settings[shipment_mode]" type="checkbox" <?php if ($formData['magento_orders_settings']['status_mapping']['mode'] == Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_STATUS_MAPPING_MODE_DEFAULT || $formData['magento_orders_settings']['shipment_mode'] == 1) echo 'checked="checked"'; ?> <?php echo $isDisabledStatusStyle; ?>>
-                        <label for="magento_orders_shipment_mode"><?php echo Mage::helper('M2ePro')->__('Automatic Shipment Creation');?></label>
                     </td>
                 </tr>
 

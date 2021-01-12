@@ -25,7 +25,10 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_account')}` (
   `inventory_last_synchronization` DATETIME DEFAULT NULL,
   `magento_orders_settings` TEXT NOT NULL,
   `auto_invoicing` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
-  `is_magento_invoice_creation_disabled` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
+  `invoice_generation` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
+  `create_magento_invoice` TINYINT(2) UNSIGNED NOT NULL DEFAULT 1,
+  `create_magento_shipment` TINYINT(2) UNSIGNED NOT NULL DEFAULT 1,
+  `remote_fulfillment_program_mode` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `info` TEXT DEFAULT NULL,
   PRIMARY KEY (`account_id`)
 )
@@ -199,6 +202,7 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_listing')}` (
   `auto_website_adding_description_template_id` int(11) UNSIGNED DEFAULT NULL,
   `template_selling_format_id` INT(11) UNSIGNED NOT NULL,
   `template_synchronization_id` INT(11) UNSIGNED NOT NULL,
+  `template_shipping_id` INT(11) UNSIGNED DEFAULT NULL,
   `sku_mode` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `sku_custom_attribute` VARCHAR(255) NOT NULL,
   `sku_modification_mode` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
@@ -235,7 +239,8 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_listing')}` (
   INDEX `auto_website_adding_description_template_id` (`auto_website_adding_description_template_id`),
   INDEX `generate_sku_mode` (`generate_sku_mode`),
   INDEX `template_selling_format_id` (`template_selling_format_id`),
-  INDEX `template_synchronization_id` (`template_synchronization_id`)
+  INDEX `template_synchronization_id` (`template_synchronization_id`),
+  INDEX `template_shipping_id` (`template_shipping_id`)
 )
 ENGINE = INNODB
 CHARACTER SET utf8
@@ -479,6 +484,7 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_order')}` (
   `status` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `is_invoice_sent` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `is_credit_memo_sent` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
+  `invoice_data_report` LONGTEXT DEFAULT NULL,
   `buyer_name` VARCHAR(255) NOT NULL,
   `buyer_email` VARCHAR(255) DEFAULT NULL,
   `shipping_service` VARCHAR(255) DEFAULT NULL,
@@ -533,6 +539,22 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_order_item')}` (
   INDEX `general_id` (`general_id`),
   INDEX `sku` (`sku`),
   INDEX `title` (`title`)
+)
+ENGINE = INNODB
+CHARACTER SET utf8
+COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_amazon_order_invoice')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_order_invoice')}` (
+  `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `order_id` INT(11) UNSIGNED NOT NULL,
+  `document_type` VARCHAR(64) DEFAULT NULL,
+  `document_number` VARCHAR(64) DEFAULT NULL,
+  `document_data` LONGTEXT DEFAULT NULL,
+  `update_date` DATETIME DEFAULT NULL,
+  `create_date` DATETIME DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `order_id` (`order_id`)
 )
 ENGINE = INNODB
 CHARACTER SET utf8
@@ -831,6 +853,7 @@ INSERT INTO `{$this->_installer->getTable('m2epro_config')}` (`group`,`key`,`val
   ('/amazon/listing/product/action/revise_images/', 'min_allowed_wait_interval', '7200', NOW(), NOW()),
   ('/amazon/listing/product/action/stop/', 'min_allowed_wait_interval', '600', NOW(), NOW()),
   ('/amazon/listing/product/action/delete/', 'min_allowed_wait_interval', '600', NOW(), NOW()),
+  ('/cron/task/amazon/listing/synchronize_inventory/', 'interval_per_account', '86400', NOW(), NOW()),
   ('/amazon/order/settings/marketplace_25/', 'use_first_street_line_as_company', '1', NOW(), NOW()),
   ('/amazon/repricing/', 'mode', '1', NOW(), NOW()),
   ('/amazon/repricing/', 'base_url', 'https://repricer.m2epro.com/connector/m2epro/', NOW(), NOW()),
@@ -860,7 +883,7 @@ INSERT INTO `{$this->_installer->getTable('m2epro_amazon_marketplace')}` VALUES
   (31, '7078-7205-1944', 'EUR',1,0,1,1,1,1,1),
   (34, '8636-1433-4377', 'MXN',1,0,0,0,0,1,0),
   (35, '2770-5005-3793', 'AUD',1,0,0,0,0,1,0),
-  (39, '7078-7205-1944', 'EUR',1,1,1,1,1,1,0),
+  (39, '7078-7205-1944', 'EUR',1,1,1,0,1,1,0),
   (40, '7078-7205-1944', 'TRY',1,1,0,0,0,1,0),
   (41, '7078-7205-1944', 'SEK',1,1,0,0,0,1,0);
 

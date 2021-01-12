@@ -167,4 +167,17 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Account_Edit extends Mage_Adminhtml_Blo
     }
 
     //########################################
+
+    protected function _prepareLayout()
+    {
+        Mage::helper('M2ePro/View')->getJsRenderer()->addOnReadyJs(<<<JS
+    AccountObj = new Account();
+    WalmartAccountObj = new WalmartAccount();
+JS
+        );
+
+        return parent::_prepareLayout();
+    }
+
+    //########################################
 }

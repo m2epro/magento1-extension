@@ -13,20 +13,19 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Edit_Form extends Mage_Adminhtml
     public function __construct()
     {
         parent::__construct();
-
-        // Initialization block
-        // ---------------------------------------
         $this->setId('amazonListingEditForm');
-        // ---------------------------------------
     }
+
+    //########################################
 
     protected function _prepareForm()
     {
         $form = new Varien_Data_Form(
             array(
                 'id'      => 'edit_form',
-                'action'  => $this->getUrl('*/adminhtml_amazon_listing/save'),
+                'class'   => 'form-list',
                 'method'  => 'post',
+                'action'  => $this->getUrl('*/adminhtml_amazon_listing/save'),
                 'enctype' => 'multipart/form-data'
             )
         );

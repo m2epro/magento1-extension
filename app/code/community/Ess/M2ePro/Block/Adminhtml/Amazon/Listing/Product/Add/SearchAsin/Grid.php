@@ -200,10 +200,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Product_Add_SearchAsin_Grid
 
     public function callbackColumnProductTitle($productTitle, $row, $column, $isExport)
     {
-        if (strlen($productTitle) > 60) {
-            $productTitle = substr($productTitle, 0, 60) . '...';
-        }
-
         $productTitle = Mage::helper('M2ePro')->escapeHtml($productTitle);
 
         $value = '<span>'.$productTitle.'</span>';

@@ -38,20 +38,4 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Edit_Form extends Mage_Ad
     }
 
     //########################################
-
-    protected function _toHtml()
-    {
-        if ($this->getRequest()->getParam('step')) {
-            $breadcrumb = $this->getLayout()->createBlock(
-                'M2ePro/adminhtml_ebay_listing_breadcrumb', '',
-                array('step' => $this->getRequest()->getParam('step', 2))
-            );
-
-            return $breadcrumb->_toHtml() . parent::_toHtml();
-        }
-
-        return parent::_toHtml();
-    }
-
-    //########################################
 }

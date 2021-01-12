@@ -48,7 +48,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
 
             ->addJs('M2ePro/Amazon/Listing/Action.js')
             ->addJs('M2ePro/Amazon/Listing/Template/Description.js')
-            ->addJs('M2ePro/Amazon/Listing/ChannelSettings.js')
+            ->addJs('M2ePro/Amazon/Listing/Create/Search.js')
             ->addJs('M2ePro/Amazon/Listing/SearchAsinGrid.js')
             ->addJs('M2ePro/Amazon/Listing/ProductSearch.js')
             ->addJs('M2ePro/Amazon/Listing/VariationProductManage.js')
@@ -627,7 +627,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
         $settings = $this->getLayout()
             ->createBlock('M2ePro/adminhtml_amazon_listing_product_add_searchAsin_searchSettings');
 
-        return $this->getResponse()->setBody($settings->toHtml());
+        return $this->_addAjaxContent($settings->toHtml());
     }
 
     public function saveSearchSettingsAction()
@@ -638,15 +638,15 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
             return $this->getResponse()->setBody('You should provide correct parameters.');
         }
 
-        $listingProduct = Mage::helper('M2ePro/Component_Amazon')->getObject('Listing', $post['id']);
+        $listing = Mage::helper('M2ePro/Component_Amazon')->getObject('Listing', $post['id']);
 
-        $listingProduct->setData('general_id_mode', $post['general_id_mode'])->save();
-        $listingProduct->setData('general_id_custom_attribute', $post['general_id_custom_attribute'])->save();
-        $listingProduct->setData('worldwide_id_mode', $post['worldwide_id_mode'])->save();
-        $listingProduct->setData('worldwide_id_custom_attribute', $post['worldwide_id_custom_attribute'])->save();
-        $listingProduct->setData('search_by_magento_title_mode', $post['search_by_magento_title_mode'])->save();
+        $listing->setData('general_id_mode', $post['general_id_mode']);
+        $listing->setData('general_id_custom_attribute', $post['general_id_custom_attribute']);
+        $listing->setData('worldwide_id_mode', $post['worldwide_id_mode']);
+        $listing->setData('worldwide_id_custom_attribute', $post['worldwide_id_custom_attribute']);
+        $listing->setData('search_by_magento_title_mode', $post['search_by_magento_title_mode']);
 
-        $listingProduct->save();
+        $listing->save();
 
         $this->_forward('viewSearchSettings');
 

@@ -27,12 +27,14 @@ $formData = array_merge($default, $formData);
 
 foreach (array('local', 'international') as $type) {
     $key = $type . '_shipping_rate_table';
-    foreach ($default[$key] as $id => $data) {
-        if (isset($formData[$key][$id])) {
-            continue;
-        }
+    if (isset($default[$key]) && is_array($default[$key])) {
+        foreach ($default[$key] as $id => $data) {
+            if (isset($formData[$key][$id])) {
+                continue;
+            }
 
-        $formData[$key][$id] = $data;
+            $formData[$key][$id] = $data;
+        }
     }
 }
 

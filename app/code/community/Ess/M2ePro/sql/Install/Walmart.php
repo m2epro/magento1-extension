@@ -25,6 +25,9 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_walmart_account')}` (
   `other_listings_mapping_mode` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `other_listings_mapping_settings` TEXT DEFAULT NULL,
   `magento_orders_settings` TEXT NOT NULL,
+  `other_carriers` TEXT DEFAULT NULL,
+  `create_magento_invoice` TINYINT(2) UNSIGNED NOT NULL DEFAULT 1,
+  `create_magento_shipment` TINYINT(2) UNSIGNED NOT NULL DEFAULT 1,
   `orders_last_synchronization` DATETIME DEFAULT NULL,
   `inventory_last_synchronization` DATETIME DEFAULT NULL,
   `info` TEXT DEFAULT NULL,
@@ -648,6 +651,7 @@ INSERT INTO `{$this->_installer->getTable('m2epro_config')}` (`group`,`key`,`val
   ('/walmart/listing/product/action/revise_lag_time/', 'min_allowed_wait_interval', '7200', NOW(), NOW()),
   ('/walmart/listing/product/action/stop/', 'min_allowed_wait_interval', '600', NOW(), NOW()),
   ('/walmart/listing/product/action/delete/', 'min_allowed_wait_interval', '600', NOW(), NOW()),
+  ('/cron/task/walmart/listing/synchronize_inventory/', 'interval_per_account', '86400', NOW(), NOW()),
   ('/walmart/order/settings/marketplace_25/', 'use_first_street_line_as_company', '1', NOW(), NOW());
 
 INSERT INTO `{$this->_installer->getTable('m2epro_marketplace')}` VALUES

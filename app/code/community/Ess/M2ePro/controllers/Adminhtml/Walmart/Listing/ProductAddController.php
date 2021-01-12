@@ -288,7 +288,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
         $failedProductsIds = $collection->getColumnValues('id');
         $this->deleteListingProducts($failedProductsIds);
 
-        //-- Remove successfully moved 3rd party items
+        //-- Remove successfully moved Unmanaged items
         if (isset($additionalData['source']) && $additionalData['source'] == SourceModeBlock::SOURCE_OTHER) {
             $this->deleteListingOthers();
         }

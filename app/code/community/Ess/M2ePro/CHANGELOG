@@ -1,4 +1,60 @@
-* 6.9.2 (r15865) (19/11/2020) 
+* 6.10.0 (r15971) (12/01/2021) 
+
+Common: [Improved] Add 'is empty' and 'is not empty' options to Advanced Conditions of Synchronization Policy
+Common: [Improved] Remove 'Single Item' option for QTY in Selling Policy
+Common: [Improved] User is notified if Magento 2 Synchronization is disabled after migration
+Common: [Improved] Empty array is returned if unserialization error occurs
+Common: [Improved] Error message "Server IP is not defined" in some cases
+Common: [Improved] Items are moved to Unmanaged Listings after deleted from Magento
+Common: [Improved] Synchronization Policy default values are unified
+Common: [Fixed] Fatal error during product actions if Magento product was deleted
+Common: [Fixed] Sell on Another Marketplace feature does not work if more than 100 items are selected
+Common: [Fixed] Exception 'Can't retrieve entity config' occurs when searching product by SKU that contains slash (/)
+eBay: [Improved] Add 'Collect and Remit taxes' field to eBay order details
+eBay: [Improved] 'Use Description From eBay Catalog' field is changed to 'Use eBay catalog Item data' in Description Policy
+eBay: [Improved] Newly added Magento customers are validated by eBay User ID
+eBay: [Improved] Hide item on the Channel if Out of stock control is enabled and the product is removed from Magento
+eBay: [Improved] Add 'Invoices & Shipments' tab to Account Settings
+eBay: [Improved] Create automatic Magento orders for City-states
+eBay: [Improved] Add In-Store pickup for Germany and Canada marketplaces
+eBay: [Improved] Add Shipping Rate Tables for Italy, Canada, and Canada (FR) marketplaces
+eBay: [Improved] eVTN can be excluded from eBay orders
+eBay: [Improved] 'Shipping Address' field is removed from 'Shipping & Handling Information' block of order details
+eBay: [Improved] eBay categories are preselected for items moved from Unmanaged Listing
+eBay: [Fixed] Unable to save more than one value for multiple-choice Item Specific
+eBay: [Fixed] Redirect to eBay Sandbox does not work after clicking on the Item ID link in the Listing grid
+eBay: [Fixed] After adding Custom Item Specifics via mass action ‘Default’ value is displayed
+eBay: [Fixed] Fatal error: 'call to undefined method' is displayed during adding the product to the same Marketplace: call to undefined method
+eBay: [Fixed] SQL Syntax error occurs during M2E Pro installation
+eBay: [Fixed] Fatal error: SQL STATE[42S22]: Column not found: 1054 Unknown column "template_payment_mode' in 'where clause' occurs after saving eBay policy in Account Configuration
+eBay: [Fixed] JS error: 'Cannot read property 'match' of undefined' occurs when editing Selling Settings in Setting View Mode
+eBay: [Fixed] AU marketplace is set by default instead of US during new Listing creation
+eBay: [Fixed] Incorrect log is displayed after Sell on Another Marketplace functionality was used
+eBay: [Fixed] Fatal error: 'Call to a member function isCanceled() on null' occurs after Cron was run
+eBay: [Fixed] Error occurs on the 'Edit Shipping policy' page after accounts were deleted from the Configuration section
+eBay: [Fixed] Uninformative error is shown after saving identical attributes for two and more Parts Compatibility blocks
+eBay: [Fixed] Exception: 'Invalid country code' occurs after adding a new eBay Store
+eBay: [Fixed] Watermark file is not saved after it had been configured in Listing Settings
+eBay: [Removed] Custom Settings for eBay ListingsCannot read property 'match' of undefined
+Amazon: [Added] Implement VCS Lite Invoices functionality
+Amazon: [Added] Ability to send SwitchFulfillmentTo in Inventory Feed (Remote Fulfillment with FBA)
+Amazon: [Improved] Automatic stop action for AFN items is removed
+Amazon: [Improved] Automatic Magento order creation for City-states
+Amazon: [Improved] Ability to assign Shipping Policy in Listing Settings
+Amazon: [Improved] Display more than 60 characters for Title when adding product to the Listing
+Amazon: [Improved] Allow 'Multi-select' attribute type for selection as keyword
+Amazon: [Improved] Disable the Invoice Uploading functionality (Netherlands)
+Amazon: [Fixed] Amazon SKU is displayed instead of Magento SKU in the Listing grid
+Amazon: [Fixed] Source and Destination Listings are swapped in the log after Sell on Another Marketplace functionality was used
+Amazon: [Fixed] The 'Sell on Another Marketplace' pop-up is not opened when using the Sell on Another Marketplace functionality
+Amazon: [Fixed] The 'Add Another' account button is displayed on the 'Creating A New Amazon M2E Pro Listing' page when using the Sell on Another Marketplace functionality
+Amazon: [Fixed] The 'To Listing' drop-down menu lacks possible Listing options when using the Sell on Another Marketplace functionality
+Walmart: [Added] Custom shipping carriers for US and Canada marketplaces
+Walmart: [Improved] Add 'Invoices & Shipments' tab to Account Settings
+Walmart: [Improved] Tracking details are sent during order status update to 'Shipped'
+Walmart: [Fixed] Redirect to Walmart does not work after clicking on the Item ID link in the Listing grid
+
+* 6.9.2 (r15865) (19/11/2020)
 
 Amazon: [Fixed] Unknown column 'product_id_subQuery.product_id_subQuery.listing_product_id' on search by product id
 

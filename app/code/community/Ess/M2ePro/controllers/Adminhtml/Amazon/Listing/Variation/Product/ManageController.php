@@ -44,8 +44,6 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_Variation_Product_ManageController
             ->addJs('M2ePro/TemplateManager.js')
             ->addJs('M2ePro/Amazon/Listing/Category/Tree.js')
             ->addJs('M2ePro/Amazon/Listing/Product/Add.js')
-            ->addJs('M2ePro/Amazon/Listing/Settings.js')
-            ->addJs('M2ePro/Amazon/Listing/ChannelSettings.js')
             ->addJs('M2ePro/Amazon/Listing/ProductsFilter.js')
 
             ->addJs('M2ePro/Amazon/Listing/Product/Variation.js');
@@ -327,7 +325,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_Variation_Product_ManageController
         if ($this->isExistInM2eProListings($listingProduct, $sku)) {
             $msg = Mage::helper('M2ePro')->__('This SKU is already being used in M2E Pro Listing.');
         } else if ($this->isExistInOtherListings($listingProduct, $sku)) {
-            $msg = Mage::helper('M2ePro')->__('This SKU is already being used in M2E Pro 3rd Party Listing.');
+            $msg = Mage::helper('M2ePro')->__('This SKU is already being used in M2E Pro Unmanaged Listing.');
         } else {
             $skuInfo = $this->getSkuInfo($listingProduct, $sku);
 

@@ -122,6 +122,33 @@ window.AmazonAccount = Class.create(Common, {
 
             return value.match(/^[+-]?\d+[.]?\d*[%]?$/g);
         });
+
+        Validation.add('M2ePro-is-ready-for-document-generation', M2ePro.translator.translate('is_ready_for_document_generation'), function(value) {
+            var checkResult = false;
+
+            if ($('auto_invoicing').value != M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account::AUTO_INVOICING_VAT_CALCULATION_SERVICE')) {
+                return true;
+            }
+
+            if ($('invoice_generation').value != M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account::INVOICE_GENERATION_BY_EXTENSION')) {
+                return true;
+            }
+
+            new Ajax.Request(M2ePro.url.get('adminhtml_amazon_account/isReadyForDocumentGeneration'), {
+                method: 'post',
+                asynchronous: false,
+                parameters: {
+                    account_id: M2ePro.formData.id,
+                    new_store_mode: $('magento_orders_listings_store_mode').value,
+                    new_store_id: $('magento_orders_listings_store_id').value
+                },
+                onSuccess: function(transport) {
+                    checkResult = transport.responseText.evalJSON()['result'];
+                }
+            });
+
+            return checkResult;
+        });
     },
 
     // ---------------------------------------
@@ -476,15 +503,9 @@ window.AmazonAccount = Class.create(Common, {
         $('magento_orders_status_mapping_processing').value = M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_STATUS_MAPPING_PROCESSING');
         $('magento_orders_status_mapping_shipped').value = M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_STATUS_MAPPING_SHIPPED');
 
-        // Default auto create invoice & shipment
-        $('magento_orders_invoice_mode').checked = true;
-        $('magento_orders_shipment_mode').checked = true;
-
         var disabled = $('magento_orders_status_mapping_mode').value == M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_STATUS_MAPPING_MODE_DEFAULT');
         $('magento_orders_status_mapping_processing').disabled = disabled;
         $('magento_orders_status_mapping_shipped').disabled = disabled;
-        $('magento_orders_invoice_mode').disabled = disabled;
-        $('magento_orders_shipment_mode').disabled = disabled;
     },
 
     changeVisibilityForOrdersModesRelatedBlocks: function()
@@ -518,7 +539,7 @@ window.AmazonAccount = Class.create(Common, {
             $('magento_block_amazon_accounts_magento_orders_tax').hide();
             $('magento_orders_tax_mode').value = M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_TAX_MODE_MIXED');
 
-            $('magento_orders_customer_billing_address_mode').value = M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_BILLING_ADDRESS_MODE_SHIPPING_IF_SAME_CUSTOMER_AND_RECIPIENT');
+            $('magento_orders_customer_billing_address_mode').value = M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account::USE_SHIPPING_ADDRESS_AS_BILLING_IF_SAME_CUSTOMER_AND_RECIPIENT');
         } else {
             $('magento_block_amazon_accounts_magento_orders_number').show();
             $('magento_block_amazon_accounts_magento_orders_fba').show();
@@ -532,10 +553,14 @@ window.AmazonAccount = Class.create(Common, {
 
     autoInvoicingModeChange: function()
     {
-        $('is_magento_invoice_creation_disabled_tr').hide();
+        var invoiceGenerationTR = $('invoice_generation').up('tr');
+        var createMagentoInvoice = $('create_magento_invoice');
 
-        if ($('auto_invoicing').value == M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_AUTO_INVOICING_VAT_CALCULATION_SERVICE')) {
-            $('is_magento_invoice_creation_disabled_tr').show();
+        invoiceGenerationTR.hide();
+
+        if ($('auto_invoicing').value == M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account::AUTO_INVOICING_VAT_CALCULATION_SERVICE')) {
+            invoiceGenerationTR.show();
+            createMagentoInvoice.value = 0;
         }
     },
 

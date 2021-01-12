@@ -21,7 +21,7 @@ class Ess_M2ePro_Model_Walmart_Order_ShippingAddress extends Ess_M2ePro_Model_Or
             'recipient_name' => $this->getData('recipient_name'),
             'country_id'     => $this->getData('country_code'),
             'region'         => $this->getData('state'),
-            'city'           => $this->getData('city'),
+            'city'           => $this->getData('city') ? $this->getData('city') : $this->getCountryName(),
             'postcode'       => $this->getPostalCode(),
             'telephone'      => $this->getPhone(),
             'company'        => $this->getData('company'),

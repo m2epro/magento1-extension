@@ -73,7 +73,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Other_Channel_SynchronizeData exte
                     $this->executeUpdateInventoryDataAccount($account);
                 } catch (Exception $exception) {
                     $message = Mage::helper('M2ePro')->__(
-                        'The "Update 3rd Party Listings" Action for eBay Account "%account%" was completed with error.',
+                        'The "Update Unmanaged Listings" Action for eBay Account "%account%" was completed with error.',
                         $account->getTitle()
                     );
 

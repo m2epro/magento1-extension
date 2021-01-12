@@ -45,11 +45,11 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Other_ResolveNonReceivedData exten
         $accountsCollection->addFieldToFilter('other_listings_synchronization', 1);
 
         foreach ($accountsCollection->getItems() as $account) {
-            /** @var $account Ess_M2ePro_Model_Account **/
+            /** @var $account Ess_M2ePro_Model_Account * */
 
             $this->getOperationHistory()->addTimePoint(
-                __METHOD__.'process'.$account->getId(),
-                'Get and process SKUs for Account '.$account->getTitle()
+                __METHOD__ . 'process' . $account->getId(),
+                'Get and process SKUs for Account ' . $account->getTitle()
             );
 
             try {
@@ -64,7 +64,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Other_ResolveNonReceivedData exten
                 $this->processTaskException($exception);
             }
 
-            $this->getOperationHistory()->saveTimePoint(__METHOD__.'process'.$account->getId());
+            $this->getOperationHistory()->saveTimePoint(__METHOD__ . 'process' . $account->getId());
         }
     }
 
@@ -76,6 +76,8 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Other_ResolveNonReceivedData exten
         $listingOtherCollection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Listing_Other');
         $listingOtherCollection->addFieldToFilter('main_table.account_id', (int)$account->getId());
         $listingOtherCollection->getSelect()->where('`second_table`.`sku` IS NULL');
+        $listingOtherCollection->getSelect()->orWhere('`second_table`.`online_categories_data` IS NULL');
+        $listingOtherCollection->getSelect()->orWhere('`second_table`.`online_main_category` IS NULL');
         $listingOtherCollection->getSelect()->order('second_table.start_date ASC');
         $listingOtherCollection->getSelect()->limit(200);
 
@@ -96,6 +98,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Other_ResolveNonReceivedData exten
 
         if (empty($receivedData['items'])) {
             $this->updateNotReceivedItems($listingOthers, null);
+
             return;
         }
 
@@ -149,7 +152,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Other_ResolveNonReceivedData exten
                     $listingOther->getMarketplaceId()
                 );
 
-                $newData['online_main_category'] = $categoryPath.' ('.$categories['category_main_id'].')';
+                $newData['online_main_category'] = $categoryPath . ' (' . $categories['category_main_id'] . ')';
                 $newData['online_categories_data'] = Mage::helper('M2ePro')->jsonEncode($categories);
             }
 
@@ -169,7 +172,11 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Other_ResolveNonReceivedData exten
             /** @var Ess_M2ePro_Model_Ebay_Listing_Other $ebayListingOther */
             $ebayListingOther = $listingOther->getChildObject();
 
-            if ($ebayListingOther->getSku() !== null) {
+            $sku = $ebayListingOther->getSku();
+            $onlineMainCategory = $ebayListingOther->getOnlineMainCategory();
+            $onlineCategoriesData = $ebayListingOther->getOnlineCategoriesData();
+
+            if ($sku !== null && $onlineMainCategory !== null && $onlineCategoriesData !== null) {
                 continue;
             }
 
@@ -179,7 +186,10 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Other_ResolveNonReceivedData exten
                 continue;
             }
 
-            $ebayListingOther->setData('sku', '');
+            $onlineMainCategory === null && $ebayListingOther->setData('online_main_category', '');
+            $onlineCategoriesData === null && $ebayListingOther->setData('online_categories_data', '');
+            $sku === null && $ebayListingOther->setData('sku', '');
+
             $ebayListingOther->save();
         }
     }
@@ -200,9 +210,13 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Other_ResolveNonReceivedData exten
 
         $dispatcherObj = Mage::getModel('M2ePro/Ebay_Connector_Dispatcher');
         $connectorObj = $dispatcherObj->getVirtualConnector(
-            'inventory', 'get', 'items',
-            $inputData, null,
-            null, $account->getId()
+            'inventory',
+            'get',
+            'items',
+            $inputData,
+            null,
+            null,
+            $account->getId()
         );
 
         $dispatcherObj->process($connectorObj);

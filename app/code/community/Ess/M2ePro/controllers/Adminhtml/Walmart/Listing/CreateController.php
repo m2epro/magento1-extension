@@ -46,7 +46,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_CreateController
             $listing = $this->createListing();
 
             if ($this->isCreationModeListingOnly()) {
-                // closing window for 3rd party products moving in new listing creation
+                // closing window for Unmanaged products moving in new listing creation
                 return $this->getResponse()->setBody("<script>window.close();</script>");
             }
 
@@ -59,7 +59,6 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_CreateController
         }
 
         $this->_initAction();
-
         $this->setPageHelpLink(null, null, "x/L4taAQ");
 
         $this->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_walmart_listing_create'));
@@ -73,8 +72,6 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_CreateController
     {
         $post = $this->getRequest()->getPost();
 
-        // Validate Templates / Account
-        // ---------------------------------------
         $account = Mage::helper('M2ePro/Component_Walmart')->getCachedObject(
             'Account', (int)$post['account_id']
         );
@@ -87,19 +84,13 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_CreateController
         $description = Mage::helper('M2ePro/Component_Walmart')->getCachedObject(
             'Template_Description', (int)$post['template_description_id']
         );
-        // ---------------------------------------
 
         $post['marketplace_id'] = $account->getMarketplaceId();
 
-        // Add new Listing
-        // ---------------------------------------
         $listing = Mage::helper('M2ePro/Component')->getComponentModel('walmart', 'Listing')
             ->addData($post)
             ->save();
-        // ---------------------------------------
 
-        // Set message to log
-        // ---------------------------------------
         $tempLog = Mage::getModel('M2ePro/Listing_Log');
         $tempLog->setComponentMode($listing->getComponentMode());
         $actionId = $tempLog->getResource()->getNextActionId();
@@ -111,7 +102,6 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_CreateController
             'Listing was Added',
             Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE
         );
-        // ---------------------------------------
 
         return $listing;
     }

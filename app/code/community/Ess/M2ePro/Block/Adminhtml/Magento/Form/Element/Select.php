@@ -53,6 +53,10 @@ class Ess_M2ePro_Block_Adminhtml_Magento_Form_Element_Select extends Varien_Data
             $html.= $this->getAfterElementHtml();
         }
 
+        if ($this->getNote()) {
+            $html.= '<br/><p class="note note-no-tool-tip">' . $this->getNote() . '</p>';
+        }
+
         return $html;
     }
 

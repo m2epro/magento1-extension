@@ -348,8 +348,13 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
             return array();
         }
 
-        // @codingStandardsIgnoreLine
-        return unserialize($data);
+        try {
+            // @codingStandardsIgnoreLine
+            return unserialize($data);
+        } catch (\Exception $e) {
+            Mage::helper('M2ePro/Module_Exception')->process($e);
+            return array();
+        }
     }
 
     //########################################

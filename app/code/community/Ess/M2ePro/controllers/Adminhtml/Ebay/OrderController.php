@@ -130,6 +130,7 @@ class Ess_M2ePro_Adminhtml_Ebay_OrderController extends Ess_M2ePro_Controller_Ad
 
         $data = array();
         $keys = array(
+            'recipient_name',
             'street',
             'city',
             'country_code',

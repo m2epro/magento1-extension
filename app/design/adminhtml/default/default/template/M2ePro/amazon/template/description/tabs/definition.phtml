@@ -53,6 +53,7 @@ $magentoAttributeHelper = Mage::helper('M2ePro/Magento_Attribute');
 $attributesByInputTypes = array(
     'text' => $magentoAttributeHelper->filterByInputTypes($this->getData('all_attributes'), array('text')),
     'text_select' => $magentoAttributeHelper->filterByInputTypes($this->getData('all_attributes'), array('text', 'select')),
+    'text_select_multiselect' => $magentoAttributeHelper->filterByInputTypes($this->getData('all_attributes'), array('text', 'select', 'multiselect')),
     'text_weight' => $magentoAttributeHelper->filterByInputTypes($this->getData('all_attributes'), array('text', 'weight')),
     'text_images' => $magentoAttributeHelper->filterByInputTypes(
         $this->getData('all_attributes'),
@@ -1191,8 +1192,8 @@ $attributesByInputTypes = array(
                         </td>
                         <td class="value attributes-container-td">
                                 <span id="select_attributes_for_target_audience_<?php echo $i; ?>_span" class="select-wrapper">
-                                    <select id="select_attributes_for_target_audience_<?php echo $i; ?>" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,select" apply_to_all_attribute_sets="0" style="width: 150px;">
-                                        <?php foreach($attributesByInputTypes['text_select'] as $attribute) : ?>
+                                    <select id="select_attributes_for_target_audience_<?php echo $i; ?>" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,select,multiselect" apply_to_all_attribute_sets="0" style="width: 150px;">
+                                        <?php foreach($attributesByInputTypes['text_select_multiselect'] as $attribute) : ?>
                                             <option value="<?php echo $attribute['code']; ?>">
                                                 <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
                                             </option>
@@ -1250,8 +1251,8 @@ $attributesByInputTypes = array(
                         </td>
                         <td class="value">
                             <span id="select_attributes_for_search_terms_<?php echo $i; ?>_span" class="select-wrapper">
-                                <select id="select_attributes_for_search_terms_<?php echo $i; ?>" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,select" apply_to_all_attribute_sets="0" style="width: 150px;">
-                                    <?php foreach($attributesByInputTypes['text_select'] as $attribute) : ?>
+                                <select id="select_attributes_for_search_terms_<?php echo $i; ?>" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,select,multiselect" apply_to_all_attribute_sets="0" style="width: 150px;">
+                                    <?php foreach($attributesByInputTypes['text_select_multiselect'] as $attribute) : ?>
                                         <option value="<?php echo $attribute['code']; ?>">
                                             <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
                                         </option>
@@ -1308,8 +1309,8 @@ $attributesByInputTypes = array(
                         </td>
                         <td class="value">
                             <span id="select_attributes_for_bullet_points_<?php echo $i; ?>_span" class="select-wrapper">
-                                 <select id="select_attributes_for_bullet_points_<?php echo $i; ?>" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,select" apply_to_all_attribute_sets="0" style="width: 150px;">
-                                     <?php foreach($attributesByInputTypes['text_select'] as $attribute) : ?>
+                                 <select id="select_attributes_for_bullet_points_<?php echo $i; ?>"class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,select,multiselect" apply_to_all_attribute_sets="0" style="width: 150px;">
+                                     <?php foreach($attributesByInputTypes['text_select_multiselect'] as $attribute) : ?>
                                          <option value="<?php echo $attribute['code']; ?>">
                                              <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
                                          </option>

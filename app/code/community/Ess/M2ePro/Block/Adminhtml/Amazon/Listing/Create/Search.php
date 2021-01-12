@@ -59,13 +59,4 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Create_Search
     }
 
     //########################################
-
-    protected function _prepareLayout()
-    {
-        Mage::helper('M2ePro/View')->getJsPhpRenderer()->addClassConstants('Ess_M2ePro_Model_Amazon_Listing');
-
-        return parent::_prepareLayout();
-    }
-
-    //########################################
 }

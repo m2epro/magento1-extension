@@ -10,7 +10,7 @@ window.ListingOther = Class.create(Common, {
             closable: true,
             className: "magento",
             windowClassName: "popup-window",
-            title: M2ePro.translator.translate('Reset 3rd Party Listings'),
+            title: M2ePro.translator.translate('Refresh Unmanaged Listings'),
             width: 430,
             height: 150,
             zIndex: 100,

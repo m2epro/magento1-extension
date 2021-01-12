@@ -49,6 +49,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Create extends Mage_Adminhtml_B
         );
 
         Mage::helper('M2ePro/View')->getJsUrlsRenderer()->addControllerActions('adminhtml_walmart_account');
+
         Mage::helper('M2ePro/View')->getJsUrlsRenderer()->addControllerActions('adminhtml_walmart_marketplace');
 
         Mage::helper('M2ePro/View')->getJsUrlsRenderer()->addUrls(

@@ -605,7 +605,10 @@ HTML;
             'cpe.entity_id=main_table.product_id',
             array()
         );
-        $childCollection->addFieldToFilter('cpe.sku', array('like' => '%'.$value.'%'));
+        $childCollection->addFieldToFilter(
+            'cpe.sku',
+            array('like' => '%' . $this->getValueForSubQuery($value) . '%')
+        );
 
         $collection->joinTable(
             array('product_sku_subQuery' => $childCollection->getSelect()),
@@ -639,7 +642,10 @@ HTML;
         }
 
         $childCollection = $this->getChildProductsCollection();
-        $childCollection->addFieldToFilter('sku', array('like' => '%'.$value.'%'));
+        $childCollection->addFieldToFilter(
+            'sku',
+            array('like' => '%' . $this->getValueForSubQuery($value) . '%')
+        );
 
         $collection->joinTable(
             array('online_sku_subQuery' => $childCollection->getSelect()),
@@ -668,13 +674,14 @@ HTML;
             return;
         }
 
+        $valueForSubQuery = $this->getValueForSubQuery($value);
         $where = <<<SQL
-main_table.gtin LIKE '%{$value}%' OR
-main_table.upc LIKE '%{$value}%' OR
-main_table.ean LIKE '%{$value}%' OR
-main_table.isbn LIKE '%{$value}%' OR
-main_table.wpid LIKE '%{$value}%' OR
-main_table.item_id LIKE '%{$value}%'
+main_table.gtin LIKE '%{$valueForSubQuery}%' OR
+main_table.upc LIKE '%{$valueForSubQuery}%' OR
+main_table.ean LIKE '%{$valueForSubQuery}%' OR
+main_table.isbn LIKE '%{$valueForSubQuery}%' OR
+main_table.wpid LIKE '%{$valueForSubQuery}%' OR
+main_table.item_id LIKE '%{$valueForSubQuery}%'
 SQL;
 
         $childCollection = $this->getChildProductsCollection();

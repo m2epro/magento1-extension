@@ -20,9 +20,9 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Other_View extends Mage_Adminht
 
         if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
             $componentName = Mage::helper('M2ePro/Component_Walmart')->getTitle();
-            $this->_headerText = Mage::helper('M2ePro')->__('%component_name% / 3rd Party Listings', $componentName);
+            $this->_headerText = Mage::helper('M2ePro')->__('%component_name% / Unmanaged Listings', $componentName);
         } else {
-            $this->_headerText = Mage::helper('M2ePro')->__('3rd Party Listings');
+            $this->_headerText = Mage::helper('M2ePro')->__('Unmanaged Listings');
         }
 
         $this->removeButton('back');
@@ -82,7 +82,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Other_View extends Mage_Adminht
         $unmappingProductsUrl = $this->getUrl('*/adminhtml_listing_other_mapping/unmapping');
 
         $someProductsWereNotMappedMessage = 'No matches were found. Please change the Mapping Attributes in <strong>';
-        $someProductsWereNotMappedMessage .= 'Configuration > Account > 3rd Party Listings</strong> ';
+        $someProductsWereNotMappedMessage .= 'Configuration > Account > Unmanaged Listings</strong> ';
         $someProductsWereNotMappedMessage .= 'or try to map manually.';
         $someProductsWereNotMappedMessage = $helper->escapeJs($helper->__($someProductsWereNotMappedMessage));
 
@@ -130,7 +130,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Other_View extends Mage_Adminht
             array('step' => 3)
         );
 
-        $urls['moveToListingPopupHtml'] = $this->getUrl('*/adminhtml_listing_other_moving/moveToListingGrid');
+        $urls['moveToListingPopupHtml'] = $this->getUrl('*/adminhtml_listing_other_moving/moveToListingPopupHtml');
         $urls['prepareMoveToListing'] = $this->getUrl('*/adminhtml_listing_other_moving/prepareMoveToListing');
         $urls['moveToListing'] = $this->getUrl('*/adminhtml_walmart_listing_other/moveToListing');
 

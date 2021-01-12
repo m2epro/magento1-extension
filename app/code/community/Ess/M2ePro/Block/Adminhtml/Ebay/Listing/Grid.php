@@ -148,6 +148,31 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Grid extends Ess_M2ePro_Block_Admi
                 )
             ),
 
+            'editTitle' => array(
+                'caption'        => $helper->__('Title'),
+                'group'          => 'edit_actions',
+                'field'          => 'id',
+                'onclick_action' => 'EditListingTitleObj.openPopup',
+            ),
+
+            'editConfiguration' => array(
+                'caption' => $helper->__('Configuration'),
+                'group'   => 'edit_actions',
+                'field'   => 'id',
+                'url'     => array(
+                    'base'   => '*/adminhtml_ebay_listing/edit',
+                    'params' => array('back' => $backUrl)
+                )
+            ),
+
+            'editPartsCompatibilityMode' => array(
+                'caption'        => $helper->__('Parts Compatibility Mode'),
+                'group'          => 'edit_actions',
+                'field'          => 'id',
+                'onclick_action' => 'EditCompatibilityModeObj.openPopup',
+                'action_id'      => self::MASS_ACTION_ID_EDIT_PARTS_COMPATIBILITY
+            ),
+
             'viewLogs' => array(
                 'caption' => $helper->__('Logs & Events'),
                 'group'   => 'other',
@@ -180,63 +205,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Grid extends Ess_M2ePro_Block_Admi
                     'base'   => '*/adminhtml_ebay_listing/delete',
                     'params' => array('id' => $this->getId())
                 )
-            ),
-
-            'editTitle' => array(
-                'caption'        => $helper->__('Title'),
-                'group'          => 'edit_actions',
-                'field'          => 'id',
-                'onclick_action' => 'EditListingTitleObj.openPopup',
-            ),
-
-            'editSelling' => array(
-                'caption' => $helper->__('Selling'),
-                'group'   => 'edit_actions',
-                'field'   => 'id',
-                'url'     => array(
-                    'base'   => '*/adminhtml_ebay_template/editListing',
-                    'params' => array(
-                        'id' => $this->getId(),
-                        'tab' => 'selling',
-                        'back' => $backUrl
-                    )
-                )
-            ),
-
-            'editSynchronization' => array(
-                'caption' => $helper->__('Synchronization'),
-                'group'   => 'edit_actions',
-                'field'   => 'id',
-                'url'     => array(
-                    'base'   => '*/adminhtml_ebay_template/editListing',
-                    'params' => array(
-                        'id' => $this->getId(),
-                        'tab' => 'synchronization',
-                        'back' => $backUrl
-                    )
-                )
-            ),
-
-            'editPaymentAndShipping' => array(
-                'caption' => $helper->__('Payment And Shipping'),
-                'group'   => 'edit_actions',
-                'field'   => 'id',
-                'url'     => array(
-                    'base'   => '*/adminhtml_ebay_template/editListing',
-                    'params' => array(
-                        'id' => $this->getId(),
-                        'tab' => 'general',
-                        'back' => $backUrl
-                    )
-                )
-            ),
-
-            'editPartsCompatibilityMode' => array(
-                'caption'        => $helper->__('Parts Compatibility Mode'),
-                'group'          => 'edit_actions',
-                'field'          => 'id',
-                'onclick_action' => 'EditCompatibilityModeObj.openPopup',
-                'action_id'      => self::MASS_ACTION_ID_EDIT_PARTS_COMPATIBILITY
             ),
         );
 

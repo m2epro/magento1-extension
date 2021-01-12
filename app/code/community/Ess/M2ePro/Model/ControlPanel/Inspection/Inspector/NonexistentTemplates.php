@@ -87,7 +87,7 @@ class Ess_M2ePro_Model_ControlPanel_Inspection_Inspector_NonexistentTemplates
     <th>Policy ID</th>
     <th>Policy ID Field</th>
     <th>My Mode</th>
-    <th>Parent Mode</th>
+    <th>Parent Policy ID</th>
     <th>Actions</th>
 </tr>
 HTML;
@@ -102,7 +102,7 @@ HTML;
 
             foreach ($items as $index => $itemInfo) {
                 $myModeWord = '--';
-                $parentModeWord = '--';
+                $parentTemplateIdWord = '--';
                 $actionsHtml = '';
                 $params = array(
                     'template' => $templateName,
@@ -110,7 +110,7 @@ HTML;
                     'field' => $itemInfo['my_needed_id_field'],
                 );
 
-                if (!isset($itemInfo['my_mode']) && !isset($itemInfo['parent_mode'])) {
+                if (!isset($itemInfo['my_mode']) && !isset($itemInfo['parent_template_id'])) {
                     $params['action'] = self::FIX_ACTION_SET_NULL;
                     $url = Mage::helper('adminhtml')->getUrl(
                         '*/adminhtml_controlPanel_module_integration_ebay/repairNonexistentTemplates',
@@ -152,33 +152,8 @@ HTML;
 HTML;
                 }
 
-                if (isset($itemInfo['parent_mode']) && $itemInfo['parent_mode'] == 1) {
-                    $parentModeWord = 'custom';
-                    $params['action'] = self::FIX_ACTION_SET_TEMPLATE;
-                    $url = Mage::helper('adminhtml')->getUrl(
-                        '*/adminhtml_controlPanel_module_integration_ebay/repairNonexistentTemplates',
-                        $params
-                    );
-                    $onClick = <<<JS
-var elem   = $(this),
-    result = prompt('Enter Template ID');
-
-if (result) {
-    elem.up('tr').remove();
-    new Ajax.Request( '{$url}'+ '?template_id=' + result , {
-    method: 'get',
-    asynchronous : true,
-});
-}
-return false;
-JS;
-                    $actionsHtml .= <<<HTML
-<a href="javascript:void();" onclick="{$onClick}">set template</a><br>
-HTML;
-                }
-
-                if (isset($itemInfo['parent_mode']) && $itemInfo['parent_mode'] == 2) {
-                    $parentModeWord = 'template';
+                if (isset($itemInfo['parent_template_id']) && $itemInfo['parent_template_id'] !== null) {
+                    $parentTemplateIdWord = $itemInfo['parent_template_id'];
                     $params['action'] = self::FIX_ACTION_SET_TEMPLATE;
                     $url = Mage::helper('adminhtml')->getUrl(
                         '*/adminhtml_controlPanel_module_integration_ebay/repairNonexistentTemplates',
@@ -215,7 +190,7 @@ HTML;
     <td>{$itemInfo['my_needed_id']}</td>
     <td>{$itemInfo['my_needed_id_field']}</td>
     <td>{$myModeWord}</td>
-    <td>{$parentModeWord}</td>
+    <td>{$parentTemplateIdWord}</td>
     <td>
         {$actionsHtml}
     </td>
@@ -290,26 +265,15 @@ HTML;
                     'my_id' => 'listing_product_id',
                     'my_mode' => "template_{$templateCode}_mode",
                     'my_template_id' => "template_{$templateCode}_id",
-                    'my_custom_id' => "template_{$templateCode}_custom_id",
 
                     'my_needed_id' => new Zend_Db_Expr(
                         "CASE
                         WHEN melp.template_{$templateCode}_mode = 2 THEN melp.template_{$templateCode}_id
-                        WHEN melp.template_{$templateCode}_mode = 1 THEN melp.template_{$templateCode}_custom_id
-                        WHEN melp.template_{$templateCode}_mode = 0 THEN IF(mel.template_{$templateCode}_mode = 1,
-                                                                            mel.template_{$templateCode}_custom_id,
-                                                                            mel.template_{$templateCode}_id)
+                        WHEN melp.template_{$templateCode}_mode = 1 THEN melp.template_{$templateCode}_id
+                        WHEN melp.template_{$templateCode}_mode = 0 THEN mel.template_{$templateCode}_id
                         END"
                     ),
-                    'my_needed_id_field' => new Zend_Db_Expr(
-                        "CASE
-                        WHEN melp.template_{$templateCode}_mode = 2 THEN 'template_{$templateCode}_id'
-                        WHEN melp.template_{$templateCode}_mode = 1 THEN 'template_{$templateCode}_custom_id'
-                        WHEN melp.template_{$templateCode}_mode = 0 THEN IF(mel.template_{$templateCode}_mode = 1,
-                                                                            'template_{$templateCode}_custom_id',
-                                                                            'template_{$templateCode}_id')
-                        END"
-                    )
+                    'my_needed_id_field' => "template_{$templateCode}_id"
                 )
             )
             ->joinLeft(
@@ -325,9 +289,7 @@ HTML;
                 ),
                 'mlp.listing_id = mel.listing_id',
                 array(
-                    'parent_mode' => "template_{$templateCode}_mode",
                     'parent_template_id' => "template_{$templateCode}_id",
-                    'parent_custom_id' => "template_{$templateCode}_custom_id"
                 )
             );
 
@@ -348,7 +310,7 @@ HTML;
                     'subselect.my_id',
                     'subselect.listing_id',
                     'subselect.my_mode',
-                    'subselect.parent_mode',
+                    'subselect.parent_template_id',
                     'subselect.my_needed_id',
                     'subselect.my_needed_id_field',
                 )

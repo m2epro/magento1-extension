@@ -8,26 +8,222 @@
 
 class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Edit_Form extends Mage_Adminhtml_Block_Widget_Form
 {
+    /** @var Ess_M2ePro_Model_Listing */
+    protected $_listing;
+
     //########################################
 
     public function __construct()
     {
         parent::__construct();
-
         $this->setId('walmartListingEditForm');
-        $this->setTemplate('M2ePro/walmart/listing/edit/form.phtml');
     }
 
     //########################################
 
     protected function _prepareForm()
     {
-        $form = new Varien_Data_Form(
+        $helper = Mage::helper('M2ePro');
+
+        $form = new Ess_M2ePro_Block_Adminhtml_Magento_Form_Element_Form(
             array(
-            'id'      => 'edit_form',
-            'action'  => $this->getUrl('*/adminhtml_walmart_listing/save'),
-            'method'  => 'post',
-            'enctype' => 'multipart/form-data'
+                'id'      => 'edit_form',
+                'class'   => 'form-list',
+                'method'  => 'post',
+                'action'  => $this->getUrl('*/adminhtml_walmart_listing/save'),
+                'enctype' => 'multipart/form-data'
+            )
+        );
+
+        $formData = $this->getListing()->getData();
+
+        $form->addField(
+            'marketplace_id',
+            'hidden',
+            array(
+                'value' => $formData['marketplace_id']
+            )
+        );
+
+        $form->addField(
+            'store_id',
+            'hidden',
+            array(
+                'value' => $formData['store_id']
+            )
+        );
+
+        $fieldset = $form->addFieldset(
+            'policies_settings',
+            array(
+                'legend'      => $helper->__('Policies Settings'),
+                'collapsable' => false
+            )
+        );
+
+        $fieldset->addField(
+            'template_selling_format_messages',
+            Ess_M2ePro_Block_Adminhtml_Magento_Form_Element_Form::CUSTOM_CONTAINER,
+            array()
+        );
+
+        $sellingFormatTemplates = $this->getSellingFormatTemplates();
+        $style = count($sellingFormatTemplates) === 0 ? 'display: none' : '';
+
+        $templateSellingFormat = new Varien_Data_Form_Element_Select(
+            array(
+                'html_id'  => 'template_selling_format_id',
+                'name'     => 'template_selling_format_id',
+                'style'    => $style,
+                'no_span'  => true,
+                'values'   => array_merge(array('' => ''), $sellingFormatTemplates),
+                'value'    => $formData['template_selling_format_id'],
+                'required' => true
+            )
+        );
+        $templateSellingFormat->setForm($form);
+
+        $style = count($sellingFormatTemplates) === 0 ? '' : 'display: none';
+        $fieldset->addField(
+            'template_selling_format_container',
+            Ess_M2ePro_Block_Adminhtml_Magento_Form_Element_Form::CUSTOM_CONTAINER,
+            array(
+                'label'              => $helper->__('Selling Policy'),
+                'required'           => true,
+                'text'               => <<<HTML
+    <span id="template_selling_format_label" style="{$style}">
+        {$helper->__('No Policies available.')}
+    </span>
+    {$templateSellingFormat->toHtml()}
+HTML
+                ,
+                'after_element_html' => <<<HTML
+&nbsp;
+<span style="line-height: 20px;">
+    <span id="edit_selling_format_template_link" style="color:#41362f">
+        <a href="javascript: void(0);" style="" onclick="WalmartListingSettingsObj.editTemplate(
+            M2ePro.url.get('editSellingFormatTemplate'), 
+            $('template_selling_format_id').value,
+            WalmartListingSettingsObj.newSellingFormatTemplateCallback
+        );">
+            {$helper->__('View')}&nbsp;/&nbsp;{$helper->__('Edit')}
+        </a>
+        <span>{$helper->__('or')}</span>
+    </span>
+    <a id="add_selling_format_template_link" href="javascript: void(0);"
+        onclick="WalmartListingSettingsObj.addNewTemplate(
+        M2ePro.url.get('addNewSellingFormatTemplate'),
+        WalmartListingSettingsObj.newSellingFormatTemplateCallback
+    );">{$helper->__('Add New')}</a>
+</span>
+HTML
+            )
+        );
+
+        $descriptionTemplates = $this->getDescriptionTemplates();
+        $style = count($descriptionTemplates) === 0 ? 'display: none' : '';
+
+        $templateDescription = new Varien_Data_Form_Element_Select(
+            array(
+                'html_id'  => 'template_description_id',
+                'name'     => 'template_description_id',
+                'style'    => $style,
+                'no_span'  => true,
+                'values'   => array_merge(array('' => ''), $descriptionTemplates),
+                'value'    => $formData['template_description_id'],
+                'required' => true
+            )
+        );
+        $templateDescription->setForm($form);
+
+        $style = count($descriptionTemplates) === 0 ? '' : 'display: none';
+        $fieldset->addField(
+            'template_description_container',
+            Ess_M2ePro_Block_Adminhtml_Magento_Form_Element_Form::CUSTOM_CONTAINER,
+            array(
+                'label'              => $helper->__('Description Policy'),
+                'required'           => true,
+                'text'               => <<<HTML
+    <span id="template_description_label" style="{$style}">
+        {$helper->__('No Policies available.')}
+    </span>
+    {$templateDescription->toHtml()}
+HTML
+                ,
+                'after_element_html' => <<<HTML
+&nbsp;
+<span style="line-height: 20px;">
+    <span id="edit_description_template_link" style="color:#41362f">
+        <a href="javascript: void(0);" onclick="WalmartListingSettingsObj.editTemplate(
+            M2ePro.url.get('editDescriptionTemplate'), 
+            $('template_description_id').value,
+            WalmartListingSettingsObj.newDescriptionTemplateCallback
+        );">
+            {$helper->__('View')}&nbsp;/&nbsp;{$helper->__('Edit')}
+        </a>
+        <span>{$helper->__('or')}</span>
+    </span>
+    <a id="add_description_template_link" href="javascript: void(0);"
+        onclick="WalmartListingSettingsObj.addNewTemplate(
+        M2ePro.url.get('addNewDescriptionTemplate'),
+        WalmartListingSettingsObj.newDescriptionTemplateCallback
+    );">{$helper->__('Add New')}</a>
+</span>
+HTML
+            )
+        );
+
+        $synchronizationTemplates = $this->getSynchronizationTemplates();
+        $style = count($synchronizationTemplates) === 0 ? 'display: none' : '';
+
+        $templateSynchronization = new Varien_Data_Form_Element_Select(
+            array(
+                'html_id'  => 'template_synchronization_id',
+                'name'     => 'template_synchronization_id',
+                'style'    => $style,
+                'no_span'  => true,
+                'values'   => array_merge(array('' => ''), $synchronizationTemplates),
+                'value'    => $formData['template_synchronization_id'],
+                'required' => true
+            )
+        );
+        $templateSynchronization->setForm($form);
+
+        $style = count($synchronizationTemplates) === 0 ? '' : 'display: none';
+        $fieldset->addField(
+            'template_synchronization_container',
+            Ess_M2ePro_Block_Adminhtml_Magento_Form_Element_Form::CUSTOM_CONTAINER,
+            array(
+                'label'                  => $helper->__('Synchronization Policy'),
+                'field_extra_attributes' => 'style="margin-bottom: 5px"',
+                'required'               => true,
+                'text'                   => <<<HTML
+    <span id="template_synchronization_label" style="{$style}">
+        {$helper->__('No Policies available.')}
+    </span>
+    {$templateSynchronization->toHtml()}
+HTML
+                ,
+                'after_element_html'     => <<<HTML
+&nbsp;
+<span style="line-height: 20px;">
+    <span id="edit_synchronization_template_link" style="color:#41362f">
+        <a href="javascript: void(0);" onclick="WalmartListingSettingsObj.editTemplate(
+            M2ePro.url.get('editSynchronizationTemplate'), 
+            $('template_synchronization_id').value,
+            WalmartListingSettingsObj.newSynchronizationTemplateCallback
+        );">
+            {$helper->__('View')}&nbsp;/&nbsp;{$helper->__('Edit')}
+        </a>
+        <span>{$helper->__('or')}</span>
+    </span>
+    <a id="add_synchronization_template_link" href="javascript: void(0);"
+        onclick="WalmartListingSettingsObj.addNewTemplate(
+        M2ePro.url.get('addNewSynchronizationTemplate'),
+        WalmartListingSettingsObj.newSynchronizationTemplateCallback
+    );">{$helper->__('Add New')}</a>
+</span>
+HTML
             )
         );
 
@@ -39,61 +235,162 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Edit_Form extends Mage_Adminhtm
 
     //########################################
 
-    protected function _beforeToHtml()
+    protected function _prepareLayout()
     {
-        $formData = $this->getFormData();
-
-        $this->sellingFormatTemplates = $this->getTemplates(
-            'Template_SellingFormat', isset($formData['marketplace_id']) ? $formData['marketplace_id'] : null
+        Mage::helper('M2ePro/View')->getJsUrlsRenderer()->addUrls(
+            array(
+                'templateCheckMessages'         => $this->getUrl(
+                    '*/adminhtml_template/checkMessages',
+                    array(
+                        'component_mode' => Ess_M2ePro_Helper_Component_Walmart::NICK
+                    )
+                ),
+                'addNewSellingFormatTemplate'   => $this->getUrl(
+                    '*/adminhtml_walmart_template_sellingFormat/new',
+                    array(
+                        'close_on_save' => 1
+                    )
+                ),
+                'editSellingFormatTemplate'     => $this->getUrl(
+                    '*/adminhtml_walmart_template_sellingFormat/edit',
+                    array(
+                        'close_on_save' => 1
+                    )
+                ),
+                'getSellingFormatTemplates'     => $this->getUrl(
+                    '*/adminhtml_general/modelGetAll',
+                    array(
+                        'model'          => 'Template_SellingFormat',
+                        'id_field'       => 'id',
+                        'data_field'     => 'title',
+                        'sort_field'     => 'title',
+                        'sort_dir'       => 'ASC',
+                        'component_mode' => Ess_M2ePro_Helper_Component_Walmart::NICK
+                    )
+                ),
+                'addNewDescriptionTemplate'     => $this->getUrl(
+                    '*/adminhtml_walmart_template_description/new',
+                    array(
+                        'close_on_save' => 1
+                    )
+                ),
+                'editDescriptionTemplate'       => $this->getUrl(
+                    '*/adminhtml_walmart_template_description/edit',
+                    array(
+                        'close_on_save' => 1
+                    )
+                ),
+                'getDescriptionTemplates'       => $this->getUrl(
+                    '*/adminhtml_general/modelGetAll',
+                    array(
+                        'model'          => 'Template_Description',
+                        'id_field'       => 'id',
+                        'data_field'     => 'title',
+                        'sort_field'     => 'title',
+                        'sort_dir'       => 'ASC',
+                        'component_mode' => Ess_M2ePro_Helper_Component_Walmart::NICK
+                    )
+                ),
+                'addNewSynchronizationTemplate' => $this->getUrl(
+                    '*/adminhtml_walmart_template_synchronization/new',
+                    array(
+                        'close_on_save' => 1
+                    )
+                ),
+                'editSynchronizationTemplate'   => $this->getUrl(
+                    '*/adminhtml_walmart_template_synchronization/edit',
+                    array(
+                        'close_on_save' => 1
+                    )
+                ),
+                'getSynchronizationTemplates'   => $this->getUrl(
+                    '*/adminhtml_general/modelGetAll',
+                    array(
+                        'model'          => 'Template_Synchronization',
+                        'id_field'       => 'id',
+                        'data_field'     => 'title',
+                        'sort_field'     => 'title',
+                        'sort_dir'       => 'ASC',
+                        'component_mode' => Ess_M2ePro_Helper_Component_Walmart::NICK
+                    )
+                )
+            )
         );
-        $this->descriptionsTemplates = $this->getTemplates('Template_Description');
-        $this->synchronizationsTemplates = $this->getTemplates('Template_Synchronization');
 
-        return parent::_beforeToHtml();
+        Mage::helper('M2ePro/View')->getJsRenderer()->addOnReadyJs(
+            <<<JS
+    TemplateManagerObj = new TemplateManager();
+
+    WalmartListingSettingsObj = new WalmartListingSettings();
+    WalmartListingSettingsObj.initObservers();
+
+JS
+        );
+
+        return parent::_prepareLayout();
     }
 
     //########################################
 
-    protected function getTemplates($model, $marketplaceId = null)
+    protected function getSellingFormatTemplates()
     {
-        $collection = Mage::helper('M2ePro/Component_Walmart')->getCollection($model);
+        /** @var $collection Ess_M2ePro_Model_Resource_Template_SellingFormat_Collection */
+        $collection = Mage::helper('M2ePro/Component_Walmart')->getCollection('Template_SellingFormat');
         $collection->addFieldToFilter('component_mode', Ess_M2ePro_Helper_Component_Walmart::NICK);
-        $marketplaceId && $collection->addFieldToFilter('marketplace_id', $marketplaceId);
+        $collection->addFieldToFilter('marketplace_id', $this->getListing()->getMarketplaceId());
+        $collection->setOrder('title', Varien_Data_Collection::SORT_ORDER_ASC);
 
-        $collection->getSelect()
-            ->reset(Zend_Db_Select::COLUMNS)
-            ->columns(array('id', 'title'));
-
-        $collection->setOrder('main_table.title', Varien_Data_Collection::SORT_ORDER_ASC);
-
-        $data = $collection->toArray();
-
-        foreach ($data['items'] as $key => $value) {
-            $data['items'][$key]['title'] = Mage::helper('M2ePro')->escapeHtml($data['items'][$key]['title']);
-        }
-
-        return $data['items'];
-    }
-
-    //########################################
-
-    public function getFormData()
-    {
-        if (!$this->getRequest()->getParam('id')) {
-            return $this->getDefaults();
-        }
-
-        return $this->getListing()->getData();
-    }
-
-    protected function getDefaults()
-    {
-        return array(
-            'title' => '',
-            'template_selling_format_id' => '',
-            'template_description_id' => '',
-            'template_synchronization_id' => '',
+        $collection->resetByType(
+            Zend_Db_Select::COLUMNS,
+            array(
+                'value' => 'id',
+                'label' => 'title'
+            )
         );
+
+        $result = $collection->toArray();
+
+        return $result['items'];
+    }
+
+    protected function getDescriptionTemplates()
+    {
+        /** @var $collection Ess_M2ePro_Model_Resource_Template_Description_Collection */
+        $collection = Mage::getModel('M2ePro/Template_Description')->getCollection();
+        $collection->addFieldToFilter('component_mode', Ess_M2ePro_Helper_Component_Walmart::NICK);
+        $collection->setOrder('title', Varien_Data_Collection::SORT_ORDER_ASC);
+
+        $collection->resetByType(
+            Zend_Db_Select::COLUMNS,
+            array(
+                'value' => 'id',
+                'label' => 'title'
+            )
+        );
+
+        $result = $collection->toArray();
+
+        return $result['items'];
+    }
+
+    protected function getSynchronizationTemplates()
+    {
+        /** @var $collection Ess_M2ePro_Model_Resource_Template_Synchronization_Collection */
+        $collection = Mage::getModel('M2ePro/Template_Synchronization')->getCollection();
+        $collection->addFieldToFilter('component_mode', Ess_M2ePro_Helper_Component_Walmart::NICK);
+        $collection->setOrder('title', Varien_Data_Collection::SORT_ORDER_ASC);
+
+        $collection->resetByType(
+            Zend_Db_Select::COLUMNS,
+            array(
+                'value' => 'id',
+                'label' => 'title'
+            )
+        );
+
+        $result = $collection->toArray();
+
+        return $result['items'];
     }
 
     //########################################
@@ -104,11 +401,11 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Edit_Form extends Mage_Adminhtm
             throw new Ess_M2ePro_Model_Exception('Listing is not defined');
         }
 
-        if ($this->listing === null) {
-            $this->listing = Mage::helper('M2ePro/Component')->getCachedUnknownObject('Listing', $listingId);
+        if ($this->_listing === null) {
+            $this->_listing = Mage::helper('M2ePro/Component_Walmart')->getCachedObject('Listing', $listingId);
         }
 
-        return $this->listing;
+        return $this->_listing;
     }
 
     //########################################

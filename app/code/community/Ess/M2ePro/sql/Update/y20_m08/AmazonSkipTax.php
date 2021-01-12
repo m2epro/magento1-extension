@@ -34,7 +34,7 @@ class Ess_M2ePro_Sql_Update_y20_m08_AmazonSkipTax extends Ess_M2ePro_Model_Upgra
             $this->_installer->getConnection()->update(
                 $this->_installer->getFullTableName('amazon_account'),
                 array('magento_orders_settings' => Mage::helper('M2ePro')->jsonEncode($data)),
-                array('account_id' => $row['account_id'])
+                array('account_id = ?' => $row['account_id'])
             );
         }
     }

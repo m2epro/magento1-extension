@@ -374,6 +374,11 @@ td.help_line .hl_footer {
     display: inline-block;
 }
 
+.m2epro-fieldset .field-row .note {
+    display: inline-block;
+    margin-right: 200px !important;
+}
+
 /* ================================================ */
 
 /* Installation Wizard */

@@ -45,8 +45,8 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
     const MAGENTO_ORDERS_CUSTOMER_MODE_PREDEFINED = 1;
     const MAGENTO_ORDERS_CUSTOMER_MODE_NEW        = 2;
 
-    const MAGENTO_ORDERS_BILLING_ADDRESS_MODE_SHIPPING = 0;
-    const MAGENTO_ORDERS_BILLING_ADDRESS_MODE_SHIPPING_IF_SAME_CUSTOMER_AND_RECIPIENT = 1;
+    const USE_SHIPPING_ADDRESS_AS_BILLING_ALWAYS                          = 0;
+    const USE_SHIPPING_ADDRESS_AS_BILLING_IF_SAME_CUSTOMER_AND_RECIPIENT  = 1;
 
     const MAGENTO_ORDERS_STATUS_MAPPING_MODE_DEFAULT = 0;
     const MAGENTO_ORDERS_STATUS_MAPPING_MODE_CUSTOM  = 1;
@@ -55,9 +55,12 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
     const MAGENTO_ORDERS_STATUS_MAPPING_PROCESSING = 'processing';
     const MAGENTO_ORDERS_STATUS_MAPPING_SHIPPED    = 'complete';
 
-    const MAGENTO_ORDERS_AUTO_INVOICING_DISABLED = 0;
-    const MAGENTO_ORDERS_AUTO_INVOICING_VAT_CALCULATION_SERVICE = 1;
-    const MAGENTO_ORDERS_AUTO_INVOICING_UPLOAD_MAGENTO_INVOICES = 2;
+    const AUTO_INVOICING_DISABLED                = 0;
+    const AUTO_INVOICING_VAT_CALCULATION_SERVICE = 1;
+    const AUTO_INVOICING_UPLOAD_MAGENTO_INVOICES = 2;
+
+    const INVOICE_GENERATION_BY_AMAZON    = 1;
+    const INVOICE_GENERATION_BY_EXTENSION = 2;
 
     /**
      * @var Ess_M2ePro_Model_Marketplace
@@ -116,7 +119,8 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
     {
         if ($this->_marketplaceModel === null) {
             $this->_marketplaceModel = Mage::helper('M2ePro/Component_Amazon')->getCachedObject(
-                'Marketplace', $this->getMarketplaceId()
+                'Marketplace',
+                $this->getMarketplaceId()
             );
         }
 
@@ -128,7 +132,7 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
      */
     public function setMarketplace(Ess_M2ePro_Model_Marketplace $instance)
     {
-         $this->_marketplaceModel = $instance;
+        $this->_marketplaceModel = $instance;
     }
 
     //########################################
@@ -138,7 +142,7 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
      */
     public function isRepricing()
     {
-        $cacheKey = 'amazon_account_'.$this->getId().'_is_repricing';
+        $cacheKey = 'amazon_account_' . $this->getId() . '_is_repricing';
         $cacheData = Mage::helper('M2ePro/Data_Cache_Permanent')->getValue($cacheKey);
 
         if ($cacheData !== false) {
@@ -161,7 +165,10 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
     {
         if ($this->_repricingModel === null) {
             $this->_repricingModel = Mage::helper('M2ePro')->getCachedObject(
-                'Amazon_Account_Repricing', $this->getId(), null, array('account')
+                'Amazon_Account_Repricing',
+                $this->getId(),
+                null,
+                array('account')
             );
         }
 
@@ -209,6 +216,7 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
     public function getDecodedInfo()
     {
         $tempInfo = $this->getInfo();
+
         return $tempInfo === null ? null : Mage::helper('M2ePro')->jsonDecode($tempInfo);
     }
 
@@ -458,6 +466,7 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
     public function isMagentoOrdersListingsModeEnabled()
     {
         $setting = $this->getSetting('magento_orders_settings', array('listing', 'mode'), 1);
+
         return $setting == 1;
     }
 
@@ -467,7 +476,8 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
     public function isMagentoOrdersListingsStoreCustom()
     {
         $setting = $this->getSetting(
-            'magento_orders_settings', array('listing', 'store_mode'),
+            'magento_orders_settings',
+            array('listing', 'store_mode'),
             self::MAGENTO_ORDERS_LISTINGS_STORE_MODE_DEFAULT
         );
 
@@ -480,6 +490,7 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
     public function getMagentoOrdersListingsStoreId()
     {
         $setting = $this->getSetting('magento_orders_settings', array('listing', 'store_id'), 0);
+
         return (int)$setting;
     }
 
@@ -491,6 +502,7 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
     public function isMagentoOrdersListingsOtherModeEnabled()
     {
         $setting = $this->getSetting('magento_orders_settings', array('listing_other', 'mode'), 1);
+
         return $setting == 1;
     }
 
@@ -500,6 +512,7 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
     public function getMagentoOrdersListingsOtherStoreId()
     {
         $setting = $this->getSetting('magento_orders_settings', array('listing_other', 'store_id'), 0);
+
         return (int)$setting;
     }
 
@@ -509,7 +522,8 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
     public function isMagentoOrdersListingsOtherProductImportEnabled()
     {
         $setting = $this->getSetting(
-            'magento_orders_settings', array('listing_other', 'product_mode'),
+            'magento_orders_settings',
+            array('listing_other', 'product_mode'),
             self::MAGENTO_ORDERS_LISTINGS_OTHER_PRODUCT_MODE_IMPORT
         );
 
@@ -535,8 +549,11 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
     public function getMagentoOrdersNumberSource()
     {
         $setting = $this->getSetting(
-            'magento_orders_settings', array('number', 'source'), self::MAGENTO_ORDERS_NUMBER_SOURCE_MAGENTO
+            'magento_orders_settings',
+            array('number', 'source'),
+            self::MAGENTO_ORDERS_NUMBER_SOURCE_MAGENTO
         );
+
         return $setting;
     }
 
@@ -564,6 +581,7 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
     public function getMagentoOrdersNumberRegularPrefix()
     {
         $settings = $this->getSetting('magento_orders_settings', array('number', 'prefix'));
+
         return isset($settings['prefix']) ? $settings['prefix'] : '';
     }
 
@@ -573,6 +591,7 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
     public function getMagentoOrdersNumberAfnPrefix()
     {
         $settings = $this->getSetting('magento_orders_settings', array('number', 'prefix'));
+
         return isset($settings['afn-prefix']) ? $settings['afn-prefix'] : '';
     }
 
@@ -582,6 +601,7 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
     public function getMagentoOrdersNumberPrimePrefix()
     {
         $settings = $this->getSetting('magento_orders_settings', array('number', 'prefix'));
+
         return isset($settings['prime-prefix']) ? $settings['prime-prefix'] : '';
     }
 
@@ -591,6 +611,7 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
     public function getMagentoOrdersNumberB2bPrefix()
     {
         $settings = $this->getSetting('magento_orders_settings', array('number', 'prefix'));
+
         return isset($settings['b2b-prefix']) ? $settings['b2b-prefix'] : '';
     }
 
@@ -602,6 +623,7 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
     public function isMagentoOrdersNumberApplyToAmazonOrderEnable()
     {
         $setting = $this->getSetting('magento_orders_settings', array('number', 'apply_to_amazon'), 0);
+
         return $setting == 1;
     }
 
@@ -613,6 +635,7 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
     public function getQtyReservationDays()
     {
         $setting = $this->getSetting('magento_orders_settings', array('qty_reservation', 'days'), 1);
+
         return (int)$setting;
     }
 
@@ -624,6 +647,7 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
     public function isRefundEnabled()
     {
         $setting = $this->getSetting('magento_orders_settings', array('refund_and_cancellation', 'refund_mode'));
+
         return (bool)$setting;
     }
 
@@ -635,6 +659,7 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
     public function isMagentoOrdersTaxModeNone()
     {
         $setting = $this->getSetting('magento_orders_settings', array('tax', 'mode'));
+
         return $setting == self::MAGENTO_ORDERS_TAX_MODE_NONE;
     }
 
@@ -644,6 +669,7 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
     public function isMagentoOrdersTaxModeChannel()
     {
         $setting = $this->getSetting('magento_orders_settings', array('tax', 'mode'));
+
         return $setting == self::MAGENTO_ORDERS_TAX_MODE_CHANNEL;
     }
 
@@ -653,6 +679,7 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
     public function isMagentoOrdersTaxModeMagento()
     {
         $setting = $this->getSetting('magento_orders_settings', array('tax', 'mode'));
+
         return $setting == self::MAGENTO_ORDERS_TAX_MODE_MAGENTO;
     }
 
@@ -662,6 +689,7 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
     public function isMagentoOrdersTaxModeMixed()
     {
         $setting = $this->getSetting('magento_orders_settings', array('tax', 'mode'));
+
         return $setting == self::MAGENTO_ORDERS_TAX_MODE_MIXED;
     }
 
@@ -691,7 +719,8 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
     public function isMagentoOrdersCustomerGuest()
     {
         $setting = $this->getSetting(
-            'magento_orders_settings', array('customer', 'mode'),
+            'magento_orders_settings',
+            array('customer', 'mode'),
             self::MAGENTO_ORDERS_CUSTOMER_MODE_GUEST
         );
 
@@ -704,7 +733,8 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
     public function isMagentoOrdersCustomerPredefined()
     {
         $setting = $this->getSetting(
-            'magento_orders_settings', array('customer', 'mode'),
+            'magento_orders_settings',
+            array('customer', 'mode'),
             self::MAGENTO_ORDERS_CUSTOMER_MODE_GUEST
         );
 
@@ -717,7 +747,8 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
     public function isMagentoOrdersCustomerNew()
     {
         $setting = $this->getSetting(
-            'magento_orders_settings', array('customer', 'mode'),
+            'magento_orders_settings',
+            array('customer', 'mode'),
             self::MAGENTO_ORDERS_CUSTOMER_MODE_GUEST
         );
 
@@ -730,6 +761,7 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
     public function getMagentoOrdersCustomerId()
     {
         $setting = $this->getSetting('magento_orders_settings', array('customer', 'id'));
+
         return (int)$setting;
     }
 
@@ -739,6 +771,7 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
     public function isMagentoOrdersCustomerNewSubscribed()
     {
         $setting = $this->getSetting('magento_orders_settings', array('customer', 'subscription_mode'), 0);
+
         return $setting == 1;
     }
 
@@ -748,6 +781,7 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
     public function isMagentoOrdersCustomerNewNotifyWhenCreated()
     {
         $setting = $this->getSetting('magento_orders_settings', array('customer', 'notifications', 'customer_created'));
+
         return (bool)$setting;
     }
 
@@ -757,6 +791,7 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
     public function isMagentoOrdersCustomerNewNotifyWhenOrderCreated()
     {
         $setting = $this->getSetting('magento_orders_settings', array('customer', 'notifications', 'order_created'));
+
         return (bool)$setting;
     }
 
@@ -766,6 +801,7 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
     public function isMagentoOrdersCustomerNewNotifyWhenInvoiceCreated()
     {
         $setting = $this->getSetting('magento_orders_settings', array('customer', 'notifications', 'invoice_created'));
+
         return (bool)$setting;
     }
 
@@ -775,6 +811,7 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
     public function getMagentoOrdersCustomerNewWebsiteId()
     {
         $setting = $this->getSetting('magento_orders_settings', array('customer', 'website_id'));
+
         return (int)$setting;
     }
 
@@ -784,6 +821,7 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
     public function getMagentoOrdersCustomerNewGroupId()
     {
         $setting = $this->getSetting('magento_orders_settings', array('customer', 'group_id'));
+
         return (int)$setting;
     }
 
@@ -792,10 +830,26 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
     /**
      * @return bool
      */
-    public function isMagentoOrdersBillingAddressSameAsShipping()
+    public function useMagentoOrdersShippingAddressAsBillingAlways()
     {
-        $setting = $this->getSetting('magento_orders_settings', array('customer', 'billing_address_mode'));
-        return (int)$setting == self::MAGENTO_ORDERS_BILLING_ADDRESS_MODE_SHIPPING;
+        return $this->getBillingAddressMode() == self::USE_SHIPPING_ADDRESS_AS_BILLING_ALWAYS;
+    }
+
+    /**
+     * @return bool
+     */
+    public function useMagentoOrdersShippingAddressAsBillingIfSameCustomerAndRecipient()
+    {
+        return $this->getBillingAddressMode() == self::USE_SHIPPING_ADDRESS_AS_BILLING_IF_SAME_CUSTOMER_AND_RECIPIENT;
+    }
+
+    private function getBillingAddressMode()
+    {
+        return $this->getSetting(
+            'magento_orders_settings',
+            array('customer', 'billing_address_mode'),
+            self::USE_SHIPPING_ADDRESS_AS_BILLING_IF_SAME_CUSTOMER_AND_RECIPIENT
+        );
     }
 
     // ---------------------------------------
@@ -806,7 +860,8 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
     public function isMagentoOrdersStatusMappingDefault()
     {
         $setting = $this->getSetting(
-            'magento_orders_settings', array('status_mapping', 'mode'),
+            'magento_orders_settings',
+            array('status_mapping', 'mode'),
             self::MAGENTO_ORDERS_STATUS_MAPPING_MODE_DEFAULT
         );
 
@@ -833,35 +888,17 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
 
     // ---------------------------------------
 
-    public function isMagentoOrdersInvoiceEnabled()
-    {
-        if ($this->isMagentoOrdersStatusMappingDefault()) {
-            return true;
-        }
-
-        return $this->getSetting('magento_orders_settings', 'invoice_mode') == 1;
-    }
-
-    public function isMagentoOrdersShipmentEnabled()
-    {
-        if ($this->isMagentoOrdersStatusMappingDefault()) {
-            return true;
-        }
-
-        return $this->getSetting('magento_orders_settings', 'shipment_mode') == 1;
-    }
-
-    // ---------------------------------------
-
     public function isMagentoOrdersFbaModeEnabled()
     {
         $setting = $this->getSetting('magento_orders_settings', array('fba', 'mode'), 1);
+
         return $setting == 1;
     }
 
     public function isMagentoOrdersFbaStockEnabled()
     {
         $setting = $this->getSetting('magento_orders_settings', array('fba', 'stock_mode'));
+
         return $setting == 1;
     }
 
@@ -878,25 +915,73 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
     /**
      * @return bool
      */
+    public function isAutoInvoicingDisabled()
+    {
+        return $this->getAutoInvoicing() == self::AUTO_INVOICING_DISABLED;
+    }
+
+    /**
+     * @return bool
+     */
     public function isVatCalculationServiceEnabled()
     {
-        return $this->getAutoInvoicing() == self::MAGENTO_ORDERS_AUTO_INVOICING_VAT_CALCULATION_SERVICE;
+        return $this->getAutoInvoicing() == self::AUTO_INVOICING_VAT_CALCULATION_SERVICE;
     }
 
     /**
      * @return bool
      */
-    public function isUploadInvoicesEnabled()
+    public function isUploadMagentoInvoices()
     {
-        return $this->getAutoInvoicing() == self::MAGENTO_ORDERS_AUTO_INVOICING_UPLOAD_MAGENTO_INVOICES;
+        return $this->getAutoInvoicing() == self::AUTO_INVOICING_UPLOAD_MAGENTO_INVOICES;
+    }
+
+    /**
+     * @return int
+     */
+    public function getInvoiceGeneration()
+    {
+        return (int)$this->getData('invoice_generation');
     }
 
     /**
      * @return bool
      */
-    public function isMagentoInvoiceCreationDisabled()
+    public function isInvoiceGenerationByAmazon()
     {
-        return (bool)$this->getData('is_magento_invoice_creation_disabled');
+        return $this->getInvoiceGeneration() == self::INVOICE_GENERATION_BY_AMAZON;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isInvoiceGenerationByExtension()
+    {
+        return $this->getInvoiceGeneration() == self::INVOICE_GENERATION_BY_EXTENSION;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isMagentoOrdersInvoiceEnabled()
+    {
+        return (bool)$this->getData('create_magento_invoice');
+    }
+
+    /**
+     * @return bool
+     */
+    public function isMagentoOrdersShipmentEnabled()
+    {
+        return (bool)$this->getData('create_magento_shipment');
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRemoteFulfillmentProgramEnabled()
+    {
+        return (bool)$this->getData('remote_fulfillment_program_mode');
     }
 
     //########################################
@@ -904,12 +989,14 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
     public function save()
     {
         Mage::helper('M2ePro/Data_Cache_Permanent')->removeTagValues('account');
+
         return parent::save();
     }
 
     public function delete()
     {
         Mage::helper('M2ePro/Data_Cache_Permanent')->removeTagValues('account');
+
         return parent::delete();
     }
 

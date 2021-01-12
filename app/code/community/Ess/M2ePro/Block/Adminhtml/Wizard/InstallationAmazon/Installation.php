@@ -25,9 +25,8 @@ abstract class Ess_M2ePro_Block_Adminhtml_Wizard_InstallationAmazon_Installation
 
     protected function _prepareLayout()
     {
-        Mage::helper('M2ePro/View')->getJsRenderer()->addOnReadyJs(
-            <<<JS
-        InstallationAmazonWizardObj = new WizardInstallationAmazon();
+        Mage::helper('M2ePro/View')->getJsRenderer()->addOnReadyJs(<<<JS
+    InstallationAmazonWizardObj = new WizardInstallationAmazon();
 JS
         );
 

@@ -323,7 +323,6 @@ td.help_line .hl_footer {
 .m2epro-fieldset label {
     width: 200px !important;
     margin-right: 10px !important;
-    font-weight: bold;
 }
 
 .m2epro-fieldset label[for="store_id"] {
@@ -372,6 +371,11 @@ td.help_line .hl_footer {
 
 .control-value {
     display: inline-block;
+}
+
+.m2epro-fieldset .field-row .note {
+    display: inline-block;
+    margin-right: 200px !important;
 }
 
 /* ================================================ */

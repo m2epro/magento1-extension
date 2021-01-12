@@ -25,7 +25,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Product_Add_SearchAsin_SearchSet
     {
         $action = $this->getUrl(
             '*/adminhtml_amazon_listing_productAdd/saveSearchSettings', array(
-            'id' => (int)$this->getRequest()->getParam('id')
+                'id' => (int)$this->getRequest()->getParam('id')
             )
         );
 
@@ -43,13 +43,41 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Product_Add_SearchAsin_SearchSet
         return parent::_prepareForm();
     }
 
-    protected function _beforeToHtml()
+    protected function _prepareLayout()
     {
-        $child = $this->getLayout()->createBlock('M2ePro/adminhtml_amazon_listing_edit_tabs_search');
+        $helpBlock = $this->getLayout()->createBlock(
+            'M2ePro/adminhtml_helpBlock', '', array(
+                'content' => Mage::helper('M2ePro')->__(<<<HTML
+<p>In this section, you can specify the settings according to which M2E Pro will perform <a href="%url1%" 
+target="_blank" class="external-link">automatic search of ASIN/ISBN</a> for your products. Also, these settings are 
+used when you list products to Amazon via the Module.</p>
+<p>Click <a href="%url2%" target="_blank" class="external-link">here</a> for more detailed information.</p>
+HTML
+                    ,
+                    Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'x/C4gVAQ'),
+                    Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'x/FYgVAQ')
+                ),
+                'title'   => Mage::helper('M2ePro')->__('Search Settings')
+            )
+        );
+        $this->setChild('help_block', $helpBlock);
 
+        $child = $this->getLayout()->createBlock('M2ePro/adminhtml_amazon_listing_create_search_form')
+            ->setUseFormContainer(false);
         $this->setChild('content', $child);
 
-        return parent::_beforeToHtml();
+        Mage::helper('M2ePro/View')->getJsPhpRenderer()->addClassConstants('Ess_M2ePro_Model_Amazon_Listing');
+
+        Mage::helper('M2ePro/View')->getJsRenderer()->add(<<<JS
+
+    AmazonListingCreateSearchObj = new AmazonListingCreateSearch();
+
+    $('general_id_mode').observe('change', AmazonListingCreateSearchObj.general_id_mode_change);
+    $('worldwide_id_mode').observe('change', AmazonListingCreateSearchObj.worldwide_id_mode_change);
+JS
+        );
+
+        return parent::_prepareLayout();
     }
 
     //########################################

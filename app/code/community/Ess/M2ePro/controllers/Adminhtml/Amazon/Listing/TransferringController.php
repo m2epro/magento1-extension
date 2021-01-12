@@ -67,6 +67,29 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_TransferringController
             )
         );
 
+        if (!$block->getAccounts()->count()) {
+            $this->getResponse()->setBody(
+                Mage::helper('M2ePro')->jsonEncode(
+                    array(
+                        'error'   => true,
+                        'message' => Mage::helper('M2ePro')->__(
+                            <<<HTML
+To use the Sell on Another Marketplace feature properly,
+you need to add one more account to M2E Pro under <i>Amazon Integration > Configuration > Accounts</i>.
+<br/>
+<br/>
+Click <a href="%url%" target="_blank">here</a> to learn about the Sell on Another Marketplace feature.
+HTML
+                            ,
+                            Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'x/iICzAQ')
+                        )
+                    )
+                )
+            );
+
+            return;
+        }
+
         $this->getResponse()->setBody($block->toHtml());
     }
 
@@ -204,18 +227,27 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_TransferringController
     {
         $accountId = $this->getRequest()->getParam('account_id');
         if (empty($accountId)) {
-            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array(
-                'id'    => null,
-                'title' => null
-            )));
+            return $this->getResponse()->setBody(
+                Mage::helper('M2ePro')->jsonEncode(
+                    array(
+                        'id'    => null,
+                        'title' => null
+                    )
+                )
+            );
         }
 
         /** @var Ess_M2ePro_Model_Account $account */
         $account = Mage::getModel('M2ePro/Account')->load($accountId);
-        return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array(
-            'id' => $account->getChildObject()->getMarketplace()->getId(),
-            'title' => $account->getChildObject()->getMarketplace()->getTitle()
-        )));
+
+        return $this->getResponse()->setBody(
+            Mage::helper('M2ePro')->jsonEncode(
+                array(
+                    'id'    => $account->getChildObject()->getMarketplace()->getId(),
+                    'title' => $account->getChildObject()->getMarketplace()->getTitle()
+                )
+            )
+        );
     }
 
     public function addProductsAction()

@@ -1,4 +1,4 @@
-window.AmazonListingCreateGeneral = Class.create(Common,{
+window.AmazonListingCreateGeneral = Class.create(Common, {
 
     marketplaceSynchProgressObj: null,
     accounts: null,
@@ -6,7 +6,7 @@ window.AmazonListingCreateGeneral = Class.create(Common,{
 
     // ---------------------------------------
 
-    initialize: function () {
+    initialize: function() {
         var self = this;
 
         self.marketplaceSynchProgressObj = new AmazonListingCreateGeneralMarketplaceSynchProgress(
@@ -23,7 +23,7 @@ window.AmazonListingCreateGeneral = Class.create(Common,{
         self.initAccount();
     },
 
-    initAccount: function () {
+    initAccount: function() {
         var self = this;
 
         $('account_id').observe('change', function() {
@@ -67,7 +67,7 @@ window.AmazonListingCreateGeneral = Class.create(Common,{
         });
     },
 
-    save_and_next: function () {
+    save_and_next: function() {
         var self = this;
 
         if (self.marketplaceSynchProgressObj.runningNow) {
@@ -83,7 +83,7 @@ window.AmazonListingCreateGeneral = Class.create(Common,{
         }
     },
 
-    renderAccounts: function (callback) {
+    renderAccounts: function(callback) {
         var self = this;
 
         var account_add_btn = $('add_account_button');
@@ -116,7 +116,7 @@ window.AmazonListingCreateGeneral = Class.create(Common,{
                     self.accounts = accounts;
                 }
 
-                if (accounts.length == 0) {
+                if (accounts.length === 0) {
                     account_add_btn.down('span').update(M2ePro.translator.translate('Add'));
                     account_label_el.update(M2ePro.translator.translate('Account not found, please create it.'));
                     account_label_el.show();
@@ -145,7 +145,10 @@ window.AmazonListingCreateGeneral = Class.create(Common,{
                     if (M2ePro.formData.wizard) {
                         accountElement = new Element('span').update(account.title);
                     } else {
-                        var accountLink = M2ePro.url.get('adminhtml_amazon_account/edit', {'id': account.id, close_on_save: 1});
+                        var accountLink = M2ePro.url.get('adminhtml_amazon_account/edit', {
+                            'id': account.id,
+                            close_on_save: 1
+                        });
                         accountElement = new Element('a', {
                             'href': accountLink,
                             'target': '_blank'
@@ -177,7 +180,7 @@ window.AmazonListingCreateGeneral = Class.create(Common,{
         });
     },
 
-    synchronizeMarketplace: function (marketplaceId) {
+    synchronizeMarketplace: function(marketplaceId) {
         var self = this;
 
         new Ajax.Request(M2ePro.url.get('adminhtml_general/isMarketplaceEnabled'), {
@@ -212,7 +215,7 @@ window.AmazonListingCreateGeneral = Class.create(Common,{
         });
     },
 
-    isAccountsEqual: function (newAccounts) {
+    isAccountsEqual: function(newAccounts) {
         if (!newAccounts.length && !this.accounts.length) {
             return true;
         }

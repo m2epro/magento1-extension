@@ -35,9 +35,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_View extends Ess_M2
 
     protected function _prepareLayout()
     {
-        Mage::helper('M2ePro/View')->getJsRenderer()->addOnReadyJs(
-            <<<JS
-    CommonObj = new Common(); 
+        Mage::helper('M2ePro/View')->getJsRenderer()->addOnReadyJs(<<<JS
+    CommonObj = new Common();
 JS
         );
 

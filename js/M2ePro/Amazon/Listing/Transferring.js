@@ -5,54 +5,45 @@ window.AmazonListingTransferring = Class.create(Common, {
 
     // ---------------------------------------
 
-    initialize: function(listingId)
-    {
+    initialize: function(listingId) {
         this.listingId = listingId;
     },
 
     //----------------------------------------
 
-    getSourceAccount: function()
-    {
+    getSourceAccount: function() {
         return $('from_account_id').value;
     },
 
-    getTargetAccount: function()
-    {
+    getTargetAccount: function() {
         return $('to_account_id').value;
     },
 
-    getSourceMarketplace: function()
-    {
+    getSourceMarketplace: function() {
         return $('from_marketplace_id').value;
     },
 
-    getSourceListing: function()
-    {
+    getSourceListing: function() {
         return $('from_listing_id').value;
     },
 
     //----------------------------------------
 
-    getTargetMarketplace: function()
-    {
+    getTargetMarketplace: function() {
         return $('to_marketplace_id').value;
     },
 
-    getTargetStore: function()
-    {
+    getTargetStore: function() {
         return $('to_store_id').value;
     },
 
-    getTargetListing: function()
-    {
+    getTargetListing: function() {
         return $('to_listing_id').value;
     },
 
     //----------------------------------------
 
-    popupShow: function(selectedProductsIds)
-    {
+    popupShow: function(selectedProductsIds) {
         new Ajax.Request(M2ePro.url.get('adminhtml_amazon_listing_transferring/index', {step: 1}), {
             method: 'post',
             asynchronous: true,
@@ -78,6 +69,13 @@ window.AmazonListingTransferring = Class.create(Common, {
                     showEffect: Element.show
                 });
 
+                if (transport.responseText.isJSON()) {
+                    var response = transport.responseText.evalJSON();
+                    if (response.error) {
+                        transport.responseText = response.message;
+                    }
+                }
+
                 $('modal_dialog_message').innerHTML = transport.responseText;
                 $('modal_dialog_message').innerHTML.evalScripts();
 
@@ -87,8 +85,7 @@ window.AmazonListingTransferring = Class.create(Common, {
         });
     },
 
-    popupContinue: function()
-    {
+    popupContinue: function() {
         if (!Validation.validate($('to_account_id')) ||
             !Validation.validate($('to_marketplace_id')) ||
             !Validation.validate($('to_store_id')) ||
@@ -101,11 +98,11 @@ window.AmazonListingTransferring = Class.create(Common, {
             M2ePro.url.get(
                 'adminhtml_amazon_listing_transferring/index',
                 {
-                    step           : 2,
-                    account_id     : this.getTargetAccount(),
-                    marketplace_id : this.getTargetMarketplace(),
-                    store_id       : this.getTargetStore(),
-                    to_listing_id  : this.getTargetListing()
+                    step: 2,
+                    account_id: this.getTargetAccount(),
+                    marketplace_id: this.getTargetMarketplace(),
+                    store_id: this.getTargetStore(),
+                    to_listing_id: this.getTargetListing()
                 }
             )
         );
@@ -113,20 +110,17 @@ window.AmazonListingTransferring = Class.create(Common, {
 
     // ---------------------------------------
 
-    accountIdChange: function()
-    {
+    accountIdChange: function() {
         this.refreshMarketplaces();
     },
 
-    storeIdChange: function()
-    {
+    storeIdChange: function() {
         this.refreshListings();
     },
 
     //----------------------------------------
 
-    refreshMarketplaces: function()
-    {
+    refreshMarketplaces: function() {
         new Ajax.Request(M2ePro.url.get('adminhtml_amazon_listing_transferring/getMarketplace'), {
             method: 'post',
             asynchronous: true,
@@ -145,8 +139,7 @@ window.AmazonListingTransferring = Class.create(Common, {
         });
     },
 
-    refreshListings: function()
-    {
+    refreshListings: function() {
         if (!this.getTargetAccount() || !this.getTargetMarketplace() || !this.getTargetStore()) {
             return;
         }
@@ -155,10 +148,10 @@ window.AmazonListingTransferring = Class.create(Common, {
             method: 'post',
             asynchronous: true,
             parameters: {
-                account_id     : this.getTargetAccount(),
-                marketplace_id : this.getTargetMarketplace(),
-                store_id       : this.getTargetStore(),
-                listing_id     : this.getSourceListing()
+                account_id: this.getTargetAccount(),
+                marketplace_id: this.getTargetMarketplace(),
+                store_id: this.getTargetStore(),
+                listing_id: this.getSourceListing()
             },
             onSuccess: function(transport) {
 
@@ -170,18 +163,17 @@ window.AmazonListingTransferring = Class.create(Common, {
                 listingsSelector.appendChild(new Element('option', {value: '', class: 'empty', selected: true}));
                 listings.each(function(listing) {
                     listingsSelector.appendChild(new Element('option', {value: listing.id}))
-                                    .update(listing.title);
+                        .update(listing.title);
                 });
                 listingsSelector.appendChild(new Element('option', {value: 'create-new', style: 'color: brown;'}))
-                                .update(M2ePro.translator.translate('Create new'));
+                    .update(M2ePro.translator.translate('Create new'));
             }.bind(this)
         });
     },
 
     //----------------------------------------
 
-    addProducts: function(progressBatId, products, callback)
-    {
+    addProducts: function(progressBatId, products, callback) {
         var parts = this.makeProductsParts(products, 100);
 
         this.progressBarObj = new ProgressBar(progressBatId);
@@ -194,8 +186,7 @@ window.AmazonListingTransferring = Class.create(Common, {
         this.sendPartsProducts(parts, parts.length, callback);
     },
 
-    makeProductsParts: function(products, partSize)
-    {
+    makeProductsParts: function(products, partSize) {
         var productsArray = products;
         var parts = new Array();
 
@@ -206,34 +197,33 @@ window.AmazonListingTransferring = Class.create(Common, {
 
         var result = new Array();
         for (var i = 0; i < productsArray.length; i++) {
-            if (result.length == 0 || result[result.length-1].length == partSize) {
+            if (result.length == 0 || result[result.length - 1].length == partSize) {
                 result[result.length] = new Array();
             }
-            result[result.length-1][result[result.length-1].length] = productsArray[i];
+            result[result.length - 1][result[result.length - 1].length] = productsArray[i];
         }
 
         return result;
     },
 
-    sendPartsProducts: function(parts, partsCount, callback)
-    {
-        if (parts.length == 0) {
+    sendPartsProducts: function(parts, partsCount, callback) {
+        if (partsCount == 0) {
             return;
         }
 
-        var isLastPart  = parts.length === 1 ? 1 : 0;
+        var isLastPart = partsCount === 1 ? 1 : 0;
         var part = parts.splice(0, 1)[0];
 
         new Ajax.Request(M2ePro.url.get('adminhtml_amazon_listing_transferring/addProducts'), {
             method: 'post',
             parameters: {
-                listing_id   : this.listingId,
-                products     : implode(',', part),
-                is_last_part : isLastPart
+                listing_id: this.listingId,
+                products: implode(',', part),
+                is_last_part: isLastPart
             },
             onSuccess: function(transport) {
 
-                var percents = ((100 - this.progressBarObj.getPercents()) / parts.length) + this.progressBarObj.getPercents();
+                var percents = ((100 - this.progressBarObj.getPercents()) / partsCount) + this.progressBarObj.getPercents();
                 if (percents >= 100) {
                     this.progressBarObj.setPercents(100, 0);
                     this.progressBarObj.setStatus('Adding has been completed');
@@ -244,8 +234,8 @@ window.AmazonListingTransferring = Class.create(Common, {
                 }
 
                 setTimeout(function() {
-                    this.sendPartsProducts(parts, partsCount);
-                }, 500);
+                    this.sendPartsProducts(parts, parts.length, callback);
+                }.bind(this), 500);
             }.bind(this)
         });
     }

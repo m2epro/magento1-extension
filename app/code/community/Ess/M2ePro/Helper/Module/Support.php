@@ -90,6 +90,17 @@ class Ess_M2ePro_Helper_Module_Support extends Mage_Core_Helper_Abstract
         return $this->getSupportUrl() . '/ideas';
     }
 
+    public function getHowToGuideUrl($articleUrl)
+    {
+        $urlParts[] = $this->getSupportUrl()  . '/how-to-guide';
+
+        if ($articleUrl) {
+            $urlParts[] = trim($articleUrl, '/');
+        }
+
+        return implode('/', $urlParts);
+    }
+
     public function getSupportUrl($urlPart = null)
     {
         $urlParts[] = trim(

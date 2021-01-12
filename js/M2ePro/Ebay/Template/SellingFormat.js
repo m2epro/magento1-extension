@@ -166,14 +166,19 @@ window.EbayTemplateSellingFormat = Class.create(Common, {
 
     updateQtyMode: function()
     {
-        var qtyMode   = $('qty_mode'),
-            qtyModeTr = $('qty_mode_tr');
+        var qtyMode        = $('qty_mode'),
+            qtyModeTr      = $('qty_mode_tr'),
+            qtyCustomValue = $('qty_custom_value'),
+            customValueTr  = $('qty_mode_cv_tr');
 
         qtyModeTr.show();
+        qtyMode.simulate('change');
         if ($('listing_type').value == M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Template_SellingFormat::LISTING_TYPE_AUCTION')) {
-            qtyMode.value = M2ePro.php.constant('Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_SINGLE');
+            qtyMode.value = M2ePro.php.constant('Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_NUMBER');
+            qtyCustomValue.value = 1;
             qtyMode.simulate('change');
             qtyModeTr.hide();
+            customValueTr.hide();
         }
     },
 
@@ -189,8 +194,7 @@ window.EbayTemplateSellingFormat = Class.create(Common, {
 
         var qtyMode = $('qty_mode').value;
 
-        if (qtyMode == M2ePro.php.constant('Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_SINGLE') ||
-            qtyMode == M2ePro.php.constant('Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_NUMBER')) {
+        if (qtyMode == M2ePro.php.constant('Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_NUMBER')) {
             return;
         }
 

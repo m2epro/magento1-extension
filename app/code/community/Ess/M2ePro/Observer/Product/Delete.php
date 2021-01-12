@@ -12,7 +12,8 @@ class Ess_M2ePro_Observer_Product_Delete extends Ess_M2ePro_Observer_Product_Abs
 
     public function process()
     {
-        if ($this->getProductId() <= 0) {
+        $productId = $this->getProductId();
+        if (empty($productId)) {
             return;
         }
 

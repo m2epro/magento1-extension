@@ -206,7 +206,7 @@ class Ess_M2EPro_Model_Ebay_Template_Description_Builder
                     @unlink($watermarkPath);
                 }
             }
-        } elseif (!empty($this->_rawData['old_watermark_image']) && !isset($data['id'])) {
+        } elseif (!empty($this->_rawData['old_watermark_image']) && isset($data['id'])) {
             $data['watermark_image'] = base64_decode($this->_rawData['old_watermark_image']);
         }
 
@@ -257,8 +257,8 @@ class Ess_M2EPro_Model_Ebay_Template_Description_Builder
                     'ean'   => array('mode' => Description::PRODUCT_DETAILS_MODE_NONE, 'attribute' => ''),
                     'brand' => array('mode' => Description::PRODUCT_DETAILS_MODE_NONE, 'attribute' => ''),
                     'mpn'   => array('mode' => Description::PRODUCT_DETAILS_MODE_DOES_NOT_APPLY, 'attribute' => ''),
-                    'include_description' => 1,
-                    'include_image'       => 1,
+                    'include_ebay_details' => 1,
+                    'include_image'   => 1,
                 )
             ),
 

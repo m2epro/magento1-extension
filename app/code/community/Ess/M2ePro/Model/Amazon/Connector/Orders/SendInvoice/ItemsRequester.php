@@ -98,11 +98,29 @@ abstract class Ess_M2ePro_Model_Amazon_Connector_Orders_SendInvoice_ItemsRequest
 
     public function getRequestData()
     {
-        return array(
+        $requestData = array(
             'order_id' => $this->_params['order']['amazon_order_id'],
             'document_number' => $this->_params['order']['document_number'],
             'document_type' => $this->_params['order']['document_type']
         );
+
+        if (isset($this->_params['order']['document_shipping_id'])) {
+            $requestData['document_shipping_id'] = $this->_params['order']['document_shipping_id'];
+        }
+
+        if (isset($this->_params['order']['document_transaction_id'])) {
+            $requestData['document_transaction_id'] = $this->_params['order']['document_transaction_id'];
+        }
+
+        if (isset($this->_params['order']['document_total_amount'])) {
+            $requestData['document_total_amount'] = $this->_params['order']['document_total_amount'];
+        }
+
+        if (isset($this->_params['order']['document_total_vat_amount'])) {
+            $requestData['document_total_vat_amount'] = $this->_params['order']['document_total_vat_amount'];
+        }
+
+        return $requestData;
     }
 
     //########################################

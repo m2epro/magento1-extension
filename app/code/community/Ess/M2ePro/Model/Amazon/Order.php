@@ -20,12 +20,15 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
     const STATUS_CANCELED            = 5;
     const STATUS_INVOICE_UNCONFIRMED = 6;
 
-    const DOCUMENT_TYPE_INVOICE = 'invoice';
-    const DOCUMENT_TYPE_CREDIT_NOTE = 'credit_note';
+    const INVOICE_SOURCE_MAGENTO = 'magento';
+    const INVOICE_SOURCE_EXTENSION = 'extension';
 
     protected $_subTotalPrice = null;
 
     protected $_grandTotalPrice = null;
+
+    /** @var Ess_M2ePro_Model_ActiveRecord_Factory */
+    protected $_activeRecordFactory;
 
     //########################################
 
@@ -33,6 +36,7 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
     {
         parent::_construct();
         $this->_init('M2ePro/Amazon_Order');
+        $this->_activeRecordFactory = Mage::getSingleton('M2ePro/ActiveRecord_Factory');
     }
 
     //########################################
@@ -449,7 +453,7 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
         $channelItems = $this->getParentObject()->getChannelItems();
 
         if (empty($channelItems)) {
-            // 3rd party order
+            // Unmanaged order
             // ---------------------------------------
             $storeId = $this->getAmazonAccount()->getMagentoOrdersListingsOtherStoreId();
             // ---------------------------------------
@@ -536,7 +540,7 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
         if ($this->isFulfilledByAmazon() && !$this->getAmazonAccount()->isMagentoOrdersFbaStockEnabled()) {
             Mage::dispatchEvent(
                 'm2epro_amazon_fba_magento_order_place_after', array(
-                'magento_order' => $this->getParentObject()->getMagentoOrder()
+                    'magento_order' => $this->getParentObject()->getMagentoOrder()
                 )
             );
         }
@@ -549,11 +553,6 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
      */
     public function canCreateInvoice()
     {
-        if ($this->getAmazonAccount()->isVatCalculationServiceEnabled() &&
-            $this->getAmazonAccount()->isMagentoInvoiceCreationDisabled()) {
-            return false;
-        }
-
         if (!$this->getAmazonAccount()->isMagentoOrdersInvoiceEnabled()) {
             return false;
         }
@@ -859,13 +858,17 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
     /**
      * @return bool
      */
-    public function canSendCreditmemo()
+    public function canSendMagentoCreditmemo()
     {
         if (!$this->getAmazonAccount()->getMarketplace()->getChildObject()->isUploadInvoicesAvailable()) {
             return false;
         }
 
-        if (!$this->getAmazonAccount()->isUploadInvoicesEnabled()) {
+        if ($this->getAmazonAccount()->isAutoInvoicingDisabled()) {
+            return false;
+        }
+
+        if (!$this->getAmazonAccount()->isUploadMagentoInvoices()) {
             return false;
         }
 
@@ -892,21 +895,16 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
 
     public function sendCreditmemo()
     {
-        if (!$this->canSendCreditmemo()) {
+        if (!$this->canSendMagentoCreditmemo()) {
             return false;
         }
 
         $params = array(
-            'document_type' => self::DOCUMENT_TYPE_CREDIT_NOTE
+            'invoice_source' => self::INVOICE_SOURCE_MAGENTO,
+            'document_type' => Ess_M2ePro_Model_Amazon_Order_Invoice::DOCUMENT_TYPE_CREDIT_NOTE
         );
 
-        Mage::getModel('M2ePro/Order_Change')->create(
-            $this->getParentObject()->getId(),
-            Ess_M2ePro_Model_Order_Change::ACTION_SEND_INVOICE,
-            $this->getParentObject()->getLog()->getInitiator(),
-            Ess_M2ePro_Helper_Component_Amazon::NICK,
-            $params
-        );
+        $this->sendInvoiceDocument($params);
 
         return true;
     }
@@ -916,13 +914,17 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
     /**
      * @return bool
      */
-    public function canSendInvoice()
+    public function canSendMagentoInvoice()
     {
         if (!$this->getAmazonAccount()->getMarketplace()->getChildObject()->isUploadInvoicesAvailable()) {
             return false;
         }
 
-        if (!$this->getAmazonAccount()->isUploadInvoicesEnabled()) {
+        if ($this->getAmazonAccount()->isAutoInvoicingDisabled()) {
+            return false;
+        }
+
+        if (!$this->getAmazonAccount()->isUploadMagentoInvoices()) {
             return false;
         }
 
@@ -931,12 +933,12 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
             return false;
         }
 
-        if (!$this->getParentObject()->getMagentoOrder()->hasInvoices()) {
+        if (!$magentoOrder->hasInvoices()) {
             return false;
         }
 
         /** @var Mage_Sales_Model_Resource_Order_Invoice_Collection $invoices */
-        $invoices = $this->getParentObject()->getMagentoOrder()->getInvoiceCollection();
+        $invoices = $magentoOrder->getInvoiceCollection();
         /** @var Mage_Sales_Model_Order_Invoice $invoice */
         $invoice = $invoices->getLastItem();
 
@@ -949,13 +951,67 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
 
     public function sendInvoice()
     {
-        if (!$this->canSendInvoice()) {
+        if (!$this->canSendMagentoInvoice()) {
             return false;
         }
 
         $params = array(
-            'document_type' => self::DOCUMENT_TYPE_INVOICE
+            'invoice_source' => self::INVOICE_SOURCE_MAGENTO,
+            'document_type' => Ess_M2ePro_Model_Amazon_Order_Invoice::DOCUMENT_TYPE_INVOICE
         );
+
+        $this->sendInvoiceDocument($params);
+
+        return true;
+    }
+
+    //########################################
+
+    public function canSendInvoiceFromReport()
+    {
+        if (!$this->getAmazonAccount()->getMarketplace()->getChildObject()->isUploadInvoicesAvailable()) {
+            return false;
+        }
+
+        if (!$this->getAmazonAccount()->isVatCalculationServiceEnabled()) {
+            return false;
+        }
+
+        if (!$this->getAmazonAccount()->isInvoiceGenerationByExtension()) {
+            return false;
+        }
+
+        $reportData = $this->getSettings('invoice_data_report');
+        if (empty($reportData)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function sendInvoiceFromReport()
+    {
+        if (!$this->canSendInvoiceFromReport()) {
+            return false;
+        }
+
+        $params = array(
+            'invoice_source' => self::INVOICE_SOURCE_EXTENSION,
+            'document_type' => ''
+        );
+
+        $this->sendInvoiceDocument($params);
+
+        return true;
+    }
+
+    //########################################
+
+    public function sendInvoiceDocument(array $params)
+    {
+        if (empty($params['invoice_source'])) {
+            throw new Ess_M2ePro_Model_Exception_Logic('invoice source param not found.');
+        }
 
         Mage::getModel('M2ePro/Order_Change')->create(
             $this->getParentObject()->getId(),
@@ -972,6 +1028,13 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
 
     public function deleteInstance()
     {
+        /** @var Ess_M2ePro_Model_Resource_Amazon_Order_Invoice_Collection $invoiceCollection */
+        $invoiceCollection = $this->_activeRecordFactory->getObjectCollection('Amazon_Order_Invoice');
+        $invoiceCollection->addFieldToFilter('order_id', $this->getId());
+        foreach ($invoiceCollection->getItems() as $invoice) {
+            $invoice->deleteInstance();
+        }
+
         return $this->delete();
     }
 

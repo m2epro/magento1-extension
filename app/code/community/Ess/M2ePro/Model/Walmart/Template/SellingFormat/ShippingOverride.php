@@ -86,7 +86,7 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat_ShippingOverride
             Mage::getModel('M2ePro/Walmart_Template_SellingFormat_ShippingOverride_Source');
 
         $this->_sellingFormatShippingOverrideSourceModels[$id]->setMagentoProduct($magentoProduct);
-        $this->_sellingFormatShippingOverrideSourceModels[$id]->setSellingFormatShipingOverrideTemplate($this);
+        $this->_sellingFormatShippingOverrideSourceModels[$id]->setSellingFormatShippingOverrideTemplate($this);
 
         return $this->_sellingFormatShippingOverrideSourceModels[$id];
     }

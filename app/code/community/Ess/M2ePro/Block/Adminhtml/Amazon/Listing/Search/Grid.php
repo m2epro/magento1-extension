@@ -616,6 +616,20 @@ HTML;
         return false;
     }
 
+    /**
+     * @param string $value
+     * @return string
+     */
+    public function getValueForSubQuery($value)
+    {
+        // Mage/Eav/Model/Entity/Collection/Abstract.php:765
+        if (empty($value) || strpos($value, '/') === false) {
+            return $value;
+        }
+
+        return substr($value, 0, strpos($value, '/'));
+    }
+
     //########################################
 
     protected function _toHtml()

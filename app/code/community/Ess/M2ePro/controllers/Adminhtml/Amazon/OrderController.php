@@ -404,7 +404,7 @@ class Ess_M2ePro_Adminhtml_Amazon_OrderController
         $order = Mage::helper('M2ePro/Component_Amazon')->getObject('Order', (int)$orderId);
         $order->getLog()->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_USER);
 
-        if ($documentType == Ess_M2ePro_Model_Amazon_Order::DOCUMENT_TYPE_INVOICE) {
+        if ($documentType == Ess_M2ePro_Model_Amazon_Order_Invoice::DOCUMENT_TYPE_INVOICE) {
             $order->getChildObject()->sendInvoice();
             $this->_addJsonContent(
                 array(
@@ -416,7 +416,7 @@ class Ess_M2ePro_Adminhtml_Amazon_OrderController
             );
         }
 
-        if ($documentType == Ess_M2ePro_Model_Amazon_Order::DOCUMENT_TYPE_CREDIT_NOTE) {
+        if ($documentType == Ess_M2ePro_Model_Amazon_Order_Invoice::DOCUMENT_TYPE_CREDIT_NOTE) {
             $order->getChildObject()->sendCreditmemo();
             $this->_addJsonContent(
                 array(

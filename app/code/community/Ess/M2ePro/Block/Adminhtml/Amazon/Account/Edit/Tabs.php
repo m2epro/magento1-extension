@@ -8,11 +8,11 @@
 
 class Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit_Tabs extends Ess_M2ePro_Block_Adminhtml_Widget_Tabs
 {
-    const TAB_ID_GENERAL             = 'general';
-    const TAB_ID_LISTING_OTHER       = 'listingOther';
-    const TAB_ID_ORDERS              = 'orders';
-    const TAB_ID_VCS_UPLOAD_INVOICES = 'vcs_upload_invoices';
-    const TAB_ID_REPRICING           = 'repricing';
+    const TAB_ID_GENERAL = 'general';
+    const TAB_ID_LISTING_OTHER = 'listingOther';
+    const TAB_ID_ORDERS = 'orders';
+    const TAB_ID_INVOICES_AND_SHIPMENTS = 'invoices_and_shipments';
+    const TAB_ID_REPRICING = 'repricing';
 
     //########################################
 
@@ -26,7 +26,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit_Tabs extends Ess_M2ePro_Blo
         $this->setDestElementId('edit_form');
     }
 
-    protected function _beforeToHtml()
+    protected function _prepareLayout()
     {
         /** @var Ess_M2ePro_Model_Account $account */
         $account = Mage::helper('M2ePro/Data_Global')->getValue('model_account');
@@ -37,19 +37,19 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit_Tabs extends Ess_M2ePro_Blo
                 'label'   => Mage::helper('M2ePro')->__('General'),
                 'title'   => Mage::helper('M2ePro')->__('General'),
                 'content' => $this->getLayout()
-                                  ->createBlock('M2ePro/adminhtml_amazon_account_edit_tabs_general')
-                                  ->toHtml(),
+                    ->createBlock('M2ePro/adminhtml_amazon_account_edit_tabs_general')
+                    ->toHtml(),
             )
         );
 
         $this->addTab(
             self::TAB_ID_LISTING_OTHER,
             array(
-                'label'   => Mage::helper('M2ePro')->__('3rd Party Listings'),
-                'title'   => Mage::helper('M2ePro')->__('3rd Party Listings'),
+                'label'   => Mage::helper('M2ePro')->__('Unmanaged Listings'),
+                'title'   => Mage::helper('M2ePro')->__('Unmanaged Listings'),
                 'content' => $this->getLayout()
-                                  ->createBlock('M2ePro/adminhtml_amazon_account_edit_tabs_listingOther')
-                                  ->toHtml(),
+                    ->createBlock('M2ePro/adminhtml_amazon_account_edit_tabs_listingOther')
+                    ->toHtml(),
             )
         );
 
@@ -59,22 +59,20 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit_Tabs extends Ess_M2ePro_Blo
                 'label'   => Mage::helper('M2ePro')->__('Orders'),
                 'title'   => Mage::helper('M2ePro')->__('Orders'),
                 'content' => $this->getLayout()
-                                  ->createBlock('M2ePro/adminhtml_amazon_account_edit_tabs_order')
-                                  ->toHtml(),
+                    ->createBlock('M2ePro/adminhtml_amazon_account_edit_tabs_order')
+                    ->toHtml(),
             )
         );
 
-        if ($account->getId() &&
-            $account->getChildObject()->getMarketplace()->getChildObject()->isVatCalculationServiceAvailable()
-        ) {
+        if ($account->getId()) {
             $this->addTab(
-                self::TAB_ID_VCS_UPLOAD_INVOICES,
+                self::TAB_ID_INVOICES_AND_SHIPMENTS,
                 array(
-                    'label'   => Mage::helper('M2ePro')->__('VCS / Upload Invoices'),
-                    'title'   => Mage::helper('M2ePro')->__('VCS / Upload Invoices'),
+                    'label'   => Mage::helper('M2ePro')->__('Invoices & Shipments'),
+                    'title'   => Mage::helper('M2ePro')->__('Invoices & Shipments'),
                     'content' => $this->getLayout()
-                                      ->createBlock('M2ePro/adminhtml_amazon_account_edit_tabs_VCSUploadInvoices')
-                                      ->toHtml(),
+                        ->createBlock('M2ePro/adminhtml_amazon_account_edit_tabs_InvoicesAndShipments_Form')
+                        ->toHtml(),
                 )
             );
         }
@@ -86,15 +84,15 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit_Tabs extends Ess_M2ePro_Blo
                     'label'   => Mage::helper('M2ePro')->__('Repricing Tool'),
                     'title'   => Mage::helper('M2ePro')->__('Repricing Tool'),
                     'content' => $this->getLayout()
-                                      ->createBlock('M2ePro/adminhtml_amazon_account_edit_tabs_repricing')
-                                      ->toHtml(),
+                        ->createBlock('M2ePro/adminhtml_amazon_account_edit_tabs_repricing')
+                        ->toHtml(),
                 )
             );
         }
 
         $this->setActiveTab($this->getRequest()->getParam('tab', self::TAB_ID_GENERAL));
 
-        return parent::_beforeToHtml();
+        return parent::_prepareLayout();
     }
 
     //########################################

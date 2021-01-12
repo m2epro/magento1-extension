@@ -63,7 +63,7 @@ abstract class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Abstract
     {
         if (null === $this->_defaultOperatorInputByType) {
             $this->_defaultOperatorInputByType = array(
-                'string'      => array('==', '!=', '>=', '>', '<=', '<', '{}', '!{}', '()', '!()'),
+                'string'      => array('==', '!=', '>=', '>', '<=', '<', '{}', '!{}', '()', '!()', '??', '!??'),
                 'numeric'     => array('==', '!=', '>=', '>', '<=', '<', '()', '!()'),
                 'date'        => array('==', '>=', '<='),
                 'select'      => array('==', '!='),
@@ -96,7 +96,9 @@ abstract class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Abstract
                 '{}'  => Mage::helper('rule')->__('contains'),
                 '!{}' => Mage::helper('rule')->__('does not contain'),
                 '()'  => Mage::helper('rule')->__('is one of'),
-                '!()' => Mage::helper('rule')->__('is not one of')
+                '!()' => Mage::helper('rule')->__('is not one of'),
+                '??'  => Mage::helper('rule')->__('is empty'),
+                '!??' => Mage::helper('rule')->__('is not empty')
             );
         }
 
@@ -648,9 +650,13 @@ abstract class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Abstract
                 }
             }
                 break;
+
+            case '??':case '!??':
+                $result = empty($validatedValue);
+                break;
         }
 
-        if ('!=' == $op || '>' == $op || '<' == $op || '!{}' == $op || '!()' == $op) {
+        if ('!=' == $op || '>' == $op || '<' == $op || '!{}' == $op || '!()' == $op || '!??' == $op) {
             $result = !$result;
         }
 

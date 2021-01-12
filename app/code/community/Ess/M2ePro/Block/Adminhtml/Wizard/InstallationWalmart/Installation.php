@@ -25,9 +25,8 @@ abstract class Ess_M2ePro_Block_Adminhtml_Wizard_InstallationWalmart_Installatio
 
     protected function _prepareLayout()
     {
-        Mage::helper('M2ePro/View')->getJsRenderer()->addOnReadyJs(
-            <<<JS
-        InstallationWalmartWizardObj = new WizardInstallationWalmart();
+        Mage::helper('M2ePro/View')->getJsRenderer()->addOnReadyJs(<<<JS
+    InstallationWalmartWizardObj = new WizardInstallationWalmart();
 JS
         );
 

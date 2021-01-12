@@ -101,7 +101,7 @@ window.WalmartConfigurationGeneral = Class.create(Common, {
         if (this.value == self.ISBN_MODE_CUSTOM_ATTRIBUTE) {
             self.updateHiddenValue(this, $('isbn_custom_attribute'));
         }
-    }
+    },
 
     // ---------------------------------------
 });

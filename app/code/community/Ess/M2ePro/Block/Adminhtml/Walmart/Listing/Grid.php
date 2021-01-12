@@ -134,25 +134,6 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Grid extends Ess_M2ePro_Block_A
         );
 
         $actions = array(
-
-            'editListingTitle' => array(
-                'caption' => $helper->__('Title'),
-                'group'   => 'edit_actions',
-                'confirm' => $helper->__('Are you sure?'),
-                'field'   => 'id',
-                'onclick_action' => 'EditListingTitleObj.openPopup'
-            ),
-
-            'editConfiguration' => array(
-                'caption' => $helper->__('Configuration'),
-                'group'   => 'edit_actions',
-                'field'   => 'id',
-                'url'     => array(
-                    'base'   => '*/adminhtml_walmart_listing/edit',
-                    'params' => array('back' => $backUrl)
-                )
-            ),
-
             'manageProducts' => array(
                 'caption' => $helper->__('Manage'),
                 'group'   => 'products_actions',
@@ -201,6 +182,24 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Grid extends Ess_M2ePro_Block_A
                         'back' => $backUrl,
                         'auto_actions' => 1
                     )
+                )
+            ),
+
+            'editListingTitle' => array(
+                'caption' => $helper->__('Title'),
+                'group'   => 'edit_actions',
+                'confirm' => $helper->__('Are you sure?'),
+                'field'   => 'id',
+                'onclick_action' => 'EditListingTitleObj.openPopup'
+            ),
+
+            'editConfiguration' => array(
+                'caption' => $helper->__('Configuration'),
+                'group'   => 'edit_actions',
+                'field'   => 'id',
+                'url'     => array(
+                    'base'   => '*/adminhtml_walmart_listing/edit',
+                    'params' => array('back' => $backUrl)
                 )
             ),
 

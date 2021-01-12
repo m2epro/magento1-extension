@@ -146,7 +146,7 @@
                             <option value="1" <?php if ($formData['magento_orders_settings']['listing_other']['mode'] == 1) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
                         </select>
                         <p class="note">
-                            <span><?php echo Mage::helper('M2ePro')->__('Enable to automatically create Magento Order if the Channel Order was placed for the Item listed without M2E Pro.'); ?></span>
+                            <span><?php echo Mage::helper('M2ePro')->__('Choose whether a Magento Order should be created if a Walmart Order is received for an item that does <b>not</b> belong to the M2E Pro Listing.'); ?></span>
                         </p>
                     </td>
                 </tr>
@@ -463,9 +463,6 @@
                     if ($formData['magento_orders_settings']['status_mapping']['mode'] == Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_STATUS_MAPPING_MODE_DEFAULT) {
                         $formData['magento_orders_settings']['status_mapping']['processing'] = Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_STATUS_MAPPING_PROCESSING;
                         $formData['magento_orders_settings']['status_mapping']['shipped'] = Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_STATUS_MAPPING_SHIPPED;
-
-                        $formData['magento_orders_settings']['invoice_mode'] = 1;
-                        $formData['magento_orders_settings']['shipment_mode'] = 1;
                     }
                 ?>
 
@@ -480,10 +477,6 @@
                             <?php } ?>
                         </select>
                     </td>
-                    <td class="value">
-                        <input id="magento_orders_invoice_mode" name="magento_orders_settings[invoice_mode]" type="checkbox" <?php if ($formData['magento_orders_settings']['status_mapping']['mode'] == Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_STATUS_MAPPING_MODE_DEFAULT || $formData['magento_orders_settings']['invoice_mode'] == 1) echo 'checked="checked"'; ?> <?php echo $isDisabledStatusStyle; ?>>
-                        <label for="magento_orders_invoice_mode"><?php echo Mage::helper('M2ePro')->__('Automatic Invoice Creation'); ?></label>
-                    </td>
                 </tr>
 
                 <tr id="magento_orders_status_mapping_shipped_container" <?php echo $isDisabledStatusStyle; ?>>
@@ -496,10 +489,6 @@
                                 <option value="<?php echo $statusKey; ?>" <?php if ($formData['magento_orders_settings']['status_mapping']['shipped'] == $statusKey) echo 'selected="selected"'; ?>><?php echo $statusValue; ?></option>
                             <?php } ?>
                         </select>
-                    </td>
-                    <td class="value">
-                        <input id="magento_orders_shipment_mode" name="magento_orders_settings[shipment_mode]" type="checkbox" <?php if ($formData['magento_orders_settings']['status_mapping']['mode'] == Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_STATUS_MAPPING_MODE_DEFAULT || $formData['magento_orders_settings']['shipment_mode'] == 1) echo 'checked="checked"'; ?> <?php echo $isDisabledStatusStyle; ?>>
-                        <label for="magento_orders_shipment_mode"><?php echo Mage::helper('M2ePro')->__('Automatic Shipment Creation');?></label>
                     </td>
                 </tr>
 

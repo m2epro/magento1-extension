@@ -243,9 +243,12 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Settings_Grid
                 'header'         => Mage::helper('M2ePro')->__('Shipping Policy'),
                 'align'          => 'left',
                 'width'          => '170px',
-                'type'           => 'text',
-                'index'          => 'template_shipping_title',
-                'filter_index'   => 'template_shipping_title',
+                'type'           => 'options',
+                'options' => array(
+                    0 => Mage::helper('M2ePro')->__('Use from Listing Settings'),
+                    1 => Mage::helper('M2ePro')->__('Policies')
+                ),
+                'filter_condition_callback' => array($this, 'callbackFilterShippingSettings'),
                 'frame_callback' => array($this, 'callbackColumnTemplateShipping')
             )
         );
@@ -471,12 +474,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Settings_Grid
 
         $value = '<span>'.$productTitle.'</span>';
 
-        $tempSku = $row->getData('sku');
-
-        if ($tempSku === null) {
-            $tempSku = Mage::getModel('M2ePro/Magento_Product')->setProductId($row->getData('entity_id'))
-                                                               ->getSku();
-        }
+        $tempSku = Mage::getModel('M2ePro/Magento_Product')->setProductId($row->getData('entity_id'))->getSku();
 
         $value .= '<br/><strong>'.Mage::helper('M2ePro')->__('SKU') .
             ':</strong> '.Mage::helper('M2ePro')->escapeHtml($tempSku) . '<br/>';
@@ -663,6 +661,14 @@ HTML;
             return <<<HTML
 <a target="_blank" href="{$url}">{$templateTitle}</a>
 HTML;
+        } elseif ($this->_listing->getData('template_shipping_id')) {
+            $shippingSettings = Mage::helper('M2ePro')->__('Use from Listing Settings');
+
+            return <<<HTML
+<div style="padding: 4px">
+    <span style="color: #666666">{$shippingSettings}</span><br/>
+</div>
+HTML;
         }
 
         return $html;
@@ -717,6 +723,19 @@ HTML;
         $selectValue = $column->getFilter()->getValue('select');
         if ($selectValue !== null) {
             $collection->addFieldToFilter('is_general_id_owner', $selectValue);
+        }
+    }
+
+    protected function callbackFilterShippingSettings($collection, $column)
+    {
+        $value = $column->getFilter()->getValue();
+
+        if ($value) {
+            $collection->addFieldToFilter('template_shipping_id', array('notnull' => true));
+        } else {
+            if ($this->_listing->getData('template_shipping_id')) {
+                $collection->addFieldToFilter('template_shipping_id', array('null' => true));
+            }
         }
     }
 

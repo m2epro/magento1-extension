@@ -278,7 +278,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_Variation_Product_ManageController
         if ($this->isExistInM2eProListings($listingProduct, $sku)) {
             $msg = Mage::helper('M2ePro')->__('This SKU is already being used in M2E Pro Listing.');
         } else if ($this->isExistInOtherListings($listingProduct, $sku)) {
-            $msg = Mage::helper('M2ePro')->__('This SKU is already being used in M2E Pro 3rd Party Listing.');
+            $msg = Mage::helper('M2ePro')->__('This SKU is already being used in M2E Pro Unmanaged Listing.');
         } else {
             $skuInfo = $this->getSkuInfo($listingProduct, $sku);
 

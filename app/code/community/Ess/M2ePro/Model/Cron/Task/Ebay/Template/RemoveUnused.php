@@ -56,13 +56,6 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Template_RemoveUnused extends Ess_M2ePro_M
             )
             ->where($templateManager->getTemplateIdColumnName().' IS NOT NULL');
 
-        $unionSelectListingCustom = $connRead->select()
-            ->from(
-                Mage::getResourceModel('M2ePro/Ebay_Listing')->getMainTable(),
-                array('result_field' => $templateManager->getCustomIdColumnName())
-            )
-            ->where($templateManager->getCustomIdColumnName().' IS NOT NULL');
-
         $unionSelectListingProductTemplate = $connRead->select()
             ->from(
                 Mage::getResourceModel('M2ePro/Ebay_Listing_Product')->getMainTable(),
@@ -70,19 +63,10 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Template_RemoveUnused extends Ess_M2ePro_M
             )
             ->where($templateManager->getTemplateIdColumnName().' IS NOT NULL');
 
-        $unionSelectListingProductCustom = $connRead->select()
-            ->from(
-                Mage::getResourceModel('M2ePro/Ebay_Listing_Product')->getMainTable(),
-                array('result_field' => $templateManager->getCustomIdColumnName())
-            )
-            ->where($templateManager->getCustomIdColumnName().' IS NOT NULL');
-
         $unionSelect = $connRead->select()->union(
             array(
                 $unionSelectListingTemplate,
-                $unionSelectListingCustom,
-                $unionSelectListingProductTemplate,
-                $unionSelectListingProductCustom
+                $unionSelectListingProductTemplate
             )
         );
 

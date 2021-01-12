@@ -12,7 +12,7 @@ class Ess_M2ePro_Adminhtml_ControlPanel_Module_Integration_EbayController
     //########################################
 
     /**
-     * @title "Stop 3rd Party"
+     * @title "Stop Unmanaged"
      * @description "[in order to resolve the problem with duplicates]"
      * @new_line
      */

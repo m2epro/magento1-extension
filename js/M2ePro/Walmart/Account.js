@@ -2,8 +2,7 @@ window.WalmartAccount = Class.create(Common, {
 
     // ---------------------------------------
 
-    initValidation: function()
-    {
+    initValidation: function() {
         this.setValidationCheckRepetitionValue('M2ePro-account-title',
             M2ePro.translator.translate('The specified Title is already used for other Account. Account Title must be unique.'),
             'Account', 'title', 'id',
@@ -23,7 +22,7 @@ window.WalmartAccount = Class.create(Common, {
                 asynchronous: false,
                 parameters: {
                     customer_id: value,
-                    id         : M2ePro.formData.id
+                    id: M2ePro.formData.id
                 },
                 onSuccess: function(transport) {
                     checkResult = transport.responseText.evalJSON()['ok'];
@@ -64,8 +63,7 @@ window.WalmartAccount = Class.create(Common, {
         });
     },
 
-    initTokenValidation: function()
-    {
+    initTokenValidation: function() {
         Validation.add('M2ePro-marketplace-merchant', M2ePro.translator.translate('M2E Pro was not able to get access to the Walmart Account'), function(value, el) {
 
             if (CommonObj.isElementHiddenFromPage(el)) {
@@ -101,8 +99,8 @@ window.WalmartAccount = Class.create(Common, {
                 parameters: params,
                 onSuccess: function(transport) {
                     var response = transport.responseText.evalJSON();
-                    checkResult  = response['result'];
-                    checkReason  = response['reason'];
+                    checkResult = response['result'];
+                    checkReason = response['reason'];
                 }
             });
 
@@ -117,23 +115,20 @@ window.WalmartAccount = Class.create(Common, {
 
     // ---------------------------------------
 
-    completeStep: function()
-    {
+    completeStep: function() {
         window.opener.completeStep = 1;
         window.close();
     },
 
     // ---------------------------------------
 
-    delete_click: function(accountId)
-    {
+    delete_click: function(accountId) {
         AccountObj.on_delete_popup(accountId);
     },
 
     // ---------------------------------------
 
-    changeMarketplace: function()
-    {
+    changeMarketplace: function() {
         $$('.marketplace-required-field').each(function(obj) {
             obj.hide();
         });
@@ -150,8 +145,7 @@ window.WalmartAccount = Class.create(Common, {
 
     // ---------------------------------------
 
-    other_listings_synchronization_change: function()
-    {
+    other_listings_synchronization_change: function() {
         if (this.value == 1) {
             $('other_listings_mapping_mode_tr').show();
             $('other_listings_store_view_tr').show();
@@ -163,8 +157,7 @@ window.WalmartAccount = Class.create(Common, {
         }
     },
 
-    other_listings_mapping_mode_change: function()
-    {
+    other_listings_mapping_mode_change: function() {
         if (this.value == 1) {
             $('magento_block_walmart_accounts_other_listings_product_mapping').show();
         } else {
@@ -186,8 +179,7 @@ window.WalmartAccount = Class.create(Common, {
 
     // ---------------------------------------
 
-    mapping_sku_mode_change: function()
-    {
+    mapping_sku_mode_change: function() {
         var self = WalmartAccountObj;
 
         if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_MAPPING_SKU_MODE_NONE')) {
@@ -202,8 +194,7 @@ window.WalmartAccount = Class.create(Common, {
         }
     },
 
-    mapping_upc_mode_change: function()
-    {
+    mapping_upc_mode_change: function() {
         var self = WalmartAccountObj;
 
         if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_MAPPING_UPC_MODE_NONE')) {
@@ -218,8 +209,7 @@ window.WalmartAccount = Class.create(Common, {
         }
     },
 
-    mapping_gtin_mode_change: function()
-    {
+    mapping_gtin_mode_change: function() {
         var self = WalmartAccountObj;
 
         if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_MAPPING_GTIN_MODE_NONE')) {
@@ -234,8 +224,7 @@ window.WalmartAccount = Class.create(Common, {
         }
     },
 
-    mapping_wpid_mode_change: function()
-    {
+    mapping_wpid_mode_change: function() {
         var self = WalmartAccountObj;
 
         if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_MAPPING_WPID_MODE_NONE')) {
@@ -250,8 +239,7 @@ window.WalmartAccount = Class.create(Common, {
         }
     },
 
-    mapping_title_mode_change: function()
-    {
+    mapping_title_mode_change: function() {
         var self = WalmartAccountObj;
 
         if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_MAPPING_TITLE_MODE_NONE')) {
@@ -268,8 +256,7 @@ window.WalmartAccount = Class.create(Common, {
 
     // ---------------------------------------
 
-    magentoOrdersListingsModeChange: function()
-    {
+    magentoOrdersListingsModeChange: function() {
         var self = WalmartAccountObj;
 
         if ($('magento_orders_listings_mode').value == 1) {
@@ -284,8 +271,7 @@ window.WalmartAccount = Class.create(Common, {
         self.changeVisibilityForOrdersModesRelatedBlocks();
     },
 
-    magentoOrdersListingsStoreModeChange: function()
-    {
+    magentoOrdersListingsStoreModeChange: function() {
         if ($('magento_orders_listings_store_mode').value == M2ePro.php.constant('Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_LISTINGS_STORE_MODE_CUSTOM')) {
             $('magento_orders_listings_store_id_container').show();
         } else {
@@ -295,8 +281,7 @@ window.WalmartAccount = Class.create(Common, {
         $('magento_orders_listings_store_id').value = '';
     },
 
-    magentoOrdersListingsOtherModeChange: function()
-    {
+    magentoOrdersListingsOtherModeChange: function() {
         var self = WalmartAccountObj;
 
         if ($('magento_orders_listings_other_mode').value == 1) {
@@ -314,8 +299,7 @@ window.WalmartAccount = Class.create(Common, {
         self.changeVisibilityForOrdersModesRelatedBlocks();
     },
 
-    magentoOrdersListingsOtherProductModeChange: function()
-    {
+    magentoOrdersListingsOtherProductModeChange: function() {
         if ($('magento_orders_listings_other_product_mode').value == M2ePro.php.constant('Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_LISTINGS_OTHER_PRODUCT_MODE_IGNORE')) {
             $('magento_orders_listings_other_product_mode_note').hide();
             $('magento_orders_listings_other_product_tax_class_id_container').hide();
@@ -325,20 +309,17 @@ window.WalmartAccount = Class.create(Common, {
         }
     },
 
-    magentoOrdersNumberSourceChange: function()
-    {
+    magentoOrdersNumberSourceChange: function() {
         var self = WalmartAccountObj;
         self.renderOrderNumberExample();
     },
 
-    magentoOrdersNumberPrefixPrefixChange: function()
-    {
+    magentoOrdersNumberPrefixPrefixChange: function() {
         var self = WalmartAccountObj;
         self.renderOrderNumberExample();
     },
 
-    renderOrderNumberExample: function()
-    {
+    renderOrderNumberExample: function() {
         var orderNumber = $('sample_magento_order_id').value;
         if ($('magento_orders_number_source').value == M2ePro.php.constant('Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_NUMBER_SOURCE_CHANNEL')) {
             orderNumber = $('sample_walmart_order_id').value;
@@ -349,8 +330,7 @@ window.WalmartAccount = Class.create(Common, {
         $('order_number_example_container').update(orderNumber);
     },
 
-    magentoOrdersCustomerModeChange: function()
-    {
+    magentoOrdersCustomerModeChange: function() {
         var customerMode = $('magento_orders_customer_mode').value;
 
         if (customerMode == M2ePro.php.constant('Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_CUSTOMER_MODE_PREDEFINED')) {
@@ -373,25 +353,17 @@ window.WalmartAccount = Class.create(Common, {
 //        $('magento_orders_customer_new_newsletter_mode').value = 0;
     },
 
-    magentoOrdersStatusMappingModeChange: function()
-    {
+    magentoOrdersStatusMappingModeChange: function() {
         // Reset dropdown selected values to default
         $('magento_orders_status_mapping_processing').value = M2ePro.php.constant('Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_STATUS_MAPPING_PROCESSING');
         $('magento_orders_status_mapping_shipped').value = M2ePro.php.constant('Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_STATUS_MAPPING_SHIPPED');
 
-        // Default auto create invoice & shipment
-        $('magento_orders_invoice_mode').checked = true;
-        $('magento_orders_shipment_mode').checked = true;
-
         var disabled = $('magento_orders_status_mapping_mode').value == M2ePro.php.constant('Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_STATUS_MAPPING_MODE_DEFAULT');
         $('magento_orders_status_mapping_processing').disabled = disabled;
         $('magento_orders_status_mapping_shipped').disabled = disabled;
-        $('magento_orders_invoice_mode').disabled = disabled;
-        $('magento_orders_shipment_mode').disabled = disabled;
     },
 
-    changeVisibilityForOrdersModesRelatedBlocks: function()
-    {
+    changeVisibilityForOrdersModesRelatedBlocks: function() {
         var self = WalmartAccountObj;
 
         if ($('magento_orders_listings_mode').value == 0 && $('magento_orders_listings_other_mode').value == 0) {
@@ -419,10 +391,9 @@ window.WalmartAccount = Class.create(Common, {
 
     // ---------------------------------------
 
-    saveAndClose: function()
-    {
+    saveAndClose: function() {
         var url = typeof M2ePro.url.urls.formSubmit == 'undefined' ?
-            M2ePro.url.formSubmit + 'back/'+base64_encode('list')+'/' :
+            M2ePro.url.formSubmit + 'back/' + base64_encode('list') + '/' :
             M2ePro.url.get('formSubmit', {'back': base64_encode('list')});
 
         if (!editForm.validate()) {
@@ -437,6 +408,101 @@ window.WalmartAccount = Class.create(Common, {
             }
         });
     },
+
+    otherCarrierInit: function(max) {
+        var visibleElementsCounter = 0;
+        $$('.other_carrier').each(function(obj) {
+            if (obj.firstChild.value == '' && visibleElementsCounter !== 0) {
+                $(obj.up()).hide();
+            } else {
+                visibleElementsCounter++;
+            }
+        });
+
+        var showOtherCarrierAction = $('show_other_carrier_action');
+        if (visibleElementsCounter < max) {
+            showOtherCarrierAction.removeClassName('action-disabled');
+        } else {
+            showOtherCarrierAction.addClassName('action-disabled');
+        }
+
+        if ($('other_carrier_0').value == '') {
+            showOtherCarrierAction.addClassName('action-disabled');
+        }
+
+        if (visibleElementsCounter <= 1) {
+            $('hide_other_carrier_action').addClassName('action-disabled');
+        }
+    },
+
+    otherCarrierKeyup: function(element) {
+        var showOtherCarrierAction = $('show_other_carrier_action');
+        if (!element.value) {
+            showOtherCarrierAction.addClassName('action-disabled');
+            element.up().nextSibling.removeClassName('required-entry');
+            return;
+        }
+
+        element.up().nextSibling.addClassName('required-entry');
+
+        var hiddenElements = $$('.other_carrier').findAll(function(obj) {
+            return !$(obj.up()).visible();
+        });
+
+        if (hiddenElements.size() > 0) {
+            showOtherCarrierAction.removeClassName('action-disabled');
+        }
+    },
+
+    otherCarrierUrlKeyup: function(element) {
+        if (!element.value) {
+            element.previousSibling.firstChild.removeClassName('required-entry');
+        } else {
+            element.previousSibling.firstChild.addClassName('required-entry');
+        }
+    },
+
+    showElement: function() {
+        var otherCarriers = $$('.other_carrier');
+        if ($(otherCarriers[0].up()).visible() && otherCarriers[0].firstChild.value == '') {
+            return;
+        }
+
+        var hiddenElements = otherCarriers.findAll(function(obj) {
+            return !$(obj.up()).visible();
+        });
+
+        if (hiddenElements.size() == 0) {
+            return;
+        }
+
+        $(hiddenElements.shift().up()).show();
+
+        $('hide_other_carrier_action').removeClassName('action-disabled');
+        $('show_other_carrier_action').addClassName('action-disabled');
+    },
+
+    hideElement: function() {
+        var visibleElements = [];
+        $$('.other_carrier').each(function(obj) {
+            if ($(obj.up()).visible()) {
+                visibleElements.push(obj);
+            }
+        });
+
+        if (visibleElements.size() > 1) {
+            var obj = visibleElements.pop();
+            obj.firstChild.value = '';
+            obj.nextSibling.value = '';
+            $(obj.up()).hide();
+        }
+
+        if (visibleElements.size() == 1) {
+            $('hide_other_carrier_action').addClassName('action-disabled');
+        }
+
+        $('show_other_carrier_action').removeClassName('action-disabled');
+    }
 
     // ---------------------------------------
 });

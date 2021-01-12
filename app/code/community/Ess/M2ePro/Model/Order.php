@@ -290,7 +290,7 @@ class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
     // ---------------------------------------
 
     /**
-     * Check whether the order has items, listed by M2E Pro (also true for mapped 3rd party listings)
+     * Check whether the order has items, listed by M2E Pro (also true for mapped Unmanaged listings)
      *
      * @return bool
      */
@@ -302,7 +302,7 @@ class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
     }
 
     /**
-     * Check whether the order has items, listed by 3rd party software
+     * Check whether the order has items, listed by Unmanaged software
      *
      * @return bool
      */

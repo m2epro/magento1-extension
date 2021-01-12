@@ -123,7 +123,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Validator_Sku_Sea
 
         if ($this->isExistInOtherListings($sku)) {
             $addMessages && $this->addMessage(
-                'Product with the same SKU is found in M2E Pro 3rd Party Listing.
+                'Product with the same SKU is found in M2E Pro Unmanaged Listing.
                  Please change the SKU or enable the Option Generate Merchant SKU.'
             );
             return true;

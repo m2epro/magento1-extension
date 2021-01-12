@@ -172,4 +172,29 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit extends Mage_Adminhtml_Bloc
     }
 
     //########################################
+
+    protected function _prepareLayout()
+    {
+        Mage::helper('M2ePro/View')->getJsTranslatorRenderer()->addTranslations(
+            array(
+                'is_ready_for_document_generation' => Mage::helper('M2ePro')->__(<<<HTML
+    To use this option, <i>Store Name</i> and <i>Store Contact Information</i> must be provided under <i>System > 
+    Configuration > General > General > Store Information</i>. 
+    Read more <a href="%url%" target="_blank">here</a>.
+HTML
+                    ,
+                    Mage::helper('M2ePro/Module_Support')->getHowToGuideUrl('1602134')
+                )
+            )
+        );
+
+        Mage::helper('M2ePro/View')->getJsRenderer()->addOnReadyJs(<<<JS
+    AmazonAccountObj = new AmazonAccount();
+JS
+        );
+
+        return parent::_prepareLayout();
+    }
+
+    //########################################
 }

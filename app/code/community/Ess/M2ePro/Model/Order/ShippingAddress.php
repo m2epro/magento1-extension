@@ -104,6 +104,26 @@ abstract class Ess_M2ePro_Model_Order_ShippingAddress extends Varien_Object
         return $region->getCode();
     }
 
+    /**
+     * @return bool
+     */
+    public function hasSameBuyerAndRecipient()
+    {
+        $rawAddressData = $this->_order->getShippingAddress()->getRawData();
+
+        $buyerNameParts =  array_map('strtolower', explode(' ', $rawAddressData['buyer_name']));
+        $recipientNameParts = array_map('strtolower', explode(' ', $rawAddressData['recipient_name']));
+
+        $buyerNameParts = array_map('trim', $buyerNameParts);
+        $recipientNameParts = array_map('trim', $recipientNameParts);
+
+        sort($buyerNameParts);
+        sort($recipientNameParts);
+
+        $diff = array_diff($buyerNameParts, $recipientNameParts);
+        return empty($diff);
+    }
+
     protected function getState()
     {
         return $this->getData('state');

@@ -106,7 +106,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Product_Add_Review extends Ess_
                 ->createBlock('adminhtml/widget_button')
                 ->setData(
                     array(
-                    'label'   => Mage::helper('M2ePro')->__('Back to 3rd Party Listing'),
+                    'label'   => Mage::helper('M2ePro')->__('Back to Unmanaged Listing'),
                     'onclick' => 'setLocation(\''.$url.'\');',
                     'class' => 'save'
                     )

@@ -20,7 +20,7 @@ class Ess_M2ePro_Model_Synchronization_Log extends Ess_M2ePro_Model_Log_Abstract
     const _TASK_LISTINGS = 'M2E Pro Listings';
 
     const TASK_OTHER_LISTINGS  = 5;
-    const _TASK_OTHER_LISTINGS = '3rd Party Listings';
+    const _TASK_OTHER_LISTINGS = 'Unmanaged Listings';
 
     const TASK_ORDERS  = 3;
     const _TASK_ORDERS = 'Orders';

@@ -20,8 +20,8 @@ class Ess_M2ePro_Model_Cron_Task_Listing_Product_StopQueue extends Ess_M2ePro_Mo
      */
     const MAX_PROCESSED_LIFETIME_HOURS_INTERVAL = 720;
 
-    const EBAY_REQUEST_MAX_ITEMS_COUNT   = 10;
-    const AMAZON_REQUEST_MAX_ITEMS_COUNT = 10000;
+    const EBAY_REQUEST_MAX_ITEMS_COUNT    = 10;
+    const AMAZON_REQUEST_MAX_ITEMS_COUNT  = 10000;
     const WALMART_REQUEST_MAX_ITEMS_COUNT = 10000;
 
     //########################################
@@ -51,7 +51,7 @@ class Ess_M2ePro_Model_Cron_Task_Listing_Product_StopQueue extends Ess_M2ePro_Mo
     public function removeOldRecords()
     {
         $minDateTime = new DateTime('now', new DateTimeZone('UTC'));
-        $minDateTime->modify('- '.self::MAX_PROCESSED_LIFETIME_HOURS_INTERVAL.' hours');
+        $minDateTime->modify('- ' . self::MAX_PROCESSED_LIFETIME_HOURS_INTERVAL . ' hours');
 
         $collection = Mage::getResourceModel('M2ePro/StopQueue_Collection');
         $collection->addFieldToFilter('is_processed', 1);
@@ -73,7 +73,7 @@ class Ess_M2ePro_Model_Cron_Task_Listing_Product_StopQueue extends Ess_M2ePro_Mo
             return;
         }
 
-        $processedItemsIds               = array();
+        $processedItemsIds = array();
         $accountsMarketplacesRequestData = array();
 
         foreach ($items as $item) {
@@ -86,33 +86,66 @@ class Ess_M2ePro_Model_Cron_Task_Listing_Product_StopQueue extends Ess_M2ePro_Mo
 
             $itemRequestData = $itemAdditionalData['request_data'];
 
-            $accountMarketplace = $itemRequestData['account'].'_'.$itemRequestData['marketplace'];
+            $accountMarketplaceActionType = $itemRequestData['account']
+                . '_' .
+                $itemRequestData['marketplace']
+                . '_' .
+                $itemRequestData['action_type'];
 
-            $accountsMarketplacesRequestData[$accountMarketplace][] = array(
+            $accountsMarketplacesRequestData[$accountMarketplaceActionType][] = array(
                 'item_id' => $itemRequestData['item_id'],
             );
         }
 
-        foreach ($accountsMarketplacesRequestData as $accountMarketplace => $accountMarketplaceRequestData) {
-            list($account, $marketplace) = explode('_', $accountMarketplace);
+        foreach ($accountsMarketplacesRequestData as $accountMarketplaceActionType => $accountMarketplaceRequestData) {
+            list($account, $marketplace, $actionType) = explode('_', $accountMarketplaceActionType);
 
-            $requestDataPacks = array_chunk($accountMarketplaceRequestData, self::EBAY_REQUEST_MAX_ITEMS_COUNT);
-
-            foreach ($requestDataPacks as $requestDataPack) {
-                $requestData = array(
-                    'account'     => $account,
-                    'marketplace' => $marketplace,
-                    'items'       => $requestDataPack,
-                );
-
-                $dispatcher = Mage::getModel('M2ePro/Ebay_Connector_Dispatcher');
-                $connector  = $dispatcher->getVirtualConnector('item', 'update', 'ends', $requestData);
-                $dispatcher->process($connector);
+            if ((int)$actionType === Ess_M2ePro_Model_Listing_Product::ACTION_STOP) {
+                $this->stopItemEbay($account, $marketplace, $accountMarketplaceRequestData);
+            } else {
+                $this->hideItemEbay($account, $marketplace, $accountMarketplaceRequestData);
             }
         }
 
         $this->markItemsAsProcessed($processedItemsIds);
     }
+
+    //----------------------------------------
+
+    protected function stopItemEbay($account, $marketplace, $accountMarketplaceRequestData)
+    {
+        $requestDataPacks = array_chunk($accountMarketplaceRequestData, self::EBAY_REQUEST_MAX_ITEMS_COUNT);
+
+        foreach ($requestDataPacks as $requestDataPack) {
+            $requestData = array(
+                'account'     => $account,
+                'marketplace' => $marketplace,
+                'items'       => $requestDataPack,
+            );
+
+            $dispatcher = Mage::getModel('M2ePro/Ebay_Connector_Dispatcher');
+            $connector = $dispatcher->getVirtualConnector('item', 'update', 'ends', $requestData);
+            $dispatcher->process($connector);
+        }
+    }
+
+    protected function hideItemEbay($account, $marketplace, $accountMarketplaceRequestData)
+    {
+        foreach ($accountMarketplaceRequestData as $requestData) {
+            $requestData = array(
+                'account'     => $account,
+                'marketplace' => $marketplace,
+                'item_id'     => $requestData['item_id'],
+                'qty'         => 0
+            );
+
+            $dispatcher = Mage::getModel('M2ePro/Ebay_Connector_Dispatcher');
+            $connector = $dispatcher->getVirtualConnector('item', 'update', 'revise', $requestData);
+            $dispatcher->process($connector);
+        }
+    }
+
+    //########################################
 
     protected function processAmazon()
     {
@@ -122,7 +155,7 @@ class Ess_M2ePro_Model_Cron_Task_Listing_Product_StopQueue extends Ess_M2ePro_Mo
             return;
         }
 
-        $processedItemsIds   = array();
+        $processedItemsIds = array();
         $accountsRequestData = array();
 
         foreach ($items as $item) {
@@ -170,13 +203,14 @@ class Ess_M2ePro_Model_Cron_Task_Listing_Product_StopQueue extends Ess_M2ePro_Mo
                 );
 
                 $dispatcher = Mage::getModel('M2ePro/Amazon_Connector_Dispatcher');
-                $connector  = $dispatcher->getVirtualConnector('product', 'update', 'entities', $requestData);
+                $connector = $dispatcher->getVirtualConnector('product', 'update', 'entities', $requestData);
                 $dispatcher->process($connector);
 
                 if ($accountObject !== null) {
                     $throttlingManager->registerRequests(
                         $accountObject->getChildObject()->getMerchantId(),
-                        Ess_M2ePro_Model_Amazon_ThrottlingManager::REQUEST_TYPE_FEED, 1
+                        Ess_M2ePro_Model_Amazon_ThrottlingManager::REQUEST_TYPE_FEED,
+                        1
                     );
                 }
             }
@@ -184,6 +218,8 @@ class Ess_M2ePro_Model_Cron_Task_Listing_Product_StopQueue extends Ess_M2ePro_Mo
 
         $this->markItemsAsProcessed($processedItemsIds);
     }
+
+    //########################################
 
     public function processWalmart()
     {
@@ -193,7 +229,7 @@ class Ess_M2ePro_Model_Cron_Task_Listing_Product_StopQueue extends Ess_M2ePro_Mo
             return;
         }
 
-        $processedItemsIds   = array();
+        $processedItemsIds = array();
         $accountsRequestData = array();
 
         foreach ($items as $item) {
@@ -231,13 +267,13 @@ class Ess_M2ePro_Model_Cron_Task_Listing_Product_StopQueue extends Ess_M2ePro_Mo
 
             if ($accountObject !== null &&
                 ($throttlingManager->getAvailableRequestsCount(
-                    $accountObject->getId(),
-                    Ess_M2ePro_Model_Walmart_ThrottlingManager::REQUEST_TYPE_UPDATE_LAG_TIME
-                ) <= 0 ||
-                $throttlingManager->getAvailableRequestsCount(
-                    $accountObject->getId(),
-                    Ess_M2ePro_Model_Walmart_ThrottlingManager::REQUEST_TYPE_UPDATE_QTY
-                ) <= 0)) {
+                        $accountObject->getId(),
+                        Ess_M2ePro_Model_Walmart_ThrottlingManager::REQUEST_TYPE_UPDATE_LAG_TIME
+                    ) <= 0 ||
+                    $throttlingManager->getAvailableRequestsCount(
+                        $accountObject->getId(),
+                        Ess_M2ePro_Model_Walmart_ThrottlingManager::REQUEST_TYPE_UPDATE_QTY
+                    ) <= 0)) {
                 continue;
             }
 
@@ -248,7 +284,7 @@ class Ess_M2ePro_Model_Cron_Task_Listing_Product_StopQueue extends Ess_M2ePro_Mo
                 );
 
                 $dispatcher = Mage::getModel('M2ePro/Walmart_Connector_Dispatcher');
-                $connector  = $dispatcher->getVirtualConnector('product', 'update', 'entities', $requestData);
+                $connector = $dispatcher->getVirtualConnector('product', 'update', 'entities', $requestData);
                 $dispatcher->process($connector);
 
                 if ($accountObject !== null) {
@@ -287,7 +323,7 @@ class Ess_M2ePro_Model_Cron_Task_Listing_Product_StopQueue extends Ess_M2ePro_Mo
             return;
         }
 
-        $resource  = Mage::getSingleton('core/resource');
+        $resource = Mage::getSingleton('core/resource');
         $connWrite = $resource->getConnection('core_write');
 
         $connWrite->update(

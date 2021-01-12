@@ -411,6 +411,7 @@ class Ess_M2ePro_Adminhtml_Ebay_AccountController extends Ess_M2ePro_Controller_
         if ($id !== null) {
             $model->load($id);
         }
+
         Mage::getModel('M2ePro/Ebay_Account_Builder')->build($model, $data);
 
         $id = $model->getId();

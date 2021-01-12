@@ -475,7 +475,20 @@ HTML;
 
             $isShowEditLink = false;
 
-            $product = $item->getProduct();
+            try {
+                $product = $item->getProduct();
+            } catch (Ess_M2ePro_Model_Exception $e) {
+                $product = null;
+                $logModel = Mage::getModel('M2ePro/Order_Log');
+                $logModel->setComponentMode(Ess_M2ePro_Helper_Component_Ebay::NICK);
+
+                $logModel->addMessage(
+                    $row->getData('id'),
+                    $e->getMessage(),
+                    Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR
+                );
+            }
+
             if ($product !== null) {
                 /** @var Ess_M2ePro_Model_Magento_Product $magentoProduct */
                 $magentoProduct = Mage::getModel('M2ePro/Magento_Product');

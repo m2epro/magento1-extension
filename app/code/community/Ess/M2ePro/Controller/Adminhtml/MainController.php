@@ -204,9 +204,18 @@ abstract class Ess_M2ePro_Controller_Adminhtml_MainController
 
     protected function addCronErrorMessage()
     {
+        if (!Mage::helper('M2ePro/Module_Cron')->isModeEnabled()) {
+            return $this->_getSession()->addWarning(
+                'Automatic Synchronization is disabled. You can enable it under 
+                    <i>System > Configuration > M2E Pro > Module & Channels > Automatic Synchronization</i>.'
+            );
+        }
+
         if (Mage::helper('M2ePro/Module')->isReadyToWork() &&
             Mage::helper('M2ePro/Module_Cron')->isLastRunMoreThan(1, true) &&
-            !Mage::helper('M2ePro/Module')->isDevelopmentEnvironment()) {
+            !Mage::helper('M2ePro/Module')->isDevelopmentEnvironment()
+        ) {
+
             $url = Mage::helper('M2ePro/Module_Support')->getKnowledgebaseUrl('cron-running');
 
             $message  = 'Attention! AUTOMATIC Synchronization is not running at the moment. ';

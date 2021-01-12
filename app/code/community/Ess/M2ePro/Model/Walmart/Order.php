@@ -12,11 +12,11 @@
  */
 class Ess_M2ePro_Model_Walmart_Order extends Ess_M2ePro_Model_Component_Child_Walmart_Abstract
 {
-    const STATUS_CREATED             = 0;
-    const STATUS_UNSHIPPED           = 1;
-    const STATUS_SHIPPED_PARTIALLY   = 2;
-    const STATUS_SHIPPED             = 3;
-    const STATUS_CANCELED            = 5;
+    const STATUS_CREATED           = 0;
+    const STATUS_UNSHIPPED         = 1;
+    const STATUS_SHIPPED_PARTIALLY = 2;
+    const STATUS_SHIPPED           = 3;
+    const STATUS_CANCELED          = 5;
 
     protected $_subTotalPrice = null;
 
@@ -128,6 +128,7 @@ class Ess_M2ePro_Model_Walmart_Order extends Ess_M2ePro_Model_Component_Child_Wa
     public function getProductPriceTaxAmount()
     {
         $taxDetails = $this->getTaxDetails();
+
         return !empty($taxDetails['product']) ? (float)$taxDetails['product'] : 0.0;
     }
 
@@ -137,6 +138,7 @@ class Ess_M2ePro_Model_Walmart_Order extends Ess_M2ePro_Model_Component_Child_Wa
     public function getShippingPriceTaxAmount()
     {
         $taxDetails = $this->getTaxDetails();
+
         return !empty($taxDetails['shipping']) ? (float)$taxDetails['shipping'] : 0.0;
     }
 
@@ -254,9 +256,9 @@ class Ess_M2ePro_Model_Walmart_Order extends Ess_M2ePro_Model_Component_Child_Wa
     public function getStatusForMagentoOrder()
     {
         $status = '';
-        $this->isUnshipped()        && $status = $this->getWalmartAccount()->getMagentoOrdersStatusProcessing();
+        $this->isUnshipped() && $status = $this->getWalmartAccount()->getMagentoOrdersStatusProcessing();
         $this->isPartiallyShipped() && $status = $this->getWalmartAccount()->getMagentoOrdersStatusProcessing();
-        $this->isShipped()          && $status = $this->getWalmartAccount()->getMagentoOrdersStatusShipped();
+        $this->isShipped() && $status = $this->getWalmartAccount()->getMagentoOrdersStatusShipped();
 
         return $status;
     }
@@ -273,7 +275,7 @@ class Ess_M2ePro_Model_Walmart_Order extends Ess_M2ePro_Model_Component_Child_Wa
         $channelItems = $this->getParentObject()->getChannelItems();
 
         if (empty($channelItems)) {
-            // 3rd party order
+            // Unmanaged order
             // ---------------------------------------
             $storeId = $this->getWalmartAccount()->getMagentoOrdersListingsOtherStoreId();
             // ---------------------------------------
@@ -458,6 +460,7 @@ class Ess_M2ePro_Model_Walmart_Order extends Ess_M2ePro_Model_Component_Child_Wa
         $shipmentBuilder = Mage::getModel('M2ePro/Magento_Order_Shipment');
         $shipmentBuilder->setMagentoOrder($magentoOrder);
         $shipmentBuilder->buildShipment();
+
         // ---------------------------------------
 
         return $shipmentBuilder->getShipment();
@@ -490,10 +493,11 @@ class Ess_M2ePro_Model_Walmart_Order extends Ess_M2ePro_Model_Component_Child_Wa
         }
 
         if (empty($trackingDetails['tracking_number'])) {
-            $this->getParentObject()->addErrorLog(
+            $this->getParentObject()->addNoticeLog(
                 'Order status was not updated to Shipped because tracking number is missing.
                 Please add the valid tracking number to the order.'
             );
+
             return false;
         }
 
@@ -510,14 +514,22 @@ class Ess_M2ePro_Model_Walmart_Order extends Ess_M2ePro_Model_Component_Child_Wa
 
         if (!empty($trackingDetails['carrier_title'])) {
             if ($trackingDetails['carrier_title'] == Ess_M2ePro_Model_Order_Shipment_Handler::CUSTOM_CARRIER_CODE &&
-                !empty($trackingDetails['shipping_method']))
-            {
+                !empty($trackingDetails['shipping_method'])) {
                 $trackingDetails['carrier_title'] = $trackingDetails['shipping_method'];
+
+                $otherCarriers = $this->getWalmartAccount()->getOtherCarriers();
+                $shippingMethod = strtolower($trackingDetails['shipping_method']);
+                foreach ($otherCarriers as $otherCarrier) {
+                    if (strtolower($otherCarrier['code']) === $shippingMethod) {
+                        $trackingDetails['url'] = $otherCarrier['url'];
+                        break;
+                    }
+                }
             }
         }
 
         $params = array(
-            'walmart_order_id'  => $this->getWalmartOrderId(),
+            'walmart_order_id' => $this->getWalmartOrderId(),
             'fulfillment_date' => $trackingDetails['fulfillment_date'],
             'items'            => array()
         );
@@ -531,16 +543,22 @@ class Ess_M2ePro_Model_Walmart_Order extends Ess_M2ePro_Model_Component_Child_Wa
                 continue;
             }
 
-            $params['items'][] = array(
+            $data = array(
                 'walmart_order_item_id' => $item['walmart_order_item_id'],
-                'qty' => (int)$item['qty'],
-                'tracking_details' => array(
+                'qty'                   => (int)$item['qty'],
+                'tracking_details'      => array(
                     'ship_date' => $trackingDetails['fulfillment_date'],
                     'method'    => $this->getShippingService(),
                     'carrier'   => $trackingDetails['carrier_title'],
                     'number'    => $trackingDetails['tracking_number']
                 )
             );
+
+            if (isset($trackingDetails['url'])) {
+                $data['tracking_details']['url'] = $trackingDetails['url'];
+            }
+
+            $params['items'][] = $data;
         }
 
         /** @var Ess_M2ePro_Model_Order_Change $change */
@@ -565,14 +583,15 @@ class Ess_M2ePro_Model_Walmart_Order extends Ess_M2ePro_Model_Component_Child_Wa
                 Ess_M2ePro_Helper_Component_Walmart::NICK,
                 $params
             );
+
             return true;
         }
 
         foreach ($params['items'] as $newItem) {
             foreach ($existingParams['items'] as &$existingItem) {
                 if ($newItem['walmart_order_item_id'] === $existingItem['walmart_order_item_id']) {
-                    /** @var Ess_M2ePro_Model_Order_Item $orderItem */
-                    $orderItem  = Mage::getModel('M2ePro/Walmart_Order_Item')->getCollection()
+                    /** @var Ess_M2ePro_Model_Walmart_Order_Item $walmartOrderItem */
+                    $walmartOrderItem = Mage::getModel('M2ePro/Walmart_Order_Item')->getCollection()
                         ->addFieldToFilter(
                             'walmart_order_item_id',
                             $existingItem['walmart_order_item_id']
@@ -582,10 +601,10 @@ class Ess_M2ePro_Model_Walmart_Order extends Ess_M2ePro_Model_Component_Child_Wa
                      * Walmart returns the same Order Item more than one time with single QTY.
                      */
                     $maxQtyTotal = 1;
-                    if ($orderItem->getId()) {
-                        $mergedIds = $orderItem->getChildObject()->getMergedWalmartOrderItemIds();
+                    if ($walmartOrderItem->getId()) {
+                        $mergedIds = $walmartOrderItem->getMergedWalmartOrderItemIds();
                         if (empty($mergedIds)) {
-                            $maxQtyTotal = $orderItem->getChildObject()->getQtyPurchased();
+                            $maxQtyTotal = $walmartOrderItem->getQtyPurchased();
                         }
                     }
 
@@ -638,7 +657,7 @@ class Ess_M2ePro_Model_Walmart_Order extends Ess_M2ePro_Model_Component_Child_Wa
             'items'    => $items,
         );
 
-        $orderId     = $this->getParentObject()->getId();
+        $orderId = $this->getParentObject()->getId();
         $action = Ess_M2ePro_Model_Order_Change::ACTION_CANCEL;
 
         if ($this->isShipped() ||
@@ -648,11 +667,14 @@ class Ess_M2ePro_Model_Walmart_Order extends Ess_M2ePro_Model_Component_Child_Wa
             if (empty($items)) {
                 $this->getParentObject()->addErrorLog(
                     'Walmart Order was not refunded. Reason: %msg%',
-                    array('msg' => 'Refund request was not submitted.
+                    array(
+                        'msg' => 'Refund request was not submitted.
                                     To be processed through Walmart API, the refund must be applied to certain products
                                     in an order. Please indicate the number of each line item, that need to be refunded,
-                                    in Credit Memo form.')
+                                    in Credit Memo form.'
+                    )
                 );
+
                 return false;
             }
 

@@ -36,14 +36,14 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Qty
         $this->checkQtyWarnings();
 
         if (!isset($this->validatorsData['handling_time'])) {
-            $handlingTime                       = $this->getAmazonListingProduct()
-                                                       ->getListingSource()
-                                                       ->getHandlingTime();
+            $handlingTime = $this->getAmazonListingProduct()
+                ->getListingSource()
+                ->getHandlingTime();
             $this->_cachedData['handling_time'] = $handlingTime;
         }
 
         if (!isset($this->validatorsData['restock_date'])) {
-            $restockDate                       = $this->getAmazonListingProduct()->getListingSource()->getRestockDate();
+            $restockDate = $this->getAmazonListingProduct()->getListingSource()->getRestockDate();
             $this->_cachedData['restock_date'] = $restockDate;
         }
 
@@ -57,6 +57,11 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Qty
 
         if (!empty($this->_params['switch_to']) && $this->_params['switch_to'] === self::FULFILLMENT_MODE_MFN) {
             $data['switch_to'] = self::FULFILLMENT_MODE_MFN;
+        }
+
+        $isRemoteFulfillmentProgram = $this->getAmazonAccount()->isRemoteFulfillmentProgramEnabled();
+        if (!empty($isRemoteFulfillmentProgram)) {
+            $data['remote_fulfillment_program'] = true;
         }
 
         return $data;
@@ -86,14 +91,14 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Qty
     {
         if ($type === Ess_M2ePro_Model_Magento_Product::FORCING_QTY_TYPE_MANAGE_STOCK_NO) {
             $this->addWarningMessage(
-                'During the Quantity Calculation the Settings in the "Manage Stock No" '.
+                'During the Quantity Calculation the Settings in the "Manage Stock No" ' .
                 'field were taken into consideration.'
             );
         }
 
         if ($type === Ess_M2ePro_Model_Magento_Product::FORCING_QTY_TYPE_BACKORDERS) {
             $this->addWarningMessage(
-                'During the Quantity Calculation the Settings in the "Backorders" '.
+                'During the Quantity Calculation the Settings in the "Backorders" ' .
                 'field were taken into consideration.'
             );
         }

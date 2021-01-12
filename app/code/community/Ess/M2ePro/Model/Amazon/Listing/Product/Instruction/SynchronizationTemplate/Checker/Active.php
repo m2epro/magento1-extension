@@ -230,6 +230,11 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Instruction_SynchronizationTemplat
 
         /** @var Ess_M2ePro_Model_Amazon_Listing_Product $amazonListingProduct */
         $amazonListingProduct = $listingProduct->getChildObject();
+
+        if ($amazonListingProduct->isAfnChannel()) {
+            return false;
+        }
+
         $variationManager = $amazonListingProduct->getVariationManager();
 
         if ($variationManager->isRelationParentType()) {

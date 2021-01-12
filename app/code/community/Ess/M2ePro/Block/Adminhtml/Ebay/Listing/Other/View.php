@@ -20,9 +20,9 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View extends Mage_Adminhtml_
 
         if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
             $componentName = Mage::helper('M2ePro/Component_Ebay')->getTitle();
-            $this->_headerText = Mage::helper('M2ePro')->__('%component_name% / 3rd Party Listings', $componentName);
+            $this->_headerText = Mage::helper('M2ePro')->__('%component_name% / Unmanaged Listings', $componentName);
         } else {
-            $this->_headerText = Mage::helper('M2ePro')->__('3rd Party Listings');
+            $this->_headerText = Mage::helper('M2ePro')->__('Unmanaged Listings');
         }
 
         $this->removeButton('back');
@@ -35,10 +35,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View extends Mage_Adminhtml_
         if ($this->getRequest()->getParam('back') !== null) {
             $url = Mage::helper('M2ePro')->getBackUrl();
             $this->_addButton(
-                'back', array(
-                'label'   => Mage::helper('M2ePro')->__('Back'),
-                'onclick' => 'CommonObj.back_click(\'' . $url . '\')',
-                'class'   => 'back'
+                'back',
+                array(
+                    'label'   => Mage::helper('M2ePro')->__('Back'),
+                    'onclick' => 'CommonObj.back_click(\'' . $url . '\')',
+                    'class'   => 'back'
                 )
             );
         }
@@ -52,9 +53,10 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View extends Mage_Adminhtml_
         $marketplaceId = $this->getRequest()->getParam('marketplace');
 
         $viewHeaderBlock = $this->getLayout()->createBlock(
-            'M2ePro/adminhtml_listing_other_view_header', '',
+            'M2ePro/adminhtml_listing_other_view_header',
+            '',
             array(
-                'account' => Mage::helper('M2ePro/Component_Ebay')->getCachedObject('Account', $accountId),
+                'account'     => Mage::helper('M2ePro/Component_Ebay')->getCachedObject('Account', $accountId),
                 'marketplace' => Mage::helper('M2ePro/Component_Ebay')->getCachedObject('Marketplace', $marketplaceId)
             )
         );
@@ -72,10 +74,12 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View extends Mage_Adminhtml_
         $urls = array();
         $urls['adminhtml_listing_other_mapping/map'] = $this->getUrl('*/adminhtml_listing_other_mapping/map');
         $urls['adminhtml_ebay_listing_categorySettings/index'] = $this->getUrl(
-            '*/adminhtml_ebay_listing_categorySettings/index', array('step' => 1)
+            '*/adminhtml_ebay_listing_categorySettings/index',
+            array('step' => 1)
         );
+        $urls['adminhtml_ebay_listing/view'] = $this->getUrl('*/adminhtml_ebay_listing/view');
 
-        $urls['moveToListingPopupHtml'] = $this->getUrl('*/adminhtml_listing_other_moving/moveToListingGrid');
+        $urls['moveToListingPopupHtml'] = $this->getUrl('*/adminhtml_listing_other_moving/moveToListingPopupHtml');
         $urls['prepareMoveToListing'] = $this->getUrl('*/adminhtml_listing_other_moving/prepareMoveToListing');
         $urls['moveToListing'] = $this->getUrl('*/adminhtml_ebay_listing_other/moveToListing');
 
@@ -83,15 +87,15 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View extends Mage_Adminhtml_
 
         $translations = Mage::helper('M2ePro')->jsonEncode(
             array(
-                'Product was Mapped.' => $helper->__('Product was Mapped.'),
-                'Product(s) was Mapped.' => $helper->__('Product(s) was Mapped.'),
+                'Product was Mapped.'      => $helper->__('Product was Mapped.'),
+                'Product(s) was Mapped.'   => $helper->__('Product(s) was Mapped.'),
                 'Product(s) was Unmapped.' => $helper->__('Product(s) was Unmapped.'),
-                'Product(s) was Removed.' => $helper->__('Product(s) was Removed.'),
-                'Not enough data' => $helper->__('Not enough data'),
+                'Product(s) was Removed.'  => $helper->__('Product(s) was Removed.'),
+                'Not enough data'          => $helper->__('Not enough data'),
 
-                'Mapping Product' => $helper->__('Mapping Product'),
-                'Product does not exist.' => $helper->__('Product does not exist.'),
-                'Please enter correct Product ID.' => $helper->__('Please enter correct Product ID.'),
+                'Mapping Product'                        => $helper->__('Mapping Product'),
+                'Product does not exist.'                => $helper->__('Product does not exist.'),
+                'Please enter correct Product ID.'       => $helper->__('Please enter correct Product ID.'),
                 'Please enter correct Product ID or SKU' => $helper->__('Please enter correct Product ID or SKU')
             )
         );
@@ -104,7 +108,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View extends Mage_Adminhtml_
         $unmappingProductsUrl = $this->getUrl('*/adminhtml_listing_other_mapping/unmapping');
 
         $someProductsWereNotMappedMessage = 'No matches were found. Please change the Mapping Attributes in <strong>';
-        $someProductsWereNotMappedMessage .= 'Configuration > Account > 3rd Party Listings</strong> ';
+        $someProductsWereNotMappedMessage .= 'Configuration > Account > Unmanaged Listings</strong> ';
         $someProductsWereNotMappedMessage .= 'or try to map manually.';
         $someProductsWereNotMappedMessage = $helper->escapeJs($helper->__($someProductsWereNotMappedMessage));
 
@@ -149,13 +153,13 @@ HTML;
 
         $mapToProductBlock = $this->getLayout()->createBlock('M2ePro/adminhtml_listing_other_mapping');
 
-        return  $javascript .
-                $mapToProductBlock->toHtml() .
-                '<div id="listing_other_progress_bar"></div>' .
-                '<div id="listing_container_errors_summary" class="errors_summary" style="display: none;"></div>' .
-                '<div id="listing_other_content_container">' .
-                parent::_toHtml() .
-                '</div>';
+        return $javascript .
+            $mapToProductBlock->toHtml() .
+            '<div id="listing_other_progress_bar"></div>' .
+            '<div id="listing_container_errors_summary" class="errors_summary" style="display: none;"></div>' .
+            '<div id="listing_other_content_container">' .
+            parent::_toHtml() .
+            '</div>';
     }
 
     //########################################

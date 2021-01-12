@@ -92,8 +92,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_ManageListings extends Ess_M2ePro_Block_Ad
     protected function prepareListingOtherTab()
     {
         $tab = array(
-            'label' => Mage::helper('M2ePro')->__('3rd Party'),
-            'title' => Mage::helper('M2ePro')->__('3rd Party')
+            'label' => Mage::helper('M2ePro')->__('Unmanaged'),
+            'title' => Mage::helper('M2ePro')->__('Unmanaged')
         );
 
         if ($this->getData('tab') != self::TAB_ID_LISTING_OTHER) {

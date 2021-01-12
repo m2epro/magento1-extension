@@ -40,7 +40,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other extends Mage_Adminhtml_Blo
 
         $this->_addButton(
             'reset_other_listings', array(
-                'label'   => Mage::helper('M2ePro')->__('Reset 3rd Party Listings'),
+                'label'   => Mage::helper('M2ePro')->__('Refresh Unmanaged Listings'),
                 'onclick' => 'ListingOtherObj.showResetPopup()',
                 'class'   => 'scalable'
             )
@@ -86,10 +86,10 @@ HTML;
         return <<<HTML
 <div id="reset_other_listings_popup_content" style="display: none">
     <div style="margin: 10px;">
-        <h3>{$helper->__('Confirm the 3rd Party Listings reset')}</h3>
-        <p>{$helper->__('This action will remove all the items from Amazon 3rd Party Listings.
+        <h3>{$helper->__('Confirm the Unmanaged Listings reset')}</h3>
+        <p>{$helper->__('This action will remove all the items from Amazon Unmanaged Listings.
          It will take some time to import them again.')}</p>
-        <p>{$helper->__('Do you want to reset the 3rd Party Listings?')}</p>
+        <p>{$helper->__('Do you want to reset the Unmanaged Listings?')}</p>
     </div>
 
     <div class="clear"></div>

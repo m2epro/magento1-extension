@@ -121,14 +121,6 @@ class Ess_M2ePro_Model_Amazon_Template_SellingFormat extends Ess_M2ePro_Model_Co
     /**
      * @return bool
      */
-    public function isQtyModeSingle()
-    {
-        return $this->getQtyMode() == Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_SINGLE;
-    }
-
-    /**
-     * @return bool
-     */
     public function isQtyModeNumber()
     {
         return $this->getQtyMode() == Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_NUMBER;

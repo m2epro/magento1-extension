@@ -19,6 +19,21 @@ $formData = array_merge($default, $formData);
 <script type="text/javascript">
 
     var init = function() {
+        $$('#ebay_template_synchronization_stop_advanced_rules select.element-value-changer option').each(function(el) {
+            if ((el.value == '??' && el.selected) || (el.value == '!??' && el.selected)) {
+                $(el.parentElement.parentElement.parentElement.nextElementSibling).hide();
+            }
+        });
+        $("ebay_template_synchronization_stop_advanced_rules")
+            .observe('change', function(event) {
+                    let target = event.target;
+                    if (target.value == '??' || target.value == '!??') {
+                        $(target.parentElement.parentElement.nextElementSibling).hide();
+                    }
+                }
+            )
+            .simulate('change');
+
         $('stop_mode')
             .observe('change', EbayTemplateSynchronizationObj.stopMode_change)
             .simulate('change');

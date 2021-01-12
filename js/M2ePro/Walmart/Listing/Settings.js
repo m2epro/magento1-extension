@@ -2,118 +2,108 @@ window.WalmartListingSettings = Class.create(Common, {
 
     // ---------------------------------------
 
-    storeId: null,
-    marketplaceId: null,
-
-    // ---------------------------------------
-
     initialize: function() {
-
         this.setValidationCheckRepetitionValue('M2ePro-listing-title',
-                                                M2ePro.text.title_not_unique_error,
-                                                'Listing', 'title', 'id',
-                                                M2ePro.formData.id,
-                                                M2ePro.php.constant('Ess_M2ePro_Helper_Component::NICK'));
+            M2ePro.text.title_not_unique_error,
+            'Listing', 'title', 'id',
+            M2ePro.formData.id,
+            M2ePro.php.constant('Ess_M2ePro_Helper_Component::NICK'));
     },
 
-    // ---------------------------------------
-
-    marketplaceIdOnChange: function()
-    {
-        var input = this;
-        $$('.m2epro-marketplace-depended-block').each(function(el){
-            input.value ? el.show()
-                        : el.hide();
+    initObservers: function() {
+        $('template_selling_format_id').observe('change', function() {
+            if ($('template_selling_format_id').value) {
+                $('edit_selling_format_template_link').show();
+            } else {
+                $('edit_selling_format_template_link').hide();
+            }
         });
-
-        // reset depended data
-        WalmartListingSettingsObj.reloadSellingFormatTemplates();
-
-        $('template_selling_format_id').value = -1;
         $('template_selling_format_id').simulate('change');
+
+        $('template_selling_format_id').observe('change', function() {
+            WalmartListingSettingsObj.checkSellingFormatMessages();
+            WalmartListingSettingsObj.hideEmptyOption(this);
+        });
+        if ($('template_selling_format_id').value) {
+            $('template_selling_format_id').simulate('change');
+        }
+
+        $('template_description_id').observe('change', function() {
+            if ($('template_description_id').value) {
+                $('edit_description_template_link').show();
+            } else {
+                $('edit_description_template_link').hide();
+            }
+        });
+        $('template_description_id').simulate('change');
+
+        $('template_description_id').observe('change', function() {
+            WalmartListingSettingsObj.hideEmptyOption(this);
+        });
+        if ($('template_description_id').value) {
+            $('template_description_id').simulate('change');
+        }
+
+        $('template_synchronization_id').observe('change', function() {
+            if ($('template_synchronization_id').value) {
+                $('edit_synchronization_template_link').show();
+            } else {
+                $('edit_synchronization_template_link').hide();
+            }
+        });
+        $('template_synchronization_id').simulate('change');
+
+        $('template_synchronization_id').observe('change', function() {
+            WalmartListingSettingsObj.hideEmptyOption(this);
+        });
+        if ($('template_synchronization_id').value) {
+            $('template_synchronization_id').simulate('change');
+        }
     },
 
     // ---------------------------------------
 
-    save_click: function(url)
-    {
+    save_click: function(url) {
         if (typeof categories_selected_items != 'undefined') {
             array_unique(categories_selected_items);
 
-            var selectedCategories = implode(',',categories_selected_items);
+            var selectedCategories = implode(',', categories_selected_items);
 
             $('selected_categories').value = selectedCategories;
         }
 
         if (typeof url == 'undefined' || url == '') {
-            url = M2ePro.url.formSubmit + 'back/'+base64_encode('list')+'/';
+            url = M2ePro.url.formSubmit + 'back/' + base64_encode('list') + '/';
         }
 
         this.submitForm(url);
     },
 
-    save_and_edit_click: function(url, lastActiveTab)
-    {
+    save_and_edit_click: function(url, lastActiveTab) {
         if (typeof categories_selected_items != 'undefined') {
             array_unique(categories_selected_items);
 
-            var selectedCategories = implode(',',categories_selected_items);
+            var selectedCategories = implode(',', categories_selected_items);
 
             $('selected_categories').value = selectedCategories;
         }
 
         if (url) {
-            url = url + 'back/'+base64_encode('edit') + '/';
+            url = url + 'back/' + base64_encode('edit') + '/';
         }
 
         this.submitForm(url);
     },
 
-    reloadSellingFormatTemplates: function()
-    {
+    reloadSellingFormatTemplates: function() {
         WalmartListingSettingsObj.reload(
-            M2ePro.url.getSellingFormatTemplates + 'marketplace_id/' + $('marketplace_id').value, 'template_selling_format_id'
+            M2ePro.url.get('getSellingFormatTemplates') + 'marketplace_id/' + $('marketplace_id').value, 'template_selling_format_id'
         );
     },
 
-    reloadDescriptionTemplates: function()
-    {
-        WalmartListingSettingsObj.reload(M2ePro.url.getDescriptionTemplates, 'template_description_id');
-    },
-
-    reloadSynchronizationTemplates: function()
-    {
-        WalmartListingSettingsObj.reload(M2ePro.url.getSynchronizationTemplates, 'template_synchronization_id');
-    },
-
     // ---------------------------------------
 
-    selling_format_template_id_simulate_change: function()
-    {
-        var intervalRestartLimit = 20;
-        var intervalRestartCount = 0;
-
-        var intervalId = setInterval(function simulateSellingFormatTemplateChange() {
-            intervalRestartCount++;
-
-            if (intervalRestartCount >= intervalRestartLimit || Ajax.activeRequestCount == 0) {
-                $('template_selling_format_id').value && $('template_selling_format_id').simulate('change');
-
-                clearInterval(intervalId);
-            }
-        }, 250);
-    },
-
-    selling_format_template_id_change: function()
-    {
-        WalmartListingSettingsObj.checkMessages();
-        WalmartListingSettingsObj.hideEmptyOption(this);
-    },
-
-    // ---------------------------------------
-
-    checkMessages: function()
-    {
+    checkSellingFormatMessages: function() {
         var storeId = $('store_id').value;
         var marketplaceId = $('marketplace_id').value;
 
@@ -130,8 +120,8 @@ window.WalmartListingSettings = Class.create(Common, {
                 var refresh = $(container).down('a.refresh-messages');
                 if (refresh) {
                     refresh.observe('click', function() {
-                        this.checkMessages();
-                    }.bind(this))
+                        this.checkSellingFormatMessages();
+                    }.bind(this));
                 }
             }.bind(this);
 
@@ -148,22 +138,7 @@ window.WalmartListingSettings = Class.create(Common, {
 
     // ---------------------------------------
 
-    description_template_id_change: function()
-    {
-        WalmartListingSettingsObj.hideEmptyOption(this);
-    },
-
-    // ---------------------------------------
-
-    synchronization_template_id_change: function()
-    {
-        WalmartListingSettingsObj.hideEmptyOption(this);
-    },
-
-    // ---------------------------------------
-
-    reload: function(url, id)
-    {
+    reload: function(url, id) {
         new Ajax.Request(url, {
             asynchronous: false,
             onSuccess: function(transport) {
@@ -205,12 +180,10 @@ window.WalmartListingSettings = Class.create(Common, {
 
     // ---------------------------------------
 
-    addNewTemplate: function(url, callback)
-    {
+    addNewTemplate: function(url, callback) {
         var win = window.open(url + 'marketplace_id/' + $('marketplace_id').value);
 
         var intervalId = setInterval(function() {
-
             if (!win.closed) {
                 return;
             }
@@ -222,12 +195,10 @@ window.WalmartListingSettings = Class.create(Common, {
         }, 1000);
     },
 
-    editTemplate: function(url, id, callback)
-    {
+    editTemplate: function(url, id, callback) {
         var win = window.open(url + 'id/' + id + '/marketplace_id/' + $('marketplace_id').value);
 
         var intervalId = setInterval(function() {
-
             if (!win.closed) {
                 return;
             }
@@ -241,8 +212,7 @@ window.WalmartListingSettings = Class.create(Common, {
 
     // ---------------------------------------
 
-    newSellingFormatTemplateCallback: function()
-    {
+    newSellingFormatTemplateCallback: function() {
         var noteEl = $('template_selling_format_note');
 
         WalmartListingSettingsObj.reloadSellingFormatTemplates();
@@ -259,36 +229,34 @@ window.WalmartListingSettings = Class.create(Common, {
 
     // ---------------------------------------
 
-    newDescriptionTemplateCallback: function()
-    {
+    newDescriptionTemplateCallback: function() {
         var noteEl = $('template_description_note');
 
-        WalmartListingSettingsObj.reloadDescriptionTemplates();
+        WalmartListingSettingsObj.reload(M2ePro.url.get('getDescriptionTemplates'), 'template_description_id');
         if ($('template_description_id').children.length > 0) {
             $('template_description_id').show();
-            noteEl &&  $('template_description_note').show();
+            noteEl && $('template_description_note').show();
             $('template_description_label').hide();
         } else {
             $('template_description_id').hide();
-            noteEl &&  $('template_description_note').hide();
+            noteEl && $('template_description_note').hide();
             $('template_description_label').show();
         }
     },
 
     // ---------------------------------------
 
-    newSynchronizationTemplateCallback: function()
-    {
+    newSynchronizationTemplateCallback: function() {
         var noteEl = $('template_synchronization_note');
 
-        WalmartListingSettingsObj.reloadSynchronizationTemplates();
+        WalmartListingSettingsObj.reload(M2ePro.url.get('getSynchronizationTemplates'), 'template_synchronization_id');
         if ($('template_synchronization_id').children.length > 0) {
             $('template_synchronization_id').show();
-            noteEl &&  $('template_synchronization_note').show();
+            noteEl && $('template_synchronization_note').show();
             $('template_synchronization_label').hide();
         } else {
             $('template_synchronization_id').hide();
-            noteEl &&  $('template_synchronization_note').hide();
+            noteEl && $('template_synchronization_note').hide();
             $('template_synchronization_label').show();
         }
     }

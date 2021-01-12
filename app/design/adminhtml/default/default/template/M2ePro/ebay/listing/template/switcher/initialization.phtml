@@ -21,6 +21,8 @@ $urls[$path] = $this->getUrl('*/' . $path);
 $path = 'adminhtml_ebay_template/edit';
 $urls[$path] = $this->getUrl('*/adminhtml_ebay_template/edit', array('wizard' => (bool)$this->getRequest()->getParam('wizard', false)));
 
+$urls['templateCheckMessages'] = $this->getUrl('*/adminhtml_template/checkMessages', array('component_mode' => Ess_M2ePro_Helper_Component_Ebay::NICK));
+
 $urls = json_encode($urls);
 //------------------------------
 
@@ -32,7 +34,6 @@ $urls = json_encode($urls);
     );
 
     M2ePro.url.add(<?php echo $urls ?>);
-    M2ePro.url.templateCheckMessages = '<?php echo $this->getUrl('*/adminhtml_template/checkMessages', array('component_mode' => Ess_M2ePro_Helper_Component_Ebay::NICK)); ?>';
 
     M2ePro.translator.add(<?php echo json_encode(array(
         'Customized' => Mage::helper('M2ePro')->__('Customized'),

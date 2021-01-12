@@ -17,7 +17,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_OtherController
     {
         $this->loadLayout()
              ->_title(Mage::helper('M2ePro')->__('Manage Listings'))
-             ->_title(Mage::helper('M2ePro')->__('3rd Party Listings'));
+             ->_title(Mage::helper('M2ePro')->__('Unmanaged Listings'));
 
         $this->getLayout()->getBlock('head')
             ->addJs('M2ePro/Plugin/ProgressBar.js')
@@ -188,7 +188,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_OtherController
         Mage::getResourceModel('M2ePro/Amazon_Listing_Other')->resetEntities();
 
         $this->_getSession()->addSuccess(
-            Mage::helper('M2ePro')->__('Amazon 3rd Party Listings were reset.')
+            Mage::helper('M2ePro')->__('Amazon Unmanaged Listings were reset.')
         );
 
         $this->_redirect(

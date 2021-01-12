@@ -29,6 +29,21 @@
 <script type="text/javascript">
 
     Event.observe(window, 'load', function() {
+        $$('#amazon_template_synchronization_relist_advanced_rules select.element-value-changer option').each(function(el) {
+            if ((el.value == '??' && el.selected) || (el.value == '!??' && el.selected)) {
+                $(el.parentElement.parentElement.parentElement.nextElementSibling).hide();
+            }
+        });
+        $("amazon_template_synchronization_relist_advanced_rules")
+            .observe('change', function(event) {
+                    let target = event.target;
+                    if (target.value == '??' || target.value == '!??') {
+                        $(target.parentElement.parentElement.nextElementSibling).hide();
+                    }
+                }
+            )
+            .simulate('change');
+
         $('relist_mode')
             .observe('change', AmazonTemplateSynchronizationObj.relistMode_change)
             .simulate('change');

@@ -103,10 +103,6 @@ class Ess_M2ePro_Model_Ebay_Template_SellingFormat extends Ess_M2ePro_Model_Comp
 
         return (bool)Mage::getModel('M2ePro/Ebay_Listing')
                             ->getCollection()
-                            ->addFieldToFilter(
-                                'template_selling_format_mode',
-                                Ess_M2ePro_Model_Ebay_Template_Manager::MODE_TEMPLATE
-                            )
                             ->addFieldToFilter('template_selling_format_id', $this->getId())
                             ->getSize() ||
                (bool)Mage::getModel('M2ePro/Ebay_Listing_Product')
@@ -282,14 +278,6 @@ class Ess_M2ePro_Model_Ebay_Template_SellingFormat extends Ess_M2ePro_Model_Comp
     public function isQtyModeProduct()
     {
         return $this->getQtyMode() == Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_PRODUCT;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isQtyModeSingle()
-    {
-        return $this->getQtyMode() == Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_SINGLE;
     }
 
     /**

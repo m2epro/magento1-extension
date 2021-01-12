@@ -171,7 +171,10 @@ $isCustomDescription = ($formData['description_mode'] == Ess_M2ePro_Model_Ebay_T
                                 <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Description::CONDITION_MODE_EBAY; ?>" attribute_code="<?php echo Ess_M2ePro_Model_Ebay_Template_Description::CONDITION_EBAY_NEW; ?>" <?php if ($formData['condition_mode'] == Ess_M2ePro_Model_Ebay_Template_Description::CONDITION_MODE_EBAY && $formData['condition_value'] == Ess_M2ePro_Model_Ebay_Template_Description::CONDITION_EBAY_NEW): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('New, New with tags, New with box, Brand New'); ?></option>
                                 <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Description::CONDITION_MODE_EBAY; ?>" attribute_code="<?php echo Ess_M2ePro_Model_Ebay_Template_Description::CONDITION_EBAY_NEW_OTHER; ?>" <?php if ($formData['condition_mode'] == Ess_M2ePro_Model_Ebay_Template_Description::CONDITION_MODE_EBAY && $formData['condition_value'] == Ess_M2ePro_Model_Ebay_Template_Description::CONDITION_EBAY_NEW_OTHER): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('New Other, New without tags, New without box'); ?></option>
                                 <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Description::CONDITION_MODE_EBAY; ?>" attribute_code="<?php echo Ess_M2ePro_Model_Ebay_Template_Description::CONDITION_EBAY_NEW_WITH_DEFECT; ?>" <?php if ($formData['condition_mode'] == Ess_M2ePro_Model_Ebay_Template_Description::CONDITION_MODE_EBAY && $formData['condition_value'] == Ess_M2ePro_Model_Ebay_Template_Description::CONDITION_EBAY_NEW_WITH_DEFECT): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('New With Defects'); ?></option>
-                                <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Description::CONDITION_MODE_EBAY; ?>" attribute_code="<?php echo Ess_M2ePro_Model_Ebay_Template_Description::CONDITION_EBAY_MANUFACTURER_REFURBISHED; ?>" <?php if ($formData['condition_mode'] == Ess_M2ePro_Model_Ebay_Template_Description::CONDITION_MODE_EBAY && $formData['condition_value'] == Ess_M2ePro_Model_Ebay_Template_Description::CONDITION_EBAY_MANUFACTURER_REFURBISHED): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Manufacturer Refurbished'); ?></option>
+                                <option value="<?php echo
+                                Ess_M2ePro_Model_Ebay_Template_Description::CONDITION_MODE_EBAY; ?>"
+                                        attribute_code="<?php echo
+                                        Ess_M2ePro_Model_Ebay_Template_Description::CONDITION_EBAY_CERTIFIED_REFURBISHED; ?>" <?php if ($formData['condition_mode'] == Ess_M2ePro_Model_Ebay_Template_Description::CONDITION_MODE_EBAY && $formData['condition_value'] == Ess_M2ePro_Model_Ebay_Template_Description::CONDITION_EBAY_CERTIFIED_REFURBISHED): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Certified Refurbished'); ?></option>
                                 <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Description::CONDITION_MODE_EBAY; ?>" attribute_code="<?php echo Ess_M2ePro_Model_Ebay_Template_Description::CONDITION_EBAY_SELLER_REFURBISHED; ?>" <?php if ($formData['condition_mode'] == Ess_M2ePro_Model_Ebay_Template_Description::CONDITION_MODE_EBAY && $formData['condition_value'] == Ess_M2ePro_Model_Ebay_Template_Description::CONDITION_EBAY_SELLER_REFURBISHED): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Seller Refurbished, Re-manufactured'); ?></option>
                                 <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Description::CONDITION_MODE_EBAY; ?>" attribute_code="<?php echo Ess_M2ePro_Model_Ebay_Template_Description::CONDITION_EBAY_USED; ?>" <?php if ($formData['condition_mode'] == Ess_M2ePro_Model_Ebay_Template_Description::CONDITION_MODE_EBAY && $formData['condition_value'] == Ess_M2ePro_Model_Ebay_Template_Description::CONDITION_EBAY_USED): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Used, Pre-owned, Like new'); ?></option>
                                 <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Description::CONDITION_MODE_EBAY; ?>" attribute_code="<?php echo Ess_M2ePro_Model_Ebay_Template_Description::CONDITION_EBAY_VERY_GOOD; ?>" <?php if ($formData['condition_mode'] == Ess_M2ePro_Model_Ebay_Template_Description::CONDITION_MODE_EBAY && $formData['condition_value'] == Ess_M2ePro_Model_Ebay_Template_Description::CONDITION_EBAY_VERY_GOOD): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Very Good'); ?></option>
@@ -1236,18 +1239,21 @@ $isCustomDescription = ($formData['description_mode'] == Ess_M2ePro_Model_Ebay_T
                     </td>
                 </tr>
 
-                <tr id="product_details_include_description_tr" class="product-details-specification">
+                <tr id="product_details_include_ebay_details_tr" class="product-details-specification">
                     <td class="label">
-                        <label for="product_details_include_description"><?php echo Mage::helper('M2ePro')->__('Use Description From eBay Catalog'); ?>:</label>
+                        <label for="product_details_include_ebay_details"><?php echo Mage::helper('M2ePro')->__('Use eBay Catalog Item Data'); ?>:</label>
                     </td>
                     <td class="value" style="width: auto;">
-                        <select id="product_details_include_description" name="description[product_details][include_description]">
-                            <option value="0"<?php if ($formData['product_details']['include_description'] == 0): ?> selected="selected"<?php endif; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
-                            <option value="1"<?php if ($formData['product_details']['include_description'] == 1): ?> selected="selected"<?php endif; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
+                        <select id="product_details_include_ebay_details" name="description[product_details][include_ebay_details]">
+                            <option value="0"<?php if ($formData['product_details']['include_ebay_details'] == 0): ?> selected="selected"<?php endif; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
+                            <option value="1"<?php if ($formData['product_details']['include_ebay_details'] == 1): ?> selected="selected"<?php endif; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
                         </select>
                         <p class="note">
                             <span>
-                                <?php echo Mage::helper('M2ePro')->__('If true, specifies that the Listing should include additional information about the Product, <br/>such as a publisher\'s Description or film credits'); ?>
+                                <?php echo Mage::helper('M2ePro')->__('
+                                    Specify whether you want your product data to include prefilled Catalog item data from eBay.<br><br>
+                                    If the field is set to <b>No</b>, your product data sent to eBay will not interfere with eBay Catalog item data.
+                                '); ?>
                             </span>
                         </p>
                     </td>
@@ -1286,6 +1292,14 @@ $isCustomDescription = ($formData['description_mode'] == Ess_M2ePro_Model_Ebay_T
     <div class="fieldset">
         <div class="hor-scroll">
 
+            <div id="block_notice_ebay_template_description_form_data_upgrade_tools" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Upgrade Tools'); ?>">
+                <?php echo Mage::helper('M2ePro')->__('
+                    The features below are provided by eBay for
+                    <a href="https://www.ebay.com/help/selling/fees-credits-invoices/selling-fees?id=4364#optional"
+                    target="_blank">additional fees</a>.
+                '); ?>
+            </div>
+
             <table class="form-list" cellspacing="0" cellpadding="0">
 
                 <tr>
@@ -1312,18 +1326,6 @@ $isCustomDescription = ($formData['description_mode'] == Ess_M2ePro_Model_Ebay_T
                         </label>
                         <p class="note">
                             <span><?php echo Mage::helper('M2ePro')->__('Find out about <a href="http://pages.ebay.com/help/sell/fees.html#optional" target="_blank">eBay optional Listing features</a>'); ?></span>
-                        </p>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td class="label"></td>
-                    <td class="value">
-                        <label>
-                            <input name="description[enhancement][]" value="Highlight" type="checkbox" <?php if (in_array('Highlight', $formData['enhancement'])): echo ' checked="checked"'; endif; ?> /> <?php echo Mage::helper('M2ePro')->__('Highlight'); ?><br/>
-                        </label>
-                        <p class="note">
-                            <span><?php echo Mage::helper('M2ePro')->__('Adding an eye-catching background to your Listing in Search results.'); ?></span>
                         </p>
                     </td>
                 </tr>

@@ -63,6 +63,10 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Edit_General extends Mage_Adminht
 
     public function getMarketplaceId()
     {
+        if ($this->getRequest()->getParam('marketplace_id', false)) {
+            return $this->getRequest()->getParam('marketplace_id');
+        }
+
         $template = $this->getParentBlock()->getTemplateObject();
 
         if ($template) {

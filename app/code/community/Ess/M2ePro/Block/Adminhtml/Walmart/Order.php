@@ -77,8 +77,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Order extends Mage_Adminhtml_Block_Widg
             )
         );
 
-        Mage::helper('M2ePro/View')->getJsRenderer()->addOnReadyJs(
-            <<<JS
+        Mage::helper('M2ePro/View')->getJsRenderer()->addOnReadyJs(<<<JS
 UploadByUserObj = new UploadByUser('walmart', 'orderUploadByUserPopupGrid');
 JS
         );

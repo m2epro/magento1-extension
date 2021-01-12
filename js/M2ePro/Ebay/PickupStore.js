@@ -589,8 +589,7 @@ window.EbayPickupStore = Class.create(Common, {
 
         var qtyMode = $('qty_mode').value;
 
-        if (qtyMode == M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Account_PickupStore::QTY_MODE_SINGLE') ||
-            qtyMode == M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Account_PickupStore::QTY_MODE_NUMBER')) {
+        if (qtyMode == M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Account_PickupStore::QTY_MODE_NUMBER')) {
             return;
         }
 

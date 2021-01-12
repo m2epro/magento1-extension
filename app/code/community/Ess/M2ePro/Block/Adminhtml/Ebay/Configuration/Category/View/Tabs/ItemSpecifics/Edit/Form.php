@@ -127,9 +127,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_View_Tabs_ItemSpeci
         Mage::helper('M2ePro/View')->getJsPhpRenderer()
             ->addClassConstants('Ess_M2ePro_Model_Ebay_Template_Category_Specific');
 
-        Mage::helper('M2ePro/View')->getJsRenderer()->addOnReadyJs(
-            <<<JS
-    EbayTemplateCategorySpecificsObj = new EbayTemplateCategorySpecifics(); 
+        Mage::helper('M2ePro/View')->getJsRenderer()->addOnReadyJs(<<<JS
+    EbayTemplateCategorySpecificsObj = new EbayTemplateCategorySpecifics();
 JS
         );
 

@@ -323,7 +323,7 @@ class Ess_M2ePro_Model_Ebay_Order_Item extends Ess_M2ePro_Model_Component_Child_
 
         // ---------------------------------------
 
-        // 3rd party Item
+        // Unmanaged Item
         // ---------------------------------------
         $sku = $this->getSku();
         if (strlen($this->getVariationSku()) > 0) {

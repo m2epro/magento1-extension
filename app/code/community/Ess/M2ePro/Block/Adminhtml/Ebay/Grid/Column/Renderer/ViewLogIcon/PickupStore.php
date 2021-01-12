@@ -32,7 +32,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Grid_Column_Renderer_ViewLogIcon_PickupSto
         $dbSelect = Mage::getSingleton('core/resource')->getConnection('core_read')
             ->select()
             ->from(
-                Mage::getResourceModel('M2ePro/Ebay_Account_PickupStore_Log')->getResource()->getMainTable(),
+                Mage::getResourceModel('M2ePro/Ebay_Account_PickupStore_Log')->getMainTable(),
                 array('id', 'action_id', 'action', 'type', 'description', 'create_date')
             )
             ->where('`account_pickup_store_state_id` = ?', $stateId)

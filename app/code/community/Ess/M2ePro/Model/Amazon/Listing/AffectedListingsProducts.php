@@ -21,6 +21,10 @@ class Ess_M2ePro_Model_Amazon_Listing_AffectedListingsProducts
             $listingProductCollection->addFieldToFilter('is_variation_parent', 0);
         }
 
+        if (!empty($filters['template_shipping_id'])) {
+            $listingProductCollection->addFieldToFilter('template_shipping_id', array('null' => true));
+        }
+
         return $listingProductCollection;
     }
 

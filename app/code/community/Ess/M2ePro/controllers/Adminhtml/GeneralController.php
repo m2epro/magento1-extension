@@ -112,6 +112,7 @@ class Ess_M2ePro_Adminhtml_GeneralController
         $model = $this->getRequest()->getParam('model', '');
         $componentMode = $this->getRequest()->getParam('component_mode', '');
         $marketplaceId = $this->getRequest()->getParam('marketplace_id', '');
+        $isCustomTemplate = $this->getRequest()->getParam('is_custom_template', null);
 
         $idField = $this->getRequest()->getParam('id_field', 'id');
         $dataField = $this->getRequest()->getParam('data_field', '');
@@ -129,6 +130,7 @@ class Ess_M2ePro_Adminhtml_GeneralController
         }
 
         $marketplaceId != '' && $collection->addFieldToFilter('marketplace_id', $marketplaceId);
+        $isCustomTemplate != null && $collection->addFieldToFilter('is_custom_template', $isCustomTemplate);
 
         $collection->getSelect()->reset(Zend_Db_Select::COLUMNS)
                                 ->columns(array($idField, $dataField));

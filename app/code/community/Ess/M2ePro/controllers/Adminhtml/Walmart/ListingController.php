@@ -247,8 +247,6 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
             return $this->_redirect('*/adminhtml_walmart_listing/index');
         }
 
-        Mage::helper('M2ePro/Data_Global')->setValue('temp_data', $listing);
-
         $this->_initAction();
         $this->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_walmart_listing_edit'));
         $this->renderLayout();
@@ -273,17 +271,10 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
 
         $oldData = $snapshotBuilder->getSnapshot();
 
-        // Base prepare
-        // ---------------------------------------
         $data = array();
-        // ---------------------------------------
-
-        // tab: settings
-        // ---------------------------------------
         $keys = array(
-            'title',
-            'template_description_id',
             'template_selling_format_id',
+            'template_description_id',
             'template_synchronization_id',
         );
         foreach ($keys as $key) {
@@ -292,27 +283,7 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
             }
         }
 
-        // ---------------------------------------
-
         $model->addData($data)->save();
-
-        $templateData = array();
-
-        // tab: channel settings
-        // ---------------------------------------
-        $keys = array(
-            'account_id',
-            'marketplace_id',
-        );
-        foreach ($keys as $key) {
-            if (isset($post[$key])) {
-                $templateData[$key] = $post[$key];
-            }
-        }
-
-        // ---------------------------------------
-
-        $model->addData($templateData)->save();
 
         $snapshotBuilder = Mage::getModel('M2ePro/Walmart_Listing_SnapshotBuilder');
         $snapshotBuilder->setModel($model);

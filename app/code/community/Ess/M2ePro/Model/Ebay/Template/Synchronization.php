@@ -46,10 +46,6 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization extends Ess_M2ePro_Model_Co
 
         return (bool)Mage::getModel('M2ePro/Ebay_Listing')
                             ->getCollection()
-                            ->addFieldToFilter(
-                                'template_synchronization_mode',
-                                Ess_M2ePro_Model_Ebay_Template_Manager::MODE_TEMPLATE
-                            )
                             ->addFieldToFilter('template_synchronization_id', $this->getId())
                             ->getSize() ||
                (bool)Mage::getModel('M2ePro/Ebay_Listing_Product')

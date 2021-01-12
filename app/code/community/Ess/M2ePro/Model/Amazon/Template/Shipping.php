@@ -39,10 +39,14 @@ class Ess_M2ePro_Model_Amazon_Template_Shipping extends Ess_M2ePro_Model_Compone
             return true;
         }
 
-        return (bool)Mage::getModel('M2ePro/Amazon_Listing_Product')
-            ->getCollection()
-            ->addFieldToFilter('template_shipping_id', $this->getId())
-            ->getSize();
+        return (bool)Mage::getModel('M2ePro/Amazon_Listing')
+                            ->getCollection()
+                            ->addFieldToFilter('template_shipping_id', $this->getId())
+                            ->getSize() ||
+                (bool)Mage::getModel('M2ePro/Amazon_Listing_Product')
+                            ->getCollection()
+                            ->addFieldToFilter('template_shipping_id', $this->getId())
+                            ->getSize();
     }
 
     public function deleteInstance()

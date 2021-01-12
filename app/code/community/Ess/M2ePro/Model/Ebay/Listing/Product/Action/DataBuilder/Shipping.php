@@ -184,7 +184,8 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Shipping
                                                         $this->getListingProduct()->getListing()->getAccountId()
                                                     );
 
-        if ($this->getShippingTemplate()->isLocalShippingFlatEnabled()) {
+        if ($this->getShippingTemplate()->isLocalShippingFlatEnabled() &&
+            $this->getShippingTemplate()->isLocalShippingRateTableEnabled($this->getAccount())) {
             $data['rate_table_mode'] = $this->getShippingTemplate()
                                             ->getLocalShippingRateTableMode($this->getAccount());
             $data['rate_table_enabled'] = $this->getShippingTemplate()

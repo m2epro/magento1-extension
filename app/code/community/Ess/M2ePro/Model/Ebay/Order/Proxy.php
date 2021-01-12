@@ -72,10 +72,15 @@ class Ess_M2ePro_Model_Ebay_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
 
             $customerInfo = $this->getAddressData();
 
-            $customer->setWebsiteId($this->_order->getEbayAccount()->getMagentoOrdersCustomerNewWebsiteId());
-            $customer->loadByEmail($customerInfo['email']);
+            $customer = $customer->getCollection()
+                ->addAttributeToSelect(self::USER_ID_ATTRIBUTE_CODE)
+                ->addAttributeToFilter(
+                    'website_id',
+                    $this->_order->getEbayAccount()->getMagentoOrdersCustomerNewWebsiteId()
+                )
+                ->addAttributeToFilter(self::USER_ID_ATTRIBUTE_CODE, $this->_order->getBuyerUserId())->getFirstItem();
 
-            if ($customer->getId() !== null) {
+            if (!empty($customer) && $customer->getId() !== null) {
                 $customer->setData(self::USER_ID_ATTRIBUTE_CODE, $this->_order->getBuyerUserId());
                 $customer->save();
 
@@ -181,11 +186,48 @@ class Ess_M2ePro_Model_Ebay_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
      */
     public function getBillingAddressData()
     {
-        if (!$this->_order->isUseGlobalShippingProgram()) {
-            return parent::getBillingAddressData();
+        if ($this->_order->getEbayAccount()->useMagentoOrdersShippingAddressAsBillingAlways()) {
+            return parent::getAddressData();
         }
 
-        return parent::getAddressData();
+        if ($this->_order->getEbayAccount()->useMagentoOrdersShippingAddressAsBillingIfSameCustomerAndRecipient() &&
+            $this->_order->getShippingAddress()->hasSameBuyerAndRecipient()
+        ) {
+            return parent::getAddressData();
+        }
+
+        $customerNameParts = $this->getNameParts($this->_order->getBuyerName());
+
+        return array(
+            'firstname'  => $customerNameParts['firstname'],
+            'middlename' => $customerNameParts['middlename'],
+            'lastname'   => $customerNameParts['lastname'],
+            'country_id' => '',
+            'region'     => '',
+            'region_id'  => '',
+            'city'       => 'eBay does not supply the complete billing Buyer information.',
+            'postcode'   => '',
+            'street'     => array(),
+            'company'    => ''
+        );
+    }
+
+    /**
+     * @return bool
+     */
+    public function shouldIgnoreBillingAddressValidation()
+    {
+        if ($this->_order->getEbayAccount()->useMagentoOrdersShippingAddressAsBillingAlways()) {
+            return false;
+        }
+
+        if ($this->_order->getEbayAccount()->useMagentoOrdersShippingAddressAsBillingIfSameCustomerAndRecipient() &&
+            $this->_order->getShippingAddress()->hasSameBuyerAndRecipient()
+        ) {
+            return false;
+        }
+
+        return true;
     }
 
     //########################################

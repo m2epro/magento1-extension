@@ -55,14 +55,13 @@ abstract class Ess_M2ePro_Block_Adminhtml_Wizard_MigrationToInnodb_Installation
             )
         );
 
-        Mage::helper('M2ePro/View')->getJsRenderer()->addOnReadyJs(
-            <<<JS
-        window.MarketplaceSynchProgressObj = new WizardMigrationToInnodbMarketplaceSynchProgress(
-            new ProgressBar('marketplaces_progress_bar'),
-            new AreaWrapper('marketplaces_content_container')
-        );
-    
-         window.MigrationToInnodbObj = new WizardMigrationToInnodb();  
+        Mage::helper('M2ePro/View')->getJsRenderer()->addOnReadyJs(<<<JS
+    window.MarketplaceSynchProgressObj = new WizardMigrationToInnodbMarketplaceSynchProgress(
+        new ProgressBar('marketplaces_progress_bar'),
+        new AreaWrapper('marketplaces_content_container')
+    );
+
+     window.MigrationToInnodbObj = new WizardMigrationToInnodb();  
 JS
         );
 

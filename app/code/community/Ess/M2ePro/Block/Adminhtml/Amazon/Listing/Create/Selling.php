@@ -28,7 +28,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Create_Selling
         $this->removeButton('add');
         $this->removeButton('save');
         $this->removeButton('edit');
-        // ---------------------------------------
 
         $url = $this->getUrl(
             '*/adminhtml_amazon_listing_create/index', array(
@@ -57,36 +56,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Create_Selling
                 'class'   => 'next'
             )
         );
-    }
-
-    //########################################
-
-    protected function _prepareLayout()
-    {
-        Mage::helper('M2ePro/View')->getJsPhpRenderer()->addConstants(
-            Mage::helper('M2ePro')->getClassConstants('Ess_M2ePro_Helper_Component_Amazon'),
-            'Ess_M2ePro_Helper_Component'
-        );
-
-        Mage::helper('M2ePro/View')->getJsPhpRenderer()->addClassConstants('Ess_M2ePro_Model_Listing');
-        Mage::helper('M2ePro/View')->getJsPhpRenderer()->addClassConstants('Ess_M2ePro_Model_Amazon_Listing');
-
-        Mage::helper('M2ePro/View')->getJsTranslatorRenderer()->addTranslations(
-            array(
-                'condition_note_length_error' => Mage::helper('M2ePro')->__(
-                    'Must be not more than 2000 characters long.'
-                ),
-                'sku_modification_custom_value_error' => Mage::helper('M2ePro')->__(
-                    '%value% placeholder should be specified'
-                ),
-                'sku_modification_custom_value_max_length_error' => Mage::helper('M2ePro')->__(
-                    'The SKU length must be less than %value%.',
-                    Ess_M2ePro_Helper_Component_Amazon::SKU_MAX_LENGTH
-                )
-            )
-        );
-
-        return parent::_prepareLayout();
     }
 
     //########################################

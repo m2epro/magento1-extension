@@ -7,8 +7,7 @@ window.ListingMoving = Class.create(Action, {
 
     // ---------------------------------------
 
-    run: function()
-    {
+    run: function() {
         this.getGridHtml(
             this.gridHandler.getSelectedProductsArray()
         );
@@ -16,8 +15,7 @@ window.ListingMoving = Class.create(Action, {
 
     // ---------------------------------------
 
-    openPopUp: function(gridHtml,popup_title)
-    {
+    openPopUp: function(gridHtml, popup_title) {
         this.popUp = Dialog.info(null, {
             draggable: true,
             resizable: true,
@@ -37,8 +35,7 @@ window.ListingMoving = Class.create(Action, {
 
     // ---------------------------------------
 
-    getGridHtml: function(selectedProducts)
-    {
+    getGridHtml: function(selectedProducts) {
         var self = this;
 
         self.selectedProducts = selectedProducts;
@@ -59,8 +56,7 @@ window.ListingMoving = Class.create(Action, {
         self.prepareData(productsByParts, productsByParts.length, 1);
     },
 
-    makeProductsParts: function()
-    {
+    makeProductsParts: function() {
         var self = this;
 
         var productsInPart = 500;
@@ -74,24 +70,23 @@ window.ListingMoving = Class.create(Action, {
 
         var result = [];
         for (var i = 0; i < self.selectedProducts.length; i++) {
-            if (result.length === 0 || result[result.length-1].length === productsInPart) {
+            if (result.length === 0 || result[result.length - 1].length === productsInPart) {
                 result[result.length] = [];
             }
-            result[result.length-1][result[result.length-1].length] = self.selectedProducts[i];
+            result[result.length - 1][result[result.length - 1].length] = self.selectedProducts[i];
         }
 
         return result;
     },
 
-    prepareData: function(parts, partsCount, isFirstPart)
-    {
+    prepareData: function(parts, partsCount, isFirstPart) {
         var self = this;
 
         if (parts.length === 0) {
             return;
         }
 
-        var isLastPart  = parts.length === 1 ? 1 : 0;
+        var isLastPart = parts.length === 1 ? 1 : 0;
         var part = parts.splice(0, 1);
         var currentPart = part[0];
 
@@ -100,7 +95,7 @@ window.ListingMoving = Class.create(Action, {
             parameters: {
                 componentMode: M2ePro.customData.componentMode,
                 is_first_part: isFirstPart,
-                is_last_part : isLastPart,
+                is_last_part: isLastPart,
                 products_part: implode(',', currentPart)
             },
             onSuccess: function(transport) {
@@ -142,16 +137,15 @@ window.ListingMoving = Class.create(Action, {
         });
     },
 
-    moveToListingGrid: function()
-    {
+    moveToListingGrid: function() {
         var self = this;
 
         new Ajax.Request(M2ePro.url.get('moveToListingPopupHtml'), {
             method: 'get',
             parameters: {
-                componentMode : M2ePro.customData.componentMode,
-                accountId     : self.accountId,
-                marketplaceId : self.marketplaceId,
+                componentMode: M2ePro.customData.componentMode,
+                accountId: self.accountId,
+                marketplaceId: self.marketplaceId,
                 ignoreListings: M2ePro.customData.ignoreListings
             },
             onSuccess: function(transport) {
@@ -161,8 +155,7 @@ window.ListingMoving = Class.create(Action, {
         });
     },
 
-    submit: function(listingId, onSuccess)
-    {
+    submit: function(listingId, onSuccess) {
         var self = this;
 
         new Ajax.Request(M2ePro.url.get('moveToListing'), {
@@ -179,7 +172,8 @@ window.ListingMoving = Class.create(Action, {
                 var response = transport.responseText.evalJSON();
 
                 if (response.result) {
-                    onSuccess.bind(self.gridHandler)(listingId);
+                    var hasOnlineCategory = response.hasOnlineCategory || false;
+                    onSuccess.bind(self.gridHandler)(listingId, hasOnlineCategory);
                     return;
                 }
 
@@ -207,7 +201,7 @@ window.ListingMoving = Class.create(Action, {
 
     // ---------------------------------------
 
-    completeProgressBar: function () {
+    completeProgressBar: function() {
         ListingProgressBarObj.hide();
         ListingProgressBarObj.reset();
         GridWrapperObj.unlock();

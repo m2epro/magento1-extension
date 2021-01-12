@@ -435,11 +435,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Sellercentral_Grid
 
         $value = '<span>'.$productTitle.'</span>';
 
-        $tempSku = $row->getData('amazon_sku');
-
-        if ($tempSku === null) {
-            $tempSku = $row->getData('sku');
-        }
+        $tempSku = Mage::getModel('M2ePro/Magento_Product')->setProductId($row->getData('entity_id'))->getSku();
 
         $value .= '<br/><strong>'.Mage::helper('M2ePro')->__('SKU') .
             ':</strong> '.Mage::helper('M2ePro')->escapeHtml($tempSku) . '<br/>';

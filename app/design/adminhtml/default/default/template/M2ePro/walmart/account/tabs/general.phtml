@@ -81,8 +81,6 @@
     Event.observe(window, 'load', function() {
         <?php echo $licenseMessage; ?>
 
-        AccountObj = new Account();
-        WalmartAccountObj = new WalmartAccount();
         WalmartAccountObj.initValidation();
         WalmartAccountObj.initTokenValidation();
 

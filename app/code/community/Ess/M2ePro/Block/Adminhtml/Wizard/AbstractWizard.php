@@ -41,10 +41,9 @@ abstract class Ess_M2ePro_Block_Adminhtml_Wizard_AbstractWizard extends Ess_M2eP
         );
         $status = Mage::helper('M2ePro/Module_Wizard')->getStatus($this->getNick());
 
-        Mage::helper('M2ePro/View')->getJsRenderer()->addOnReadyJs(
-            <<<JS
-        WizardObj = new Wizard('{$status}', '{$step}');
-        WizardObj.steps.all = {$steps};
+        Mage::helper('M2ePro/View')->getJsRenderer()->addOnReadyJs(<<<JS
+    WizardObj = new Wizard('{$status}', '{$step}');
+    WizardObj.steps.all = {$steps};
 JS
         );
 

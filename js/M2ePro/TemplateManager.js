@@ -16,7 +16,7 @@ window.TemplateManager = Class.create(Common, {
         parameters += '&marketplace_id=' + encodeURIComponent(marketplaceId);
         parameters += '&'+data;
 
-        new Ajax.Request(M2ePro.url.templateCheckMessages, {
+        new Ajax.Request(M2ePro.url.get('templateCheckMessages'), {
             method: 'post',
             asynchronous: true,
             parameters: parameters,

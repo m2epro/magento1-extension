@@ -312,9 +312,20 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Details
     protected function getShippingData()
     {
         if ($this->getAmazonListingProduct()->isAfnChannel() ||
-            !$this->getAmazonListingProduct()->isExistShippingTemplate()
+            !$this->getAmazonListingProduct()->isExistShippingTemplate() &&
+            !$this->getAmazonListing()->isExistShippingTemplate()
         ) {
             return array();
+        }
+
+        if (!$this->getAmazonListingProduct()->isExistShippingTemplate()) {
+            return array(
+                'shipping_data' => array(
+                    'template_name' => $this->getAmazonListing()->getShippingTemplateSource(
+                        $this->getAmazonListingProduct()->getActualMagentoProduct()
+                    )->getTemplateName(),
+                )
+            );
         }
 
         return array(

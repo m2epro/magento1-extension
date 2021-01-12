@@ -56,8 +56,9 @@ class Ess_M2ePro_Adminhtml_Amazon_ListingController
             ->addJs('M2ePro/Amazon/Listing/Other/Grid.js')
 
             ->addJs('M2ePro/TemplateManager.js')
+            ->addJs('M2ePro/Amazon/Listing/Create/Selling.js')
+            ->addJs('M2ePro/Amazon/Listing/Create/Search.js')
             ->addJs('M2ePro/Amazon/Listing/Settings.js')
-            ->addJs('M2ePro/Amazon/Listing/ChannelSettings.js')
             ->addJs('M2ePro/Amazon/Listing/ProductsFilter.js')
 
             ->addJs('M2ePro/Amazon/Listing/Product/Variation.js')
@@ -257,8 +258,6 @@ class Ess_M2ePro_Adminhtml_Amazon_ListingController
             return $this->_redirect('*/adminhtml_amazon_listing/index');
         }
 
-        Mage::helper('M2ePro/Data_Global')->setValue('temp_data', $listing);
-
         $this->_initAction();
         $this->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_amazon_listing_edit'));
         $this->renderLayout();
@@ -293,10 +292,11 @@ class Ess_M2ePro_Adminhtml_Amazon_ListingController
         $keys = array(
             'template_selling_format_id',
             'template_synchronization_id',
+            'template_shipping_id'
         );
         foreach ($keys as $key) {
             if (isset($post[$key])) {
-                $data[$key] = $post[$key];
+                $data[$key] = (!empty($post[$key])) ? $post[$key] : null;
             }
         }
 
@@ -391,6 +391,12 @@ class Ess_M2ePro_Adminhtml_Amazon_ListingController
 
         $this->processSellingFormatTemplateChange($oldData, $newData, $affectedListingsProductsData);
         $this->processSynchronizationTemplateChange($oldData, $newData, $affectedListingsProductsData);
+
+        $affectedListingsProductsData = $affectedListingsProducts->getData(
+            array('id', 'status'),
+            array('only_physical_units' => true, 'template_shipping_id' => true)
+        );
+        $this->processShippingTemplateChange($oldData, $newData, $affectedListingsProductsData);
 
         $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('The Listing was saved.'));
 
@@ -2755,6 +2761,43 @@ class Ess_M2ePro_Adminhtml_Amazon_ListingController
         $diff->setOldSnapshot($oldSnapshot);
 
         $changeProcessor = Mage::getModel('M2ePro/Amazon_Template_Synchronization_ChangeProcessor');
+        $changeProcessor->process($diff, $affectedListingsProductsData);
+    }
+
+    protected function processShippingTemplateChange(
+        array $oldData,
+        array $newData,
+        array $affectedListingsProductsData
+    ) {
+        if (empty($affectedListingsProductsData) ||
+            empty($oldData['template_shipping_id']) &&
+            empty($newData['template_shipping_id'])) {
+            return;
+        }
+
+        $oldTemplate = Mage::getModel('M2ePro/Amazon_Template_Shipping');
+        if (!empty($oldData['template_shipping_id'])) {
+            $oldTemplate = $oldTemplate->load($oldData['template_shipping_id']);
+        }
+
+        $snapshotBuilder = Mage::getModel('M2ePro/Amazon_Template_Shipping_SnapshotBuilder');
+        $snapshotBuilder->setModel($oldTemplate);
+        $oldSnapshot = $snapshotBuilder->getSnapshot();
+
+        $newTemplate = Mage::getModel('M2ePro/Amazon_Template_Shipping');
+        if (!empty($newData['template_shipping_id'])) {
+            $newTemplate = $oldTemplate->load($newData['template_shipping_id']);
+        }
+
+        $snapshotBuilder = Mage::getModel('M2ePro/Amazon_Template_Shipping_SnapshotBuilder');
+        $snapshotBuilder->setModel($newTemplate);
+        $newSnapshot = $snapshotBuilder->getSnapshot();
+
+        $diff = Mage::getModel('M2ePro/Amazon_Template_Shipping_Diff');
+        $diff->setNewSnapshot($newSnapshot);
+        $diff->setOldSnapshot($oldSnapshot);
+
+        $changeProcessor = Mage::getModel('M2ePro/Amazon_Template_Shipping_ChangeProcessor');
         $changeProcessor->process($diff, $affectedListingsProductsData);
     }
 

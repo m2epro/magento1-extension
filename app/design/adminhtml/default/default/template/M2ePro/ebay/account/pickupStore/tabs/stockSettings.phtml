@@ -104,7 +104,6 @@ $attributesByInputTypes = array(
                     <td class="value" style="width: auto;">
                         <select id="qty_mode" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text" name="qty_mode">
                             <option value="<?php echo Ess_M2ePro_Model_Ebay_Account_PickupStore::QTY_MODE_PRODUCT; ?>" <?php echo $formData['qty_mode'] == Ess_M2ePro_Model_Ebay_Account_PickupStore::QTY_MODE_PRODUCT ? 'selected="selected"' : '';?>><?php echo Mage::helper('M2ePro')->__('Product Quantity'); ?></option>
-                            <option value="<?php echo Ess_M2ePro_Model_Ebay_Account_PickupStore::QTY_MODE_SINGLE; ?>" <?php echo $formData['qty_mode'] == Ess_M2ePro_Model_Ebay_Account_PickupStore::QTY_MODE_SINGLE ? 'selected="selected"' : '';?>><?php echo Mage::helper('M2ePro')->__('Single Item'); ?></option>
                             <option value="<?php echo Ess_M2ePro_Model_Ebay_Account_PickupStore::QTY_MODE_NUMBER; ?>" <?php echo $formData['qty_mode'] == Ess_M2ePro_Model_Ebay_Account_PickupStore::QTY_MODE_NUMBER ? 'selected="selected"' : '';?>><?php echo Mage::helper('M2ePro')->__('Custom Value'); ?></option>
 
                             <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute" new_option_value="<?php echo Ess_M2ePro_Model_Ebay_Account_PickupStore::QTY_MODE_ATTRIBUTE; ?>">

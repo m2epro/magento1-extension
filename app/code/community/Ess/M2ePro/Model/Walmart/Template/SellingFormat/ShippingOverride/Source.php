@@ -44,7 +44,7 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat_ShippingOverride_Source
      * @param Ess_M2ePro_Model_Walmart_Template_SellingFormat_ShippingOverride $instance
      * @return $this
      */
-    public function setSellingFormatShipingOverrideTemplate(
+    public function setSellingFormatShippingOverrideTemplate(
         Ess_M2ePro_Model_Walmart_Template_SellingFormat_ShippingOverride $instance
     ) {
         $this->_sellingFormatShippingOverrideTemplateModel = $instance;

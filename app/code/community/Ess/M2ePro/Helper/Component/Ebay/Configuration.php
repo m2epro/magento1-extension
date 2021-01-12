@@ -197,7 +197,7 @@ class Ess_M2ePro_Helper_Component_Ebay_Configuration extends Mage_Core_Helper_Ab
             $motorsAttributes[] = $values['ktypes_attribute'];
         }
 
-        if (count($motorsAttributes) != count(array_unique($motorsAttributes))) {
+        if (count(array_filter($motorsAttributes)) != count(array_unique(array_filter($motorsAttributes)))) {
             throw new Ess_M2ePro_Model_Exception_Logic('Motors Attributes can not be the same.');
         }
 

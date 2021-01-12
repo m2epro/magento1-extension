@@ -105,12 +105,12 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View_Grid extends Mage_Admin
 
         $this->addColumn(
             'title', array(
-                'header'                    => Mage::helper('M2ePro')->__('Title / SKU'),
-                'align'                     => 'left',
-                'type'                      => 'text',
-                'index'                     => 'title',
-                'filter_index'              => 'second_table.title',
-                'frame_callback'            => array($this, 'callbackColumnProductTitle'),
+                'header'         => Mage::helper('M2ePro')->__('Product Title / Product SKU / eBay Category'),
+                'align'          => 'left',
+                'type'           => 'text',
+                'index'          => 'title',
+                'filter_index'   => 'second_table.title',
+                'frame_callback' => array($this, 'callbackColumnProductTitle'),
                 'filter_condition_callback' => array($this, 'callbackFilterTitle')
             )
         );
@@ -428,7 +428,12 @@ HTML;
             return;
         }
 
-        $collection->getSelect()->where('second_table.title LIKE ? OR second_table.sku LIKE ?', '%'.$value.'%');
+        $collection->getSelect()->where(
+            'second_table.title LIKE ? OR
+             second_table.sku LIKE ? OR
+              second_table.online_main_category LIKE ?',
+            '%'.$value.'%'
+        );
     }
 
     //########################################

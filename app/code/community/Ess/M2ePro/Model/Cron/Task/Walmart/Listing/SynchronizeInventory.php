@@ -42,16 +42,18 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_SynchronizeInventory
             return;
         }
 
-        $this->getOperationHistory()->addText('Starting Account "'.$account->getTitle().'"');
+        $this->getOperationHistory()->addText('Starting Account "' . $account->getTitle() . '"');
         $this->getOperationHistory()->addTimePoint(
-            __METHOD__.'process'.$account->getId(),
-            'Process Account '.$account->getTitle()
+            __METHOD__ . 'process' . $account->getId(),
+            'Process Account ' . $account->getTitle()
         );
 
         try {
             $dispatcherObject = Mage::getModel('M2ePro/Walmart_Connector_Dispatcher');
             $connectorObj = $dispatcherObject->getCustomConnector(
-                'Cron_Task_Walmart_Listing_SynchronizeInventory_Requester', array(), $account
+                'Cron_Task_Walmart_Listing_SynchronizeInventory_Requester',
+                array(),
+                $account
             );
             $dispatcherObject->process($connectorObj);
         } catch (Exception $exception) {
@@ -63,7 +65,7 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_SynchronizeInventory
             $this->processTaskException($exception);
         }
 
-        $this->getOperationHistory()->saveTimePoint(__METHOD__.'process'.$account->getId());
+        $this->getOperationHistory()->saveTimePoint(__METHOD__ . 'process' . $account->getId());
     }
 
     /**
@@ -97,8 +99,12 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_SynchronizeInventory
         $collection->getSelect()->group('main_table.id');
         $collection->getSelect()->order(new Zend_Db_Expr('second_table.inventory_last_synchronization ASC'));
 
-        $dayAgoDate = new DateTime('now', new \DateTimeZone('UTC'));
-        $dayAgoDate->modify('-' . self::DEFAULT_INTERVAL_PER_ACCOUNT . ' seconds');
+        $interval = $this->getConfigValue('interval_per_account') !== null
+            ? $this->getConfigValue('interval_per_account')
+            : self::DEFAULT_INTERVAL_PER_ACCOUNT;
+
+        $intervalPerAccountDate = new DateTime('now', new \DateTimeZone('UTC'));
+        $intervalPerAccountDate->modify('-' . $interval . ' seconds');
 
         foreach ($collection->getItems() as $account) {
             /**@var Ess_M2ePro_Model_Account $account */
@@ -111,7 +117,7 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_SynchronizeInventory
                 new DateTimeZone('UTC')
             );
 
-            if ($dayAgoDate->getTimestamp() >= $lastSynchDate->getTimestamp()) {
+            if ($intervalPerAccountDate->getTimestamp() >= $lastSynchDate->getTimestamp()) {
                 return $account;
             }
 
@@ -149,6 +155,7 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_SynchronizeInventory
 
         if ($lockItemManager->isInactiveMoreThanSeconds(Ess_M2ePro_Model_Processing_Runner::MAX_LIFETIME)) {
             $lockItemManager->remove();
+
             return false;
         }
 

@@ -86,9 +86,9 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_General
             return $data;
         }
 
-        $data['include_description'] = $this->getEbayListingProduct()
+        $data['include_ebay_details'] = $this->getEbayListingProduct()
             ->getEbayDescriptionTemplate()
-            ->isProductDetailsIncludeDescription();
+            ->isProductDetailsIncludeEbayDetails();
         $data['include_image'] = $this->getEbayListingProduct()
             ->getEbayDescriptionTemplate()
             ->isProductDetailsIncludeImage();

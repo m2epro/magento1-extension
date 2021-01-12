@@ -34,7 +34,7 @@ class Ess_M2ePro_Block_Adminhtml_Listing_Search_Switcher extends Ess_M2ePro_Bloc
 
         if ($this->showOtherOption) {
             $this->_items['mode']['value'][] = array(
-                'label' => $this->__('3rd Party'),
+                'label' => $this->__('Unmanaged'),
                 'value' => self::LISTING_TYPE_LISTING_OTHER
             );
         }

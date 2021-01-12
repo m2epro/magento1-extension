@@ -104,6 +104,8 @@ class Ess_M2ePro_Helper_Client extends Mage_Core_Helper_Abstract
             $ip = $server['LOCAL_ADDR'];
         }
 
+        empty($ip) && $ip = gethostbyname(gethostname());
+
         return null !== $ip ? strtolower(trim($ip)) : $ip;
     }
 

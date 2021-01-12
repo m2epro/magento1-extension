@@ -17,17 +17,12 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Create_Search_Form extends Mage_
 
     //########################################
 
-    public function __construct()
-    {
-        parent::__construct();
-        $this->setId('amazonListingCreateSearchForm');
-    }
-
     protected function _prepareForm()
     {
         $form = new Ess_M2ePro_Block_Adminhtml_Magento_Form_Element_Form(
             array(
                 'id'      => 'edit_form',
+                'class'   => 'form-list',
                 'method'  => 'post',
                 'action'  => 'javascript:void(0)',
                 'enctype' => 'multipart/form-data',
@@ -38,8 +33,10 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Create_Search_Form extends Mage_
         /** @var Ess_M2ePro_Helper_Magento_Attribute $magentoAttributeHelper */
         $magentoAttributeHelper = Mage::helper('M2ePro/Magento_Attribute');
 
+        $attributes = Mage::helper('M2ePro/Magento_Attribute')->getAll();
+
         $attributesByTypes = array(
-            'text' => $magentoAttributeHelper->filterByInputTypes($this->getData('all_attributes'), array('text'))
+            'text' => $magentoAttributeHelper->filterByInputTypes($attributes, array('text'))
         );
         $formData = $this->getListingData();
 
@@ -98,9 +95,9 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Create_Search_Form extends Mage_
             'general_id_mode',
             Ess_M2ePro_Block_Adminhtml_Magento_Form_Element_Form::SELECT,
             array(
-                'name'   => 'general_id_mode',
-                'label'  => Mage::helper('M2ePro')->__('ASIN / ISBN'),
-                'values' => array(
+                'name'                     => 'general_id_mode',
+                'label'                    => Mage::helper('M2ePro')->__('ASIN / ISBN'),
+                'values'                   => array(
                     AmazonListing::GENERAL_ID_MODE_NOT_SET => Mage::helper('M2ePro')->__('Not Set'),
                     array(
                         'label' => Mage::helper('M2ePro')->__('Magento Attributes'),
@@ -108,10 +105,10 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Create_Search_Form extends Mage_
                         'attrs' => array('is_magento_attribute' => true)
                     )
                 ),
-                'value' => $formData['general_id_mode'] != AmazonListing::GENERAL_ID_MODE_CUSTOM_ATTRIBUTE
+                'value'                    => $formData['general_id_mode'] != AmazonListing::GENERAL_ID_MODE_CUSTOM_ATTRIBUTE
                     ? $formData['general_id_mode'] : '',
                 'create_magento_attribute' => true,
-                'after_element_html' => $this->getTooltipHtml(
+                'after_element_html'       => $this->getTooltipHtml(
                     Mage::helper('M2ePro')->__(
                         'This setting is a source for ASIN/ISBN value which will be used
                     at the time of Automatic Search of Amazon Products.'
@@ -167,9 +164,9 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Create_Search_Form extends Mage_
             'worldwide_id_mode',
             Ess_M2ePro_Block_Adminhtml_Magento_Form_Element_Form::SELECT,
             array(
-                'name'   => 'worldwide_id_mode',
-                'label'  => Mage::helper('M2ePro')->__('UPC / EAN'),
-                'values' => array(
+                'name'                     => 'worldwide_id_mode',
+                'label'                    => Mage::helper('M2ePro')->__('UPC / EAN'),
+                'values'                   => array(
                     AmazonListing::WORLDWIDE_ID_MODE_NOT_SET => Mage::helper('M2ePro')->__('Not Set'),
                     array(
                         'label' => Mage::helper('M2ePro')->__('Magento Attributes'),
@@ -177,10 +174,10 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Create_Search_Form extends Mage_
                         'attrs' => array('is_magento_attribute' => true)
                     )
                 ),
-                'value' => $formData['worldwide_id_mode'] != AmazonListing::WORLDWIDE_ID_MODE_CUSTOM_ATTRIBUTE
+                'value'                    => $formData['worldwide_id_mode'] != AmazonListing::WORLDWIDE_ID_MODE_CUSTOM_ATTRIBUTE
                     ? $formData['worldwide_id_mode'] : '',
                 'create_magento_attribute' => true,
-                'after_element_html' => $this->getTooltipHtml(
+                'after_element_html'       => $this->getTooltipHtml(
                     Mage::helper('M2ePro')->__(
                         'This setting is a source for UPC/EAN value which will be used
                     at the time of Automatic Search of Amazon Products.'
@@ -203,9 +200,9 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Create_Search_Form extends Mage_
             'search_by_magento_title_mode',
             'select',
             array(
-                'name'   => 'search_by_magento_title_mode',
-                'label'  => Mage::helper('M2ePro')->__('Search by Product Name'),
-                'values' => array(
+                'name'    => 'search_by_magento_title_mode',
+                'label'   => Mage::helper('M2ePro')->__('Search by Product Name'),
+                'values'  => array(
                     AmazonListing::SEARCH_BY_MAGENTO_TITLE_MODE_NONE => Mage::helper('M2ePro')->__('Disable'),
                     AmazonListing::SEARCH_BY_MAGENTO_TITLE_MODE_YES  => Mage::helper('M2ePro')->__('Enable')
                 ),
@@ -227,78 +224,69 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Create_Search_Form extends Mage_
 
     //########################################
 
-    protected function _beforeToHtml()
+    protected function _prepareLayout()
     {
-        $data = $this->getListingData();
+        Mage::helper('M2ePro/View')->getJsPhpRenderer()->addClassConstants('Ess_M2ePro_Model_Amazon_Listing');
 
-        $this->setData(
-            'all_attributes',
-            Mage::helper('M2ePro/Magento_Attribute')->getAll()
+        Mage::helper('M2ePro/View')->getJsRenderer()->addOnReadyJs(
+            <<<JS
+    AmazonListingCreateSearchObj = new AmazonListingCreateSearch();
+
+    $('general_id_mode').observe('change', AmazonListingCreateSearchObj.general_id_mode_change);
+    $('worldwide_id_mode').observe('change', AmazonListingCreateSearchObj.worldwide_id_mode_change);
+JS
         );
 
-        foreach ($data as $key => $value) {
-            $this->setData($key, $value);
-        }
-
-        return parent::_beforeToHtml();
+        return parent::_prepareLayout();
     }
 
     //########################################
 
     protected function _toHtml()
     {
-
-        $helpBlock = $this->getLayout()->createBlock(
-            'M2ePro/adminhtml_helpBlock', '', array(
-                'content' => Mage::helper('M2ePro')->__(
-                    'In this Section you can specify the sources from which the values for ASIN/ISBN and
-                UPC/EAN will be taken in case you have those for your Items. <br/><br/>
-                These Settings will be used in two cases:
-
-                <ul class="list">
-                    <li>at the time of using Automatic ASIN/ISBN Search;</li>
-                    <li>at the time of using “List” Action.</li>
-                </ul>
-
-                Using these Settings means the Search of existing Amazon Products and the process of
-                linking Magento Product with found Amazon Product. <br/><br/>
-
-                During the process of Search, Settings values are used according to the following logic:
-
-                <ul class="list">
-                    <li>the Product is searched by ASIN/ISBN parameter. (if specified);</li>
-                    <li>if no result by ASIN/ISBN parameter, then UPC/EAN search is performed. (if specified);</li>
-                    <li>if no result by UPC/EAN parameter, then additional search by Magento Product Name is performed.
-                    (if enabled).</li>
-                </ul>
-                <br/>
-                More detailed information you can find
-                <a href="%url%" target="_blank" class="external-link">here</a>.',
-                    Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'x/FYgVAQ')
-                ),
-                'title' => Mage::helper('M2ePro')->__('Search Settings')
-            )
-        );
+        if ($this->getListing()) {
+            return parent::_toHtml();
+        }
 
         /** @var Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Create_Breadcrumb $breadcrumb */
         $breadcrumb = $this->getLayout()->createBlock('M2ePro/adminhtml_amazon_listing_create_breadcrumb');
-        $breadcrumb->setSelectedStep((int)$this->getRequest()->getParam('step', 1));
+        $breadcrumb->setSelectedStep(3);
 
-        $javascript = <<<HTML
-<script type="text/javascript">
+        $helpBlock = $this->getLayout()->createBlock(
+            'M2ePro/adminhtml_helpBlock',
+            '',
+            array(
+                'content' => Mage::helper('M2ePro')->__(
+                    <<<HTML
+<p>In this Section you can specify the sources from which the values for ASIN/ISBN and UPC/EAN will be taken in case 
+you have those for your Items.</p>
+<p>These Settings will be used in two cases:
+<ul class="list">
+    <li>at the time of using Automatic ASIN/ISBN Search;</li>
+    <li>at the time of using “List” Action.</li>
+</ul>
+Using these Settings means the Search of existing Amazon Products and the process of linking Magento Product with 
+found Amazon Product.</p>
+<p>During the process of Search, Settings values are used according to the following logic:
+<ul class="list">
+    <li>the Product is searched by ASIN/ISBN parameter. (if specified);</li>
+    <li>if no result by ASIN/ISBN parameter, then UPC/EAN search is performed. (if specified);</li>
+    <li>if no result by UPC/EAN parameter, then additional search by Magento Product Name is performed. (if enabled).
+    </li>
+</ul>
+</p>
+<p>More detailed information you can find <a href="%url%" target="_blank" class="external-link">here</a>.</p>
+HTML
+                    ,
+                    Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'x/FYgVAQ')
+                ),
+                'title'   => Mage::helper('M2ePro')->__('Search Settings')
+            )
+        );
 
-    AmazonListingCreateSearchObj = new AmazonListingCreateSearch();
-
-    $('general_id_mode').observe('change', AmazonListingCreateSearchObj.general_id_mode_change);
-    $('worldwide_id_mode').observe('change', AmazonListingCreateSearchObj.worldwide_id_mode_change);
-
-</script>
-HTML;
-
-        return $breadcrumb->_toHtml()
-            . $helpBlock->_toHtml()
-            . parent::_toHtml()
-            . $javascript;
+        return $breadcrumb->toHtml() .
+            $helpBlock->toHtml() .
+            parent::_toHtml();
     }
 
     //########################################
@@ -306,10 +294,10 @@ HTML;
     public function getDefaultFieldsValues()
     {
         return array(
-            'general_id_mode' => AmazonListing::GENERAL_ID_MODE_NOT_SET,
+            'general_id_mode'             => AmazonListing::GENERAL_ID_MODE_NOT_SET,
             'general_id_custom_attribute' => '',
 
-            'worldwide_id_mode' => AmazonListing::WORLDWIDE_ID_MODE_NOT_SET,
+            'worldwide_id_mode'             => AmazonListing::WORLDWIDE_ID_MODE_NOT_SET,
             'worldwide_id_custom_attribute' => '',
 
             'search_by_magento_title_mode' => AmazonListing::SEARCH_BY_MAGENTO_TITLE_MODE_NONE
@@ -332,15 +320,14 @@ HTML;
         return $data;
     }
 
+    //########################################
+
     protected function getListing()
     {
-        if (!$listingId = $this->getRequest()->getParam('id')) {
-            throw new Ess_M2ePro_Model_Exception('Listing is not defined');
-        }
-
-        if ($this->_listing === null) {
+        if ($this->_listing === null && $this->getRequest()->getParam('id')) {
             $this->_listing = Mage::helper('M2ePro/Component_Amazon')->getCachedObject(
-                'Listing', $listingId
+                'Listing',
+                $this->getRequest()->getParam('id')
             );
         }
 
@@ -373,6 +360,8 @@ HTML;
     public function setUseFormContainer($useFormContainer)
     {
         $this->_useFormContainer = $useFormContainer;
+
+        return $this;
     }
 
     //########################################

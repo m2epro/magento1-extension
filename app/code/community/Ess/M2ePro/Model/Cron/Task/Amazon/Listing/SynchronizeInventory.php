@@ -11,8 +11,8 @@ use Ess_M2ePro_Model_Cron_Task_Amazon_Listing_SynchronizeInventory_ProcessingRun
 class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_SynchronizeInventory
     extends Ess_M2ePro_Model_Cron_Task_Abstract
 {
-    const NICK = 'amazon/listing/synchronize_inventory';
-    const INTERVAL_PER_ACCOUNT = 86400;
+    const NICK                         = 'amazon/listing/synchronize_inventory';
+    const DEFAULT_INTERVAL_PER_ACCOUNT = 86400;
 
     //####################################
 
@@ -57,10 +57,10 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_SynchronizeInventory
             return;
         }
 
-        $this->getOperationHistory()->addText('Starting Account "'.$account->getTitle().'"');
+        $this->getOperationHistory()->addText('Starting Account "' . $account->getTitle() . '"');
         $this->getOperationHistory()->addTimePoint(
-            __METHOD__.'process'.$account->getId(),
-            'Process Account '.$account->getTitle()
+            __METHOD__ . 'process' . $account->getId(),
+            'Process Account ' . $account->getTitle()
         );
 
         try {
@@ -80,7 +80,9 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_SynchronizeInventory
             /** @var Ess_M2ePro_Model_Amazon_Connector_Dispatcher $dispatcherObject */
             $dispatcherObject = Mage::getModel('M2ePro/Amazon_Connector_Dispatcher');
             $connectorObj = $dispatcherObject->getCustomConnector(
-                'Cron_Task_Amazon_Listing_SynchronizeInventory_Requester', $params, $account
+                'Cron_Task_Amazon_Listing_SynchronizeInventory_Requester',
+                $params,
+                $account
             );
             $dispatcherObject->process($connectorObj);
         } catch (Exception $exception) {
@@ -92,7 +94,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_SynchronizeInventory
             $this->processTaskException($exception);
         }
 
-        $this->getOperationHistory()->saveTimePoint(__METHOD__.'process'.$account->getId());
+        $this->getOperationHistory()->saveTimePoint(__METHOD__ . 'process' . $account->getId());
     }
 
     /**
@@ -101,8 +103,12 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_SynchronizeInventory
      */
     protected function getAccountForProcess()
     {
+        $interval = $this->getConfigValue('interval_per_account') !== null
+            ? $this->getConfigValue('interval_per_account')
+            : self::DEFAULT_INTERVAL_PER_ACCOUNT;
+
         $date = new \DateTime('now', new \DateTimeZone('UTC'));
-        $date->modify('-' . self::INTERVAL_PER_ACCOUNT . ' seconds');
+        $date->modify('-' . $interval . ' seconds');
 
         /** @var Ess_M2ePro_Model_Resource_Account_Collection $collection */
         $collection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Account');
@@ -144,6 +150,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_SynchronizeInventory
 
         if ($lockItemManager->isInactiveMoreThanSeconds(Ess_M2ePro_Model_Processing_Runner::MAX_LIFETIME)) {
             $lockItemManager->remove();
+
             return false;
         }
 
@@ -157,6 +164,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_SynchronizeInventory
     protected function isFullItemsDataAlreadyReceived(Ess_M2ePro_Model_Account $account)
     {
         $additionalData = (array)Mage::helper('M2ePro')->jsonDecode($account->getAdditionalData());
+
         return !empty($additionalData['is_amazon_other_listings_full_items_data_already_received']);
     }
 

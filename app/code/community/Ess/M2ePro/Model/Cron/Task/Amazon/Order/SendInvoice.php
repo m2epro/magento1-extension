@@ -6,6 +6,10 @@
  * @license    Commercial use is forbidden
  */
 
+use Ess_M2ePro_Model_Amazon_Account as AmazonAccount;
+use Ess_M2ePro_Model_Amazon_Order as AmazonOrder;
+use Ess_M2ePro_Model_Amazon_Order_Invoice as AmazonOrderInvoice;
+
 class Ess_M2ePro_Model_Cron_Task_Amazon_Order_SendInvoice
     extends Ess_M2ePro_Model_Cron_Task_Abstract
 {
@@ -51,11 +55,11 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_SendInvoice
         foreach ($permittedAccounts as $account) {
             /** @var Ess_M2ePro_Model_Account $account */
 
-            $this->getOperationHistory()->addText('Starting account "'.$account->getTitle().'"');
+            $this->getOperationHistory()->addText('Starting account "' . $account->getTitle() . '"');
 
             $this->getOperationHistory()->addTimePoint(
-                __METHOD__.'process'.$account->getId(),
-                'Process account '.$account->getTitle()
+                __METHOD__ . 'process' . $account->getId(),
+                'Process account ' . $account->getTitle()
             );
 
             try {
@@ -70,7 +74,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_SendInvoice
                 $this->processTaskException($exception);
             }
 
-            $this->getOperationHistory()->saveTimePoint(__METHOD__.'process'.$account->getId());
+            $this->getOperationHistory()->saveTimePoint(__METHOD__ . 'process' . $account->getId());
         }
     }
 
@@ -78,11 +82,15 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_SendInvoice
 
     protected function getPermittedAccounts()
     {
-        /** @var $accountsCollection Mage_Core_Model_Resource_Db_Collection_Abstract */
+        /** @var $accountsCollection Ess_M2ePro_Model_Resource_Amazon_Account_Collection */
         $accountsCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Account');
-        $accountsCollection->addFieldToFilter(
-            'auto_invoicing',
-            Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_AUTO_INVOICING_UPLOAD_MAGENTO_INVOICES
+        $accountsCollection->getSelect()->where(
+            'auto_invoicing = ' . AmazonAccount::AUTO_INVOICING_UPLOAD_MAGENTO_INVOICES .
+            ' OR (' .
+                'auto_invoicing = ' . AmazonAccount::AUTO_INVOICING_VAT_CALCULATION_SERVICE .
+                ' AND ' .
+                'invoice_generation = ' . AmazonAccount::INVOICE_GENERATION_BY_EXTENSION .
+            ')'
         );
         return $accountsCollection->getItems();
     }
@@ -98,9 +106,6 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_SendInvoice
 
         Mage::getResourceModel('M2ePro/Order_Change')->incrementAttemptCount(array_keys($relatedChanges));
 
-        /** @var $dispatcherObject Ess_M2ePro_Model_Amazon_Connector_Dispatcher */
-        $dispatcherObject = Mage::getModel('M2ePro/Amazon_Connector_Dispatcher');
-
         $failedChangesIds = array();
         $changesCount = count($relatedChanges);
 
@@ -110,40 +115,266 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_SendInvoice
             /** @var Ess_M2ePro_Model_Order $order */
             $order = Mage::helper('M2ePro/Component_Amazon')->getObject('Order', $change->getOrderId());
 
-            if (!$order->getChildObject()->canSendInvoice()) {
-                $failedChangesIds[] = $change->getId();
+            if ($changeParams['invoice_source'] == AmazonOrder::INVOICE_SOURCE_MAGENTO) {
+                if (($changeParams['document_type'] == AmazonOrderInvoice::DOCUMENT_TYPE_INVOICE &&
+                        !$order->getChildObject()->canSendMagentoInvoice()) ||
+                    ($changeParams['document_type'] == AmazonOrderInvoice::DOCUMENT_TYPE_CREDIT_NOTE &&
+                        !$order->getChildObject()->canSendMagentoCreditmemo())
+                ) {
+                    $failedChangesIds[] = $change->getId();
+                    continue;
+                }
+
+                $this->processMagentoDocument($account, $order, $change);
+
+                if ($changesCount > 1) {
+                    $this->trotlleProcess();
+                }
                 continue;
             }
 
-            $documentData = $this->getDocumentData($order, $changeParams['document_type']);
+            if ($changeParams['invoice_source'] == AmazonOrder::INVOICE_SOURCE_EXTENSION) {
+                if (!$order->getChildObject()->canSendInvoiceFromReport()) {
+                    $failedChangesIds[] = $change->getId();
+                    continue;
+                }
 
-            $connectorData = array(
-                'change_id' => $change->getId(),
-                'order_id'  => $change->getOrderId(),
-                'amazon_order_id' => $order->getChildObject()->getAmazonOrderId(),
-                'document_number' => $documentData['document_number'],
-                'document_pdf' => $documentData['document_pdf'],
-                'document_type' => $changeParams['document_type']
-            );
-
-            /** @var Ess_M2ePro_Model_Cron_Task_Amazon_Order_SendInvoice_Requester $connectorObj */
-            $connectorObj = $dispatcherObject->getCustomConnector(
-                'Cron_Task_Amazon_Order_SendInvoice_Requester',
-                array('order' => $connectorData), $account
-            );
-            $dispatcherObject->process($connectorObj);
-
-            /**
-             * Amazon trolling 1 request per 3 sec.
-             */
-            if ($changesCount > 1) {
-                // @codingStandardsIgnoreLine
-                sleep(3);
+                $this->processExtensionDocument($order, $change);
             }
         }
 
         if (!empty($failedChangesIds)) {
             Mage::getResourceModel('M2ePro/Order_Change')->deleteByIds($failedChangesIds);
+        }
+    }
+
+    protected function processMagentoDocument($account, $order, $change)
+    {
+        $changeParams = $change->getParams();
+        $documentData = $this->getMagentoDocumentData($order, $changeParams['document_type']);
+
+        $requestData = array(
+            'change_id'       => $change->getId(),
+            'order_id'        => $change->getOrderId(),
+            'amazon_order_id' => $order->getChildObject()->getAmazonOrderId(),
+            'document_number' => $documentData['document_number'],
+            'document_type'   => $changeParams['document_type'],
+            'document_pdf'    => $documentData['document_pdf']
+        );
+
+        /** @var $dispatcherObject Ess_M2ePro_Model_Amazon_Connector_Dispatcher */
+        $dispatcherObject = Mage::getModel('M2ePro/Amazon_Connector_Dispatcher');
+        /** @var Ess_M2ePro_Model_Cron_Task_Amazon_Order_SendInvoice_Requester $connectorObj */
+        $connectorObj = $dispatcherObject->getCustomConnector(
+            'Cron_Task_Amazon_Order_SendInvoice_Requester',
+            array('order' => $requestData), $account
+        );
+
+        $dispatcherObject->process($connectorObj);
+    }
+
+    /**
+     * @param Ess_M2ePro_Model_Order $order
+     * @param $type
+     * @return array
+     * @throws Zend_Pdf_Exception
+     */
+    protected function getMagentoDocumentData($order, $type)
+    {
+        switch ($type) {
+            case AmazonOrderInvoice::DOCUMENT_TYPE_INVOICE:
+                /** @var Mage_Sales_Model_Resource_Order_Invoice_Collection $invoices */
+                $invoices = $order->getMagentoOrder()->getInvoiceCollection();
+                /** @var Mage_Sales_Model_Order_Invoice $invoice */
+                $invoice = $invoices->getLastItem();
+
+                /** @var Mage_Sales_Model_Order_Pdf_Invoice $orderPdfInvoice */
+                $orderPdfInvoice = Mage::getModel('sales/order_pdf_invoice');
+                $pdf = $orderPdfInvoice->getPdf(array($invoice));
+
+                $documentNumber = $invoice->getIncrementId();
+                $documentPdf = $pdf->render();
+                break;
+
+            case AmazonOrderInvoice::DOCUMENT_TYPE_CREDIT_NOTE:
+                /** @var Mage_Sales_Model_Resource_Order_Creditmemo_Collection $creditmemos */
+                $creditmemos = $order->getMagentoOrder()->getCreditmemosCollection();
+                /** @var Mage_Sales_Model_Order_Creditmemo $creditmemo */
+                $creditmemo = $creditmemos->getLastItem();
+
+                /** @var Mage_Sales_Model_Order_Pdf_Creditmemo $orderpPdfCreditmemos */
+                $orderpPdfCreditmemos = Mage::getModel('sales/order_pdf_creditmemo');
+                $pdf = $orderpPdfCreditmemos->getPdf(array($creditmemo));
+
+                $documentNumber = $creditmemo->getIncrementId();
+                $documentPdf = $pdf->render();
+                break;
+
+            default:
+                $documentNumber = '';
+                $documentPdf = '';
+                break;
+        }
+
+        return array(
+            'document_number' => $documentNumber,
+            'document_pdf'    => $documentPdf
+        );
+    }
+
+    //########################################
+
+    protected function processExtensionDocument($order, $change)
+    {
+        $reportData = $order->getChildObject()->getSettings('invoice_data_report');
+
+        $itemsByShippingId = $this->groupItemsByField($reportData['items'], 'shipping-id');
+
+        foreach ($itemsByShippingId as $shippingData) {
+            $itemsByInvoiceStatus = $this->groupItemsByField($shippingData, 'invoice-status');
+
+            if (!empty($itemsByInvoiceStatus['InvoicePending'])) {
+                $this->processExtensionDocumentInvoice($itemsByInvoiceStatus['InvoicePending'], $order, $change);
+            }
+
+            if (!empty($itemsByInvoiceStatus['CreditNotePending'])) {
+                $this->processExtensionDocumentCreditNote($itemsByInvoiceStatus['CreditNotePending'], $order, $change);
+            }
+        }
+
+        $order->setData('invoice_data_report', null);
+        $order->save();
+    }
+
+    protected function processExtensionDocumentInvoice($items, $order, $change)
+    {
+        $invocieData = $order->getChildObject()->getSettings('invoice_data_report');
+        $invocieData['shipping-id'] = $items[0]['shipping-id'];
+        $invocieData['transaction-id'] = $items[0]['transaction-id'];
+        $invocieData['items'] = $items;
+
+        /** @var Ess_M2ePro_Model_Amazon_Order_Invoice $lastInvoice */
+        $lastInvoice = Mage::getModel('M2ePro/Amazon_Order_Invoice')->getCollection()
+            ->addFieldToFilter('document_type', AmazonOrderInvoice::DOCUMENT_TYPE_INVOICE)
+            ->setOrder('create_date', Varien_Data_Collection::SORT_ORDER_DESC)
+            ->getFirstItem();
+
+        $lastInvoiceNumber = $lastInvoice->getDocumentNumber();
+
+        /** @var Mage_Eav_Model_Entity_Increment_Numeric $incrementModel */
+        $incrementModel = Mage::getModel('eav/entity_increment_numeric');
+        $incrementModel->setPrefix('IN-')
+            ->setPadLength(12)
+            ->setLastId($lastInvoiceNumber);
+
+        /** @var Ess_M2ePro_Model_Amazon_Order_Invoice $invoice */
+        $invoice = Mage::getModel('M2ePro/Amazon_Order_Invoice');
+        $invoice->addData(array(
+            'order_id' => $order->getId(),
+            'document_type' => AmazonOrderInvoice::DOCUMENT_TYPE_INVOICE,
+            'document_number' => $incrementModel->getNextId()
+        ));
+        $invoice->setSettings('document_data', $invocieData);
+        $invoice->save();
+
+        /** @var Ess_M2ePro_Model_Amazon_Order_Invoice_Pdf_Invoice $orderPdfInvoice */
+        $orderPdfInvoice = Mage::getModel('M2ePro/Amazon_Order_Invoice_Pdf_Invoice');
+        $orderPdfInvoice->setOrder($order);
+        $orderPdfInvoice->setInvocie($invoice);
+        $pdf = $orderPdfInvoice->getPdf();
+
+        $documentPdf = $pdf->render();
+
+        $requestData = array(
+            'change_id' => $change->getId(),
+            'order_id'  => $change->getOrderId(),
+            'amazon_order_id' => $invoice->getSetting('document_data', 'order-id'),
+            'document_shipping_id' => $invoice->getSetting('document_data', 'shipping-id'),
+            'document_transaction_id' => $invoice->getSetting('document_data', 'transaction-id'),
+            'document_total_amount' => $orderPdfInvoice->getDocumentTotal(),
+            'document_total_vat_amount' => $orderPdfInvoice->getDocumentVatTotal(),
+            'document_type' => $invoice->getDocumentType(),
+            'document_number' => $invoice->getDocumentNumber(),
+            'document_pdf' => $documentPdf
+        );
+
+        /** @var $dispatcherObject Ess_M2ePro_Model_Amazon_Connector_Dispatcher */
+        $dispatcherObject = Mage::getModel('M2ePro/Amazon_Connector_Dispatcher');
+        /** @var Ess_M2ePro_Model_Cron_Task_Amazon_Order_SendInvoice_Requester $connectorObj */
+        $connectorObj = $dispatcherObject->getCustomConnector(
+            'Cron_Task_Amazon_Order_SendInvoice_Requester',
+            array('order' => $requestData), $order->getAccount()
+        );
+
+        $dispatcherObject->process($connectorObj);
+        $this->trotlleProcess();
+    }
+
+    protected function processExtensionDocumentCreditNote($items, $order, $change)
+    {
+        $itemsByTransactionId = $this->groupItemsByField($items, 'transaction-id');
+
+        foreach ($itemsByTransactionId as $items) {
+            $invocieData = $order->getChildObject()->getSettings('invoice_data_report');
+            $invocieData['shipping-id'] = $items[0]['shipping-id'];
+            $invocieData['transaction-id'] = $items[0]['transaction-id'];
+            $invocieData['items'] = $items;
+
+            /** @var Ess_M2ePro_Model_Amazon_Order_Invoice $lastInvoice */
+            $lastInvoice = Mage::getModel('M2ePro/Amazon_Order_Invoice')->getCollection()
+                ->addFieldToFilter('document_type', AmazonOrderInvoice::DOCUMENT_TYPE_CREDIT_NOTE)
+                ->setOrder('create_date', Varien_Data_Collection::SORT_ORDER_DESC)
+                ->getFirstItem();
+
+            $lastInvoiceNumber = $lastInvoice->getDocumentNumber();
+
+            /** @var Mage_Eav_Model_Entity_Increment_Numeric $incrementModel */
+            $incrementModel = Mage::getModel('eav/entity_increment_numeric');
+            $incrementModel->setPrefix('CN-')
+                ->setPadLength(12)
+                ->setLastId($lastInvoiceNumber);
+
+            /** @var Ess_M2ePro_Model_Amazon_Order_Invoice $invoice */
+            $invoice = Mage::getModel('M2ePro/Amazon_Order_Invoice');
+            $invoice->addData(array(
+                'order_id' => $order->getId(),
+                'document_type' => AmazonOrderInvoice::DOCUMENT_TYPE_CREDIT_NOTE,
+                'document_number' => $incrementModel->getNextId()
+            ));
+            $invoice->setSettings('document_data', $invocieData);
+            $invoice->save();
+
+            /** @var Ess_M2ePro_Model_Amazon_Order_Invoice_Pdf_CreditNote $orderPdfCreditNote */
+            $orderPdfCreditNote = Mage::getModel('M2ePro/Amazon_Order_Invoice_Pdf_CreditNote');
+            $orderPdfCreditNote->setOrder($order);
+            $orderPdfCreditNote->setInvocie($invoice);
+            $pdf = $orderPdfCreditNote->getPdf();
+
+            $documentPdf = $pdf->render();
+
+            $requestData = array(
+                'change_id' => $change->getId(),
+                'order_id'  => $change->getOrderId(),
+                'amazon_order_id' => $invoice->getSetting('document_data', 'order-id'),
+                'document_shipping_id' => $invoice->getSetting('document_data', 'shipping-id'),
+                'document_transaction_id' => $invoice->getSetting('document_data', 'transaction-id'),
+                'document_total_amount' => $orderPdfCreditNote->getDocumentTotal(),
+                'document_total_vat_amount' => $orderPdfCreditNote->getDocumentVatTotal(),
+                'document_type' => $invoice->getDocumentType(),
+                'document_number' => $invoice->getDocumentNumber(),
+                'document_pdf' => $documentPdf
+            );
+
+            /** @var $dispatcherObject Ess_M2ePro_Model_Amazon_Connector_Dispatcher */
+            $dispatcherObject = Mage::getModel('M2ePro/Amazon_Connector_Dispatcher');
+            /** @var Ess_M2ePro_Model_Cron_Task_Amazon_Order_SendInvoice_Requester $connectorObj */
+            $connectorObj = $dispatcherObject->getCustomConnector(
+                'Cron_Task_Amazon_Order_SendInvoice_Requester',
+                array('order' => $requestData), $order->getAccount()
+            );
+
+            $dispatcherObject->process($connectorObj);
+            $this->trotlleProcess();
         }
     }
 
@@ -185,53 +416,24 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_SendInvoice
 
     //########################################
 
-    /**
-     * @param Ess_M2ePro_Model_Order $order
-     * @param $type
-     * @return array
-     * @throws Zend_Pdf_Exception
-     */
-    protected function getDocumentData($order, $type)
+    protected function groupItemsByField($data, $field)
     {
-        switch ($type) {
-            case Ess_M2ePro_Model_Amazon_Order::DOCUMENT_TYPE_INVOICE:
-                /** @var Mage_Sales_Model_Resource_Order_Invoice_Collection $invoices */
-                $invoices = $order->getMagentoOrder()->getInvoiceCollection();
-                /** @var Mage_Sales_Model_Order_Invoice $invoice */
-                $invoice = $invoices->getLastItem();
-
-                /** @var Mage_Sales_Model_Order_Pdf_Invoice $orderPdfInvoice */
-                $orderPdfInvoice = Mage::getModel('sales/order_pdf_invoice');
-                $pdf = $orderPdfInvoice->getPdf(array($invoice));
-
-                $documentNumber = $invoice->getIncrementId();
-                $documentPdf = $pdf->render();
-                break;
-
-            case Ess_M2ePro_Model_Amazon_Order::DOCUMENT_TYPE_CREDIT_NOTE:
-                /** @var Mage_Sales_Model_Resource_Order_Creditmemo_Collection $creditmemos */
-                $creditmemos = $order->getMagentoOrder()->getCreditmemosCollection();
-                /** @var Mage_Sales_Model_Order_Creditmemo $creditmemo */
-                $creditmemo = $creditmemos->getLastItem();
-
-                /** @var Mage_Sales_Model_Order_Pdf_Creditmemo $orderpPdfCreditmemos */
-                $orderpPdfCreditmemos = Mage::getModel('sales/order_pdf_creditmemo');
-                $pdf = $orderpPdfCreditmemos->getPdf(array($creditmemo));
-
-                $documentNumber = $creditmemo->getIncrementId();
-                $documentPdf = $pdf->render();
-                break;
-
-            default:
-                $documentNumber = '';
-                $documentPdf = '';
-                break;
+        $groupedData = array();
+        foreach ($data as $row) {
+            $groupedData[$row[$field]][] = $row;
         }
+        return $groupedData;
+    }
 
-        return array(
-            'document_number' => $documentNumber,
-            'document_pdf' => $documentPdf
-        );
+    //########################################
+
+    protected function trotlleProcess()
+    {
+        /**
+         * Amazon trolling 1 request per 3 sec.
+         */
+        // @codingStandardsIgnoreLine
+        sleep(3);
     }
 
     //########################################

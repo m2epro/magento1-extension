@@ -544,7 +544,10 @@ HTML;
             'cpe.entity_id=main_table.product_id',
             array()
         );
-        $childCollection->addFieldToFilter('cpe.sku', array('like' => '%'.$value.'%'));
+        $childCollection->addFieldToFilter(
+            'cpe.sku',
+            array('like' => '%' . $this->getValueForSubQuery($value) . '%')
+        );
 
         $collection->joinTable(
             array('product_sku_subQuery' => $childCollection->getSelect()),
@@ -577,7 +580,10 @@ HTML;
         }
 
         $childCollection = $this->getChildProductsCollection();
-        $childCollection->addFieldToFilter('sku', array('like' => '%'.$value.'%'));
+        $childCollection->addFieldToFilter(
+            'sku',
+            array('like' => '%' . $this->getValueForSubQuery($value) . '%')
+        );
 
         $collection->joinTable(
             array('online_sku_subQuery' => $childCollection->getSelect()),
@@ -608,7 +614,10 @@ HTML;
         }
 
         $childCollection = $this->getChildProductsCollection();
-        $childCollection->addFieldToFilter('general_id', array('like' => '%'.$value.'%'));
+        $childCollection->addFieldToFilter(
+            'general_id',
+            array('like' => '%' . $this->getValueForSubQuery($value) . '%')
+        );
 
         $collection->joinTable(
             array('asin_subQuery' => $childCollection->getSelect()),

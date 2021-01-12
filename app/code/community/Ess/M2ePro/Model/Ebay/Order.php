@@ -628,7 +628,7 @@ class Ess_M2ePro_Model_Ebay_Order extends Ess_M2ePro_Model_Component_Child_Ebay_
         $channelItems = $this->getParentObject()->getChannelItems();
 
         if (empty($channelItems)) {
-            // 3rd party order
+            // Unmanaged order
             // ---------------------------------------
             $storeId = $this->getEbayAccount()->getMagentoOrdersListingsOtherStoreId();
             // ---------------------------------------
@@ -697,7 +697,9 @@ class Ess_M2ePro_Model_Ebay_Order extends Ess_M2ePro_Model_Component_Child_Ebay_
         $shippingDetails = $this->getShippingDetails();
         $shippingDetails['address'] = $buyerInfo['address'];
 
-        $this->getParentObject()->setData('buyer_name', $buyerInfo['name']);
+        $buyerName = trim($buyerInfo['first_name']) . ' ' . trim($buyerInfo['last_name']);
+
+        $this->getParentObject()->setData('buyer_name', $buyerName);
         $this->getParentObject()->setSettings('shipping_details', $shippingDetails);
 
         $this->getParentObject()->save();

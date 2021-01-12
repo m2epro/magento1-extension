@@ -164,8 +164,8 @@ class Ess_M2ePro_Adminhtml_Walmart_AccountController
                     $dispatcherObject->process($connectorObj);
                 } else {
 
-                    $requestData = array_diff_assoc($requestData, $oldData);
-                    if (!empty($requestData)) {
+                    $arrayDiffAssoc = array_diff_assoc($requestData, $oldData);
+                    if (!empty($arrayDiffAssoc)) {
                         $connectorObj = $dispatcherObject->getConnector(
                             'account', 'update', 'entityRequester', $requestData, $id
                         );

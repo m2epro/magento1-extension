@@ -6,7 +6,7 @@ window.WalmartListingCreateGeneral = Class.create(Common, {
 
     // ---------------------------------------
 
-    initialize: function () {
+    initialize: function() {
         var self = this;
 
         self.marketplaceSynchProgressObj = new WalmartListingCreateGeneralMarketplaceSynchProgress(
@@ -23,7 +23,19 @@ window.WalmartListingCreateGeneral = Class.create(Common, {
         self.initAccount();
     },
 
-    initAccount: function () {
+    initObservers: function() {
+        $('store_id').observe('change', WalmartListingCreateGeneralObj.store_id_change);
+        $('store_id').simulate('change');
+
+        $('account_id').observe('change', WalmartListingSettingsObj.reloadSellingFormatTemplates);
+        if ($('account_id').value) {
+            $('account_id').simulate('change');
+        }
+    },
+
+    // ---------------------------------------
+
+    initAccount: function() {
         var self = this;
 
         $('account_id').observe('change', function() {
@@ -47,7 +59,7 @@ window.WalmartListingCreateGeneral = Class.create(Common, {
                 }
             }
 
-            WalmartListingSettingsObj.checkMessages();
+            WalmartListingSettingsObj.checkSellingFormatMessages();
         });
 
         self.renderAccounts();
@@ -69,7 +81,7 @@ window.WalmartListingCreateGeneral = Class.create(Common, {
         });
     },
 
-    save_and_next: function () {
+    save_and_next: function() {
         var self = this;
 
         if (self.marketplaceSynchProgressObj.runningNow) {
@@ -85,7 +97,7 @@ window.WalmartListingCreateGeneral = Class.create(Common, {
         }
     },
 
-    renderAccounts: function (callback) {
+    renderAccounts: function(callback) {
         var self = this;
 
         var account_add_btn = $('add_account_button');
@@ -118,7 +130,7 @@ window.WalmartListingCreateGeneral = Class.create(Common, {
                     self.accounts = accounts;
                 }
 
-                if (accounts.length == 0) {
+                if (accounts.length === 0) {
                     account_add_btn.down('span').update(M2ePro.translator.translate('Add'));
                     account_label_el.update(M2ePro.translator.translate('Account not found, please create it.'));
                     account_label_el.show();
@@ -147,7 +159,10 @@ window.WalmartListingCreateGeneral = Class.create(Common, {
                     if (M2ePro.formData.wizard) {
                         accountElement = new Element('span').update(account.title);
                     } else {
-                        var accountLink = M2ePro.url.get('adminhtml_walmart_account/edit', {'id': account.id, close_on_save: 1});
+                        var accountLink = M2ePro.url.get('adminhtml_walmart_account/edit', {
+                            'id': account.id,
+                            close_on_save: 1
+                        });
                         accountElement = new Element('a', {
                             'href': accountLink,
                             'target': '_blank'
@@ -179,7 +194,7 @@ window.WalmartListingCreateGeneral = Class.create(Common, {
         });
     },
 
-    synchronizeMarketplace: function (marketplaceId) {
+    synchronizeMarketplace: function(marketplaceId) {
         var self = this;
 
         new Ajax.Request(M2ePro.url.get('adminhtml_general/isMarketplaceEnabled'), {
@@ -214,7 +229,7 @@ window.WalmartListingCreateGeneral = Class.create(Common, {
         });
     },
 
-    isAccountsEqual: function (newAccounts) {
+    isAccountsEqual: function(newAccounts) {
         if (!newAccounts.length && !this.accounts.length) {
             return true;
         }
@@ -234,10 +249,9 @@ window.WalmartListingCreateGeneral = Class.create(Common, {
 
     // ---------------------------------------
 
-    store_id_change: function ()
-    {
-        WalmartListingSettingsObj.checkMessages();
-    },
+    store_id_change: function() {
+        WalmartListingSettingsObj.checkSellingFormatMessages();
+    }
 
     // ---------------------------------------
 });

@@ -15,33 +15,33 @@ class Ess_M2ePro_Model_Ebay_Template_Description extends Ess_M2ePro_Model_Compon
     const TITLE_MODE_PRODUCT = 0;
     const TITLE_MODE_CUSTOM  = 1;
 
-    const SUBTITLE_MODE_NONE     = 0;
-    const SUBTITLE_MODE_CUSTOM   = 1;
+    const SUBTITLE_MODE_NONE   = 0;
+    const SUBTITLE_MODE_CUSTOM = 1;
 
     const DESCRIPTION_MODE_PRODUCT = 0;
     const DESCRIPTION_MODE_SHORT   = 1;
     const DESCRIPTION_MODE_CUSTOM  = 2;
 
-    const CONDITION_MODE_EBAY       = 0;
-    const CONDITION_MODE_ATTRIBUTE  = 1;
-    const CONDITION_MODE_NONE       = 2;
+    const CONDITION_MODE_EBAY      = 0;
+    const CONDITION_MODE_ATTRIBUTE = 1;
+    const CONDITION_MODE_NONE      = 2;
 
-    const CONDITION_EBAY_NEW                        = 1000;
-    const CONDITION_EBAY_NEW_OTHER                  = 1500;
-    const CONDITION_EBAY_NEW_WITH_DEFECT            = 1750;
-    const CONDITION_EBAY_MANUFACTURER_REFURBISHED   = 2000;
-    const CONDITION_EBAY_SELLER_REFURBISHED         = 2500;
-    const CONDITION_EBAY_USED                       = 3000;
-    const CONDITION_EBAY_VERY_GOOD                  = 4000;
-    const CONDITION_EBAY_GOOD                       = 5000;
-    const CONDITION_EBAY_ACCEPTABLE                 = 6000;
-    const CONDITION_EBAY_NOT_WORKING                = 7000;
+    const CONDITION_EBAY_NEW                   = 1000;
+    const CONDITION_EBAY_NEW_OTHER             = 1500;
+    const CONDITION_EBAY_NEW_WITH_DEFECT       = 1750;
+    const CONDITION_EBAY_CERTIFIED_REFURBISHED = 2000;
+    const CONDITION_EBAY_SELLER_REFURBISHED    = 2500;
+    const CONDITION_EBAY_USED                  = 3000;
+    const CONDITION_EBAY_VERY_GOOD             = 4000;
+    const CONDITION_EBAY_GOOD                  = 5000;
+    const CONDITION_EBAY_ACCEPTABLE            = 6000;
+    const CONDITION_EBAY_NOT_WORKING           = 7000;
 
-    const CONDITION_NOTE_MODE_NONE    = 0;
-    const CONDITION_NOTE_MODE_CUSTOM  = 1;
+    const CONDITION_NOTE_MODE_NONE   = 0;
+    const CONDITION_NOTE_MODE_CUSTOM = 1;
 
-    const EDITOR_TYPE_SIMPLE    = 0;
-    const EDITOR_TYPE_TINYMCE   = 1;
+    const EDITOR_TYPE_SIMPLE  = 0;
+    const EDITOR_TYPE_TINYMCE = 1;
 
     const CUT_LONG_TITLE_DISABLED = 0;
     const CUT_LONG_TITLE_ENABLED  = 1;
@@ -63,9 +63,9 @@ class Ess_M2ePro_Model_Ebay_Template_Description extends Ess_M2ePro_Model_Compon
     const GALLERY_TYPE_PLUS     = 2;
     const GALLERY_TYPE_FEATURED = 3;
 
-    const IMAGE_MAIN_MODE_NONE       = 0;
-    const IMAGE_MAIN_MODE_PRODUCT    = 1;
-    const IMAGE_MAIN_MODE_ATTRIBUTE  = 2;
+    const IMAGE_MAIN_MODE_NONE      = 0;
+    const IMAGE_MAIN_MODE_PRODUCT   = 1;
+    const IMAGE_MAIN_MODE_ATTRIBUTE = 2;
 
     const GALLERY_IMAGES_MODE_NONE      = 0;
     const GALLERY_IMAGES_MODE_PRODUCT   = 1;
@@ -78,21 +78,21 @@ class Ess_M2ePro_Model_Ebay_Template_Description extends Ess_M2ePro_Model_Compon
     const USE_SUPERSIZE_IMAGES_NO  = 0;
     const USE_SUPERSIZE_IMAGES_YES = 1;
 
-    const WATERMARK_MODE_NO   = 0;
-    const WATERMARK_MODE_YES  = 1;
+    const WATERMARK_MODE_NO  = 0;
+    const WATERMARK_MODE_YES = 1;
 
-    const WATERMARK_POSITION_TOP = 0;
+    const WATERMARK_POSITION_TOP    = 0;
     const WATERMARK_POSITION_MIDDLE = 1;
     const WATERMARK_POSITION_BOTTOM = 2;
 
-    const WATERMARK_SCALE_MODE_NONE = 0;
+    const WATERMARK_SCALE_MODE_NONE     = 0;
     const WATERMARK_SCALE_MODE_IN_WIDTH = 1;
-    const WATERMARK_SCALE_MODE_STRETCH = 2;
+    const WATERMARK_SCALE_MODE_STRETCH  = 2;
 
-    const WATERMARK_TRANSPARENT_MODE_NO = 0;
+    const WATERMARK_TRANSPARENT_MODE_NO  = 0;
     const WATERMARK_TRANSPARENT_MODE_YES = 1;
 
-    const WATERMARK_CACHE_TIME = 604800; // 7 days
+    const WATERMARK_CACHE_TIME     = 604800; // 7 days
     const GALLERY_IMAGES_COUNT_MAX = 11;
 
     const INSTRUCTION_TYPE_MAGENTO_STATIC_BLOCK_IN_DESCRIPTION_CHANGED = 'magento_static_block_in_description_changed';
@@ -131,21 +131,17 @@ class Ess_M2ePro_Model_Ebay_Template_Description extends Ess_M2ePro_Model_Compon
         }
 
         return (bool)Mage::getModel('M2ePro/Ebay_Listing')
-                            ->getCollection()
-                            ->addFieldToFilter(
-                                'template_description_mode',
-                                Ess_M2ePro_Model_Ebay_Template_Manager::MODE_TEMPLATE
-                            )
-                            ->addFieldToFilter('template_description_id', $this->getId())
-                            ->getSize() ||
-               (bool)Mage::getModel('M2ePro/Ebay_Listing_Product')
-                            ->getCollection()
-                            ->addFieldToFilter(
-                                'template_description_mode',
-                                Ess_M2ePro_Model_Ebay_Template_Manager::MODE_TEMPLATE
-                            )
-                            ->addFieldToFilter('template_description_id', $this->getId())
-                            ->getSize();
+                ->getCollection()
+                ->addFieldToFilter('template_description_id', $this->getId())
+                ->getSize() ||
+            (bool)Mage::getModel('M2ePro/Ebay_Listing_Product')
+                ->getCollection()
+                ->addFieldToFilter(
+                    'template_description_mode',
+                    Ess_M2ePro_Model_Ebay_Template_Manager::MODE_TEMPLATE
+                )
+                ->addFieldToFilter('template_description_id', $this->getId())
+                ->getSize();
     }
 
     public function deleteInstance()
@@ -156,7 +152,7 @@ class Ess_M2ePro_Model_Ebay_Template_Description extends Ess_M2ePro_Model_Compon
             array('child_folder' => 'ebay/template/description/watermarks')
         );
 
-        $watermarkPath = $varDir->getPath().$this->getId().'.png';
+        $watermarkPath = $varDir->getPath() . $this->getId() . '.png';
         if (is_file($watermarkPath)) {
             @unlink($watermarkPath);
         }
@@ -165,6 +161,7 @@ class Ess_M2ePro_Model_Ebay_Template_Description extends Ess_M2ePro_Model_Compon
 
         $temp = parent::deleteInstance();
         $temp && $this->_descriptionSourceModels = array();
+
         return $temp;
     }
 
@@ -411,8 +408,8 @@ class Ess_M2ePro_Model_Ebay_Template_Description extends Ess_M2ePro_Model_Compon
     public function getConditionNoteSource()
     {
         return array(
-            'mode'      => (int)$this->getData('condition_note_mode'),
-            'template'  => $this->getData('condition_note_template')
+            'mode'     => (int)$this->getData('condition_note_mode'),
+            'template' => $this->getData('condition_note_template')
         );
     }
 
@@ -449,10 +446,11 @@ class Ess_M2ePro_Model_Ebay_Template_Description extends Ess_M2ePro_Model_Compon
     /**
      * @return bool
      */
-    public function isProductDetailsIncludeDescription()
+    public function isProductDetailsIncludeEbayDetails()
     {
         $productDetails = $this->getProductDetails();
-        return isset($productDetails['include_description']) ? (bool)$productDetails['include_description'] : true;
+
+        return isset($productDetails['include_ebay_details']) ? (bool)$productDetails['include_ebay_details'] : true;
     }
 
     /**
@@ -461,6 +459,7 @@ class Ess_M2ePro_Model_Ebay_Template_Description extends Ess_M2ePro_Model_Compon
     public function isProductDetailsIncludeImage()
     {
         $productDetails = $this->getProductDetails();
+
         return isset($productDetails['include_image']) ? (bool)$productDetails['include_image'] : true;
     }
 
@@ -692,7 +691,7 @@ class Ess_M2ePro_Model_Ebay_Template_Description extends Ess_M2ePro_Model_Compon
     public function getImageMainSource()
     {
         return array(
-            'mode'     => $this->getImageMainMode(),
+            'mode'      => $this->getImageMainMode(),
             'attribute' => $this->getData('image_main_attribute')
         );
     }
@@ -707,7 +706,7 @@ class Ess_M2ePro_Model_Ebay_Template_Description extends Ess_M2ePro_Model_Compon
 
         if ($src['mode'] == self::IMAGE_MAIN_MODE_PRODUCT) {
             $attributes[] = 'image';
-        } else if ($src['mode'] == self::IMAGE_MAIN_MODE_ATTRIBUTE) {
+        } elseif ($src['mode'] == self::IMAGE_MAIN_MODE_ATTRIBUTE) {
             $attributes[] = $src['attribute'];
         }
 
@@ -754,9 +753,9 @@ class Ess_M2ePro_Model_Ebay_Template_Description extends Ess_M2ePro_Model_Compon
     public function getGalleryImagesSource()
     {
         return array(
-            'mode'     => $this->getGalleryImagesMode(),
+            'mode'      => $this->getGalleryImagesMode(),
             'attribute' => $this->getData('gallery_images_attribute'),
-            'limit' => $this->getData('gallery_images_limit')
+            'limit'     => $this->getData('gallery_images_limit')
         );
     }
 
@@ -770,7 +769,7 @@ class Ess_M2ePro_Model_Ebay_Template_Description extends Ess_M2ePro_Model_Compon
 
         if ($src['mode'] == self::GALLERY_IMAGES_MODE_PRODUCT) {
             $attributes[] = 'media_gallery';
-        } else if ($src['mode'] == self::GALLERY_IMAGES_MODE_ATTRIBUTE) {
+        } elseif ($src['mode'] == self::GALLERY_IMAGES_MODE_ATTRIBUTE) {
             $attributes[] = $src['attribute'];
         }
 
@@ -817,9 +816,9 @@ class Ess_M2ePro_Model_Ebay_Template_Description extends Ess_M2ePro_Model_Compon
     public function getVariationImagesSource()
     {
         return array(
-            'mode'     => $this->getVariationImagesMode(),
+            'mode'      => $this->getVariationImagesMode(),
             'attribute' => $this->getData('variation_images_attribute'),
-            'limit' => $this->getData('variation_images_limit')
+            'limit'     => $this->getData('variation_images_limit')
         );
     }
 
@@ -833,7 +832,7 @@ class Ess_M2ePro_Model_Ebay_Template_Description extends Ess_M2ePro_Model_Compon
 
         if ($src['mode'] == self::VARIATION_IMAGES_MODE_PRODUCT) {
             $attributes[] = 'media_gallery';
-        } else if ($src['mode'] == self::VARIATION_IMAGES_MODE_ATTRIBUTE) {
+        } elseif ($src['mode'] == self::VARIATION_IMAGES_MODE_ATTRIBUTE) {
             $attributes[] = $src['attribute'];
         }
 
@@ -863,6 +862,7 @@ class Ess_M2ePro_Model_Ebay_Template_Description extends Ess_M2ePro_Model_Compon
     public function isVariationConfigurableImages()
     {
         $images = $this->getDecodedVariationConfigurableImages();
+
         return !empty($images);
     }
 
@@ -924,6 +924,7 @@ class Ess_M2ePro_Model_Ebay_Template_Description extends Ess_M2ePro_Model_Compon
         $settings['hashes']['current'] = substr(sha1(microtime()), 0, 5);
 
         $this->setSettings('watermark_settings', $settings);
+
         return $this;
     }
 
@@ -1020,12 +1021,14 @@ class Ess_M2ePro_Model_Ebay_Template_Description extends Ess_M2ePro_Model_Compon
     public function save()
     {
         Mage::helper('M2ePro/Data_Cache_Permanent')->removeTagValues('template_description');
+
         return parent::save();
     }
 
     public function delete()
     {
         Mage::helper('M2ePro/Data_Cache_Permanent')->removeTagValues('template_description');
+
         return parent::delete();
     }
 

@@ -125,6 +125,10 @@ class Ess_M2ePro_Model_Magento_Product
             );
         }
 
+        if ($this->_productModel->getId() === null) {
+            throw new Ess_M2ePro_Model_Exception(sprintf('Magento Product with id %s does not exist.', $productId));
+        }
+
         $this->setProductId($productId);
         $this->setStoreId($storeId);
 

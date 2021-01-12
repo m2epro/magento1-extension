@@ -7,15 +7,13 @@ window.TemplateEdit = Class.create(Common, {
 
     // ---------------------------------------
 
-    getComponent: function()
-    {
+    getComponent: function() {
         alert('abstract getComponent');
     },
 
     // ---------------------------------------
 
-    confirm: function(templateNick, confirmText, okCallback)
-    {
+    confirm: function(templateNick, confirmText, okCallback) {
         var self = this,
             skipConfirmationId = this.getComponent() + '_template_' + templateNick + self.skipSaveConfirmationPostFix;
 
@@ -27,14 +25,14 @@ window.TemplateEdit = Class.create(Common, {
         var template = $('dialog_confirm_container');
 
         template.down('.dialog_confirm_content').innerHTML =
-            '<div class="magento-message" style="position: absolute; left: 0; padding-left: 10px;"">'+confirmText+'</div>' +
+            '<div class="magento-message" style="position: absolute; left: 0; padding-left: 10px;"">' + confirmText + '</div>' +
             '<div style="position: absolute; bottom: 0; left: 0; padding: 10px;">' +
             '<input type="checkbox" id="do_not_show_again" name="do_not_show_again">&nbsp;' +
             M2ePro.translator.translate('Do not show any more') +
             '</div>';
 
         var me = this;
-        if(!me.isCreatedDialog) {
+        if (!me.isCreatedDialog) {
             me.isCreatedDialog = true;
             Dialog._openDialog(template.innerHTML, {
                 draggable: true,
@@ -57,7 +55,8 @@ window.TemplateEdit = Class.create(Common, {
 
                     okCallback();
                 },
-                cancel: function() {},
+                cancel: function() {
+                },
                 onClose: function() {
                     me.isCreatedDialog = false;
                 }
@@ -67,36 +66,37 @@ window.TemplateEdit = Class.create(Common, {
 
     // ---------------------------------------
 
-    save_click: function($super, url, confirmText, templateNick)
-    {
+    save_click: function($super, url, confirmText, templateNick) {
         if (!this.validateForm()) {
             return;
         }
 
         if (confirmText && this.showConfirmMsg) {
-            this.confirm(templateNick, confirmText, function() { $super(url); });
+            this.confirm(templateNick, confirmText, function() {
+                $super(url);
+            });
             return;
         }
 
         $super(url);
     },
 
-    save_and_edit_click: function($super, url, tabsId, confirmText, templateNick)
-    {
+    save_and_edit_click: function($super, url, tabsId, confirmText, templateNick) {
         if (!this.validateForm()) {
             return;
         }
 
         if (confirmText && this.showConfirmMsg) {
-            this.confirm(templateNick, confirmText, function() { $super(url); });
+            this.confirm(templateNick, confirmText, function() {
+                $super(url);
+            });
             return;
         }
 
         $super(url, tabsId);
     },
 
-    saveAndClose: function(url)
-    {
+    saveAndClose: function(url) {
         if (!this.validateForm()) {
             return;
         }
@@ -110,8 +110,7 @@ window.TemplateEdit = Class.create(Common, {
         });
     },
 
-    duplicate_click: function($super, $headId, chapter_when_duplicate_text)
-    {
+    duplicate_click: function($super, $headId, chapter_when_duplicate_text) {
         this.showConfirmMsg = false;
 
         $super($headId, chapter_when_duplicate_text);
@@ -119,15 +118,13 @@ window.TemplateEdit = Class.create(Common, {
 
     // ---------------------------------------
 
-    validateForm: function()
-    {
+    validateForm: function() {
         return editForm.validate();
     },
 
     // ---------------------------------------
 
-    forgetSkipSaveConfirmation: function()
-    {
+    forgetSkipSaveConfirmation: function() {
         LocalStorageObj.removeAllByPostfix(this.skipSaveConfirmationPostFix);
     }
 

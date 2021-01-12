@@ -81,11 +81,13 @@ class Ess_M2ePro_Model_Amazon_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
      */
     public function getBillingAddressData()
     {
-        if ($this->_order->getAmazonAccount()->isMagentoOrdersBillingAddressSameAsShipping()) {
+        if ($this->_order->getAmazonAccount()->useMagentoOrdersShippingAddressAsBillingAlways()) {
             return parent::getBillingAddressData();
         }
 
-        if ($this->_order->getShippingAddress()->hasSameBuyerAndRecipient()) {
+        if ($this->_order->getAmazonAccount()->useMagentoOrdersShippingAddressAsBillingIfSameCustomerAndRecipient() &&
+            $this->_order->getShippingAddress()->hasSameBuyerAndRecipient()
+        ) {
             return parent::getBillingAddressData();
         }
 
@@ -110,11 +112,13 @@ class Ess_M2ePro_Model_Amazon_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
      */
     public function shouldIgnoreBillingAddressValidation()
     {
-        if ($this->_order->getAmazonAccount()->isMagentoOrdersBillingAddressSameAsShipping()) {
+        if ($this->_order->getAmazonAccount()->useMagentoOrdersShippingAddressAsBillingAlways()) {
             return false;
         }
 
-        if ($this->_order->getShippingAddress()->hasSameBuyerAndRecipient()) {
+        if ($this->_order->getAmazonAccount()->useMagentoOrdersShippingAddressAsBillingIfSameCustomerAndRecipient() &&
+            $this->_order->getShippingAddress()->hasSameBuyerAndRecipient()
+        ) {
             return false;
         }
 

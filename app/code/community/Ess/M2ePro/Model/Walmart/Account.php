@@ -849,20 +849,21 @@ class Ess_M2ePro_Model_Walmart_Account extends Ess_M2ePro_Model_Component_Child_
 
     public function isMagentoOrdersInvoiceEnabled()
     {
-        if ($this->isMagentoOrdersStatusMappingDefault()) {
-            return true;
-        }
-
-        return $this->getSetting('magento_orders_settings', 'invoice_mode') == 1;
+        return (bool)$this->getData('create_magento_invoice');
     }
 
     public function isMagentoOrdersShipmentEnabled()
     {
-        if ($this->isMagentoOrdersStatusMappingDefault()) {
-            return true;
-        }
+        return (bool)$this->getData('create_magento_shipment');
+    }
 
-        return $this->getSetting('magento_orders_settings', 'shipment_mode') == 1;
+    /**
+     * @return array
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
+    public function getOtherCarriers()
+    {
+        return $this->getSettings('other_carriers');
     }
 
     //########################################

@@ -58,7 +58,7 @@ class Ess_M2ePro_Model_Magento_Order_Invoice
                 continue;
             }
 
-            $qtys[$item->getId()] = $item->getQtyToInvoice();
+            $qtys[$item->getId()] = $qtyToInvoice;
         }
 
         // Create invoice

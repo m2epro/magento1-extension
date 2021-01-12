@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Ess_M2ePro>
-            <version>6.9.2</version>
+            <version>6.10.0</version>
         </Ess_M2ePro>
     </modules>
     <default>
@@ -1192,6 +1192,10 @@
                     <Amazon_Inventory_Sku>
                         <table>m2epro_amazon_inventory_sku</table>
                     </Amazon_Inventory_Sku>
+
+                    <Amazon_Order_Invoice>
+                        <table>m2epro_amazon_order_invoice</table>
+                    </Amazon_Order_Invoice>
 
                     <Amazon_Template_SellingFormat_BusinessDiscount>
                         <table>m2epro_amazon_template_selling_format_business_discount</table>

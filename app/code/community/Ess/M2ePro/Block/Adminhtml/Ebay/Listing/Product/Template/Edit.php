@@ -55,6 +55,21 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Product_Template_Edit extends Mage
 
     //########################################
 
+    protected function _prepareLayout()
+    {
+        Mage::helper('M2ePro/View')->getJsUrlsRenderer()->add(
+            $this->getUrl(
+                '*/adminhtml_template/checkMessages',
+                array('component_mode' => Ess_M2ePro_Helper_Component_Ebay::NICK)
+            ),
+            'templateCheckMessages'
+        );
+
+        return parent::_prepareLayout();
+    }
+
+    //########################################
+
     public function getAllowedTabs()
     {
         if (!isset($this->_data['allowed_tabs']) || !is_array($this->_data['allowed_tabs'])) {

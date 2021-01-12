@@ -297,6 +297,72 @@ class Ess_M2ePro_Adminhtml_Amazon_AccountController
         $this->_redirectUrl(Mage::helper('M2ePro')->getBackUrl('list', array(), array('edit' => $routerParams)));
     }
 
+    public function isReadyForDocumentGenerationAction()
+    {
+        $id = $this->getRequest()->getParam('account_id');
+        $newStoreMode = $this->getRequest()->getParam('new_store_mode');
+        $newStoreId = $this->getRequest()->getParam('new_store_id');
+
+        /** @var Ess_M2ePro_Model_Account $account */
+        $account = Mage::helper('M2ePro/Component_Amazon')->getModel('Account')->load($id);
+
+        if ($id && !$account->getId()) {
+            $this->getResponse()->setBody('You should provide correct parameters.');
+            return;
+        }
+
+        $result = true;
+
+        $accountStoreMode = $account->getChildObject()->getSetting(
+            'magento_orders_settings',
+            array('listing', 'store_mode'),
+            Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_LISTINGS_STORE_MODE_DEFAULT
+        );
+        $accountStoreId = $account->getChildObject()->getMagentoOrdersListingsStoreId();
+
+        if ($accountStoreMode != $newStoreMode) {
+            $accountStoreMode = $newStoreMode;
+            $accountStoreId = $newStoreId;
+        }
+
+        if ($accountStoreMode == Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_LISTINGS_STORE_MODE_CUSTOM) {
+            $storeData = Mage::getStoreConfig('general/store_information', $accountStoreId);
+
+            if (empty($storeData['name']) || empty($storeData['address'])) {
+                $result = false;
+            }
+        } else {
+            /** @var Ess_M2ePro_Model_Resource_Listing_Collection $listingCollection */
+            $listingCollection = Mage::getModel('M2ePro/Listing')->getCollection();
+            $listingCollection->addFieldToFilter('account_id', $account->getId());
+
+            if ($listingCollection->getSize() > 0) {
+                foreach ($listingCollection->getItems() as $listing) {
+                    /** @var Ess_M2ePro_Model_Listing $listing */
+                    $storeData = Mage::getStoreConfig('general/store_information', $listing->getStoreId());
+
+                    if (empty($storeData['name']) || empty($storeData['address '])) {
+                        $result = false;
+                        break;
+                    }
+                }
+            } else {
+                $storeData = Mage::getStoreConfig('general/store_information');
+
+                if (empty($storeData['name']) || empty($storeData['address'])) {
+                    $result = false;
+                }
+            }
+        }
+
+        $this->_addJsonContent(
+            array(
+                'success' => true,
+                'result' => $result
+            )
+        );
+    }
+
     //########################################
 
     public function deleteAction()
@@ -448,6 +514,11 @@ class Ess_M2ePro_Adminhtml_Amazon_AccountController
 
     //########################################
 
+    /**
+     * @param $id
+     * @param $data
+     * @return Ess_M2ePro_Model_Account
+     */
     protected function updateAccount($id, $data)
     {
         $model = Mage::helper('M2ePro/Component_Amazon')->getModel('Account');

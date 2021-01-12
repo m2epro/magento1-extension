@@ -53,8 +53,7 @@ class Ess_M2ePro_Block_Adminhtml_General extends Mage_Adminhtml_Block_Widget
 
     protected function initRenderData()
     {
-        $this->_js->add(
-            <<<JS
+        $this->_js->add(<<<JS
 var M2ePro = {};
 
 M2ePro.url        = new GeneralUrl();
@@ -134,7 +133,7 @@ JS
                 'Show Advanced Filter',
                 'Hide Advanced Filter',
 
-                'Reset 3rd Party Listings'
+                'Refresh Unmanaged Listings'
             )
         );
 

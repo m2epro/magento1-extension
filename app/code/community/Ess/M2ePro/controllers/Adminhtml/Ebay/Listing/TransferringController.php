@@ -97,8 +97,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_TransferringController
 
         foreach ($templates as $nick) {
             $manager->setTemplate($nick);
-            $sessionData["template_id_{$nick}"] = $this->_listing->getData($manager->getTemplateIdColumnName());
-            $sessionData["template_mode_{$nick}"] = $this->_listing->getData($manager->getModeColumnName());
+            $sessionData["template_{$nick}_id"] = $this->_listing->getData($manager->getTemplateIdColumnName());
         }
 
         Mage::helper('M2ePro/Data_Session')->setValue(

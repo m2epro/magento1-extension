@@ -188,6 +188,10 @@ class Ess_M2ePro_Model_Cron_Task_Repository
             'component' => Ess_M2ePro_Helper_Component_Amazon::NICK,
             'group'     => self::GROUP_AMAZON,
         ),
+        Ess_M2ePro_Model_Cron_Task_Amazon_Order_Receive_InvoiceDataReport::NICK => array(
+            'component' => Ess_M2ePro_Helper_Component_Amazon::NICK,
+            'group'     => self::GROUP_AMAZON,
+        ),
         Ess_M2ePro_Model_Cron_Task_Amazon_Order_CreateFailed::NICK => array(
             'component' => Ess_M2ePro_Helper_Component_Amazon::NICK,
             'group'     => self::GROUP_AMAZON,

@@ -62,6 +62,11 @@ $address = $this->getData('address');
                         </tr>
 
                         <tr>
+                            <td class="label"><?php echo Mage::helper('M2ePro')->__('Recipient Name') ?>: <span class="required">*</span></td>
+                            <td class="value"><input type="text" name="recipient_name" class="input-text required-entry" value="<?php echo isset($address['recipient_name']) ? Mage::helper('M2ePro')->escapeHtml($address['recipient_name']) : '' ?>" /></td>
+                        </tr>
+
+                        <tr>
                             <td class="label"><?php echo Mage::helper('M2ePro')->__('Street Address') ?>: <span class="required">*</span></td>
                             <td class="value"><input type="text" name="street[0]" class="input-text required-entry" value="<?php echo isset($address['street'][0]) ? Mage::helper('M2ePro')->escapeHtml($address['street'][0]) : '' ?>" /></td>
                         </tr>

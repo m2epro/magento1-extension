@@ -87,10 +87,6 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
 
         return (bool)Mage::getModel('M2ePro/Ebay_Listing')
                             ->getCollection()
-                            ->addFieldToFilter(
-                                'template_shipping_mode',
-                                Ess_M2ePro_Model_Ebay_Template_Manager::MODE_TEMPLATE
-                            )
                             ->addFieldToFilter('template_shipping_id', $this->getId())
                             ->getSize() ||
                (bool)Mage::getModel('M2ePro/Ebay_Listing_Product')

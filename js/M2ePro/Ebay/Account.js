@@ -424,16 +424,10 @@ window.EbayAccount = Class.create(Common, {
         $('magento_orders_status_mapping_paid').value = M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_STATUS_MAPPING_PAID');
         $('magento_orders_status_mapping_shipped').value = M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_STATUS_MAPPING_SHIPPED');
 
-        // Default auto create invoice & shipping
-        $('magento_orders_invoice_mode').checked = true;
-        $('magento_orders_shipment_mode').checked = true;
-
         var disabled = $('magento_orders_status_mapping_mode').value == M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_STATUS_MAPPING_MODE_DEFAULT');
         $('magento_orders_status_mapping_new').disabled = disabled;
         $('magento_orders_status_mapping_paid').disabled = disabled;
         $('magento_orders_status_mapping_shipped').disabled = disabled;
-        $('magento_orders_invoice_mode').disabled = disabled;
-        $('magento_orders_shipment_mode').disabled = disabled;
     },
 
     changeVisibilityForOrdersModesRelatedBlocks: function()
@@ -459,6 +453,8 @@ window.EbayAccount = Class.create(Common, {
 
             $('magento_block_ebay_accounts_magento_orders_tax').hide();
             $('magento_orders_tax_mode').value = M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_TAX_MODE_MIXED');
+
+            $('magento_orders_customer_billing_address_mode').value = M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Account::USE_SHIPPING_ADDRESS_AS_BILLING_IF_SAME_CUSTOMER_AND_RECIPIENT');
 
             if ($('magento_block_ebay_accounts_magento_orders_in_store_pickup_statuses')) {
                 $('magento_block_ebay_accounts_magento_orders_in_store_pickup_statuses').hide();

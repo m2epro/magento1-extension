@@ -72,7 +72,6 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
      */
     protected function initializeData(array $data = array())
     {
-        // ---------------------------------------
         $this->setData('account_id', $this->_account->getId());
 
         $this->setData('ebay_order_id', $data['identifiers']['ebay_order_id']);
@@ -83,9 +82,7 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
 
         $this->setData('purchase_update_date', $data['purchase_update_date']);
         $this->setData('purchase_create_date', $data['purchase_create_date']);
-        // ---------------------------------------
 
-        // ---------------------------------------
         $this->setData('paid_amount', (float)$data['selling']['paid_amount']);
         $this->setData('saved_amount', (float)$data['selling']['saved_amount']);
         $this->setData('currency', $data['selling']['currency']);
@@ -96,17 +93,12 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
             $this->setData('tax_details', $data['selling']['tax_details']);
         }
 
-        // ---------------------------------------
-
-        // ---------------------------------------
         $this->setData('buyer_user_id', trim($data['buyer']['user_id']));
-        $this->setData('buyer_name', trim($data['buyer']['name']));
+        $this->setData('buyer_name', trim($data['buyer']['first_name']) . ' ' . trim($data['buyer']['last_name']));
         $this->setData('buyer_email', trim($data['buyer']['email']));
         $this->setData('buyer_message', $data['buyer']['message']);
         $this->setData('buyer_tax_id', trim($data['buyer']['tax_id']));
-        // ---------------------------------------
 
-        // ---------------------------------------
         $this->_externalTransactions = $data['payment']['external_transactions'];
         unset($data['payment']['external_transactions']);
 
@@ -116,20 +108,16 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
             $data['payment']['method'], $data['payment']['date'], $data['payment']['status']
         );
         $this->setData('payment_status', $paymentStatus);
-        // ---------------------------------------
 
-        // ---------------------------------------
         $this->setData('shipping_details', $data['shipping']);
 
         $shippingStatus = $this->_helper->getShippingStatus(
             $data['shipping']['date'], !empty($data['shipping']['service'])
         );
         $this->setData('shipping_status', $shippingStatus);
-        // ---------------------------------------
 
         // ---------------------------------------
         $this->_items = $data['items'];
-        // ---------------------------------------
     }
 
     //########################################

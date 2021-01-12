@@ -32,7 +32,7 @@ class Ess_M2ePro_Model_Resource_Ebay_Listing_Product
 
         !$returnNull && $stmt->where("{$columnName} IS NOT NULL");
 
-        foreach($stmt->query()->fetchAll() as $row) {
+        foreach ($stmt->query()->fetchAll() as $row) {
             $id = $row[$columnName] !== null ? (int)$row[$columnName] : null;
             if (!$returnNull) {
                 continue;
@@ -42,6 +42,34 @@ class Ess_M2ePro_Model_Resource_Ebay_Listing_Product
         }
 
         return array_values($ids);
+    }
+
+    //########################################
+
+    public function assignTemplatesToProducts(
+        $productsIds,
+        $categoryTemplateId = null,
+        $categorySecondaryTemplateId = null,
+        $storeCategoryTemplateId = null,
+        $storeCategorySecondaryTemplateId = null
+    ) {
+        if (empty($productsIds)) {
+            return;
+        }
+
+        $bind = array(
+            'template_category_id'                 => $categoryTemplateId,
+            'template_category_secondary_id'       => $categorySecondaryTemplateId,
+            'template_store_category_id'           => $storeCategoryTemplateId,
+            'template_store_category_secondary_id' => $storeCategorySecondaryTemplateId
+        );
+        $bind = array_filter($bind);
+
+        $this->_getWriteAdapter()->update(
+            $this->getMainTable(),
+            $bind,
+            array('listing_product_id IN (?)' => $productsIds)
+        );
     }
 
     //########################################

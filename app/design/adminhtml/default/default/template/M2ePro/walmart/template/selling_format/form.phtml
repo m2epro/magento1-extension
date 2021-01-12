@@ -472,7 +472,6 @@
 
                         <select id="qty_mode" name="qty_mode" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text">
                             <option id="qty_mode_product" value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_PRODUCT; ?>" <?php if (Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_PRODUCT == $formData['qty_mode']) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Product Quantity'); ?></option>
-                            <option id="qty_mode_single" value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_SINGLE; ?>" <?php if (Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_SINGLE == $formData['qty_mode']) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Single Item'); ?></option>
                             <option id="qty_mode_cv" value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_NUMBER; ?>" <?php if (Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_NUMBER == $formData['qty_mode']) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Custom Value'); ?></option>
 
                             <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute" new_option_value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_ATTRIBUTE; ?>">
@@ -769,14 +768,20 @@
                             <option value="1" <?php if ($formData['price_vat_percent'] > 0): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
                         </select>
                         <p class="note">
-                            <?php echo Mage::helper('M2ePro')->__('
-                                Enable to add a specified VAT value to the Item Price when it is listed on Walmart.<br/><br/>
-
-                                <strong>For example</strong>, if Magento Product Price = £10 and VAT rate = 15%, i.e. £10 * 15% = £1.50,<br>
-                                the final Item Price on Walmart will be calculated as Magento Price + VAT, i.e. £10 + £1.50 = £11.50.<br/><br/>
-
-                                <strong>Note:</strong> No VAT Rate value will be sent on Walmart. Instead, the Walmart Item Price will be increased by specified VAT %.
-                            ') ?>
+                            <?php echo Mage::helper('M2ePro')->__(<<<HTML
+Enable this option to add a specified VAT percent value to the Price when a Product is listed on Walmart.
+<br/>
+<br/>
+The final product price on Walmart will be calculated according to the following formula:
+<br/>
+<br/>
+(Product Price + Price Change) + VAT Rate
+<br/>
+<br/>
+<strong>Note:</strong> Walmart considers the VAT rate value sent by M2E Pro as an additional price increase,
+not as a proper VAT rate.
+HTML
+                            ) ?>
                         </p>
                     </td>
                 </tr>

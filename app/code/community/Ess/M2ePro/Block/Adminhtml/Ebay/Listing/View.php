@@ -321,47 +321,24 @@ HTML;
     {
         $items = array();
 
-        // ---------------------------------------
-        $url = $this->getUrl(
-            '*/adminhtml_ebay_template/editListing',
+        $backUrl = Mage::helper('M2ePro')->makeBackUrlParam(
+            '*/adminhtml_ebay_listing/view',
             array(
-                'id' => $this->_listing->getId(),
-                'tab' => 'selling'
+                'id' => $this->_listing->getId()
             )
         );
-        $items[] = array(
-            'url' => $url,
-            'label' => Mage::helper('M2ePro')->__('Selling'),
-            'target' => '_blank'
-        );
-        // ---------------------------------------
 
         // ---------------------------------------
         $url = $this->getUrl(
-            '*/adminhtml_ebay_template/editListing',
+            '*/adminhtml_ebay_listing/edit',
             array(
                 'id' => $this->_listing->getId(),
-                'tab' => 'synchronization'
+                'back' => $backUrl
             )
         );
         $items[] = array(
             'url' => $url,
-            'label' => Mage::helper('M2ePro')->__('Synchronization'),
-            'target' => '_blank'
-        );
-        // ---------------------------------------
-
-        // ---------------------------------------
-        $url = $this->getUrl(
-            '*/adminhtml_ebay_template/editListing',
-            array(
-                'id' => $this->_listing->getId(),
-                'tab' => 'general'
-            )
-        );
-        $items[] = array(
-            'url' => $url,
-            'label' => Mage::helper('M2ePro')->__('Payment and Shipping'),
+            'label' => Mage::helper('M2ePro')->__('Configuration'),
             'target' => '_blank'
         );
         // ---------------------------------------

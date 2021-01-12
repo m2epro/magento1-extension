@@ -309,7 +309,7 @@ class Ess_M2ePro_Model_Amazon_Order_Item extends Ess_M2ePro_Model_Component_Chil
 
         // ---------------------------------------
 
-        // 3rd party Item
+        // Unmanaged Item
         // ---------------------------------------
         $sku = $this->getSku();
         if ($sku != '' && strlen($sku) <= Ess_M2ePro_Helper_Magento_Product::SKU_MAX_LENGTH) {

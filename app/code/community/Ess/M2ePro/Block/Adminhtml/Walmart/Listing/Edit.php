@@ -22,23 +22,21 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Edit extends Mage_Adminhtml_Blo
         $this->_controller = 'adminhtml_walmart_listing';
         $this->_mode = 'edit';
 
-        $this->_listing = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
+        $listing = $this->getListing();
 
         if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
             $componentName = Mage::helper('M2ePro/Component_Walmart')->getTitle();
-            $headerText = Mage::helper('M2ePro')->__(
+            $this->_headerText = Mage::helper('M2ePro')->__(
                 'Edit %component_name% Listing Settings "%listing_title%"',
                 $componentName,
-                $this->escapeHtml($this->_listing->getTitle())
+                $this->escapeHtml($listing->getTitle())
             );
         } else {
-            $headerText = Mage::helper('M2ePro')->__(
+            $this->_headerText = Mage::helper('M2ePro')->__(
                 'Edit Listing Settings "%listing_title%"',
-                $this->escapeHtml($this->_listing->getTitle())
+                $this->escapeHtml($listing->getTitle())
             );
         }
-
-        $this->_headerText = $headerText;
 
         $this->removeButton('back');
         $this->removeButton('reset');
@@ -46,108 +44,126 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Edit extends Mage_Adminhtml_Blo
         $this->removeButton('add');
         $this->removeButton('save');
         $this->removeButton('edit');
-        // ---------------------------------------
 
         if ($this->getRequest()->getParam('back') !== null) {
-            // ---------------------------------------
             $url = Mage::helper('M2ePro')->getBackUrl(
                 '*/adminhtml_walmart_listing/index'
             );
             $this->_addButton(
-                'back', array(
-                'label'     => Mage::helper('M2ePro')->__('Back'),
-                'onclick'   => 'WalmartListingSettingsObj.back_click(\''.$url.'\')',
-                'class'     => 'back'
+                'back',
+                array(
+                    'label'   => Mage::helper('M2ePro')->__('Back'),
+                    'onclick' => 'WalmartListingSettingsObj.back_click(\'' . $url . '\')',
+                    'class'   => 'back'
                 )
             );
-            // ---------------------------------------
         }
 
-        // ---------------------------------------
         $this->_addButton(
-            'auto_action', array(
-            'label'     => Mage::helper('M2ePro')->__('Auto Add/Remove Rules'),
-            'onclick'   => 'ListingAutoActionObj.loadAutoActionHtml();'
+            'auto_action',
+            array(
+                'label'   => Mage::helper('M2ePro')->__('Auto Add/Remove Rules'),
+                'onclick' => 'ListingAutoActionObj.loadAutoActionHtml();'
             )
         );
-        // ---------------------------------------
 
         $backUrl = Mage::helper('M2ePro')->getBackUrlParam('list');
 
-        // ---------------------------------------
         $url = $this->getUrl(
             '*/adminhtml_walmart_listing/save',
             array(
-                'id'    => $this->_listing->getId(),
-                'back'  => $backUrl
+                'id'   => $this->_listing->getId(),
+                'back' => $backUrl
             )
         );
         $this->_addButton(
-            'save', array(
-            'label'     => Mage::helper('M2ePro')->__('Save'),
-            'onclick'   => 'WalmartListingSettingsObj.save_click(\'' . $url . '\')',
-            'class'     => 'save'
+            'save',
+            array(
+                'label'   => Mage::helper('M2ePro')->__('Save'),
+                'onclick' => 'WalmartListingSettingsObj.save_click(\'' . $url . '\')',
+                'class'   => 'save'
             )
         );
-        // ---------------------------------------
 
-        // ---------------------------------------
         $this->_addButton(
-            'save_and_continue', array(
-            'label'     => Mage::helper('M2ePro')->__('Save And Continue Edit'),
-            'onclick'   => 'WalmartListingSettingsObj.save_and_edit_click(\''.$url.'\', 1)',
-            'class'     => 'save'
+            'save_and_continue',
+            array(
+                'label'   => Mage::helper('M2ePro')->__('Save And Continue Edit'),
+                'onclick' => 'WalmartListingSettingsObj.save_and_edit_click(\'' . $url . '\', 1)',
+                'class'   => 'save'
             )
         );
-        // ---------------------------------------
+    }
+
+    //########################################
+
+    protected function _prepareLayout()
+    {
+        Mage::helper('M2ePro/View')->getJsPhpRenderer()->addConstants(
+            Mage::helper('M2ePro')->getClassConstants('Ess_M2ePro_Helper_Component_Walmart'),
+            'Ess_M2ePro_Helper_Component'
+        );
+
+        Mage::helper('M2ePro/View')->getJsUrlsRenderer()->addUrls(
+            Mage::helper('M2ePro')->getControllerActions(
+                'adminhtml_walmart_listing_autoAction',
+                array(
+                    'listing_id' => $this->getListing()->getId(),
+                    'component'  => Ess_M2ePro_Helper_Component_Walmart::NICK
+                )
+            )
+        );
+
+        /** @var $helper Ess_M2ePro_Helper_Data */
+        $helper = Mage::helper('M2ePro');
+
+        Mage::helper('M2ePro/View')->getJsTranslatorRenderer()->addTranslations(
+            array(
+                'Auto Add/Remove Rules'                    => $helper->__('Auto Add/Remove Rules'),
+                'Based on Magento Categories'              => $helper->__('Based on Magento Categories'),
+                'You must select at least 1 Category.'     => $helper->__('You must select at least 1 Category.'),
+                'Rule with the same Title already exists.' => $helper->__('Rule with the same Title already exists.')
+            )
+        );
+
+        Mage::helper('M2ePro/View')->getJsRenderer()->addOnReadyJs(
+            <<<JS
+    ListingAutoActionObj = new WalmartListingAutoAction();
+JS
+        );
+
+        return parent::_prepareLayout();
     }
 
     //########################################
 
     public function getFormHtml()
     {
-        $listing = Mage::helper('M2ePro/Component_Walmart')->getCachedObject(
-            'Listing', $this->getRequest()->getParam('id')
-        );
-
         $viewHeaderBlock = $this->getLayout()->createBlock(
-            'M2ePro/adminhtml_listing_view_header', '',
-            array('listing' => $listing)
+            'M2ePro/adminhtml_listing_view_header',
+            '',
+            array('listing' => $this->getListing())
         );
 
-        $urls = Mage::helper('M2ePro')->getControllerActions(
-            'adminhtml_walmart_listing_autoAction',
-            array(
-                'listing_id' => $this->getRequest()->getParam('id'),
-                'component' => Ess_M2ePro_Helper_Component_Walmart::NICK
-            )
-        );
-        $urls = Mage::helper('M2ePro')->jsonEncode($urls);
+        return $viewHeaderBlock->toHtml() . parent::getFormHtml();
+    }
 
-        /** @var $helper Ess_M2ePro_Helper_Data */
-        $helper = Mage::helper('M2ePro');
+    //########################################
 
-        $translations = Mage::helper('M2ePro')->jsonEncode(
-            array(
-            'Auto Add/Remove Rules' => $helper->__('Auto Add/Remove Rules'),
-            'Based on Magento Categories' => $helper->__('Based on Magento Categories'),
-            'You must select at least 1 Category.' => $helper->__('You must select at least 1 Category.'),
-            'Rule with the same Title already exists.' => $helper->__('Rule with the same Title already exists.')
-            )
-        );
+    protected function getListing()
+    {
+        if (!$listingId = $this->getRequest()->getParam('id')) {
+            throw new Ess_M2ePro_Model_Exception('Listing is not defined');
+        }
 
-        $js = <<<HTML
-<script type="text/javascript">
+        if ($this->_listing === null) {
+            $this->_listing = Mage::helper('M2ePro/Component_Walmart')->getCachedObject(
+                'Listing',
+                $listingId
+            );
+        }
 
-    M2ePro.url.add({$urls});
-    M2ePro.translator.add({$translations});
-
-    ListingAutoActionObj = new WalmartListingAutoAction();
-
-</script>
-HTML;
-
-        return $viewHeaderBlock->toHtml() .  parent::getFormHtml() . $js;
+        return $this->_listing;
     }
 
     //########################################

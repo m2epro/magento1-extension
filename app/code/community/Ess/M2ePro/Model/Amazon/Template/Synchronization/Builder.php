@@ -69,7 +69,7 @@ class Ess_M2ePro_Model_Amazon_Template_Synchronization_Builder extends Ess_M2ePr
             'list_status_enabled' => 1,
             'list_is_in_stock'    => 1,
 
-            'list_qty_calculated'       => Synchronization::QTY_MODE_NONE,
+            'list_qty_calculated'       => Synchronization::QTY_MODE_YES,
             'list_qty_calculated_value' => '1',
 
             'list_advanced_rules_mode' => 0,
@@ -80,7 +80,7 @@ class Ess_M2ePro_Model_Amazon_Template_Synchronization_Builder extends Ess_M2ePr
             'relist_status_enabled'    => 1,
             'relist_is_in_stock'       => 1,
 
-            'relist_qty_calculated'       => Synchronization::QTY_MODE_NONE,
+            'relist_qty_calculated'       => Synchronization::QTY_MODE_YES,
             'relist_qty_calculated_value' => '1',
 
             'relist_advanced_rules_mode'               => 0,
@@ -99,7 +99,7 @@ class Ess_M2ePro_Model_Amazon_Template_Synchronization_Builder extends Ess_M2ePr
             'stop_status_disabled' => 1,
             'stop_out_off_stock'   => 1,
 
-            'stop_qty_calculated'       => Synchronization::QTY_MODE_NONE,
+            'stop_qty_calculated'       => Synchronization::QTY_MODE_YES,
             'stop_qty_calculated_value' => '0',
 
             'stop_advanced_rules_mode' => 0,

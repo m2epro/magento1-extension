@@ -9,7 +9,6 @@
 class Ess_M2ePro_Model_Ebay_Account_PickupStore extends Ess_M2ePro_Model_Component_Abstract
 {
     const QTY_MODE_PRODUCT = 1;
-    const QTY_MODE_SINGLE = 2;
     const QTY_MODE_NUMBER = 3;
     const QTY_MODE_ATTRIBUTE = 4;
     const QTY_MODE_PRODUCT_FIXED = 5;
@@ -164,11 +163,6 @@ class Ess_M2ePro_Model_Ebay_Account_PickupStore extends Ess_M2ePro_Model_Compone
     public function isQtyModeProduct()
     {
         return $this->getQtyMode() == self::QTY_MODE_PRODUCT;
-    }
-
-    public function isQtyModeSingle()
-    {
-        return $this->getQtyMode() == self::QTY_MODE_SINGLE;
     }
 
     public function isQtyModeNumber()

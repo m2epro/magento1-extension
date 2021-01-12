@@ -130,7 +130,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Search_M2ePro_Grid
         /** @var Ess_M2ePro_Helper_Data $dataHelper */
         $dataHelper = Mage::helper('M2ePro');
 
-        /** @var Ess_M2ePro_Helper_Component_Walmart $eBayHelper */
+        /** @var Ess_M2ePro_Helper_Component_Ebay $eBayHelper */
         $eBayHelper = Mage::helper('M2ePro/Component_Ebay');
 
         /** @var Ess_M2ePro_Model_Account $account */
@@ -257,7 +257,10 @@ HTML;
             array()
         );
 
-        $childCollection->addFieldToFilter('cpe.sku', array('like' => '%'.$value.'%'));
+        $childCollection->addFieldToFilter(
+            'cpe.sku',
+            array('like' => '%' . $this->getValueForSubQuery($value) . '%')
+        );
 
         $collection->joinTable(
             array('product_sku_subQuery' => $childCollection->getSelect()),

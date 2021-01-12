@@ -239,9 +239,11 @@ echo $this->getChildHtml('item_edit');
                             <td class="value">
                                 <strong>
 
-                                    <?php echo Mage::helper('M2ePro')->escapeHtml($this->order->getChildObject()->getBuyerName()) ?>
-
                                     <?php if (!empty($this->shippingAddress)): ?>
+
+                                        <?php if (!empty($this->shippingAddress['recipient_name'])): ?>
+                                            <?php echo Mage::helper('M2ePro')->escapeHtml($this->shippingAddress['recipient_name']); ?>
+                                        <?php endif; ?>
 
                                         <?php if (!empty($this->shippingAddress['street'][0])): ?>
                                             <br/><?php echo Mage::helper('M2ePro')->escapeHtml($this->shippingAddress['street'][0]); ?>
@@ -332,10 +334,6 @@ echo $this->getChildHtml('item_edit');
                         <tr>
                             <td class="label"><?php echo Mage::helper('M2ePro')->__('Payment Method');?>:</td>
                             <td class="value"><strong><?php echo Mage::helper('M2ePro')->escapeHtml($this->order->getChildObject()->getPaymentMethod()); ?></strong></td>
-                        </tr>
-                        <tr>
-                            <td class="label"><?php echo Mage::helper('M2ePro')->__('eBay User ID'); ?>:</td>
-                            <td class="value"><strong><?php echo Mage::helper('M2ePro')->escapeHtml($this->order->getChildObject()->getBuyerUserId()); ?></strong></td>
                         </tr>
                         <tr>
                             <td class="label"><?php echo Mage::helper('M2ePro')->__('eBay Final Fee');?>:</td>
@@ -450,48 +448,6 @@ echo $this->getChildHtml('item_edit');
                                 <td class="value"><strong><?php echo Mage::helper('core')->formatDate($this->order->getChildObject()->getShippingDate(), 'medium', true); ?></strong></td>
                             </tr>
                         <?php } ?>
-
-                        <tr>
-                            <td class="label"><?php echo Mage::helper('M2ePro')->__('Shipping Address'); ?>:</td>
-                            <td class="value">
-                                <strong>
-
-                                    <?php echo Mage::helper('M2ePro')->escapeHtml($this->order->getChildObject()->getBuyerName()) ?>
-
-                                    <?php if (!empty($this->shippingAddress)): ?>
-
-                                        <?php if (!empty($this->shippingAddress['street'][0])): ?>
-                                            <br/><?php echo Mage::helper('M2ePro')->escapeHtml($this->shippingAddress['street'][0]); ?>
-                                        <?php endif; ?>
-
-                                        <?php if (!empty($this->shippingAddress['street'][1])): ?>
-                                            <br/><?php echo Mage::helper('M2ePro')->escapeHtml($this->shippingAddress['street'][1]); ?>
-                                        <?php endif; ?>
-
-                                        <?php if (!empty($this->shippingAddress['city'])): ?>
-                                            <br/><?php echo Mage::helper('M2ePro')->escapeHtml(implode(', ', array($this->shippingAddress['city'], $this->shippingAddress['state'], $this->shippingAddress['postal_code']))) ?>
-                                        <?php endif; ?>
-
-                                        <?php if (!empty($this->shippingAddress['country_name'])): ?>
-                                            <br/>
-                                            <?php
-                                            if (!empty($this->shippingAddress['country_name'])) {
-                                                echo Mage::helper('M2ePro')->escapeHtml($this->shippingAddress['country_name']);
-                                            } else {
-                                                echo Mage::helper('M2ePro')->escapeHtml($this->shippingAddress['country_code']);
-                                            }
-                                            ?>
-                                        <?php endif; ?>
-
-                                        <?php if (!empty($this->shippingAddress['phone']) && stripos($this->shippingAddress['phone'], 'Invalid Request') === false): ?>
-                                            <br/><?php echo 'T: ' . Mage::helper('M2ePro')->escapeHtml($this->shippingAddress['phone']); ?>
-                                        <?php endif; ?>
-
-                                    <?php endif; ?>
-
-                                </strong>
-                            </td>
-                        </tr>
 
                         <?php if (count($this->order->getChildObject()->getShippingTrackingDetails())) { ?>
 

@@ -6,6 +6,8 @@
  * @license    Commercial use is forbidden
  */
 
+use Ess_M2ePro_Model_Listing_Product as Listing_Product;
+
 class Ess_M2ePro_Model_StopQueue extends Ess_M2ePro_Model_Abstract
 {
     //########################################
@@ -37,28 +39,39 @@ class Ess_M2ePro_Model_StopQueue extends Ess_M2ePro_Model_Abstract
 
     /**
      * @param Ess_M2ePro_Model_Listing_Product $listingProduct
+     * @param int $actionType
      * @return bool
      * @throws Ess_M2ePro_Model_Exception_Logic
      */
-    public function add(Ess_M2ePro_Model_Listing_Product $listingProduct)
+    public function add(Ess_M2ePro_Model_Listing_Product $listingProduct, $actionType = Listing_Product::ACTION_STOP)
     {
         if (!$listingProduct->isStoppable()) {
             return false;
         }
 
-        $requestData = $this->getRequestData($listingProduct);
-        if (empty($requestData)) {
+        try {
+            $requestData = $this->getRequestData($listingProduct, $actionType);
+        } catch (\Exception $exception) {
+            Mage::helper('M2ePro/Module_Logger')->process(
+                sprintf(
+                    'Product [Listing Product ID: %s, SKU %s] was not added to stop queue because of the error: %s',
+                    $listingProduct->getId(),
+                    $listingProduct->getChildObject()->getSku(),
+                    $exception->getMessage()
+                ),
+                'Product was not added to stop queue',
+                false
+            );
+
+            Mage::helper('M2ePro/Module_Exception')->process($exception);
+
             return false;
         }
-
-        $additionalData = array(
-            'request_data' => $requestData,
-        );
 
         $addedData = array(
             'component_mode'  => $listingProduct->getComponentMode(),
             'is_processed'    => 0,
-            'additional_data' => Mage::helper('M2ePro')->jsonEncode($additionalData),
+            'additional_data' => Mage::helper('M2ePro')->jsonEncode(array('request_data' => $requestData)),
         );
 
         Mage::getModel('M2ePro/StopQueue')->setData($addedData)->save();
@@ -68,7 +81,7 @@ class Ess_M2ePro_Model_StopQueue extends Ess_M2ePro_Model_Abstract
 
     // ---------------------------------------
 
-    protected function getRequestData(Ess_M2ePro_Model_Listing_Product $listingProduct)
+    protected function getRequestData(Listing_Product $listingProduct, $actionType = Listing_Product::ACTION_STOP)
     {
         $data = array();
 
@@ -81,6 +94,7 @@ class Ess_M2ePro_Model_StopQueue extends Ess_M2ePro_Model_Abstract
                 'account'     => $ebayAccount->getServerHash(),
                 'marketplace' => $ebayListingProduct->getMarketplace()->getNativeId(),
                 'item_id'     => $ebayListingProduct->getEbayItem()->getItemId(),
+                'action_type' => $actionType,
             );
         }
 
@@ -90,8 +104,9 @@ class Ess_M2ePro_Model_StopQueue extends Ess_M2ePro_Model_Abstract
             $amazonAccount        = $amazonListingProduct->getAmazonAccount();
 
             $data = array(
-                'account' => $amazonAccount->getServerHash(),
-                'sku'     => $amazonListingProduct->getSku(),
+                'account'     => $amazonAccount->getServerHash(),
+                'sku'         => $amazonListingProduct->getSku(),
+                'action_type' => $actionType,
             );
         }
 
@@ -101,9 +116,10 @@ class Ess_M2ePro_Model_StopQueue extends Ess_M2ePro_Model_Abstract
             $walmartAccount        = $walmartListingProduct->getWalmartAccount();
 
             $data = array(
-                'account' => $walmartAccount->getServerHash(),
-                'sku'     => $walmartListingProduct->getSku(),
-                'wpid'    => $walmartListingProduct->getWpid()
+                'account'     => $walmartAccount->getServerHash(),
+                'sku'         => $walmartListingProduct->getSku(),
+                'wpid'        => $walmartListingProduct->getWpid(),
+                'action_type' => $actionType,
             );
         }
 

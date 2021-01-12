@@ -861,7 +861,9 @@ class Ess_M2ePro_Model_Servicing_Task_Statistic extends Ess_M2ePro_Model_Servici
             $data['orders'][$row['component']]['total'] += (int)$row['count'];
 
             $markTitle = $helper->getCachedUnknownObject('Marketplace', $row['marketplace_id'])->getTitle();
-            $accountTitle = $helper->getCachedUnknownObject('Account', $row['account_id'])->getTitle();
+            $account = $helper->getCachedUnknownObject('Account', $row['account_id']);
+
+            $accountTitle = $account === null ? 'account_id_' . $row['account_id'] : $account->getTitle();
 
             if (!isset($data['orders'][$row['component']]['marketplaces'][$markTitle])) {
                 $data['orders'][$row['component']]['marketplaces'][$markTitle] = 0;

@@ -54,10 +54,10 @@ $isEdit = !!$this->getRequest()->getParam('id');
 
 </script>
 
-<div id="block_notice_ebay_accounts_other_listings" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('3rd Party Listings'); ?>">
+<div id="block_notice_ebay_accounts_other_listings" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Unmanaged Listings'); ?>">
     <?php echo Mage::helper('M2ePro')->__(
-        'Edit the Import, Mapping and Synchronization Settings for <b>3rd Party Listings</b> here.<br/>
-        3rd Party Listings are Items that have been Listed on eBay either directly or with a tool other than M2E Pro.<br/><br/>
+        'Edit the Import, Mapping and Synchronization Settings for <b>Unmanaged Listings</b> here.<br/>
+        Unmanaged Listings are Items that have been Listed on eBay either directly or with a tool other than M2E Pro.<br/><br/>
         More detailed information about ability to work with this Page you can find <a href="%url%" target="_blank">here</a>.',
         Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'x/LQAJAQ')); ?>
 </div>
@@ -75,7 +75,7 @@ $isEdit = !!$this->getRequest()->getParam('id');
 
                 <tr>
                     <td class="label">
-                        <label for="other_listings_synchronization"><?php echo Mage::helper('M2ePro')->__('Import 3rd Party Listings'); ?>:</label>
+                        <label for="other_listings_synchronization"><?php echo Mage::helper('M2ePro')->__('Import Unmanaged Listings'); ?>:</label>
                     </td>
                     <td class="value" style="width: auto;">
                         <select id="other_listings_synchronization" name="other_listings_synchronization">

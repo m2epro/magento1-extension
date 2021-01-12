@@ -131,6 +131,17 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_View_Item extends Mage_Adminhtml_Blo
         );
 
         $this->addColumn(
+            'ebay_collect_tax', array(
+                'header'         => Mage::helper('M2ePro')->__('Collect and Remit taxes'),
+                'align'          => 'left',
+                'width'          => '80px',
+                'filter'         => false,
+                'sortable'       => false,
+                'frame_callback' => array($this, 'callbackColumnEbayCollectTax')
+            )
+        );
+
+        $this->addColumn(
             'row_total', array(
             'header'    => Mage::helper('M2ePro')->__('Row Total'),
             'align'     => 'left',
@@ -288,6 +299,19 @@ HTML;
         }
 
         return sprintf('%s%%', $taxDetails['rate']);
+    }
+
+    public function callbackColumnEbayCollectTax($value, $row, $column, $isExport)
+    {
+        $collectTax = Mage::helper('M2ePro')->jsonDecode($row->getData('tax_details'));
+
+        if (isset($collectTax['ebay_collect_taxes'])) {
+            return Mage::getSingleton('M2ePro/Currency')->formatPrice(
+                $this->_order->getChildObject()->getCurrency(), $collectTax['ebay_collect_taxes']
+            );
+        }
+
+        return '0';
     }
 
     public function callbackColumnRowTotal($value, $row, $column, $isExport)
