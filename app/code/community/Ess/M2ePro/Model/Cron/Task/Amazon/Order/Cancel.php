@@ -10,6 +10,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Cancel
     extends Ess_M2ePro_Model_Cron_Task_Abstract
 {
     const NICK = 'amazon/order/cancel';
+    const ORDER_CHANGES_PER_ACCOUNT = 300;
 
     //####################################
 
@@ -158,6 +159,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Cancel
             array()
         );
         $changesCollection->addFieldToFilter('pl.id', array('null' => true));
+        $changesCollection->getSelect()->limit(self::ORDER_CHANGES_PER_ACCOUNT);
         $changesCollection->getSelect()->group(array('order_id'));
 
         return $changesCollection->getItems();

@@ -1,4 +1,8 @@
-* 6.10.0 (r15971) (12/01/2021) 
+* 6.10.1 (r15992) (18/01/2021) 
+
+Amazon: [Fixed] Sending VAT invoices does not work
+
+* 6.10.0 (r15969) (12/01/2021)
 
 Common: [Improved] Add 'is empty' and 'is not empty' options to Advanced Conditions of Synchronization Policy
 Common: [Improved] Remove 'Single Item' option for QTY in Selling Policy
@@ -32,10 +36,8 @@ eBay: [Fixed] AU marketplace is set by default instead of US during new Listing 
 eBay: [Fixed] Incorrect log is displayed after Sell on Another Marketplace functionality was used
 eBay: [Fixed] Fatal error: 'Call to a member function isCanceled() on null' occurs after Cron was run
 eBay: [Fixed] Error occurs on the 'Edit Shipping policy' page after accounts were deleted from the Configuration section
-eBay: [Fixed] Uninformative error is shown after saving identical attributes for two and more Parts Compatibility blocks
 eBay: [Fixed] Exception: 'Invalid country code' occurs after adding a new eBay Store
 eBay: [Fixed] Watermark file is not saved after it had been configured in Listing Settings
-eBay: [Removed] Custom Settings for eBay ListingsCannot read property 'match' of undefined
 Amazon: [Added] Implement VCS Lite Invoices functionality
 Amazon: [Added] Ability to send SwitchFulfillmentTo in Inventory Feed (Remote Fulfillment with FBA)
 Amazon: [Improved] Automatic stop action for AFN items is removed
@@ -51,7 +53,6 @@ Amazon: [Fixed] The 'Add Another' account button is displayed on the 'Creating A
 Amazon: [Fixed] The 'To Listing' drop-down menu lacks possible Listing options when using the Sell on Another Marketplace functionality
 Walmart: [Added] Custom shipping carriers for US and Canada marketplaces
 Walmart: [Improved] Add 'Invoices & Shipments' tab to Account Settings
-Walmart: [Improved] Tracking details are sent during order status update to 'Shipped'
 Walmart: [Fixed] Redirect to Walmart does not work after clicking on the Item ID link in the Listing grid
 
 * 6.9.2 (r15865) (19/11/2020)

@@ -14,6 +14,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_SendInvoice
     extends Ess_M2ePro_Model_Cron_Task_Abstract
 {
     const NICK = 'amazon/order/send_invoice';
+    const ORDER_CHANGES_PER_ACCOUNT = 100;
 
     //####################################
 
@@ -398,6 +399,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_SendInvoice
             array()
         );
         $changesCollection->addFieldToFilter('pl.id', array('null' => true));
+        $changesCollection->getSelect()->limit(self::ORDER_CHANGES_PER_ACCOUNT);
         $changesCollection->getSelect()->group(array('order_id'));
 
         return $changesCollection->getItems();
