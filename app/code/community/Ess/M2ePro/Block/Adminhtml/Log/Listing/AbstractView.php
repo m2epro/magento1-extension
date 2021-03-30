@@ -17,6 +17,9 @@ abstract class Ess_M2ePro_Block_Adminhtml_Log_Listing_AbstractView extends Mage_
     /** @var  Ess_M2ePro_Block_Adminhtml_Marketplace_Switcher  */
     protected $_marketplaceSwitcherBlock;
 
+    /** @var  Ess_M2ePro_Block_Adminhtml_Log_UniqueMessageFilter  */
+    protected $_uniqueMessageFilterBlock;
+
     //#######################################
 
     abstract protected function getComponentMode();
@@ -43,12 +46,12 @@ abstract class Ess_M2ePro_Block_Adminhtml_Log_Listing_AbstractView extends Mage_
         $this->setTemplate('M2ePro/log/listing.phtml');
     }
 
-
     protected function _prepareLayout()
     {
         $this->_viewModeSwitcherBlock    = $this->createViewModeSwitcherBlock();
         $this->_accountSwitcherBlock     = $this->createAccountSwitcherBlock();
         $this->_marketplaceSwitcherBlock = $this->createMarketplaceSwitcherBlock();
+        $this->_uniqueMessageFilterBlock = $this->createUniqueMessageFilterBlock();
 
         return parent::_prepareLayout();
     }
@@ -88,6 +91,18 @@ abstract class Ess_M2ePro_Block_Adminhtml_Log_Listing_AbstractView extends Mage_
         return $this->getLayout()->createBlock(
             'M2ePro/adminhtml_marketplace_switcher', '', array(
                 'component_mode' => $this->getComponentMode()
+            )
+        );
+    }
+
+    protected function createUniqueMessageFilterBlock()
+    {
+        return $this->getLayout()->createBlock(
+            'M2ePro/adminhtml_log_uniqueMessageFilter',
+            '',
+            array(
+                'route' => "*/adminhtml_{$this->getComponentMode()}_log/listing",
+                'title' => Mage::helper('M2ePro')->__('Only messages with a unique Product ID')
             )
         );
     }

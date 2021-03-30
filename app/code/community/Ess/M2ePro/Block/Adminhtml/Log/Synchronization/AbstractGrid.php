@@ -25,10 +25,6 @@ abstract class Ess_M2ePro_Block_Adminhtml_Log_Synchronization_AbstractGrid exten
 
     //########################################
 
-    abstract public function getComponentMode();
-
-    //########################################
-
     protected function _getLogTypeList()
     {
         return array(

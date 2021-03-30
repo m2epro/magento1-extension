@@ -68,7 +68,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_Edit extends Mage_Adminhtml_Block_
                     'save_and_continue', array(
                     'label'     => Mage::helper('M2ePro')->__('Save And Continue Edit'),
                     'onclick'   => 'EbayAccountObj.save_and_edit_click(\'\',\'ebayAccountEditTabs\')',
-                    'class'     => 'save'
+                    'class'     => 'save',
+                    'id'        => 'save_and_continue'
                     )
                 );
             }
@@ -108,7 +109,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_Edit extends Mage_Adminhtml_Block_
             'save_and_continue', array(
             'label'     => Mage::helper('M2ePro')->__('Save And Continue Edit'),
             'onclick'   => 'EbayAccountObj.save_and_edit_click(\'\',\'ebayAccountEditTabs\')',
-            'class'     => 'save'
+            'class'     => 'save',
+            'id'        => 'save_and_continue'
             )
         );
     }

@@ -11,16 +11,17 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated extends Ess_M2ePro_Mode
     const MEASUREMENT_SYSTEM_ENGLISH = 1;
     const MEASUREMENT_SYSTEM_METRIC  = 2;
 
+    const PACKAGE_SIZE_NONE             = 0;
     const PACKAGE_SIZE_CUSTOM_VALUE     = 1;
     const PACKAGE_SIZE_CUSTOM_ATTRIBUTE = 2;
 
-    const DIMENSION_NONE               = 0;
-    const DIMENSION_CUSTOM_VALUE       = 1;
-    const DIMENSION_CUSTOM_ATTRIBUTE   = 2;
+    const DIMENSION_NONE             = 0;
+    const DIMENSION_CUSTOM_VALUE     = 1;
+    const DIMENSION_CUSTOM_ATTRIBUTE = 2;
 
-    const WEIGHT_NONE                   = 0;
-    const WEIGHT_CUSTOM_VALUE           = 1;
-    const WEIGHT_CUSTOM_ATTRIBUTE       = 2;
+    const WEIGHT_NONE             = 0;
+    const WEIGHT_CUSTOM_VALUE     = 1;
+    const WEIGHT_CUSTOM_ATTRIBUTE = 2;
 
     /**
      * @var Ess_M2ePro_Model_Ebay_Template_Shipping
@@ -47,6 +48,7 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated extends Ess_M2ePro_Mode
         $temp = parent::deleteInstance();
         $temp && $this->_shippingTemplateModel = null;
         $temp && $this->_shippingCalculatedSourceModels = array();
+
         return $temp;
     }
 
@@ -59,7 +61,10 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated extends Ess_M2ePro_Mode
     {
         if ($this->_shippingTemplateModel === null) {
             $this->_shippingTemplateModel = Mage::helper('M2ePro')->getCachedObject(
-                'Ebay_Template_Shipping', $this->getId(), null, array('template')
+                'Ebay_Template_Shipping',
+                $this->getId(),
+                null,
+                array('template')
             );
         }
 
@@ -71,7 +76,7 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated extends Ess_M2ePro_Mode
      */
     public function setShippingTemplate(Ess_M2ePro_Model_Ebay_Template_Shipping $instance)
     {
-         $this->_shippingTemplateModel = $instance;
+        $this->_shippingTemplateModel = $instance;
     }
 
     // ---------------------------------------
@@ -128,6 +133,14 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated extends Ess_M2ePro_Mode
     //########################################
 
     /**
+     * @return bool
+     */
+    public function isPackageSizeSet()
+    {
+        return (int)$this->getData('package_size_mode') !== self::PACKAGE_SIZE_NONE;
+    }
+
+    /**
      * @return array
      */
     public function getPackageSizeSource()
@@ -157,6 +170,14 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated extends Ess_M2ePro_Mode
     // ---------------------------------------
 
     /**
+     * @return bool
+     */
+    public function isDimensionSet()
+    {
+        return (int)$this->getData('dimension_mode') !== self::DIMENSION_NONE;
+    }
+
+    /**
      * @return array
      */
     public function getDimensionSource()
@@ -164,14 +185,14 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated extends Ess_M2ePro_Mode
         return array(
             'mode' => (int)$this->getData('dimension_mode'),
 
-            'width_value'  => $this->getData('dimension_width_value'),
-            'width_attribute'  => $this->getData('dimension_width_attribute'),
+            'width_value'     => $this->getData('dimension_width_value'),
+            'width_attribute' => $this->getData('dimension_width_attribute'),
 
-            'length_value' => $this->getData('dimension_length_value'),
+            'length_value'     => $this->getData('dimension_length_value'),
             'length_attribute' => $this->getData('dimension_length_attribute'),
 
-            'depth_value'  => $this->getData('dimension_depth_value'),
-            'depth_attribute'  => $this->getData('dimension_depth_attribute')
+            'depth_value'     => $this->getData('dimension_depth_value'),
+            'depth_attribute' => $this->getData('dimension_depth_attribute')
         );
     }
 
@@ -195,14 +216,22 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated extends Ess_M2ePro_Mode
     // ---------------------------------------
 
     /**
+     * @return bool
+     */
+    public function isWeightSet()
+    {
+        return (int)$this->getData('weight_mode') !== self::WEIGHT_NONE;
+    }
+
+    /**
      * @return array
      */
     public function getWeightSource()
     {
         return array(
-            'mode' => (int)$this->getData('weight_mode'),
-            'major' => $this->getData('weight_major'),
-            'minor' => $this->getData('weight_minor'),
+            'mode'      => (int)$this->getData('weight_mode'),
+            'major'     => $this->getData('weight_major'),
+            'minor'     => $this->getData('weight_minor'),
             'attribute' => $this->getData('weight_attribute')
         );
     }
@@ -245,12 +274,14 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated extends Ess_M2ePro_Mode
     public function save()
     {
         Mage::helper('M2ePro/Data_Cache_Permanent')->removeTagValues('ebay_template_shipping_calculated');
+
         return parent::save();
     }
 
     public function delete()
     {
         Mage::helper('M2ePro/Data_Cache_Permanent')->removeTagValues('ebay_template_shipping_calculated');
+
         return parent::delete();
     }
 

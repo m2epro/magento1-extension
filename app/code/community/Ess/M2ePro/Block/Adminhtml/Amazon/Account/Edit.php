@@ -164,7 +164,8 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit extends Mage_Adminhtml_Bloc
                 array(
                     'label'   => Mage::helper('M2ePro')->__('Save And Continue Edit'),
                     'onclick' => 'AmazonAccountObj.save_and_edit_click(\'\',\'amazonAccountEditTabs\')',
-                    'class'   => 'save'
+                    'class'   => 'save',
+                    'id'      => 'save_and_continue',
                 )
             );
             // ---------------------------------------

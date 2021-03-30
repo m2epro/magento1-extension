@@ -14,8 +14,6 @@ abstract class Ess_M2ePro_Block_Adminhtml_Log_Listing_AbstractGrid extends Ess_M
 
     abstract protected function getLogHash($type);
 
-    abstract protected function getComponentMode();
-
     //#######################################
 
     protected function getActionName()
@@ -63,5 +61,6 @@ abstract class Ess_M2ePro_Block_Adminhtml_Log_Listing_AbstractGrid extends Ess_M
             )
         );
     }
+
     //#######################################
 }

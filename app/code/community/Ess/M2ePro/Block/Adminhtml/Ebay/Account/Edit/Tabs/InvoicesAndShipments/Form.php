@@ -75,9 +75,9 @@ HTML
 <span>
     <img class="tool-tip-image"
      style="vertical-align: middle;" src="{$this->getSkinUrl('M2ePro/images/tool-tip-icon.png')}" />
-    <span class="tool-tip-message" style="display:none; text-align: left; width: 120px; background: #E3E3E3;">
+    <span class="tool-tip-message" style="display:none; text-align: left; width: 120px;">
         <img src="{$this->getSkinUrl('M2ePro/images/help.png')}" />
-        <span style="color:gray;">
+        <span>
            Enable to automatically create Shipment when shipping is completed.
         </span>
     </span>

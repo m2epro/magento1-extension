@@ -83,6 +83,10 @@ class Ess_M2ePro_Model_Servicing_Task_Analytics_EntityManager_Serializer
                 $data['services'] = $this->unsetDataInRelatedItems($item->getServices(), 'template_shipping_id');
                 break;
 
+            case Ess_M2ePro_Helper_Component_Ebay::NICK . '::Template_Description':
+                unset($data['watermark_image'], $data['description_template']);
+                break;
+
             case Ess_M2ePro_Helper_Component_Ebay::NICK . '::Ebay_Template_Category':
                 /**@var $item Ess_M2ePro_Model_Ebay_Template_Category */
                 $data['specifics'] = $this->unsetDataInRelatedItems($item->getSpecifics(), 'template_category_id');
@@ -102,6 +106,10 @@ class Ess_M2ePro_Model_Servicing_Task_Analytics_EntityManager_Serializer
                 $data['promotions'] = $this->unsetDataInRelatedItems(
                     $item->getChildObject()->getPromotions(), 'template_selling_format_id'
                 );
+                break;
+
+            case Ess_M2ePro_Helper_Component_Walmart::NICK . '::Template_Description':
+                unset($data['description_template']);
                 break;
 
             case Ess_M2ePro_Helper_Component_Walmart::NICK . '::Template_Category':

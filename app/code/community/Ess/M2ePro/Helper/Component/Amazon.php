@@ -15,7 +15,7 @@ class Ess_M2ePro_Helper_Component_Amazon extends Mage_Core_Helper_Abstract
     const MARKETPLACE_CA = 24;
     const MARKETPLACE_DE = 25;
     const MARKETPLACE_US = 29;
-    const MARKETPLACE_JP = 27;
+    const MARKETPLACE_JP = 42;
     const MARKETPLACE_CN = 32;
 
     const MAX_ALLOWED_FEED_REQUESTS_PER_HOUR = 30;

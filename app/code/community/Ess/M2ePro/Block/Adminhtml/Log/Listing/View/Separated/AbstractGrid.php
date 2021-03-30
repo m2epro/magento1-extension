@@ -25,9 +25,23 @@ abstract class Ess_M2ePro_Block_Adminhtml_Log_Listing_View_Separated_AbstractGri
 
         $this->applyFilters($collection);
 
-        $this->setCollection($collection);
+        $isNeedCombine = $this->isNeedCombineMessages();
 
-        return parent::_prepareCollection();
+        if ($isNeedCombine) {
+            $collection->getSelect()->columns(
+                array('create_date' => new \Zend_Db_Expr('MAX(main_table.create_date)'))
+            );
+            $collection->getSelect()->group(array('main_table.listing_product_id', 'main_table.description'));
+        }
+
+        $this->setCollection($collection);
+        $result = parent::_prepareCollection();
+
+        if ($isNeedCombine) {
+            $this->prepareMessageCount($collection);
+        }
+
+        return $result;
     }
 
     //########################################

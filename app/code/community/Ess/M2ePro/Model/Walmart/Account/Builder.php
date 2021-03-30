@@ -98,7 +98,7 @@ class Ess_M2ePro_Model_Walmart_Account_Builder extends Ess_M2ePro_Model_ActiveRe
             }
         }
 
-        if (isset($tempData['mapping_upc_mode']) ) {
+        if (isset($tempData['mapping_upc_mode'])) {
             $mappingSettings['upc']['mode'] = (int)$tempData['mapping_upc_mode'];
 
             if ($tempData['mapping_upc_mode'] == Account::OTHER_LISTINGS_MAPPING_UPC_MODE_CUSTOM_ATTRIBUTE) {
@@ -264,6 +264,21 @@ class Ess_M2ePro_Model_Walmart_Account_Builder extends Ess_M2ePro_Model_ActiveRe
             }
         }
 
+        // refund & cancellation
+        // ---------------------------------------
+        $tempKey = 'refund_and_cancellation';
+        $tempSettings = !empty($this->_rawData['magento_orders_settings'][$tempKey])
+            ? $this->_rawData['magento_orders_settings'][$tempKey] : array();
+
+        $keys = array(
+            'refund_mode',
+        );
+        foreach ($keys as $key) {
+            if (isset($tempSettings[$key])) {
+                $data['magento_orders_settings'][$tempKey][$key] = $tempSettings[$key];
+            }
+        }
+
         $data['magento_orders_settings'] = Mage::helper('M2ePro')->jsonEncode($data['magento_orders_settings']);
 
         // tab invoice and shipment
@@ -279,7 +294,6 @@ class Ess_M2ePro_Model_Walmart_Account_Builder extends Ess_M2ePro_Model_ActiveRe
         }
 
         if (isset($this->_rawData['other_carrier']) && isset($this->_rawData['other_carrier_url'])) {
-
             $otherCarriers = array();
             $carriers = array_filter($this->_rawData['other_carrier']);
             $carrierURLs = array_filter($this->_rawData['other_carrier_url']);
@@ -287,7 +301,7 @@ class Ess_M2ePro_Model_Walmart_Account_Builder extends Ess_M2ePro_Model_ActiveRe
             foreach ($carriers as $index => $code) {
                 $otherCarriers[] = array(
                     'code' => $code,
-                    'url' => isset($carrierURLs[$index]) ? $carrierURLs[$index] : ''
+                    'url'  => isset($carrierURLs[$index]) ? $carrierURLs[$index] : ''
                 );
             }
 
@@ -300,59 +314,62 @@ class Ess_M2ePro_Model_Walmart_Account_Builder extends Ess_M2ePro_Model_ActiveRe
     public function getDefaultData()
     {
         return array(
-            'title'           => '',
-            'marketplace_id'  => 0,
-            'consumer_id'     => '',
-            'private_key'     => '',
-            'client_id'       => '',
-            'client_secret'   => '',
+            'title'          => '',
+            'marketplace_id' => 0,
+            'consumer_id'    => '',
+            'private_key'    => '',
+            'client_id'      => '',
+            'client_secret'  => '',
 
             'related_store_id' => 0,
 
-            'other_listings_synchronization' => 1,
-            'other_listings_mapping_mode' => 1,
+            'other_listings_synchronization'  => 1,
+            'other_listings_mapping_mode'     => 1,
             'other_listings_mapping_settings' => array(),
 
             'magento_orders_settings' => array(
-                'listing' => array(
-                    'mode' => 1,
+                'listing'        => array(
+                    'mode'       => 1,
                     'store_mode' => Account::MAGENTO_ORDERS_LISTINGS_STORE_MODE_DEFAULT,
-                    'store_id' => null
+                    'store_id'   => null
                 ),
-                'listing_other' => array(
-                    'mode' => 1,
-                    'product_mode' => Account::MAGENTO_ORDERS_LISTINGS_OTHER_PRODUCT_MODE_IMPORT,
+                'listing_other'  => array(
+                    'mode'                 => 1,
+                    'product_mode'         => Account::MAGENTO_ORDERS_LISTINGS_OTHER_PRODUCT_MODE_IGNORE,
                     'product_tax_class_id' => Ess_M2ePro_Model_Magento_Product::TAX_CLASS_ID_NONE,
-                    'store_id' => null,
+                    'store_id'             => null,
                 ),
-                'number' => array(
+                'number'         => array(
                     'source' => Account::MAGENTO_ORDERS_NUMBER_SOURCE_MAGENTO,
                     'prefix' => array(
                         'prefix' => '',
                     )
                 ),
-                'tax' => array(
+                'tax'            => array(
                     'mode' => Account::MAGENTO_ORDERS_TAX_MODE_MIXED
                 ),
-                'customer' => array(
-                    'mode' => Account::MAGENTO_ORDERS_CUSTOMER_MODE_GUEST,
-                    'id' => null,
-                    'website_id' => null,
-                    'group_id' => null,
+                'customer'       => array(
+                    'mode'          => Account::MAGENTO_ORDERS_CUSTOMER_MODE_GUEST,
+                    'id'            => null,
+                    'website_id'    => null,
+                    'group_id'      => null,
                     'notifications' => array(
                         'invoice_created' => false,
-                        'order_created' => false
+                        'order_created'   => false
                     ),
                 ),
                 'status_mapping' => array(
-                    'mode' => Account::MAGENTO_ORDERS_STATUS_MAPPING_MODE_DEFAULT,
+                    'mode'       => Account::MAGENTO_ORDERS_STATUS_MAPPING_MODE_DEFAULT,
                     'processing' => Account::MAGENTO_ORDERS_STATUS_MAPPING_PROCESSING,
-                    'shipped' => Account::MAGENTO_ORDERS_STATUS_MAPPING_SHIPPED,
-                )
+                    'shipped'    => Account::MAGENTO_ORDERS_STATUS_MAPPING_SHIPPED,
+                ),
+                'refund_and_cancellation' => array(
+                    'refund_mode' => 1,
+                ),
             ),
-            'create_magento_invoice' => 1,
+            'create_magento_invoice'  => 1,
             'create_magento_shipment' => 1,
-            'other_carriers' => array()
+            'other_carriers'          => array()
         );
     }
 

@@ -81,7 +81,6 @@ class Ess_M2ePro_Block_Adminhtml_Order_UploadByUser_Grid extends Mage_Adminhtml_
                 'type'     => 'text',
                 'sortable' => false,
                 'index'    => 'identifier',
-                'frame_callback' => array($this, 'callbackColumnIdentifier')
             )
         );
 
@@ -153,23 +152,6 @@ CSS
 
     //########################################
 
-    public function callbackColumnIdentifier($value, $row, $column, $isExport)
-    {
-        /** @var AmazonManager|EbayManager|WalmartManager $manager */
-        $manager = $row['_manager_'];
-        $helper = Mage::helper('M2ePro');
-
-        $state = '';
-        if ($manager->isEnabled()) {
-            $state = <<<HTML
-<br/>
-<span style="color: orange; font-style: italic;">{$helper->__('(in progress)')}</span>
-HTML;
-        }
-
-        return $value . $state;
-    }
-
     public function callbackColumnDate($value, $row, $column, $isExport)
     {
         /** @var AmazonManager|EbayManager|WalmartManager $manager */
@@ -207,6 +189,8 @@ HTML;
         /** @var Ess_M2ePro_Model_Account $account */
         $account = $row['_account_'];
 
+        $helper = Mage::helper('M2ePro');
+
         $data = array(
             'label'   => $manager->isEnabled()
                 ? Mage::helper('M2ePro')->__('Cancel')
@@ -219,8 +203,17 @@ HTML;
             'class' => 'button_link'
         );
 
+        $state = '';
+        if ($manager->isEnabled()) {
+            $state = <<<HTML
+<br/>
+<span style="color: orange; font-style: italic;">{$helper->__('(in progress)')}</span>
+HTML;
+        }
+
         $button = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
-        return $button->toHtml();
+        return $button->toHtml() . $state;
+
     }
 
     //########################################

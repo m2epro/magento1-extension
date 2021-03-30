@@ -88,7 +88,10 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Product_ProcessActionsResults
                     'errors' => array()
                 );
 
-                if (isset($resultData['data'][$action->getListingProductId().'-id'])) {
+                //worker may return different data structure
+                if (isset($resultData[$action->getListingProductId().'-id'])) {
+                    $resultActionData = $resultData[$action->getListingProductId().'-id'];
+                } elseif (isset($resultData['data'][$action->getListingProductId().'-id'])) {
                     $resultActionData = $resultData['data'][$action->getListingProductId().'-id'];
                 }
 

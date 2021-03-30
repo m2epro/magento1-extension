@@ -20,33 +20,6 @@ class Ess_M2ePro_Model_Ebay_Order_Helper
 
     //########################################
 
-    public function getOrderStatus($orderStatusEbay)
-    {
-        $orderStatus = null;
-
-        switch ($orderStatusEbay) {
-            case self::EBAY_ORDER_STATUS_ACTIVE:
-                $orderStatus = Ess_M2ePro_Model_Ebay_Order::ORDER_STATUS_ACTIVE;
-                break;
-
-            case self::EBAY_ORDER_STATUS_COMPLETED:
-                $orderStatus = Ess_M2ePro_Model_Ebay_Order::ORDER_STATUS_COMPLETED;
-                break;
-
-            case self::EBAY_ORDER_STATUS_CANCELLED:
-                $orderStatus = Ess_M2ePro_Model_Ebay_Order::ORDER_STATUS_CANCELLED;
-                break;
-
-            case self::EBAY_ORDER_STATUS_INACTIVE:
-                $orderStatus = Ess_M2ePro_Model_Ebay_Order::ORDER_STATUS_INACTIVE;
-                break;
-        }
-
-        return $orderStatus;
-    }
-
-    //########################################
-
     public function getCheckoutStatus($checkoutStatusEbay)
     {
         if ($checkoutStatusEbay == self::EBAY_CHECKOUT_STATUS_COMPLETE) {

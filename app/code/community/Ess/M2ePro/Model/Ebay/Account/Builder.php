@@ -288,6 +288,21 @@ class Ess_M2ePro_Model_Ebay_Account_Builder extends Ess_M2ePro_Model_ActiveRecor
             }
         }
 
+        // refund & cancellation
+        // ---------------------------------------
+        $tempKey = 'refund_and_cancellation';
+        $tempSettings = !empty($this->_rawData['magento_orders_settings'][$tempKey])
+            ? $this->_rawData['magento_orders_settings'][$tempKey] : array();
+
+        $keys = array(
+            'refund_mode',
+        );
+        foreach ($keys as $key) {
+            if (isset($tempSettings[$key])) {
+                $data['magento_orders_settings'][$tempKey][$key] = $tempSettings[$key];
+            }
+        }
+
         // In Store Pickup statuses
         // ---------------------------------------
         $tempKey = 'in_store_pickup_statuses';
@@ -360,7 +375,7 @@ class Ess_M2ePro_Model_Ebay_Account_Builder extends Ess_M2ePro_Model_ActiveRecor
                 ),
                 'listing_other'            => array(
                     'mode'                 => 1,
-                    'product_mode'         => Account::MAGENTO_ORDERS_LISTINGS_OTHER_PRODUCT_MODE_IMPORT,
+                    'product_mode'         => Account::MAGENTO_ORDERS_LISTINGS_OTHER_PRODUCT_MODE_IGNORE,
                     'product_tax_class_id' => Ess_M2ePro_Model_Magento_Product::TAX_CLASS_ID_NONE,
                     'store_id'             => null,
                 ),
@@ -402,7 +417,10 @@ class Ess_M2ePro_Model_Ebay_Account_Builder extends Ess_M2ePro_Model_ActiveRecor
                 ),
                 'qty_reservation'          => array(
                     'days' => 1
-                )
+                ),
+                'refund_and_cancellation' => array(
+                    'refund_mode' => 0,
+                ),
             ),
 
             'create_magento_invoice'  => 1,

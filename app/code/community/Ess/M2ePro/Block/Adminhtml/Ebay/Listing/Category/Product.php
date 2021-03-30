@@ -30,19 +30,21 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Product
 
         $url = $this->getUrl('*/*/', array('step' => 1, '_current' => true));
         $this->_addButton(
-            'back', array(
-            'label'     => Mage::helper('M2ePro')->__('Back'),
-            'class'     => 'back',
-            'onclick'   => 'setLocation(\''.$url.'\');'
+            'back',
+            array(
+                'label'   => Mage::helper('M2ePro')->__('Back'),
+                'class'   => 'back',
+                'onclick' => 'setLocation(\'' . $url . '\');'
             )
         );
 
         $this->_addButton(
-            'next', array(
-            'id'        => 'ebay_listing_category_continue_btn',
-            'label'     => Mage::helper('M2ePro')->__('Continue'),
-            'class'     => 'scalable next',
-            'onclick'   => 'EbayListingCategoryProductGridObj.completeCategoriesDataStep(1, 0);'
+            'next',
+            array(
+                'id'      => 'ebay_listing_category_continue_btn',
+                'label'   => Mage::helper('M2ePro')->__('Continue'),
+                'class'   => 'scalable next',
+                'onclick' => 'EbayListingCategoryProductGridObj.completeCategoriesDataStep(1, 0);'
             )
         );
     }
@@ -57,10 +59,12 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Product
 
         /** @var Ess_M2ePro_Model_Listing $listing */
         $listing = Mage::helper('M2ePro/Component_Ebay')->getCachedObject(
-            'Listing', $this->getRequest()->getParam('listing_id')
+            'Listing',
+            $this->getRequest()->getParam('listing_id')
         );
         $viewHeaderBlock = $this->getLayout()->createBlock(
-            'M2ePro/adminhtml_listing_view_header', '',
+            'M2ePro/adminhtml_listing_view_header',
+            '',
             array('listing' => $listing)
         );
 

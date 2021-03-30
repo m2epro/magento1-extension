@@ -36,7 +36,6 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Diff extends Ess_M2ePro_Model_Acti
             'local_shipping_mode',
             'local_shipping_discount_promotional_mode',
             'local_shipping_discount_combined_profile_id',
-            'click_and_collect_mode',
             'international_shipping_mode',
             'international_shipping_discount_promotional_mode',
             'international_shipping_discount_combined_profile_id',

@@ -62,6 +62,11 @@ abstract class Ess_M2ePro_Block_Adminhtml_Log_Listing_View_AbstractView extends
 
         $this->_viewModeSwitcherBlock->addData($params);
 
+        $uniqueMessageFilterBlockHtml = '';
+        if ($this->getViewMode() == Ess_M2ePro_Block_Adminhtml_Log_Listing_View_ModeSwitcher::VIEW_MODE_SEPARATED) {
+            $uniqueMessageFilterBlockHtml = $this->_uniqueMessageFilterBlock->toHtml();
+        }
+
         if ($this->getListingId()) {
             $html = '<div class="static-switcher-block">'
                 . $this->getStaticFilterHtml(
@@ -72,7 +77,8 @@ abstract class Ess_M2ePro_Block_Adminhtml_Log_Listing_View_AbstractView extends
                     Mage::helper('M2ePro')->__('Marketplace'),
                     $this->getListing()->getMarketplace()->getTitle()
                 )
-                . '</div>';
+                . '</div>'
+                . $uniqueMessageFilterBlockHtml;
         } elseif ($this->getListingProductId()) {
             $html = '<div class="static-switcher-block">'
                 . $this->getStaticFilterHtml(
@@ -86,7 +92,8 @@ abstract class Ess_M2ePro_Block_Adminhtml_Log_Listing_View_AbstractView extends
                 . '</div>';
         } else {
             $html = $this->_accountSwitcherBlock->toHtml()
-                . $this->_marketplaceSwitcherBlock->toHtml();
+                . $this->_marketplaceSwitcherBlock->toHtml()
+                . $uniqueMessageFilterBlockHtml;
         }
 
         return $this->_viewModeSwitcherBlock->_toHtml()

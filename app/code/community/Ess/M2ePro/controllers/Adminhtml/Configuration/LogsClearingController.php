@@ -42,6 +42,10 @@ class Ess_M2ePro_Adminhtml_Configuration_LogsClearingController
                 );
             }
 
+            /** @var Ess_M2ePro_Helper_Order_Notification $orderNotification */
+            $orderNotification = Mage::helper('M2ePro/Order_Notification');
+            $orderNotification->setNotificationMode($this->getRequest()->getParam('order_notification_mode'));
+
             $this->_getSession()->addSuccess(
                 Mage::helper('M2ePro')->__('The clearing Settings has been saved.')
             );

@@ -27,19 +27,15 @@ class Ess_M2ePro_Observer_Creditmemo extends Ess_M2ePro_Observer_Abstract
             return;
         }
 
-        $components = array_intersect(
-            Mage::helper('M2ePro/Component')->getEnabledComponents(),
-            array(Ess_M2ePro_Helper_Component_Amazon::NICK, Ess_M2ePro_Helper_Component_Walmart::NICK)
-        );
+        $componentMode = ucfirst($order->getComponentMode());
 
-        if (!in_array($order->getComponentMode(), $components)) {
+        if (!Mage::helper("M2ePro/Component_{$componentMode}")->isEnabled()) {
             return;
         }
 
         $order->getLog()->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION);
 
         /** @var Ess_M2ePro_Model_Order_Creditmemo_Handler $handler */
-        $componentMode = ucfirst($order->getComponentMode());
         $handler = Mage::getModel("M2ePro/{$componentMode}_Order_Creditmemo_Handler");
         $handler->handle($order, $creditmemo);
     }

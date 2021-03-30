@@ -6,6 +6,8 @@
  * @license    Commercial use is forbidden
  */
 
+use Ess_M2ePro_Model_Ebay_Order_Helper as Helper;
+
 class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
 {
     const STATUS_NOT_MODIFIED = 0;
@@ -15,6 +17,7 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
     const UPDATE_COMPLETED_CHECKOUT = 'completed_checkout';
     const UPDATE_COMPLETED_PAYMENT  = 'completed_payment';
     const UPDATE_COMPLETED_SHIPPING = 'completed_shipping';
+    const UPDATE_CANCELLATION       = 'cancellation';
     const UPDATE_BUYER_MESSAGE      = 'buyer_message';
     const UPDATE_PAYMENT_DATA       = 'payment_data';
     const UPDATE_SHIPPING_TAX_DATA  = 'shipping_tax_data';
@@ -77,7 +80,7 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
         $this->setData('ebay_order_id', $data['identifiers']['ebay_order_id']);
         $this->setData('selling_manager_id', $data['identifiers']['selling_manager_id']);
 
-        $this->setData('order_status', $this->_helper->getOrderStatus($data['statuses']['order']));
+        $this->setData('order_status', $data['statuses']['order']);
         $this->setData('checkout_status', $this->_helper->getCheckoutStatus($data['statuses']['checkout']));
 
         $this->setData('purchase_update_date', $data['purchase_update_date']);
@@ -115,6 +118,11 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
             $data['shipping']['date'], !empty($data['shipping']['service'])
         );
         $this->setData('shipping_status', $shippingStatus);
+
+        // ---------------------------------------
+
+        $cancellationStatus = $data['statuses']['order'] == Helper::EBAY_ORDER_STATUS_CANCELLED ? 1 : 0;
+        $this->setData('cancellation_status', $cancellationStatus);
 
         // ---------------------------------------
         $this->_items = $data['items'];
@@ -452,13 +460,16 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
             return true;
         }
 
+        if ($this->getData('order_status') == Helper::EBAY_ORDER_STATUS_CANCELLED &&
+            !$this->_order->getChildObject()->isCanceled()) {
+            return true;
+        }
+
         if ($this->getData('checkout_status') == Ess_M2ePro_Model_Ebay_Order::CHECKOUT_STATUS_COMPLETED) {
             return true;
         }
 
-        if ($this->getData('order_status') == Ess_M2ePro_Model_Ebay_Order::ORDER_STATUS_CANCELLED ||
-            $this->getData('order_status') == Ess_M2ePro_Model_Ebay_Order::ORDER_STATUS_INACTIVE
-        ) {
+        if ($this->getData('order_status') == Helper::EBAY_ORDER_STATUS_INACTIVE) {
             return false;
         }
 
@@ -495,10 +506,14 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
 
         $this->_order->setAccount($this->_account);
 
-        if ($this->getData('order_status') == Ess_M2ePro_Model_Ebay_Order::ORDER_STATUS_CANCELLED &&
-            $this->_order->getReserve()->isPlaced()
-        ) {
-            $this->_order->getReserve()->cancel();
+        if ($this->getData('order_status') == Helper::EBAY_ORDER_STATUS_CANCELLED) {
+            if ($this->_order->getReserve()->isPlaced()) {
+                $this->_order->getReserve()->cancel();
+            }
+
+            if ($this->_order->getMagentoOrder() !== null && !$this->_order->getMagentoOrder()->isCanceled()) {
+                $this->_order->cancelMagentoOrder();
+            }
         }
     }
 
@@ -617,6 +632,10 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
     {
         if (!$this->isUpdated()) {
             return;
+        }
+
+        if ($this->hasUpdatedCancellationStatus()) {
+            $this->_updates[] = self::UPDATE_CANCELLATION;
         }
 
         if ($this->hasUpdatedCompletedCheckout()) {
@@ -771,6 +790,26 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
         return false;
     }
 
+    /**
+     * @return bool
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
+    protected function hasUpdatedCancellationStatus()
+    {
+        if (!$this->isUpdated()) {
+            return false;
+        }
+
+        $oldStatus = $this->_order->getChildObject()->getData('cancellation_status');
+        $newStatus = $this->getData('cancellation_status');
+
+        if ($newStatus == 0 && ($oldStatus != $newStatus)) {
+            return true;
+        }
+
+        return false;
+    }
+
     // ---------------------------------------
 
     /**
@@ -843,6 +882,11 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
 
         if ($this->hasUpdate(self::UPDATE_COMPLETED_SHIPPING)) {
             $this->_order->addSuccessLog('Shipping status was updated to Shipped on eBay.');
+            $this->_order->setStatusUpdateRequired(true);
+        }
+
+        if ($this->hasUpdate(self::UPDATE_CANCELLATION)) {
+            $this->_order->addSuccessLog('Seller canceled order on eBay.');
             $this->_order->setStatusUpdateRequired(true);
         }
 

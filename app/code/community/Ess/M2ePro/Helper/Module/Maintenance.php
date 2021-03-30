@@ -11,6 +11,8 @@ class Ess_M2ePro_Helper_Module_Maintenance extends Mage_Core_Helper_Abstract
     const MAINTENANCE_CONFIG_PATH = 'm2epro/maintenance';
     const MENU_ROOT_NODE_NICK = 'm2epro_maintenance';
 
+    private $cache = array();
+
     //########################################
 
     public function isEnabled()
@@ -32,6 +34,10 @@ class Ess_M2ePro_Helper_Module_Maintenance extends Mage_Core_Helper_Abstract
 
     protected function getConfig($path)
     {
+        if (isset($this->cache[$path])) {
+            return $this->cache[$path];
+        }
+
         $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
 
         $select = $connRead
@@ -44,7 +50,7 @@ class Ess_M2ePro_Helper_Module_Maintenance extends Mage_Core_Helper_Abstract
             ->where('scope_id = ?', 0)
             ->where('path = ?', $path);
 
-        return $connRead->fetchOne($select);
+        return $this->cache[$path] = $connRead->fetchOne($select);
     }
 
     protected function setConfig($path, $value)
@@ -61,18 +67,19 @@ class Ess_M2ePro_Helper_Module_Maintenance extends Mage_Core_Helper_Abstract
                     'value'    => $value
                 )
             );
-            return;
+        } else {
+            $connWrite->update(
+                Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('core_config_data'),
+                array('value' => $value),
+                array(
+                    'scope = ?'    => 'default',
+                    'scope_id = ?' => 0,
+                    'path = ?'     => $path,
+                )
+            );
         }
 
-        $connWrite->update(
-            Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('core_config_data'),
-            array('value' => $value),
-            array(
-                'scope = ?'    => 'default',
-                'scope_id = ?' => 0,
-                'path = ?'     => $path,
-            )
-        );
+        unset($this->cache[$path]);
     }
 
     //########################################

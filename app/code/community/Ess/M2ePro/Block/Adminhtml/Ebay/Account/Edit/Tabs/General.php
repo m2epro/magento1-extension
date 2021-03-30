@@ -28,7 +28,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_Edit_Tabs_General extends Mage_Adm
         $data = array(
             'label'   => Mage::helper('M2ePro')->__('Get Token'),
             'onclick' => 'EbayAccountObj.get_token();',
-            'class'   => 'get_token_button'
+            'class'   => 'get_token_button',
+            'id'      => 'grant_access'
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('get_token_button', $buttonBlock);

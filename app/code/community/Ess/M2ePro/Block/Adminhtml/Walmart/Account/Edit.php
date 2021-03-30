@@ -159,7 +159,8 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Account_Edit extends Mage_Adminhtml_Blo
                 'save_and_continue', array(
                 'label'     => Mage::helper('M2ePro')->__('Save And Continue Edit'),
                 'onclick'   => 'WalmartAccountObj.save_and_edit_click(\'\',\'walmartAccountEditTabs\')',
-                'class'     => 'save'
+                'class'     => 'save',
+                'id'        => 'save_and_continue-button'
                 )
             );
             // ---------------------------------------

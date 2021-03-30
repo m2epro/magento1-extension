@@ -42,7 +42,8 @@ class Ess_M2ePro_Block_Adminhtml_Wizard_InstallationAmazon_Installation_ListingT
 
     <br/>
     <p>
-        Click on <strong>Create First Listing</strong> button to proceed.
+        Click on the <strong>Create First Listing</strong> button to proceed.
+         Or click on the <strong>Skip</strong> button if you want to create your first listing later.
     </p>
 </div>
 HTML

@@ -2,8 +2,7 @@ window.EbayListingCategoryGrid = Class.create(Grid, {
 
     // ---------------------------------------
 
-    prepareActions: function()
-    {
+    prepareActions: function() {
         this.actions = {
             editCategoriesAction: function(id) {
                 id && this.selectByRowId(id);
@@ -16,16 +15,15 @@ window.EbayListingCategoryGrid = Class.create(Grid, {
         };
     },
 
-    editCategories: function(mode)
-    {
+    editCategories: function(mode) {
         this.selectedProductsIds = this.getSelectedProductsString();
 
         new Ajax.Request(M2ePro.url.get('adminhtml_ebay_listing_categorySettings/getChooserBlockHtml'), {
             method: 'post',
             asynchronous: true,
             parameters: {
-                ids           : this.selectedProductsIds,
-                category_mode : mode
+                ids: this.selectedProductsIds,
+                category_mode: mode
             },
             onSuccess: function(transport) {
                 this.openPopUp('Category Settings', transport.responseText);
@@ -33,8 +31,7 @@ window.EbayListingCategoryGrid = Class.create(Grid, {
         });
     },
 
-    resetCategories: function(id)
-    {
+    resetCategories: function(id) {
         if (id && !confirm('Are you sure?')) {
             return;
         }
@@ -56,8 +53,7 @@ window.EbayListingCategoryGrid = Class.create(Grid, {
 
     //----------------------------------------
 
-    openPopUp: function(title, content)
-    {
+    openPopUp: function(title, content) {
         var popup = Dialog.info(content, {
             draggable: true,
             resizable: true,
@@ -80,14 +76,12 @@ window.EbayListingCategoryGrid = Class.create(Grid, {
         $('modal_dialog_message').innerHTML.evalScripts();
     },
 
-    cancelCategoriesData: function()
-    {
+    cancelCategoriesData: function() {
         Windows.getFocusedWindow() && Windows.getFocusedWindow().close();
         this.unselectAllAndReload();
     },
 
-    confirmCategoriesData: function()
-    {
+    confirmCategoriesData: function() {
         var editForm = new varienForm('edit_form');
         if (!editForm.validate()) {
             return;
@@ -104,13 +98,12 @@ window.EbayListingCategoryGrid = Class.create(Grid, {
 
     // ---------------------------------------
 
-    saveCategoriesData: function(templateData)
-    {
+    saveCategoriesData: function(templateData) {
         new Ajax.Request(M2ePro.url.get('adminhtml_ebay_listing_categorySettings/stepTwoSaveToSession'), {
             method: 'post',
             parameters: {
-                ids           : this.getSelectedProductsString(),
-                template_data : Object.toJSON(templateData)
+                ids: this.getSelectedProductsString(),
+                template_data: Object.toJSON(templateData)
             },
             onSuccess: function(transport) {
                 this.cancelCategoriesData();
@@ -120,8 +113,7 @@ window.EbayListingCategoryGrid = Class.create(Grid, {
 
     // ---------------------------------------
 
-    completeCategoriesDataStep: function(validateCategory, validateSpecifics)
-    {
+    completeCategoriesDataStep: function(validateCategory, validateSpecifics) {
         var self = this;
 
         MessageObj.clearAll();
@@ -130,8 +122,8 @@ window.EbayListingCategoryGrid = Class.create(Grid, {
             method: 'post',
             asynchronous: true,
             parameters: {
-                validate_category  : validateCategory,
-                validate_specifics : validateSpecifics
+                validate_category: validateCategory,
+                validate_specifics: validateSpecifics
             },
             onSuccess: function(transport) {
 
@@ -163,11 +155,11 @@ window.EbayListingCategoryGrid = Class.create(Grid, {
                 this.nextStepWarningPopup.options.destroyOnClose = false;
                 $('modal_dialog_message').insert($('next_step_warning_popup_content').show());
 
-                $('next_step_warning_popup_content').select('span.total_count').each(function(el){
+                $('next_step_warning_popup_content').select('span.total_count').each(function(el) {
                     $(el).update(response['total_count']);
                 });
 
-                $('next_step_warning_popup_content').select('span.failed_count').each(function(el){
+                $('next_step_warning_popup_content').select('span.failed_count').each(function(el) {
                     $(el).update(response['failed_count']);
                 });
 
@@ -179,13 +171,12 @@ window.EbayListingCategoryGrid = Class.create(Grid, {
 
     // ---------------------------------------
 
-    validateCategories: function (isAlLeasOneCategorySelected, showErrorMessage)
-    {
+    validateCategories: function(isAlLeasOneCategorySelected, showErrorMessage) {
         var button = $('ebay_listing_category_continue_btn');
         if (parseInt(isAlLeasOneCategorySelected)) {
             button.addClassName('disabled');
             button.disable();
-            if (showErrorMessage) {
+            if (parseInt(showErrorMessage)) {
                 MessageObj.removeError('category-data-must-be-specified');
                 MessageObj.addError(M2ePro.translator.translate('select_relevant_category'), 'category-data-must-be-specified');
             }
@@ -198,13 +189,11 @@ window.EbayListingCategoryGrid = Class.create(Grid, {
 
     // ---------------------------------------
 
-    categoryNotSelectedWarningPopupContinueClick: function()
-    {
+    categoryNotSelectedWarningPopupContinueClick: function() {
         setLocation(M2ePro.url.get('adminhtml_ebay_listing_categorySettings'));
     },
 
-    getComponent: function()
-    {
+    getComponent: function() {
         return 'ebay';
     }
 

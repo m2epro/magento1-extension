@@ -20,6 +20,9 @@ abstract class Ess_M2ePro_Block_Adminhtml_Log_Listing_View_AbstractGrid extends
         $this->setDefaultDir('DESC');
         $this->setSaveParametersInSession(true);
         $this->setUseAjax(true);
+
+        $this->_entityIdFieldName = self::LISTING_PRODUCT_ID_FIELD;
+        $this->_logModelName = 'Listing_Log';
     }
 
     //########################################

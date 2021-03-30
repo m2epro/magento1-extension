@@ -45,6 +45,7 @@ class Ess_M2ePro_Model_Ebay_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
      */
     public function getCustomer()
     {
+        /** @var  $customer Mage_Customer_Model_Customer*/
         $customer = Mage::getModel('customer/customer');
 
         if ($this->_order->getEbayAccount()->isMagentoOrdersCustomerPredefined()) {
@@ -81,6 +82,13 @@ class Ess_M2ePro_Model_Ebay_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
                 ->addAttributeToFilter(self::USER_ID_ATTRIBUTE_CODE, $this->_order->getBuyerUserId())->getFirstItem();
 
             if (!empty($customer) && $customer->getId() !== null) {
+                return $customer;
+            }
+
+            $customer->setWebsiteId($this->_order->getEbayAccount()->getMagentoOrdersCustomerNewWebsiteId());
+            $customer->loadByEmail($customerInfo['email']);
+
+            if ($customer->getId() !== null) {
                 $customer->setData(self::USER_ID_ATTRIBUTE_CODE, $this->_order->getBuyerUserId());
                 $customer->save();
 

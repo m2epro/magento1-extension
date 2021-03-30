@@ -47,7 +47,7 @@ class Ess_M2ePro_Helper_Module_Support extends Mage_Core_Helper_Abstract
     {
         $urlParts[] = Mage::helper('M2ePro/Module')->getConfig()->getGroupValue('/support/', 'documentation_url');
 
-        if ($component || $articleUrl) {
+        if ($component) {
             $urlParts[] = 'display';
         }
 

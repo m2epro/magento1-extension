@@ -14,6 +14,9 @@ class Ess_M2ePro_Model_ControlPanel_Inspection_Inspector_FilesPermissions
     protected $_unWritable = array();
 
     /** @var array */
+    protected $_notExisting = array();
+
+    /** @var array */
     protected $_checked = array();
 
     //########################################
@@ -47,6 +50,14 @@ class Ess_M2ePro_Model_ControlPanel_Inspection_Inspector_FilesPermissions
                 $this,
                 'Has unwriteable files \ directories',
                 array_keys($this->_unWritable)
+            );
+        }
+
+        if (!empty($this->_notExisting)) {
+            $issues[] = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Result_Factory')->createWarning(
+                $this,
+                'Following directories are missing',
+                $this->_notExisting
             );
         }
 
@@ -94,7 +105,13 @@ class Ess_M2ePro_Model_ControlPanel_Inspection_Inspector_FilesPermissions
         foreach ($modulePaths as $path) {
             $fullPath = Mage::getBaseDir().DS.$path;
 
-            $directoryIterator = new RecursiveDirectoryIterator($fullPath, FilesystemIterator::SKIP_DOTS);
+            try {
+                $directoryIterator = new RecursiveDirectoryIterator($fullPath, FilesystemIterator::SKIP_DOTS);
+            } catch (\UnexpectedValueException $e) {
+                $this->_notExisting[] = $fullPath;
+                continue;
+            }
+
             $iterator = new RecursiveIteratorIterator($directoryIterator, RecursiveIteratorIterator::SELF_FIRST);
 
             foreach ($iterator as $fileObj) {

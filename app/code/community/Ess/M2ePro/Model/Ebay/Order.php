@@ -6,17 +6,14 @@
  * @license    Commercial use is forbidden
  */
 
+use Ess_M2ePro_Helper_Component_Ebay as EbayHelper;
+
 /**
  * @method Ess_M2ePro_Model_Order getParentObject()
  * @method Ess_M2ePro_Model_Resource_Ebay_Order getResource()
  */
 class Ess_M2ePro_Model_Ebay_Order extends Ess_M2ePro_Model_Component_Child_Ebay_Abstract
 {
-    const ORDER_STATUS_ACTIVE     = 0;
-    const ORDER_STATUS_COMPLETED  = 1;
-    const ORDER_STATUS_CANCELLED  = 2;
-    const ORDER_STATUS_INACTIVE   = 3;
-
     const CHECKOUT_STATUS_INCOMPLETE = 0;
     const CHECKOUT_STATUS_COMPLETED  = 1;
 
@@ -28,6 +25,15 @@ class Ess_M2ePro_Model_Ebay_Order extends Ess_M2ePro_Model_Component_Child_Ebay_
     const SHIPPING_STATUS_NOT_SELECTED = 0;
     const SHIPPING_STATUS_PROCESSING   = 1;
     const SHIPPING_STATUS_COMPLETED    = 2;
+
+    const STATUS_PENDING   = 0;
+    const STATUS_UNSHIPPED = 1;
+    const STATUS_SHIPPED   = 2;
+    const STATUS_CANCELED  = 3;
+
+    /** All reasons: https://developer.ebay.com/Devzone/post-order/types/CancelReasonEnum.html */
+    const CANCEL_REASON_DEFAULT   = 'OTHER';
+    const CANCEL_REASON_BUYER_ASK = 'BUYER_ASKED_CANCEL';
 
     /** @var $_externalTransactionsCollection Ess_M2ePro_Model_Resource_Ebay_Order_ExternalTransaction_Collection */
     protected $_externalTransactionsCollection = null;
@@ -568,6 +574,14 @@ class Ess_M2ePro_Model_Ebay_Order extends Ess_M2ePro_Model_Component_Child_Ebay_
                !$this->isShippingInProcess();
     }
 
+    /**
+     * @return bool
+     */
+    public function isCanceled()
+    {
+        return (bool)$this->getData('cancellation_status');
+    }
+
     // ---------------------------------------
 
     /**
@@ -1091,6 +1105,88 @@ class Ess_M2ePro_Model_Ebay_Order extends Ess_M2ePro_Model_Component_Child_Ebay_
         $buyerInfo = $connectorObj->getResponseData();
 
         return $buyerInfo;
+    }
+
+    //########################################
+
+    /**
+     * @return bool
+     */
+    public function canRefund()
+    {
+        if ($this->isCanceled()) {
+            return false;
+        }
+
+        if (!$this->getEbayAccount()->isRefundEnabled()) {
+            return false;
+        }
+
+        $supportedMarketplaces = array(
+            EbayHelper::MARKETPLACE_US,
+            EbayHelper::MARKETPLACE_CA,
+            EbayHelper::MARKETPLACE_UK,
+            EbayHelper::MARKETPLACE_AU,
+            EbayHelper::MARKETPLACE_DE
+        );
+
+        if (!in_array($this->getParentObject()->getMarketplaceId(), $supportedMarketplaces)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @return bool
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
+    public function cancel()
+    {
+        if (!$this->canRefund()) {
+            return false;
+        }
+
+        $params = array(
+            'channel_order_id' => $this->getEbayOrderId(),
+            'reason'           => self::CANCEL_REASON_BUYER_ASK,
+        );
+
+        Mage::getModel('M2ePro/Order_Change')->create(
+            $this->getParentObject()->getId(),
+            Ess_M2ePro_Model_Order_Change::ACTION_CANCEL,
+            $this->getParentObject()->getLog()->getInitiator(),
+            Ess_M2ePro_Helper_Component_Ebay::NICK,
+            $params
+        );
+
+        return true;
+    }
+
+    /**
+     * @return bool
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
+    public function refund()
+    {
+        if (!$this->canRefund()) {
+            return false;
+        }
+
+        $params = array(
+            'channel_order_id' => $this->getEbayOrderId(),
+            'reason'           => self::CANCEL_REASON_BUYER_ASK,
+        );
+
+        Mage::getModel('M2ePro/Order_Change')->create(
+            $this->getParentObject()->getId(),
+            Ess_M2ePro_Model_Order_Change::ACTION_REFUND,
+            $this->getParentObject()->getLog()->getInitiator(),
+            Ess_M2ePro_Helper_Component_Ebay::NICK,
+            $params
+        );
+
+        return true;
     }
 
     //########################################

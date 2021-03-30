@@ -19,19 +19,15 @@ abstract class Ess_M2ePro_Block_Adminhtml_Wizard_AbstractWizard extends Ess_M2eP
 
         Mage::helper('M2ePro/View')->getJsUrlsRenderer()->addUrls(
             array(
-                'setStep'   => $this->getUrl('*/adminhtml_wizard_'.$this->getNick().'/setStep'),
-                'setStatus' => $this->getUrl('*/adminhtml_wizard_'.$this->getNick().'/setStatus')
+                'setStep'   => $this->getUrl('*/adminhtml_wizard_' . $this->getNick() . '/setStep'),
+                'setStatus' => $this->getUrl('*/adminhtml_wizard_' . $this->getNick() . '/setStatus')
             )
         );
 
         Mage::helper('M2ePro/View')->getJsTranslatorRenderer()->addTranslations(
             array(
-                'Step' => 'Step',
+                'Step'      => 'Step',
                 'Completed' => 'Completed',
-                'Note: If you close the Wizard, it never starts again.
-                You will be required to set all Settings manually. Press Cancel to continue working with Wizard.' =>
-                    'Note: If you close the Wizard, it never starts again.
-                    You will be required to set all Settings manually. Press Cancel to continue working with Wizard.',
             )
         );
 
@@ -41,7 +37,8 @@ abstract class Ess_M2ePro_Block_Adminhtml_Wizard_AbstractWizard extends Ess_M2eP
         );
         $status = Mage::helper('M2ePro/Module_Wizard')->getStatus($this->getNick());
 
-        Mage::helper('M2ePro/View')->getJsRenderer()->addOnReadyJs(<<<JS
+        Mage::helper('M2ePro/View')->getJsRenderer()->addOnReadyJs(
+            <<<JS
     WizardObj = new Wizard('{$status}', '{$step}');
     WizardObj.steps.all = {$steps};
 JS

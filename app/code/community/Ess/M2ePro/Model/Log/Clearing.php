@@ -14,6 +14,8 @@ class Ess_M2ePro_Model_Log_Clearing
 
     const LOG_EBAY_PICKUP_STORE = 'ebay_pickup_store';
 
+    const LOG_ORDER_NOTIFICATION = 'order_notification';
+
     //########################################
 
     public function clearOldRecords($log)

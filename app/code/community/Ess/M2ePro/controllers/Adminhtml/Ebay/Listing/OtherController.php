@@ -8,6 +8,7 @@
 
 use Ess_M2ePro_Helper_Component_Ebay as ComponentEbay;
 use Ess_M2ePro_Block_Adminhtml_Ebay_Listing_SourceMode as SourceModeBlock;
+use Ess_M2ePro_Helper_Component_Ebay_Category as EbayCategory;
 
 class Ess_M2ePro_Adminhtml_Ebay_Listing_OtherController extends Ess_M2ePro_Controller_Adminhtml_Ebay_MainController
 {
@@ -137,11 +138,14 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_OtherController extends Ess_M2ePro_Contr
             $tempProducts[] = $listingProduct->getId();
 
             $categoryData = $this->getCategoryData($listingProduct->getOnlineMainCategory(), $listingInstance);
-            if (!empty($categoryData)) {
+            if (!empty($categoryData) && !isset($categoryData['create_new_category'])) {
                 $this->assignMainCategoryToProduct($listingProduct->getId(), $categoryData, $listingInstance);
 
                 $productsHaveOnlineCategory[] = $listingProduct->getId();
                 $listingOther->moveToListingSucceed();
+            } elseif (!empty($categoryData) && isset($categoryData['create_new_category'])) {
+                $categoryData[EbayCategory::TYPE_EBAY_MAIN] = $categoryData['create_new_category'];
+                unset($categoryData['create_new_category']);
             }
         }
 
@@ -162,38 +166,39 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_OtherController extends Ess_M2ePro_Contr
 
         $sessionHelper->removeValue($sessionKey);
 
+        $result = array('result' => true);
+
         if ($errorsCount) {
             if (count($selectedProducts) == $errorsCount) {
-                $this->getSession()->addError(
-                    Mage::helper('M2ePro')->__(
+                $result['result'] = false;
+                $result['message'] = array(
+                    'text' => Mage::helper('M2ePro')->__(
                         'Products were not moved because they already exist in the selected Listing.'
-                    )
+                    ),
+                    'type' => 'error'
                 );
-
-                return $this->getResponse()->setBody(
-                    Mage::helper('M2ePro')->jsonEncode(array('result' => false))
+            } else {
+                $result['message'] = array(
+                    'text' => Mage::helper('M2ePro')->__(
+                        'Some products were not moved because they already exist in the selected Listing.'
+                    ),
+                    'type' => 'warning'
                 );
             }
-
-            $this->getSession()->addError(
-                Mage::helper('M2ePro')->__(
-                    'Some products were not moved because they already exist in the selected Listing.'
-                )
-            );
         } else {
-            $this->getSession()->addSuccess(Mage::helper('M2ePro')->__('Product(s) was Moved.'));
+            $result['message'] = array(
+                'text' => Mage::helper('M2ePro')->__('Product(s) was Moved.'),
+                'type' => 'success'
+            );
         }
 
-        $allProductsHaveOnlineCategory = false;
+        $result['hasOnlineCategory'] = false;
         if (empty($addingProducts) && !empty($productsHaveOnlineCategory)) {
-            $allProductsHaveOnlineCategory = true;
+            $result['hasOnlineCategory'] = true;
         }
 
-        return $this->getResponse()->setBody(
-            Mage::helper('M2ePro')->jsonEncode(
-                array('result' => true, 'hasOnlineCategory' => $allProductsHaveOnlineCategory)
-            )
-        );
+        return $this->_addJsonContent($result);
+
     }
 
     //########################################
@@ -210,7 +215,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_OtherController extends Ess_M2ePro_Contr
 
         $categoryTpl = Mage::getModel('M2ePro/Ebay_Template_Category_Builder')->build(
             Mage::getModel('M2ePro/Ebay_Template_Category'),
-            $converter->getCategoryDataForTemplate(Ess_M2ePro_Helper_Component_Ebay_Category::TYPE_EBAY_MAIN)
+            $converter->getCategoryDataForTemplate(EbayCategory::TYPE_EBAY_MAIN)
         );
 
         Mage::getModel('M2ePro/Ebay_Listing_Product')->assignTemplatesToProducts($productId, $categoryTpl->getId());
@@ -237,12 +242,20 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_OtherController extends Ess_M2ePro_Contr
             ->getFirstItem();
 
         if ($templateCategory->getId()) {
-            $categoryData[Ess_M2ePro_Helper_Component_Ebay_Category::TYPE_EBAY_MAIN] = array(
+            $categoryData[EbayCategory::TYPE_EBAY_MAIN] = array(
                 'mode'               => Ess_M2ePro_Model_Ebay_Template_Category::CATEGORY_MODE_EBAY,
                 'value'              => $templateCategory->getCategoryValue(),
                 'path'               => $path,
                 'is_custom_template' => $templateCategory->getIsCustomTemplate(),
                 'specific'           => $templateCategory->getSpecifics()
+            );
+        } else {
+            $categoryData['create_new_category'] = array(
+                'mode'               => Ess_M2ePro_Model_Ebay_Template_Category::CATEGORY_MODE_EBAY,
+                'value'              => $value,
+                'path'               => $path,
+                'is_custom_template' => 0,
+                'specific'           => array()
             );
         }
 

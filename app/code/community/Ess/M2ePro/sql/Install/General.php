@@ -866,7 +866,9 @@ INSERT INTO `{$this->_installer->getTable('m2epro_config')}` (`group`,`key`,`val
   ('/magento/product/downloadable_type/', 'custom_types', '', NOW(), NOW()),
   ('/magento/product/configurable_type/', 'custom_types', '', NOW(), NOW()),
   ('/magento/product/bundle_type/', 'custom_types', '', NOW(), NOW()),
-  ('/magento/product/grouped_type/', 'custom_types', '', NOW(), NOW());
+  ('/magento/product/grouped_type/', 'custom_types', '', NOW(), NOW()),
+  ('/logs/notification/order/', 'mode', '2', NOW(), NOW()),
+  ('/logs/notification/order/', 'last_date',  DATE_FORMAT(NOW(),'%Y-%m-%d'), NOW(), NOW());
 
 INSERT INTO `{$this->_installer->getTable('m2epro_wizard')}` VALUES
   (1,  'installationEbay',      'ebay',    0, NULL, 1, 1),

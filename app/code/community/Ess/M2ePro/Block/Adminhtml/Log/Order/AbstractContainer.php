@@ -40,6 +40,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Log_Order_AbstractContainer extends Ma
     {
         $accountSwitcherBlock = $this->createAccountSwitcherBlock();
         $marketplaceSwitcherBlock = $this->createMarketplaceSwitcherBlock();
+        $uniqueMessageFilterBlock = $this->createUniqueMessageFilterBlock();
 
         $orderId = $this->getRequest()->getParam('order_id', false);
 
@@ -61,10 +62,12 @@ abstract class Ess_M2ePro_Block_Adminhtml_Log_Order_AbstractContainer extends Ma
         }
 
         if ($marketplaceSwitcherBlock->isEmpty() && $accountSwitcherBlock->isEmpty()) {
-            return '';
+            return $uniqueMessageFilterBlock->toHtml();
         }
 
-        return $accountSwitcherBlock->toHtml() . $marketplaceSwitcherBlock->toHtml();
+        return $accountSwitcherBlock->toHtml()
+            . $marketplaceSwitcherBlock->toHtml()
+            . $uniqueMessageFilterBlock->toHtml();
     }
 
     protected function getStaticFilterHtml($label, $value)
@@ -91,6 +94,18 @@ HTML;
         return $this->getLayout()->createBlock(
             'M2ePro/adminhtml_marketplace_switcher', '', array(
                 'component_mode' => $this->getComponentMode()
+            )
+        );
+    }
+
+    protected function createUniqueMessageFilterBlock()
+    {
+        return $this->getLayout()->createBlock(
+            'M2ePro/adminhtml_log_uniqueMessageFilter',
+            '',
+            array(
+                'route' => "*/adminhtml_{$this->getComponentMode()}_log/order",
+                'title' => Mage::helper('M2ePro')->__('Only messages with a unique Order ID')
             )
         );
     }

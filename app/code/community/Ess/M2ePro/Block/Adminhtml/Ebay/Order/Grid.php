@@ -82,6 +82,40 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_Grid extends Mage_Adminhtml_Block_Wi
 
         // ---------------------------------------
 
+        // Add Order Status column
+        // ---------------------------------------
+        $shippingCompleted = Ess_M2ePro_Model_Ebay_Order::SHIPPING_STATUS_COMPLETED;
+        $paymentCompleted = Ess_M2ePro_Model_Ebay_Order::PAYMENT_STATUS_COMPLETED;
+
+        $statusList = array(
+            'pending'   => Ess_M2ePro_Model_Ebay_Order::STATUS_PENDING,
+            'unshipped' => Ess_M2ePro_Model_Ebay_Order::STATUS_UNSHIPPED,
+            'shipped'   => Ess_M2ePro_Model_Ebay_Order::STATUS_SHIPPED,
+            'canceled'  => Ess_M2ePro_Model_Ebay_Order::STATUS_CANCELED
+        );
+
+        $collection->getSelect()->columns(
+            array(
+                'status' => new Zend_Db_Expr(
+                    "IF (
+                        `cancellation_status` = 1,
+                        {$statusList['canceled']},
+                        IF (
+                            `shipping_status` = {$shippingCompleted},
+                            {$statusList['shipped']},
+                            IF (
+                                `payment_status` = {$paymentCompleted},
+                                {$statusList['unshipped']},
+                                {$statusList['pending']}
+                            )
+                        )
+                    )"
+                )
+            )
+        );
+
+        // ---------------------------------------
+
         $this->setCollection($collection);
 
         return parent::_prepareCollection();
@@ -189,49 +223,23 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_Grid extends Mage_Adminhtml_Block_Wi
             )
         );
 
-        $this->addColumn(
-            'checkout_status', array(
-            'header' => Mage::helper('M2ePro')->__('Checkout'),
-            'align'  => 'left',
-            'width'  => '50px',
-            'index'  => 'checkout_status',
-            'type'   => 'options',
-            'options' => array(
-                Ess_M2ePro_Model_Ebay_Order::CHECKOUT_STATUS_INCOMPLETE => Mage::helper('M2ePro')->__('No'),
-                Ess_M2ePro_Model_Ebay_Order::CHECKOUT_STATUS_COMPLETED  => Mage::helper('M2ePro')->__('Yes')
-            )
-            )
-        );
+        $helper = Mage::helper('M2ePro');
 
         $this->addColumn(
-            'payment_status', array(
-            'header' => Mage::helper('M2ePro')->__('Paid'),
-            'align'  => 'left',
-            'width'  => '50px',
-            'index'  => 'payment_status',
-            'type'   => 'options',
-            'options' => array(
-                0 => Mage::helper('M2ePro')->__('No'),
-                1 => Mage::helper('M2ePro')->__('Yes')
-            ),
-            'frame_callback' => array($this, 'callbackColumnPayment'),
-            'filter_condition_callback' => array($this, 'callbackFilterPaymentCondition')
-            )
-        );
-
-        $this->addColumn(
-            'shipping_status', array(
-            'header' => Mage::helper('M2ePro')->__('Shipped'),
-            'align'  => 'left',
-            'width'  => '50px',
-            'index'  => 'shipping_status',
-            'type'   => 'options',
-            'options' => array(
-                0 => Mage::helper('M2ePro')->__('No'),
-                1 => Mage::helper('M2ePro')->__('Yes')
-            ),
-            'frame_callback' => array($this, 'callbackColumnShipping'),
-            'filter_condition_callback' => array($this, 'callbackFilterShippingCondition')
+            'status', array(
+                'header'  => Mage::helper('M2ePro')->__('Status'),
+                'align'   => 'left',
+                'width'   => '50px',
+                'index'   => 'status',
+                'type'    => 'options',
+                'options' => array(
+                    Ess_M2ePro_Model_Ebay_Order::STATUS_PENDING   => $helper->__('Pending'),
+                    Ess_M2ePro_Model_Ebay_Order::STATUS_UNSHIPPED => $helper->__('Unshipped'),
+                    Ess_M2ePro_Model_Ebay_Order::STATUS_SHIPPED   => $helper->__('Shipped'),
+                    Ess_M2ePro_Model_Ebay_Order::STATUS_CANCELED  => $helper->__('Canceled')
+                ),
+                'frame_callback' => array($this, 'callbackColumnStatus'),
+                'filter_condition_callback' => array($this, 'callbackFilterStatus'),
             )
         );
 
@@ -607,22 +615,20 @@ HTML;
         );
     }
 
-    public function callbackColumnShipping($value, $row, $column, $isExport)
+    public function callbackColumnStatus($value, $row, $column, $isExport)
     {
-        if ($row->getData('shipping_status') == Ess_M2ePro_Model_Ebay_Order::SHIPPING_STATUS_COMPLETED) {
-            return Mage::helper('M2ePro')->__('Yes');
-        } else {
-            return Mage::helper('M2ePro')->__('No');
-        }
-    }
+        $status = $row->getData('status');
 
-    public function callbackColumnPayment($value, $row, $column, $isExport)
-    {
-        if ($row->getData('payment_status') == Ess_M2ePro_Model_Ebay_Order::PAYMENT_STATUS_COMPLETED) {
-            return Mage::helper('M2ePro')->__('Yes');
-        } else {
-            return Mage::helper('M2ePro')->__('No');
-        }
+        $statusColors = array(
+            Ess_M2ePro_Model_Ebay_Order::STATUS_PENDING  => 'gray',
+            Ess_M2ePro_Model_Ebay_Order::STATUS_SHIPPED  => 'green',
+            Ess_M2ePro_Model_Ebay_Order::STATUS_CANCELED => 'red'
+        );
+
+        $color = isset($statusColors[$status]) ? $statusColors[$status] : 'black';
+        $value = '<span style="color: ' . $color . ';">' . $value . '</span>';
+
+        return $value;
     }
 
     //########################################
@@ -681,30 +687,44 @@ HTML;
                 ->where('buyer_email LIKE ? OR buyer_user_id LIKE ? OR buyer_name LIKE ?', '%'.$value.'%');
     }
 
-    protected function callbackFilterPaymentCondition($collection, $column)
+    protected function callbackFilterStatus($collection, $column)
     {
         $value = $column->getFilter()->getValue();
-        if ($value === null) {
+
+        if ($value == null) {
             return;
         }
 
-        $filterType = ($value == 1) ? 'eq' : 'neq';
-        $this->getCollection()->addFieldToFilter(
-            'payment_status', array($filterType => Ess_M2ePro_Model_Ebay_Order::PAYMENT_STATUS_COMPLETED)
-        );
-    }
+        switch ($value) {
+            case Ess_M2ePro_Model_Ebay_Order::STATUS_CANCELED:
+                $collection->addFieldToFilter('cancellation_status', 1);
+                break;
 
-    protected function callbackFilterShippingCondition($collection, $column)
-    {
-        $value = $column->getFilter()->getValue();
-        if ($value === null) {
-            return;
+            case Ess_M2ePro_Model_Ebay_Order::STATUS_SHIPPED:
+                $collection->addFieldToFilter(
+                    'shipping_status',
+                    Ess_M2ePro_Model_Ebay_Order::SHIPPING_STATUS_COMPLETED
+                );
+                break;
+
+            case Ess_M2ePro_Model_Ebay_Order::STATUS_UNSHIPPED:
+                $collection->addFieldToFilter(
+                    'payment_status',
+                    Ess_M2ePro_Model_Ebay_Order::PAYMENT_STATUS_COMPLETED
+                );
+                $collection->addFieldToFilter(
+                    'shipping_status',
+                    array('neq' => Ess_M2ePro_Model_Ebay_Order::SHIPPING_STATUS_COMPLETED)
+                );
+                break;
+
+            case Ess_M2ePro_Model_Ebay_Order::STATUS_PENDING:
+                $collection->addFieldToFilter(
+                    'payment_status',
+                    array('neq' => Ess_M2ePro_Model_Ebay_Order::PAYMENT_STATUS_COMPLETED)
+                );
+                break;
         }
-
-        $filterType = ($value == 1) ? 'eq' : 'neq';
-        $this->getCollection()->addFieldToFilter(
-            'shipping_status', array($filterType => Ess_M2ePro_Model_Ebay_Order::SHIPPING_STATUS_COMPLETED)
-        );
     }
 
     //########################################

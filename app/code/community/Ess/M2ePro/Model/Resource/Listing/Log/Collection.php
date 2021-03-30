@@ -18,4 +18,16 @@ class Ess_M2ePro_Model_Resource_Listing_Log_Collection
     }
 
     //########################################
+
+    /**
+     * GroupBy fix
+     */
+    public function getSelectCountSql()
+    {
+        $sql = parent::getSelectCountSql();
+        $sql->reset(Zend_Db_Select::GROUP);
+        return $sql;
+    }
+
+    //########################################
 }

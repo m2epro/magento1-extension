@@ -31,6 +31,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Log_Listing_View_Grouped_AbstractGrid 
 
     protected function _prepareCollection()
     {
+        /** @var Ess_M2ePro_Model_Resource_Listing_Log_Collection $logCollection */
         $logCollection = Mage::getModel('M2ePro/Listing_Log')->getCollection();
 
         $this->applyFilters($logCollection);

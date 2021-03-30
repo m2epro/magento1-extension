@@ -24,12 +24,26 @@ class Ess_M2ePro_Block_Adminhtml_Wizard_InstallationWalmart_Installation_Listing
 
         $this->updateButton('continue', 'label', Mage::helper('M2ePro')->__('Create First Listing'));
         $this->updateButton('continue', 'class', 'primary');
+
+        $url = $this->getUrl('M2ePro/adminhtml_wizard_installationWalmart/skip');
+        $this->addButton(
+            'skip',
+            array(
+                'label'   => Mage::helper('M2ePro')->__('Skip'),
+                'class'   => 'primary forward',
+                'id'      => 'skip',
+                'onclick' => "WizardObj.skip('{$url}');"
+            ),
+            1,
+            1
+        );
     }
 
     protected function _prepareLayout()
     {
         $newListingsUrl = $this->getUrl(
-            '*/adminhtml_walmart_listing_create/index', array(
+            '*/adminhtml_walmart_listing_create/index',
+            array(
                 'step'  => '1',
                 'clear' => 'yes',
             )

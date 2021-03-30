@@ -73,9 +73,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View extends Mage_Adminhtml_
 
         $urls = array();
         $urls['adminhtml_listing_other_mapping/map'] = $this->getUrl('*/adminhtml_listing_other_mapping/map');
-        $urls['adminhtml_ebay_listing_categorySettings/index'] = $this->getUrl(
-            '*/adminhtml_ebay_listing_categorySettings/index',
-            array('step' => 1)
+        $urls['adminhtml_ebay_listing_categorySettings/otherCategories'] = $this->getUrl(
+            '*/adminhtml_ebay_listing_categorySettings/otherCategories'
         );
         $urls['adminhtml_ebay_listing/view'] = $this->getUrl('*/adminhtml_ebay_listing/view');
 

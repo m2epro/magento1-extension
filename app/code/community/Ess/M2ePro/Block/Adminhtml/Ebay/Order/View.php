@@ -14,16 +14,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_View extends Mage_Adminhtml_Block_Wi
     {
         parent::__construct();
 
-        // Initialization block
-        // ---------------------------------------
         $this->setId('ebayOrderView');
         $this->_blockGroup = 'M2ePro';
         $this->_controller = 'adminhtml_ebay_order';
         $this->_mode = 'view';
-        // ---------------------------------------
 
-        // Set header text
-        // ---------------------------------------
         if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
             $componentName = Mage::helper('M2ePro/Component_Ebay')->getTitle();
             $this->_headerText = Mage::helper('M2ePro')->__('View %component_name% Order Details', $componentName);
@@ -31,22 +26,16 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_View extends Mage_Adminhtml_Block_Wi
             $this->_headerText = Mage::helper('M2ePro')->__('View Order Details');
         }
 
-        // ---------------------------------------
-
         /** @var $order Ess_M2ePro_Model_Order */
         $this->order = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
 
-        // Set buttons actions
-        // ---------------------------------------
         $this->removeButton('back');
         $this->removeButton('reset');
         $this->removeButton('delete');
         $this->removeButton('add');
         $this->removeButton('save');
         $this->removeButton('edit');
-        // ---------------------------------------
 
-        // ---------------------------------------
         $url = Mage::helper('M2ePro')->getBackUrl('*/adminhtml_ebay_order/index');
         $this->_addButton(
             'back', array(
@@ -55,10 +44,10 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_View extends Mage_Adminhtml_Block_Wi
             'class'     => 'back'
             )
         );
-        // ---------------------------------------
 
-        if ($this->order->getChildObject()->canUpdateShippingStatus()) {
-            // ---------------------------------------
+        $isCanceled = $this->order->getChildObject()->isCanceled();
+
+        if ($this->order->getChildObject()->canUpdateShippingStatus() && !$isCanceled) {
             $url = $this->getUrl('*/*/updateShippingStatus', array('id' => $this->order->getId()));
             $this->_addButton(
                 'ship', array(
@@ -67,11 +56,9 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_View extends Mage_Adminhtml_Block_Wi
                 'class'     => 'scalable'
                 )
             );
-            // ---------------------------------------
         }
 
-        if ($this->order->getChildObject()->canUpdatePaymentStatus()) {
-            // ---------------------------------------
+        if ($this->order->getChildObject()->canUpdatePaymentStatus() && !$isCanceled) {
             $url = $this->getUrl('*/*/updatePaymentStatus', array('id' => $this->order->getId()));
             $this->_addButton(
                 'pay', array(
@@ -80,11 +67,9 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_View extends Mage_Adminhtml_Block_Wi
                 'class'     => 'scalable'
                 )
             );
-            // ---------------------------------------
         }
 
         if ($this->order->getReserve()->isPlaced()) {
-            // ---------------------------------------
             $url = $this->getUrl('*/adminhtml_order/reservationCancel', array('ids' => $this->order->getId()));
             $this->_addButton(
                 'reservation_cancel', array(
@@ -93,9 +78,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_View extends Mage_Adminhtml_Block_Wi
                 'class'     => 'scalable'
                 )
             );
-            // ---------------------------------------
-        } elseif ($this->order->isReservable()) {
-            // ---------------------------------------
+        } elseif ($this->order->isReservable() && !$isCanceled) {
             $url = $this->getUrl('*/adminhtml_order/reservationPlace', array('ids' => $this->order->getId()));
             $this->_addButton(
                 'reservation_place', array(
@@ -104,11 +87,9 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_View extends Mage_Adminhtml_Block_Wi
                 'class'     => 'scalable'
                 )
             );
-            // ---------------------------------------
         }
 
-        if ($this->order->getMagentoOrderId() === null) {
-            // ---------------------------------------
+        if ($this->order->getMagentoOrderId() === null && !$isCanceled) {
             $url = $this->getUrl('*/*/createMagentoOrder', array('id' => $this->order->getId()));
             $this->_addButton(
                 'order', array(
@@ -117,9 +98,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_View extends Mage_Adminhtml_Block_Wi
                 'class'     => 'scalable'
                 )
             );
-            // ---------------------------------------
         } else if ($this->order->getMagentoOrder() === null || $this->order->getMagentoOrder()->isCanceled()) {
-            // ---------------------------------------
             $url = $this->getUrl('*/*/createMagentoOrder', array('id' => $this->order->getId(), 'force' => 'yes'));
             $confirm = Mage::helper('M2ePro')->escapeJs(
                 Mage::helper('M2ePro')->__('Are you sure that you want to create new Magento Order?')
@@ -132,7 +111,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_View extends Mage_Adminhtml_Block_Wi
                 'class'     => 'scalable'
                 )
             );
-            // ---------------------------------------
         }
     }
 

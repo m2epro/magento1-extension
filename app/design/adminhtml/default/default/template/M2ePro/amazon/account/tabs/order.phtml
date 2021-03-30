@@ -209,10 +209,17 @@
                             <span><?php echo Mage::helper('M2ePro')->__('What has to be done if a Listed Product does not exist in Magento.'); ?></span><br/>
                             <span id="magento_orders_listings_other_product_mode_note" <?php if ($formData['magento_orders_settings']['listing_other']['product_mode'] == Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_LISTINGS_OTHER_PRODUCT_MODE_IGNORE) echo 'style="display: none;"'; ?>><?php echo Mage::helper('M2ePro')->__('<b>Note:</b> Only Simple Products without Variations can be created in Magento. If there is a Product with Variations on Amazon, M2E Pro creates different Simple Products for each Variation.') ?></span>
                         </p>
+                        <?php $canShowBlock = $formData['magento_orders_settings']['listing_other']['product_mode'] == Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_LISTINGS_OTHER_PRODUCT_MODE_IMPORT; ?>
+                        <div id="magento_orders_listings_other_product_mode_warning" <?php if (!$canShowBlock): ?>style="display: none;"<?php endif; ?>>
+                            <ul class="messages">
+                                <li class="warning-msg">
+                                <?php echo Mage::helper('M2ePro')->__('Please note that a new Magento Product will be created if the corresponding SKU is not found in your Catalog.'); ?>
+                                </li>
+                            </ul>
+                        </div>
                     </td>
                 </tr>
 
-                <?php $canShowBlock = $formData['magento_orders_settings']['listing_other']['product_mode'] == Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_LISTINGS_OTHER_PRODUCT_MODE_IMPORT; ?>
                 <tr id="magento_orders_listings_other_product_tax_class_id_container" <?php if (!$canShowBlock): ?>style="display: none;"<?php endif; ?>>
                     <td class="label">
                         <label for="magento_orders_listings_other_product_tax_class_id"><?php echo Mage::helper('M2ePro')->__('Product Tax Class') ?>:</label>

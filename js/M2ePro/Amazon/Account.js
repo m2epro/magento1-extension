@@ -2,23 +2,22 @@ window.AmazonAccount = Class.create(Common, {
 
     // ---------------------------------------
 
-    initialize: function()
-    {
+    initialize: function() {
         this.accountHandler = new Account();
 
         this.setValidationCheckRepetitionValue('M2ePro-account-title',
-                                                M2ePro.translator.translate('The specified Title is already used for other Account. Account Title must be unique.'),
-                                                'Account', 'title', 'id',
-                                                M2ePro.formData.id,
-                                                M2ePro.php.constant('Ess_M2ePro_Helper_Component_Amazon::NICK'));
+            M2ePro.translator.translate('The specified Title is already used for other Account. Account Title must be unique.'),
+            'Account', 'title', 'id',
+            M2ePro.formData.id,
+            M2ePro.php.constant('Ess_M2ePro_Helper_Component_Amazon::NICK'));
 
         Validation.add('M2ePro-marketplace-merchant', M2ePro.translator.translate('M2E Pro was not able to get access to the Amazon Account. Please, make sure, that you choose correct Option on MWS Authorization Page and enter correct Merchant ID.'), function(value, el) {
 
             // reset error message to the default
             this.error = M2ePro.translator.translate('M2E Pro was not able to get access to the Amazon Account. Please, make sure, that you choose correct Option on MWS Authorization Page and enter correct Merchant ID.');
 
-            var merchant_id    = $('merchant_id').value;
-            var token          = $('token').value;
+            var merchant_id = $('merchant_id').value;
+            var token = $('token').value;
             var marketplace_id = $('marketplace_id').value;
 
             var pattern = /^[A-Z0-9]*$/;
@@ -33,9 +32,9 @@ window.AmazonAccount = Class.create(Common, {
                 method: 'post',
                 asynchronous: false,
                 parameters: {
-                    merchant_id    : merchant_id,
-                    token          : token,
-                    marketplace_id : marketplace_id
+                    merchant_id: merchant_id,
+                    token: token,
+                    marketplace_id: marketplace_id
                 },
                 onSuccess: function(transport) {
                     var response = transport.responseText.evalJSON();
@@ -65,7 +64,7 @@ window.AmazonAccount = Class.create(Common, {
                 asynchronous: false,
                 parameters: {
                     customer_id: value,
-                    id         : M2ePro.formData.id
+                    id: M2ePro.formData.id
                 },
                 onSuccess: function(transport) {
                     checkResult = transport.responseText.evalJSON()['ok'];
@@ -153,16 +152,14 @@ window.AmazonAccount = Class.create(Common, {
 
     // ---------------------------------------
 
-    completeStep: function()
-    {
+    completeStep: function() {
         window.opener.completeStep = 1;
         window.close();
     },
 
     // ---------------------------------------
 
-    delete_click: function(accountId)
-    {
+    delete_click: function(accountId) {
         this.accountHandler.on_delete_popup(accountId);
     },
 
@@ -190,8 +187,7 @@ window.AmazonAccount = Class.create(Common, {
 
     // ---------------------------------------
 
-    changeMarketplace: function(id)
-    {
+    changeMarketplace: function(id) {
         var self = AmazonAccountObj;
 
         $$('.marketplaces_view_element').each(function(obj) {
@@ -206,18 +202,16 @@ window.AmazonAccount = Class.create(Common, {
         self.magentoOrdersTaxModeChange();
     },
 
-    showGetAccessData: function(id)
-    {
+    showGetAccessData: function(id) {
         $('marketplaces_application_name_container').show();
 
-        $('marketplaces_developer_key_container_'+id).show();
-        $('marketplaces_register_url_container_'+id).show();
+        $('marketplaces_developer_key_container_' + id).show();
+        $('marketplaces_register_url_container_' + id).show();
     },
 
     // ---------------------------------------
 
-    other_listings_synchronization_change: function()
-    {
+    other_listings_synchronization_change: function() {
         if (this.value == 1) {
             $('other_listings_mapping_mode_tr').show();
             $('other_listings_store_view_tr').show();
@@ -229,8 +223,7 @@ window.AmazonAccount = Class.create(Common, {
         }
     },
 
-    other_listings_mapping_mode_change: function()
-    {
+    other_listings_mapping_mode_change: function() {
         if (this.value == 1) {
             $('magento_block_amazon_accounts_other_listings_product_mapping').show();
         } else {
@@ -248,8 +241,7 @@ window.AmazonAccount = Class.create(Common, {
 
     // ---------------------------------------
 
-    mapping_general_id_mode_change: function()
-    {
+    mapping_general_id_mode_change: function() {
         var self = AmazonAccountObj;
 
         if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account::OTHER_LISTINGS_MAPPING_GENERAL_ID_MODE_NONE')) {
@@ -264,8 +256,7 @@ window.AmazonAccount = Class.create(Common, {
         }
     },
 
-    mapping_sku_mode_change: function()
-    {
+    mapping_sku_mode_change: function() {
         var self = AmazonAccountObj;
 
         if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account::OTHER_LISTINGS_MAPPING_SKU_MODE_NONE')) {
@@ -280,8 +271,7 @@ window.AmazonAccount = Class.create(Common, {
         }
     },
 
-    mapping_title_mode_change: function()
-    {
+    mapping_title_mode_change: function() {
         var self = AmazonAccountObj;
 
         if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account::OTHER_LISTINGS_MAPPING_TITLE_MODE_NONE')) {
@@ -298,8 +288,7 @@ window.AmazonAccount = Class.create(Common, {
 
     // ---------------------------------------
 
-    magentoOrdersListingsModeChange: function()
-    {
+    magentoOrdersListingsModeChange: function() {
         var self = AmazonAccountObj;
 
         if ($('magento_orders_listings_mode').value == 1) {
@@ -314,8 +303,7 @@ window.AmazonAccount = Class.create(Common, {
         self.changeVisibilityForOrdersModesRelatedBlocks();
     },
 
-    magentoOrdersListingsStoreModeChange: function()
-    {
+    magentoOrdersListingsStoreModeChange: function() {
         if ($('magento_orders_listings_store_mode').value == M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_LISTINGS_STORE_MODE_CUSTOM')) {
             $('magento_orders_listings_store_id_container').show();
         } else {
@@ -325,8 +313,7 @@ window.AmazonAccount = Class.create(Common, {
         $('magento_orders_listings_store_id').value = '';
     },
 
-    magentoOrdersListingsOtherModeChange: function()
-    {
+    magentoOrdersListingsOtherModeChange: function() {
         var self = AmazonAccountObj;
 
         if ($('magento_orders_listings_other_mode').value == 1) {
@@ -344,31 +331,29 @@ window.AmazonAccount = Class.create(Common, {
         self.changeVisibilityForOrdersModesRelatedBlocks();
     },
 
-    magentoOrdersListingsOtherProductModeChange: function()
-    {
+    magentoOrdersListingsOtherProductModeChange: function() {
         if ($('magento_orders_listings_other_product_mode').value == M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_LISTINGS_OTHER_PRODUCT_MODE_IGNORE')) {
             $('magento_orders_listings_other_product_mode_note').hide();
             $('magento_orders_listings_other_product_tax_class_id_container').hide();
+            $('magento_orders_listings_other_product_mode_warning').hide();
         } else {
             $('magento_orders_listings_other_product_mode_note').show();
             $('magento_orders_listings_other_product_tax_class_id_container').show();
+            $('magento_orders_listings_other_product_mode_warning').show();
         }
     },
 
-    magentoOrdersNumberSourceChange: function()
-    {
+    magentoOrdersNumberSourceChange: function() {
         var self = AmazonAccountObj;
         self.renderOrderNumberExample();
     },
 
-    magentoOrdersNumberPrefixPrefixChange: function()
-    {
+    magentoOrdersNumberPrefixPrefixChange: function() {
         var self = AmazonAccountObj;
         self.renderOrderNumberExample();
     },
 
-    renderOrderNumberExample: function()
-    {
+    renderOrderNumberExample: function() {
         var orderNumber = $('sample_magento_order_id').value;
         if ($('magento_orders_number_source').value == M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_NUMBER_SOURCE_CHANNEL')) {
             orderNumber = $('sample_amazon_order_id').value;
@@ -391,8 +376,7 @@ window.AmazonAccount = Class.create(Common, {
         $('order_number_example_container_b2b').update(b2b);
     },
 
-    magentoOrdersFbaModeChange: function()
-    {
+    magentoOrdersFbaModeChange: function() {
         if ($('magento_orders_fba_mode').value == 0) {
             $('magento_orders_fba_stock_mode_container').hide();
             $('magento_orders_fba_stock_mode').value = 0;
@@ -401,8 +385,7 @@ window.AmazonAccount = Class.create(Common, {
         }
     },
 
-    magentoOrdersCustomerModeChange: function()
-    {
+    magentoOrdersCustomerModeChange: function() {
         var customerMode = $('magento_orders_customer_mode').value;
 
         if (customerMode == M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_CUSTOMER_MODE_PREDEFINED')) {
@@ -424,8 +407,7 @@ window.AmazonAccount = Class.create(Common, {
         $('magento_orders_customer_new_notifications').value = '';
     },
 
-    openExcludedStatesPopup: function()
-    {
+    openExcludedStatesPopup: function() {
         var self = this;
 
         new Ajax.Request(M2ePro.url.get('adminhtml_amazon_account/getExcludedStatesPopupHtml'), {
@@ -447,7 +429,7 @@ window.AmazonAccount = Class.create(Common, {
                     zIndex: 100,
                     border: false,
                     hideEffect: Element.hide,
-                    showEffect: Element.show,
+                    showEffect: Element.show
                 });
 
                 popup.options.destroyOnClose = true;
@@ -458,8 +440,7 @@ window.AmazonAccount = Class.create(Common, {
         });
     },
 
-    confirmExcludedStates: function()
-    {
+    confirmExcludedStates: function() {
         var excludedStates = [];
 
         $$('.excluded_state_checkbox').each(function(element) {
@@ -473,8 +454,7 @@ window.AmazonAccount = Class.create(Common, {
         Windows.getFocusedWindow().close();
     },
 
-    magentoOrdersTaxModeChange: function()
-    {
+    magentoOrdersTaxModeChange: function() {
         if ($('marketplace_id').value != M2ePro.php.constant('Ess_M2ePro_Helper_Component_Amazon::MARKETPLACE_US')) {
             $('tr_magento_orders_tax_excluded_states').hide();
             return;
@@ -488,8 +468,7 @@ window.AmazonAccount = Class.create(Common, {
         }
     },
 
-    magentoOrdersTaxAmazonCollectsChange: function()
-    {
+    magentoOrdersTaxAmazonCollectsChange: function() {
         if ($('magento_orders_tax_amazon_collects').value == 1) {
             $('show_excluded_states_button').show();
         } else {
@@ -497,8 +476,7 @@ window.AmazonAccount = Class.create(Common, {
         }
     },
 
-    magentoOrdersStatusMappingModeChange: function()
-    {
+    magentoOrdersStatusMappingModeChange: function() {
         // Reset dropdown selected values to default
         $('magento_orders_status_mapping_processing').value = M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_STATUS_MAPPING_PROCESSING');
         $('magento_orders_status_mapping_shipped').value = M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_STATUS_MAPPING_SHIPPED');
@@ -508,8 +486,7 @@ window.AmazonAccount = Class.create(Common, {
         $('magento_orders_status_mapping_shipped').disabled = disabled;
     },
 
-    changeVisibilityForOrdersModesRelatedBlocks: function()
-    {
+    changeVisibilityForOrdersModesRelatedBlocks: function() {
         var self = AmazonAccountObj;
 
         if ($('magento_orders_listings_mode').value == 0 && $('magento_orders_listings_other_mode').value == 0) {
@@ -551,8 +528,7 @@ window.AmazonAccount = Class.create(Common, {
         }
     },
 
-    autoInvoicingModeChange: function()
-    {
+    autoInvoicingModeChange: function() {
         var invoiceGenerationTR = $('invoice_generation').up('tr');
         var createMagentoInvoice = $('create_magento_invoice');
 
@@ -567,13 +543,11 @@ window.AmazonAccount = Class.create(Common, {
     // Repricing Integration
     // ---------------------------------------
 
-    linkOrRegisterRepricing: function()
-    {
+    linkOrRegisterRepricing: function() {
         return setLocation(M2ePro.url.get('adminhtml_amazon_account_repricing/linkOrRegister'));
     },
 
-    unlinkRepricing: function()
-    {
+    unlinkRepricing: function() {
         if (!confirm(M2ePro.translator.translate('Are you sure?'))) {
             return;
         }
@@ -581,18 +555,15 @@ window.AmazonAccount = Class.create(Common, {
         AmazonAccountObj.openUnlinkPage();
     },
 
-    openUnlinkPage: function()
-    {
+    openUnlinkPage: function() {
         return setLocation(M2ePro.url.get('adminhtml_amazon_account_repricing/openUnlinkPage'));
     },
 
-    openManagement: function()
-    {
+    openManagement: function() {
         window.open(M2ePro.url.get('adminhtml_amazon_account_repricing/openManagement'));
     },
 
-    regular_price_mode_change: function()
-    {
+    regular_price_mode_change: function() {
         var self = AmazonAccountObj,
             regularPriceAttr = $('regular_price_attribute'),
             regularPriceCoeficient = $('regular_price_coefficient_td'),
@@ -614,7 +585,7 @@ window.AmazonAccount = Class.create(Common, {
         }
 
         if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account_Repricing::PRICE_MODE_MANUAL')) {
-            $$('.repricing-min-price-mode-regular-depended').each(function (element) {
+            $$('.repricing-min-price-mode-regular-depended').each(function(element) {
                 if (element.selected) {
                     element.up().selectedIndex = M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account_Repricing::PRICE_MODE_MANUAL');
                     element.simulate('change');
@@ -623,7 +594,7 @@ window.AmazonAccount = Class.create(Common, {
                 element.hide();
             });
 
-            $$('.repricing-max-price-mode-regular-depended').each(function (element) {
+            $$('.repricing-max-price-mode-regular-depended').each(function(element) {
                 if (element.selected) {
                     element.up().selectedIndex = M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account_Repricing::PRICE_MODE_MANUAL');
                     element.simulate('change');
@@ -632,18 +603,17 @@ window.AmazonAccount = Class.create(Common, {
                 element.hide();
             });
         } else {
-            $$('.repricing-min-price-mode-regular-depended').each(function (element) {
+            $$('.repricing-min-price-mode-regular-depended').each(function(element) {
                 element.show();
             });
 
-            $$('.repricing-max-price-mode-regular-depended').each(function (element) {
+            $$('.repricing-max-price-mode-regular-depended').each(function(element) {
                 element.show();
             });
         }
     },
 
-    min_price_mode_change: function()
-    {
+    min_price_mode_change: function() {
         var self = AmazonAccountObj,
             minPriceValueTr = $('min_price_value_tr'),
             minPricePercentTr = $('min_price_percent_tr'),
@@ -679,8 +649,7 @@ window.AmazonAccount = Class.create(Common, {
         }
     },
 
-    max_price_mode_change: function()
-    {
+    max_price_mode_change: function() {
         var self = AmazonAccountObj,
             maxPriceValueTr = $('max_price_value_tr'),
             maxPricePercentTr = $('max_price_percent_tr'),
@@ -716,8 +685,7 @@ window.AmazonAccount = Class.create(Common, {
         }
     },
 
-    disable_mode_change: function()
-    {
+    disable_mode_change: function() {
         var self = AmazonAccountObj,
             disableModeAttr = $('disable_mode_attribute');
 
@@ -729,10 +697,9 @@ window.AmazonAccount = Class.create(Common, {
 
     // ---------------------------------------
 
-    saveAndClose: function()
-    {
+    saveAndClose: function() {
         var url = typeof M2ePro.url.urls.formSubmit == 'undefined' ?
-            M2ePro.url.formSubmit + 'back/'+base64_encode('list')+'/' :
+            M2ePro.url.formSubmit + 'back/' + base64_encode('list') + '/' :
             M2ePro.url.get('formSubmit', {'back': base64_encode('list')});
 
         if (!editForm.validate()) {
@@ -750,8 +717,7 @@ window.AmazonAccount = Class.create(Common, {
 
     // ---------------------------------------
 
-    repricing_refresh: function ()
-    {
+    repricing_refresh: function() {
         if (!confirm(M2ePro.translator.translate('Are you sure?'))) {
             return;
         }

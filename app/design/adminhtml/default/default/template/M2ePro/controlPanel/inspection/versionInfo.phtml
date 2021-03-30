@@ -23,7 +23,8 @@
             <td class="value">
                 <label style="padding-right: 10px;"><?php echo Mage::helper('M2ePro')->__('Latest Public Version'); ?>: </label>
                 <?php echo $this->latestPublicVersion; ?>
-                <a href="<?php echo Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, "ReleaseNotes/M2E+Pro+Version+-+{$this->latestPublicVersion}"); ?>" target="_blank"><?php echo Mage::helper('M2ePro')->__('[release notes]'); ?></a>
+                <?php $versionForUrl = str_replace('.', '-', $this->latestPublicVersion); ?>
+                <a href="<?php echo Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, "help/m1/release-notes-policy/m2e-pro-version-{$versionForUrl}"); ?>" target="_blank"><?php echo Mage::helper('M2ePro')->__('[release notes]'); ?></a>
             </td>
         <?php endif; ?>
     </tr>
@@ -35,7 +36,8 @@
         </td>
         <td class="value">
             <?php echo $this->latestVersion; ?>
-            <a href="<?php echo Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, "ReleaseNotes/M2E+Pro+Version+-+{$this->latestVersion}"); ?>" target="_blank"><?php echo Mage::helper('M2ePro')->__('[release notes]'); ?></a>
+            <?php $versionForUrl = str_replace('.', '-', $this->latestVersion); ?>
+            <a href="<?php echo Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, "help/m1/release-notes-policy/m2e-pro-version-{$versionForUrl}"); ?>" target="_blank"><?php echo Mage::helper('M2ePro')->__('[release notes]'); ?></a>
         </td>
     </tr>
     <?php endif; ?>

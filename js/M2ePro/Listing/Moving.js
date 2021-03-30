@@ -171,6 +171,11 @@ window.ListingMoving = Class.create(Action, {
 
                 var response = transport.responseText.evalJSON();
 
+                if (response.message) {
+                    MessageObj.clearAll();
+                    MessageObj['add' + response.message.type[0].toUpperCase() + response.message.type.slice(1)](response.message.text);
+                }
+
                 if (response.result) {
                     var hasOnlineCategory = response.hasOnlineCategory || false;
                     onSuccess.bind(self.gridHandler)(listingId, hasOnlineCategory);

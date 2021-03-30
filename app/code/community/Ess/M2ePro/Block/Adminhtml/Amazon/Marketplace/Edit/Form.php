@@ -28,10 +28,10 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Marketplace_Edit_Form extends Mage_Admin
     {
         $form = new Varien_Data_Form(
             array(
-            'id'      => 'edit_form',
-            'action'  => $this->getUrl('*/*/save'),
-            'method'  => 'post',
-            'enctype' => 'multipart/form-data'
+                'id'      => 'edit_form',
+                'action'  => $this->getUrl('*/*/save'),
+                'method'  => 'post',
+                'enctype' => 'multipart/form-data'
             )
         );
 
@@ -47,18 +47,18 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Marketplace_Edit_Form extends Mage_Admin
         // ---------------------------------------
         /** @var Ess_M2ePro_Model_Marketplace[] $marketplaces */
         $marketplaces = Mage::helper('M2ePro/Component_Amazon')->getCollection('Marketplace')
-                                                        ->setOrder('group_title', 'ASC')
-                                                        ->setOrder('sorder', 'ASC')
-                                                        ->setOrder('title', 'ASC')
-                                                        ->getItems();
+            ->setOrder('group_title', 'ASC')
+            ->setOrder('sorder', 'ASC')
+            ->setOrder('title', 'ASC')
+            ->getItems();
         $groups = array();
         $storedStatuses = array();
         $idGroup = 1;
 
         $groupsOrder = array(
-            'america'   => 'America',
-            'europe'    => 'Europe',
-            'australia' => 'Australia Region'
+            'america'      => 'America',
+            'europe'       => 'Europe',
+            'asia_pacific' => 'Asia / Pacific'
         );
 
         foreach ($groupsOrder as $key => $groupOrderTitle) {
@@ -76,7 +76,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Marketplace_Edit_Form extends Mage_Admin
 
                 $storedStatuses[] = array(
                     'marketplace_id' => $marketplace->getId(),
-                    'status' => $marketplace->getStatus()
+                    'status'         => $marketplace->getStatus()
                 );
 
                 $isLocked = (bool)Mage::helper('M2ePro/Component_Amazon')->getCollection('Account')
@@ -110,6 +110,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Marketplace_Edit_Form extends Mage_Admin
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('run_single_button', $buttonBlock);
+
         // ---------------------------------------
 
         return parent::_beforeToHtml();

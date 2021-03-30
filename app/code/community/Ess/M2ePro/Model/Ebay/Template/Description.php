@@ -26,16 +26,16 @@ class Ess_M2ePro_Model_Ebay_Template_Description extends Ess_M2ePro_Model_Compon
     const CONDITION_MODE_ATTRIBUTE = 1;
     const CONDITION_MODE_NONE      = 2;
 
-    const CONDITION_EBAY_NEW                   = 1000;
-    const CONDITION_EBAY_NEW_OTHER             = 1500;
-    const CONDITION_EBAY_NEW_WITH_DEFECT       = 1750;
-    const CONDITION_EBAY_CERTIFIED_REFURBISHED = 2000;
-    const CONDITION_EBAY_SELLER_REFURBISHED    = 2500;
-    const CONDITION_EBAY_USED                  = 3000;
-    const CONDITION_EBAY_VERY_GOOD             = 4000;
-    const CONDITION_EBAY_GOOD                  = 5000;
-    const CONDITION_EBAY_ACCEPTABLE            = 6000;
-    const CONDITION_EBAY_NOT_WORKING           = 7000;
+    const CONDITION_EBAY_NEW                        = 1000;
+    const CONDITION_EBAY_NEW_OTHER                  = 1500;
+    const CONDITION_EBAY_NEW_WITH_DEFECT            = 1750;
+    const CONDITION_EBAY_CERTIFIED_REFURBISHED      = 2000;
+    const CONDITION_EBAY_SELLER_REFURBISHED         = 2500;
+    const CONDITION_EBAY_USED                       = 3000;
+    const CONDITION_EBAY_VERY_GOOD                  = 4000;
+    const CONDITION_EBAY_GOOD                       = 5000;
+    const CONDITION_EBAY_ACCEPTABLE                 = 6000;
+    const CONDITION_EBAY_NOT_WORKING                = 7000;
 
     const CONDITION_NOTE_MODE_NONE   = 0;
     const CONDITION_NOTE_MODE_CUSTOM = 1;

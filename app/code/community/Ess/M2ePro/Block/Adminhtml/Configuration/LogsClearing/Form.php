@@ -6,6 +6,11 @@
  * @license    Commercial use is forbidden
  */
 
+/**
+ * Class Ess_M2ePro_Block_Adminhtml_Configuration_LogsClearing_Form
+ *
+ * @method Ess_M2ePro_Helper_Order_Notification getOrderNotificationHelper()
+ */
 class Ess_M2ePro_Block_Adminhtml_Configuration_LogsClearing_Form
     extends Ess_M2ePro_Block_Adminhtml_Configuration_Abstract
 {
@@ -26,10 +31,10 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_LogsClearing_Form
     {
         $form = new Varien_Data_Form(
             array(
-            'id'      => 'config_edit_form',
-            'action'  => $this->getUrl('M2ePro/adminhtml_configuration_logsClearing/save'),
-            'method'  => 'post',
-            'enctype' => 'multipart/form-data'
+                'id'      => 'config_edit_form',
+                'action'  => $this->getUrl('M2ePro/adminhtml_configuration_logsClearing/save'),
+                'method'  => 'post',
+                'enctype' => 'multipart/form-data'
             )
         );
 
@@ -63,11 +68,11 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_LogsClearing_Form
 
         // ---------------------------------------
         $modes = array();
-        $days  = array();
+        $days = array();
 
         foreach ($tasks as $task) {
-            $modes[$task] = $config->getGroupValue('/logs/clearing/'.$task.'/', 'mode');
-            $days[$task] = $config->getGroupValue('/logs/clearing/'.$task.'/', 'days');
+            $modes[$task] = $config->getGroupValue('/logs/clearing/' . $task . '/', 'mode');
+            $days[$task] = $config->getGroupValue('/logs/clearing/' . $task . '/', 'days');
         }
 
         $this->modes = $modes;
@@ -82,7 +87,7 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_LogsClearing_Form
                 'class'   => 'run_now_' . $task
             );
             $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
-            $this->setChild('run_now_'.$task, $buttonBlock);
+            $this->setChild('run_now_' . $task, $buttonBlock);
             // ---------------------------------------
 
             if ($task == Ess_M2ePro_Model_Log_Clearing::LOG_ORDERS) {
@@ -96,9 +101,11 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_LogsClearing_Form
                 'class'   => 'clear_all_' . $task
             );
             $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
-            $this->setChild('clear_all_'.$task, $buttonBlock);
+            $this->setChild('clear_all_' . $task, $buttonBlock);
             // ---------------------------------------
         }
+
+        $this->setData('order_notification_helper', Mage::helper('M2ePro/Order_Notification'));
 
         return parent::_beforeToHtml();
     }

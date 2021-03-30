@@ -52,10 +52,6 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CategorySettingsController
 
     public function indexAction()
     {
-        if (!$listingId = $this->getRequest()->getParam('listing_id')) {
-            throw new Ess_M2ePro_Model_Exception('Listing is not defined');
-        }
-
         $this->_listing = $this->getListingFromRequest();
 
         $addedIds = $this->_listing->getChildObject()->getAddedListingProductsIds();
@@ -63,7 +59,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CategorySettingsController
             return $this->_redirect(
                 '*/adminhtml_ebay_listing_productAdd',
                 array(
-                    'listing_id' => $listingId,
+                    'listing_id' => $this->getRequest()->getParam('listing_id'),
                     '_current'   => true
                 )
             );
@@ -133,6 +129,10 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CategorySettingsController
         }
 
         $source = $this->_listing->getSetting('additional_data', 'source');
+
+        if ($source == SourceModeBlock::SOURCE_OTHER) {
+            return $this->_redirect('*/*/otherCategories', array('_current' => true));
+        }
 
         if ($this->getRequest()->isPost()) {
             $mode = $this->getRequest()->getParam('mode');
@@ -761,6 +761,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CategorySettingsController
         $canBeSkipped = !$this->getRequest()->isAjax();
         $listing = $this->getListingFromRequest();
 
+        $isFromOtherListing = false;
         foreach ($sessionData as $id => &$categoryData) {
             if (!isset($categoryData[eBayCategory::TYPE_EBAY_MAIN]) ||
                 $categoryData[eBayCategory::TYPE_EBAY_MAIN]['mode'] === TemplateCategory::CATEGORY_MODE_NONE
@@ -806,9 +807,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CategorySettingsController
             return $this->saveAction();
         }
 
-        $block = $this->getLayout()->createBlock(
-            'M2ePro/adminhtml_ebay_listing_category_specific'
-        );
+        $block = $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_listing_category_specific');
         $block->getChild('grid')->setCategoriesData($primaryData);
 
         if ($this->getRequest()->isXmlHttpRequest()) {
@@ -840,6 +839,50 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CategorySettingsController
             $mainHash,
             $mainHash . '-' . $specificsHash
         );
+    }
+
+    //########################################
+
+    public function otherCategoriesAction()
+    {
+        $this->_listing = $this->getListingFromRequest();
+
+        $this->setWizardStep('categoryStepTwo');
+        $this->_initAction();
+        $this->clearSession();
+
+        $this->setSessionValue('mode', Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Mode::MODE_PRODUCT);
+        $this->initSessionDataProducts($this->_listing->getChildObject()->getAddedListingProductsIds());
+
+        $this->getLayout()->getBlock('head')
+            ->addJs('M2ePro/Plugin/ProgressBar.js')
+            ->addJs('M2ePro/Plugin/AreaWrapper.js')
+            ->addJs('M2ePro/Ebay/Listing/Category/Grid.js')
+            ->addJs('M2ePro/Ebay/Listing/Category/Product/Grid.js')
+            ->addJs('M2ePro/Ebay/Listing/Category/Product/SuggestedSearch.js')
+            ->addCss('M2ePro/css/Plugin/ProgressBar.css')
+            ->addCss('M2ePro/css/Plugin/AreaWrapper.css')
+            ->addCss('M2ePro/css/Plugin/DropDown.css');
+
+        $this->setPageHelpLink(null, null, "x/UgAJAQ");
+        $block = $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_listing_category_other_product');
+
+        $categoriesData = $this->getSessionValue($this->getSessionDataKey());
+        $block->getChild('grid')->setCategoriesData($categoriesData);
+        $this->_addContent($block);
+
+        $this->renderLayout();
+    }
+
+    public function otherCategoriesGridAction()
+    {
+        $this->loadLayout();
+
+        $categoriesData = $this->getSessionValue($this->getSessionDataKey());
+        $block = $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_listing_category_other_product_grid');
+        $block->setCategoriesData($categoriesData);
+
+        $this->getResponse()->setBody($block->toHtml());
     }
 
     //########################################

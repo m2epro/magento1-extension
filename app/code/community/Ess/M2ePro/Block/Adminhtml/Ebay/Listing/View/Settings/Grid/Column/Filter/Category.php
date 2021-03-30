@@ -6,18 +6,10 @@
  * @license    Commercial use is forbidden
  */
 
-class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Settings_Grid_Column_Filter_TitleSkuCategory extends
+class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Settings_Grid_Column_Filter_Category extends
     Mage_Adminhtml_Block_Widget_Grid_Column_Filter_Abstract
 {
     //########################################
-
-    protected function _renderOption($option, $value)
-    {
-        $selected = (($option['value'] == $value && ($value !== null)) ? ' selected="selected"' : '' );
-        return '<option value="'. $this->escapeHtml($option['value']).'"'.$selected.'>'
-                    .$this->escapeHtml($option['label'])
-              .'</option>';
-    }
 
     public function getHtml()
     {
@@ -72,6 +64,14 @@ HTML;
                 'value' => 0
             ),
         );
+    }
+
+    protected function _renderOption($option, $value)
+    {
+        $selected = (($option['value'] == $value && ($value !== null)) ? ' selected="selected"' : '' );
+        return '<option value="'. $this->escapeHtml($option['value']).'"'.$selected.'>'
+            .$this->escapeHtml($option['label'])
+            .'</option>';
     }
 
     //########################################

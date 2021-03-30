@@ -202,12 +202,6 @@ $missingAttributes = $this->getMissingAttributes();
             .observe('change', EbayTemplateShippingObj.dispatchTimeChange)
             .simulate('change');
 
-        if ($('click_and_collect_mode')) {
-            $('click_and_collect_mode')
-                .observe('change', EbayTemplateShippingObj.clickAndCollectModeChange)
-                .simulate('change');
-        }
-
         if ($('cross_border_trade')) {
             $('cross_border_trade')
                 .observe('change', EbayTemplateShippingObj.crossBorderTradeChange)
@@ -276,9 +270,6 @@ $missingAttributes = $this->getMissingAttributes();
         text-align: right;
     }
 
-    #weight_cv input {
-        width: 130px !important;
-    }
     #dimensions_ca_tr select {
         width: 86px !important;
     }
@@ -773,32 +764,6 @@ $missingAttributes = $this->getMissingAttributes();
                         </p>
                     </td>
                 </tr>
-
-                <?php if ($this->canDisplayClickAndCollectOption()): ?>
-                    <tr id="click_and_collect_mode_tr" class="local-shipping-tr">
-                        <td class="label">
-                            <label><?php echo Mage::helper('M2ePro')->__('Click And Collect Opt-out'); ?>:</label>
-                        </td>
-                        <td class="value" style="width: auto;">
-                            <select id="click_and_collect_mode" name="shipping[click_and_collect_mode]">
-                                <option value="0" <?php if (!$formData['click_and_collect_mode']): ?>selected="selected"<?php endif; ?> ><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
-                                <option value="1" <?php if ($formData['click_and_collect_mode']): ?>selected="selected"<?php endif; ?> ><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
-                            </select>
-                            <p class="note">
-                                <span>
-                                    <?php echo Mage::helper('M2ePro')->__(
-                                        'Select "No" to enable the Click & Collect option for your Products in M2E Pro Listing.
-                                         Details about the Click & Collect delivery option can be found on
-                                         <a href="%url_uk%" target="_blank">eBay UK</a>,
-                                         <a href="%url_au%" target="_blank">eBay Australia</a> sites.',
-                                        'http://pages.ebay.co.uk/sell/click-and-collect/',
-                                        'http://sellercentre.ebay.com.au/click-and-collect/'
-                                    ) ;?>
-                                </span>
-                            </p>
-                        </td>
-                    </tr>
-                <?php endif; ?>
 
                 <tr id="local_handling_cost_cv_tr" class="local-shipping-tr">
                     <td class="label">
@@ -1312,7 +1277,7 @@ $missingAttributes = $this->getMissingAttributes();
 
 </div>
 
-<div class="entry-edit" id="magento_block_ebay_template_shipping_form_data_calculated" style="display:none">
+<div class="entry-edit" id="magento_block_ebay_template_shipping_form_data_calculated">
 
     <div class="entry-edit-head">
         <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Package details'); ?></h4>
@@ -1354,12 +1319,16 @@ $missingAttributes = $this->getMissingAttributes();
                         </td>
                     </tr>
 
-                    <tr id="package_size_tr" class="visible-for-calculated-by-default">
+                    <tr id="package_size_tr" class="visible-for-flat-by-default visible-for-calculated-by-default">
                         <td class="label">
                             <label for="package_size"><?php echo Mage::helper('M2ePro')->__('Package Size Source'); ?>:</label>
                         </td>
                         <td class="value">
                             <select id="package_size" class="select M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,select">
+                                <option id="package_size_none" value="<?php echo Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated::PACKAGE_SIZE_NONE; ?>" attribute_code=""
+                                        <?php if ($formData['package_size_mode'] == Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated::PACKAGE_SIZE_NONE): ?>selected="selected"<?php endif; ?> >
+                                    <?php echo Mage::helper('M2ePro')->__('None'); ?>
+                                </option>
                                 <optgroup label="<?php echo Mage::helper('M2ePro')->__('eBay Values'); ?>">
                                     <?php foreach ($marketplaceData['packages'] as $package): ?>
                                         <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated::PACKAGE_SIZE_CUSTOM_VALUE; ?>" attribute_code="<?php echo Mage::helper('M2ePro')->escapeHtml($package['ebay_id']) ?>"
@@ -1524,7 +1493,8 @@ $missingAttributes = $this->getMissingAttributes();
                         </td>
                         <td class="value">
                             <input name="shipping[weight_major]" value="<?php echo $this->escapeHtml($formData['weight_major']); ?>" type="text" class="M2ePro-required-when-visible M2ePro-validation-float input-text" />
-                            &nbsp;
+                        </td>
+                        <td class="value">
                             <input name="shipping[weight_minor]" value="<?php echo $this->escapeHtml($formData['weight_minor']); ?>" type="text" class="M2ePro-required-when-visible M2ePro-validation-float input-text" />
                         </td>
                         <td class="note">

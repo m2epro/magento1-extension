@@ -11,10 +11,19 @@ abstract class Ess_M2ePro_Block_Adminhtml_Log_AbstractGrid extends Mage_Adminhtm
     const LISTING_ID_FIELD                = 'listing_id';
     const LISTING_PRODUCT_ID_FIELD        = 'listing_product_id';
     const LISTING_PARENT_PRODUCT_ID_FIELD = 'parent_listing_product_id';
+    const ORDER_ID_FIELD                  = 'order_id';
 
     /** @var Ess_M2ePro_Model_Listing_Product $_listingProduct */
     protected $_listingProduct;
+
+    protected $_messageCount = array();
+    protected $_entityIdFieldName;
+    protected $_logModelName;
     
+    //########################################
+
+    abstract protected function getComponentMode();
+
     //########################################
 
     protected function getEntityId()
@@ -55,6 +64,17 @@ abstract class Ess_M2ePro_Block_Adminhtml_Log_AbstractGrid extends Mage_Adminhtm
     {
         $listingProductId = $this->getRequest()->getParam(self::LISTING_PRODUCT_ID_FIELD);
         return !empty($listingProductId);
+    }
+
+    public function isSingleOrderLog()
+    {
+        return $this->getRequest()->getParam(self::ORDER_ID_FIELD);
+    }
+
+    public function isNeedCombineMessages()
+    {
+        return !$this->isListingProductLog() && !$this->isSingleOrderLog() &&
+            $this->getRequest()->getParam('only_unique_messages', true);
     }
 
     //########################################
@@ -168,18 +188,37 @@ abstract class Ess_M2ePro_Block_Adminhtml_Log_AbstractGrid extends Mage_Adminhtm
 
         $renderedText = $this->stripTags($fullDescription, '<br>');
         if (strlen($renderedText) < 200) {
-            return $fullDescription;
-        }
+            $html = $fullDescription;
+        } else {
+            $renderedText =  Mage::helper('core/string')->truncate($renderedText, 200, '');
 
-        $renderedText =  Mage::helper('core/string')->truncate($renderedText, 200, '');
-
-        return <<<HTML
+            $html = <<<HTML
 {$renderedText}
 <a href="javascript://" onclick="LogObj.showFullText(this);">
     {$this->__('more')}
 </a>
 <div class="no-display">{$fullDescription}</div>
 HTML;
+        }
+
+        $countHtml = '';
+
+        if (isset($this->_messageCount[$row[$this->_entityIdFieldName]])) {
+            $colorMap = array(
+                Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE  => 'gray',
+                Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS => 'green',
+                Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING => 'orange',
+                Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR   => 'red',
+            );
+
+            $count = $this->_messageCount[$row[$this->_entityIdFieldName]][$row['description']]['count'];
+            if ($count > 1) {
+                $color = $colorMap[$row['type']];
+                $countHtml = " <span style='color: {$color}; font-weight: bold'>({$count})</span>";
+            }
+        }
+
+        return $html . $countHtml;
     }
 
     //########################################
@@ -218,6 +257,21 @@ JAVASCIRPT;
 JAVASCIRPT;
 
         return $javascript . parent::_toHtml();
+    }
+
+    //########################################
+
+    protected function prepareMessageCount(Mage_Core_Model_Resource_Db_Collection_Abstract $collection)
+    {
+        $select = clone $collection->getSelect();
+        $select->columns(array('number' => 'COUNT(*)'));
+        $stmt = $select->query();
+
+        while ($log = $stmt->fetch()) {
+            if ($log[$this->_entityIdFieldName]) {
+                $this->_messageCount[$log[$this->_entityIdFieldName]][$log['description']]['count'] = $log['number'];
+            }
+        }
     }
 
     //########################################

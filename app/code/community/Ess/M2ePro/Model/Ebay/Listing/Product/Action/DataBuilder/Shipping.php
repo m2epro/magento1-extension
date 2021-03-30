@@ -33,8 +33,8 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Shipping
     public function getData()
     {
         $data = array(
-            'country' => $this->getShippingSource()->getCountry(),
-            'address' => $this->getShippingSource()->getAddress(),
+            'country'     => $this->getShippingSource()->getCountry(),
+            'address'     => $this->getShippingSource()->getAddress(),
             'postal_code' => $this->getShippingSource()->getPostalCode()
         );
 
@@ -48,10 +48,12 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Shipping
             // there are permissions by marketplace (interface management)
             if ($this->getShippingTemplate()->isCrossBorderTradeNorthAmerica()) {
                 $data['cross_border_trade'] = self::CROSS_BORDER_TRADE_NORTH_AMERICA;
-            } else if ($this->getShippingTemplate()->isCrossBorderTradeUnitedKingdom()) {
-                $data['cross_border_trade'] = self::CROSS_BORDER_TRADE_UNITED_KINGDOM;
             } else {
-                $data['cross_border_trade'] = self::CROSS_BORDER_TRADE_NONE;
+                if ($this->getShippingTemplate()->isCrossBorderTradeUnitedKingdom()) {
+                    $data['cross_border_trade'] = self::CROSS_BORDER_TRADE_UNITED_KINGDOM;
+                } else {
+                    $data['cross_border_trade'] = self::CROSS_BORDER_TRADE_NONE;
+                }
             }
 
             $data['excluded_locations'] = array();
@@ -75,6 +77,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Shipping
 
     /**
      * @return array
+     * @throws Ess_M2ePro_Model_Exception_Logic
      */
     protected function getShippingData()
     {
@@ -87,44 +90,20 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Shipping
             return $shippingData;
         }
 
-        if ($this->getShippingTemplate()->isLocalShippingCalculatedEnabled()) {
-            $shippingData['calculated'] = $this->getCalculatedData();
-        }
-
         if ($this->getShippingTemplate()->isInternationalShippingFlatEnabled() ||
             $this->getShippingTemplate()->isInternationalShippingCalculatedEnabled()) {
             $shippingData['international'] = $this->getInternationalShippingData();
-
-            if ($this->getShippingTemplate()->isInternationalShippingCalculatedEnabled()) {
-                if (!isset($shippingData['calculated'])) {
-                    $shippingData['calculated'] = $this->getCalculatedData();
-                }
-            }
         }
 
-        if (!isset($shippingData['calculated'])) {
-            if (($this->getShippingTemplate()->isLocalShippingFlatEnabled() &&
-                 $this->getShippingTemplate()->isLocalShippingRateTableEnabled($this->getAccount())) ||
-                ($this->getShippingTemplate()->isInternationalShippingFlatEnabled() &&
-                 $this->getShippingTemplate()->isInternationalShippingRateTableEnabled($this->getAccount()))) {
-                $calculatedData = $this->getCalculatedData();
-                unset($calculatedData['package_size']);
-                unset($calculatedData['dimensions']);
-                $shippingData['calculated'] = $calculatedData;
-            }
-
-            if ($this->isClickAndCollectAvailable() && $this->getShippingTemplate()->isClickAndCollectEnabled()) {
-                $calculatedData = $this->getCalculatedData();
-                unset($calculatedData['package_size']);
-                $shippingData['calculated'] = $calculatedData;
-            }
+        if ($calculatedData = $this->getCalculatedData()) {
+            $shippingData['calculated'] = $calculatedData;
         }
 
         return $shippingData;
     }
 
     /**
-     * @return array|null
+     * @return array
      */
     protected function getCalculatedData()
     {
@@ -136,19 +115,29 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Shipping
             return array();
         }
 
-        $data = array(
-            'package_size' => $this->getCalculatedShippingSource()->getPackageSize(),
-            'dimensions'   => $this->getCalculatedShippingSource()->getDimension(),
-            'weight'       => $this->getCalculatedShippingSource()->getWeight()
-        );
+        $data = array();
 
-        switch ($this->getCalculatedShippingTemplate()->getMeasurementSystem()) {
-            case Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated::MEASUREMENT_SYSTEM_ENGLISH:
-                $data['measurement_system'] = self::MEASUREMENT_SYSTEM_ENGLISH;
-                break;
-            case Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated::MEASUREMENT_SYSTEM_METRIC:
-                $data['measurement_system'] = self::MEASUREMENT_SYSTEM_METRIC;
-                break;
+        if ($this->getCalculatedShippingTemplate()->isPackageSizeSet()) {
+            $data['package_size'] = $this->getCalculatedShippingSource()->getPackageSize();
+        }
+
+        if ($this->getCalculatedShippingTemplate()->isDimensionSet()) {
+            $data['dimensions'] = $this->getCalculatedShippingSource()->getDimension();
+        }
+
+        if ($this->getCalculatedShippingTemplate()->isWeightSet()) {
+            $data['weight'] = $this->getCalculatedShippingSource()->getWeight();
+        }
+
+        if (!empty($data)) {
+            switch ($this->getCalculatedShippingTemplate()->getMeasurementSystem()) {
+                case Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated::MEASUREMENT_SYSTEM_ENGLISH:
+                    $data['measurement_system'] = self::MEASUREMENT_SYSTEM_ENGLISH;
+                    break;
+                case Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated::MEASUREMENT_SYSTEM_METRIC:
+                    $data['measurement_system'] = self::MEASUREMENT_SYSTEM_METRIC;
+                    break;
+            }
         }
 
         return $this->_calculatedShippingData = $data;
@@ -178,23 +167,19 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Shipping
         }
 
         $data['discount_promotional_enabled'] = $this->getShippingTemplate()
-                                                     ->isLocalShippingDiscountPromotionalEnabled();
+            ->isLocalShippingDiscountPromotionalEnabled();
         $data['discount_combined_profile_id'] = $this->getShippingTemplate()
-                                                    ->getLocalShippingDiscountCombinedProfileId(
-                                                        $this->getListingProduct()->getListing()->getAccountId()
-                                                    );
+            ->getLocalShippingDiscountCombinedProfileId(
+                $this->getListingProduct()->getListing()->getAccountId()
+            );
 
         if ($this->getShippingTemplate()->isLocalShippingFlatEnabled() &&
             $this->getShippingTemplate()->isLocalShippingRateTableEnabled($this->getAccount())) {
             $data['rate_table_mode'] = $this->getShippingTemplate()
-                                            ->getLocalShippingRateTableMode($this->getAccount());
+                ->getLocalShippingRateTableMode($this->getAccount());
             $data['rate_table_enabled'] = $this->getShippingTemplate()
-                                               ->isLocalShippingRateTableEnabled($this->getAccount());
+                ->isLocalShippingRateTableEnabled($this->getAccount());
             $data['rate_table_id'] = $this->getShippingTemplate()->getLocalShippingRateTableId($this->getAccount());
-
-            if ($this->isClickAndCollectAvailable()) {
-                $data['click_and_collect_enabled'] = $this->getShippingTemplate()->isClickAndCollectEnabled();
-            }
         }
 
         if ($this->getShippingTemplate()->isLocalShippingCalculatedEnabled()) {
@@ -238,7 +223,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Shipping
             /** @var $service Ess_M2ePro_Model_Ebay_Template_Shipping_Service */
 
             if (!$service->isShippingTypeLocal()) {
-               continue;
+                continue;
             }
 
             $tempDataMethod = array(
@@ -248,10 +233,10 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Shipping
             if ($this->getShippingTemplate()->isLocalShippingFlatEnabled()) {
                 $store = $this->getListing()->getStoreId();
                 $tempDataMethod['cost'] = $service->getSource($this->getMagentoProduct())
-                                                  ->getCost($store);
+                    ->getCost($store);
 
                 $tempDataMethod['cost_additional'] = $service->getSource($this->getMagentoProduct())
-                                                             ->getCostAdditional($store);
+                    ->getCostAdditional($store);
             }
 
             if ($this->getShippingTemplate()->isLocalShippingCalculatedEnabled()) {
@@ -277,19 +262,21 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Shipping
         );
 
         $data['discount_promotional_enabled'] = $this->getShippingTemplate()
-                                                     ->isInternationalShippingDiscountPromotionalEnabled();
+            ->isInternationalShippingDiscountPromotionalEnabled();
         $data['discount_combined_profile_id'] = $this->getShippingTemplate()
-                                                    ->getInternationalShippingDiscountCombinedProfileId(
-                                                        $this->getListingProduct()->getListing()->getAccountId()
-                                                    );
+            ->getInternationalShippingDiscountCombinedProfileId(
+                $this->getListingProduct()->getListing()->getAccountId()
+            );
 
-        if ($this->getShippingTemplate()->isInternationalShippingFlatEnabled()) {
+        if ($this->getShippingTemplate()->isInternationalShippingFlatEnabled() &&
+            $this->getShippingTemplate()->isInternationalShippingRateTableEnabled($this->getAccount())
+        ) {
             $data['rate_table_mode'] = $this->getShippingTemplate()
-                                            ->getInternationalShippingRateTableMode($this->getAccount());
+                ->getInternationalShippingRateTableMode($this->getAccount());
             $data['rate_table_enabled'] = $this->getShippingTemplate()
-                                               ->isInternationalShippingRateTableEnabled($this->getAccount());
+                ->isInternationalShippingRateTableEnabled($this->getAccount());
             $data['rate_table_id'] = $this->getShippingTemplate()
-                                          ->getInternationalShippingRateTableId($this->getAccount());
+                ->getInternationalShippingRateTableId($this->getAccount());
         }
 
         if ($this->getShippingTemplate()->isInternationalShippingCalculatedEnabled()) {
@@ -325,48 +312,27 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Shipping
             /** @var $service Ess_M2ePro_Model_Ebay_Template_Shipping_Service */
 
             if (!$service->isShippingTypeInternational()) {
-               continue;
+                continue;
             }
 
             $tempDataMethod = array(
-                'service' => $service->getShippingValue(),
+                'service'   => $service->getShippingValue(),
                 'locations' => $service->getLocations()
             );
 
             if ($this->getShippingTemplate()->isInternationalShippingFlatEnabled()) {
                 $store = $this->getListing()->getStoreId();
                 $tempDataMethod['cost'] = $service->getSource($this->getMagentoProduct())
-                                                  ->getCost($store);
+                    ->getCost($store);
 
                 $tempDataMethod['cost_additional'] = $service->getSource($this->getMagentoProduct())
-                                                             ->getCostAdditional($store);
+                    ->getCostAdditional($store);
             }
 
             $services[] = $tempDataMethod;
         }
 
         return $services;
-    }
-
-    //########################################
-
-    protected function isClickAndCollectAvailable()
-    {
-        if (!$this->getMarketplace()->getChildObject()->isClickAndCollectEnabled()) {
-            return false;
-        }
-
-        if (!$this->getShippingTemplate()->isLocalShippingFlatEnabled() &&
-            !$this->getShippingTemplate()->isLocalShippingCalculatedEnabled()
-        ) {
-            return false;
-        }
-
-        if ($this->getShippingSource()->getDispatchTime() > 3) {
-            return false;
-        }
-
-        return true;
     }
 
     //########################################

@@ -214,5 +214,10 @@ HTML;
         return false;
     }
 
+    protected function getComponentMode()
+    {
+        return Ess_M2ePro_Helper_Component_Ebay::NICK;
+    }
+
     //########################################
 }

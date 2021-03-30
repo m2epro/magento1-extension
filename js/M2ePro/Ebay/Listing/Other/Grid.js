@@ -7,7 +7,7 @@ window.EbayListingOtherGrid = Class.create(ListingOtherGrid, {
     },
 
     onSuccess: function(listingId, hasOnlineCategory = false) {
-        var refererUrl = M2ePro.url.get('adminhtml_ebay_listing_categorySettings/index', {
+        var refererUrl = M2ePro.url.get('adminhtml_ebay_listing_categorySettings/otherCategories', {
             listing_id: listingId
         });
 

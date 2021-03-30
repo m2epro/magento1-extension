@@ -16,26 +16,23 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_OtherController
     protected function _initAction()
     {
         $this->loadLayout()
-             ->_title(Mage::helper('M2ePro')->__('Manage Listings'))
-             ->_title(Mage::helper('M2ePro')->__('Unmanaged Listings'));
+            ->_title(Mage::helper('M2ePro')->__('Manage Listings'))
+            ->_title(Mage::helper('M2ePro')->__('Unmanaged Listings'));
 
         $this->getLayout()->getBlock('head')
             ->addJs('M2ePro/Plugin/ProgressBar.js')
             ->addCss('M2ePro/css/Plugin/ProgressBar.css')
             ->addJs('M2ePro/Plugin/AreaWrapper.js')
             ->addCss('M2ePro/css/Plugin/AreaWrapper.css')
-
             ->addJs('M2ePro/Grid.js')
             ->addJs('M2ePro/Listing/Other/Grid.js')
             ->addJs('M2ePro/Amazon/Listing/Other/Grid.js')
             ->addJs('M2ePro/Amazon/Listing/AfnQty.js')
             ->addJs('M2ePro/Amazon/Listing/RepricingPrice.js')
             ->addJs('M2ePro/Amazon/Listing/Other/Grid.js')
-
             ->addJs('M2ePro/Action.js')
             ->addJs('M2ePro/Listing/Moving.js')
             ->addJs('M2ePro/Listing/Other/AutoMapping.js')
-
             ->addJs('M2ePro/Listing/Other/Mapping.js')
 
             ->addJs('M2ePro/Listing/Other/Removing.js')
@@ -73,7 +70,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_OtherController
     public function gridAction()
     {
         $response = $this->loadLayout()->getLayout()
-                         ->createBlock('M2ePro/adminhtml_amazon_listing_other_view_grid')->toHtml();
+            ->createBlock('M2ePro/adminhtml_amazon_listing_other_view_grid')->toHtml();
         $this->getResponse()->setBody($response);
     }
 
@@ -105,7 +102,9 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_OtherController
         foreach ($productArray as $productId) {
             /** @var $listingOther Ess_M2ePro_Model_Listing_Other */
             $listingOther = Mage::helper('M2ePro/Component')->getComponentObject(
-                Ess_M2ePro_Helper_Component_Amazon::NICK, 'Listing_Other', $productId
+                Ess_M2ePro_Helper_Component_Amazon::NICK,
+                'Listing_Other',
+                $productId
             );
 
             if ($listingOther->getProductId() !== null) {
@@ -123,12 +122,13 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_OtherController
     public function moveToListingAction()
     {
         $sessionHelper = Mage::helper('M2ePro/Data_Session');
-        $sessionKey = ComponentAmazon::NICK .'_'. Ess_M2ePro_Helper_View::MOVING_LISTING_OTHER_SELECTED_SESSION_KEY;
+        $sessionKey = ComponentAmazon::NICK . '_' . Ess_M2ePro_Helper_View::MOVING_LISTING_OTHER_SELECTED_SESSION_KEY;
         $selectedProducts = $sessionHelper->getValue($sessionKey);
 
         /** @var Ess_M2ePro_Model_Listing $listingInstance */
         $listingInstance = Mage::helper('M2ePro/Component_Amazon')->getCachedObject(
-            'Listing', (int)$this->getRequest()->getParam('listingId')
+            'Listing',
+            (int)$this->getRequest()->getParam('listingId')
         );
 
         $errorsCount = 0;
@@ -136,7 +136,8 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_OtherController
 
             /** @var Ess_M2ePro_Model_Listing_Other $listingOther */
             $listingOther = Mage::helper('M2ePro/Component_Amazon')->getObject(
-                'Listing_Other', $otherListingProduct
+                'Listing_Other',
+                $otherListingProduct
             );
 
             $listingProduct = $listingInstance->getChildObject()->addProductFromOther(
@@ -150,35 +151,37 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_OtherController
             }
 
             $listingOther->moveToListingSucceed();
-        };
+        }
 
         $sessionHelper->removeValue($sessionKey);
 
+        $result = array('result' => true);
+
         if ($errorsCount) {
             if (count($selectedProducts) == $errorsCount) {
-                $this->getSession()->addError(
-                    Mage::helper('M2ePro')->__(
+                $result['result'] = false;
+                $result['message'] = array(
+                    'text' => Mage::helper('M2ePro')->__(
                         'Products were not moved because they already exist in the selected Listing.'
-                    )
+                    ),
+                    'type' => 'error'
                 );
-
-                return $this->getResponse()->setBody(
-                    Mage::helper('M2ePro')->jsonEncode(array('result' => false))
+            } else {
+                $result['message'] = array(
+                    'text' => Mage::helper('M2ePro')->__(
+                        'Some products were not moved because they already exist in the selected Listing.'
+                    ),
+                    'type' => 'warning'
                 );
             }
-
-            $this->getSession()->addError(
-                Mage::helper('M2ePro')->__(
-                    'Some products were not moved because they already exist in the selected Listing.'
-                )
-            );
         } else {
-            $this->getSession()->addSuccess(Mage::helper('M2ePro')->__('Product(s) was Moved.'));
+            $result['message'] = array(
+                'text' => Mage::helper('M2ePro')->__('Product(s) was Moved.'),
+                'type' => 'success'
+            );
         }
 
-        return $this->getResponse()->setBody(
-            Mage::helper('M2ePro')->jsonEncode(array('result' => true))
-        );
+        return $this->_addJsonContent($result);
     }
 
     //########################################
@@ -192,7 +195,8 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_OtherController
         );
 
         $this->_redirect(
-            '*/adminhtml_amazon_listing/index', array(
+            '*/adminhtml_amazon_listing/index',
+            array(
                 'tab' => Ess_M2ePro_Block_Adminhtml_Amazon_ManageListings::TAB_ID_LISTING_OTHER
             )
         );

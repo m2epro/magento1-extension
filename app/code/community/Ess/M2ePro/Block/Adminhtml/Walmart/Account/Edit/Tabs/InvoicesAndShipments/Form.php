@@ -63,10 +63,10 @@ HTML
             'create_magento_shipment',
             'select',
             array(
-                'label'   => Mage::helper('M2ePro')->__('Magento Shipment Creation') . ':',
-                'title'   => Mage::helper('M2ePro')->__('Magento Shipment Creation'),
-                'name'    => 'create_magento_shipment',
-                'options' => array(
+                'label'              => Mage::helper('M2ePro')->__('Magento Shipment Creation') . ':',
+                'title'              => Mage::helper('M2ePro')->__('Magento Shipment Creation'),
+                'name'               => 'create_magento_shipment',
+                'options'            => array(
                     0 => Mage::helper('M2ePro')->__('Disabled'),
                     1 => Mage::helper('M2ePro')->__('Enabled'),
                 ),
@@ -74,9 +74,9 @@ HTML
 <span>
     <img class="tool-tip-image"
      style="vertical-align: middle;" src="{$this->getSkinUrl('M2ePro/images/tool-tip-icon.png')}" />
-    <span class="tool-tip-message" style="display:none; text-align: left; width: 120px; background: #E3E3E3;">
+    <span class="tool-tip-message" style="display:none; text-align: left; width: 120px;">
         <img src="{$this->getSkinUrl('M2ePro/images/help.png')}" />
-        <span style="color:gray;">
+        <span>
            Enable to automatically create Shipment when shipping is completed.
         </span>
     </span>
@@ -104,10 +104,10 @@ HTML
                 'other_carrier_field_' . $i,
                 Ess_M2ePro_Block_Adminhtml_Magento_Form_Element_Form::CUSTOM_CONTAINER,
                 array(
-                    'container_class' => 'other_carrier',
-                    'label' => Mage::helper('M2ePro')->__('Other Carrier #%number%:', $i + 1),
-                    'title' => Mage::helper('M2ePro')->__('Other Carrier #%number%:', $i + 1),
-                    'text' => <<<HTML
+                    'container_class'    => 'other_carrier',
+                    'label'              => Mage::helper('M2ePro')->__('Other Carrier #%number%:', $i + 1),
+                    'title'              => Mage::helper('M2ePro')->__('Other Carrier #%number%:', $i + 1),
+                    'text'               => <<<HTML
 <input id="other_carrier_{$i}"
        type="text"
        name="other_carrier[]"
@@ -131,7 +131,7 @@ HTML
 />
 HTML
                     ,
-                    'tooltip' => Mage::helper('M2ePro')->__(
+                    'tooltip'            => Mage::helper('M2ePro')->__(
                         <<<TEXT
 If you use Other Carrier option on Walmart,
 enter a carrier code (unique identifier) and their website URL,
@@ -174,7 +174,8 @@ HTML
 
     protected function _prepareLayout()
     {
-        Mage::helper('M2ePro/View')->getCssRenderer()->add(<<<CSS
+        Mage::helper('M2ePro/View')->getCssRenderer()->add(
+            <<<CSS
     a.action-disabled {
         color: gray !important;
         pointer-events: none; !important;
@@ -188,10 +189,13 @@ HTML
 CSS
         );
 
-        Mage::helper('M2ePro/View')->getJsRenderer()->addOnReadyJs(<<<JS
+        Mage::helper('M2ePro/View')->getJsRenderer()->addOnReadyJs(
+            <<<JS
     WalmartAccountObj.otherCarrierInit(5);
 JS
-        , 2);
+            ,
+            2
+        );
 
         return parent::_prepareLayout();
     }
@@ -202,7 +206,8 @@ JS
             'M2ePro/adminhtml_helpBlock',
             '',
             array(
-                'content' => Mage::helper('M2ePro')->__(<<<HTML
+                'content' => Mage::helper('M2ePro')->__(
+                    <<<HTML
     <p>Under this tab, you can set M2E Pro to automatically create invoices and shipments in your Magento.
      To do that, keep Magento <i>Invoice/Shipment Creation</i> options enabled.</p>
 HTML
@@ -224,6 +229,7 @@ HTML
 
         /** @var Ess_M2ePro_Model_Walmart_Account_Builder $defaults */
         $defaults = Mage::getModel('M2ePro/Walmart_Account_Builder')->getDefaultData();
+
         return array_merge($defaults, $formData);
     }
 

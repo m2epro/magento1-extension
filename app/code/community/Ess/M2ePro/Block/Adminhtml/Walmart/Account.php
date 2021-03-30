@@ -40,7 +40,8 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Account extends Mage_Adminhtml_Block_Wi
             'add', array(
             'label'     => Mage::helper('M2ePro')->__('Add Account'),
             'onclick'   => 'setLocation(\''.$this->getUrl('*/adminhtml_walmart_account/new').'\');',
-            'class'     => 'add'
+            'class'     => 'add',
+            'id'        => 'add'
             )
         );
         // ---------------------------------------

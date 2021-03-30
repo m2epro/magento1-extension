@@ -133,6 +133,11 @@ class Ess_M2ePro_Observer_Dispatcher
         $this->process('Shipment_View_After', $eventObserver);
     }
 
+    public function orderNotification(Varien_Event_Observer $eventObserver)
+    {
+        $this->process('Order_Notification', $eventObserver);
+    }
+
     public function salesOrderCreditmemoRefund(Varien_Event_Observer $eventObserver)
     {
         $this->process('Creditmemo', $eventObserver);
@@ -161,6 +166,11 @@ class Ess_M2ePro_Observer_Dispatcher
     public function orderViewBefore(Varien_Event_Observer $eventObserver)
     {
         $this->process('Order_View_Before', $eventObserver);
+    }
+
+    public function salesOrderCancel(Varien_Event_Observer $eventObserver)
+    {
+        $this->process('Order_Cancel', $eventObserver);
     }
 
     public function shipmentView(Varien_Event_Observer $eventObserver)

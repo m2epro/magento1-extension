@@ -847,6 +847,17 @@ class Ess_M2ePro_Model_Walmart_Account extends Ess_M2ePro_Model_Component_Child_
 
     // ---------------------------------------
 
+    /**
+     * @return bool
+     */
+    public function isRefundEnabled()
+    {
+        $setting = $this->getSetting('magento_orders_settings', array('refund_and_cancellation', 'refund_mode'));
+        return (bool)$setting;
+    }
+
+    // ---------------------------------------
+
     public function isMagentoOrdersInvoiceEnabled()
     {
         return (bool)$this->getData('create_magento_invoice');

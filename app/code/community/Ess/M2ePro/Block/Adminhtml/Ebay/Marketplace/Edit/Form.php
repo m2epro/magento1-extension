@@ -41,7 +41,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Marketplace_Edit_Form extends Mage_Adminht
         $groupOrder = array(
             'america'      => 'America',
             'europe'       => 'Europe',
-            'australia'    => 'Australia Region',
             'asia_pacific' => 'Asia / Pacific',
             'other'        => 'Other'
         );
@@ -79,7 +78,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Marketplace_Edit_Form extends Mage_Adminht
                 $marketplace = array(
                     'instance' => $tempMarketplace,
                     'params'   => array(
-                        'locked' => $isLocked,
+                        'locked'              => $isLocked,
                         'lockedByPickupStore' => $isLockedByPickupStore
                     )
                 );
@@ -96,9 +95,9 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Marketplace_Edit_Form extends Mage_Adminht
             ->createBlock('adminhtml/widget_button')
             ->setData(
                 array(
-                'label'   => Mage::helper('M2ePro')->__('Update Now'),
-                'onclick' => 'MarketplaceObj.runSingleSynchronization(this)',
-                'class' => 'run_single_button'
+                    'label'   => Mage::helper('M2ePro')->__('Update Now'),
+                    'onclick' => 'MarketplaceObj.runSingleSynchronization(this)',
+                    'class'   => 'run_single_button'
                 )
             );
 

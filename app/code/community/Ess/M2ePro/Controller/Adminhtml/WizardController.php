@@ -9,7 +9,7 @@
 abstract class Ess_M2ePro_Controller_Adminhtml_WizardController
     extends Ess_M2ePro_Controller_Adminhtml_MainController
 {
-    /** @var Ess_M2ePro_Helper_Module_Wizard|null  */
+    /** @var Ess_M2ePro_Helper_Module_Wizard|null */
     protected $_wizardHelper = null;
 
     //########################################
@@ -28,6 +28,7 @@ abstract class Ess_M2ePro_Controller_Adminhtml_WizardController
         $this->_initPopUp();
 
         Mage::helper('M2ePro/Module_Wizard')->addWizardJs();
+
         return $this;
     }
 
@@ -70,6 +71,7 @@ abstract class Ess_M2ePro_Controller_Adminhtml_WizardController
     {
         if (!$this->isFinished()) {
             $this->_redirect('*/*/index');
+
             return;
         }
 
@@ -139,9 +141,12 @@ abstract class Ess_M2ePro_Controller_Adminhtml_WizardController
             try {
                 $licenseResult = Mage::helper('M2ePro/Module_License')->updateLicenseUserInfo(
                     $licenseData['email'],
-                    $licenseData['firstname'], $licenseData['lastname'],
-                    $licenseData['country'], $licenseData['city'],
-                    $licenseData['postal_code'], $licenseData['phone']
+                    $licenseData['firstname'],
+                    $licenseData['lastname'],
+                    $licenseData['country'],
+                    $licenseData['city'],
+                    $licenseData['postal_code'],
+                    $licenseData['phone']
                 );
             } catch (Exception $e) {
                 Mage::helper('M2ePro/Module_Exception')->process($e);
@@ -152,9 +157,12 @@ abstract class Ess_M2ePro_Controller_Adminhtml_WizardController
             try {
                 $licenseResult = Mage::helper('M2ePro/Module_License')->obtainRecord(
                     $licenseData['email'],
-                    $licenseData['firstname'], $licenseData['lastname'],
-                    $licenseData['country'], $licenseData['city'],
-                    $licenseData['postal_code'], $licenseData['phone']
+                    $licenseData['firstname'],
+                    $licenseData['lastname'],
+                    $licenseData['country'],
+                    $licenseData['city'],
+                    $licenseData['postal_code'],
+                    $licenseData['phone']
                 );
             } catch (Exception $e) {
                 Mage::helper('M2ePro/Module_Exception')->process($e);
@@ -214,9 +222,12 @@ abstract class Ess_M2ePro_Controller_Adminhtml_WizardController
             try {
                 $licenseResult = Mage::helper('M2ePro/Module_License')->updateLicenseUserInfo(
                     $licenseData['email'],
-                    $licenseData['firstname'], $licenseData['lastname'],
-                    $licenseData['country'], $licenseData['city'],
-                    $licenseData['postal_code'], $licenseData['phone']
+                    $licenseData['firstname'],
+                    $licenseData['lastname'],
+                    $licenseData['country'],
+                    $licenseData['city'],
+                    $licenseData['postal_code'],
+                    $licenseData['phone']
                 );
 
                 Mage::helper('M2ePro/Module')->getRegistry()->setValue('/wizard/license_form_data/', $licenseData);
@@ -245,7 +256,8 @@ abstract class Ess_M2ePro_Controller_Adminhtml_WizardController
 
         $this->setStatus(Ess_M2ePro_Helper_Module_Wizard::STATUS_SKIPPED);
 
-        $this->_redirect('*/*/index');
+        $component = $this->getCustomViewNick();
+        $this->_redirect("M2ePro/adminhtml_{$component}_listing/index");
     }
 
     public function completeAction()
@@ -273,6 +285,7 @@ abstract class Ess_M2ePro_Controller_Adminhtml_WizardController
     protected function setStatus($status)
     {
         $this->getWizardHelper()->setStatus($this->getNick(), $status);
+
         return $this;
     }
 
@@ -286,6 +299,7 @@ abstract class Ess_M2ePro_Controller_Adminhtml_WizardController
     protected function setStep($step)
     {
         $this->getWizardHelper()->setStep($this->getNick(), $step);
+
         return $this;
     }
 
@@ -351,8 +365,8 @@ abstract class Ess_M2ePro_Controller_Adminhtml_WizardController
             return $this->getResponse()->setBody(
                 Mage::helper('M2ePro')->jsonEncode(
                     array(
-                    'type'    => 'error',
-                    'message' => Mage::helper('M2ePro')->__('Step is invalid')
+                        'type'    => 'error',
+                        'message' => Mage::helper('M2ePro')->__('Step is invalid')
                     )
                 )
             );
@@ -363,7 +377,7 @@ abstract class Ess_M2ePro_Controller_Adminhtml_WizardController
         return $this->getResponse()->setBody(
             Mage::helper('M2ePro')->jsonEncode(
                 array(
-                'type' => 'success'
+                    'type' => 'success'
                 )
             )
         );
@@ -377,8 +391,8 @@ abstract class Ess_M2ePro_Controller_Adminhtml_WizardController
             return $this->getResponse()->setBody(
                 Mage::helper('M2ePro')->jsonEncode(
                     array(
-                    'type'    => 'error',
-                    'message' => Mage::helper('M2ePro')->__('Status is invalid')
+                        'type'    => 'error',
+                        'message' => Mage::helper('M2ePro')->__('Status is invalid')
                     )
                 )
             );
@@ -389,7 +403,7 @@ abstract class Ess_M2ePro_Controller_Adminhtml_WizardController
         return $this->getResponse()->setBody(
             Mage::helper('M2ePro')->jsonEncode(
                 array(
-                'type' => 'success'
+                    'type' => 'success'
                 )
             )
         );
@@ -397,11 +411,12 @@ abstract class Ess_M2ePro_Controller_Adminhtml_WizardController
 
     //########################################
 
-    public function loadLayout($ids=null, $generateBlocks=true, $generateXml=true)
+    public function loadLayout($ids = null, $generateBlocks = true, $generateXml = true)
     {
         $tempResult = parent::loadLayout($ids, $generateBlocks, $generateXml);
         $tempResult->_setActiveMenu($this->getMenuRootNodeNick());
         $tempResult->_title($this->getMenuRootNodeLabel());
+
         return $tempResult;
     }
 

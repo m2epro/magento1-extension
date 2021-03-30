@@ -8,8 +8,8 @@
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Shipping_Edit_Form_Data extends Mage_Adminhtml_Block_Widget
 {
-    public  $attributes = array();
-    protected $_formData  = array();
+    public $attributes = array();
+    protected $_formData = array();
 
     //########################################
 
@@ -17,11 +17,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Shipping_Edit_Form_Data extends M
     {
         parent::__construct();
 
-        // Initialization block
-        // ---------------------------------------
         $this->setId('ebayTemplateShippingEditFormData');
-        // ---------------------------------------
-
         $this->setTemplate('M2ePro/ebay/template/shipping/form/data.phtml');
 
         $this->attributes = Mage::helper('M2ePro/Data_Global')->getValue('ebay_attributes');
@@ -114,8 +110,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Shipping_Edit_Form_Data extends M
             if (is_array($accountProfiles) && isset($accountProfiles[$marketplaceId]['profiles'])) {
                 foreach ($accountProfiles[$marketplaceId]['profiles'] as $profile) {
                     $temp['profiles'][] = array(
-                        'type' => Mage::helper('M2ePro')->escapeHtml($profile['type']),
-                        'profile_id' => Mage::helper('M2ePro')->escapeHtml($profile['profile_id']),
+                        'type'         => Mage::helper('M2ePro')->escapeHtml($profile['type']),
+                        'profile_id'   => Mage::helper('M2ePro')->escapeHtml($profile['profile_id']),
                         'profile_name' => Mage::helper('M2ePro')->escapeHtml($profile['profile_name'])
                     );
                 }
@@ -166,7 +162,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Shipping_Edit_Form_Data extends M
             return array();
         }
 
-        $this->_formData             = $template->getData();
+        $this->_formData = $template->getData();
         $this->_formData['services'] = $template->getServices();
 
         $calculated = $template->getCalculatedShipping();
@@ -246,14 +242,14 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Shipping_Edit_Form_Data extends M
         foreach (array('local', 'international') as $type) {
             if ($default[$type . '_shipping_rate_table'] === null) {
                 if ($this->getAccountId() !== null) {
-                    $default[$type.'_shipping_rate_table'][$this->getAccountId()] = array(
-                        'mode' => Ess_M2ePro_Model_Ebay_Template_Shipping::SHIPPING_RATE_TABLE_ACCEPT_MODE,
+                    $default[$type . '_shipping_rate_table'][$this->getAccountId()] = array(
+                        'mode'  => Ess_M2ePro_Model_Ebay_Template_Shipping::SHIPPING_RATE_TABLE_ACCEPT_MODE,
                         'value' => 0
                     );
                 } else {
                     foreach ($this->getAccounts() as $account) {
-                        $default[$type.'_shipping_rate_table'][$account->getId()] = array(
-                            'mode' => Ess_M2ePro_Model_Ebay_Template_Shipping::SHIPPING_RATE_TABLE_ACCEPT_MODE,
+                        $default[$type . '_shipping_rate_table'][$account->getId()] = array(
+                            'mode'  => Ess_M2ePro_Model_Ebay_Template_Shipping::SHIPPING_RATE_TABLE_ACCEPT_MODE,
                             'value' => 0
                         );
                     }
@@ -269,14 +265,14 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Shipping_Edit_Form_Data extends M
     public function getMarketplaceData()
     {
         $data = array(
-            'id' => $this->getMarketplace()->getId(),
-            'currency' => $this->getMarketplace()->getChildObject()->getCurrency(),
-            'services' => $this->getMarketplace()->getChildObject()->getShippingInfo(),
-            'packages' => $this->getMarketplace()->getChildObject()->getPackageInfo(),
-            'dispatch' => $this->getSortedDispatchInfo(),
-            'locations' => $this->getMarketplace()->getChildObject()->getShippingLocationInfo(),
+            'id'                => $this->getMarketplace()->getId(),
+            'currency'          => $this->getMarketplace()->getChildObject()->getCurrency(),
+            'services'          => $this->getMarketplace()->getChildObject()->getShippingInfo(),
+            'packages'          => $this->getMarketplace()->getChildObject()->getPackageInfo(),
+            'dispatch'          => $this->getSortedDispatchInfo(),
+            'locations'         => $this->getMarketplace()->getChildObject()->getShippingLocationInfo(),
             'locations_exclude' => $this->getSortedLocationExcludeInfo(),
-            'origin_country' => $this->getMarketplace()->getChildObject()->getOriginCountry(),
+            'origin_country'    => $this->getMarketplace()->getChildObject()->getOriginCountry(),
         );
 
         $data['services'] = $this->modifyNonUniqueShippingServicesTitles($data['services']);
@@ -300,7 +296,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Shipping_Edit_Form_Data extends M
             }
 
             foreach ($data['locations'] as $key => $item) {
-                $data['locations'][$key]['title'] =  $translator->__($item['title']);
+                $data['locations'][$key]['title'] = $translator->__($item['title']);
             }
 
             foreach ($data['locations_exclude'] as $regionKey => $region) {
@@ -395,7 +391,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Shipping_Edit_Form_Data extends M
                         $title = $category['methods'][$key]['title'];
 
                         $duplicatedPart = str_replace(' ', '', preg_quote($title, '/'));
-                        $uniqPart = preg_replace('/\w*'.$duplicatedPart.'/i', '', $ebayId);
+                        $uniqPart = preg_replace('/\w*' . $duplicatedPart . '/i', '', $ebayId);
                         $uniqPart = preg_replace('/([A-Z]+[a-z]*)/', '${1} ', $uniqPart);
 
                         $category['methods'][$key]['title'] = trim($title) . ' ' . str_replace('_', '', $uniqPart);
@@ -414,7 +410,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Shipping_Edit_Form_Data extends M
         $html = '';
 
         $attributes = Mage::helper('M2ePro/Magento_Attribute')->filterByInputTypes(
-            $this->attributes, array('text', 'price', 'select')
+            $this->attributes,
+            array('text', 'price', 'select')
         );
 
         foreach ($attributes as $attribute) {
@@ -518,11 +515,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Shipping_Edit_Form_Data extends M
     public function canDisplayLocalShippingRateTable()
     {
         return $this->getMarketplace()->getChildObject()->isLocalShippingRateTableEnabled();
-    }
-
-    public function canDisplayClickAndCollectOption()
-    {
-        return $this->getMarketplace()->getChildObject()->isClickAndCollectEnabled();
     }
 
     public function canDisplayFreightShippingType()
@@ -657,7 +649,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Shipping_Edit_Form_Data extends M
             }
 
             $rateTablesData[$rateTable['rateTableId']] = isset($rateTable['name']) ? $rateTable['name'] :
-                                                                                     $rateTable['rateTableId'];
+                $rateTable['rateTableId'];
         }
 
         return $rateTablesData;
@@ -703,38 +695,38 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Shipping_Edit_Form_Data extends M
 
         // ---------------------------------------
         $buttonBlock = $this->getLayout()
-                            ->createBlock('adminhtml/widget_button')
-                            ->setData(
-                                array(
-                                'onclick' => 'EbayTemplateShippingObj.addRow(\'local\');',
-                                'class' => 'add add_local_shipping_method_button'
-                                )
-                            );
+            ->createBlock('adminhtml/widget_button')
+            ->setData(
+                array(
+                    'onclick' => 'EbayTemplateShippingObj.addRow(\'local\');',
+                    'class'   => 'add add_local_shipping_method_button'
+                )
+            );
         $this->setChild('add_local_shipping_method_button', $buttonBlock);
         // ---------------------------------------
 
         // ---------------------------------------
         $buttonBlock = $this->getLayout()
-                            ->createBlock('adminhtml/widget_button')
-                            ->setData(
-                                array(
-                                'onclick' => 'EbayTemplateShippingObj.addRow(\'international\');',
-                                'class' => 'add add_international_shipping_method_button'
-                                )
-                            );
+            ->createBlock('adminhtml/widget_button')
+            ->setData(
+                array(
+                    'onclick' => 'EbayTemplateShippingObj.addRow(\'international\');',
+                    'class'   => 'add add_international_shipping_method_button'
+                )
+            );
         $this->setChild('add_international_shipping_method_button', $buttonBlock);
         // ---------------------------------------
 
         // ---------------------------------------
         $buttonBlock = $this->getLayout()
-                            ->createBlock('adminhtml/widget_button')
-                            ->setData(
-                                array(
-                                'label'   => Mage::helper('M2ePro')->__('Remove'),
-                                'onclick' => 'EbayTemplateShippingObj.removeRow.call(this, \'%type%\');',
-                                'class' => 'delete icon-btn remove_shipping_method_button'
-                                )
-                            );
+            ->createBlock('adminhtml/widget_button')
+            ->setData(
+                array(
+                    'label'   => Mage::helper('M2ePro')->__('Remove'),
+                    'onclick' => 'EbayTemplateShippingObj.removeRow.call(this, \'%type%\');',
+                    'class'   => 'delete icon-btn remove_shipping_method_button'
+                )
+            );
         $this->setChild('remove_shipping_method_button', $buttonBlock);
         // ---------------------------------------
 

@@ -39,7 +39,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account extends Mage_Adminhtml_Block_Widge
             'add', array(
             'label'     => Mage::helper('M2ePro')->__('Add Account'),
             'onclick'   => 'setLocation(\''.$this->getUrl('*/adminhtml_ebay_account/new').'\');',
-            'class'     => 'add'
+            'class'     => 'add',
+            'id'        => 'add'
             )
         );
         // ---------------------------------------

@@ -11,22 +11,22 @@
  */
 class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component_Abstract
 {
-    const COUNTRY_MODE_CUSTOM_VALUE         = 1;
-    const COUNTRY_MODE_CUSTOM_ATTRIBUTE     = 2;
+    const COUNTRY_MODE_CUSTOM_VALUE     = 1;
+    const COUNTRY_MODE_CUSTOM_ATTRIBUTE = 2;
 
     const POSTAL_CODE_MODE_NONE             = 0;
     const POSTAL_CODE_MODE_CUSTOM_VALUE     = 1;
     const POSTAL_CODE_MODE_CUSTOM_ATTRIBUTE = 2;
 
-    const ADDRESS_MODE_NONE                 = 0;
-    const ADDRESS_MODE_CUSTOM_VALUE         = 1;
-    const ADDRESS_MODE_CUSTOM_ATTRIBUTE     = 2;
+    const ADDRESS_MODE_NONE             = 0;
+    const ADDRESS_MODE_CUSTOM_VALUE     = 1;
+    const ADDRESS_MODE_CUSTOM_ATTRIBUTE = 2;
 
-    const SHIPPING_TYPE_FLAT                = 0;
-    const SHIPPING_TYPE_CALCULATED          = 1;
-    const SHIPPING_TYPE_FREIGHT             = 2;
-    const SHIPPING_TYPE_LOCAL               = 3;
-    const SHIPPING_TYPE_NO_INTERNATIONAL    = 4;
+    const SHIPPING_TYPE_FLAT             = 0;
+    const SHIPPING_TYPE_CALCULATED       = 1;
+    const SHIPPING_TYPE_FREIGHT          = 2;
+    const SHIPPING_TYPE_LOCAL            = 3;
+    const SHIPPING_TYPE_NO_INTERNATIONAL = 4;
 
     const DISPATCH_TIME_MODE_VALUE     = 1;
     const DISPATCH_TIME_MODE_ATTRIBUTE = 2;
@@ -86,17 +86,17 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
         }
 
         return (bool)Mage::getModel('M2ePro/Ebay_Listing')
-                            ->getCollection()
-                            ->addFieldToFilter('template_shipping_id', $this->getId())
-                            ->getSize() ||
-               (bool)Mage::getModel('M2ePro/Ebay_Listing_Product')
-                            ->getCollection()
-                            ->addFieldToFilter(
-                                'template_shipping_mode',
-                                Ess_M2ePro_Model_Ebay_Template_Manager::MODE_TEMPLATE
-                            )
-                            ->addFieldToFilter('template_shipping_id', $this->getId())
-                            ->getSize();
+                ->getCollection()
+                ->addFieldToFilter('template_shipping_id', $this->getId())
+                ->getSize() ||
+            (bool)Mage::getModel('M2ePro/Ebay_Listing_Product')
+                ->getCollection()
+                ->addFieldToFilter(
+                    'template_shipping_mode',
+                    Ess_M2ePro_Model_Ebay_Template_Manager::MODE_TEMPLATE
+                )
+                ->addFieldToFilter('template_shipping_id', $this->getId())
+                ->getSize();
     }
 
     public function deleteInstance()
@@ -115,11 +115,12 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
             $service->deleteInstance();
         }
 
-        $this->_marketplaceModel        = null;
+        $this->_marketplaceModel = null;
         $this->_calculatedShippingModel = null;
-        $this->_shippingSourceModels    = array();
+        $this->_shippingSourceModels = array();
 
         $this->delete();
+
         return true;
     }
 
@@ -132,7 +133,8 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
     {
         if ($this->_marketplaceModel === null) {
             $this->_marketplaceModel = Mage::helper('M2ePro/Component_Ebay')->getCachedObject(
-                'Marketplace', $this->getMarketplaceId()
+                'Marketplace',
+                $this->getMarketplaceId()
             );
         }
 
@@ -178,7 +180,10 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
         if ($this->_calculatedShippingModel === null) {
             try {
                 $this->_calculatedShippingModel = Mage::helper('M2ePro')->getCachedObject(
-                    'Ebay_Template_Shipping_Calculated', $this->getId(), null, array('template')
+                    'Ebay_Template_Shipping_Calculated',
+                    $this->getId(),
+                    null,
+                    array('template')
                 );
 
                 $this->_calculatedShippingModel->setShippingTemplate($this);
@@ -195,7 +200,7 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
      */
     public function setCalculatedShipping(Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated $instance)
     {
-         $this->_calculatedShippingModel = $instance;
+        $this->_calculatedShippingModel = $instance;
     }
 
     //########################################
@@ -218,6 +223,7 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
 
         if (!$asObjects) {
             $result = $collection->toArray();
+
             return $result['items'];
         }
 
@@ -419,9 +425,9 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
      */
     public function isLocalShippingRateTableEnabled(Ess_M2ePro_Model_Account $account)
     {
-        $rateTable = $this->getRateTable('local', $account);
-
-        if (empty($rateTable)) {
+        try {
+            $rateTable = $this->getRateTable('local', $account);
+        } catch (Ess_M2ePro_Model_Exception_Logic $e) {
             return null;
         }
 
@@ -436,6 +442,7 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
     public function getLocalShippingRateTableMode(Ess_M2ePro_Model_Account $account)
     {
         $rateTable = $this->getLocalShippingRateTable($account);
+
         return $rateTable['mode'];
     }
 
@@ -447,6 +454,7 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
     public function getLocalShippingRateTableId(Ess_M2ePro_Model_Account $account)
     {
         $rateTable = $this->getLocalShippingRateTable($account);
+
         return $rateTable['value'];
     }
 
@@ -467,9 +475,9 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
      */
     public function isInternationalShippingRateTableEnabled(Ess_M2ePro_Model_Account $account)
     {
-        $rateTable = $this->getRateTable('international', $account);
-
-        if (empty($rateTable)) {
+        try {
+            $rateTable = $this->getRateTable('international', $account);
+        } catch (Ess_M2ePro_Model_Exception_Logic $e) {
             return false;
         }
 
@@ -484,6 +492,7 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
     public function getInternationalShippingRateTableMode(Ess_M2ePro_Model_Account $account)
     {
         $rateTable = $this->getInternationalShippingRateTable($account);
+
         return $rateTable['mode'];
     }
 
@@ -495,6 +504,7 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
     public function getInternationalShippingRateTableId(Ess_M2ePro_Model_Account $account)
     {
         $rateTable = $this->getInternationalShippingRateTable($account);
+
         return $rateTable['value'];
     }
 
@@ -516,7 +526,7 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
      */
     protected function getRateTable($type, Ess_M2ePro_Model_Account $account)
     {
-        $rateTables = $this->getSettings($type.'_shipping_rate_table');
+        $rateTables = $this->getSettings($type . '_shipping_rate_table');
 
         foreach ($rateTables as $accountId => $rateTableData) {
             if ($account->getId() == $accountId) {
@@ -524,7 +534,18 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
             }
         }
 
-        return false;
+        throw new Ess_M2ePro_Model_Exception_Logic(
+            Mage::helper('M2ePro')->__(
+                'Domestic or International Shipping Rate Table data is not found for this account. 
+                Make sure to <a href="%url%" target="_blank">download Rate Tables from eBay</a> 
+                in the M2E Pro Shipping Policy.',
+                Mage::helper("M2ePro/Module_Support")->getDocumentationUrl(
+                    null,
+                    null,
+                    "x/wRhPAQ#eBayGuaranteedDelivery-HowtodownloadeBayShippingRateTablestoM2EPro?"
+                )
+            )
+        );
     }
 
     //########################################
@@ -631,16 +652,6 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
         return !isset($data[$accountId]) ? null : $data[$accountId];
     }
 
-    // ---------------------------------------
-
-    /**
-     * @return bool
-     */
-    public function isClickAndCollectEnabled()
-    {
-        return (bool)$this->getData('click_and_collect_mode');
-    }
-
     //########################################
 
     /**
@@ -699,6 +710,7 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
     {
         $excludedLocations = $this->getData('excluded_locations');
         is_string($excludedLocations) && $excludedLocations = Mage::helper('M2ePro')->jsonDecode($excludedLocations);
+
         return is_array($excludedLocations) ? $excludedLocations : array();
     }
 
@@ -797,12 +809,14 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
     public function save()
     {
         Mage::helper('M2ePro/Data_Cache_Permanent')->removeTagValues('ebay_template_shipping');
+
         return parent::save();
     }
 
     public function delete()
     {
         Mage::helper('M2ePro/Data_Cache_Permanent')->removeTagValues('ebay_template_shipping');
+
         return parent::delete();
     }
 

@@ -140,6 +140,14 @@ class Ess_M2ePro_Model_Cron_Task_Repository
             'component' => Ess_M2ePro_Helper_Component_Ebay::NICK,
             'group'     => self::GROUP_EBAY,
         ),
+        Ess_M2ePro_Model_Cron_Task_Ebay_Order_Cancel::NICK => array(
+            'component' => Ess_M2ePro_Helper_Component_Ebay::NICK,
+            'group'     => self::GROUP_EBAY,
+        ),
+        Ess_M2ePro_Model_Cron_Task_Ebay_Order_Refund::NICK => array(
+            'component' => Ess_M2ePro_Helper_Component_Ebay::NICK,
+            'group'     => self::GROUP_EBAY,
+        ),
         Ess_M2ePro_Model_Cron_Task_Ebay_PickupStore_ScheduleForUpdate::NICK => array(
             'component' => Ess_M2ePro_Helper_Component_Ebay::NICK,
             'group'     => self::GROUP_EBAY,

@@ -2,8 +2,7 @@ window.Wizard = Class.create(Common, {
 
     // ---------------------------------------
 
-    initialize: function(currentStatus, currentStep, hiddenSteps)
-    {
+    initialize: function(currentStatus, currentStep, hiddenSteps) {
         this.currentStatus = currentStatus;
 
         this.steps = {};
@@ -14,24 +13,17 @@ window.Wizard = Class.create(Common, {
 
     // ---------------------------------------
 
-    skip: function(url)
-    {
-        if (!confirm(M2ePro.translator.translate('Note: If you close the Wizard, it never starts again. You will be required to set all Settings manually. Press Cancel to continue working with Wizard.'))) {
-            return;
-        }
-
+    skip: function(url) {
         setLocation(url);
     },
 
-    complete: function()
-    {
+    complete: function() {
         window.location.reload();
     },
 
     // ---------------------------------------
 
-    setStatus: function(status, callback)
-    {
+    setStatus: function(status, callback) {
         new Ajax.Request(M2ePro.url.get('setStatus'), {
             method: 'get',
             parameters: {
@@ -54,11 +46,10 @@ window.Wizard = Class.create(Common, {
                 }
 
             }).bind(this)
-        })
+        });
     },
 
-    setStep: function(step, callback)
-    {
+    setStep: function(step, callback) {
         new Ajax.Request(M2ePro.url.get('setStep'), {
             method: 'get',
             parameters: {
@@ -81,13 +72,12 @@ window.Wizard = Class.create(Common, {
                 }
 
             }).bind(this)
-        })
+        });
     },
 
     // ---------------------------------------
 
-    getNextStep: function()
-    {
+    getNextStep: function() {
         var stepIndex = this.steps.all.indexOf(this.steps.current);
 
         if (stepIndex == -1) {
@@ -103,13 +93,11 @@ window.Wizard = Class.create(Common, {
         return nextStepNick;
     },
 
-    disableContinueButton: function ()
-    {
+    disableContinueButton: function() {
         $('continue').disable();
     },
 
-    registrationStep: function (url)
-    {
+    registrationStep: function(url) {
         var editForm = new varienForm('edit_form');
         if (!editForm.validate()) {
             return false;
@@ -118,8 +106,8 @@ window.Wizard = Class.create(Common, {
         MessageObj.clearAll();
 
         new Ajax.Request(url, {
-            method       : 'post',
-            parameters   : $('edit_form').serialize(),
+            method: 'post',
+            parameters: $('edit_form').serialize(),
             onSuccess: function(transport) {
 
                 var response = transport.responseText.evalJSON();

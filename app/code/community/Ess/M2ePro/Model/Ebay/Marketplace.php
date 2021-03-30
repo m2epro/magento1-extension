@@ -169,14 +169,6 @@ class Ess_M2ePro_Model_Ebay_Marketplace extends Ess_M2ePro_Model_Component_Child
     /**
      * @return bool
      */
-    public function isClickAndCollectEnabled()
-    {
-        return (bool)(int)$this->getData('is_click_and_collect');
-    }
-
-    /**
-     * @return bool
-     */
     public function isInStorePickupEnabled()
     {
         return (bool)(int)$this->getData('is_in_store_pickup');
@@ -226,14 +218,14 @@ class Ess_M2ePro_Model_Ebay_Marketplace extends Ess_M2ePro_Model_Component_Child
             ->getTableNameWithPrefix('m2epro_ebay_dictionary_category');
 
         $dbSelect = Mage::getResourceModel('core/config')->getReadConnection()
-                             ->select()
-                             ->from($tableCategories, '*')
-                             ->where('`marketplace_id` = ?', (int)$this->getId())
-                             ->where('`category_id` = ?', (int)$categoryId);
+            ->select()
+            ->from($tableCategories, '*')
+            ->where('`marketplace_id` = ?', (int)$this->getId())
+            ->where('`category_id` = ?', (int)$categoryId);
 
         $categories = Mage::getResourceModel('core/config')
-                                ->getReadConnection()
-                                ->fetchAll($dbSelect);
+            ->getReadConnection()
+            ->fetchAll($dbSelect);
 
         return !empty($categories) ? $categories[0] : array();
     }
@@ -244,17 +236,17 @@ class Ess_M2ePro_Model_Ebay_Marketplace extends Ess_M2ePro_Model_Component_Child
             ->getTableNameWithPrefix('m2epro_ebay_dictionary_category');
 
         $dbSelect = Mage::getResourceModel('core/config')->getReadConnection()
-                             ->select()
-                             ->from($tableCategories, array('category_id','title','is_leaf'))
-                             ->where('`marketplace_id` = ?', (int)$this->getId())
-                             ->order(array('title ASC'));
+            ->select()
+            ->from($tableCategories, array('category_id', 'title', 'is_leaf'))
+            ->where('`marketplace_id` = ?', (int)$this->getId())
+            ->order(array('title ASC'));
 
         empty($parentId) ? $dbSelect->where('parent_category_id IS NULL')
-                         : $dbSelect->where('parent_category_id = ?', (int)$parentId);
+            : $dbSelect->where('parent_category_id = ?', (int)$parentId);
 
         $categories = Mage::getResourceModel('core/config')
-                                ->getReadConnection()
-                                ->fetchAll($dbSelect);
+            ->getReadConnection()
+            ->fetchAll($dbSelect);
 
         return $categories;
     }
@@ -282,8 +274,8 @@ class Ess_M2ePro_Model_Ebay_Marketplace extends Ess_M2ePro_Model_Component_Child
         // table m2epro_ebay_dictionary_marketplace
         // ---------------------------------------
         $dbSelect = $connRead->select()
-                             ->from($tableDictMarketplace, '*')
-                             ->where('`marketplace_id` = ?', (int)$this->getId());
+            ->from($tableDictMarketplace, '*')
+            ->where('`marketplace_id` = ?', (int)$this->getId());
         $data = $connRead->fetchRow($dbSelect);
         // ---------------------------------------
 
@@ -294,9 +286,9 @@ class Ess_M2ePro_Model_Ebay_Marketplace extends Ess_M2ePro_Model_Component_Child
         // table m2epro_ebay_dictionary_shipping
         // ---------------------------------------
         $dbSelect = $connRead->select()
-                             ->from($tableDictShipping, '*')
-                             ->where('`marketplace_id` = ?', (int)$this->getId())
-                             ->order(array('title ASC'));
+            ->from($tableDictShipping, '*')
+            ->where('`marketplace_id` = ?', (int)$this->getId())
+            ->order(array('title ASC'));
         $shippingMethods = $connRead->fetchAll($dbSelect);
         // ---------------------------------------
 
@@ -349,6 +341,7 @@ class Ess_M2ePro_Model_Ebay_Marketplace extends Ess_M2ePro_Model_Component_Child
     public function getDispatchInfo()
     {
         $info = $this->getInfo();
+
         return isset($info['dispatch']) ? $info['dispatch'] : array();
     }
 
@@ -358,6 +351,7 @@ class Ess_M2ePro_Model_Ebay_Marketplace extends Ess_M2ePro_Model_Component_Child
     public function getPackageInfo()
     {
         $info = $this->getInfo();
+
         return isset($info['packages']) ? $info['packages'] : array();
     }
 
@@ -367,6 +361,7 @@ class Ess_M2ePro_Model_Ebay_Marketplace extends Ess_M2ePro_Model_Component_Child
     public function getReturnPolicyInfo()
     {
         $info = $this->getInfo();
+
         return isset($info['return_policy']) ? $info['return_policy'] : array();
     }
 
@@ -376,6 +371,7 @@ class Ess_M2ePro_Model_Ebay_Marketplace extends Ess_M2ePro_Model_Component_Child
     public function getListingFeatureInfo()
     {
         $info = $this->getInfo();
+
         return isset($info['listing_features']) ? $info['listing_features'] : array();
     }
 
@@ -385,6 +381,7 @@ class Ess_M2ePro_Model_Ebay_Marketplace extends Ess_M2ePro_Model_Component_Child
     public function getPaymentInfo()
     {
         $info = $this->getInfo();
+
         return isset($info['payments']) ? $info['payments'] : array();
     }
 
@@ -394,6 +391,7 @@ class Ess_M2ePro_Model_Ebay_Marketplace extends Ess_M2ePro_Model_Component_Child
     public function getShippingInfo()
     {
         $info = $this->getInfo();
+
         return isset($info['shipping']) ? $info['shipping'] : array();
     }
 
@@ -403,6 +401,7 @@ class Ess_M2ePro_Model_Ebay_Marketplace extends Ess_M2ePro_Model_Component_Child
     public function getShippingLocationInfo()
     {
         $info = $this->getInfo();
+
         return isset($info['shipping_locations']) ? $info['shipping_locations'] : array();
     }
 
@@ -412,6 +411,7 @@ class Ess_M2ePro_Model_Ebay_Marketplace extends Ess_M2ePro_Model_Component_Child
     public function getShippingLocationExcludeInfo()
     {
         $info = $this->getInfo();
+
         return isset($info['shipping_locations_exclude']) ? $info['shipping_locations_exclude'] : array();
     }
 
@@ -421,6 +421,7 @@ class Ess_M2ePro_Model_Ebay_Marketplace extends Ess_M2ePro_Model_Component_Child
     public function getTaxCategoryInfo()
     {
         $info = $this->getInfo();
+
         return isset($info['tax_categories']) ? $info['tax_categories'] : array();
     }
 
@@ -430,6 +431,7 @@ class Ess_M2ePro_Model_Ebay_Marketplace extends Ess_M2ePro_Model_Component_Child
     public function getCharitiesInfo()
     {
         $info = $this->getInfo();
+
         return isset($info['charities']) ? $info['charities'] : array();
     }
 
@@ -438,12 +440,14 @@ class Ess_M2ePro_Model_Ebay_Marketplace extends Ess_M2ePro_Model_Component_Child
     public function save()
     {
         Mage::helper('M2ePro/Data_Cache_Permanent')->removeTagValues('marketplace');
+
         return parent::save();
     }
 
     public function delete()
     {
         Mage::helper('M2ePro/Data_Cache_Permanent')->removeTagValues('marketplace');
+
         return parent::delete();
     }
 

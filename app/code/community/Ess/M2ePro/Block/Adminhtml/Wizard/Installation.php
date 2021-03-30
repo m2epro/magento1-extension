@@ -27,10 +27,14 @@ abstract class Ess_M2ePro_Block_Adminhtml_Wizard_Installation extends Ess_M2ePro
         $this->removeButton('edit');
 
         $this->addButton(
-            'continue', array(
+            'continue',
+            array(
                 'label' => Mage::helper('M2ePro')->__('Continue'),
                 'class' => 'primary forward',
-            )
+                'id'    => 'continue'
+            ),
+            1,
+            0
         );
 
         return parent::_beforeToHtml();
@@ -52,7 +56,9 @@ abstract class Ess_M2ePro_Block_Adminhtml_Wizard_Installation extends Ess_M2ePro
         $stepsBlock->setSelectedStep($this->getStep());
 
         $helpBlock = $this->getLayout()->createBlock(
-            'M2ePro/adminhtml_helpBlock', 'wizard.help.block', array(
+            'M2ePro/adminhtml_helpBlock',
+            'wizard.help.block',
+            array(
                 'no_collapse' => true,
                 'no_hide'     => true
             )

@@ -89,7 +89,7 @@
             <frontend_model>M2ePro/adminhtml_configuration_settings_form</frontend_model>
         </m2epro_settings>
         <m2epro_logs_clearing translate="label" module="M2ePro">
-            <label>Logs Clearing</label>
+            <label>Logs &amp; Notifications</label>
             <tab>m2epro</tab>
             <frontend_type>text</frontend_type>
             <sort_order>30</sort_order>

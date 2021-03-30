@@ -637,6 +637,10 @@ class Ess_M2ePro_Model_Walmart_Order extends Ess_M2ePro_Model_Component_Child_Wa
             return false;
         }
 
+        if (!$this->getWalmartAccount()->isRefundEnabled()) {
+            return false;
+        }
+
         return true;
     }
 

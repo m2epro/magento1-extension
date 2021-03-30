@@ -82,6 +82,11 @@ class Ess_M2ePro_Adminhtml_Amazon_MarketplaceController
             (int)$this->getRequest()->getParam('marketplace_id')
         );
 
+        // Japan only for beta, he have not marketplace build.
+        if ($marketplace->getId() == Ess_M2ePro_Helper_Component_Amazon::MARKETPLACE_JP) {
+            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('result' => 'success')));
+        }
+
         $synchronization = Mage::getModel('M2ePro/Amazon_Marketplace_Synchronization');
         $synchronization->setMarketplace($marketplace);
 

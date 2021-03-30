@@ -567,7 +567,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Preview extends Mage_Adminhtml_Blo
                 Mage::helper('M2ePro')->__('New With Defects'),
             Ess_M2ePro_Model_Ebay_Template_Description::CONDITION_EBAY_CERTIFIED_REFURBISHED =>
                 Mage::helper('M2ePro')->__('Certified Refurbished'),
-            Ess_M2ePro_Model_Ebay_Template_Description::CONDITION_EBAY_SELLER_REFURBISHED    =>
+            Ess_M2ePro_Model_Ebay_Template_Description::CONDITION_EBAY_SELLER_REFURBISHED =>
                 Mage::helper('M2ePro')->__('Seller Refurbished, Re-manufactured'),
             Ess_M2ePro_Model_Ebay_Template_Description::CONDITION_EBAY_USED                  =>
                 Mage::helper('M2ePro')->__('Used'),

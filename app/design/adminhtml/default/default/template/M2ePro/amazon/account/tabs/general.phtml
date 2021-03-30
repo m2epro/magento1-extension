@@ -230,9 +230,10 @@
                         <td class="label"></td>
                         <td class="value">
                             <?php if($marketplaceRow['is_automatic_token_retrieving_available']): ?>
-                                <a href="" onclick="return AmazonAccountObj.get_token(<?php echo $marketplaceRow['id'];?>)" target="_self"><?php echo Mage::helper('M2ePro')->__('Get Access Data') ?></a>
+                                <a id ="marketplaces_register_url" href="" onclick="return AmazonAccountObj.get_token(<?php echo
+                                $marketplaceRow['id'];?>)" target="_self"><?php echo Mage::helper('M2ePro')->__('Get Access Data') ?></a>
                             <?php else: ?>
-                                <a href="<?php echo Mage::helper('M2ePro/Component_Amazon')->getRegisterUrl($marketplaceRow['id']); ?>" target="_blank"><?php echo Mage::helper('M2ePro')->__('Get Access Data') ?></a>
+                                <a id ="marketplaces_register_url" href="<?php echo Mage::helper('M2ePro/Component_Amazon')->getRegisterUrl($marketplaceRow['id']); ?>" target="_blank"><?php echo Mage::helper('M2ePro')->__('Get Access Data') ?></a>
                             <?php endif; ?>
                         </td>
                     </tr>

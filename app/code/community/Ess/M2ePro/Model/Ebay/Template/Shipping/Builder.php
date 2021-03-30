@@ -120,10 +120,6 @@ class Ess_M2EPro_Model_Ebay_Template_Shipping_Builder
             $data['excluded_locations'] = $this->_rawData['excluded_locations'];
         }
 
-        if (isset($this->_rawData['click_and_collect_mode'])) {
-            $data['click_and_collect_mode'] = (int)$this->_rawData['click_and_collect_mode'];
-        }
-
         $key = 'cash_on_delivery_cost';
         $data[$key] = (isset($this->_rawData[$key]) && $this->_rawData[$key] != '') ? $this->_rawData[$key] : null;
 
@@ -187,44 +183,12 @@ class Ess_M2EPro_Model_Ebay_Template_Shipping_Builder
 
     protected function canSaveCalculatedData()
     {
-        if ($this->_rawData['local_shipping_mode'] == Shipping::SHIPPING_TYPE_CALCULATED) {
-            return true;
+        if ($this->_rawData['local_shipping_mode'] == Shipping::SHIPPING_TYPE_LOCAL ||
+            $this->_rawData['local_shipping_mode'] == Shipping::SHIPPING_TYPE_FREIGHT) {
+            return false;
         }
 
-        if ($this->_rawData['international_shipping_mode'] == Shipping::SHIPPING_TYPE_CALCULATED) {
-            return true;
-        }
-
-        $marketplace = Mage::helper('M2ePro/Component_Ebay')->getObject(
-            'Marketplace',
-            $this->_rawData['marketplace_id']
-        );
-
-        $isLocalRateTableEnabled = $marketplace->getChildObject()->isLocalShippingRateTableEnabled();
-        $isInternationalRateTableEnabled = $marketplace->getChildObject()->isInternationalShippingRateTableEnabled();
-
-        if ($isLocalRateTableEnabled
-            && $this->_rawData['local_shipping_mode'] == Shipping::SHIPPING_TYPE_FLAT
-            && isset($this->_rawData['local_shipping_rate_table'])
-            && $this->isRateTableEnabled($this->_rawData['local_shipping_rate_table'])
-        ) {
-            return true;
-        }
-
-        if ($isInternationalRateTableEnabled
-            && $this->_rawData['international_shipping_mode'] == Shipping::SHIPPING_TYPE_FLAT
-            && isset($this->_rawData['international_shipping_rate_table'])
-            && $this->isRateTableEnabled($this->_rawData['international_shipping_rate_table'])
-        ) {
-            return true;
-        }
-
-        if ($marketplace->getChildObject()->isClickAndCollectEnabled() &&
-            !empty($this->_rawData['click_and_collect_mode'])) {
-            return true;
-        }
-
-        return false;
+        return true;
     }
 
     protected function createCalculated($templateShippingId, array $data)
@@ -363,59 +327,58 @@ class Ess_M2EPro_Model_Ebay_Template_Shipping_Builder
     public function getDefaultData()
     {
         return array(
-            'country_mode' => Shipping::COUNTRY_MODE_CUSTOM_VALUE,
-            'country_custom_value' => 'US',
-            'country_custom_attribute' => '',
-            'postal_code_mode' => Shipping::POSTAL_CODE_MODE_NONE,
-            'postal_code_custom_value' => '',
+            'country_mode'                 => Shipping::COUNTRY_MODE_CUSTOM_VALUE,
+            'country_custom_value'         => 'US',
+            'country_custom_attribute'     => '',
+            'postal_code_mode'             => Shipping::POSTAL_CODE_MODE_NONE,
+            'postal_code_custom_value'     => '',
             'postal_code_custom_attribute' => '',
-            'address_mode' => Shipping::ADDRESS_MODE_NONE,
-            'address_custom_value' => '',
-            'address_custom_attribute' => '',
+            'address_mode'                 => Shipping::ADDRESS_MODE_NONE,
+            'address_custom_value'         => '',
+            'address_custom_attribute'     => '',
 
-            'dispatch_time_mode' => Shipping::DISPATCH_TIME_MODE_VALUE,
-            'dispatch_time_value' => 1,
+            'dispatch_time_mode'      => Shipping::DISPATCH_TIME_MODE_VALUE,
+            'dispatch_time_value'     => 1,
             'dispatch_time_attribute' => '',
-            'cash_on_delivery_cost' => null,
+            'cash_on_delivery_cost'   => null,
             'global_shipping_program' => 0,
-            'cross_border_trade' => Shipping::CROSS_BORDER_TRADE_NONE,
-            'excluded_locations' => Mage::helper('M2ePro')->jsonEncode(array()),
+            'cross_border_trade'      => Shipping::CROSS_BORDER_TRADE_NONE,
+            'excluded_locations'      => Mage::helper('M2ePro')->jsonEncode(array()),
 
-            'local_shipping_mode' =>  Shipping::SHIPPING_TYPE_FLAT,
-            'local_shipping_discount_promotional_mode' => 0,
+            'local_shipping_mode'                         => Shipping::SHIPPING_TYPE_FLAT,
+            'local_shipping_discount_promotional_mode'    => 0,
             'local_shipping_discount_combined_profile_id' => Mage::helper('M2ePro')->jsonEncode(array()),
-            'local_shipping_rate_table_mode' => 0,
-            'local_shipping_rate_table' => null,
-            'click_and_collect_mode' => 1,
+            'local_shipping_rate_table_mode'              => 0,
+            'local_shipping_rate_table'                   => null,
 
-            'international_shipping_mode' => Shipping::SHIPPING_TYPE_NO_INTERNATIONAL,
-            'international_shipping_discount_promotional_mode' => 0,
+            'international_shipping_mode'                         => Shipping::SHIPPING_TYPE_NO_INTERNATIONAL,
+            'international_shipping_discount_promotional_mode'    => 0,
             'international_shipping_discount_combined_profile_id' => Mage::helper('M2ePro')->jsonEncode(array()),
-            'international_shipping_rate_table_mode' => 0,
-            'international_shipping_rate_table' => null,
+            'international_shipping_rate_table_mode'              => 0,
+            'international_shipping_rate_table'                   => null,
 
             // CALCULATED SHIPPING
             // ---------------------------------------
-            'measurement_system' => ShippingCalculated::MEASUREMENT_SYSTEM_ENGLISH,
+            'measurement_system'                                  => ShippingCalculated::MEASUREMENT_SYSTEM_ENGLISH,
 
-            'package_size_mode' => ShippingCalculated::PACKAGE_SIZE_CUSTOM_VALUE,
-            'package_size_value' => 'None',
+            'package_size_mode'      => ShippingCalculated::PACKAGE_SIZE_NONE,
+            'package_size_value'     => '',
             'package_size_attribute' => '',
 
-            'dimension_mode'   => ShippingCalculated::DIMENSION_NONE,
-            'dimension_width_value'  => '',
-            'dimension_length_value' => '',
-            'dimension_depth_value'  => '',
+            'dimension_mode'             => ShippingCalculated::DIMENSION_NONE,
+            'dimension_width_value'      => '',
+            'dimension_length_value'     => '',
+            'dimension_depth_value'      => '',
             'dimension_width_attribute'  => '',
             'dimension_length_attribute' => '',
             'dimension_depth_attribute'  => '',
 
-            'weight_mode' => ShippingCalculated::WEIGHT_NONE,
-            'weight_minor' => '',
-            'weight_major' => '',
+            'weight_mode'      => ShippingCalculated::WEIGHT_NONE,
+            'weight_minor'     => '',
+            'weight_major'     => '',
             'weight_attribute' => '',
 
-            'local_handling_cost' => null,
+            'local_handling_cost'         => null,
             'international_handling_cost' => null,
             // ---------------------------------------
 

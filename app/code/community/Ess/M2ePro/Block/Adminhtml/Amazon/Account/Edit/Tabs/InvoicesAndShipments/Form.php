@@ -38,17 +38,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit_Tabs_InvoicesAndShipments_F
         );
 
         if ($account->getChildObject()->getMarketplace()->getChildObject()->isVatCalculationServiceAvailable()) {
-            $options = array(
-                AmazonAccount::AUTO_INVOICING_DISABLED => Mage::helper('M2ePro')->__('Disabled')
-            );
-            if ($account->getChildObject()->getMarketplace()->getChildObject()->isUploadInvoicesAvailable()) {
-                $options[AmazonAccount::AUTO_INVOICING_UPLOAD_MAGENTO_INVOICES] =
-                    Mage::helper('M2ePro')->__('Upload Magento Invoices');
-            }
-
-            $options[AmazonAccount::AUTO_INVOICING_VAT_CALCULATION_SERVICE] =
-                Mage::helper('M2ePro')->__('Use VAT Calculation Service');
-
             $fieldset->addField(
                 'auto_invoicing',
                 'select',
@@ -56,7 +45,14 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit_Tabs_InvoicesAndShipments_F
                     'label'   => Mage::helper('M2ePro')->__('Invoice Uploading to Amazon') . ':',
                     'title'   => Mage::helper('M2ePro')->__('Invoice Uploading to Amazon'),
                     'name'    => 'auto_invoicing',
-                    'options' => $options,
+                    'options' => array(
+                        AmazonAccount::AUTO_INVOICING_DISABLED                => Mage::helper('M2ePro')->__('Disabled'),
+                        AmazonAccount::AUTO_INVOICING_UPLOAD_MAGENTO_INVOICES =>
+                            Mage::helper('M2ePro')->__('Upload Magento Invoices'),
+                        AmazonAccount::AUTO_INVOICING_VAT_CALCULATION_SERVICE =>
+                            Mage::helper('M2ePro')->__('Use VAT Calculation Service')
+
+                    ),
                     'value'   => $formData['auto_invoicing']
                 )
             );
@@ -101,14 +97,15 @@ HTML
                     0 => Mage::helper('M2ePro')->__('Disabled'),
                     1 => Mage::helper('M2ePro')->__('Enabled'),
                 ),
+
                 'after_element_html' => Mage::helper('M2ePro')->__(
                     <<<HTML
 <span>
     <img class="tool-tip-image"
      style="vertical-align: middle;" src="{$this->getSkinUrl('M2ePro/images/tool-tip-icon.png')}" />
-    <span class="tool-tip-message" style="display:none; text-align: left; width: 120px; background: #E3E3E3;">
+    <span class="tool-tip-message" style="display:none; text-align: left; width: 120px;">
         <img src="{$this->getSkinUrl('M2ePro/images/help.png')}" />
-        <span style="color:gray;">
+        <span>
            Enable to automatically create Magento Invoices when order status is Unshipped/Partially Shipped.
         </span>
     </span>
@@ -137,14 +134,15 @@ HTML
                     0 => Mage::helper('M2ePro')->__('Disabled'),
                     1 => Mage::helper('M2ePro')->__('Enabled'),
                 ),
+
                 'after_element_html' => Mage::helper('M2ePro')->__(
                     <<<HTML
 <span>
     <img class="tool-tip-image"
      style="vertical-align: middle;" src="{$this->getSkinUrl('M2ePro/images/tool-tip-icon.png')}" />
-    <span class="tool-tip-message" style="display:none; text-align: left; width: 120px; background: #E3E3E3;">
+    <span class="tool-tip-message" style="display:none; text-align: left; width: 120px;">
         <img src="{$this->getSkinUrl('M2ePro/images/help.png')}" />
-        <span style="color:gray;">
+        <span>
            Enable to automatically create Shipment when shipping is completed.
         </span>
     </span>
@@ -197,7 +195,7 @@ HTML
 
         /** @var Ess_M2ePro_Model_Account $account */
         $account = Mage::helper('M2ePro/Data_Global')->getValue('model_account');
-        if ($account->getChildObject()->getMarketplace()->getChildObject()->isUploadInvoicesAvailable()) {
+        if ($account->getChildObject()->getMarketplace()->getChildObject()->isVatCalculationServiceAvailable()) {
             $helpText .= Mage::helper('M2ePro')->__(
                 <<<HTML
     <p>Also, you can set up an <i>Automatic Invoice Uploading</i> to Amazon. Read the <a href="%url%" 

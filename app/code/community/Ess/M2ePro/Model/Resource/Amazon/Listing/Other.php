@@ -38,7 +38,7 @@ class Ess_M2ePro_Model_Resource_Amazon_Listing_Other
 
         $listingOtherCollection->getSelect()->reset(Zend_Db_Select::COLUMNS);
         $listingOtherCollection->getSelect()->columns(
-            array('sku'  => 'second_table.sku')
+            array('sku' => 'second_table.sku')
         );
 
         return $listingOtherCollection->getColumnValues('sku');
@@ -54,9 +54,10 @@ class Ess_M2ePro_Model_Resource_Amazon_Listing_Other
 
         if (!empty($skus)) {
             $skus = array_map(
-                function($el){
-                return (string)$el; 
-                }, $skus
+                function ($el) {
+                    return (string)$el;
+                },
+                $skus
             );
             $listingOtherCollection->addFieldToFilter('sku', array('in' => array_unique($skus)));
         }
@@ -109,9 +110,8 @@ class Ess_M2ePro_Model_Resource_Amazon_Listing_Other
             $additionalData = (array)Mage::helper('M2ePro')->jsonDecode($account->getAdditionalData());
             unset($additionalData['is_amazon_other_listings_full_items_data_already_received']);
 
-            $account->setSettings('additional_data', $additionalData)
-                    ->addData('inventory_last_synchronization', null)
-                    ->save();
+            $account->setSettings('additional_data', $additionalData)->save();
+            $account->getChildObject()->setData('inventory_last_synchronization', null)->save();
         }
     }
 

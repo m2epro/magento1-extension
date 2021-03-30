@@ -64,17 +64,11 @@ SQL
                 $magentoOrdersSettings = Mage::helper('M2ePro/Data')->jsonDecode($row['magento_orders_settings']);
 
                 $data = array(
-                    'is_magento_invoice_creation_disabled' => empty($magentoOrdersSettings['invoice_mode']) ?
-                        0 : $magentoOrdersSettings['invoice_mode'],
-                    'create_magento_shipment'              => empty($magentoOrdersSettings['shipment_mode']) ?
-                        0 : $magentoOrdersSettings['shipment_mode']
+                    'is_magento_invoice_creation_disabled' => isset($magentoOrdersSettings['invoice_mode']) ?
+                        $magentoOrdersSettings['invoice_mode'] : 0,
+                    'create_magento_shipment'              => isset($magentoOrdersSettings['shipment_mode']) ?
+                        $magentoOrdersSettings['invoice_mode'] : 0
                 );
-
-                // if VCS was enabled
-                if ($row['auto_invoicing'] == 1) {
-                    // revert old "is disabled" value
-                    $data['is_magento_invoice_creation_disabled'] = !$row['is_magento_invoice_creation_disabled'];
-                }
 
                 // clearing old data
                 unset($magentoOrdersSettings['invoice_mode']);
@@ -84,7 +78,7 @@ SQL
                 $this->_installer->getConnection()->update(
                     $amazonAccountTable,
                     $data,
-                    array('account_id = ?' => (int)$row['account_id'])
+                    array('account_id = ?' => $row['account_id'])
                 );
             }
 

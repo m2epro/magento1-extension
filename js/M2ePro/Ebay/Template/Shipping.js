@@ -18,22 +18,21 @@ window.EbayTemplateShipping = Class.create(Common, {
 
     // ---------------------------------------
 
-    initialize: function()
-    {
+    initialize: function() {
         Validation.add('M2ePro-location-or-postal-required', M2ePro.translator.translate('Location or Zip/Postal Code should be specified.'), function() {
             return $('address_mode').value != M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Template_Shipping::ADDRESS_MODE_NONE') ||
-                   $('postal_code_mode').value != M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Template_Shipping::POSTAL_CODE_MODE_NONE');
+                $('postal_code_mode').value != M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Template_Shipping::POSTAL_CODE_MODE_NONE');
         });
 
         Validation.add('M2ePro-validate-international-ship-to-location', M2ePro.translator.translate('Select one or more international ship-to Locations.'), function(value, el) {
-            return $$('input[name="'+el.name+'"]').any(function(o) {
+            return $$('input[name="' + el.name + '"]').any(function(o) {
                 return o.checked;
             });
         });
 
         Validation.add('M2ePro-required-if-calculated', M2ePro.translator.translate('This is a required field.'), function(value) {
 
-            if(EbayTemplateShippingObj.isLocalShippingModeCalculated() ||
+            if (EbayTemplateShippingObj.isLocalShippingModeCalculated() ||
                 EbayTemplateShippingObj.isInternationalShippingModeCalculated()) {
                 return value != M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Template_Shipping::POSTAL_CODE_MODE_NONE');
             }
@@ -77,11 +76,11 @@ window.EbayTemplateShipping = Class.create(Common, {
             return value != '';
         });
 
-        Validation.add('M2ePro-validate-rate-table',M2ePro.translator.translate('You are submitting different Shipping Rate Table modes for the domestic and international shipping. It contradicts eBay requirements. Please edit the settings.'), function(value, el) {
+        Validation.add('M2ePro-validate-rate-table', M2ePro.translator.translate('You are submitting different Shipping Rate Table modes for the domestic and international shipping. It contradicts eBay requirements. Please edit the settings.'), function(value, el) {
 
             var id = el.id.replace(
-                    el.id.indexOf('local') !== -1 ? 'local' : 'international',
-                    el.id.indexOf('local') !== -1 ? 'international' : 'local'
+                el.id.indexOf('local') !== -1 ? 'local' : 'international',
+                el.id.indexOf('local') !== -1 ? 'international' : 'local'
                 ).replace('_value', '_mode'),
                 secondElement = $(id),
                 mode = +el.previous().value;
@@ -92,7 +91,7 @@ window.EbayTemplateShipping = Class.create(Common, {
 
             var elementMode = +secondElement.value,
                 modeAggregate = +M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Template_Shipping::SHIPPING_RATE_TABLE_ACCEPT_MODE')
-                                + +M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Template_Shipping::SHIPPING_RATE_TABLE_IDENTIFIER_MODE');
+                    + +M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Template_Shipping::SHIPPING_RATE_TABLE_IDENTIFIER_MODE');
 
             return modeAggregate !== (mode + elementMode);
         });
@@ -100,8 +99,7 @@ window.EbayTemplateShipping = Class.create(Common, {
 
     // ---------------------------------------
 
-    countryModeChange : function()
-    {
+    countryModeChange: function() {
         var self = EbayTemplateShippingObj,
             elem = $('country_mode');
         if (elem.value == M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Template_Shipping::COUNTRY_MODE_CUSTOM_VALUE')) {
@@ -117,8 +115,7 @@ window.EbayTemplateShipping = Class.create(Common, {
 
     // ---------------------------------------
 
-    postalCodeModeChange: function()
-    {
+    postalCodeModeChange: function() {
         var self = EbayTemplateShippingObj,
             elem = $('postal_code_mode');
 
@@ -136,8 +133,7 @@ window.EbayTemplateShipping = Class.create(Common, {
 
     // ---------------------------------------
 
-    addressModeChange: function()
-    {
+    addressModeChange: function() {
         var self = EbayTemplateShippingObj,
             elem = $('address_mode');
 
@@ -155,8 +151,7 @@ window.EbayTemplateShipping = Class.create(Common, {
 
     // ---------------------------------------
 
-    dispatchTimeChange: function()
-    {
+    dispatchTimeChange: function() {
         var self = EbayTemplateShippingObj;
 
         if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Template_Shipping::DISPATCH_TIME_MODE_VALUE')) {
@@ -168,33 +163,11 @@ window.EbayTemplateShipping = Class.create(Common, {
 
             self.updateHiddenValue(this, $('dispatch_time_attribute'));
         }
-
-        if (!$('click_and_collect_mode')) {
-            return;
-        }
-
-        if (this.value != M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Template_Shipping::DISPATCH_TIME_MODE_VALUE')) {
-            return;
-        }
-
-        if ($('dispatch_time_value').value > 3 || (!EbayTemplateShippingObj.isLocalShippingModeFlat()
-            && !EbayTemplateShippingObj.isLocalShippingModeCalculated())
-        ) {
-            $('click_and_collect_mode_tr').hide();
-            $('click_and_collect_mode').selectedIndex = 1;
-            $('click_and_collect_mode').simulate('change');
-
-            return;
-        }
-
-        $('click_and_collect_mode_tr').show();
-        $('click_and_collect_mode').simulate('change');
     },
 
     // ---------------------------------------
 
-    localShippingModeChange: function()
-    {
+    localShippingModeChange: function() {
         // ---------------------------------------
         $('magento_block_ebay_template_shipping_form_data_international').hide();
         $('block_notice_ebay_template_shipping_local').hide();
@@ -218,11 +191,6 @@ window.EbayTemplateShipping = Class.create(Common, {
             $('dispatch_time_mode').simulate('change');
         } else {
             $$('.local-shipping-tr').invoke('hide');
-
-            if ($('click_and_collect_mode')) {
-                $('click_and_collect_mode').selectedIndex = 1;
-                $('click_and_collect_mode').simulate('change');
-            }
         }
         // ---------------------------------------
 
@@ -273,30 +241,25 @@ window.EbayTemplateShipping = Class.create(Common, {
         // ---------------------------------------
     },
 
-    isLocalShippingModeFlat: function()
-    {
+    isLocalShippingModeFlat: function() {
         return $('local_shipping_mode').value == M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Template_Shipping::SHIPPING_TYPE_FLAT');
     },
 
-    isLocalShippingModeCalculated: function()
-    {
+    isLocalShippingModeCalculated: function() {
         return $('local_shipping_mode').value == M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Template_Shipping::SHIPPING_TYPE_CALCULATED');
     },
 
-    isLocalShippingModeFreight: function()
-    {
+    isLocalShippingModeFreight: function() {
         return $('local_shipping_mode').value == M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Template_Shipping::SHIPPING_TYPE_FREIGHT');
     },
 
-    isLocalShippingModeLocal: function()
-    {
+    isLocalShippingModeLocal: function() {
         return $('local_shipping_mode').value == M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Template_Shipping::SHIPPING_TYPE_LOCAL');
     },
 
     // ---------------------------------------
 
-    internationalShippingModeChange: function()
-    {
+    internationalShippingModeChange: function() {
         // clear selected shipping methods
         // ---------------------------------------
         $$('#shipping_international_tbody .icon-btn').each(function(el) {
@@ -331,23 +294,19 @@ window.EbayTemplateShipping = Class.create(Common, {
         // ---------------------------------------
     },
 
-    isInternationalShippingModeFlat: function()
-    {
+    isInternationalShippingModeFlat: function() {
         return $('international_shipping_mode').value == M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Template_Shipping::SHIPPING_TYPE_FLAT');
     },
 
-    isInternationalShippingModeCalculated: function()
-    {
+    isInternationalShippingModeCalculated: function() {
         return $('international_shipping_mode').value == M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Template_Shipping::SHIPPING_TYPE_CALCULATED');
     },
 
-    isInternationalShippingModeNoInternational: function()
-    {
+    isInternationalShippingModeNoInternational: function() {
         return $('international_shipping_mode').value == M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Template_Shipping::SHIPPING_TYPE_NO_INTERNATIONAL');
     },
 
-    isShippingModeCalculated: function(locationType)
-    {
+    isShippingModeCalculated: function(locationType) {
         if (locationType == 'local') {
             return EbayTemplateShippingObj.isLocalShippingModeCalculated();
         }
@@ -361,19 +320,7 @@ window.EbayTemplateShipping = Class.create(Common, {
 
     // ---------------------------------------
 
-    isClickAndCollectEnabled: function()
-    {
-        if (!$('click_and_collect_mode')) {
-            return false;
-        }
-
-        return $('click_and_collect_mode').value == 1;
-    },
-
-    // ---------------------------------------
-
-    crossBorderTradeChange: function()
-    {
+    crossBorderTradeChange: function() {
         if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Template_Shipping::CROSS_BORDER_TRADE_NONE')) {
             $('international_shipping_none').show();
         } else {
@@ -387,9 +334,8 @@ window.EbayTemplateShipping = Class.create(Common, {
 
     // ---------------------------------------
 
-    updateCrossBorderTradeVisibility: function()
-    {
-        if(!$('magento_block_ebay_template_shipping_form_data_cross_border_trade')) {
+    updateCrossBorderTradeVisibility: function() {
+        if (!$('magento_block_ebay_template_shipping_form_data_cross_border_trade')) {
             return;
         }
 
@@ -405,8 +351,7 @@ window.EbayTemplateShipping = Class.create(Common, {
 
     // ---------------------------------------
 
-    renderRateTables: function(options)
-    {
+    renderRateTables: function(options) {
         options = options || {};
 
         var select = $(options.elementId);
@@ -415,7 +360,7 @@ window.EbayTemplateShipping = Class.create(Common, {
 
         if (options.data && Object.keys(options.data).length) {
 
-            [{value: 0, text: 'No'}, {value: 1, text: 'Yes'}].forEach(function (item) {
+            [{value: 0, text: 'No'}, {value: 1, text: 'Yes'}].forEach(function(item) {
                 var option = new Element('option', {
                     value: item.value,
                     mode: M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Template_Shipping::SHIPPING_RATE_TABLE_ACCEPT_MODE'),
@@ -428,7 +373,7 @@ window.EbayTemplateShipping = Class.create(Common, {
             var appendIn = new Element('optgroup', {label: 'Rate Table'});
             select.appendChild(appendIn);
 
-            Object.keys(options.data).forEach(function (key) {
+            Object.keys(options.data).forEach(function(key) {
                 var option = new Element('option', {
                     value: key,
                     mode: M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Template_Shipping::SHIPPING_RATE_TABLE_IDENTIFIER_MODE'),
@@ -442,7 +387,7 @@ window.EbayTemplateShipping = Class.create(Common, {
 
         } else {
 
-            [{value: 0, text: 'No'}, {value: 1, text: 'Yes'}].forEach(function (item) {
+            [{value: 0, text: 'No'}, {value: 1, text: 'Yes'}].forEach(function(item) {
 
                 var option = new Element('option', {
                     value: item.value,
@@ -455,8 +400,7 @@ window.EbayTemplateShipping = Class.create(Common, {
         }
     },
 
-    updateRateTablesData: function(options)
-    {
+    updateRateTablesData: function(options) {
         var self = this;
 
         new Ajax.Request(M2ePro.url.get('adminhtml_ebay_template_shipping/getRateTableData'), {
@@ -494,7 +438,7 @@ window.EbayTemplateShipping = Class.create(Common, {
                 select.stopObserving('change');
                 self.renderRateTables(options);
                 select.observe('change', EbayTemplateShippingObj.rateTableModeChange)
-                      .simulate('change');
+                    .simulate('change');
 
                 var otherId = options.elementId.replace(
                     options.elementId.indexOf('local') !== -1 ? 'local' : 'international',
@@ -516,8 +460,7 @@ window.EbayTemplateShipping = Class.create(Common, {
         });
     },
 
-    sellApiAuthPopup: function(options)
-    {
+    sellApiAuthPopup: function(options) {
         var self = this;
         var popup = Dialog.info(null, {
             draggable: true,
@@ -534,7 +477,7 @@ window.EbayTemplateShipping = Class.create(Common, {
             showEffect: Element.show
         });
 
-        popup.okCallback = function () {
+        popup.okCallback = function() {
 
             var win = window.open(M2ePro.url.get('adminhtml_ebay_account/edit', {
                 id: options.accountId,
@@ -574,50 +517,45 @@ window.EbayTemplateShipping = Class.create(Common, {
 
     // ---------------------------------------
 
-    updateRateTableVisibility: function(locationType)
-    {
+    updateRateTableVisibility: function(locationType) {
         var shippingMode = $(locationType + '_shipping_mode').value;
 
-        if (!$(locationType+'_shipping_rate_table_mode_tr')) {
+        if (!$(locationType + '_shipping_rate_table_mode_tr')) {
             return;
         }
 
         if (shippingMode != M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Template_Shipping::SHIPPING_TYPE_FLAT')) {
-            $(locationType+'_shipping_rate_table_mode_tr').hide();
+            $(locationType + '_shipping_rate_table_mode_tr').hide();
 
-            $$('[id^="'+locationType+'_shipping_rate_table_value"').forEach(function (el) {
+            $$('[id^="' + locationType + '_shipping_rate_table_value"').forEach(function(el) {
                 el.value = 0;
             });
         } else {
-            $(locationType+'_shipping_rate_table_mode_tr').show();
+            $(locationType + '_shipping_rate_table_mode_tr').show();
         }
     },
 
-    isDomesticRateTableEnabled: function ()
-    {
-        return $$('[id^="local_shipping_rate_table_value"]').some(function (el) {
+    isDomesticRateTableEnabled: function() {
+        return $$('[id^="local_shipping_rate_table_value"]').some(function(el) {
             return +el.value !== 0;
         });
     },
 
-    isInternationalRateTableEnabled: function ()
-    {
-        return $$('[id^="international_shipping_rate_table_value"]').some(function (el) {
+    isInternationalRateTableEnabled: function() {
+        return $$('[id^="international_shipping_rate_table_value"]').some(function(el) {
             return +el.value !== 0;
         });
     },
 
-    isRateTableEnabled: function()
-    {
+    isRateTableEnabled: function() {
         return EbayTemplateShippingObj.isDomesticRateTableEnabled()
-               || EbayTemplateShippingObj.isInternationalRateTableEnabled();
+            || EbayTemplateShippingObj.isInternationalRateTableEnabled();
     },
 
-    rateTableModeChange: function()
-    {
+    rateTableModeChange: function() {
         var otherId = this.id.replace(
-                this.id.indexOf('local') !== -1 ? 'local' : 'international',
-                this.id.indexOf('local') !== -1 ? 'international' : 'local'
+            this.id.indexOf('local') !== -1 ? 'local' : 'international',
+            this.id.indexOf('local') !== -1 ? 'international' : 'local'
             ),
             otherElement = $(otherId),
             mode = +this.options[this.selectedIndex].getAttribute('mode'),
@@ -635,7 +573,7 @@ window.EbayTemplateShipping = Class.create(Common, {
             if (+this.value === 0 && +otherElement.value !== 0) {
                 isModeChanged = true;
                 modeElement.value = otherElement.options[otherElement.selectedIndex]
-                                                                        .getAttribute('mode');
+                    .getAttribute('mode');
             }
 
             if (+this.value === 0 && +otherElement.value === 0) {
@@ -646,13 +584,13 @@ window.EbayTemplateShipping = Class.create(Common, {
                     || otherElement.dataset.currentMode == M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Template_Shipping::SHIPPING_RATE_TABLE_IDENTIFIER_MODE')
                 ) {
                     modeElement.value = M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Template_Shipping::SHIPPING_RATE_TABLE_IDENTIFIER_MODE');
-                    modeOtherElement.value =  M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Template_Shipping::SHIPPING_RATE_TABLE_IDENTIFIER_MODE');
+                    modeOtherElement.value = M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Template_Shipping::SHIPPING_RATE_TABLE_IDENTIFIER_MODE');
                 } else {
                     modeElement.value = M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Template_Shipping::SHIPPING_RATE_TABLE_ACCEPT_MODE');
                     modeOtherElement.value = M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Template_Shipping::SHIPPING_RATE_TABLE_ACCEPT_MODE');
                 }
             }
-        } else if(+this.value === 0) {
+        } else if (+this.value === 0) {
 
             isModeChanged = true;
 
@@ -682,15 +620,7 @@ window.EbayTemplateShipping = Class.create(Common, {
 
     // ---------------------------------------
 
-    clickAndCollectModeChange: function()
-    {
-        EbayTemplateShippingObj.updatePackageBlockState();
-    },
-
-    // ---------------------------------------
-
-    updateLocalHandlingCostVisibility: function()
-    {
+    updateLocalHandlingCostVisibility: function() {
         if (!$('local_handling_cost_cv_tr')) {
             return;
         }
@@ -708,8 +638,7 @@ window.EbayTemplateShipping = Class.create(Common, {
         // ---------------------------------------
     },
 
-    updateInternationalHandlingCostVisibility: function()
-    {
+    updateInternationalHandlingCostVisibility: function() {
         if (!$('international_handling_cost_cv_tr')) {
             return;
         }
@@ -724,8 +653,7 @@ window.EbayTemplateShipping = Class.create(Common, {
 
     // ---------------------------------------
 
-    updateDiscountProfiles: function(accountId)
-    {
+    updateDiscountProfiles: function(accountId) {
         new Ajax.Request(M2ePro.url.get('adminhtml_ebay_template_shipping/updateDiscountProfiles'), {
             method: 'get',
             parameters: {
@@ -739,8 +667,7 @@ window.EbayTemplateShipping = Class.create(Common, {
         });
     },
 
-    renderDiscountProfiles: function(locationType, renderAccountId)
-    {
+    renderDiscountProfiles: function(locationType, renderAccountId) {
         if (typeof renderAccountId == 'undefined') {
             $$('.' + locationType + '-discount-profile-account-tr').each(function(account) {
                 var accountId = account.readAttribute('account_id');
@@ -778,11 +705,10 @@ window.EbayTemplateShipping = Class.create(Common, {
 
     },
 
-    getDiscountProfilesHtml: function(locationType, accountId)
-    {
+    getDiscountProfilesHtml: function(locationType, accountId) {
         var shippingModeSelect = $(locationType + '_shipping_mode');
         var desiredProfileType = null;
-        var html = '<option value="">'+M2ePro.translator.translate('None')+'</option>';
+        var html = '<option value="">' + M2ePro.translator.translate('None') + '</option>';
 
         switch (parseInt(shippingModeSelect.value)) {
             case M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Template_Shipping::SHIPPING_TYPE_FLAT'):
@@ -802,7 +728,7 @@ window.EbayTemplateShipping = Class.create(Common, {
                 return;
             }
 
-            html += '<option value="'+profile.profile_id+'">'+profile.profile_name+'</option>';
+            html += '<option value="' + profile.profile_id + '">' + profile.profile_name + '</option>';
         });
 
         return html;
@@ -810,8 +736,7 @@ window.EbayTemplateShipping = Class.create(Common, {
 
     // ---------------------------------------
 
-    updateCashOnDeliveryCostVisibility: function()
-    {
+    updateCashOnDeliveryCostVisibility: function() {
         if (!$('cash_on_delivery_cost_cv_tr')) {
             return;
         }
@@ -828,8 +753,7 @@ window.EbayTemplateShipping = Class.create(Common, {
 
     // ---------------------------------------
 
-    packageSizeChange: function()
-    {
+    packageSizeChange: function() {
         var self = EbayTemplateShippingObj;
 
         var packageSizeMode = this.value;
@@ -842,16 +766,18 @@ window.EbayTemplateShipping = Class.create(Common, {
 
             var showDimension = parseInt(this.options[this.selectedIndex].getAttribute('dimensions_supported'));
             self.updateDimensionVisibility(showDimension);
-         } else if (packageSizeMode == M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated::PACKAGE_SIZE_CUSTOM_ATTRIBUTE')) {
+        } else if (packageSizeMode == M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated::PACKAGE_SIZE_CUSTOM_ATTRIBUTE')) {
             self.updateHiddenValue(this, $('package_size_attribute'));
             self.updateDimensionVisibility(true);
+        } else if (packageSizeMode == M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated::PACKAGE_SIZE_NONE')) {
+            self.updateHiddenValue(this, $('package_size_value'));
+            self.updateDimensionVisibility(false);
         }
     },
 
     // ---------------------------------------
 
-    updateDimensionVisibility: function(showDimension)
-    {
+    updateDimensionVisibility: function(showDimension) {
         if (showDimension) {
             $('dimensions_tr').show();
             $('dimension_mode').simulate('change');
@@ -864,8 +790,7 @@ window.EbayTemplateShipping = Class.create(Common, {
 
     // ---------------------------------------
 
-    dimensionModeChange: function()
-    {
+    dimensionModeChange: function() {
         $('dimensions_ca_tr', 'dimensions_cv_tr').invoke('hide');
 
         if (this.value != 0) {
@@ -875,8 +800,7 @@ window.EbayTemplateShipping = Class.create(Common, {
 
     // ---------------------------------------
 
-    weightChange: function()
-    {
+    weightChange: function() {
         var measurementNoteElement = this.up().next('td.note');
 
         $('weight_cv').hide();
@@ -897,13 +821,11 @@ window.EbayTemplateShipping = Class.create(Common, {
 
     // ---------------------------------------
 
-    isMeasurementSystemEnglish: function()
-    {
+    isMeasurementSystemEnglish: function() {
         return $('measurement_system').value == M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated::MEASUREMENT_SYSTEM_ENGLISH');
     },
 
-    measurementSystemChange: function()
-    {
+    measurementSystemChange: function() {
         $$('.measurement-system-english, .measurement-system-metric').invoke('hide');
 
         if (EbayTemplateShippingObj.isMeasurementSystemEnglish()) {
@@ -915,59 +837,48 @@ window.EbayTemplateShipping = Class.create(Common, {
 
     // ---------------------------------------
 
-    updateMeasurementVisibility: function()
-    {
+    updateMeasurementVisibility: function() {
+        EbayTemplateShippingObj.updatePackageBlockState();
+
         if (EbayTemplateShippingObj.isLocalShippingModeCalculated()) {
             EbayTemplateShippingObj.showMeasurementOptions('local', 'calculated');
-            EbayTemplateShippingObj.updatePackageBlockState();
             return;
         }
 
         if (EbayTemplateShippingObj.isInternationalShippingModeCalculated()) {
             EbayTemplateShippingObj.showMeasurementOptions('international', 'calculated');
-            EbayTemplateShippingObj.updatePackageBlockState();
             return;
         }
 
-        if (EbayTemplateShippingObj.isLocalShippingModeFlat()
-            && EbayTemplateShippingObj.isRateTableEnabled()
-        ) {
+        if (EbayTemplateShippingObj.isLocalShippingModeFlat()) {
             EbayTemplateShippingObj.showMeasurementOptions('local', 'flat');
         }
-
-        EbayTemplateShippingObj.updatePackageBlockState();
     },
 
-    showMeasurementOptions: function(locationType, shippingMode)
-    {
+    showMeasurementOptions: function(locationType, shippingMode) {
         $$('#block_shipping_template_calculated_options tr').each(function(element) {
-            if (element.hasClassName('visible-for-'+shippingMode+'-by-default')) {
+            if (element.hasClassName('visible-for-' + shippingMode + '-by-default')) {
                 element.show();
             } else {
                 element.hide();
             }
         });
 
-        EbayTemplateShippingObj.prepareMeasurementObservers(shippingMode);
+        EbayTemplateShippingObj.prepareMeasurementObservers();
     },
 
-    prepareMeasurementObservers: function(shippingMode)
-    {
+    prepareMeasurementObservers: function() {
         $('measurement_system')
             .observe('change', EbayTemplateShippingObj.measurementSystemChange)
             .simulate('change');
 
-        if (shippingMode == 'calculated') {
-            $('package_size')
-                .observe('change', EbayTemplateShippingObj.packageSizeChange)
-                .simulate('change');
-        }
+        $('package_size')
+            .observe('change', EbayTemplateShippingObj.packageSizeChange)
+            .simulate('change');
 
-        if ($('dimension_mode')) {
-            $('dimension_mode')
-                .observe('change', EbayTemplateShippingObj.dimensionModeChange)
-                .simulate('change');
-        }
+        $('dimension_mode')
+            .observe('change', EbayTemplateShippingObj.dimensionModeChange)
+            .simulate('change');
 
         $('weight')
             .observe('change', EbayTemplateShippingObj.weightChange)
@@ -976,8 +887,7 @@ window.EbayTemplateShipping = Class.create(Common, {
 
     // ---------------------------------------
 
-    serviceChange: function()
-    {
+    serviceChange: function() {
         var row = $(this).up('tr');
 
         if (this.up('table').id != 'shipping_international_table') {
@@ -998,8 +908,7 @@ window.EbayTemplateShipping = Class.create(Common, {
 
     // ---------------------------------------
 
-    serviceCostModeChange: function()
-    {
+    serviceCostModeChange: function() {
         var row = $(this).up('tr');
         // ---------------------------------------
 
@@ -1061,8 +970,7 @@ window.EbayTemplateShipping = Class.create(Common, {
 
     // ---------------------------------------
 
-    shippingLocationChange: function()
-    {
+    shippingLocationChange: function() {
         var i = this.name.match(/\d+/);
         var current = this;
 
@@ -1141,12 +1049,12 @@ window.EbayTemplateShipping = Class.create(Common, {
         }
         // ---------------------------------------
 
-        var isAttributeMode = function (element) {
+        var isAttributeMode = function(element) {
             return element.value == M2ePro.php
                 .constant('Ess_M2ePro_Model_Ebay_Template_Shipping::COUNTRY_MODE_CUSTOM_ATTRIBUTE');
         };
 
-        row.down('[name^="shipping[shipping_cost_attribute]"]').observe('change', function (event) {
+        row.down('[name^="shipping[shipping_cost_attribute]"]').observe('change', function(event) {
             var element = event.target.up('tr').down('[name^="shipping[cost_mode]"]');
 
             if (!isAttributeMode(element)) {
@@ -1156,7 +1064,7 @@ window.EbayTemplateShipping = Class.create(Common, {
             EbayTemplateShippingObj.checkMessages(type);
         });
 
-        row.down('[name^="shipping[shipping_cost_additional_attribute]"]').observe('change', function (event) {
+        row.down('[name^="shipping[shipping_cost_additional_attribute]"]').observe('change', function(event) {
             var element = event.target.up('tr').down('[name^="shipping[cost_mode]"]');
 
             if (!isAttributeMode(element)) {
@@ -1171,8 +1079,7 @@ window.EbayTemplateShipping = Class.create(Common, {
 
     // ---------------------------------------
 
-    initRow: function(row)
-    {
+    initRow: function(row) {
         var locationType = /local/.test(row.id) ? 'local' : 'international';
 
         // ---------------------------------------
@@ -1202,8 +1109,7 @@ window.EbayTemplateShipping = Class.create(Common, {
 
     // ---------------------------------------
 
-    renderServices: function(el, locationType)
-    {
+    renderServices: function(el, locationType) {
         var html = '';
         var isCalculated = EbayTemplateShippingObj.isShippingModeCalculated(locationType);
         var selectedPackage = $('package_size_value').value;
@@ -1213,7 +1119,7 @@ window.EbayTemplateShipping = Class.create(Common, {
         if (locationType == 'international') {
             html += '<option value="">--</option>';
         } else {
-            html += '<option value="">'+ M2ePro.translator.translate('Select Shipping Service') +'</option>';
+            html += '<option value="">' + M2ePro.translator.translate('Select Shipping Service') + '</option>';
         }
 
         if (Object.isArray(EbayTemplateShippingObj.shippingServices) && EbayTemplateShippingObj.shippingServices.length == 0) {
@@ -1226,7 +1132,7 @@ window.EbayTemplateShipping = Class.create(Common, {
             categoryMethods = '';
             category.value.methods.each(function(service) {
                 var isServiceOfSelectedDestination = (locationType == 'local' && service.is_international == 0) || (locationType == 'international' && service.is_international == 1);
-                var isServiceOfSelectedType = (isCalculated && service.is_calculated == 1) || (! isCalculated && service.is_flat == 1);
+                var isServiceOfSelectedType = (isCalculated && service.is_calculated == 1) || (!isCalculated && service.is_flat == 1);
 
                 if (!isServiceOfSelectedDestination || !isServiceOfSelectedType) {
                     return;
@@ -1249,7 +1155,7 @@ window.EbayTemplateShipping = Class.create(Common, {
                     html += categoryMethods;
                 } else {
                     if (locationType == 'local') {
-                        html += '<optgroup ebay_id="'+category.key+'" label="' + category.value.title + '">' + categoryMethods + '</optgroup>';
+                        html += '<optgroup ebay_id="' + category.key + '" label="' + category.value.title + '">' + categoryMethods + '</optgroup>';
                     } else {
                         html += '<optgroup label="' + category.value.title + '">' + categoryMethods + '</optgroup>';
                     }
@@ -1263,8 +1169,7 @@ window.EbayTemplateShipping = Class.create(Common, {
 
     // ---------------------------------------
 
-    renderShipToLocationCheckboxes: function(i)
-    {
+    renderShipToLocationCheckboxes: function(i) {
         var html = '';
 
         // ---------------------------------------
@@ -1272,24 +1177,24 @@ window.EbayTemplateShipping = Class.create(Common, {
             if (location.ebay_id == 'Worldwide') {
                 html += '<div>' +
                     '<label>' +
-                        '<input' +
-                            ' type="checkbox"' +
-                            ' name="shipping[shippingLocation][' + i + '][]" value="' + location.ebay_id + '"' +
-                            ' onclick="EbayTemplateShippingObj.shippingLocationChange.call(this);"' +
-                            ' class="shipping-location M2ePro-validate-international-ship-to-location"' +
-                        '/>' +
-                        '&nbsp;<b>' + location.title + '</b>' +
+                    '<input' +
+                    ' type="checkbox"' +
+                    ' name="shipping[shippingLocation][' + i + '][]" value="' + location.ebay_id + '"' +
+                    ' onclick="EbayTemplateShippingObj.shippingLocationChange.call(this);"' +
+                    ' class="shipping-location M2ePro-validate-international-ship-to-location"' +
+                    '/>' +
+                    '&nbsp;<b>' + location.title + '</b>' +
                     '</label>' +
-                '</div>';
+                    '</div>';
             } else {
                 html += '<label style="float: left; width: 133px;" class="nobr">' +
                     '<input' +
-                        ' type="checkbox"' +
-                        ' name="shipping[shippingLocation][' + i + '][]" value="' + location.ebay_id + '"' +
-                        ' onclick="EbayTemplateShippingObj.shippingLocationChange.call(this);"' +
+                    ' type="checkbox"' +
+                    ' name="shipping[shippingLocation][' + i + '][]" value="' + location.ebay_id + '"' +
+                    ' onclick="EbayTemplateShippingObj.shippingLocationChange.call(this);"' +
                     '/>' +
                     '&nbsp;' + location.title +
-                '</label>';
+                    '</label>';
             }
         });
         // ---------------------------------------
@@ -1326,8 +1231,7 @@ window.EbayTemplateShipping = Class.create(Common, {
 
     // ---------------------------------------
 
-    removeRow: function(locationType)
-    {
+    removeRow: function(locationType) {
         var table = $(this).up('table');
 
         if (locationType == 'international') {
@@ -1339,8 +1243,8 @@ window.EbayTemplateShipping = Class.create(Common, {
         EbayTemplateShippingObj.counter[locationType]--;
 
         if (EbayTemplateShippingObj.counter[locationType] == 0) {
-            $('shipping_'+locationType+'_table').hide();
-            $('add_'+locationType+'_shipping_method_button').show();
+            $('shipping_' + locationType + '_table').hide();
+            $('add_' + locationType + '_shipping_method_button').show();
         }
 
         if (locationType == 'local' && EbayTemplateShippingObj.counter[locationType] < 4) {
@@ -1355,8 +1259,7 @@ window.EbayTemplateShipping = Class.create(Common, {
 
     // ---------------------------------------
 
-    hasMissingServiceAttribute: function(code, position)
-    {
+    hasMissingServiceAttribute: function(code, position) {
         if (typeof EbayTemplateShippingObj.missingAttributes['services'][position] == 'undefined') {
             return false;
         }
@@ -1368,8 +1271,7 @@ window.EbayTemplateShipping = Class.create(Common, {
         return true;
     },
 
-    addMissingServiceAttributeOption: function(select, code, position, value)
-    {
+    addMissingServiceAttributeOption: function(select, code, position, value) {
         var option = document.createElement('option');
 
         option.value = value;
@@ -1377,11 +1279,10 @@ window.EbayTemplateShipping = Class.create(Common, {
 
         var first = select.down('.empty').next();
 
-        first.insert({ before: option });
+        first.insert({before: option});
     },
 
-    renderShippingMethods: function(shippingMethods)
-    {
+    renderShippingMethods: function(shippingMethods) {
         if (shippingMethods.length > 0) {
             $('shipping_local_table').show();
             $('add_local_shipping_method_button').hide();
@@ -1426,141 +1327,60 @@ window.EbayTemplateShipping = Class.create(Common, {
 
     // ---------------------------------------
 
-    updatePackageBlockState: function()
-    {
+    updatePackageBlockState: function() {
         if (this.isLocalShippingModeCalculated() || this.isInternationalShippingModeCalculated()) {
             this.setCalculatedPackageBlockState();
-            return;
+        } else if (this.isLocalShippingModeLocal() || this.isLocalShippingModeFreight()) {
+            this.setNonePackageBlockState();
+        } else {
+            this.setCommonPackageBlockState();
         }
-
-        if (this.isClickAndCollectEnabled() &&
-            (this.isLocalShippingModeFlat() || this.isLocalShippingModeCalculated()) &&
-            $('dispatch_time_mode').value == M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Template_Shipping::DISPATCH_TIME_MODE_VALUE')
-            && $('dispatch_time_value').value <= 3
-        ) {
-            this.setClickAndCollectPackageBlockState();
-            return;
-        }
-
-        if (this.isRateTableEnabled()) {
-            this.setRateTablePackageBlockState();
-            return;
-        }
-
-        this.setNonePackageBlockState();
     },
 
-    setCalculatedPackageBlockState: function()
-    {
+    setCalculatedPackageBlockState: function() {
         $('magento_block_ebay_template_shipping_form_data_calculated').show();
 
-        var dimensionsTr = $('dimensions_tr');
-        var dimensionSelect = $('dimension_mode');
-        if (dimensionsTr) {
-            dimensionsTr.show();
-            dimensionSelect.simulate('change');
+        $('dimension_mode').simulate('change');
+
+        if ($('package_size').selectedIndex == 0) {
+            $('package_size').selectedIndex = 1;
         }
 
-        var packageSizeTr = $('package_size_tr');
-        var packageSizeSelect = $('package_size');
-        if (packageSizeTr) {
-            packageSizeTr.show();
-            packageSizeSelect.simulate('change');
+        $('package_size_none').hide();
+        $('package_size').simulate('change');
+
+        if ($('weight').selectedIndex == 0) {
+            $('weight').selectedIndex = 1;
         }
 
-        var weightTr = $('weight_tr');
-        var weightSelect = $('weight');
-        if (weightTr) {
-            if ($('weight').selectedIndex == 0) {
-                $('weight').selectedIndex = 1;
-            }
-
-            weightTr.show();
-            $('weight_mode_none').hide();
-            weightSelect.simulate('change');
-        }
+        $('weight_mode_none').hide();
+        $('weight').simulate('change');
     },
 
-    setRateTablePackageBlockState: function()
-    {
+    setCommonPackageBlockState: function() {
         $('magento_block_ebay_template_shipping_form_data_calculated').show();
-
-        var dimensionsTr = $('dimensions_tr');
-        var dimensionSelect = $('dimension_mode');
-        if (dimensionsTr) {
-            dimensionsTr.hide();
-            dimensionSelect.selectedIndex = 0;
-            dimensionSelect.simulate('change');
-        }
-
-        var packageSizeTr = $('package_size_tr');
-        var packageSizeSelect = $('package_size');
-        if (packageSizeTr) {
-            packageSizeTr.hide();
-            packageSizeSelect.selectedIndex = 0;
-            packageSizeSelect.simulate('change');
-        }
-
-        var weightTr = $('weight_tr');
-        var weightSelect = $('weight');
-        if (weightTr) {
-            weightTr.show();
-            $('weight_mode_none').show();
-            weightSelect.simulate('change');
-        }
+        $('package_size_none').show();
+        $('weight_mode_none').show();
     },
 
-    setClickAndCollectPackageBlockState: function()
-    {
-        $('magento_block_ebay_template_shipping_form_data_calculated').show();
+    setNonePackageBlockState: function() {
+        $('package_size_none').show();
+        $('package_size').selectedIndex = 0;
+        $('package_size').simulate('change');
 
-        var dimensionsTr = $('dimensions_tr');
-        var dimensionSelect = $('dimension_mode');
-        if (dimensionsTr) {
-            dimensionsTr.show();
-            dimensionSelect.simulate('change');
-        }
+        $('dimension_mode').selectedIndex = 0;
+        $('dimension_mode').simulate('change');
 
-        var packageSizeTr = $('package_size_tr');
-        var packageSizeSelect = $('package_size');
-        if (packageSizeTr) {
-            packageSizeTr.hide();
-            packageSizeSelect.selectedIndex = 0;
-            packageSizeSelect.simulate('change');
-        }
+        $('weight_mode_none').show();
+        $('weight').selectedIndex = 0;
+        $('weight').simulate('change');
 
-        var weightTr = $('weight_tr');
-        var weightSelect = $('weight');
-        if (weightTr) {
-            weightTr.show();
-            $('weight_mode_none').show();
-            weightSelect.simulate('change');
-        }
-    },
-
-    setNonePackageBlockState: function()
-    {
         $('magento_block_ebay_template_shipping_form_data_calculated').hide();
-
-        var dimensionsTr = $('dimensions_tr');
-        var dimensionSelect = $('dimension_mode');
-        if (dimensionsTr) {
-            dimensionSelect.selectedIndex = 0;
-            dimensionSelect.simulate('change');
-        }
-
-        var weightTr = $('weight_tr');
-        var weightSelect = $('weight');
-        if (weightTr) {
-            weightSelect.selectedIndex = 0;
-            weightSelect.simulate('change');
-        }
     },
 
     // ---------------------------------------
 
-    checkMessages: function(type)
-    {
+    checkMessages: function(type) {
         if (typeof EbayListingTemplateSwitcherObj == 'undefined') {
             // not inside template switcher
             return;
@@ -1572,14 +1392,16 @@ window.EbayTemplateShipping = Class.create(Common, {
             container = 'shipping_local_table_messages';
             excludeTable = $('shipping_international_table');
 
-            formElements = formElements.map(function (element) {
+            formElements = formElements.map(function(element) {
 
                 if (element.up('table') == excludeTable) {
                     return false;
                 }
 
                 return element;
-            }).filter(function(el) { return el; });
+            }).filter(function(el) {
+                return el;
+            });
 
             data = Form.serializeElements(formElements);
 
@@ -1587,14 +1409,16 @@ window.EbayTemplateShipping = Class.create(Common, {
             container = 'shipping_international_table_messages';
             excludeTable = $('shipping_local_table');
 
-            formElements = formElements.map(function (element) {
+            formElements = formElements.map(function(element) {
 
                 if (element.up('table') == excludeTable) {
                     return false;
                 }
 
                 return element;
-            }).filter(function(el) { return el; });
+            }).filter(function(el) {
+                return el;
+            });
 
             data = Form.serializeElements(formElements);
 
@@ -1611,7 +1435,7 @@ window.EbayTemplateShipping = Class.create(Common, {
                 if (refresh) {
                     refresh.observe('click', function() {
                         this.checkMessages();
-                    }.bind(this))
+                    }.bind(this));
                 }
             }.bind(this);
 
@@ -1626,8 +1450,7 @@ window.EbayTemplateShipping = Class.create(Common, {
         );
     },
 
-    clearMessages: function(type)
-    {
+    clearMessages: function(type) {
         if (typeof EbayListingTemplateSwitcherObj == 'undefined') {
             // not inside template switcher
             return;
