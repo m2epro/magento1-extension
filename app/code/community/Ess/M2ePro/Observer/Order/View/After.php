@@ -42,22 +42,10 @@ class Ess_M2ePro_Observer_Order_View_After extends Ess_M2ePro_Observer_Abstract
 
         if ($order->isComponentModeEbay()) {
             $buttonUrl = $block->getUrl('M2ePro/adminhtml_ebay_order/view', array('id' => $order->getId()));
-
-            Mage::helper('adminhtml')->setPageHelpUrl(
-                Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(
-                    null, null, "x/1YwVAQ"
-                )
-            );
         } else {
             $buttonUrl = $block->getUrl(
                 'M2ePro/adminhtml_'.strtolower($order->getComponentMode()).'_order/view',
                 array('id' => $order->getId())
-            );
-
-            Mage::helper('adminhtml')->setPageHelpUrl(
-                Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(
-                    null, null, "x/So0VAQ"
-                )
             );
         }
 
