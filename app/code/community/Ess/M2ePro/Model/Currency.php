@@ -13,12 +13,14 @@ class Ess_M2ePro_Model_Currency
     public function isBase($currencyCode, $store)
     {
         $baseCurrency = Mage::app()->getStore($store)->getBaseCurrencyCode();
+
         return $baseCurrency == $currencyCode;
     }
 
     public function isAllowed($currencyCode, $store)
     {
         $allowedCurrencies = Mage::app()->getStore($store)->getAvailableCurrencyCodes();
+
         return in_array($currencyCode, $allowedCurrencies);
     }
 
@@ -76,6 +78,11 @@ class Ess_M2ePro_Model_Currency
     public function formatPrice($currencyName, $priceValue)
     {
         return Mage::app()->getLocale()->currency($currencyName)->toCurrency($priceValue);
+    }
+
+    public function convertPriceToCurrency($price, $currentCurrency, $toCurrency)
+    {
+        return Mage::helper('directory')->currencyConvert($price, $currentCurrency, $toCurrency);
     }
 
     //########################################

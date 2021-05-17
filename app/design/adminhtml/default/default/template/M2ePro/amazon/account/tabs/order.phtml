@@ -704,6 +704,45 @@
                     <input type="hidden" id="magento_orders_tax_excluded_states" name="magento_orders_settings[tax][excluded_states]" value="<?php echo $formData['magento_orders_settings']['tax']['excluded_states']; ?>" />
                 </tr>
 
+                <tr id="tr_magento_orders_tax_collect_for_uk">
+                    <td class="label">
+                        <label for="magento_orders_tax_mode"><?php echo Mage::helper('M2ePro')->__('Skip Tax in UK Orders');
+                        ?>:</label>
+                    </td>
+
+                    <td class="value" style="width: auto;">
+                        <select id="magento_orders_tax_amazon_collects_for_uk_shipment"
+                                name="magento_orders_settings[tax][amazon_collect_for_uk]" class="M2ePro-required-when-visible">
+                            <option value="<?php echo Ess_M2ePro_Model_Amazon_Account::SKIP_TAX_FOR_UK_SHIPMENT_NONE; ?>"<?php if ($formData['magento_orders_settings']['tax']['amazon_collect_for_uk'] == Ess_M2ePro_Model_Amazon_Account::SKIP_TAX_FOR_UK_SHIPMENT_NONE) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('None'); ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Amazon_Account::SKIP_TAX_FOR_UK_SHIPMENT;
+                            ?>"<?php if ($formData['magento_orders_settings']['tax']['amazon_collect_for_uk'] ==
+                                Ess_M2ePro_Model_Amazon_Account::SKIP_TAX_FOR_UK_SHIPMENT) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('All orders with UK shipments'); ?></option>
+                            <option value="<?php echo
+                            Ess_M2ePro_Model_Amazon_Account::SKIP_TAX_FOR_UK_SHIPMENT_WITH_CERTAIN_PRICE; ?>"<?php if
+                            ($formData['magento_orders_settings']['tax']['amazon_collect_for_uk'] ==
+                                Ess_M2ePro_Model_Amazon_Account::SKIP_TAX_FOR_UK_SHIPMENT_WITH_CERTAIN_PRICE) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Orders under 135GBP price'); ?></option>
+                        </select>
+                    </td>
+
+                    <td class="value" style="display: none">
+                        <p class="note">
+                            <span>
+                                <?php echo Mage::helper('M2ePro')->__(
+                                    'The option allows skipping tax for orders with UK shipment.</br></br>
+
+<strong>None</strong> - the tax won\'t be skipped and will be displayed in all orders.</br></br>
+
+<strong>All orders with UK shipments</strong> - M2E Pro will skip tax for all orders with UK shipments.</br></br>
+
+<strong>Orders under 135GBP price</strong> - M2E Pro will skip tax only for orders with a total price of all products under 135GBP price.'
+                                ); ?>
+                            </span>
+                        </p>
+                    </td>
+
+                </tr>
+
+
             </table>
 
         </div>

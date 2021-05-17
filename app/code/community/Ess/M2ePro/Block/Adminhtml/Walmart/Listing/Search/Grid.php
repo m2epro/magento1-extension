@@ -253,5 +253,24 @@ HTML;
         return substr($value, 0, strpos($value, '/'));
     }
 
+    protected function isFilterOrSortByPriceIsUsed($filterName = null, $advancedFilterName = null)
+    {
+        if ($filterName) {
+            $filters = $this->getParam($this->getVarNameFilter());
+            is_string($filters) && $filters = $this->helper('adminhtml')->prepareFilterString($filters);
+
+            if (is_array($filters) && array_key_exists($filterName, $filters)) {
+                return true;
+            }
+
+            $sort = $this->getParam($this->getVarNameSort());
+            if ($sort == $filterName) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     //########################################
 }

@@ -6,8 +6,6 @@
  * @license    Commercial use is forbidden
  */
 
-use Ess_M2ePro_Model_Walmart_Account as Account;
-
 class Ess_M2ePro_Adminhtml_Wizard_InstallationWalmartController
     extends Ess_M2ePro_Controller_Adminhtml_Walmart_WizardController
 {
@@ -47,66 +45,56 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationWalmartController
             return $this->indexAction();
         }
 
-        if (empty($params['marketplace_id'])) {
-            $error = Mage::helper('M2ePro')->__('Please select Marketplace');
+        if (!$this->validateRequiredParams($params)) {
+            $error = Mage::helper('M2ePro')->__('You should fill all required fields.');
             return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('message' => $error)));
         }
 
+        $accountData = array();
+
+        $requiredFields = array(
+            'marketplace_id',
+            'consumer_id',
+            'private_key',
+            'client_id',
+            'client_secret'
+        );
+
+        foreach ($requiredFields as $requiredField) {
+            if (!empty($params[$requiredField])) {
+                $accountData[$requiredField] = $params[$requiredField];
+            }
+        }
+
+        /** @var Ess_M2ePro_Model_Marketplace $marketplace */
+        $marketplace = Mage::getModel('M2ePro/Marketplace')->loadInstance($accountData['marketplace_id']);
+        $marketplace->setData('status', Ess_M2ePro_Model_Marketplace::STATUS_ENABLE);
+        $marketplace->save();
+
+        $accountData = array_merge(
+            $this->getAccountDefaultSettings(),
+            array(
+                'title' => "Default - {$marketplace->getCode()}",
+            ),
+            $accountData
+        );
+
+        /** @var $account Ess_M2ePro_Model_Account */
+        $account = Mage::helper('M2ePro/Component_Walmart')->getModel('Account');
+        Mage::getModel('M2ePro/Walmart_Account_Builder')->build($account, $accountData);
+
         try {
-            $accountData = array();
-
-            $requiredFields = array(
-                'marketplace_id',
-                'consumer_id',
-                'private_key',
-                'client_id',
-                'client_secret'
+            $requestData = array(
+                'marketplace_id' => $params['marketplace_id']
             );
 
-            foreach ($requiredFields as $requiredField) {
-                if (!empty($params[$requiredField])) {
-                    $accountData[$requiredField] = $params[$requiredField];
-                }
-            }
-
-            /** @var Ess_M2ePro_Model_Marketplace $marketplace */
-            $marketplace = Mage::getModel('M2ePro/Marketplace')->loadInstance($accountData['marketplace_id']);
-
-            if ($params['marketplace_id'] == Ess_M2ePro_Helper_Component_Walmart::MARKETPLACE_CA &&
-                $params['consumer_id'] && $params['private_key']) {
-                $requestData = array(
-                    'marketplace_id' => $params['marketplace_id'],
-                    'consumer_id'    => $params['consumer_id'],
-                    'private_key'    => $params['private_key'],
-                );
-            } elseif ($params['marketplace_id'] != Ess_M2ePro_Helper_Component_Walmart::MARKETPLACE_CA &&
-                $params['client_id'] && $params['client_secret']) {
-                $requestData = array(
-                    'marketplace_id' => $params['marketplace_id'],
-                    'client_id'      => $params['client_id'],
-                    'client_secret'  => $params['client_secret'],
-                );
+            if ($params['marketplace_id'] == Ess_M2ePro_Helper_Component_Walmart::MARKETPLACE_US) {
+                $requestData['client_id'] = $params['client_id'];
+                $requestData['client_secret'] = $params['client_secret'];
             } else {
-                $error = Mage::helper('M2ePro')->__('You should fill all required fields.');
-                return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('message' => $error)));
+                $requestData['consumer_id'] = $params['consumer_id'];
+                $requestData['private_key'] = $params['private_key'];
             }
-
-            $marketplace->setData('status', Ess_M2ePro_Model_Marketplace::STATUS_ENABLE);
-            $marketplace->save();
-
-            $accountData = array_merge(
-                $this->getAccountDefaultSettings(),
-                array(
-                    'title' => "Default - {$marketplace->getCode()}",
-                ),
-                $accountData
-            );
-
-            /** @var $model Ess_M2ePro_Model_Account */
-            $model = Mage::helper('M2ePro/Component_Walmart')->getModel('Account');
-            Mage::getModel('M2ePro/Walmart_Account_Builder')->build($model, $accountData);
-
-            $id = $model->save()->getId();
 
             /** @var $dispatcherObject Ess_M2ePro_Model_Walmart_Connector_Dispatcher */
             $dispatcherObject = Mage::getModel('M2ePro/Walmart_Connector_Dispatcher');
@@ -116,15 +104,23 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationWalmartController
                 'add',
                 'entityRequester',
                 $requestData,
-                $id
+                $account
             );
             $dispatcherObject->process($connectorObj);
+
+            $responseData = $connectorObj->getResponseData();
+            $account->getChildObject()->addData(
+                array(
+                    'server_hash' => $responseData['hash'],
+                    'info' => Mage::helper('M2ePro')->jsonEncode($responseData['info'])
+                )
+            );
+
+            $account->getChildObject()->save();
         } catch (Exception $exception) {
             Mage::helper('M2ePro/Module_Exception')->process($exception);
 
-            if (!empty($model)) {
-                $model->deleteInstance();
-            }
+            $account->deleteInstance();
 
             Mage::getModel('M2ePro/Servicing_Dispatcher')->processTask(
                 Mage::getModel('M2ePro/Servicing_Task_License')->getPublicNick()
@@ -196,6 +192,25 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationWalmartController
             ->getDefaultStoreId();
 
         return $data;
+    }
+
+    protected function validateRequiredParams($params)
+    {
+        if (empty($params['marketplace_id'])) {
+            return false;
+        }
+
+        if ($params['marketplace_id'] == Ess_M2ePro_Helper_Component_Walmart::MARKETPLACE_US) {
+            if (empty($params['client_id']) || empty($params['client_secret'])) {
+                return false;
+            }
+        } else {
+            if (empty($params['consumer_id']) || empty($params['private_key'])) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     //########################################

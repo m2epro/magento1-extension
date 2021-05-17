@@ -80,10 +80,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Amazon_Grid
         $collection->setStoreId($this->_listing->getStoreId());
         $collection->setListing($this->_listing->getId());
 
-        if ($this->isFilterOrSortByPriceIsUsed('online_price', 'amazon_online_price')) {
-            $collection->setIsNeedToUseIndexerParent(true);
-        }
-
         $collection->addAttributeToSelect('name')
                    ->addAttributeToSelect('sku')
                    ->joinStockItem();
@@ -144,7 +140,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Amazon_Grid
             )
         );
 
-        if ($collection->isNeedUseIndexerParent()) {
+        if ($this->isFilterOrSortByPriceIsUsed('online_price', 'amazon_online_price')) {
             $collection->joinIndexerParent();
         } else {
             $collection->setIsNeedToInjectPrices(true);

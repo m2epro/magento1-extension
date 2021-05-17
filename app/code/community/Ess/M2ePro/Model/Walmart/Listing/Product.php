@@ -763,4 +763,11 @@ class Ess_M2ePro_Model_Walmart_Listing_Product extends Ess_M2ePro_Model_Componen
     }
 
     //########################################
+
+    public function mapChannelItemProduct()
+    {
+        $this->getResource()->mapChannelItemProduct($this);
+    }
+
+    //########################################
 }

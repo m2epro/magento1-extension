@@ -673,7 +673,9 @@ $missingAttributes = $this->getMissingAttributes();
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <td colspan="20" class="a-right"><?php echo $this->getChild('add_local_shipping_method_button')->setData('label', Mage::helper('M2ePro')->__('Add Method'))->toHtml(); ?></td>
+                                    <td id="add_local_shipping_method" colspan="20" class="a-right">
+                                        <?php echo $this->getChild('add_local_shipping_method_button')->setData('label', Mage::helper('M2ePro')->__('Add Method'))->toHtml(); ?>
+                                    </td>
                                 </tr>
                             </tfoot>
                         </table>
@@ -683,7 +685,8 @@ $missingAttributes = $this->getMissingAttributes();
                             <table style="border: none" cellpadding="0" cellspacing="0">
                                 <tfoot>
                                     <tr>
-                                        <td valign="middle" align="center" style="vertical-align: middle; border: 1px solid #cbd3d4; height: 40px">
+                                        <td id="add_local_shipping_method_init" valign="middle" align="center"
+                                            style="vertical-align: middle; border: 1px solid #cbd3d4; height: 40px">
                                             <?php echo $this->getChild('add_local_shipping_method_button')->setData('label', Mage::helper('M2ePro')->__('Add Shipping Method'))->toHtml(); ?>
                                         </td>
                                     </tr>

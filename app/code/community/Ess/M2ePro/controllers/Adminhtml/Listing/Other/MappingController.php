@@ -6,14 +6,38 @@
  * @license    Commercial use is forbidden
  */
 
-class Ess_M2ePro_Adminhtml_Listing_Other_MappingController
-    extends Ess_M2ePro_Controller_Adminhtml_BaseController
+class Ess_M2ePro_Adminhtml_Listing_Other_MappingController extends Ess_M2ePro_Controller_Adminhtml_BaseController
 {
     //########################################
 
-    public function mapGridAction()
+    public function mapProductPopupHtmlAction()
     {
-        $block = $this->loadLayout()->getLayout()->createBlock('M2ePro/adminhtml_listing_other_mapping_grid');
+        $block = $this->getLayout()->createBlock(
+            'M2ePro/adminhtml_listing_mapping_view',
+            '',
+            array(
+                'grid_url'           => '*/adminhtml_listing_other_mapping/mapProductGrid',
+                'mapping_handler_js' => 'ListingOtherMappingObj',
+                'mapping_action'     => 'map'
+            )
+        );
+
+        $this->getResponse()->setBody($block->toHtml());
+    }
+
+    //########################################
+
+    public function mapProductGridAction()
+    {
+        $block = $this->loadLayout()->getLayout()->createBlock(
+            'M2ePro/adminhtml_listing_mapping_grid',
+            '',
+            array(
+                'grid_url'           => '*/adminhtml_listing_other_mapping/mapProductGrid',
+                'mapping_handler_js' => 'ListingOtherMappingObj',
+                'mapping_action'     => 'map'
+            )
+        );
         $this->getResponse()->setBody($block->toHtml());
     }
 
@@ -21,13 +45,12 @@ class Ess_M2ePro_Adminhtml_Listing_Other_MappingController
 
     public function mapAction()
     {
-        $componentMode = $this->getRequest()->getParam('componentMode');
-        $productId = $this->getRequest()->getPost('productId');
-        $sku = $this->getRequest()->getPost('sku');
-        $productOtherId = $this->getRequest()->getPost('otherProductId');
+        $componentMode = $this->getRequest()->getParam('component_mode');
+        $productId = $this->getRequest()->getPost('product_id');
+        $productOtherId = $this->getRequest()->getPost('other_product_id');
 
-        if ((!$productId && !$sku) || !$productOtherId || !$componentMode) {
-            return;
+        if (!$productId || !$productOtherId || !$componentMode) {
+            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('result' => false)));
         }
 
         /** @var $collection Ess_M2ePro_Model_Resource_Magento_Product_Collection */
@@ -37,22 +60,23 @@ class Ess_M2ePro_Adminhtml_Listing_Other_MappingController
         );
 
         $productId && $collection->addFieldToFilter('entity_id', $productId);
-        $sku       && $collection->addFieldToFilter('sku', $sku);
 
-        $tempData = $collection->getSelect()->query()->fetch();
-        if (!$tempData) {
-            return $this->getResponse()->setBody('1');
+        $magentoCatalogProductModel = $collection->getFirstItem();
+        if ($magentoCatalogProductModel->isEmpty()) {
+            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('result' => false)));
         }
 
-        $productId || $productId = $tempData['entity_id'];
+        $productId || $productId = $magentoCatalogProductModel->getId();
 
         $productOtherInstance = Mage::helper('M2ePro/Component')->getComponentObject(
-            $componentMode, 'Listing_Other', $productOtherId
+            $componentMode,
+            'Listing_Other',
+            $productOtherId
         );
 
         $productOtherInstance->mapProduct($productId);
 
-        return $this->getResponse()->setBody('0');
+        return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('result' => true)));
     }
 
     public function autoMapAction()
@@ -85,7 +109,7 @@ class Ess_M2ePro_Adminhtml_Listing_Other_MappingController
         }
 
         $componentMode = ucfirst(strtolower($componentMode));
-        $mappingModel = Mage::getModel('M2ePro/'.$componentMode.'_Listing_Other_Mapping');
+        $mappingModel = Mage::getModel('M2ePro/' . $componentMode . '_Listing_Other_Mapping');
         $mappingModel->initialize();
 
         if (!$mappingModel->autoMapOtherListingsProducts($productsForMapping)) {

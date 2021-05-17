@@ -23,6 +23,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Instruction_SynchronizationTemplat
             ChangeProcessorAbstract::INSTRUCTION_TYPE_PRODUCT_STATUS_DATA_POTENTIALLY_CHANGED,
             Ess_M2ePro_Model_Listing::INSTRUCTION_TYPE_PRODUCT_MOVED_FROM_OTHER,
             Ess_M2ePro_Model_Listing::INSTRUCTION_TYPE_PRODUCT_MOVED_FROM_LISTING,
+            Ess_M2ePro_Model_Listing::INSTRUCTION_TYPE_PRODUCT_REMAP_FROM_LISTING,
             Ess_M2ePro_Model_Amazon_Listing_Product::INSTRUCTION_TYPE_CHANNEL_QTY_CHANGED,
             Ess_M2ePro_Model_Amazon_Listing_Product::INSTRUCTION_TYPE_CHANNEL_STATUS_CHANGED,
             Ess_M2ePro_Model_Amazon_Template_ChangeProcessor_Abstract::INSTRUCTION_TYPE_QTY_DATA_CHANGED,
@@ -149,23 +150,15 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Instruction_SynchronizationTemplat
             }
         }
 
-        if ($this->_input->hasInstructionWithTypes($this->getRevisePriceRegularInstructionTypes())) {
-            if ($this->isMeetRevisePriceRegularRequirements()) {
-                $configurator->allowRegularPrice();
-                $tags['price_regular'] = true;
-            } else {
-                $configurator->disallowRegularPrice();
-                unset($tags['price_regular']);
-            }
-        }
+        $priceInstructionTypes = array_merge(
+            $this->getRevisePriceRegularInstructionTypes(),
+            $this->getRevisePriceBusinessInstructionTypes()
+        );
 
-        if ($this->_input->hasInstructionWithTypes($this->getRevisePriceBusinessInstructionTypes())) {
-            if ($this->isMeetRevisePriceBusinessRequirements()) {
-                $configurator->allowBusinessPrice();
-                $tags['price_business'] = true;
-            } else {
-                $configurator->disallowBusinessPrice();
-                unset($tags['price_business']);
+        if ($this->_input->hasInstructionWithTypes($priceInstructionTypes)) {
+            if ($this->isMeetRevisePriceRegularRequirements() || $this->isMeetRevisePriceBusinessRequirements()) {
+                $configurator->allowRegularPrice()->allowBusinessPrice();
+                $tags['price'] = true;
             }
         }
 

@@ -27,6 +27,7 @@ window.WalmartListingGrid = Class.create(ListingGrid, {
     {
         $super();
         this.movingHandler = new ListingMoving(this);
+        this.mappingHandler = new ListingMapping(this, 'walmart');
         this.actionHandler = new WalmartListingAction(this);
         this.templateCategory = new WalmartListingTemplateCategory(this);
         this.variationProductManageHandler = new WalmartListingVariationProductManage(this);
@@ -43,7 +44,11 @@ window.WalmartListingGrid = Class.create(ListingGrid, {
             changeTemplateCategoryIdAction: (function(id) {
                 id = id || this.getSelectedProductsString();
                 this.templateCategory.validateProductsForTemplateCategoryAssign(id, null)
-            }).bind(this)
+            }).bind(this),
+
+            remapProductAction: function(id) {
+                this.mappingHandler.openPopUp(id, null, this.listingId);
+            }.bind(this),
 
         });
 

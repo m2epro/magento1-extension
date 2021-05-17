@@ -223,11 +223,10 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_View_Grid extends Mage_Adm
             }
 
             $htmlValue = '&nbsp;<a href="javascript:void(0);"
-                                    onclick="AmazonListingOtherMappingObj.openPopUp(\''.
-                                        $productTitle.
-                                        '\','.
-                                        (int)$row->getId().
-                                    ');">' . Mage::helper('M2ePro')->__('Map') . '</a>';
+                                    onclick="ListingOtherMappingObj.openPopUp(
+                                    '. (int)$row->getId(). ',
+                                    \''. $productTitle. '\'
+                                    );">' . Mage::helper('M2ePro')->__('Map') . '</a>';
 
             return $htmlValue;
         }

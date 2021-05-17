@@ -1,4 +1,24 @@
-* 6.12.1 (r16144) (30/03/2021) 
+* 6.13.0 (r16265) (17/05/2021) 
+
+Common: [Fixed] Fatal error 'CategoryTemplate with same data already exists' occurs when moving the Product from the Unmanaged Listing to the M2E Listing [M1-1125]
+Common: [Fixed] Products are not displayed on the Search page of the M2E Pro Listing after applying filtering by price [M1-1173]
+Common: [Fixed] Fatal error 'Uncaught Error: Call to a member function addJs() on boolean in Helper/Order/Notification.php:26' occurs during Products import under Magento Import/Export tab [M1-1145]
+Common: [Improved] Redirect from the Listing logs to the selected Product [M1-949]
+Common: [Improved] Possibility to Remap Products after they are moved to the M2E Listing from Unmanaged Listing [M1-951]
+Common: [Improved] Process of getting an Account token [M1-1071]
+Common: [Improved] Increase the stability of fatal error handler in case of memory limit exceeding [M1-1092]
+Common: [Improved] Improved counting process of selected products with 'having' clause [M1-1153]
+eBay: [Fixed] Shipped orders are displayed in the Orders grid filtered by Pending status [M1-1116]
+eBay: [Fixed] Error 404 occurs when trying to complete the eBay installation wizard after Policy templates creation [M1-1162]
+eBay: [Fixed] eBay order records are duplicated in the M2E Pro Orders grid [M1-1199]
+Amazon: [Added] Possibility to skip taxes for UK orders [M1-1015]
+Amazon: [Fixed] Item is relisted on Amazon with the price it was stopped with instead of its actual price [M1-1121]
+Amazon: [Fixed] Inventory_last_synchronization date gets stuck in 70s [M1-1151]
+Amazon: [Improved] Amazon's Shipping Services functionality allows specifying Package Details using Magento attributes [M1-1017]
+Walmart: [Fixed] Inventory_last_synchronization date gets stuck in 70s [M1-1151]
+Walmart: [Improved] Possibility to use special characters in the SKU value [M1-1008]
+
+* 6.12.1 (r16129) (23/03/2021)
 
 eBay: [Fixed] "Use eBay Catalog Item Data" option is set to Yes in Description Policy despite the value in "m2epro_ebay_template_description" table [M1-1075]
 eBay: [Added] Managed Payments option for Italy, France, Spain, eBay Motors marketplaces [M1-1025]

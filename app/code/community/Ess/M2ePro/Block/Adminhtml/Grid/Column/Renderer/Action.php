@@ -6,6 +6,8 @@
  * @license    Commercial use is forbidden
  */
 
+use Ess_M2ePro_Model_Listing_Product as Listing_Product;
+
 class Ess_M2ePro_Block_Adminhtml_Grid_Column_Renderer_Action
     extends Mage_Adminhtml_Block_Widget_Grid_Column_Renderer_Action
 {
@@ -14,11 +16,21 @@ class Ess_M2ePro_Block_Adminhtml_Grid_Column_Renderer_Action
     public function render(Varien_Object $row)
     {
         $actions = $this->getColumn()->getActions();
-        if (empty($actions) || !is_array($actions) ) {
+        if (empty($actions) || !is_array($actions)) {
             return '&nbsp;';
         }
 
-        if (sizeof($actions)==1 && !$this->getColumn()->getNoLink()) {
+        foreach ($actions as $columnName => $value) {
+            if (array_key_exists('only_remap_product', $value) && $value['only_remap_product']) {
+                $additionalData = (array)Mage::helper('M2ePro')->jsonDecode($row->getData('additional_data'));
+
+                if (!isset($additionalData[Listing_Product::MOVING_LISTING_OTHER_SOURCE_KEY])) {
+                    unset($actions[$columnName]);
+                }
+            }
+        }
+
+        if (sizeof($actions) == 1 && !$this->getColumn()->getNoLink()) {
             foreach ($actions as $action) {
                 if (is_array($action)) {
                     return $this->_toLinkHtml($action, $row);
@@ -26,8 +38,8 @@ class Ess_M2ePro_Block_Adminhtml_Grid_Column_Renderer_Action
             }
         }
 
-        $itemParam  = $row->getId();
-        $field      = $this->getColumn()->getData('field');
+        $itemParam = $row->getId();
+        $field = $this->getColumn()->getData('field');
         $groupOrder = $this->getColumn()->getGroupOrder();
 
         if (!empty($field)) {
@@ -52,7 +64,7 @@ HTML;
 
         foreach ($groupOrder as $groupId => $groupLabel) {
             $sorted[$groupId] = array(
-                'label' => $groupLabel,
+                'label'   => $groupLabel,
                 'actions' => array()
             );
 
@@ -69,7 +81,7 @@ HTML;
 
     protected function renderOptions(array $actions, Varien_Object $row)
     {
-        $outHtml           = '';
+        $outHtml = '';
         $notGroupedOptions = '';
 
         foreach ($actions as $groupId => $group) {

@@ -72,6 +72,13 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View extends Mage_Adminhtml_
         $helper = Mage::helper('M2ePro');
 
         $urls = array();
+        $urls['mapProductPopupHtml'] = $this->getUrl(
+            '*/adminhtml_listing_other_mapping/mapProductPopupHtml',
+            array(
+                'account_id'     => $this->getRequest()->getParam('account'),
+                'marketplace_id' => $this->getRequest()->getParam('marketplace')
+            )
+        );
         $urls['adminhtml_listing_other_mapping/map'] = $this->getUrl('*/adminhtml_listing_other_mapping/map');
         $urls['adminhtml_ebay_listing_categorySettings/otherCategories'] = $this->getUrl(
             '*/adminhtml_ebay_listing_categorySettings/otherCategories'
@@ -92,10 +99,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View extends Mage_Adminhtml_
                 'Product(s) was Removed.'  => $helper->__('Product(s) was Removed.'),
                 'Not enough data'          => $helper->__('Not enough data'),
 
-                'Mapping Product'                        => $helper->__('Mapping Product'),
-                'Product does not exist.'                => $helper->__('Product does not exist.'),
-                'Please enter correct Product ID.'       => $helper->__('Please enter correct Product ID.'),
-                'Please enter correct Product ID or SKU' => $helper->__('Please enter correct Product ID or SKU')
+                'Mapping Product'         => $helper->__('Mapping Product'),
+                'Product does not exist.' => $helper->__('Product does not exist.')
             )
         );
 
@@ -144,16 +149,13 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View extends Mage_Adminhtml_
         GridWrapperObj = new AreaWrapper('listing_other_content_container');
 
         EbayListingOtherGridObj = new EbayListingOtherGrid('ebayListingOtherViewGrid');
-        EbayListingOtherMappingObj = new ListingOtherMapping(EbayListingOtherGridObj,'ebay');
+        ListingOtherMappingObj = new ListingMapping(EbayListingOtherGridObj,'ebay');
     });
 
 </script>
 HTML;
 
-        $mapToProductBlock = $this->getLayout()->createBlock('M2ePro/adminhtml_listing_other_mapping');
-
         return $javascript .
-            $mapToProductBlock->toHtml() .
             '<div id="listing_other_progress_bar"></div>' .
             '<div id="listing_container_errors_summary" class="errors_summary" style="display: none;"></div>' .
             '<div id="listing_other_content_container">' .

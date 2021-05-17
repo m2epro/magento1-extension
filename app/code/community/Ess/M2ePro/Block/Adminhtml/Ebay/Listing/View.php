@@ -8,9 +8,9 @@
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View extends Mage_Adminhtml_Block_Widget_Grid_Container
 {
-    const VIEW_MODE_EBAY        = 'ebay';
-    const VIEW_MODE_MAGENTO     = 'magento';
-    const VIEW_MODE_SETTINGS    = 'settings';
+    const VIEW_MODE_EBAY     = 'ebay';
+    const VIEW_MODE_MAGENTO  = 'magento';
+    const VIEW_MODE_SETTINGS = 'settings';
 
     const DEFAULT_VIEW_MODE = self::VIEW_MODE_EBAY;
 
@@ -50,31 +50,35 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View extends Mage_Adminhtml_Block_
             )
         );
         $this->_addButton(
-            'view_log', array(
-            'label'   => Mage::helper('M2ePro')->__('Logs & Events'),
-            'onclick' => 'window.open(\'' . $url . '\',\'_blank\')',
-            'class'   => 'button_link'
+            'view_log',
+            array(
+                'label'   => Mage::helper('M2ePro')->__('Logs & Events'),
+                'onclick' => 'window.open(\'' . $url . '\',\'_blank\')',
+                'class'   => 'button_link'
             )
         );
 
         if ($this->_listing->getAccount()->getChildObject()->isPickupStoreEnabled() &&
             Mage::helper('M2ePro/Component_Ebay_PickupStore')->isFeatureEnabled()) {
             $pickupStoreUrl = $this->getUrl(
-                '*/adminhtml_ebay_listing_pickupStore/index', array(
-                'id'   => $this->_listing->getId()
+                '*/adminhtml_ebay_listing_pickupStore/index',
+                array(
+                    'id' => $this->_listing->getId()
                 )
             );
             $this->_addButton(
-                'pickup_store_management', array(
-                    'label' => Mage::helper('M2ePro')->__('In-Store Pickup Management'),
+                'pickup_store_management',
+                array(
+                    'label'   => Mage::helper('M2ePro')->__('In-Store Pickup Management'),
                     'onclick' => 'window.open(\'' . $pickupStoreUrl . '\',\'_blank\')',
-                    'class' => 'success'
+                    'class'   => 'success'
                 )
             );
         }
 
         $this->_addButton(
-            'edit_templates', array(
+            'edit_templates',
+            array(
                 'label'   => Mage::helper('M2ePro')->__('Edit Settings'),
                 'onclick' => '',
                 'class'   => 'drop_down edit_default_settings_drop_down'
@@ -82,11 +86,12 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View extends Mage_Adminhtml_Block_
         );
 
         $this->_addButton(
-            'add_products', array(
-                'id'        => 'add_products',
-                'label'     => Mage::helper('M2ePro')->__('Add Products'),
-                'onclick'   => '',
-                'class'     => 'add drop_down add_products_drop_down'
+            'add_products',
+            array(
+                'id'      => 'add_products',
+                'label'   => Mage::helper('M2ePro')->__('Add Products'),
+                'onclick' => '',
+                'class'   => 'add drop_down add_products_drop_down'
             )
         );
     }
@@ -117,6 +122,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View extends Mage_Adminhtml_Block_
         if ($this->getRequest()->has($paramName)) {
             $param = $this->getRequest()->getParam($paramName);
             $session->setValue($sessionParamName, $param);
+
             return $param;
         } elseif ($param = $session->getValue($sessionParamName)) {
             return $param;
@@ -140,7 +146,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View extends Mage_Adminhtml_Block_
         foreach ($collection->getItems() as $item) {
             $items[] = array(
                 'label' => $item->getTitle(),
-                'url' => $this->getUrl('*/*/view', array('id' => $item->getId()))
+                'url'   => $this->getUrl('*/*/view', array('id' => $item->getId()))
             );
         }
 
@@ -153,11 +159,12 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View extends Mage_Adminhtml_Block_
         // ---------------------------------------
         $data = array(
             'target_css_class' => 'listing-profile-title',
-            'style' => 'max-height: 120px; overflow: auto; width: 200px;',
-            'items' => $items
+            'style'            => 'max-height: 120px; overflow: auto; width: 200px;',
+            'items'            => $items
         );
         $dropDownBlock = $this->getLayout()->createBlock('M2ePro/adminhtml_widget_button_dropDown');
         $dropDownBlock->setData($data);
+
         // ---------------------------------------
 
         return parent::getHeaderHtml() . $dropDownBlock->toHtml();
@@ -169,6 +176,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View extends Mage_Adminhtml_Block_
         $changeProfile = Mage::helper('M2ePro')->__('Change Listing');
         $headerText = parent::getHeaderText();
         $listingTitle = Mage::helper('M2ePro')->escapeHtml($this->_listing->getTitle());
+
         // ---------------------------------------
 
         return <<<HTML
@@ -185,11 +193,11 @@ HTML;
 
     protected function _toHtml()
     {
-        return '<div id="listing_view_progress_bar"></div>'.
-               '<div id="listing_container_errors_summary" class="errors_summary" style="display: none;"></div>'.
-               '<div id="listing_view_content_container">'.
-               parent::_toHtml().
-               '</div>';
+        return '<div id="listing_view_progress_bar"></div>' .
+            '<div id="listing_container_errors_summary" class="errors_summary" style="display: none;"></div>' .
+            '<div id="listing_view_content_container">' .
+            parent::_toHtml() .
+            '</div>';
     }
 
     //########################################
@@ -227,7 +235,8 @@ HTML;
 
         // ---------------------------------------
         $viewHeaderBlock = $this->getLayout()->createBlock(
-            'M2ePro/adminhtml_listing_view_header', '',
+            'M2ePro/adminhtml_listing_view_header',
+            '',
             array('listing' => $this->_listing)
         );
 
@@ -263,14 +272,25 @@ HTML;
                     array('listing_id' => $this->getRequest()->getParam('id'))
                 ),
                 array(
-                    'logViewUrl' => $this->getUrl(
+                    'logViewUrl'                      => $this->getUrl(
                         'M2ePro/adminhtml_ebay_log/synchronization',
-                        array('back'=>$helper->makeBackUrlParam('*/adminhtml_ebay_synchronization/index'))
+                        array('back' => $helper->makeBackUrlParam('*/adminhtml_ebay_synchronization/index'))
                     ),
-                    'variationProductManage' => $this->getUrl(
+                    'variationProductManage'          => $this->getUrl(
                         '*/adminhtml_ebay_listing_variation_product_manage/index'
                     ),
-                    'getListingProductBids' => $this->getUrl('*/adminhtml_ebay_listing/getListingProductBids')
+                    'getListingProductBids'           => $this->getUrl(
+                        '*/adminhtml_ebay_listing/getListingProductBids'
+                    ),
+                    'mapProductPopupHtml'             =>
+                        $this->getUrl(
+                            '*/adminhtml_listing_mapping/mapProductPopupHtml',
+                            array(
+                                'account_id'     => $this->_listing->getAccountId(),
+                                'marketplace_id' => $this->_listing->getMarketplaceId()
+                            )
+                        ),
+                    'adminhtml_listing_mapping/remap' => $this->getUrl('*/adminhtml_listing_mapping/remap')
                 )
             )
         );
@@ -286,6 +306,7 @@ HTML;
                 'Compatibility Attribute'                  => $helper->__('Compatibility Attribute'),
                 'Sell on Another Marketplace'              => $helper->__('Sell on Another Marketplace'),
                 'Create new'                               => $helper->__('Create new'),
+                'Mapping Product'                          => $helper->__('Mapping Product')
             )
         );
         // ---------------------------------------
@@ -311,8 +332,8 @@ HTML;
         // ---------------------------------------
 
         return $html .
-               $addProductsDropDownBlock->toHtml() .
-               parent::getGridHtml();
+            $addProductsDropDownBlock->toHtml() .
+            parent::getGridHtml();
     }
 
     //########################################
@@ -332,23 +353,24 @@ HTML;
         $url = $this->getUrl(
             '*/adminhtml_ebay_listing/edit',
             array(
-                'id' => $this->_listing->getId(),
+                'id'   => $this->_listing->getId(),
                 'back' => $backUrl
             )
         );
         $items[] = array(
-            'url' => $url,
-            'label' => Mage::helper('M2ePro')->__('Configuration'),
+            'url'    => $url,
+            'label'  => Mage::helper('M2ePro')->__('Configuration'),
             'target' => '_blank'
         );
         // ---------------------------------------
 
         // ---------------------------------------
         $items[] = array(
-            'url' => 'javascript: void(0);',
+            'url'     => 'javascript: void(0);',
             'onclick' => 'ListingAutoActionObj.loadAutoActionHtml();',
-            'label' => Mage::helper('M2ePro')->__('Auto Add/Remove Rules')
+            'label'   => Mage::helper('M2ePro')->__('Auto Add/Remove Rules')
         );
+
         // ---------------------------------------
 
         return $items;
@@ -361,14 +383,16 @@ HTML;
         $items = array();
 
         $backUrl = Mage::helper('M2ePro')->makeBackUrlParam(
-            '*/adminhtml_ebay_listing/view', array(
-            'id' => $this->_listing->getId()
+            '*/adminhtml_ebay_listing/view',
+            array(
+                'id' => $this->_listing->getId()
             )
         );
 
         // ---------------------------------------
         $url = $this->getUrl(
-            '*/adminhtml_ebay_listing_productAdd', array(
+            '*/adminhtml_ebay_listing_productAdd',
+            array(
                 'source'     => Ess_M2ePro_Block_Adminhtml_Ebay_Listing_SourceMode::SOURCE_LIST,
                 'clear'      => 1,
                 'listing_id' => $this->_listing->getId(),
@@ -383,7 +407,8 @@ HTML;
 
         // ---------------------------------------
         $url = $this->getUrl(
-            '*/adminhtml_ebay_listing_productAdd', array(
+            '*/adminhtml_ebay_listing_productAdd',
+            array(
                 'source'     => Ess_M2ePro_Block_Adminhtml_Ebay_Listing_SourceMode::SOURCE_CATEGORIES,
                 'clear'      => 1,
                 'listing_id' => $this->_listing->getId(),
@@ -394,6 +419,7 @@ HTML;
             'url'   => $url,
             'label' => Mage::helper('M2ePro')->__('From Categories')
         );
+
         // ---------------------------------------
 
         return $items;

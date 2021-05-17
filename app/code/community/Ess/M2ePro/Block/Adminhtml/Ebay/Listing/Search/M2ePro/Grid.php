@@ -39,9 +39,10 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Search_M2ePro_Grid
         $collection->addAttributeToSelect('name');
 
         $collection->setStoreId(Mage_Catalog_Model_Abstract::DEFAULT_STORE_ID);
+
         $collection->joinStockItem(
             array(
-            'is_in_stock' => 'is_in_stock'
+                'is_in_stock' => 'is_in_stock'
             )
         );
 

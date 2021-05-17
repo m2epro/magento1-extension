@@ -41,12 +41,16 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
     const MAGENTO_ORDERS_TAX_MODE_MAGENTO = 2;
     const MAGENTO_ORDERS_TAX_MODE_MIXED   = 3;
 
+    const SKIP_TAX_FOR_UK_SHIPMENT_NONE               = 0;
+    const SKIP_TAX_FOR_UK_SHIPMENT                    = 1;
+    const SKIP_TAX_FOR_UK_SHIPMENT_WITH_CERTAIN_PRICE = 2;
+
     const MAGENTO_ORDERS_CUSTOMER_MODE_GUEST      = 0;
     const MAGENTO_ORDERS_CUSTOMER_MODE_PREDEFINED = 1;
     const MAGENTO_ORDERS_CUSTOMER_MODE_NEW        = 2;
 
-    const USE_SHIPPING_ADDRESS_AS_BILLING_ALWAYS                          = 0;
-    const USE_SHIPPING_ADDRESS_AS_BILLING_IF_SAME_CUSTOMER_AND_RECIPIENT  = 1;
+    const USE_SHIPPING_ADDRESS_AS_BILLING_ALWAYS                         = 0;
+    const USE_SHIPPING_ADDRESS_AS_BILLING_IF_SAME_CUSTOMER_AND_RECIPIENT = 1;
 
     const MAGENTO_ORDERS_STATUS_MAPPING_MODE_DEFAULT = 0;
     const MAGENTO_ORDERS_STATUS_MAPPING_MODE_CUSTOM  = 1;
@@ -193,6 +197,11 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
     public function getMerchantId()
     {
         return $this->getData('merchant_id');
+    }
+
+    public function getToken()
+    {
+        return $this->getData('token');
     }
 
     /**
@@ -709,6 +718,20 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
     public function getExcludedStates()
     {
         return $this->getSetting('magento_orders_settings', array('tax', 'excluded_states'), array());
+    }
+
+    public function isAmazonCollectsTaxForUKShipmentAvailable()
+    {
+        $setting = $this->getSetting('magento_orders_settings', array('tax', 'amazon_collect_for_uk'), 0);
+
+        return $setting == self::SKIP_TAX_FOR_UK_SHIPMENT;
+    }
+
+    public function isAmazonCollectsTaxForUKShipmentWithCertainPrice()
+    {
+        $setting = $this->getSetting('magento_orders_settings', array('tax', 'amazon_collect_for_uk'), 0);
+
+        return $setting == self::SKIP_TAX_FOR_UK_SHIPMENT_WITH_CERTAIN_PRICE;
     }
 
     // ---------------------------------------

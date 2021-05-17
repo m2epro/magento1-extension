@@ -8,8 +8,7 @@ window.AmazonOrderMerchantFulfillment = Class.create(Common, {
 
     // ---------------------------------------
 
-    initialize: function()
-    {
+    initialize: function() {
         var self = this;
 
         Validation.add('M2ePro-validate-must-arrive-date', M2ePro.translator.translate('Please enter a valid date.'), function(value) {
@@ -18,6 +17,10 @@ window.AmazonOrderMerchantFulfillment = Class.create(Common, {
 
         Validation.add('M2ePro-validate-dimension', M2ePro.translator.translate('Please select an option.'), function(value) {
             return value != M2ePro.php.constant('Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::DIMENSION_SOURCE_NONE');
+        });
+
+        Validation.add('M2ePro-validate-weight', M2ePro.translator.translate('Please select an option.'), function(value) {
+            return value != M2ePro.php.constant('Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::WEIGHT_SOURCE_NONE');
         });
 
         Validation.add('M2ePro-validate-required-custom-dimension', M2ePro.translator.translate('This is a required fields.'), function(value, element) {
@@ -43,8 +46,7 @@ window.AmazonOrderMerchantFulfillment = Class.create(Common, {
 
     // ---------------------------------------
 
-    openPopUp: function(content, customConfig)
-    {
+    openPopUp: function(content, customConfig) {
         var self = this;
         var title = M2ePro.translator.translate('Amazon\'s Shipping Services');
 
@@ -95,8 +97,7 @@ window.AmazonOrderMerchantFulfillment = Class.create(Common, {
         return this.popUp;
     },
 
-    closePopUp: function()
-    {
+    closePopUp: function() {
         if (this.popUp) {
             this.popUp.close();
         }
@@ -104,8 +105,7 @@ window.AmazonOrderMerchantFulfillment = Class.create(Common, {
 
     // ---------------------------------------
 
-    validate: function()
-    {
+    validate: function() {
         this.validateCustomDimension = true;
         var validationResult = [];
 
@@ -123,8 +123,7 @@ window.AmazonOrderMerchantFulfillment = Class.create(Common, {
 
     // ---------------------------------------
 
-    getPopupAction: function(orderId)
-    {
+    getPopupAction: function(orderId) {
         var self = this;
 
         if (orderId && this.orderId != orderId) {
@@ -148,8 +147,7 @@ window.AmazonOrderMerchantFulfillment = Class.create(Common, {
         });
     },
 
-    getShippingServicesAction: function()
-    {
+    getShippingServicesAction: function() {
         if (!this.validate()) {
             return;
         }
@@ -167,8 +165,7 @@ window.AmazonOrderMerchantFulfillment = Class.create(Common, {
         });
     },
 
-    createShippingOfferAction: function()
-    {
+    createShippingOfferAction: function() {
         if (!confirm(M2ePro.translator.translate('Are you sure you want to create Shipment now?'))) {
             return;
         }
@@ -184,8 +181,7 @@ window.AmazonOrderMerchantFulfillment = Class.create(Common, {
         });
     },
 
-    cancelShippingOfferAction: function()
-    {
+    cancelShippingOfferAction: function() {
         if (!confirm(M2ePro.translator.translate('Are you sure?'))) {
             return;
         }
@@ -206,8 +202,7 @@ window.AmazonOrderMerchantFulfillment = Class.create(Common, {
         });
     },
 
-    refreshDataAction: function()
-    {
+    refreshDataAction: function() {
         var self = this;
 
         new Ajax.Request(M2ePro.url.get('adminhtml_amazon_order_merchantFulfillment/refreshData', {order_id: this.orderId}), {
@@ -224,8 +219,7 @@ window.AmazonOrderMerchantFulfillment = Class.create(Common, {
         });
     },
 
-    resetDataAction: function()
-    {
+    resetDataAction: function() {
         if (!confirm(M2ePro.translator.translate('Are you sure?'))) {
             return;
         }
@@ -247,15 +241,13 @@ window.AmazonOrderMerchantFulfillment = Class.create(Common, {
         });
     },
 
-    getShippingLabelAction: function()
-    {
+    getShippingLabelAction: function() {
         this.openWindow(M2ePro.url.get('adminhtml_amazon_order_merchantFulfillment/getLabel', {
             order_id: this.orderId
         }));
     },
 
-    markAsShippedAction: function(orderId)
-    {
+    markAsShippedAction: function(orderId) {
         var self = this;
         this.orderId = orderId;
 
@@ -277,16 +269,14 @@ window.AmazonOrderMerchantFulfillment = Class.create(Common, {
         });
     },
 
-    useMerchantFulfillmentAction: function()
-    {
+    useMerchantFulfillmentAction: function() {
         this.closePopUp();
         this.getPopupAction();
     },
 
     // ---------------------------------------
 
-    onPopupScroll: function()
-    {
+    onPopupScroll: function() {
         if (!$('fulfillment_must_arrive_by_date')) {
             return;
         }
@@ -300,7 +290,7 @@ window.AmazonOrderMerchantFulfillment = Class.create(Common, {
             cache: true,
             position: [
                 bounds.left + bounds.width,
-                bounds.top + window.scrollY,
+                bounds.top + window.scrollY
             ]
         });
 
@@ -312,20 +302,26 @@ window.AmazonOrderMerchantFulfillment = Class.create(Common, {
         }
     },
 
-    shippingServicesChange: function()
-    {
+    shippingServicesChange: function() {
         $('fulfillment_save_shipping_services').enable();
         $('fulfillment_save_shipping_services').removeClassName('disabled');
     },
 
-    packageDimensionChange: function()
-    {
-        if(this.value == M2ePro.php.constant('Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::DIMENSION_SOURCE_NONE')) {
+    packageDimensionChange: function() {
+        $('fulfillment_package_dimension_custom_value').hide();
+        $('fulfillment_package_dimension_custom_attribute').hide();
+
+        if (this.value == M2ePro.php.constant('Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::DIMENSION_SOURCE_NONE')) {
             $('fulfillment_package_dimension_custom').hide();
             $('fulfillment_package_dimension_source').value = M2ePro.php.constant('Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::DIMENSION_SOURCE_NONE');
-        } else if(this.value == M2ePro.php.constant('Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::DIMENSION_SOURCE_CUSTOM')) {
+        } else if (this.value == M2ePro.php.constant('Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::DIMENSION_SOURCE_CUSTOM')) {
             $('fulfillment_package_dimension_custom').show();
+            $('fulfillment_package_dimension_custom_value').show();
             $('fulfillment_package_dimension_source').value = M2ePro.php.constant('Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::DIMENSION_SOURCE_CUSTOM');
+        } else if (this.value == M2ePro.php.constant('Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::DIMENSION_SOURCE_CUSTOM_ATTRIBUTE')) {
+            $('fulfillment_package_dimension_custom').show();
+            $('fulfillment_package_dimension_custom_attribute').show();
+            $('fulfillment_package_dimension_source').value = M2ePro.php.constant('Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::DIMENSION_SOURCE_CUSTOM_ATTRIBUTE');
         } else {
             $('fulfillment_package_dimension_custom').hide();
             $('fulfillment_package_dimension_width').clear();
@@ -335,20 +331,35 @@ window.AmazonOrderMerchantFulfillment = Class.create(Common, {
 
             if (this.value.match(M2ePro.php.constant('Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::VIRTUAL_PREDEFINED_PACKAGE'))) {
 
-                var selectedOption = $$('#fulfillment_package_dimension_predefined option[value="'+this.value+'"]')[0];
-                $('fulfillment_package_dimension_width').value   = selectedOption.getAttribute('width');
-                $('fulfillment_package_dimension_length').value  = selectedOption.getAttribute('length');
-                $('fulfillment_package_dimension_height').value  = selectedOption.getAttribute('height');
+                var selectedOption = $$('#fulfillment_package_dimension_predefined option[value="' + this.value + '"]')[0];
+                $('fulfillment_package_dimension_width').value = selectedOption.getAttribute('width');
+                $('fulfillment_package_dimension_length').value = selectedOption.getAttribute('length');
+                $('fulfillment_package_dimension_height').value = selectedOption.getAttribute('height');
                 $('fulfillment_package_dimension_measure').value = selectedOption.getAttribute('unit');
-                $('fulfillment_package_weight_measure').value    = selectedOption.getAttribute('weight_unit');
+                $('fulfillment_package_weight_measure').value = selectedOption.getAttribute('weight_unit');
 
                 $('fulfillment_package_dimension_custom').show();
             }
         }
     },
 
-    shippingCountryChange: function()
-    {
+    fulfillmentPackageWeightChange: function() {
+        var customAttribute = $('fulfillment_package_weight_custom_attribute'),
+            customValueTr = $('fulfillment_package_weight_custom_value_tr');
+
+        customValueTr.hide();
+
+        customAttribute.value = '';
+        if (this.value == M2ePro.php.constant('Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::WEIGHT_SOURCE_CUSTOM_VALUE')) {
+            customValueTr.show();
+        }
+
+        if (this.value == M2ePro.php.constant('Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::WEIGHT_SOURCE_CUSTOM_ATTRIBUTE')) {
+            AmazonOrderMerchantFulfillmentObj.updateHiddenValue(this, customAttribute);
+        }
+    },
+
+    shippingCountryChange: function() {
         new Ajax.Request(M2ePro.url.get('adminhtml_order/getCountryRegions'), {
             method: 'post',
             parameters: {
@@ -389,8 +400,7 @@ window.AmazonOrderMerchantFulfillment = Class.create(Common, {
 
     // ---------------------------------------
 
-    cacheForm: function(isSerialize)
-    {
+    cacheForm: function(isSerialize) {
         var self = this;
         var fieldsToCache = [
             'fulfillment_must_arrive_by_date',
@@ -400,16 +410,16 @@ window.AmazonOrderMerchantFulfillment = Class.create(Common, {
             'fulfillment_package_dimension_length',
             'fulfillment_package_dimension_width',
             'fulfillment_package_dimension_height',
-            'fulfillment_package_weight',
+            'fulfillment_package_weight'
         ];
 
         if (isSerialize) {
             this.cachedFields.cached = true;
-            fieldsToCache.forEach(function(field){
+            fieldsToCache.forEach(function(field) {
                 self.cachedFields[field] = $(field).value;
             });
-        } else if(this.cachedFields.hasOwnProperty('cached')) {
-            fieldsToCache.forEach(function(field){
+        } else if (this.cachedFields.hasOwnProperty('cached')) {
+            fieldsToCache.forEach(function(field) {
                 $(field).value = self.cachedFields[field];
             });
             $('fulfillment_package_dimension_predefined').simulate('change');
@@ -418,8 +428,7 @@ window.AmazonOrderMerchantFulfillment = Class.create(Common, {
 
     // ---------------------------------------
 
-    autoHeightFix: function()
-    {
+    autoHeightFix: function() {
         setTimeout(function() {
             Windows.getFocusedWindow().content.style.height = '';
             Windows.getFocusedWindow().content.style.maxHeight = '700px';
@@ -427,7 +436,7 @@ window.AmazonOrderMerchantFulfillment = Class.create(Common, {
             if ($('fulfillment_form_container')) {
                 var containerHeight = parseInt($('fulfillment_form_container').getStyle('height'));
 
-                if($('fulfillment_form_container').scrollHeight <= containerHeight){
+                if ($('fulfillment_form_container').scrollHeight <= containerHeight) {
                     $('fulfillment_form_container').setStyle({
                         paddingRight: 0
                     });

@@ -6,8 +6,6 @@
  * @license    Commercial use is forbidden
  */
 
-use Ess_M2ePro_Model_Walmart_Account as Account;
-
 class Ess_M2ePro_Adminhtml_Walmart_AccountController
     extends Ess_M2ePro_Controller_Adminhtml_Walmart_MainController
 {
@@ -16,8 +14,8 @@ class Ess_M2ePro_Adminhtml_Walmart_AccountController
     protected function _initAction()
     {
         $this->loadLayout()
-             ->_title(Mage::helper('M2ePro')->__('Configuration'))
-             ->_title(Mage::helper('M2ePro')->__('Accounts'));
+            ->_title(Mage::helper('M2ePro')->__('Configuration'))
+            ->_title(Mage::helper('M2ePro')->__('Accounts'));
 
         $this->getLayout()->getBlock('head')
             ->setCanLoadExtJs(true)
@@ -33,6 +31,7 @@ class Ess_M2ePro_Adminhtml_Walmart_AccountController
         $this->_initPopUp();
 
         $this->setPageHelpLink(null, null, "x/L4taAQ");
+
         return $this;
     }
 
@@ -50,7 +49,8 @@ class Ess_M2ePro_Adminhtml_Walmart_AccountController
         $this->_initAction()
             ->_addContent(
                 $this->getLayout()->createBlock(
-                    'M2ePro/adminhtml_walmart_configuration', '',
+                    'M2ePro/adminhtml_walmart_configuration',
+                    '',
                     array('active_tab' => Ess_M2ePro_Block_Adminhtml_Walmart_Configuration_Tabs::TAB_ID_ACCOUNT)
                 )
             )->renderLayout();
@@ -58,7 +58,8 @@ class Ess_M2ePro_Adminhtml_Walmart_AccountController
 
     public function accountGridAction()
     {
-        $response = $this->loadLayout()->getLayout()->createBlock('M2ePro/adminhtml_walmart_account_grid')->toHtml();
+        $response = $this->loadLayout()->getLayout()
+            ->createBlock('M2ePro/adminhtml_walmart_account_grid')->toHtml();
         $this->getResponse()->setBody($response);
     }
 
@@ -76,6 +77,7 @@ class Ess_M2ePro_Adminhtml_Walmart_AccountController
 
         if ($id && !$account->getId()) {
             $this->_getSession()->addError(Mage::helper('M2ePro')->__('Account does not exist.'));
+
             return $this->indexAction();
         }
 
@@ -83,6 +85,7 @@ class Ess_M2ePro_Adminhtml_Walmart_AccountController
         if ($marketplaces->getSize() <= 0) {
             $message = 'You should select and update at least one Walmart marketplace.';
             $this->_getSession()->addError(Mage::helper('M2ePro')->__($message));
+
             return $this->indexAction();
         }
 
@@ -93,88 +96,23 @@ class Ess_M2ePro_Adminhtml_Walmart_AccountController
         Mage::helper('M2ePro/Data_Global')->setValue('temp_data', $account);
 
         $this->_initAction()
-             ->_addLeft($this->getLayout()->createBlock('M2ePro/adminhtml_walmart_account_edit_tabs'))
-             ->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_walmart_account_edit'))
-             ->renderLayout();
+            ->_addLeft($this->getLayout()->createBlock('M2ePro/adminhtml_walmart_account_edit_tabs'))
+            ->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_walmart_account_edit'))
+            ->renderLayout();
     }
 
     //########################################
 
     public function saveAction()
     {
-        if (!$post = $this->getRequest()->getPost()) {
+        if (!$data = $this->getRequest()->getPost()) {
             $this->_redirect('*/*/index');
         }
 
         $id = $this->getRequest()->getParam('id');
-        $isEdit = $id !== null;
-
-        $searchField = empty($post['client_id']) ? 'consumer_id' : 'client_id';
-        $searchValue = empty($post['client_id']) ? $post['consumer_id'] : $post['client_id'];
-
-        $accountExists = $this->getExistsAccount($searchField, $searchValue);
-        if (empty($id) && !empty($accountExists)) {
-            $this->_getSession()->addError(
-                Mage::helper('M2ePro')->__('An account with the same Walmart Client ID already exists.')
-            );
-
-            $this->_redirect('*/*/new');
-            return;
-        }
-
-        /** @var Ess_M2ePro_Model_Walmart_Account $model */
-        $model = Mage::helper('M2ePro/Component_Walmart')->getModel('Account');
-        $isEdit && $model->loadInstance($id);
-        $oldData = $model->getOrigData();
-
-        Mage::getModel('M2ePro/Walmart_Account_Builder')->build($model, $post);
-
-        $id = $model->getId();
 
         try {
-            // Add or update server
-            // ---------------------------------------
-
-            /** @var $accountObj Ess_M2ePro_Model_Account */
-            $accountObj = $model;
-
-            if (!$accountObj->isSetProcessingLock('server_synchronize')) {
-
-                /** @var $dispatcherObject Ess_M2ePro_Model_Walmart_Connector_Dispatcher */
-                $dispatcherObject = Mage::getModel('M2ePro/Walmart_Connector_Dispatcher');
-
-                $requestData = array(
-                    'title'            => $post['title'],
-                    'marketplace_id'   => (int)$post['marketplace_id'],
-                    'related_store_id' => (int)$post['related_store_id']
-                );
-
-                if ($post['marketplace_id'] == Ess_M2ePro_Helper_Component_Walmart::MARKETPLACE_CA) {
-                    $requestData['consumer_id'] = $post['consumer_id'];
-                    $requestData['private_key'] = $post['private_key'];
-                } else {
-                    $requestData['client_id'] = $post['client_id'];
-                    $requestData['client_secret'] = $post['client_secret'];
-                }
-
-                if (!$isEdit) {
-                    $connectorObj = $dispatcherObject->getConnector(
-                        'account', 'add', 'entityRequester', $requestData, $id
-                    );
-                    $dispatcherObject->process($connectorObj);
-                } else {
-
-                    $arrayDiffAssoc = array_diff_assoc($requestData, $oldData);
-                    if (!empty($arrayDiffAssoc)) {
-                        $connectorObj = $dispatcherObject->getConnector(
-                            'account', 'update', 'entityRequester', $requestData, $id
-                        );
-                        $dispatcherObject->process($connectorObj);
-                    }
-                }
-            }
-
-            // ---------------------------------------
+            $account = $id ? $this->updateAccount($id, $data) : $this->addAccount($data);
         } catch (Exception $exception) {
             Mage::helper('M2ePro/Module_Exception')->process($exception);
 
@@ -182,10 +120,6 @@ class Ess_M2ePro_Adminhtml_Walmart_AccountController
             $error = Mage::helper('M2ePro')->__($error, $exception->getMessage());
 
             $this->_getSession()->addError($error);
-
-            if (!$isEdit) {
-                $model->deleteInstance();
-            }
 
             return $this->indexAction();
         }
@@ -195,7 +129,7 @@ class Ess_M2ePro_Adminhtml_Walmart_AccountController
         /** @var $wizardHelper Ess_M2ePro_Helper_Module_Wizard */
         $wizardHelper = Mage::helper('M2ePro/Module_Wizard');
 
-        $routerParams = array('id' => $id);
+        $routerParams = array('id' => $account->getId());
         if ($wizardHelper->isActive('installationWalmart') &&
             $wizardHelper->getStep('installationWalmart') == 'account') {
             $routerParams['wizard'] = true;
@@ -213,6 +147,7 @@ class Ess_M2ePro_Adminhtml_Walmart_AccountController
         if (empty($ids)) {
             $this->_getSession()->addError(Mage::helper('M2ePro')->__('Please select account(s) to remove.'));
             $this->_redirect('*/*/index');
+
             return;
         }
 
@@ -224,6 +159,7 @@ class Ess_M2ePro_Adminhtml_Walmart_AccountController
 
         if (empty($accounts)) {
             $this->_redirect('*/*/index');
+
             return;
         }
 
@@ -237,22 +173,6 @@ class Ess_M2ePro_Adminhtml_Walmart_AccountController
                 continue;
             }
 
-            try {
-                $dispatcherObject = Mage::getModel('M2ePro/Walmart_Connector_Dispatcher');
-
-                $connectorObj = $dispatcherObject->getConnector(
-                    'account', 'delete', 'entityRequester',
-                    array(), $account
-                );
-                $dispatcherObject->process($connectorObj);
-            } catch (Exception $e) {
-                $account->deleteProcessings();
-                $account->deleteProcessingLocks();
-                $account->deleteInstance();
-
-                throw $e;
-            }
-
             $account->deleteProcessings();
             $account->deleteProcessingLocks();
             $account->deleteInstance();
@@ -263,7 +183,7 @@ class Ess_M2ePro_Adminhtml_Walmart_AccountController
         $tempString = Mage::helper('M2ePro')->__('%amount% record(s) were deleted.', $deleted);
         $deleted && $this->_getSession()->addSuccess($tempString);
 
-        $tempString  = Mage::helper('M2ePro')->__('%amount% record(s) are used in M2E Pro Listing(s).', $locked) . ' ';
+        $tempString = Mage::helper('M2ePro')->__('%amount% record(s) are used in M2E Pro Listing(s).', $locked) . ' ';
         $tempString .= Mage::helper('M2ePro')->__('Account must not be in use to be deleted.');
         $locked && $this->_getSession()->addError($tempString);
 
@@ -274,16 +194,17 @@ class Ess_M2ePro_Adminhtml_Walmart_AccountController
 
     public function checkAuthAction()
     {
-        $consumerId    = $this->getRequest()->getParam('consumer_id', false);
-        $privateKey    = $this->getRequest()->getParam('private_key', false);
-        $clientId      = $this->getRequest()->getParam('client_id', false);
-        $clientSecret  = $this->getRequest()->getParam('client_secret', false);
+        $consumerId = $this->getRequest()->getParam('consumer_id', false);
+        $privateKey = $this->getRequest()->getParam('private_key', false);
+        $clientId = $this->getRequest()->getParam('client_id', false);
+        $clientSecret = $this->getRequest()->getParam('client_secret', false);
         $marketplaceId = $this->getRequest()->getParam('marketplace_id', false);
-        $result        = array('result' => null);
+        $result = array('result' => null);
 
         /** @var $marketplaceObject Ess_M2ePro_Model_Marketplace */
         $marketplaceObject = Mage::helper('M2ePro/Component_Walmart')->getCachedObject(
-            'Marketplace', $marketplaceId
+            'Marketplace',
+            $marketplaceId
         );
 
         if ($marketplaceId == Ess_M2ePro_Helper_Component_Walmart::MARKETPLACE_CA &&
@@ -294,7 +215,7 @@ class Ess_M2ePro_Adminhtml_Walmart_AccountController
                 'private_key' => $privateKey,
             );
         } elseif ($marketplaceId != Ess_M2ePro_Helper_Component_Walmart::MARKETPLACE_CA &&
-                  $clientId && $clientSecret) {
+            $clientId && $clientSecret) {
             $requestData = array(
                 'marketplace'   => $marketplaceObject->getNativeId(),
                 'client_id'     => $clientId,
@@ -312,7 +233,7 @@ class Ess_M2ePro_Adminhtml_Walmart_AccountController
             $response = $connectorObj->getResponseData();
 
             $result['result'] = isset($response['status']) ? $response['status']
-                                                           : null;
+                : null;
             if (!empty($response['reason'])) {
                 $result['reason'] = Mage::helper('M2ePro')->escapeJs($response['reason']);
             }
@@ -331,8 +252,11 @@ class Ess_M2ePro_Adminhtml_Walmart_AccountController
         try {
             $dispatcherObject = Mage::getModel('M2ePro/M2ePro_Connector_Dispatcher');
             $connectorObj = $dispatcherObject->getVirtualConnector(
-                'account', 'get', 'info', array(
-                'account' => $account->getChildObject()->getServerHash()
+                'account',
+                'get',
+                'info',
+                array(
+                    'account' => $account->getChildObject()->getServerHash()
                 )
             );
 
@@ -347,10 +271,10 @@ class Ess_M2ePro_Adminhtml_Walmart_AccountController
         }
 
         $status = (bool)$response['info']['status'];
-        $note   = $response['info']['note'];
+        $note = $response['info']['note'];
 
         if ($status) {
-            return 'MessageObj.addNotice(\''.$note.'\');';
+            return 'MessageObj.addNotice(\'' . $note . '\');';
         }
 
         $errorMessage = Mage::helper('M2ePro')->__(
@@ -358,22 +282,138 @@ class Ess_M2ePro_Adminhtml_Walmart_AccountController
             array('error_message' => $note)
         );
 
-        return 'MessageObj.addError(\''.$errorMessage.'\');';
+        return 'MessageObj.addError(\'' . $errorMessage . '\');';
     }
 
     //########################################
 
-    protected function getExistsAccount($search, $value)
+    protected function addAccount($data)
     {
-        /** @var Ess_M2ePro_Model_Resource_Account_Collection $account */
-        $account = Mage::getModel('M2ePro/Walmart_Account')->getCollection()
-            ->addFieldToFilter($search, $value);
+        $searchField = empty($data['client_id']) ? 'consumer_id' : 'client_id';
+        $searchValue = empty($data['client_id']) ? $data['consumer_id'] : $data['client_id'];
 
-        if (!$account->getSize()) {
-            return null;
+        if ($this->isAccountExists($searchField, $searchValue)) {
+            throw new Ess_M2ePro_Model_Exception(
+                'An account with the same Walmart Client ID already exists.'
+            );
         }
 
-        return $account->getFirstItem();
+        /** @var Ess_M2ePro_Model_Account $account */
+        $account = Mage::helper('M2ePro/Component_Walmart')->getModel('Account');
+
+        Mage::getModel('M2ePro/Walmart_Account_Builder')->build($account, $data);
+
+        try {
+            $params = $this->getDataForServer($data);
+
+            /** @var $dispatcherObject Ess_M2ePro_Model_Walmart_Connector_Dispatcher */
+            $dispatcherObject = Mage::getModel('M2ePro/Walmart_Connector_Dispatcher');
+
+            /** @var Ess_M2ePro_Model_Walmart_Connector_Account_Add_EntityRequester $connectorObj */
+            $connectorObj = $dispatcherObject->getConnector(
+                'account',
+                'add',
+                'entityRequester',
+                $params,
+                $account
+            );
+            $dispatcherObject->process($connectorObj);
+            $responseData = $connectorObj->getResponseData();
+
+            $account->getChildObject()->addData(
+                array(
+                    'server_hash' => $responseData['hash'],
+                    'info'        => Mage::helper('M2ePro')->jsonEncode($responseData['info'])
+                )
+            );
+            $account->getChildObject()->save();
+        } catch (\Exception $exception) {
+            $account->deleteInstance();
+
+            throw $exception;
+        }
+
+        return $account;
+    }
+
+    protected function updateAccount($id, $data)
+    {
+        /** @var Ess_M2ePro_Model_Account $account */
+        $account = Mage::helper('M2ePro/Component_Walmart')->getObject('Account', $id);
+
+        $oldData = array_merge($account->getOrigData(), $account->getChildObject()->getOrigData());
+
+        Mage::getModel('M2ePro/Walmart_Account_Builder')->build($account, $data);
+
+        try {
+            $params = $this->getDataForServer($data);
+
+            if (!$this->isNeedSendDataToServer($params, $oldData)) {
+                return $account;
+            }
+
+            /** @var $dispatcherObject Ess_M2ePro_Model_Walmart_Connector_Dispatcher */
+            $dispatcherObject = Mage::getModel('M2ePro/Walmart_Connector_Dispatcher');
+
+            /** @var Ess_M2ePro_Model_Walmart_Connector_Account_Update_EntityRequester $connectorObj */
+            $connectorObj = $dispatcherObject->getConnector(
+                'account',
+                'update',
+                'entityRequester',
+                $params,
+                $account
+            );
+            $dispatcherObject->process($connectorObj);
+            $responseData = $connectorObj->getResponseData();
+
+            $account->getChildObject()->addData(
+                array(
+                    'info' => Mage::helper('M2ePro')->jsonEncode($responseData['info'])
+                )
+            );
+            $account->getChildObject()->save();
+        } catch (\Exception $exception) {
+            Mage::getModel('M2ePro/Walmart_Account_Builder')->build($account, $oldData);
+
+            throw $exception;
+        }
+
+        return $account;
+    }
+
+    //########################################
+
+    protected function getDataForServer($data)
+    {
+        $params = array(
+            'marketplace_id' => (int)$data['marketplace_id']
+        );
+
+        if ($data['marketplace_id'] == Ess_M2ePro_Helper_Component_Walmart::MARKETPLACE_US) {
+            $params['client_id'] = $data['client_id'];
+            $params['client_secret'] = $data['client_secret'];
+        } else {
+            $params['consumer_id'] = $data['consumer_id'];
+            $params['private_key'] = $data['private_key'];
+        }
+
+        return $params;
+    }
+
+    protected function isNeedSendDataToServer($newData, $oldData)
+    {
+        $diff = array_diff_assoc($newData, $oldData);
+
+        return !empty($diff);
+    }
+
+    protected function isAccountExists($search, $value)
+    {
+        /** @var Ess_M2ePro_Model_Resource_Account_Collection $collection */
+        $collection = Mage::getModel('M2ePro/Walmart_Account')->getCollection()
+            ->addFieldToFilter($search, $value);
+
+        return $collection->getSize();
     }
 
     //########################################

@@ -10,6 +10,7 @@ use Ess_M2ePro_Model_Ebay_Account as Account;
 
 class Ess_M2ePro_Model_Ebay_Account_Builder extends Ess_M2ePro_Model_ActiveRecord_AbstractBuilder
 {
+    //########################################
 
     protected function prepareData()
     {

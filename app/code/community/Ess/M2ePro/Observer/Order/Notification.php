@@ -28,6 +28,9 @@ class Ess_M2ePro_Observer_Order_Notification extends Ess_M2ePro_Observer_Abstrac
 
     //########################################
 
+    /**
+     * @return bool
+     */
     public function canProcess()
     {
         if ($this->_isProcessed) {
@@ -65,8 +68,7 @@ class Ess_M2ePro_Observer_Order_Notification extends Ess_M2ePro_Observer_Abstrac
             return false;
         }
 
-        // do not show on configuration page
-        if (strtolower($request->getControllerName()) == 'system_config') {
+        if ($this->isNeedToSkipByControllerName($request)) {
             return false;
         }
 
@@ -83,6 +85,21 @@ class Ess_M2ePro_Observer_Order_Notification extends Ess_M2ePro_Observer_Abstrac
         }
 
         return true;
+    }
+
+    /**
+     * @param Mage_Core_Controller_Request_Http $request
+     * @return bool
+     */
+    protected function isNeedToSkipByControllerName(Mage_Core_Controller_Request_Http $request)
+    {
+        $controllersToSkip = array(
+            'system_config',
+            'system_convert_profile',
+            'system_convert_gui'
+        );
+
+        return in_array(strtolower($request->getControllerName()), $controllersToSkip, true);
     }
 
     //########################################

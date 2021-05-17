@@ -48,7 +48,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_SynchronizeInventory_Responser
 
         if ($this->getResponse()->getMessages() && $this->getResponse()->getMessages()->hasErrorEntities()) {
             //try download inventory again in an hour
-            $newSynchDate = date('Y-m-d H:i:s', strtotime($account->getData('inventory_last_synchronization')) + 3600);
+            $newSynchDate = date('Y-m-d H:i:s', strtotime($newSynchDate) + 3600);
         }
 
         $account->setData('inventory_last_synchronization', $newSynchDate)->save();

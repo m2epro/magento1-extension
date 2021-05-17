@@ -62,10 +62,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Magento_Grid
                 )
             );
 
-        if ($this->isFilterOrSortByPriceIsUsed(null, 'ebay_online_current_price')) {
-            $collection->setIsNeedToUseIndexerParent(true);
-        }
-
         $collection->joinTable(
             array('lp' => 'M2ePro/Listing_Product'),
             'product_id=entity_id',
@@ -132,9 +128,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Magento_Grid
             $collection->addAttributeToSelect('thumbnail');
         }
 
-        // ---------------------------------------
-
-        if ($collection->isNeedUseIndexerParent()) {
+        if ($this->isFilterOrSortByPriceIsUsed(null, 'ebay_online_current_price')) {
             $collection->joinIndexerParent();
         }
 

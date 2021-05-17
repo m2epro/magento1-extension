@@ -7,25 +7,24 @@
  */
 
 class Ess_M2ePro_Model_Walmart_Connector_Account_Delete_EntityRequester
-    extends Ess_M2ePro_Model_Walmart_Connector_Command_Pending_Requester
+    extends Ess_M2ePro_Model_Walmart_Connector_Command_RealTime
 {
     //########################################
 
+    /**
+     * @return array
+     */
     public function getRequestData()
     {
         return array();
     }
 
+    /**
+     * @return array
+     */
     protected function getCommand()
     {
         return array('account','delete','entity');
-    }
-
-    //########################################
-
-    protected function getProcessingRunnerModelName()
-    {
-        return 'Walmart_Connector_Account_Delete_ProcessingRunner';
     }
 
     //########################################

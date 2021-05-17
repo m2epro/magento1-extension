@@ -7,7 +7,7 @@
  */
 
 class Ess_M2ePro_Model_Amazon_Connector_Account_Update_EntityRequester
-    extends Ess_M2ePro_Model_Amazon_Connector_Command_Pending_Requester
+    extends Ess_M2ePro_Model_Amazon_Connector_Command_RealTime
 {
     //########################################
 
@@ -21,11 +21,31 @@ class Ess_M2ePro_Model_Amazon_Connector_Account_Update_EntityRequester
         return array('account','update','entity');
     }
 
-    //########################################
-
-    protected function getProcessingRunnerModelName()
+    protected function validateResponse()
     {
-        return 'Amazon_Connector_Account_Update_ProcessingRunner';
+        if (!parent::validateResponse()) {
+            return false;
+        }
+
+        $responseData = $this->getResponse()->getData();
+        if (!isset($responseData['info']) && !$this->getResponse()->getMessages()->hasErrorEntities()) {
+            throw new Exception('Validation Failed. The Server response data is not valid.');
+        }
+
+        return true;
+    }
+
+    protected function prepareResponseData()
+    {
+        foreach ($this->getResponse()->getMessages()->getEntities() as $message) {
+            if (!$message->isError()) {
+                continue;
+            }
+
+            throw new Exception($message->getText());
+        }
+
+        $this->_responseData = $this->getResponse()->getData();
     }
 
     //########################################

@@ -7,8 +7,7 @@ window.EbayListingSettingsGrid = Class.create(EbayListingViewGrid, {
 
     // ---------------------------------------
 
-    initialize: function($super, gridId, listingId, marketplaceId, accountId)
-    {
+    initialize: function($super, gridId, listingId, marketplaceId, accountId) {
         this.marketplaceId = marketplaceId;
         this.accountId = accountId;
 
@@ -17,11 +16,11 @@ window.EbayListingSettingsGrid = Class.create(EbayListingViewGrid, {
 
     // ---------------------------------------
 
-    prepareActions: function($super)
-    {
+    prepareActions: function($super) {
         $super();
 
         this.movingHandler = new ListingMoving(this);
+        this.mappingHandler = new ListingMapping(this, 'ebay');
 
         this.actions = Object.extend(this.actions, {
 
@@ -44,6 +43,9 @@ window.EbayListingSettingsGrid = Class.create(EbayListingViewGrid, {
             editMotorsAction: function(id) {
                 this.openMotorsPopup(id);
             }.bind(this),
+            remapProductAction: function(id) {
+                this.mappingHandler.openPopUp(id, null, this.listingId);
+            }.bind(this),
 
             movingAction: this.movingHandler.run.bind(this.movingHandler),
 
@@ -56,20 +58,17 @@ window.EbayListingSettingsGrid = Class.create(EbayListingViewGrid, {
 
     // ---------------------------------------
 
-    tryToMove: function(listingId)
-    {
-        this.movingHandler.submit(listingId, this.onSuccess)
+    tryToMove: function(listingId) {
+        this.movingHandler.submit(listingId, this.onSuccess);
     },
 
-    onSuccess: function()
-    {
+    onSuccess: function() {
         this.unselectAllAndReload();
     },
 
     // ---------------------------------------
 
-    editSettings: function(id, tab)
-    {
+    editSettings: function(id, tab) {
         this.selectedProductsIds = id ? [id] : this.getSelectedProductsArray();
 
         new Ajax.Request(M2ePro.url.get('adminhtml_ebay_template/editListingProduct'), {
@@ -92,8 +91,7 @@ window.EbayListingSettingsGrid = Class.create(EbayListingViewGrid, {
         });
     },
 
-    openMotorsPopup: function(id)
-    {
+    openMotorsPopup: function(id) {
         EbayMotorsObj.savedNotes = {};
 
         this.selectedProductsIds = id ? [id] : this.getSelectedProductsArray();
@@ -102,8 +100,7 @@ window.EbayListingSettingsGrid = Class.create(EbayListingViewGrid, {
 
     // ---------------------------------------
 
-    saveSettings: function(savedTemplates)
-    {
+    saveSettings: function(savedTemplates) {
         var requestParams = {};
 
         // push information about saved templates into the request params
@@ -156,8 +153,7 @@ window.EbayListingSettingsGrid = Class.create(EbayListingViewGrid, {
 
     // ---------------------------------------
 
-    getPopUpTitle: function(tab, productTitles)
-    {
+    getPopUpTitle: function(tab, productTitles) {
         var title;
 
         switch (tab) {
@@ -185,8 +181,7 @@ window.EbayListingSettingsGrid = Class.create(EbayListingViewGrid, {
 
     // ---------------------------------------
 
-    transferring: function(id)
-    {
+    transferring: function(id) {
         this.selectedProductsIds = id ? [id] : this.getSelectedProductsArray();
         this.unselectAll();
 
@@ -195,8 +190,7 @@ window.EbayListingSettingsGrid = Class.create(EbayListingViewGrid, {
 
     // ---------------------------------------
 
-    confirm: function()
-    {
+    confirm: function() {
         return true;
     }
 

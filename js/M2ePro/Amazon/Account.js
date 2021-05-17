@@ -455,17 +455,19 @@ window.AmazonAccount = Class.create(Common, {
     },
 
     magentoOrdersTaxModeChange: function() {
-        if ($('marketplace_id').value != M2ePro.php.constant('Ess_M2ePro_Helper_Component_Amazon::MARKETPLACE_US')) {
-            $('tr_magento_orders_tax_excluded_states').hide();
-            return;
-        }
-
         if ($('magento_orders_tax_mode').value == M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_TAX_MODE_CHANNEL') ||
             $('magento_orders_tax_mode').value == M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_TAX_MODE_MIXED')) {
             $('tr_magento_orders_tax_excluded_states').show();
+            $('tr_magento_orders_tax_collect_for_uk').show();
         } else {
             $('tr_magento_orders_tax_excluded_states').hide();
+            $('tr_magento_orders_tax_collect_for_uk').hide();
         }
+
+        if ($('marketplace_id').value != M2ePro.php.constant('Ess_M2ePro_Helper_Component_Amazon::MARKETPLACE_US')) {
+            $('tr_magento_orders_tax_excluded_states').hide();
+        }
+
     },
 
     magentoOrdersTaxAmazonCollectsChange: function() {

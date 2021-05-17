@@ -13,20 +13,25 @@ class Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment extends Mage_Core_H
     const STATUS_REFUND_REJECTED = 'RefundRejected';
     const STATUS_REFUND_APPLIED  = 'RefundApplied';
 
-    const DIMENSION_SOURCE_NONE       = 0;
-    const DIMENSION_SOURCE_CUSTOM     = 1;
-    const DIMENSION_SOURCE_PREDEFINED = 2;
+    const DIMENSION_SOURCE_NONE             = 0;
+    const DIMENSION_SOURCE_CUSTOM           = 1;
+    const DIMENSION_SOURCE_PREDEFINED       = 2;
+    const DIMENSION_SOURCE_CUSTOM_ATTRIBUTE = 3;
 
     const DIMENSION_MEASURE_INCHES      = 'inches';
     const DIMENSION_MEASURE_CENTIMETERS = 'centimeters';
 
+    const WEIGHT_SOURCE_NONE             = 0;
+    const WEIGHT_SOURCE_CUSTOM_VALUE     = 1;
+    const WEIGHT_SOURCE_CUSTOM_ATTRIBUTE = 2;
+
     const WEIGHT_MEASURE_OUNCES = 'ounces';
     const WEIGHT_MEASURE_GRAMS  = 'grams';
 
-    const DELIVERY_EXPERIENCE_NO_TRACKING           = 0;
-    const DELIVERY_EXPERIENCE_WITHOUT_SIGNATURE     = 1;
-    const DELIVERY_EXPERIENCE_WITH_SIGNATURE        = 2;
-    const DELIVERY_EXPERIENCE_WITH_ADULT_SIGNATURE  = 3;
+    const DELIVERY_EXPERIENCE_NO_TRACKING          = 0;
+    const DELIVERY_EXPERIENCE_WITHOUT_SIGNATURE    = 1;
+    const DELIVERY_EXPERIENCE_WITH_SIGNATURE       = 2;
+    const DELIVERY_EXPERIENCE_WITH_ADULT_SIGNATURE = 3;
 
     const CARRIER_WILL_PICK_UP_NO  = 0;
     const CARRIER_WILL_PICK_UP_YES = 1;
@@ -42,7 +47,7 @@ class Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment extends Mage_Core_H
     public function getPredefinedPackageDimensions()
     {
         return array(
-            'FedEx' => array(
+            'FedEx'      => array(
                 'FedEx_Box_10kg'          => 'FedEx Box 10 kg (15.81 x 12.94 x 10.19 in)',
                 'FedEx_Box_25kg'          => 'FedEx Box 25 kg (54.80 x 42.10 x 33.50 in)',
                 'FedEx_Box_Extra_Large_1' => 'FedEx Box Extra Large 1 (11.88 x 11.00 x 10.75 in)',
@@ -60,7 +65,7 @@ class Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment extends Mage_Core_H
                 'FedEx_Tube'              => 'FedEx Tube (38.00 x 6.00 x 6.00 in)',
                 'FedEx_XL_Pak'            => 'FedEx XL Pak (17.50 x 20.75 x 2.00 in)'
             ),
-            'UPS' => array(
+            'UPS'        => array(
                 'UPS_Box_10kg'               => 'UPS Box 10 kg (41.00 x 33.50 x 26.50 cm)',
                 'UPS_Box_25kg'               => 'UPS Box 25 kg (48.40 x 43.30 x 35.00 cm)',
                 'UPS_Express_Box'            => 'UPS Express Box (46.00 x 31.50 x 9.50 cm)',
@@ -76,7 +81,7 @@ class Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment extends Mage_Core_H
                 'UPS_Pad_Pak'                => 'UPS Pad Pak (14.75 x 11.00 x 2.00 in)',
                 'UPS_Pallet'                 => 'UPS Pallet (120.00 x 80.00 x 200.00 cm)'
             ),
-            'USPS' => array(
+            'USPS'       => array(
                 'USPS_Card'                      => 'USPS Card (6.00 x 4.25 x 0.01 in)',
                 'USPS_Flat'                      => 'USPS Flat (15.00 x 12.00 x 0.75 in)',
                 'USPS_FlatRateCardboardEnvelope' => 'USPS Flat Rate Cardboard Envelope (12.50 x 9.50 x 4.00 in)',
@@ -102,7 +107,7 @@ class Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment extends Mage_Core_H
              * https://www.postoffice.co.uk/mail/international-confirmed
              */
             'Royal Mail' => array(
-                self::VIRTUAL_PREDEFINED_PACKAGE .'-1' => array(
+                self::VIRTUAL_PREDEFINED_PACKAGE . '-1' => array(
                     'title'       => 'Royal Mail Letter (24 x 16.5 x 0.5 cm)',
                     'unit'        => self::DIMENSION_MEASURE_CENTIMETERS,
                     'length'      => '24',
@@ -110,7 +115,7 @@ class Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment extends Mage_Core_H
                     'height'      => '0.5',
                     'weight_unit' => self::WEIGHT_MEASURE_GRAMS
                 ),
-                self::VIRTUAL_PREDEFINED_PACKAGE .'-2' => array(
+                self::VIRTUAL_PREDEFINED_PACKAGE . '-2' => array(
                     'title'       => 'Royal Mail Large letter (35.3 x 25 x 2.5 cm)',
                     'unit'        => self::DIMENSION_MEASURE_CENTIMETERS,
                     'length'      => '35.3',
@@ -118,7 +123,7 @@ class Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment extends Mage_Core_H
                     'height'      => '2.5',
                     'weight_unit' => self::WEIGHT_MEASURE_GRAMS
                 ),
-                self::VIRTUAL_PREDEFINED_PACKAGE .'-3' => array(
+                self::VIRTUAL_PREDEFINED_PACKAGE . '-3' => array(
                     'title'       => 'Royal Mail Small Parcels (Height + Width + Depth no
                                       greater than 90cm with no single side longer than 60cm)',
                     'unit'        => self::DIMENSION_MEASURE_CENTIMETERS,

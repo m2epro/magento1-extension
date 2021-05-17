@@ -264,6 +264,11 @@ abstract class Ess_M2ePro_Model_Walmart_Connector_Product_Requester
 
         $this->buildRequestDataObject($requestDataRaw);
 
+        if (isset($requestDataRaw['sku'])) {
+            $helperProductData =  Mage::helper('M2ePro/Component_Walmart_ProductData');
+            $requestDataRaw['sku'] = $helperProductData->encodeWalmartSku($requestDataRaw['sku']);
+        }
+
         return $requestDataRaw;
     }
 

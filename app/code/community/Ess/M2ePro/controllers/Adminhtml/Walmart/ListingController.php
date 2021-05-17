@@ -41,6 +41,7 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
             ->addJs('M2ePro/Action.js')
             ->addJs('M2ePro/Listing/Action.js')
             ->addJs('M2ePro/Listing/Moving.js')
+            ->addJs('M2ePro/Listing/Mapping.js')
             ->addJs('M2ePro/Walmart/Listing.js')
             ->addJs('M2ePro/Walmart/Listing/Grid.js')
             ->addJs('M2ePro/Walmart/Listing/Action.js')
@@ -56,7 +57,6 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
             ->addJs('M2ePro/Walmart/Listing/Product/Variation.js')
 
             ->addJs('M2ePro/Listing/Other/AutoMapping.js')
-            ->addJs('M2ePro/Listing/Other/Mapping.js')
             ->addJs('M2ePro/Listing/Other/Removing.js')
             ->addJs('M2ePro/Listing/Other/Unmapping.js');
 

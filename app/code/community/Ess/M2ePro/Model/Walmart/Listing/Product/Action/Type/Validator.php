@@ -229,15 +229,6 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Validator
 
         $params = $this->getParams();
         if (isset($params['changed_sku'])) {
-            if (preg_match('/[.\s-]+/', $params['changed_sku'])) {
-                $this->addMessage(
-                    'Item SKU was not updated because it contains special characters,
-                    i.e. hyphen (-), space ( ), and period (.), that are not allowed by Walmart.
-                    Please enter SKU in a correct format. M2E Pro will resubmit the new value automatically.'
-                );
-                return false;
-            }
-
             if (strlen($params['changed_sku']) > Ess_M2ePro_Helper_Component_Walmart::SKU_MAX_LENGTH) {
                 $this->addMessage('The length of SKU must be less than 50 characters.');
                 return false;

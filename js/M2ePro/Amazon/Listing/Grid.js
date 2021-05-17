@@ -27,6 +27,7 @@ window.AmazonListingGrid = Class.create(ListingGrid, {
     {
         $super();
         this.movingHandler = new ListingMoving(this);
+        this.mappingHandler = new ListingMapping(this, 'amazon');
         this.actionHandler = new AmazonListingAction(this);
         this.productSearchHandler = new AmazonListingProductSearch(this);
         this.templateDescription = new AmazonListingTemplateDescription(this);
@@ -105,7 +106,11 @@ window.AmazonListingGrid = Class.create(ListingGrid, {
             }).bind(this),
             unassignGeneralIdAction: (function() {
                 this.productSearchHandler.unmapFromGeneralId(this.getSelectedProductsString())
-            }).bind(this)
+            }).bind(this),
+
+            remapProductAction: function(id) {
+                this.mappingHandler.openPopUp(id, null, this.listingId);
+            }.bind(this),
         });
 
     },

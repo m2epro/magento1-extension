@@ -21,6 +21,7 @@ abstract class Ess_M2ePro_Model_ActiveRecord_AbstractBuilder
      * @param array $rawData
      *
      * @return Ess_M2ePro_Model_ActiveRecord_ActiveRecordAbstract|Ess_M2ePro_Model_Abstract
+     * @throws Exception
      */
     public function build($model, array $rawData)
     {
@@ -31,7 +32,9 @@ abstract class Ess_M2ePro_Model_ActiveRecord_AbstractBuilder
         $this->_model   = $model;
         $this->_rawData = $rawData;
 
-        $this->save($this->prepareData());
+        $prepareData = $this->prepareData();
+        $this->_model->addData($prepareData);
+        $this->_model->save();
 
         return $this->_model;
     }
@@ -47,14 +50,6 @@ abstract class Ess_M2ePro_Model_ActiveRecord_AbstractBuilder
      * @return array
      */
     abstract public function getDefaultData();
-
-    //########################################
-
-    protected function save(array $preparedData)
-    {
-        $this->_model->addData($preparedData);
-        $this->_model->save();
-    }
 
     //########################################
 

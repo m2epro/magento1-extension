@@ -1203,4 +1203,11 @@ class Ess_M2ePro_Model_Amazon_Listing_Product extends Ess_M2ePro_Model_Component
     }
 
     //########################################
+
+    public function mapChannelItemProduct()
+    {
+        $this->getResource()->mapChannelItemProduct($this);
+    }
+
+    //########################################
 }

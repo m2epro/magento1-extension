@@ -35,10 +35,11 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Other_View extends Mage_Adminht
         if ($this->getRequest()->getParam('back') !== null) {
             $url = Mage::helper('M2ePro')->getBackUrl();
             $this->_addButton(
-                'back', array(
-                'label'   => Mage::helper('M2ePro')->__('Back'),
-                'onclick' => 'CommonObj.back_click(\'' . $url . '\')',
-                'class'   => 'back'
+                'back',
+                array(
+                    'label'   => Mage::helper('M2ePro')->__('Back'),
+                    'onclick' => 'CommonObj.back_click(\'' . $url . '\')',
+                    'class'   => 'back'
                 )
             );
         }
@@ -52,20 +53,21 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Other_View extends Mage_Adminht
         $marketplaceId = $this->getRequest()->getParam('marketplace');
 
         $viewHeaderBlock = $this->getLayout()->createBlock(
-            'M2ePro/adminhtml_listing_other_view_header', '',
+            'M2ePro/adminhtml_listing_other_view_header',
+            '',
             array(
-                'account' => Mage::helper('M2ePro/Component_Walmart')->getCachedObject(
-                    'Account', $accountId
+                'account'     => Mage::helper('M2ePro/Component_Walmart')->getCachedObject(
+                    'Account',
+                    $accountId
                 ),
                 'marketplace' => Mage::helper('M2ePro/Component_Walmart')->getCachedObject(
-                    'Marketplace', $marketplaceId
+                    'Marketplace',
+                    $marketplaceId
                 )
             )
         );
 
-        $mapToProductBlock = $this->getLayout()->createBlock('M2ePro/adminhtml_listing_other_mapping');
-
-        return $viewHeaderBlock->toHtml() . $mapToProductBlock->toHtml() . parent::getGridHtml();
+        return $viewHeaderBlock->toHtml() . parent::getGridHtml();
     }
 
     //########################################
@@ -86,7 +88,6 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Other_View extends Mage_Adminht
         $someProductsWereNotMappedMessage .= 'or try to map manually.';
         $someProductsWereNotMappedMessage = $helper->escapeJs($helper->__($someProductsWereNotMappedMessage));
 
-
         $createListing = $helper->escapeJs(
             $helper->__(
                 'Listings, which have the same Marketplace and Account were not found.'
@@ -101,16 +102,14 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Other_View extends Mage_Adminht
 
         $translations = Mage::helper('M2ePro')->jsonEncode(
             array(
-                'Product was Mapped.' => $helper->__('Product was Mapped.'),
-                'Product(s) was Mapped.' => $helper->__('Product(s) was Mapped.'),
+                'Product was Mapped.'      => $helper->__('Product was Mapped.'),
+                'Product(s) was Mapped.'   => $helper->__('Product(s) was Mapped.'),
                 'Product(s) was Unmapped.' => $helper->__('Product(s) was Unmapped.'),
-                'Product(s) was Removed.' => $helper->__('Product(s) was Removed.'),
-                'Not enough data' => $helper->__('Not enough data'),
+                'Product(s) was Removed.'  => $helper->__('Product(s) was Removed.'),
+                'Not enough data'          => $helper->__('Not enough data'),
 
-                'Mapping Product' => $helper->__('Mapping Product'),
+                'Mapping Product'         => $helper->__('Mapping Product'),
                 'Product does not exist.' => $helper->__('Product does not exist.'),
-                'Please enter correct Product ID.' => $helper->__('Please enter correct Product ID.'),
-                'Please enter correct Product ID or SKU' => $helper->__('Please enter correct Product ID or SKU'),
 
                 'Current version only supports Simple Products. Please, choose Simple Product.' => $helper->__(
                     'Current version only supports Simple Products. Please, choose Simple Product.'
@@ -124,6 +123,13 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Other_View extends Mage_Adminht
         );
 
         $urls = array();
+        $urls['mapProductPopupHtml'] = $this->getUrl(
+            '*/adminhtml_listing_other_mapping/mapProductPopupHtml',
+            array(
+                'account_id'     => $this->getRequest()->getParam('account'),
+                'marketplace_id' => $this->getRequest()->getParam('marketplace')
+            )
+        );
         $urls['adminhtml_listing_other_mapping/map'] = $this->getUrl('*/adminhtml_listing_other_mapping/map');
         $urls['adminhtml_walmart_listing_productAdd/index'] = $this->getUrl(
             '*/adminhtml_walmart_listing_productAdd/index',
@@ -135,7 +141,6 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Other_View extends Mage_Adminht
         $urls['moveToListing'] = $this->getUrl('*/adminhtml_walmart_listing_other/moveToListing');
 
         $urls = Mage::helper('M2ePro')->jsonEncode($urls);
-
 
         $javascriptsMain = <<<HTML
 <script type="text/javascript">
@@ -163,7 +168,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Other_View extends Mage_Adminht
         GridWrapperObj = new AreaWrapper('listing_other_content_container');
 
         WalmartListingOtherGridObj    = new WalmartListingOtherGrid('walmartListingOtherGrid');
-        WalmartListingOtherMappingObj = new ListingOtherMapping(
+        ListingOtherMappingObj = new ListingMapping(
             WalmartListingOtherGridObj,
             'walmart'
         );
@@ -172,7 +177,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Other_View extends Mage_Adminht
 </script>
 HTML;
 
-        return $javascriptsMain.
+        return $javascriptsMain .
             '<div id="listing_other_progress_bar"></div>' .
             '<div id="listing_container_errors_summary" class="errors_summary" style="display: none;"></div>' .
             '<div id="listing_other_content_container">' .

@@ -70,10 +70,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Sellercentral_Grid
         $collection->setStoreId($this->_listing->getStoreId());
         $collection->setListing($this->_listing->getId());
 
-        if ($this->isFilterOrSortByPriceIsUsed('online_price', 'amazon_online_price')) {
-            $collection->setIsNeedToUseIndexerParent(true);
-        }
-
         $collection->addAttributeToSelect('name')
                    ->addAttributeToSelect('sku')
                    ->joinStockItem(array('qty' => 'qty', 'is_in_stock' => 'is_in_stock'));
@@ -159,15 +155,13 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Sellercentral_Grid
                 'is_repricing_inactive' => 'is_online_inactive',
             )
         );
-        // ---------------------------------------
 
-        if ($collection->isNeedUseIndexerParent()) {
+        if ($this->isFilterOrSortByPriceIsUsed('online_price', 'amazon_online_price')) {
             $collection->joinIndexerParent();
         } else {
             $collection->setIsNeedToInjectPrices(true);
         }
 
-        // Set collection to grid
         $this->setCollection($collection);
 
         return parent::_prepareCollection();

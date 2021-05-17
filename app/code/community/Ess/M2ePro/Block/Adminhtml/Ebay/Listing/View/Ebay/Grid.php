@@ -68,10 +68,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Ebay_Grid
         $collection->setListing($this->_listing->getId());
         $collection->setStoreId($this->_listing->getStoreId());
 
-        if ($this->isFilterOrSortByPriceIsUsed('price', 'ebay_online_current_price')) {
-            $collection->setIsNeedToUseIndexerParent(true);
-        }
-
         $collection->addAttributeToSelect('sku');
         $collection->addAttributeToSelect('name');
 
@@ -117,7 +113,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Ebay_Grid
             'left'
         );
 
-        if ($collection->isNeedUseIndexerParent()) {
+        if ($this->isFilterOrSortByPriceIsUsed('price', 'ebay_online_current_price')) {
             $collection->joinIndexerParent();
         } else {
             $collection->setIsNeedToInjectPrices(true);

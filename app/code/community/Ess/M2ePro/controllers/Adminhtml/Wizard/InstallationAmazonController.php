@@ -6,8 +6,6 @@
  * @license    Commercial use is forbidden
  */
 
-use Ess_M2ePro_Model_Amazon_Account as Account;
-
 class Ess_M2ePro_Adminhtml_Wizard_InstallationAmazonController
     extends Ess_M2ePro_Controller_Adminhtml_Amazon_WizardController
 {
@@ -246,9 +244,9 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationAmazonController
 
     protected function processAfterGetToken($accountData)
     {
-        /** @var Ess_M2ePro_Model_Account $accountModel */
-        $accountModel = Mage::helper('M2ePro/Component_Amazon')->getModel('Account');
-        Mage::getModel('M2ePro/Amazon_Account_Builder')->build($accountModel, $accountData);
+        /** @var Ess_M2ePro_Model_Account $account */
+        $account = Mage::helper('M2ePro/Component_Amazon')->getModel('Account');
+        Mage::getModel('M2ePro/Amazon_Account_Builder')->build($account, $accountData);
 
         try {
             /** @var $dispatcherObject Ess_M2ePro_Model_Amazon_Connector_Dispatcher */
@@ -266,9 +264,20 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationAmazonController
                 'add',
                 'entityRequester',
                 $params,
-                $accountModel->getId()
+                $account
             );
             $dispatcherObject->process($connectorObj);
+
+            $responseData = $connectorObj->getResponseData();
+
+            $account->getChildObject()->addData(
+                array(
+                    'server_hash' => $responseData['hash'],
+                    'info'        => Mage::helper('M2ePro')->jsonEncode($responseData['info'])
+                )
+            );
+
+            $account->getChildObject()->save();
         } catch (Exception $exception) {
             Mage::helper('M2ePro/Module_Exception')->process($exception);
 
@@ -279,7 +288,7 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationAmazonController
                 )
             );
 
-            $accountModel->deleteInstance();
+            $account->deleteInstance();
 
             return $this->indexAction();
         }

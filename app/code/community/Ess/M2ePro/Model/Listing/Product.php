@@ -25,26 +25,26 @@ use Ess_M2ePro_Model_Walmart_Listing_Product_Action_Processing as WalmartActionP
  */
 class Ess_M2ePro_Model_Listing_Product extends Ess_M2ePro_Model_Component_Parent_Abstract
 {
-    const ACTION_LIST    = 1;
-    const ACTION_RELIST  = 2;
-    const ACTION_REVISE  = 3;
-    const ACTION_STOP    = 4;
-    const ACTION_DELETE  = 5;
+    const ACTION_LIST   = 1;
+    const ACTION_RELIST = 2;
+    const ACTION_REVISE = 3;
+    const ACTION_STOP   = 4;
+    const ACTION_DELETE = 5;
 
     const STATUS_NOT_LISTED = 0;
-    const STATUS_SOLD = 1;
-    const STATUS_LISTED = 2;
-    const STATUS_STOPPED = 3;
-    const STATUS_FINISHED = 4;
-    const STATUS_UNKNOWN = 5;
-    const STATUS_BLOCKED = 6;
-    const STATUS_HIDDEN = 7;
+    const STATUS_SOLD       = 1;
+    const STATUS_LISTED     = 2;
+    const STATUS_STOPPED    = 3;
+    const STATUS_FINISHED   = 4;
+    const STATUS_UNKNOWN    = 5;
+    const STATUS_BLOCKED    = 6;
+    const STATUS_HIDDEN     = 7;
 
-    const STATUS_CHANGER_UNKNOWN = 0;
-    const STATUS_CHANGER_SYNCH = 1;
-    const STATUS_CHANGER_USER = 2;
+    const STATUS_CHANGER_UNKNOWN   = 0;
+    const STATUS_CHANGER_SYNCH     = 1;
+    const STATUS_CHANGER_USER      = 2;
     const STATUS_CHANGER_COMPONENT = 3;
-    const STATUS_CHANGER_OBSERVER = 4;
+    const STATUS_CHANGER_OBSERVER  = 4;
 
     const MOVING_LISTING_OTHER_SOURCE_KEY = 'moved_from_listing_other_id';
 
@@ -170,7 +170,7 @@ class Ess_M2ePro_Model_Listing_Product extends Ess_M2ePro_Model_Component_Parent
             Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE
         );
 
-        $this->_listingModel        = null;
+        $this->_listingModel = null;
         $this->_magentoProductModel = null;
 
         $this->deleteChildInstance();
@@ -188,7 +188,9 @@ class Ess_M2ePro_Model_Listing_Product extends Ess_M2ePro_Model_Component_Parent
     {
         if ($this->_listingModel === null) {
             $this->_listingModel = Mage::helper('M2ePro/Component')->getCachedComponentObject(
-                $this->getComponentMode(), 'Listing', $this->getData('listing_id')
+                $this->getComponentMode(),
+                'Listing',
+                $this->getData('listing_id')
             );
         }
 
@@ -200,7 +202,7 @@ class Ess_M2ePro_Model_Listing_Product extends Ess_M2ePro_Model_Component_Parent
      */
     public function setListing(Ess_M2ePro_Model_Listing $instance)
     {
-         $this->_listingModel = $instance;
+        $this->_listingModel = $instance;
     }
 
     // ---------------------------------------
@@ -270,7 +272,7 @@ class Ess_M2ePro_Model_Listing_Product extends Ess_M2ePro_Model_Component_Parent
     public function getVariations($asObjects = false, array $filters = array())
     {
         $storageKey = "listing_product_{$this->getId()}_variations_" .
-                      sha1((string)$asObjects . Mage::helper('M2ePro')->jsonEncode($filters));
+            sha1((string)$asObjects . Mage::helper('M2ePro')->jsonEncode($filters));
 
         if ($cacheData = Mage::helper('M2ePro/Data_Cache_Runtime')->getValue($storageKey)) {
             return $cacheData;
@@ -278,7 +280,8 @@ class Ess_M2ePro_Model_Listing_Product extends Ess_M2ePro_Model_Component_Parent
 
         /** @var Ess_M2ePro_Model_Resource_ActiveRecord_CollectionAbstract $collection */
         $collection = Mage::helper('M2ePro/Component')->getComponentCollection(
-            $this->getComponentMode(), 'Listing_Product_Variation'
+            $this->getComponentMode(),
+            'Listing_Product_Variation'
         );
         $collection->addFieldToFilter('listing_product_id', $this->getId());
 
@@ -462,7 +465,7 @@ class Ess_M2ePro_Model_Listing_Product extends Ess_M2ePro_Model_Component_Parent
         return ($this->isNotListed() || $this->isSold() ||
                 $this->isStopped() || $this->isFinished() ||
                 $this->isHidden() || $this->isUnknown()) &&
-                !$this->isBlocked();
+            !$this->isBlocked();
     }
 
     /**
@@ -470,9 +473,8 @@ class Ess_M2ePro_Model_Listing_Product extends Ess_M2ePro_Model_Component_Parent
      */
     public function isRelistable()
     {
-        return ($this->isSold() || $this->isStopped() ||
-                $this->isFinished() || $this->isUnknown()) &&
-                !$this->isBlocked();
+        return ($this->isSold() || $this->isStopped() || $this->isFinished() || $this->isUnknown()) &&
+            !$this->isBlocked();
     }
 
     /**
@@ -480,8 +482,7 @@ class Ess_M2ePro_Model_Listing_Product extends Ess_M2ePro_Model_Component_Parent
      */
     public function isRevisable()
     {
-        return ($this->isListed() || $this->isHidden() || $this->isUnknown()) &&
-                !$this->isBlocked();
+        return ($this->isListed() || $this->isHidden() || $this->isUnknown()) && !$this->isBlocked();
     }
 
     /**
@@ -489,8 +490,37 @@ class Ess_M2ePro_Model_Listing_Product extends Ess_M2ePro_Model_Component_Parent
      */
     public function isStoppable()
     {
-        return ($this->isListed() || $this->isHidden() || $this->isUnknown()) &&
-                !$this->isBlocked();
+        return ($this->isListed() || $this->isHidden() || $this->isUnknown()) && !$this->isBlocked();
+    }
+
+    //########################################
+
+    public function remapProduct(Ess_M2ePro_Model_Magento_Product $magentoProduct)
+    {
+        $data = array('product_id' => $magentoProduct->getProductId());
+
+        if ($this->getMagentoProduct()->isStrictVariationProduct()
+            && $magentoProduct->isSimpleTypeWithoutCustomOptions()) {
+            $data['is_variation_product'] = 0;
+            $data['is_variation_parent'] = 0;
+            $data['variation_parent_id'] = null;
+        }
+
+        $this->addData($data)->save();
+        $this->getChildObject()->mapChannelItemProduct();
+
+        $instruction = Mage::getModel('M2ePro/Listing_Product_Instruction');
+        $instruction->setData(
+            array(
+                'listing_product_id' => $this->getId(),
+                'component'          => $this->getComponentMode(),
+                'type'               => Ess_M2ePro_Model_Listing::INSTRUCTION_TYPE_PRODUCT_REMAP_FROM_LISTING,
+                'initiator'          => Ess_M2ePro_Model_Listing::INSTRUCTION_INITIATOR_REMAPING_PRODUCT_FROM_LISTING,
+                'priority'           => 50,
+            )
+        );
+
+        $instruction->save();
     }
 
     //########################################
@@ -502,6 +532,7 @@ class Ess_M2ePro_Model_Listing_Product extends Ess_M2ePro_Model_Component_Parent
         }
 
         $this->_canBeForceDeleted = $value;
+
         return $this;
     }
 

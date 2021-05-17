@@ -6,7 +6,7 @@
  * @license    Commercial use is forbidden
  */
 
-use Ess_M2ePro_Model_Ebay_Account as Account;
+use Ess_M2ePro_Model_Ebay_Account as EbayAccount;
 
 class Ess_M2ePro_Adminhtml_Wizard_InstallationEbayController
     extends Ess_M2ePro_Controller_Adminhtml_Ebay_WizardController
@@ -109,7 +109,7 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationEbayController
 
         $accountMode = $this->getRequest()->getParam('mode');
 
-        $requestParams = array(
+        $params = array(
             'mode'          => $accountMode,
             'token_session' => $tokenSessionId
         );
@@ -119,36 +119,37 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationEbayController
             'account',
             'add',
             'entity',
-            $requestParams,
+            $params,
             null,
             null,
             null
         );
 
         $dispatcherObject->process($connectorObj);
-        $response = array_filter($connectorObj->getResponseData());
+        $responseData = array_filter($connectorObj->getResponseData());
 
-        if (empty($response)) {
+        if (empty($responseData)) {
             $this->_getSession()->addError(Mage::helper('M2ePro')->__('Account Add Entity failed.'));
+
             return $this->_redirect('*/*/installation');
         }
 
         if ($accountMode == 'sandbox') {
-            $accountMode = Account::MODE_SANDBOX;
+            $accountMode = EbayAccount::MODE_SANDBOX;
         } else {
-            $accountMode = Account::MODE_PRODUCTION;
+            $accountMode = EbayAccount::MODE_PRODUCTION;
         }
 
         $data = array_merge(
             $this->getEbayAccountDefaultSettings(),
             array(
-                'title'              => $response['info']['UserID'],
-                'user_id'            => $response['info']['UserID'],
+                'title'              => $responseData['info']['UserID'],
+                'user_id'            => $responseData['info']['UserID'],
                 'mode'               => $accountMode,
-                'info'               => Mage::helper('M2ePro')->jsonEncode($response['info']),
-                'server_hash'        => $response['hash'],
+                'info'               => Mage::helper('M2ePro')->jsonEncode($responseData['info']),
+                'server_hash'        => $responseData['hash'],
                 'token_session'      => $tokenSessionId,
-                'token_expired_date' => $response['token_expired_date']
+                'token_expired_date' => $responseData['token_expired_date']
             )
         );
 
@@ -172,14 +173,9 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationEbayController
         return $this->_redirect('*/adminhtml_ebay_listing_create', array('step' => 2, 'wizard' => true));
     }
 
-    public function listingSellingAction()
+    public function listingTemplatesAction()
     {
-        return $this->_redirect('*/adminhtml_ebay_listing_create', array('step' => 3, 'wizard' => true));
-    }
-
-    public function listingSynchronizationAction()
-    {
-        return $this->_redirect('*/adminhtml_ebay_listing_create', array('step' => 4, 'wizard' => true));
+        return $this->_redirect('*/adminhtml_ebay_listing_create', array('step' => 2, 'wizard' => true));
     }
 
     public function sourceModeAction()

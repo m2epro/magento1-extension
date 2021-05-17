@@ -25,12 +25,15 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_OtherController extends Ess_M2ePro_Contr
             ->addCss('M2ePro/css/Plugin/ProgressBar.css')
             ->addJs('M2ePro/Plugin/AreaWrapper.js')
             ->addCss('M2ePro/css/Plugin/AreaWrapper.css')
+
             ->addJs('M2ePro/Grid.js')
             ->addJs('M2ePro/Listing/Other/Grid.js')
             ->addJs('M2ePro/Ebay/Listing/Other/Grid.js')
+
             ->addJs('M2ePro/Action.js')
             ->addJs('M2ePro/Listing/Moving.js')
-            ->addJs('M2ePro/Listing/Other/Mapping.js')
+            ->addJs('M2ePro/Listing/Mapping.js')
+
             ->addJs('M2ePro/Listing/Other/AutoMapping.js')
             ->addJs('M2ePro/Listing/Other/Removing.js')
             ->addJs('M2ePro/Listing/Other/Unmapping.js');

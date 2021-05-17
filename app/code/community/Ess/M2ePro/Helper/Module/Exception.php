@@ -12,6 +12,8 @@ class Ess_M2ePro_Helper_Module_Exception extends Mage_Core_Helper_Abstract
     const FILTER_TYPE_INFO    = 2;
     const FILTER_TYPE_MESSAGE = 3;
 
+    protected $systemLogTableName;
+
     //########################################
 
     public function process(Exception $exception, $sendToServer = true)
@@ -53,14 +55,27 @@ class Ess_M2ePro_Helper_Module_Exception extends Mage_Core_Helper_Abstract
 
             Mage::helper('M2ePro/Data_Global')->unsetValue('send_exception_to_server');
 
-        // @codingStandardsIgnoreLine
-        } catch (Exception $exceptionTemp) {}
+            // @codingStandardsIgnoreLine
+        } catch (Exception $exceptionTemp) {
+        }
     }
 
     public function processFatal($error, $traceInfo)
     {
         try {
             $class = 'Fatal Error';
+
+            if (isset($error['message']) && strpos($error['message'], 'Allowed memory size') !== false) {
+                $this->writeSystemLogByDirectSql(
+                    300,//Ess_M2ePro_Model_Log_System::TYPE_FATAL_ERROR
+                    $class,
+                    $error['message'],
+                    $this->getFatalInfo($error, 'Fatal Error')
+                );
+
+                return;
+            }
+
             $info = $this->getFatalErrorDetailedInfo($error, $traceInfo);
 
             $this->systemLog(
@@ -88,8 +103,9 @@ class Ess_M2ePro_Helper_Module_Exception extends Mage_Core_Helper_Abstract
 
             Mage::helper('M2ePro/Data_Global')->unsetValue('send_exception_to_server');
 
-        // @codingStandardsIgnoreLine
-        } catch (Exception $exceptionTemp) {}
+            // @codingStandardsIgnoreLine
+        } catch (Exception $exceptionTemp) {
+        }
     }
 
     // ---------------------------------------
@@ -104,9 +120,14 @@ class Ess_M2ePro_Helper_Module_Exception extends Mage_Core_Helper_Abstract
 
         Mage::helper('M2ePro/Data_Global')->setValue('set_fatal_error_handler', true);
 
+        // preventing autoload error in case of memory limit exceeding
+        $this->systemLogTableName = Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix(
+            'm2epro_system_log'
+        );
+
         // @codingStandardsIgnoreLine
         register_shutdown_function(
-            function() {
+            function () {
                 $error = error_get_last();
                 if ($error === null) {
                     return;
@@ -127,7 +148,7 @@ class Ess_M2ePro_Helper_Module_Exception extends Mage_Core_Helper_Abstract
 
     public function getUserMessage(Exception $exception)
     {
-        return Mage::helper('M2ePro')->__('Fatal error occurred').': "'.$exception->getMessage().'".';
+        return Mage::helper('M2ePro')->__('Fatal error occurred') . ': "' . $exception->getMessage() . '".';
     }
 
     //########################################
@@ -164,7 +185,7 @@ class Ess_M2ePro_Helper_Module_Exception extends Mage_Core_Helper_Abstract
         $line = isset($trace[1]['line']) ? $trace[1]['line'] : 'not set';
 
         $additionalData = array(
-            'called-from' => $file .' : '. $line
+            'called-from' => $file . ' : ' . $line
         );
 
         /** @var Ess_M2ePro_Model_Log_System $log */
@@ -182,12 +203,28 @@ class Ess_M2ePro_Helper_Module_Exception extends Mage_Core_Helper_Abstract
         $log->save();
     }
 
+    private function writeSystemLogByDirectSql($type, $class, $message, $description)
+    {
+        $date = new DateTime('now', new DateTimeZone('UTC'));
+
+        Mage::getSingleton('core/resource')->getConnection('core_write')->insert(
+            $this->systemLogTableName,
+            array(
+                'type'                 => $type,
+                'class'                => $class,
+                'description'          => $message,
+                'detailed_description' => $description,
+                'create_date'          => $date->format('Y-m-d H:i:s')
+            )
+        );
+    }
+
     //########################################
 
     protected function getExceptionInfo(Exception $exception, $type)
     {
         $additionalData = $exception instanceof Ess_M2ePro_Model_Exception ? $exception->getAdditionalData()
-                                                                           : '';
+            : '';
 
         // @codingStandardsIgnoreLine
         is_array($additionalData) && $additionalData = print_r($additionalData, true);
@@ -340,9 +377,9 @@ ACTION;
         foreach ($exceptionFilters as $exceptionFilter) {
             try {
                 $searchSubject = '';
-                $exceptionFilter['type'] == self::FILTER_TYPE_TYPE    && $searchSubject = $type;
+                $exceptionFilter['type'] == self::FILTER_TYPE_TYPE && $searchSubject = $type;
                 $exceptionFilter['type'] == self::FILTER_TYPE_MESSAGE && $searchSubject = $message;
-                $exceptionFilter['type'] == self::FILTER_TYPE_INFO    && $searchSubject = $info;
+                $exceptionFilter['type'] == self::FILTER_TYPE_INFO && $searchSubject = $info;
 
                 $tempResult = preg_match($exceptionFilter['preg_match'], $searchSubject);
             } catch (Exception $exception) {

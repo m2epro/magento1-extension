@@ -36,6 +36,7 @@ class Ess_M2ePro_Adminhtml_Ebay_ListingController extends Ess_M2ePro_Controller_
             ->addJs('M2ePro/Listing/Action.js')
             ->addJs('M2ePro/Ebay/Listing/Action.js')
             ->addJs('M2ePro/Listing/Moving.js')
+            ->addJs('M2ePro/Listing/Mapping.js')
             ->addJs('M2ePro/Grid.js')
             ->addJs('M2ePro/Listing/Category/Tree.js')
             ->addJs('M2ePro/Listing/Grid.js')

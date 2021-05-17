@@ -7,15 +7,19 @@
  */
 
 class Ess_M2ePro_Model_Walmart_Connector_Account_Add_EntityRequester
-    extends Ess_M2ePro_Model_Walmart_Connector_Command_Pending_Requester
+    extends Ess_M2ePro_Model_Walmart_Connector_Command_RealTime
 {
     //########################################
 
+    /**
+     * @return array
+     */
     public function getRequestData()
     {
         /** @var $marketplaceObject Ess_M2ePro_Model_Marketplace */
         $marketplaceObject = Mage::helper('M2ePro/Component_Walmart')->getCachedObject(
-            'Marketplace', $this->_params['marketplace_id']
+            'Marketplace',
+            $this->_params['marketplace_id']
         );
 
         if ($this->_params['marketplace_id'] == Ess_M2ePro_Helper_Component_Walmart::MARKETPLACE_CA) {
@@ -37,16 +41,45 @@ class Ess_M2ePro_Model_Walmart_Connector_Account_Add_EntityRequester
         return $requestData;
     }
 
+    /**
+     * @return array
+     */
     protected function getCommand()
     {
-        return array('account','add','entity');
+        return array('account', 'add', 'entity');
     }
 
     //########################################
 
-    protected function getProcessingRunnerModelName()
+    /**
+     * @return bool
+     */
+    protected function validateResponse()
     {
-        return 'Walmart_Connector_Account_Add_ProcessingRunner';
+        $responseData = $this->getResponse()->getData();
+        if ((empty($responseData['hash']) || !isset($responseData['info'])) &&
+            !$this->getResponse()->getMessages()->hasErrorEntities()
+        ) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @throws Exception
+     */
+    protected function prepareResponseData()
+    {
+        foreach ($this->getResponse()->getMessages()->getEntities() as $message) {
+            if (!$message->isError()) {
+                continue;
+            }
+
+            throw new Exception($message->getText());
+        }
+
+        $this->_responseData = $this->getResponse()->getData();
     }
 
     //########################################

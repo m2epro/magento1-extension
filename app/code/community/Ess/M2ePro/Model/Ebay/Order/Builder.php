@@ -229,7 +229,7 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
     protected function getExistedOrders()
     {
         $orderIds = array($this->getData('ebay_order_id'));
-        if ($oldFormatId = $this->getOldFormatId()) {
+        if ($this->getData('selling_manager_id') && $oldFormatId = $this->getOldFormatId()) {
             $orderIds[] = $oldFormatId;
         }
 
@@ -275,6 +275,7 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
             array('ebay_order_id' => 'ebay_order_id')
         );
         $collection->addFieldToFilter('ebay_order_id', array('neq' => $this->getData('ebay_order_id')));
+        $collection->addFieldToFilter('e_order.selling_manager_id', array('neq' => 0));
         $collection->addFieldToFilter('transaction_id', array('in' => $transactionIds));
 
         $possibleOldFormatIds = array_unique($collection->getColumnValues('ebay_order_id'));

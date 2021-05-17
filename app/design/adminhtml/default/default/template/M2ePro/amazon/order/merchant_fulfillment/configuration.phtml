@@ -17,17 +17,22 @@ if (!$cachedData) {
 }
 
 $defaults = array(
-    'must_arrive_by_date'          => '',
-    'declared_value'               => $this->getData('declared_value'),
-    'ship_from_address_phone'      => '',
-    'package_dimension_source'     => Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::DIMENSION_SOURCE_NONE,
-    'package_dimension_predefined' => '',
-    'package_dimension_length'     => '',
-    'package_dimension_width'      => '',
-    'package_dimension_height'     => '',
-    'package_dimension_measure'    => Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::DIMENSION_MEASURE_INCHES,
-    'package_weight'               => '',
-    'package_weight_measure'       => Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::WEIGHT_MEASURE_OUNCES,
+    'must_arrive_by_date'                       => '',
+    'declared_value'                            => $this->getData('declared_value'),
+    'ship_from_address_phone'                   => '',
+    'package_dimension_source'                  => Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::DIMENSION_SOURCE_NONE,
+    'package_dimension_predefined'              => '',
+    'package_dimension_length'                  => '',
+    'package_dimension_width'                   => '',
+    'package_dimension_height'                  => '',
+    'package_dimension_length_custom_attribute' => '',
+    'package_dimension_width_custom_attribute'  => '',
+    'package_dimension_height_custom_attribute' => '',
+    'package_dimension_measure'                 => Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::DIMENSION_MEASURE_INCHES,
+    'package_weight_source'                     => '',
+    'package_weight_custom_value'               => '',
+    'package_weight_custom_attribute'           => '',
+    'package_weight_measure'                    => Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::WEIGHT_MEASURE_OUNCES,
 );
 
 if ($this->getData('delivery_date_to') !== null) {
@@ -40,7 +45,7 @@ if (empty($cachedData)) {
     $shippingOriginData = $this->getShippingOriginData();
 
     $customerName = array();
-    isset($userData['lastname'])  && $customerName[] = $userData['lastname'];
+    isset($userData['lastname']) && $customerName[] = $userData['lastname'];
     isset($userData['firstname']) && $customerName[] = $userData['firstname'];
 
     $defaultsCachedData = array(
@@ -62,34 +67,50 @@ if (empty($cachedData)) {
     $formData = array_merge($defaults, $cachedData);
 }
 
+/** @var Ess_M2ePro_Helper_Magento_Attribute $magentoAttributeHelper */
+$magentoAttributeHelper = Mage::helper('M2ePro/Magento_Attribute');
+
+$allAttributes = $magentoAttributeHelper->getAll();
+
+$attributesByInputTypes = array(
+    'text' => $magentoAttributeHelper->filterByInputTypes($allAttributes, array('text')),
+);
+
 ?>
 
 <style>
     .calendar {
         z-index: 99999 !important;
     }
+
     .dimension-input {
         width: 64px !important;
     }
+
     .dimension-measure-input, .weight-measure-input {
         width: 40px !important;
     }
-    .weight-input{
+
+    .weight-input {
         width: 229px !important;
     }
+
     #fulfillment_order_items th, #fulfillment_order_items td {
         padding: 2px 4px 2px 4px !important;
     }
+
     .control {
         text-align: right;
         margin-bottom: 15px;
         margin-top: 10px;
     }
+
     .declared-value-currency {
         display: inline-table;
         width: 10px;
         text-align: right;
     }
+
     #fulfillment_form_container {
         height: 320px;
         overflow: auto;
@@ -100,7 +121,9 @@ if (empty($cachedData)) {
 <script type="text/javascript">
 
     M2ePro.php.setConstants(
-        <?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment'); ?>,
+        <?php echo Mage::helper('M2ePro')->getClassConstantAsJson(
+            'Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment'
+        ); ?>,
         'Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment'
     );
 
@@ -110,20 +133,28 @@ if (empty($cachedData)) {
         .observe('change', AmazonOrderMerchantFulfillmentObj.packageDimensionChange)
         .simulate('change');
 
+    <?php if ($this->canUseProductAttributes()) { ?>
+    $('fulfillment_package_weight_source')
+        .observe('change', AmazonOrderMerchantFulfillmentObj.fulfillmentPackageWeightChange)
+        .simulate('change');
+    <?php } ?>
+
     $('fulfillment_ship_from_address_country')
         .observe('change', AmazonOrderMerchantFulfillmentObj.shippingCountryChange)
         .simulate('change');
 
-    setTimeout(function () {
+    setTimeout(function() {
         AmazonOrderMerchantFulfillmentObj.onPopupScroll();
     }, 50);
 
 </script>
 
 <br/>
-<div class="preview_header block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Amazon\'s Shipping Services'); ?>">
-    <?php echo Mage::helper('M2ePro')->__('
-        Amazon\' s Shipping Services offer a variety of <strong>Shipping Benefits</strong>, including several
+<div
+    class="preview_header block_notices_module"
+    title="<?php echo Mage::helper('M2ePro')->__('Amazon\'s Shipping Services'); ?>">
+    <?php echo Mage::helper('M2ePro')->__(
+        'Amazon\' s Shipping Services offer a variety of <strong>Shipping Benefits</strong>, including several
         Shipping Options if you need to expedite your delivery.<br/>
         This Tool provides <strong>programmatic access</strong> to Amazon’s Shipping Services for Sellers,
         including competitive rates from Amazon-partnered Carriers. Sellers can find out what Shipping Service
@@ -132,7 +163,8 @@ if (empty($cachedData)) {
         <strong>Delivery Date</strong> requirements. Sellers can choose from the Shipping Service
         offers returned by Amazon, and then Purchase Shipping Labels for Fulfilling their Orders.<br/>
         For more information about Amazon\'s Shipping Services Program, see the Seller Central Help.<br/><br/>
-        Amazon\'s Shipping Service tool is required to be used for Amazon Prime Orders.'); ?>
+        Amazon\'s Shipping Service tool is required to be used for Amazon Prime Orders.'
+    ); ?>
 </div>
 
 <?php echo $this->getChildHtml('breadcrumb'); ?>
@@ -144,7 +176,9 @@ if (empty($cachedData)) {
 
         <div class="entry-edit" id="magento_block_amazon_order_fulfillment_configuration_products">
             <div class="entry-edit-head">
-                <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Products'); ?></h4>
+                <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__(
+                        'Products'
+                    ); ?></h4>
             </div>
             <div class="fieldset">
                 <div class="hor-scroll">
@@ -157,12 +191,14 @@ if (empty($cachedData)) {
                                         <th><?php echo Mage::helper('M2ePro')->__('Title'); ?></th>
                                         <th style="width: 100px;"><?php echo Mage::helper('M2ePro')->__('SKU'); ?></th>
                                         <th style="width: 100px;"><?php echo Mage::helper('M2ePro')->__('ASIN'); ?></th>
-                                        <th style="width: 50px;"><?php echo Mage::helper('M2ePro')->__('Quantity'); ?></th>
+                                        <th style="width: 50px;"><?php echo Mage::helper('M2ePro')->__(
+                                                'Quantity'
+                                            ); ?></th>
                                         <th><?php echo Mage::helper('M2ePro')->__('Price'); ?></th>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <?php foreach($this->getOrderItems() as $orderItem): ?>
+                                    <?php foreach ($this->getOrderItems() as $orderItem): ?>
                                         <tr>
                                             <td>
                                                 <?php echo $orderItem['title']; ?>
@@ -177,7 +213,10 @@ if (empty($cachedData)) {
                                                 <?php echo $orderItem['qty']; ?>
                                             </td>
                                             <td>
-                                                <?php echo Mage::app()->getLocale()->currency($orderItem['currency'])->toCurrency($orderItem['price']); ?>
+                                                <?php echo Mage::app()
+                                                    ->getLocale()
+                                                    ->currency($orderItem['currency'])
+                                                    ->toCurrency($orderItem['price']); ?>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
@@ -191,30 +230,46 @@ if (empty($cachedData)) {
         </div>
         <div class="entry-edit" id="magento_block_amazon_order_fulfillment_configuration_general">
             <div class="entry-edit-head">
-                <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('General'); ?></h4>
+                <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__(
+                        'General'
+                    ); ?></h4>
             </div>
             <div class="fieldset">
                 <div class="hor-scroll">
                     <table class="form-list" cellspacing="0" cellpadding="0">
                         <tr>
                             <td class="label">
-                                <label for="fulfillment_must_arrive_by_date"><?php echo Mage::helper('M2ePro')->__('Must Arrive By Date'); ?>: <span class="required">*</span></label>
+                                <label for="fulfillment_must_arrive_by_date"><?php echo Mage::helper('M2ePro')->__(
+                                        'Must Arrive By Date'
+                                    ); ?>: <span class="required">*</span></label>
                             </td>
                             <td class="value" style="width: auto;">
-                                <input id="fulfillment_must_arrive_by_date" name="must_arrive_by_date" value="<?php echo $formData['must_arrive_by_date']; ?>" type="text" class="input-text required-entry M2ePro-validate-must-arrive-date" />
+                                <input
+                                    id="fulfillment_must_arrive_by_date" name="must_arrive_by_date"
+                                    value="<?php echo $formData['must_arrive_by_date']; ?>" type="text"
+                                    class="input-text required-entry M2ePro-validate-must-arrive-date"/>
                                 <p class="note">
-                                    <span><?php echo Mage::helper('M2ePro')->__('Enter the date by which the Item must be delivered to a Buyer.'); ?></span>
+                                    <span><?php echo Mage::helper('M2ePro')->__(
+                                            'Enter the date by which the Item must be delivered to a Buyer.'
+                                        ); ?></span>
                                 </p>
                             </td>
                         </tr>
                         <tr>
                             <td class="label">
-                                <label for="fulfillment_declared_value"><?php echo Mage::helper('M2ePro')->__('Declared Value'); ?>:</label>
+                                <label for="fulfillment_declared_value"><?php echo Mage::helper('M2ePro')->__(
+                                        'Declared Value'
+                                    ); ?>:</label>
                             </td>
                             <td class="value">
-                                <input id="fulfillment_general_declared_value" name="declared_value" value="<?php echo $formData['declared_value']; ?>" type="text" class="input-text validate-greater-than-zero" />
+                                <input
+                                    id="fulfillment_general_declared_value" name="declared_value"
+                                    value="<?php echo $formData['declared_value']; ?>" type="text"
+                                    class="input-text validate-greater-than-zero"/>
                                 <p class="note">
-                                    <span><?php echo Mage::helper('M2ePro')->__('Based on this Value, the Carrier will determine for how much to insure the Shipment. By default, this Value is calculated as a subtotal of all of the purchased Items.'); ?></span>
+                                    <span><?php echo Mage::helper('M2ePro')->__(
+                                            'Based on this Value, the Carrier will determine for how much to insure the Shipment. By default, this Value is calculated as a subtotal of all of the purchased Items.'
+                                        ); ?></span>
                                 </p>
                                 <p class="note note-no-tool-tip">
                                     <span style="color: grey;">[<?php echo $this->getData('order_currency'); ?>]</span>
@@ -228,42 +283,72 @@ if (empty($cachedData)) {
 
         <div class="entry-edit" id="magento_block_amazon_order_fulfillment_configuration_package">
             <div class="entry-edit-head">
-                <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Package'); ?></h4>
+                <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__(
+                        'Package'
+                    ); ?></h4>
             </div>
             <div class="fieldset">
                 <div class="hor-scroll">
                     <table class="form-list" cellspacing="0" cellpadding="0">
                         <tr>
                             <td class="label">
-                                <label for="fulfillment_package_dimension_predefined"><?php echo Mage::helper('M2ePro')->__('Dimension'); ?>: <span class="required">*</span></label>
+                                <label for="fulfillment_package_dimension_predefined"><?php echo Mage::helper('M2ePro')
+                                        ->__('Dimension'); ?>: <span class="required">*</span></label>
                             </td>
                             <td class="value" style="width: auto;">
-                                <input type="hidden" id="fulfillment_package_dimension_source" name="package_dimension_source" value="<?php echo $formData['package_dimension_source'] ?>" />
-                                <select id="fulfillment_package_dimension_predefined" name="package_dimension_predefined" class="M2ePro-validate-dimension">
-                                    <option value="<?php echo Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::DIMENSION_SOURCE_NONE; ?>" <?php if ($formData['package_dimension_source'] == Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::DIMENSION_SOURCE_NONE) echo ' selected="selected"'; ?> style="display:none;">
+                                <input
+                                    type="hidden" id="fulfillment_package_dimension_source"
+                                    name="package_dimension_source"
+                                    value="<?php echo $formData['package_dimension_source'] ?>"/>
+                                <select
+                                    id="fulfillment_package_dimension_predefined" name="package_dimension_predefined"
+                                    class="M2ePro-validate-dimension">
+                                    <option
+                                        value="<?php echo Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::DIMENSION_SOURCE_NONE; ?>" <?php if ($formData['package_dimension_source'] == Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::DIMENSION_SOURCE_NONE) {
+                                        echo ' selected="selected"';
+                                    } ?> style="display:none;">
                                         -- <?php echo Mage::helper('M2ePro')->__('Please select'); ?> --
                                     </option>
-                                    <option value="<?php echo Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::DIMENSION_SOURCE_CUSTOM; ?>" <?php if ($formData['package_dimension_source'] == Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::DIMENSION_SOURCE_CUSTOM) echo ' selected="selected"'; ?>>
+                                    <option
+                                        value="<?php echo Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::DIMENSION_SOURCE_CUSTOM; ?>" <?php if ($formData['package_dimension_source'] == Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::DIMENSION_SOURCE_CUSTOM) {
+                                        echo ' selected="selected"';
+                                    } ?>>
                                         <?php echo Mage::helper('M2ePro')->__('Custom Value'); ?>
                                     </option>
+                                    <?php if ($this->canUseProductAttributes()) { ?>
+                                        <option
+                                            value="<?php echo Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::DIMENSION_SOURCE_CUSTOM_ATTRIBUTE; ?>" <?php if ($formData['package_dimension_source'] == Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::DIMENSION_SOURCE_CUSTOM_ATTRIBUTE) {
+                                            echo ' selected="selected"';
+                                        } ?>>
+                                            <?php echo Mage::helper('M2ePro')->__('Custom Attribute'); ?>
+                                        </option>
+                                    <?php } ?>
                                     <?php
-                                    foreach (Mage::helper('M2ePro/Component_Amazon_MerchantFulfillment')->getPredefinedPackageDimensions() as $groupTitle => $predefinedPackageGroup): ?>
+                                    foreach (Mage::helper('M2ePro/Component_Amazon_MerchantFulfillment')
+                                                 ->getPredefinedPackageDimensions(
+                                                 ) as $groupTitle => $predefinedPackageGroup): ?>
                                         <optgroup label="<?php echo $groupTitle; ?>">
                                             <?php foreach ($predefinedPackageGroup as $dimensionCode => $dimensionData): ?>
-                                                <?php if(is_array($dimensionData)) { ?>
+                                                <?php if (is_array($dimensionData)) { ?>
 
-                                                    <option value="<?php echo $dimensionCode; ?>"
-                                                        <?php if ($formData['package_dimension_predefined'] == $dimensionCode) echo ' selected="selected" '; ?>
-                                                        <?php echo ' length="'.$dimensionData['length'].'" '; ?>
-                                                        <?php echo ' height="'.$dimensionData['height'].'" '; ?>
-                                                        <?php echo ' width="'.$dimensionData['width'].'" '; ?>
-                                                        <?php echo ' unit="'.$dimensionData['unit'].'" '; ?>
-                                                        <?php echo ' weight_unit="'.$dimensionData['weight_unit'].'" '; ?>
+                                                    <option
+                                                        value="<?php echo $dimensionCode; ?>"
+                                                        <?php if ($formData['package_dimension_predefined'] == $dimensionCode) {
+                                                            echo ' selected="selected" ';
+                                                        } ?>
+                                                        <?php echo ' length="' . $dimensionData['length'] . '" '; ?>
+                                                        <?php echo ' height="' . $dimensionData['height'] . '" '; ?>
+                                                        <?php echo ' width="' . $dimensionData['width'] . '" '; ?>
+                                                        <?php echo ' unit="' . $dimensionData['unit'] . '" '; ?>
+                                                        <?php echo ' weight_unit="' . $dimensionData['weight_unit'] . '" '; ?>
                                                     >
                                                         <?php echo $dimensionData['title']; ?>
                                                     </option>
                                                 <?php } else { ?>
-                                                    <option value="<?php echo $dimensionCode; ?>" <?php if ($formData['package_dimension_predefined'] == $dimensionCode) echo ' selected="selected"'; ?>>
+                                                    <option
+                                                        value="<?php echo $dimensionCode; ?>" <?php if ($formData['package_dimension_predefined'] == $dimensionCode) {
+                                                        echo ' selected="selected"';
+                                                    } ?>>
                                                         <?php echo $dimensionData; ?>
                                                     </option>
                                                 <?php } ?>
@@ -272,39 +357,202 @@ if (empty($cachedData)) {
                                     <?php endforeach; ?>
                                 </select>
                                 <p class="note">
-                                    <span><?php echo Mage::helper('M2ePro')->__('You can select between a <strong>Custom Value</strong> and the <strong>Predefined Package Dimensions</strong> offered by the Carriers. It is recommended to use Custom Value only if the Item Package Dimensions do not confirm to the predefined Options.'); ?></span>
+                                    <span><?php echo Mage::helper('M2ePro')->__(
+                                            'You can select between a <strong>Custom Value</strong> and the <strong>Predefined Package Dimensions</strong> offered by the Carriers. It is recommended to use Custom Value only if the Item Package Dimensions do not confirm to the predefined Options.'
+                                        ); ?></span>
                                 </p>
                             </td>
                         </tr>
                         <tr id="fulfillment_package_dimension_custom">
                             <td class="label">
-                                <label for="fulfillment_package_dimension_width"><?php echo Mage::helper('M2ePro')->__('Length/Width/Height'); ?>: <span class="required">*</span></label>
+                                <label for="fulfillment_package_dimension_width"><?php echo Mage::helper('M2ePro')->__(
+                                        'Length/Width/Height'
+                                    ); ?>: <span class="required">*</span></label>
                             </td>
                             <td class="value" style="width: auto;">
-                                <input id="fulfillment_package_dimension_length" name="package_dimension_length" value="<?php echo $formData['package_dimension_length']; ?>" type="text" class="input-text dimension-input M2ePro-validate-required-custom-dimension M2ePro-validate-custom-dimension" /> x
-                                <input id="fulfillment_package_dimension_width" name="package_dimension_width" value="<?php echo $formData['package_dimension_width']; ?>" type="text" class="input-text dimension-input M2ePro-validate-required-custom-dimension M2ePro-validate-custom-dimension" /> x
-                                <input id="fulfillment_package_dimension_height" name="package_dimension_height" value="<?php echo $formData['package_dimension_height']; ?>" type="text" class="input-text dimension-input M2ePro-validate-required-custom-dimension M2ePro-validate-custom-dimension" />
-                                <select id="fulfillment_package_dimension_measure" name="package_dimension_measure" class="dimension-measure-input validate-select">
-                                    <option value="<?php echo Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::DIMENSION_MEASURE_INCHES; ?>" <?php if ($formData['package_dimension_measure'] == Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::DIMENSION_MEASURE_INCHES) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('in'); ?></option>
-                                    <option value="<?php echo Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::DIMENSION_MEASURE_CENTIMETERS; ?>" <?php if ($formData['package_dimension_measure'] == Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::DIMENSION_MEASURE_CENTIMETERS) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('cm'); ?></option>
+                                <span id="fulfillment_package_dimension_custom_value" style="display: none">
+                                    <input
+                                        id="fulfillment_package_dimension_length" name="package_dimension_length"
+                                        value="<?php echo $formData['package_dimension_length']; ?>" type="text"
+                                        class="input-text dimension-input M2ePro-validate-required-custom-dimension M2ePro-validate-custom-dimension"/> x
+                                    <input
+                                        id="fulfillment_package_dimension_width" name="package_dimension_width"
+                                        value="<?php echo $formData['package_dimension_width']; ?>" type="text"
+                                        class="input-text dimension-input M2ePro-validate-required-custom-dimension M2ePro-validate-custom-dimension"/> x
+                                    <input
+                                        id="fulfillment_package_dimension_height" name="package_dimension_height"
+                                        value="<?php echo $formData['package_dimension_height']; ?>" type="text"
+                                        class="input-text dimension-input M2ePro-validate-required-custom-dimension M2ePro-validate-custom-dimension"/>
+                                </span>
+                                <span id="fulfillment_package_dimension_custom_attribute" style="display: none">
+                                    <select
+                                        id="fulfillment_ppackage_dimension_length_custom_attribute"
+                                        name="package_dimension_length_custom_attribute"
+                                        class="M2ePro-required-when-visible" style="width: 70px">
+                                        <option value=""></option>
+                                        <?php foreach ($attributesByInputTypes['text'] as $attribute) : ?>
+                                            <option
+                                                value="<?php echo $attribute['code']; ?>"
+                                                <?php if ($attribute['code'] == $formData['package_dimension_length_custom_attribute']): ?>selected="selected"<?php endif; ?>>
+                                                <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select> x
+                                    <select
+                                        id="fulfillment_ppackage_dimension_width_custom_attribute"
+                                        name="package_dimension_width_custom_attribute"
+                                        class="M2ePro-required-when-visible" style="width: 70px">
+                                        <option value=""></option>
+                                        <?php foreach ($attributesByInputTypes['text'] as $attribute) : ?>
+                                            <option
+                                                value="<?php echo $attribute['code']; ?>"
+                                                <?php if ($attribute['code'] == $formData['package_dimension_width_custom_attribute']): ?>selected="selected"<?php endif; ?>>
+                                                <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select> x
+                                    <select
+                                        id="fulfillment_ppackage_dimension_height_custom_attribute"
+                                        name="package_dimension_height_custom_attribute"
+                                        class="M2ePro-required-when-visible" style="width: 70px">
+                                        <option value=""></option>
+                                        <?php foreach ($attributesByInputTypes['text'] as $attribute) : ?>
+                                            <option
+                                                value="<?php echo $attribute['code']; ?>"
+                                                <?php if ($attribute['code'] == $formData['package_dimension_height_custom_attribute']): ?>selected="selected"<?php endif; ?>>
+                                                <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </span>
+                                <select
+                                    id="fulfillment_package_dimension_measure" name="package_dimension_measure"
+                                    class="dimension-measure-input validate-select">
+                                    <option
+                                        value="<?php echo Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::DIMENSION_MEASURE_INCHES; ?>" <?php if ($formData['package_dimension_measure'] == Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::DIMENSION_MEASURE_INCHES) {
+                                        echo ' selected="selected"';
+                                    } ?>><?php echo Mage::helper('M2ePro')->__('in'); ?></option>
+                                    <option
+                                        value="<?php echo Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::DIMENSION_MEASURE_CENTIMETERS; ?>" <?php if ($formData['package_dimension_measure'] == Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::DIMENSION_MEASURE_CENTIMETERS) {
+                                        echo ' selected="selected"';
+                                    } ?>><?php echo Mage::helper('M2ePro')->__('cm'); ?></option>
                                 </select>
                             </td>
                         </tr>
-                        <tr>
-                            <td class="label">
-                                <label for="fulfillment_package_weight"><?php echo Mage::helper('M2ePro')->__('Weight'); ?>: <span class="required">*</span></label>
-                            </td>
-                            <td class="value" style="width: auto;">
-                                <input id="fulfillment_package_weight" name="package_weight" value="<?php if($this->getData('total_weight') > 0) echo $this->getData('total_weight'); ?>" type="text" class="input-text weight-input required-entry validate-greater-than-zero" />
-                                <select id="fulfillment_package_weight_measure" name="package_weight_measure" class="weight-measure-input validate-select">
-                                    <option value="<?php echo Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::WEIGHT_MEASURE_OUNCES; ?>" <?php if ($formData['package_weight_measure'] == Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::WEIGHT_MEASURE_OUNCES) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('oz'); ?></option>
-                                    <option value="<?php echo Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::WEIGHT_MEASURE_GRAMS; ?>" <?php if ($formData['package_weight_measure'] == Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::WEIGHT_MEASURE_GRAMS) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('g'); ?></option>
-                                </select>
-                                <p class="note">
-                                    <span><?php echo Mage::helper('M2ePro')->__('Enter a Weight Value and select the appropriate Measurement Units. Please, note the selected Measurement Units will be Saved Up till the next Changes are Made.'); ?></span>
-                                </p>
-                            </td>
-                        </tr>
+
+                        <?php if ($this->canUseProductAttributes()) { ?>
+                            <tr>
+                                <td class="label">
+                                    <label for="fulfillment_package_weight"><?php echo Mage::helper('M2ePro')->__(
+                                            'Weight'
+                                        ); ?>: <span class="required">*</span></label>
+                                </td>
+                                <td class="value">
+                                    <input
+                                        type="hidden" id="fulfillment_package_weight_custom_attribute"
+                                        name="package_weight_custom_attribute"
+                                        value="<?php echo $formData['package_weight_custom_attribute']; ?>"/>
+
+                                    <select
+                                        id="fulfillment_package_weight_source" name="package_weight_source"
+                                        class="M2ePro-validate-weight" style="width: 235px">
+                                        <option
+                                            value="<?php echo Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::WEIGHT_SOURCE_NONE;
+                                            ?>" <?php if ($formData['package_weight_source'] == Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::WEIGHT_SOURCE_NONE) {
+                                            echo ' selected="selected"';
+                                        } ?> style="display:none;">
+                                            -- <?php echo Mage::helper('M2ePro')->__('Please select'); ?> --
+                                        </option>
+                                        <option
+                                            value="<?php echo
+                                            Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::WEIGHT_SOURCE_CUSTOM_VALUE; ?>" <?php if
+                                        ($formData['package_weight_source'] == Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::WEIGHT_SOURCE_CUSTOM_VALUE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper(
+                                                'M2ePro'
+                                            )->__('Custom Value'); ?></option>
+
+                                        <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
+                                            <?php foreach ($attributesByInputTypes['text'] as $attribute) : ?>
+                                                <option
+                                                    attribute_code="<?php echo $attribute['code']; ?>"
+                                                    value="<?php echo Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::WEIGHT_SOURCE_CUSTOM_ATTRIBUTE; ?>"
+                                                    <?php if ($attribute['code'] == $formData['package_weight_custom_attribute']): ?>selected="selected"<?php endif; ?>>
+                                                    <?php echo Mage::helper('M2ePro')->escapeHtml(
+                                                        $attribute['label']
+                                                    ); ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </optgroup>
+                                    </select>
+                                    <select
+                                        id="fulfillment_package_weight_measure" name="package_weight_measure"
+                                        class="weight-measure-input validate-select">
+                                        <option
+                                            value="<?php echo Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::WEIGHT_MEASURE_OUNCES; ?>" <?php if ($formData['package_weight_measure'] == Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::WEIGHT_MEASURE_OUNCES) {
+                                            echo ' selected="selected"';
+                                        } ?>><?php echo Mage::helper('M2ePro')->__('oz'); ?></option>
+                                        <option
+                                            value="<?php echo Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::WEIGHT_MEASURE_GRAMS; ?>" <?php if ($formData['package_weight_measure'] == Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::WEIGHT_MEASURE_GRAMS) {
+                                            echo ' selected="selected"';
+                                        } ?>><?php echo Mage::helper('M2ePro')->__('g'); ?></option>
+                                    </select>
+                                    <p class="note">
+                                    <span><?php echo Mage::helper('M2ePro')->__(
+                                            'Enter a Weight Value and select the appropriate Measurement Units. Please, note the selected Measurement Units will be Saved Up till the next Changes are Made.'
+                                        ); ?></span>
+                                    </p>
+                                </td>
+                            </tr>
+
+                            <tr id="fulfillment_package_weight_custom_value_tr">
+                                <td class="label">
+                                    <label><?php echo Mage::helper('M2ePro')->__('Weight Value'); ?>:&nbsp<span
+                                            class="required">*</span></label>
+                                </td>
+                                <td class="value">
+                                    <input
+                                        id="fulfillment_package_weight" name="package_weight_custom_value"
+                                        value="<?php if ($this->getData('total_weight') > 0) {
+                                            echo $this->getData('total_weight');
+                                        } ?>" type="text"
+                                        class="M2ePro-required-when-visible input-text
+                                    validate-greater-than-zero"/>
+                                </td>
+                            </tr>
+                        <?php } else { ?>
+                            <tr>
+                                <td class="label">
+                                    <label for="fulfillment_package_weight"><?php echo Mage::helper('M2ePro')->__(
+                                            'Weight'
+                                        ); ?>: <span class="required">*</span></label>
+                                </td>
+                                <td class="value">
+                                    <input
+                                        id="fulfillment_package_weight" name="package_weight_custom_value"
+                                        value="<?php if ($this->getData('total_weight') > 0) {
+                                            echo $this->getData('total_weight');
+                                        } ?>" type="text"
+                                        class="M2ePro-required-when-visible input-text weight-input
+                                    validate-greater-than-zero"/>
+                                    <select
+                                        id="fulfillment_package_weight_measure" name="package_weight_measure"
+                                        class="weight-measure-input validate-select">
+                                        <option
+                                            value="<?php echo Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::WEIGHT_MEASURE_OUNCES; ?>" <?php if ($formData['package_weight_measure'] == Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::WEIGHT_MEASURE_OUNCES) {
+                                            echo ' selected="selected"';
+                                        } ?>><?php echo Mage::helper('M2ePro')->__('oz'); ?></option>
+                                        <option
+                                            value="<?php echo Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::WEIGHT_MEASURE_GRAMS; ?>" <?php if ($formData['package_weight_measure'] == Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::WEIGHT_MEASURE_GRAMS) {
+                                            echo ' selected="selected"';
+                                        } ?>><?php echo Mage::helper('M2ePro')->__('g'); ?></option>
+                                    </select>
+                                    <p class="note">
+                                    <span><?php echo Mage::helper('M2ePro')->__(
+                                            'Enter a Weight Value and select the appropriate Measurement Units. Please, note the selected Measurement Units will be Saved Up till the next Changes are Made.'
+                                        ); ?></span>
+                                    </p>
+                                </td>
+                            </tr>
+                        <?php } ?>
                     </table>
                 </div>
             </div>
@@ -312,7 +560,9 @@ if (empty($cachedData)) {
 
         <div class="entry-edit" id="magento_block_amazon_order_fulfillment_configuration_ship_from_address">
             <div class="entry-edit-head">
-                <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Shipping Origin'); ?></h4>
+                <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__(
+                        'Shipping Origin'
+                    ); ?></h4>
             </div>
             <div class="fieldset">
                 <div class="hor-scroll">
@@ -320,36 +570,57 @@ if (empty($cachedData)) {
                     <table class="form-list" cellspacing="0" cellpadding="0">
                         <tr>
                             <td class="label">
-                                <label for="fulfillment_ship_from_address_name"><?php echo Mage::helper('M2ePro')->__('Name'); ?>: <span class="required">*</span></label>
+                                <label for="fulfillment_ship_from_address_name"><?php echo Mage::helper('M2ePro')->__(
+                                        'Name'
+                                    ); ?>: <span class="required">*</span></label>
                             </td>
                             <td class="value" style="width: auto;">
-                                <input id="fulfillment_ship_from_address_name" name="ship_from_address_name" value="<?php echo $formData['ship_from_address_name']; ?>" type="text" class="input-text required-entry" />
+                                <input
+                                    id="fulfillment_ship_from_address_name" name="ship_from_address_name"
+                                    value="<?php echo $formData['ship_from_address_name']; ?>" type="text"
+                                    class="input-text required-entry"/>
                             </td>
                         </tr>
                         <tr>
                             <td class="label">
-                                <label for="fulfillment_ship_from_address_email"><?php echo Mage::helper('M2ePro')->__('Email'); ?>: <span class="required">*</span></label>
+                                <label for="fulfillment_ship_from_address_email"><?php echo Mage::helper('M2ePro')->__(
+                                        'Email'
+                                    ); ?>: <span class="required">*</span></label>
                             </td>
                             <td class="value" style="width: auto;">
-                                <input id="fulfillment_ship_from_address_email" name="ship_from_address_email" value="<?php echo $formData['ship_from_address_email']; ?>" type="text" class="input-text required-entry validate-email" />
+                                <input
+                                    id="fulfillment_ship_from_address_email" name="ship_from_address_email"
+                                    value="<?php echo $formData['ship_from_address_email']; ?>" type="text"
+                                    class="input-text required-entry validate-email"/>
                             </td>
                         </tr>
                         <tr>
                             <td class="label">
-                                <label for="fulfillment_ship_from_address_phone"><?php echo Mage::helper('M2ePro')->__('Phone'); ?>: <span class="required">*</span></label>
+                                <label for="fulfillment_ship_from_address_phone"><?php echo Mage::helper('M2ePro')->__(
+                                        'Phone'
+                                    ); ?>: <span class="required">*</span></label>
                             </td>
                             <td class="value" style="width: auto;">
-                                <input id="fulfillment_ship_from_address_phone" name="ship_from_address_phone" value="<?php echo $formData['ship_from_address_phone']; ?>" type="text" class="input-text required-entry" />
+                                <input
+                                    id="fulfillment_ship_from_address_phone" name="ship_from_address_phone"
+                                    value="<?php echo $formData['ship_from_address_phone']; ?>" type="text"
+                                    class="input-text required-entry"/>
                             </td>
                         </tr>
                         <tr>
                             <td class="label">
-                                <label for="fulfillment_ship_from_address_country"><?php echo Mage::helper('M2ePro')->__('Country'); ?>: <span class="required">*</span></label>
+                                <label for="fulfillment_ship_from_address_country"><?php echo Mage::helper('M2ePro')
+                                        ->__('Country'); ?>: <span class="required">*</span></label>
                             </td>
                             <td class="value" style="width: auto;">
-                                <select id="fulfillment_ship_from_address_country" name="ship_from_address_country" class="validate-select">
-                                    <?php foreach($this->getCountries() as $countryId => $countryName): ?>
-                                        <option value="<?php echo $countryId; ?>" <?php if ($formData['ship_from_address_country'] == $countryId) echo ' selected="selected"'; ?>>
+                                <select
+                                    id="fulfillment_ship_from_address_country" name="ship_from_address_country"
+                                    class="validate-select">
+                                    <?php foreach ($this->getCountries() as $countryId => $countryName): ?>
+                                        <option
+                                            value="<?php echo $countryId; ?>" <?php if ($formData['ship_from_address_country'] == $countryId) {
+                                            echo ' selected="selected"';
+                                        } ?>>
                                             <?php echo Mage::helper('M2ePro')->__($countryName); ?>
                                         </option>
                                     <?php endforeach; ?>
@@ -358,44 +629,67 @@ if (empty($cachedData)) {
                         </tr>
                         <tr>
                             <td class="label">
-                                <label for="fulfillment_ship_from_address_region_state"><?php echo Mage::helper('M2ePro')->__('Region/State'); ?>:</label>
+                                <label for="fulfillment_ship_from_address_region_state"><?php echo Mage::helper(
+                                        'M2ePro'
+                                    )->__('Region/State'); ?>:</label>
                             </td>
                             <td id="fulfillment_ship_from_address_region_state" class="value" style="width: auto;">
                             </td>
                             <td style="display: none">
-                                <input type="hidden" id="fulfillment_ship_from_address_region_state_default" value="<?php echo $formData['ship_from_address_region_state']?>">
+                                <input
+                                    type="hidden" id="fulfillment_ship_from_address_region_state_default"
+                                    value="<?php echo $formData['ship_from_address_region_state'] ?>">
                             </td>
                         </tr>
                         <tr>
                             <td class="label">
-                                <label for="fulfillment_ship_from_address_city"><?php echo Mage::helper('M2ePro')->__('City'); ?>: <span class="required">*</span></label>
+                                <label for="fulfillment_ship_from_address_city"><?php echo Mage::helper('M2ePro')->__(
+                                        'City'
+                                    ); ?>: <span class="required">*</span></label>
                             </td>
                             <td class="value" style="width: auto;">
-                                <input id="fulfillment_ship_from_address_city" name="ship_from_address_city" value="<?php echo $formData['ship_from_address_city']; ?>" type="text" class="input-text required-entry" />
+                                <input
+                                    id="fulfillment_ship_from_address_city" name="ship_from_address_city"
+                                    value="<?php echo $formData['ship_from_address_city']; ?>" type="text"
+                                    class="input-text required-entry"/>
                             </td>
                         </tr>
                         <tr>
                             <td class="label">
-                                <label for="fulfillment_ship_from_address_address_line_1"><?php echo Mage::helper('M2ePro')->__('Street Address'); ?>: <span class="required">*</span></label>
+                                <label for="fulfillment_ship_from_address_address_line_1"><?php echo Mage::helper(
+                                        'M2ePro'
+                                    )->__('Street Address'); ?>: <span class="required">*</span></label>
                             </td>
                             <td class="value" style="width: auto;">
-                                <input id="fulfillment_ship_from_address_address_line_1" name="ship_from_address_address_line_1" class="input-text required-entry" value="<?php echo $formData['ship_from_address_address_line_1']; ?>" />
+                                <input
+                                    id="fulfillment_ship_from_address_address_line_1"
+                                    name="ship_from_address_address_line_1" class="input-text required-entry"
+                                    value="<?php echo $formData['ship_from_address_address_line_1']; ?>"/>
                             </td>
                         </tr>
                         <tr>
                             <td class="label">
-                                <label for="fulfillment_ship_from_address_address_line_2"><?php echo Mage::helper('M2ePro')->__('Street Address Line 2'); ?>:</label>
+                                <label for="fulfillment_ship_from_address_address_line_2"><?php echo Mage::helper(
+                                        'M2ePro'
+                                    )->__('Street Address Line 2'); ?>:</label>
                             </td>
                             <td class="value" style="width: auto;">
-                                <input id="fulfillment_ship_from_address_address_line_2" name="ship_from_address_address_line_2" class="input-text" value="<?php echo $formData['ship_from_address_address_line_2']; ?>" />
+                                <input
+                                    id="fulfillment_ship_from_address_address_line_2"
+                                    name="ship_from_address_address_line_2" class="input-text"
+                                    value="<?php echo $formData['ship_from_address_address_line_2']; ?>"/>
                             </td>
                         </tr>
                         <tr>
                             <td class="label">
-                                <label for="fulfillment_ship_from_address_postal_code"><?php echo Mage::helper('M2ePro')->__('Postal Code'); ?>: <span class="required">*</span></label>
+                                <label for="fulfillment_ship_from_address_postal_code"><?php echo Mage::helper('M2ePro')
+                                        ->__('Postal Code'); ?>: <span class="required">*</span></label>
                             </td>
                             <td class="value" style="width: auto;">
-                                <input id="fulfillment_ship_from_address_postal_code" name="ship_from_address_postal_code" value="<?php echo $formData['ship_from_address_postal_code']; ?>" type="text" class="input-text required-entry" />
+                                <input
+                                    id="fulfillment_ship_from_address_postal_code" name="ship_from_address_postal_code"
+                                    value="<?php echo $formData['ship_from_address_postal_code']; ?>" type="text"
+                                    class="input-text required-entry"/>
                             </td>
                         </tr>
                     </table>
@@ -405,38 +699,76 @@ if (empty($cachedData)) {
 
         <div class="entry-edit" id="magento_block_amazon_order_fulfillment_configuration_additional_settings">
             <div class="entry-edit-head">
-                <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Additional Settings'); ?></h4>
+                <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__(
+                        'Additional Settings'
+                    ); ?></h4>
             </div>
             <div class="fieldset" style="display: none;">
                 <div class="hor-scroll">
                     <table class="form-list" cellspacing="0" cellpadding="0">
                         <tr>
                             <td class="label">
-                                <label for="fulfillment_carrier_will_pickup"><?php echo Mage::helper('M2ePro')->__('Carrier Will Pickup'); ?>: <span class="required">*</span></label>
+                                <label for="fulfillment_carrier_will_pickup"><?php echo Mage::helper('M2ePro')->__(
+                                        'Carrier Will Pickup'
+                                    ); ?>: <span class="required">*</span></label>
                             </td>
                             <td class="value" style="width: auto;">
-                                <select id="fulfillment_carrier_will_pickup" name="carrier_will_pickup" class="validate-select">
-                                    <option value="<?php echo Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::CARRIER_WILL_PICK_UP_NO; ?>" <?php if ($formData['carrier_will_pickup'] == Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::CARRIER_WILL_PICK_UP_NO) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
-                                    <option value="<?php echo Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::CARRIER_WILL_PICK_UP_YES; ?>" <?php if ($formData['carrier_will_pickup'] == Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::CARRIER_WILL_PICK_UP_YES) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
+                                <select
+                                    id="fulfillment_carrier_will_pickup" name="carrier_will_pickup"
+                                    class="validate-select">
+                                    <option
+                                        value="<?php echo Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::CARRIER_WILL_PICK_UP_NO; ?>" <?php if ($formData['carrier_will_pickup'] == Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::CARRIER_WILL_PICK_UP_NO) {
+                                        echo ' selected="selected"';
+                                    } ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
+                                    <option
+                                        value="<?php echo Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::CARRIER_WILL_PICK_UP_YES; ?>" <?php if ($formData['carrier_will_pickup'] == Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::CARRIER_WILL_PICK_UP_YES) {
+                                        echo ' selected="selected"';
+                                    } ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
                                 </select>
                                 <p class="note">
-                                    <span><?php echo Mage::helper('M2ePro')->__('Indicates whether the Carrier will pick up the Package. Please, note the selected Values will be Saved Up till the next changes are made.'); ?></span>
+                                    <span><?php echo Mage::helper('M2ePro')->__(
+                                            'Indicates whether the Carrier will pick up the Package. Please, note the selected Values will be Saved Up till the next changes are made.'
+                                        ); ?></span>
                                 </p>
                             </td>
                         </tr>
                         <tr>
                             <td class="label">
-                                <label for="fulfillment_delivery_experience"><?php echo Mage::helper('M2ePro')->__('Delivery Experience'); ?>: <span class="required">*</span></label>
+                                <label for="fulfillment_delivery_experience"><?php echo Mage::helper('M2ePro')->__(
+                                        'Delivery Experience'
+                                    ); ?>: <span class="required">*</span></label>
                             </td>
                             <td class="value" style="width: auto;">
-                                <select id="fulfillment_delivery_experience" name="delivery_experience" class="validate-select">
-                                    <option value="<?php echo Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::DELIVERY_EXPERIENCE_WITH_ADULT_SIGNATURE; ?>" <?php if ($formData['delivery_experience'] == Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::DELIVERY_EXPERIENCE_WITH_ADULT_SIGNATURE) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Delivery Confirmation With Adult Signature'); ?></option>
-                                    <option value="<?php echo Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::DELIVERY_EXPERIENCE_WITH_SIGNATURE; ?>" <?php if ($formData['delivery_experience'] == Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::DELIVERY_EXPERIENCE_WITH_SIGNATURE) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Delivery Confirmation With Signature'); ?></option>
-                                    <option value="<?php echo Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::DELIVERY_EXPERIENCE_WITHOUT_SIGNATURE; ?>" <?php if ($formData['delivery_experience'] == Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::DELIVERY_EXPERIENCE_WITHOUT_SIGNATURE) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Delivery Confirmation Without Signature'); ?></option>
-                                    <option value="<?php echo Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::DELIVERY_EXPERIENCE_NO_TRACKING; ?>" <?php if ($formData['delivery_experience'] == Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::DELIVERY_EXPERIENCE_NO_TRACKING) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('No Delivery Confirmation'); ?></option>
+                                <select
+                                    id="fulfillment_delivery_experience" name="delivery_experience"
+                                    class="validate-select">
+                                    <option
+                                        value="<?php echo Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::DELIVERY_EXPERIENCE_WITH_ADULT_SIGNATURE; ?>" <?php if ($formData['delivery_experience'] == Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::DELIVERY_EXPERIENCE_WITH_ADULT_SIGNATURE) {
+                                        echo ' selected="selected"';
+                                    } ?>><?php echo Mage::helper('M2ePro')->__(
+                                            'Delivery Confirmation With Adult Signature'
+                                        ); ?></option>
+                                    <option
+                                        value="<?php echo Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::DELIVERY_EXPERIENCE_WITH_SIGNATURE; ?>" <?php if ($formData['delivery_experience'] == Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::DELIVERY_EXPERIENCE_WITH_SIGNATURE) {
+                                        echo ' selected="selected"';
+                                    } ?>><?php echo Mage::helper('M2ePro')->__(
+                                            'Delivery Confirmation With Signature'
+                                        ); ?></option>
+                                    <option
+                                        value="<?php echo Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::DELIVERY_EXPERIENCE_WITHOUT_SIGNATURE; ?>" <?php if ($formData['delivery_experience'] == Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::DELIVERY_EXPERIENCE_WITHOUT_SIGNATURE) {
+                                        echo ' selected="selected"';
+                                    } ?>><?php echo Mage::helper('M2ePro')->__(
+                                            'Delivery Confirmation Without Signature'
+                                        ); ?></option>
+                                    <option
+                                        value="<?php echo Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::DELIVERY_EXPERIENCE_NO_TRACKING; ?>" <?php if ($formData['delivery_experience'] == Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::DELIVERY_EXPERIENCE_NO_TRACKING) {
+                                        echo ' selected="selected"';
+                                    } ?>><?php echo Mage::helper('M2ePro')->__('No Delivery Confirmation'); ?></option>
                                 </select>
                                 <p class="note">
-                                    <span><?php echo Mage::helper('M2ePro')->__('Select a delivery confirmation level. Please, note the selected Value will be Saved Up till the next changes are made.'); ?></span>
+                                    <span><?php echo Mage::helper('M2ePro')->__(
+                                            'Select a delivery confirmation level. Please, note the selected Value will be Saved Up till the next changes are made.'
+                                        ); ?></span>
                                 </p>
                             </td>
                         </tr>
@@ -447,7 +779,8 @@ if (empty($cachedData)) {
     </form>
 </div>
 <div class="control">
-    <a href="javascript://" onclick="AmazonOrderMerchantFulfillmentObj.closePopUp();"><?php echo Mage::helper('M2ePro')->__('Cancel'); ?></a>
+    <a href="javascript://" onclick="AmazonOrderMerchantFulfillmentObj.closePopUp();"><?php echo Mage::helper('M2ePro')
+            ->__('Cancel'); ?></a>
     &nbsp;
     &nbsp;
     &nbsp;

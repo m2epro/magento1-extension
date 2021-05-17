@@ -73,4 +73,34 @@ class Ess_M2ePro_Model_Resource_Ebay_Listing_Product
     }
 
     //########################################
+
+    public function mapChannelItemProduct(Ess_M2ePro_Model_Ebay_Listing_Product $listingProduct)
+    {
+        /** @var Ess_M2ePro_Model_Ebay_Item $ebayItem */
+        $ebayItem = Mage::getModel('M2ePro/Ebay_Item')->load($listingProduct->getEbayItemId());
+
+        $ebayItemTable = Mage::getResourceModel('M2ePro/Ebay_Item')->getMainTable();
+        $existedRelation = Mage::getSingleton('core/resource')->getConnection('core_read')
+            ->select()
+            ->from(array('ei' => $ebayItemTable))
+            ->where('`account_id` = ?', $ebayItem->getAccountId())
+            ->where('`marketplace_id` = ?', $ebayItem->getMarketplaceId())
+            ->where('`item_id` = ?', $ebayItem->getItemId())
+            ->where('`product_id` = ?', $listingProduct->getParentObject()->getProductId())
+            ->where('`store_id` = ?', $ebayItem->getStoreId())
+            ->query()
+            ->fetchColumn();
+
+        if ($existedRelation) {
+            return;
+        }
+
+        $this->_getWriteAdapter()->update(
+            $ebayItemTable,
+            array('product_id' => $listingProduct->getParentObject()->getProductId()),
+            array('id = ?' => $listingProduct->getEbayItemId())
+        );
+    }
+
+    //########################################
 }

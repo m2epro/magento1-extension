@@ -218,11 +218,10 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Other_View_Grid extends Mage_Ad
             }
 
             $htmlValue = '&nbsp;<a href="javascript:void(0);"
-                                    onclick="WalmartListingOtherMappingObj.openPopUp(\''.
-                                        $productTitle.
-                                        '\','.
-                                        (int)$row->getId().
-                                    ');">' . Mage::helper('M2ePro')->__('Map') . '</a>';
+                                    onclick="ListingOtherMappingObj.openPopUp(
+                                    '. (int)$row->getId(). ',
+                                    \''. $productTitle. '\'
+                                    );">' . Mage::helper('M2ePro')->__('Map') . '</a>';
 
             return $htmlValue;
         }

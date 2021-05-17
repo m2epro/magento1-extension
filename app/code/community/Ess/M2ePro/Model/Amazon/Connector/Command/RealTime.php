@@ -30,7 +30,7 @@ abstract class Ess_M2ePro_Model_Amazon_Connector_Command_RealTime extends Ess_M2
         $request = parent::buildRequestInstance();
 
         $requestData = $request->getData();
-        if ($this->_account !== null) {
+        if ($this->_account !== null && $this->_account->getId() !== null) {
             $requestData['account'] = $this->_account->getChildObject()->getServerHash();
         }
 

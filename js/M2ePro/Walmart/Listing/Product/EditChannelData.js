@@ -9,24 +9,22 @@ window.WalmartListingProductEditChannelData = Class.create(Common, {
 
     // ---------------------------------------
 
-    initialize: function(gridHandler)
-    {
+    initialize: function(gridHandler) {
         this.gridHandler = gridHandler;
 
-        Validation.add('M2ePro-validate-walmart-sku', M2ePro.translator.translate('SKU contains the special characters that are not allowed by Walmart.'), function(value, el) {
+        Validation.add('M2ePro-validate-walmart-sku', M2ePro.translator.translate('The length of SKU must be less than 50 characters.'), function(value, el) {
 
             if (!el.up('tr').visible()) {
                 return true;
             }
 
-            return !value.match(/[.\s-]+/g);
+            return value.length < 50;
         });
     },
 
     //########################################
 
-    showIdentifiersPopup: function (productId)
-    {
+    showIdentifiersPopup: function(productId) {
         if (window.top !== window) {
             window.top.ListingGridObj.editChannelDataHandler.frameObj = window;
             window.top.ListingGridObj.editChannelDataHandler.showIdentifiersPopup(productId);
@@ -52,8 +50,7 @@ window.WalmartListingProductEditChannelData = Class.create(Common, {
         });
     },
 
-    editIdentifier: function()
-    {
+    editIdentifier: function() {
         var self = this,
             identifier = $('identifier'),
             identifierName = identifier.selectedOptions[0].textContent;
@@ -66,8 +63,8 @@ window.WalmartListingProductEditChannelData = Class.create(Common, {
             method: 'post',
             parameters: {
                 product_id: self.editIdentifierPopup.productId,
-                type:       identifier.value,
-                value:      $('new-identifier-value').value
+                type: identifier.value,
+                value: $('new-identifier-value').value
             },
             onSuccess: function(transport) {
 
@@ -90,15 +87,14 @@ window.WalmartListingProductEditChannelData = Class.create(Common, {
                 self.cancelEditIdentifier();
 
                 self.getAppropriateMessageObj().addSuccess(
-                    M2ePro.translator.translate("Updating "+identifierName+" has submitted to be processed.")
+                    M2ePro.translator.translate("Updating " + identifierName + " has submitted to be processed.")
                 );
                 self.getAppropriateGridObj().reload();
             }
         });
     },
 
-    cancelEditIdentifier: function()
-    {
+    cancelEditIdentifier: function() {
         var self = this;
 
         if (typeof self.editIdentifierPopup == null) {
@@ -111,8 +107,7 @@ window.WalmartListingProductEditChannelData = Class.create(Common, {
 
     // ---------------------------------------
 
-    showEditSkuPopup: function (productId)
-    {
+    showEditSkuPopup: function(productId) {
         if (window.top !== window) {
             window.top.ListingGridObj.editChannelDataHandler.frameObj = window;
             window.top.ListingGridObj.editChannelDataHandler.showEditSkuPopup(productId);
@@ -138,8 +133,7 @@ window.WalmartListingProductEditChannelData = Class.create(Common, {
         });
     },
 
-    editSku: function ()
-    {
+    editSku: function() {
         var self = this;
 
         if (!self.validateForm()) {
@@ -150,7 +144,7 @@ window.WalmartListingProductEditChannelData = Class.create(Common, {
             method: 'post',
             parameters: {
                 product_id: self.editSkuPopup.productId,
-                value:      $('new-sku-value').value
+                value: $('new-sku-value').value
             },
             onSuccess: function(transport) {
 
@@ -181,8 +175,7 @@ window.WalmartListingProductEditChannelData = Class.create(Common, {
         });
     },
 
-    cancelEditSku: function()
-    {
+    cancelEditSku: function() {
         var self = this;
 
         if (typeof self.editSkuPopup == null) {
@@ -195,8 +188,7 @@ window.WalmartListingProductEditChannelData = Class.create(Common, {
 
     // ---------------------------------------
 
-    showPopup: function(html, id, options)
-    {
+    showPopup: function(html, id, options) {
         var self = this,
             multiSetting = Window.keepMultiModalWindow;
 
@@ -227,8 +219,7 @@ window.WalmartListingProductEditChannelData = Class.create(Common, {
         return popup;
     },
 
-    validateForm: function()
-    {
+    validateForm: function() {
         var validationResult = [];
 
         if ($('popup-edit-form')) {
@@ -244,14 +235,12 @@ window.WalmartListingProductEditChannelData = Class.create(Common, {
 
     // ---------------------------------------
 
-    getAppropriateGridObj: function()
-    {
+    getAppropriateGridObj: function() {
         return this.frameObj ? this.frameObj.ListingGridObj.editChannelDataHandler.gridHandler.getGridObj()
-                             : this.gridHandler.getGridObj();
+            : this.gridHandler.getGridObj();
     },
 
-    getAppropriateMessageObj: function()
-    {
+    getAppropriateMessageObj: function() {
         return this.frameObj ? this.frameObj.MessageObj : MessageObj;
     }
 

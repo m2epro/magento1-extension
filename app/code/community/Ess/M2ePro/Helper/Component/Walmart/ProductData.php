@@ -54,6 +54,11 @@ class Ess_M2ePro_Helper_Component_Walmart_ProductData extends Mage_Core_Helper_A
         Mage::helper('M2ePro/Module')->getRegistry()->setValue($this->getConfigGroup(), $allRecent);
     }
 
+    public function encodeWalmartSku($sku)
+    {
+        return rawurlencode($sku);
+    }
+
     //########################################
 
     protected function getConfigGroup()

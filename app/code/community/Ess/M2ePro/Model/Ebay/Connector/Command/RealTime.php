@@ -43,7 +43,7 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Command_RealTime extends Ess_M2eP
             $requestData['marketplace'] = $this->_marketplace->getNativeId();
         }
 
-        if ($this->_account !== null) {
+        if ($this->_account !== null && $this->_account->getId() !== null) {
             $requestData['account'] = $this->_account->getChildObject()->getServerHash();
         }
 

@@ -32,9 +32,9 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_OtherController
             ->addJs('M2ePro/Amazon/Listing/Other/Grid.js')
             ->addJs('M2ePro/Action.js')
             ->addJs('M2ePro/Listing/Moving.js')
-            ->addJs('M2ePro/Listing/Other/AutoMapping.js')
-            ->addJs('M2ePro/Listing/Other/Mapping.js')
+            ->addJs('M2ePro/Listing/Mapping.js')
 
+            ->addJs('M2ePro/Listing/Other/AutoMapping.js')
             ->addJs('M2ePro/Listing/Other/Removing.js')
             ->addJs('M2ePro/Listing/Other/Unmapping.js');
 

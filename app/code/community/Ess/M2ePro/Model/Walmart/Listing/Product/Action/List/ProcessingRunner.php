@@ -57,7 +57,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_ProcessingRunner
         $this->getProcessingAction()->save();
 
         $accountId = (int)$params['account_id'];
-        $sku       = (string)$params['request_data']['sku'];
+        $sku       = (string)$params['requester_params']['sku'];
 
         $processingActionList = Mage::getModel('M2ePro/Walmart_Listing_Product_Action_ProcessingList');
         $processingActionList->setData(

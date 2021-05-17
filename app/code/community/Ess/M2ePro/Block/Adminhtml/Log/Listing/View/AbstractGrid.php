@@ -223,6 +223,14 @@ abstract class Ess_M2ePro_Block_Adminhtml_Log_Listing_View_AbstractGrid extends
         }
 
         $value = Mage::helper('M2ePro')->escapeHtml($value);
+        $productId = (int)$row->getData('product_id');
+
+        $urlData = array(
+            'id'     => $row->getData('listing_id'),
+            'filter' => base64_encode("product_id[from]={$productId}&product_id[to]={$productId}")
+        );
+
+        $manageUrl = $this->getUrl('*/adminhtml_' . $row->getData('component_mode') . '_listing/view', $urlData);
 
         if ($row->getData('listing_id')) {
             $url = $this->getUrl(
@@ -233,6 +241,12 @@ abstract class Ess_M2ePro_Block_Adminhtml_Log_Listing_View_AbstractGrid extends
             $value = '<a target="_blank" href="'.$url.'">' .
                 $value .
                 '</a><br/>ID: '.$row->getData('listing_id');
+
+            if ($productId) {
+                $value .= '<br/>Product:<br/>'
+                    . '<a target="_blank" href="' . $manageUrl . '">'
+                    . $row->getData('product_title') . '</a>';
+            }
         }
 
         return $value;

@@ -23,12 +23,14 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_SkuResolver
     public function setListingProduct(Ess_M2ePro_Model_Listing_Product $listingProduct)
     {
         $this->_listingProduct = $listingProduct;
+
         return $this;
     }
 
     public function setSkusInCurrentRequest(array $skus)
     {
         $this->_skusInCurrentRequest = $skus;
+
         return $this;
     }
 
@@ -50,6 +52,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_SkuResolver
 
         if (empty($sku)) {
             $this->addMessage('SKU is not provided. Please, check Listing Settings.');
+
             return null;
         }
 
@@ -80,13 +83,14 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_SkuResolver
 
     protected function getUnifiedSku($prefix = 'SKU')
     {
-        return $prefix.'_'.$this->getListingProduct()->getProductId().'_'.$this->getListingProduct()->getId();
+        return $prefix . '_' . $this->getListingProduct()->getProductId() . '_' . $this->getListingProduct()->getId();
     }
 
     protected function getRandomSku()
     {
-        $hash = sha1(rand(0, 10000).microtime(1));
-        return $this->getUnifiedSku().'_'.substr($hash, 0, 10);
+        $hash = sha1(rand(0, 10000) . microtime(1));
+
+        return $this->getUnifiedSku() . '_' . substr($hash, 0, 10);
     }
 
     //########################################
@@ -113,6 +117,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_SkuResolver
                 'Another Product with the same SKU is being Listed simultaneously with this one.
                 Please change the SKU or enable the Option Generate Merchant SKU.'
             );
+
             return true;
         }
 
@@ -121,6 +126,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_SkuResolver
                 'Product with the same SKU is found in other M2E Pro Listing that is created
                  from the same Merchant ID for the same Marketplace.'
             );
+
             return true;
         }
 
@@ -129,6 +135,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_SkuResolver
                 'Product with the same SKU is found in M2E Pro Unmanaged Listing.
                 Please change the SKU or enable the Option Generate Merchant SKU.'
             );
+
             return true;
         }
 
@@ -189,7 +196,8 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_SkuResolver
             'M2ePro/Walmart_Listing_Product_Action_ProcessingList_Collection'
         );
         $processingActionListCollection->addFieldToFilter(
-            'account_id', $this->getListingProduct()->getListing()->getAccountId()
+            'account_id',
+            $this->getListingProduct()->getListing()->getAccountId()
         );
 
         return $this->_skusInProcessing = $processingActionListCollection->getColumnValues('sku');
@@ -216,7 +224,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_SkuResolver
 
             if (!empty($sku)) {
                 $sku = $this->applySkuModification($sku);
-                $sku = $this->removeUnsupportedCharacters($sku);
             }
 
             /**
@@ -252,7 +259,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_SkuResolver
 
         if (!empty($sku)) {
             $sku = $this->applySkuModification($sku);
-            $sku = $this->removeUnsupportedCharacters($sku);
         }
 
         return $sku;
@@ -278,28 +284,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_SkuResolver
 
         return $sku;
     }
-
-    protected function removeUnsupportedCharacters($sku)
-    {
-        if (!preg_match('/[.\s-]/', $sku)) {
-            return $sku;
-        }
-
-        $newSku = preg_replace('/[.\s-]/', '_', $sku);
-        $this->addMessage(
-            sprintf(
-                'The Item SKU will be automatically changed to "%s".
-                Special characters, i.e. hyphen (-), space ( ), and period (.), are not allowed by Walmart and
-                will be replaced with the underscore ( _ ).
-                The Item will remain associated with Magento Product "%s".',
-                $newSku, $sku
-            ),
-            Ess_M2ePro_Model_Response_Message::TYPE_WARNING
-        );
-
-        return $newSku;
-    }
-
     //########################################
 
     /**
