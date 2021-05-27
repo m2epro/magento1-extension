@@ -1,4 +1,8 @@
-* 6.13.0 (r16265) (17/05/2021) 
+* 6.13.1 (r16274) (27/05/2021) 
+
+eBay: [Fixed] eBay Store Category IDs are not saved correctly [M1-1242]
+
+* 6.13.0 (r16264) (17/05/2021)
 
 Common: [Fixed] Fatal error 'CategoryTemplate with same data already exists' occurs when moving the Product from the Unmanaged Listing to the M2E Listing [M1-1125]
 Common: [Fixed] Products are not displayed on the Search page of the M2E Pro Listing after applying filtering by price [M1-1173]
