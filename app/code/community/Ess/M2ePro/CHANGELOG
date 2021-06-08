@@ -1,4 +1,9 @@
-* 6.13.1 (r16274) (27/05/2021) 
+* 6.13.2 (r16287) (08/06/2021) 
+
+Walmart: [Fixed] Some Walmart orders cannot be updated to Shipped status [M1-1274]
+Walmart: [Fixed] Custom attributes values are not saved for duplicated Walmart Description policy [M1-1260]
+
+* 6.13.1 (r16273) (27/05/2021)
 
 eBay: [Fixed] eBay Store Category IDs are not saved correctly [M1-1242]
 

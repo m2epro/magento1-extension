@@ -135,6 +135,8 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat_Builder extends Ess_M2ePro
 
             'attributes_mode' => WalmartTemplateSellingFormat::ATTRIBUTES_MODE_NONE,
             'attributes' => '',
+            'attributes_name' => json_encode(array()),
+            'attributes_value' => json_encode(array()),
 
             'shipping_override_rule_mode' => WalmartTemplateSellingFormat::SHIPPING_OVERRIDE_RULE_MODE_NO,
             'shipping_override_rule' => array()

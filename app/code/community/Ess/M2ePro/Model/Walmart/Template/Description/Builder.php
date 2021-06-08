@@ -128,6 +128,8 @@ class Ess_M2ePro_Model_Walmart_Template_Description_Builder extends Ess_M2ePro_M
 
             'attributes_mode' => Description::ATTRIBUTES_MODE_NONE,
             'attributes'      => json_encode(array()),
+            'attributes_name' => json_encode(array()),
+            'attributes_value' => json_encode(array())
         );
     }
 
