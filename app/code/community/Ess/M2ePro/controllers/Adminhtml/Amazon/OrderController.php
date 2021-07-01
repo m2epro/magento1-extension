@@ -138,9 +138,7 @@ class Ess_M2ePro_Adminhtml_Amazon_OrderController
 
             // Create shipment
             // ---------------------------------------
-            if ($order->getChildObject()->canCreateShipment()) {
-                $order->createShipment();
-            }
+            $order->createShipment();
 
             // ---------------------------------------
 

@@ -1211,6 +1211,7 @@ $isCustomDescription = ($formData['description_mode'] == Ess_M2ePro_Model_Ebay_T
                         <input type="hidden" id="product_details_mpn_attribute" name="description[product_details][mpn][attribute]" value="<?php echo $formData['product_details']['mpn']['attribute']; ?>"/>
 
                         <select id="product_details_mpn" name="description[product_details][mpn][mode]" class="M2ePro-required-when-visible M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text">
+                            <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Description::PRODUCT_DETAILS_MODE_NONE;?>" <?php if (Ess_M2ePro_Model_Ebay_Template_Description::PRODUCT_DETAILS_MODE_NONE == $formData['product_details']['mpn']['mode']): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('None'); ?></option>
                             <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Description::PRODUCT_DETAILS_MODE_DOES_NOT_APPLY;?>" <?php if (Ess_M2ePro_Model_Ebay_Template_Description::PRODUCT_DETAILS_MODE_DOES_NOT_APPLY == $formData['product_details']['mpn']['mode']): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Does Not Apply'); ?></option>
                             <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attributes">
                                 <?php foreach($attributesByInputTypes['text'] as $attribute) : ?>

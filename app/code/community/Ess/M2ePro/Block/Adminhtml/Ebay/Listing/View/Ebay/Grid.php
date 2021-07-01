@@ -171,9 +171,10 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Ebay_Grid
                 'type'     => 'number',
                 'index'    => 'available_qty',
                 'sortable' => true,
-                'filter'   => false,
+                'filter_index' => 'online_qty',
                 'renderer' => 'M2ePro/adminhtml_ebay_grid_column_renderer_qty',
                 'render_online_qty' => OnlineQty::ONLINE_AVAILABLE_QTY,
+                'filter_condition_callback' => array($this, 'callbackFilterAvailableQty')
             )
         );
 
@@ -466,6 +467,36 @@ HTML;
                 array('attribute'=>'online_main_category', 'like'=>'%'.$value.'%')
             )
         );
+    }
+
+    protected function callbackFilterAvailableQty($collection, $column)
+    {
+        $cond = $column->getFilter()->getCondition();
+
+        if (empty($cond)) {
+            return;
+        }
+
+        $where = '';
+        $onlineQty = 'elp.online_qty - elp.online_qty_sold';
+
+        if (isset($cond['from']) || isset($cond['to'])) {
+            if (isset($cond['from']) && $cond['from'] != '') {
+                $value = $collection->getConnection()->quote($cond['from']);
+                $where .= "{$onlineQty} >= {$value}";
+            }
+
+            if (isset($cond['to']) && $cond['to'] != '') {
+                if (isset($cond['from']) && $cond['from'] != '') {
+                    $where .= ' AND ';
+                }
+
+                $value = $collection->getConnection()->quote($cond['to']);
+                $where .= "{$onlineQty} <= {$value}";
+            }
+        }
+
+        $collection->getSelect()->where($where);
     }
 
     protected function callbackFilterPrice($collection, $column)

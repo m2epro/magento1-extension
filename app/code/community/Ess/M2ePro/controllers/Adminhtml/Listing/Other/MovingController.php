@@ -95,7 +95,7 @@ class Ess_M2ePro_Adminhtml_Listing_Other_MovingController
 
         if ($listingOtherCollection->getSize() != count($selectedProducts)) {
             $sessionHelper->removeValue($sessionKey);
-            $message = Mage::helper('M2ePro')->__('Only Mapped Products must be selected.');
+            $message = Mage::helper('M2ePro')->__('Only Linked Products must be selected.');
 
             return $this->getResponse()->setBody(
                 Mage::helper('M2ePro')->jsonEncode(

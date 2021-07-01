@@ -30,6 +30,7 @@ class Ess_M2ePro_Model_Ebay_Order extends Ess_M2ePro_Model_Component_Child_Ebay_
     const STATUS_UNSHIPPED = 1;
     const STATUS_SHIPPED   = 2;
     const STATUS_CANCELED  = 3;
+    const STATUS_PENDING_RESERVED = 4;
 
     /** All reasons: https://developer.ebay.com/Devzone/post-order/types/CancelReasonEnum.html */
     const CANCEL_REASON_DEFAULT   = 'OTHER';
@@ -176,6 +177,11 @@ class Ess_M2ePro_Model_Ebay_Order extends Ess_M2ePro_Model_Component_Child_Ebay_
 
     // ---------------------------------------
 
+    public function getTaxReference()
+    {
+        return $this->getData('tax_reference');
+    }
+
     public function getTaxDetails()
     {
         return $this->getSettings('tax_details');
@@ -313,6 +319,11 @@ class Ess_M2ePro_Model_Ebay_Order extends Ess_M2ePro_Model_Component_Child_Ebay_
     {
         $shippingDetails = $this->getShippingDetails();
         return isset($shippingDetails['date']) ? $shippingDetails['date'] : '';
+    }
+
+    public function getShippingDateTo()
+    {
+        return $this->getData('shipping_date_to');
     }
 
     /**

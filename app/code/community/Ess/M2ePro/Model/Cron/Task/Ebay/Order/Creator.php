@@ -110,9 +110,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Order_Creator
             $order->createInvoice();
         }
 
-        if ($order->getChildObject()->canCreateShipment()) {
-            $order->createShipment();
-        }
+        $order->createShipment();
 
         if ($order->getChildObject()->canCreateTracks()) {
             $order->getChildObject()->createTracks();

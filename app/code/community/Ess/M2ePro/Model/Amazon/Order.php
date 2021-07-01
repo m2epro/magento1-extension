@@ -19,6 +19,7 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
     const STATUS_UNFULFILLABLE       = 4;
     const STATUS_CANCELED            = 5;
     const STATUS_INVOICE_UNCONFIRMED = 6;
+    const STATUS_PENDING_RESERVED    = 7;
 
     const INVOICE_SOURCE_MAGENTO = 'magento';
     const INVOICE_SOURCE_EXTENSION = 'extension';
@@ -123,28 +124,14 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
 
     //########################################
 
-    public function getShipDateFrom()
+    public function getShippingDateTo()
     {
-        $shippingDates = $this->getSettings('shipping_dates');
-        return !empty($shippingDates['ship']['from']) ? $shippingDates['ship']['from'] : null;
-    }
-
-    public function getShipDateTo()
-    {
-        $shippingDates = $this->getSettings('shipping_dates');
-        return !empty($shippingDates['ship']['to']) ? $shippingDates['ship']['to'] : null;
-    }
-
-    public function getDeliveryDateFrom()
-    {
-        $shippingDates = $this->getSettings('shipping_dates');
-        return !empty($shippingDates['delivery']['from']) ? $shippingDates['delivery']['from'] : null;
+        return $this->getData('shipping_date_to');
     }
 
     public function getDeliveryDateTo()
     {
-        $shippingDates = $this->getSettings('shipping_dates');
-        return !empty($shippingDates['delivery']['to']) ? $shippingDates['delivery']['to'] : null;
+        return $this->getData('delivery_date_to');
     }
 
     //########################################

@@ -177,7 +177,7 @@ class Ess_M2ePro_Block_Adminhtml_Listing_Mapping_Grid extends Mage_Adminhtml_Blo
         $actions = '&nbsp;<a href="javascript:void(0);"';
         $actions .= 'onclick="' . $this->getData('mapping_handler_js') . '.';
         $actions .= $this->getData('mapping_action') . '(' . $row->getId() . ');">';
-        $actions .= Mage::helper('M2ePro')->__('Map To This Product') . '</a>';
+        $actions .= Mage::helper('M2ePro')->__('Link To This Product') . '</a>';
 
         return $actions;
     }

@@ -61,7 +61,7 @@ window.EbayAccount = Class.create(Common, {
             return checkResult;
         });
 
-        Validation.add('M2ePro-require-select-attribute', M2ePro.translator.translate('If Yes is chosen, you must select at least one Attribute for Product Mapping.'), function(value, el) {
+        Validation.add('M2ePro-require-select-attribute', M2ePro.translator.translate('If Yes is chosen, you must select at least one Attribute for Product Linking.'), function(value, el) {
 
             if ($('other_listings_mapping_mode').value == 0) {
                 return true;

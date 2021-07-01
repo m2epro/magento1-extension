@@ -156,17 +156,10 @@ class Ess_M2ePro_Model_Listing_Product extends Ess_M2ePro_Model_Component_Parent
             $scheduledAction->deleteInstance();
         }
 
-        $tempLog = Mage::getModel('M2ePro/Listing_Log');
-        $tempLog->setComponentMode($this->getComponentMode());
-        $actionId = $tempLog->getResource()->getNextActionId();
-        $tempLog->addProductMessage(
-            $this->getListingId(),
-            $this->getProductId(),
-            $this->getId(),
-            Ess_M2ePro_Helper_Data::INITIATOR_UNKNOWN,
-            $actionId,
-            Ess_M2ePro_Model_Listing_Log::ACTION_DELETE_PRODUCT_FROM_LISTING,
+        $this->logProductMessage(
             'Item was Deleted',
+            Ess_M2ePro_Helper_Data::INITIATOR_UNKNOWN,
+            Ess_M2ePro_Model_Listing_Log::ACTION_DELETE_PRODUCT_FROM_LISTING,
             Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE
         );
 
@@ -497,7 +490,9 @@ class Ess_M2ePro_Model_Listing_Product extends Ess_M2ePro_Model_Component_Parent
 
     public function remapProduct(Ess_M2ePro_Model_Magento_Product $magentoProduct)
     {
-        $data = array('product_id' => $magentoProduct->getProductId());
+        $exMagentoProductId = $this->getProductId();
+        $newMagentoProductId = $magentoProduct->getProductId();
+        $data = array('product_id' => $newMagentoProductId);
 
         if ($this->getMagentoProduct()->isStrictVariationProduct()
             && $magentoProduct->isSimpleTypeWithoutCustomOptions()) {
@@ -521,6 +516,17 @@ class Ess_M2ePro_Model_Listing_Product extends Ess_M2ePro_Model_Component_Parent
         );
 
         $instruction->save();
+        
+        $this->logProductMessage(
+            sprintf(
+                "Item was relinked from Magento Product ID [%s] to ID [%s]",
+                $exMagentoProductId,
+                $newMagentoProductId
+            ),
+            Ess_M2ePro_Helper_Data::INITIATOR_USER,
+            Ess_M2ePro_Model_Listing_Log::ACTION_REMAP_LISTING_PRODUCT,
+            Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS
+        );
     }
 
     //########################################
@@ -536,5 +542,25 @@ class Ess_M2ePro_Model_Listing_Product extends Ess_M2ePro_Model_Component_Parent
         return $this;
     }
 
+    //########################################
+    
+    public function logProductMessage($text, $initiator, $action, $type)
+    {
+        /** @var Ess_M2ePro_Model_Listing_Log $log */
+        $log = Mage::getModel('M2ePro/Listing_Log');
+        $log->setComponentMode($this->getComponentMode());
+        $actionId = $log->getResource()->getNextActionId();
+        $log->addProductMessage(
+            $this->getListingId(),
+            $this->getProductId(),
+            $this->getId(),
+            $initiator,
+            $actionId,
+            $action,
+            $text,
+            $type
+        );
+    }
+    
     //########################################
 }

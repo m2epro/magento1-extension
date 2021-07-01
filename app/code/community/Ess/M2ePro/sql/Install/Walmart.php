@@ -360,6 +360,7 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_walmart_order')}` (
   `shipping_service` VARCHAR(255) DEFAULT NULL,
   `shipping_address` TEXT NOT NULL,
   `shipping_price` DECIMAL(12, 4) UNSIGNED NOT NULL,
+  `shipping_date_to` DATETIME DEFAULT NULL,
   `paid_amount` DECIMAL(12, 4) UNSIGNED NOT NULL,
   `tax_details` TEXT DEFAULT NULL,
   `currency` VARCHAR(10) NOT NULL,
@@ -370,6 +371,7 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_walmart_order')}` (
   INDEX `walmart_order_id` (`walmart_order_id`),
   INDEX `buyer_email` (`buyer_email`),
   INDEX `buyer_name` (`buyer_name`),
+  INDEX `shipping_date_to` (`shipping_date_to`),
   INDEX `paid_amount` (`paid_amount`),
   INDEX `is_tried_to_acknowledge` (`is_tried_to_acknowledge`),
   INDEX `purchase_create_date` (`purchase_create_date`)

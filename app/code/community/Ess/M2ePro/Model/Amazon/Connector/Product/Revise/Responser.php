@@ -85,21 +85,16 @@ class Ess_M2ePro_Model_Amazon_Connector_Product_Revise_Responser
 
         $from = $this->_listingProduct->getOrigData('online_regular_price');
         $to = $this->_listingProduct->getChildObject()->getOnlineRegularPrice();
-        if ($from == $to) {
-            return;
+        
+        if ($from != $to) {
+            $this->logSuccessMessage(
+                sprintf(
+                    'Regular Price was revised from %s to %s',
+                    $currency->toCurrency($from),
+                    $currency->toCurrency($to)
+                )
+            );
         }
-
-        $message = Mage::getModel('M2ePro/Connector_Connection_Response_Message');
-        $message->initFromPreparedData(
-            sprintf(
-                'Regular Price was revised from %s to %s',
-                $currency->toCurrency($from),
-                $currency->toCurrency($to)
-            ),
-            Ess_M2ePro_Model_Connector_Connection_Response_Message::TYPE_SUCCESS
-        );
-
-        $this->getLogger()->logListingProductMessage($this->_listingProduct, $message);
     }
 
     protected function processSuccessReviseBusinessPrice()
@@ -114,21 +109,16 @@ class Ess_M2ePro_Model_Amazon_Connector_Product_Revise_Responser
 
         $from = $this->_listingProduct->getOrigData('online_business_price');
         $to = $this->_listingProduct->getChildObject()->getOnlineBusinessPrice();
-        if ($from == $to) {
-            return;
+        
+        if ($from != $to) {
+            $this->logSuccessMessage(
+                sprintf(
+                    'Business Price was revised from %s to %s',
+                    $currency->toCurrency($from),
+                    $currency->toCurrency($to)
+                )
+            );
         }
-
-        $message = Mage::getModel('M2ePro/Connector_Connection_Response_Message');
-        $message->initFromPreparedData(
-            sprintf(
-                'Business Price was revised from %s to %s',
-                $currency->toCurrency($from),
-                $currency->toCurrency($to)
-            ),
-            Ess_M2ePro_Model_Connector_Connection_Response_Message::TYPE_SUCCESS
-        );
-
-        $this->getLogger()->logListingProductMessage($this->_listingProduct, $message);
     }
 
     protected function processSuccessReviseQty()
@@ -137,18 +127,30 @@ class Ess_M2ePro_Model_Amazon_Connector_Product_Revise_Responser
             return;
         }
 
-        $from = $this->_listingProduct->getOrigData('online_qty');
-        $to = $this->_listingProduct->getChildObject()->getOnlineQty();
-        if ($from == $to) {
-            return;
+        $handlingTimeFrom = $this->_listingProduct->getOrigData('online_handling_time');
+        $handlingTimeTo = $this->_listingProduct->getChildObject()->getOnlineHandlingTime();
+        
+        if ($handlingTimeFrom != $handlingTimeTo) {
+            $this->logSuccessMessage(
+                sprintf('Handling Time was revised from %s to %s', $handlingTimeFrom, $handlingTimeTo)
+            );
         }
 
-        $message = Mage::getModel('M2ePro/Connector_Connection_Response_Message');
-        $message->initFromPreparedData(
-            sprintf('QTY was revised from %s to %s', $from, $to),
-            Ess_M2ePro_Model_Connector_Connection_Response_Message::TYPE_SUCCESS
-        );
+        $qtyFrom = $this->_listingProduct->getOrigData('online_qty');
+        $qtyTo = $this->_listingProduct->getChildObject()->getOnlineQty();
+        
+        if ($qtyFrom != $qtyTo) {
+            $this->logSuccessMessage(
+                sprintf('QTY was revised from %s to %s', $qtyFrom, $qtyTo)
+            );
+        }
+    }
 
+    protected function logSuccessMessage($text)
+    {
+        /** @var Ess_M2ePro_Model_Connector_Connection_Response_Message $message */
+        $message = Mage::getModel('M2ePro/Connector_Connection_Response_Message');
+        $message->initFromPreparedData($text, Ess_M2ePro_Model_Connector_Connection_Response_Message::TYPE_SUCCESS);
         $this->getLogger()->logListingProductMessage($this->_listingProduct, $message);
     }
 

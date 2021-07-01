@@ -35,7 +35,7 @@ $defaults = array(
     'package_weight_measure'                    => Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::WEIGHT_MEASURE_OUNCES,
 );
 
-if ($this->getData('delivery_date_to') !== null) {
+if (!empty($this->getData('delivery_date_to'))) {
     $mustArriveByDate = new DateTime($this->getData('delivery_date_to'));
     $defaults['must_arrive_by_date'] = $mustArriveByDate->format('Y-m-d');
 }

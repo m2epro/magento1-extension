@@ -224,23 +224,27 @@ class Ess_M2ePro_Model_Ebay_Connector_Item_Revise_Responser
         $responseMessages = $this->getResponse()->getMessages()->getEntities();
 
         if ($this->getStatusChanger() == Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_SYNCH &&
-            (!$this->getConfigurator()->isExcludingMode()) &&
-            $this->isNewRequiredSpecificNeeded($responseMessages)) {
-            $message = Mage::getModel('M2ePro/Connector_Connection_Response_Message');
-            $message->initFromPreparedData(
-                Mage::helper('M2ePro')->__(
-                    'eBay Category assigned to this Item requires the Product Identifier to be specified
-                    (UPC, EAN, ISBN, etc.). The related data will be automatically submitted to the Channel based
-                    on eBay Catalog Identifiers settings in the Description Policy.'
-                ),
-                Ess_M2ePro_Model_Connector_Connection_Response_Message::TYPE_WARNING
-            );
-
-            $this->getLogger()->logListingProductMessage($this->_listingProduct, $message);
-
+            $this->getConfigurator()->isIncludingMode()) {
+            /** @var Ess_M2ePro_Model_Ebay_Listing_Product_Action_Configurator $configurator */
             $configurator = Mage::getModel('M2ePro/Ebay_Listing_Product_Action_Configurator');
 
-            $this->processAdditionalAction($this->getActionType(), $configurator);
+            if ($this->isProductIdentifierNeeded($responseMessages)) {
+                $message = Mage::getModel('M2ePro/Connector_Connection_Response_Message');
+                $message->initFromPreparedData(
+                    Mage::helper('M2ePro')->__(
+                        'eBay Category assigned to this Item requires the Product Identifier to be specified
+                    (UPC, EAN, ISBN, etc.). The related data will be automatically submitted to the Channel based
+                    on eBay Catalog Identifiers settings in the Description Policy.'
+                    ),
+                    Ess_M2ePro_Model_Connector_Connection_Response_Message::TYPE_WARNING
+                );
+
+                $this->getLogger()->logListingProductMessage($this->_listingProduct, $message);
+                $this->processAdditionalAction($this->getActionType(), $configurator);
+            } elseif ($this->isNewRequiredSpecificNeeded($responseMessages)) {
+                $configurator->allowCategories();
+                $this->processAdditionalAction($this->getActionType(), $configurator);
+            }
         }
 
         $additionalData = $this->_listingProduct->getAdditionalData();
@@ -249,7 +253,7 @@ class Ess_M2ePro_Model_Ebay_Connector_Item_Revise_Responser
             $this->getRequestDataObject()->hasVariations() &&
             !isset($additionalData['is_variation_mpn_filled'])
         ) {
-            $this->tryToResolveVariationMpnErrors();
+            $this->tryToResolveVariationErrors();
         }
 
         parent::eventAfterExecuting();

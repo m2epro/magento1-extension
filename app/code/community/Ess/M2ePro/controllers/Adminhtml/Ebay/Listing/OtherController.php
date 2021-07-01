@@ -142,7 +142,10 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_OtherController extends Ess_M2ePro_Contr
 
             $categoryData = $this->getCategoryData($listingProduct->getOnlineMainCategory(), $listingInstance);
             if (!empty($categoryData) && !isset($categoryData['create_new_category'])) {
-                $this->assignMainCategoryToProduct($listingProduct->getId(), $categoryData, $listingInstance);
+                Mage::getModel('M2ePro/Ebay_Listing_Product')->assignTemplatesToProducts(
+                    $listingProduct->getId(),
+                    $categoryData['id']
+                );
 
                 $productsHaveOnlineCategory[] = $listingProduct->getId();
                 $listingOther->moveToListingSucceed();
@@ -206,26 +209,6 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_OtherController extends Ess_M2ePro_Contr
 
     //########################################
 
-    protected function assignMainCategoryToProduct($productId, $categoryData, Ess_M2ePro_Model_Listing $listing)
-    {
-        /** @var Ess_M2ePro_Model_Ebay_Template_Category_Chooser_Converter $converter */
-        $converter = Mage::getModel('M2ePro/Ebay_Template_Category_Chooser_Converter');
-        $converter->setAccountId($listing->getAccountId());
-        $converter->setMarketplaceId($listing->getMarketplaceId());
-        foreach ($categoryData as $type => $templateData) {
-            $converter->setCategoryDataFromChooser($templateData, $type);
-        }
-
-        $categoryTpl = Mage::getModel('M2ePro/Ebay_Template_Category_Builder')->build(
-            Mage::getModel('M2ePro/Ebay_Template_Category'),
-            $converter->getCategoryDataForTemplate(EbayCategory::TYPE_EBAY_MAIN)
-        );
-
-        Mage::getModel('M2ePro/Ebay_Listing_Product')->assignTemplatesToProducts($productId, $categoryTpl->getId());
-    }
-
-    //----------------------------------------
-
     protected function getCategoryData($onlineMainCategory, Ess_M2ePro_Model_Listing $listing)
     {
         $categoryData = array();
@@ -245,13 +228,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_OtherController extends Ess_M2ePro_Contr
             ->getFirstItem();
 
         if ($templateCategory->getId()) {
-            $categoryData[EbayCategory::TYPE_EBAY_MAIN] = array(
-                'mode'               => Ess_M2ePro_Model_Ebay_Template_Category::CATEGORY_MODE_EBAY,
-                'value'              => $templateCategory->getCategoryValue(),
-                'path'               => $path,
-                'is_custom_template' => $templateCategory->getIsCustomTemplate(),
-                'specific'           => $templateCategory->getSpecifics()
-            );
+            $categoryData['id'] = $templateCategory->getId();
         } else {
             $categoryData['create_new_category'] = array(
                 'mode'               => Ess_M2ePro_Model_Ebay_Template_Category::CATEGORY_MODE_EBAY,

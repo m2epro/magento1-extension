@@ -9,7 +9,7 @@
 class Ess_M2ePro_Model_Ebay_Connector_Order_Update_Shipping
     extends Ess_M2ePro_Model_Ebay_Connector_Order_Update_Abstract
 {
-    protected $_carrierCode    = null;
+    protected $_carrierCode = null;
     protected $_trackingNumber = null;
 
     //########################################
@@ -23,7 +23,7 @@ class Ess_M2ePro_Model_Ebay_Connector_Order_Update_Shipping
         parent::setAction($action);
 
         if ($this->_action == Ess_M2ePro_Model_Ebay_Connector_Order_Dispatcher::ACTION_SHIP_TRACK) {
-            $this->_carrierCode    = $this->_params['carrier_code'];
+            $this->_carrierCode = $this->_params['carrier_code'];
             $this->_trackingNumber = $this->_params['tracking_number'];
         }
 
@@ -90,7 +90,8 @@ class Ess_M2ePro_Model_Ebay_Connector_Order_Update_Shipping
 
         if ($this->_action == Ess_M2ePro_Model_Ebay_Connector_Order_Dispatcher::ACTION_SHIP_TRACK) {
             $this->_order->addSuccessLog(
-                'Tracking number "%num%" for "%code%" has been sent to eBay.', array(
+                'Tracking number "%num%" for "%code%" has been sent to eBay.',
+                array(
                     '!num'  => $this->_trackingNumber,
                     '!code' => $this->_carrierCode
                 )
@@ -99,7 +100,7 @@ class Ess_M2ePro_Model_Ebay_Connector_Order_Update_Shipping
 
         if (!$this->_order->getChildObject()->isShippingCompleted()) {
             $this->_order->addSuccessLog(
-                'Shipping Status for eBay Order was updated to Shipped.'
+                'Shipping status [Shipped] was sent to eBay.'
             );
         }
 

@@ -428,7 +428,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View extends Mage_Adminhtml_Bloc
                 'Rule with the same Title already exists.' => $helper->__('Rule with the same Title already exists.'),
                 'Sell on Another Marketplace'              => $helper->__('Sell on Another Marketplace'),
                 'Create new'                               => $helper->__('Create new'),
-                'Mapping Product'                          => $helper->__('Mapping Product')
+                'Linking Product'                          => $helper->__('Linking Product')
             )
         );
 

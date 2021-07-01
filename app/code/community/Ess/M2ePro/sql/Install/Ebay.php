@@ -723,8 +723,10 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_order')}` (
   `payment_status` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `cancellation_status` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `shipping_details` TEXT DEFAULT NULL,
+  `shipping_date_to` DATETIME DEFAULT NULL,
   `payment_details` TEXT DEFAULT NULL,
   `tax_details` TEXT DEFAULT NULL,
+  `tax_reference` VARCHAR(72) DEFAULT NULL,
   `purchase_update_date` DATETIME DEFAULT NULL,
   `purchase_create_date` DATETIME DEFAULT NULL,
   PRIMARY KEY (`order_id`),
@@ -737,6 +739,7 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_order')}` (
   INDEX `checkout_status` (`checkout_status`),
   INDEX `payment_status` (`payment_status`),
   INDEX `shipping_status` (`shipping_status`),
+  INDEX `shipping_date_to` (`shipping_date_to`),
   INDEX `purchase_create_date` (`purchase_create_date`)
 )
 ENGINE = INNODB

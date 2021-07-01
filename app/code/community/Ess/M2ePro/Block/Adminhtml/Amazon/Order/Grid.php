@@ -20,18 +20,12 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Order_Grid extends Mage_Adminhtml_Block_
     {
         parent::__construct();
 
-        // Initialization block
-        // ---------------------------------------
         $this->setId('amazonOrderGrid');
-        // ---------------------------------------
 
-        // Set default values
-        // ---------------------------------------
         $this->setDefaultSort('purchase_create_date');
         $this->setDefaultDir('DESC');
         $this->setSaveParametersInSession(true);
         $this->setUseAjax(true);
-        // ---------------------------------------
     }
 
     public function getMassactionBlockName()
@@ -44,11 +38,11 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Order_Grid extends Mage_Adminhtml_Block_
         $collection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Order');
 
         $collection->getSelect()
-        ->joinLeft(
-            array('so' => Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('sales/order')),
-            '(so.entity_id = `main_table`.magento_order_id)',
-            array('magento_order_num' => 'increment_id')
-        );
+            ->joinLeft(
+                array('so' => Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('sales/order')),
+                '(so.entity_id = `main_table`.magento_order_id)',
+                array('magento_order_num' => 'increment_id')
+            );
 
         // Add Filter By Account
         // ---------------------------------------
@@ -84,20 +78,21 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Order_Grid extends Mage_Adminhtml_Block_
         // ---------------------------------------
 
         $this->setCollection($collection);
+
         return parent::_prepareCollection();
     }
 
     protected function _afterLoadCollection()
     {
         $this->_itemsCollection = Mage::helper('M2ePro/Component_Amazon')
-             ->getCollection('Order_Item')
-             ->addFieldToFilter('order_id', array('in' => $this->getCollection()->getColumnValues('id')));
+            ->getCollection('Order_Item')
+            ->addFieldToFilter('order_id', array('in' => $this->getCollection()->getColumnValues('id')));
 
         // ---------------------------------------
 
         $this->_notesCollection = Mage::getModel('M2ePro/Order_Note')
-             ->getCollection()
-             ->addFieldToFilter('order_id', array('in' => $this->getCollection()->getColumnValues('id')));
+            ->getCollection()
+            ->addFieldToFilter('order_id', array('in' => $this->getCollection()->getColumnValues('id')));
 
         // ---------------------------------------
 
@@ -107,164 +102,173 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Order_Grid extends Mage_Adminhtml_Block_
     protected function _prepareColumns()
     {
         $this->addColumn(
-            'purchase_create_date', array(
-            'header' => Mage::helper('M2ePro')->__('Sale Date'),
-            'align'  => 'left',
-            'type'   => 'datetime',
-            'format' => Mage::app()->getLocale()->getDateTimeFormat(Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM),
-            'index'  => 'purchase_create_date',
-            'width'  => '170px'
+            'purchase_create_date',
+            array(
+                'header' => Mage::helper('M2ePro')->__('Sale Date'),
+                'align'  => 'left',
+                'type'   => 'datetime',
+                'format' => Mage::app()->getLocale()->getDateTimeFormat(Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM),
+                'index'  => 'purchase_create_date',
+                'width'  => '170px'
             )
         );
 
         $this->addColumn(
-            'magento_order_num', array(
-            'header' => Mage::helper('M2ePro')->__('Magento Order #'),
-            'align'  => 'left',
-            'index'  => 'so.increment_id',
-            'width'  => '110px',
-            'frame_callback' => array($this, 'callbackColumnMagentoOrder')
+            'shipping_date_to',
+            array(
+                'header' => Mage::helper('M2ePro')->__('Ship By Date'),
+                'align'  => 'left',
+                'type'   => 'datetime',
+                'format' => Mage::app()->getLocale()->getDateTimeFormat(Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM),
+                'index'  => 'shipping_date_to',
+                'width'  => '170px'
             )
         );
 
         $this->addColumn(
-            'amazon_order_id', array(
-            'header' => Mage::helper('M2ePro')->__('Amazon Order #'),
-            'align'  => 'left',
-            'width'  => '110px',
-            'index'  => 'amazon_order_id',
-            'frame_callback' => array($this, 'callbackColumnAmazonOrderId')
+            'magento_order_num',
+            array(
+                'header'         => Mage::helper('M2ePro')->__('Magento Order #'),
+                'align'          => 'left',
+                'index'          => 'so.increment_id',
+                'width'          => '110px',
+                'frame_callback' => array($this, 'callbackColumnMagentoOrder')
             )
         );
 
         $this->addColumn(
-            'amazon_order_items', array(
-            'header' => Mage::helper('M2ePro')->__('Items'),
-            'align'  => 'left',
-            'index'  => 'amazon_order_items',
-            'sortable' => false,
-            'width'  => '*',
-            'frame_callback' => array($this, 'callbackColumnItems'),
-            'filter_condition_callback' => array($this, 'callbackFilterItems')
+            'amazon_order_id',
+            array(
+                'header'         => Mage::helper('M2ePro')->__('Amazon Order #'),
+                'align'          => 'left',
+                'width'          => '160px',
+                'index'          => 'amazon_order_id',
+                'frame_callback' => array($this, 'callbackColumnAmazonOrderId')
             )
         );
 
         $this->addColumn(
-            'buyer', array(
-            'header' => Mage::helper('M2ePro')->__('Buyer'),
-            'align'  => 'left',
-            'index'  => 'buyer_name',
-            'width'  => '120px',
-            'frame_callback' => array($this, 'callbackColumnBuyer'),
-            'filter_condition_callback' => array($this, 'callbackFilterBuyer')
+            'amazon_order_items',
+            array(
+                'header'                    => Mage::helper('M2ePro')->__('Items'),
+                'align'                     => 'left',
+                'index'                     => 'amazon_order_items',
+                'sortable'                  => false,
+                'width'                     => '*',
+                'frame_callback'            => array($this, 'callbackColumnItems'),
+                'filter_condition_callback' => array($this, 'callbackFilterItems')
             )
         );
 
         $this->addColumn(
-            'paid_amount', array(
-            'header' => Mage::helper('M2ePro')->__('Total Paid'),
-            'align'  => 'left',
-            'width'  => '110px',
-            'index'  => 'paid_amount',
-            'type'   => 'number',
-            'frame_callback' => array($this, 'callbackColumnTotal')
+            'buyer',
+            array(
+                'header'                    => Mage::helper('M2ePro')->__('Buyer'),
+                'align'                     => 'left',
+                'index'                     => 'buyer_name',
+                'width'                     => '120px',
+                'frame_callback'            => array($this, 'callbackColumnBuyer'),
+                'filter_condition_callback' => array($this, 'callbackFilterBuyer')
             )
         );
 
         $this->addColumn(
-            'is_afn_channel', array(
-            'header' => Mage::helper('M2ePro')->__('Fulfillment'),
-            'width' => '100px',
-            'index' => 'is_afn_channel',
-            'filter_index' => 'second_table.is_afn_channel',
-            'type' => 'options',
-            'sortable' => false,
-            'options' => array(
-                0 => Mage::helper('M2ePro')->__('Merchant'),
-                1 => Mage::helper('M2ePro')->__('Amazon')
-            ),
-            'frame_callback' => array($this, 'callbackColumnAfnChannel')
+            'paid_amount',
+            array(
+                'header'         => Mage::helper('M2ePro')->__('Total Paid'),
+                'align'          => 'left',
+                'width'          => '110px',
+                'index'          => 'paid_amount',
+                'type'           => 'number',
+                'frame_callback' => array($this, 'callbackColumnTotal')
             )
         );
 
         $this->addColumn(
-            'reservation_state', array(
-            'header' => Mage::helper('M2ePro')->__('Reservation'),
-            'align'  => 'left',
-            'width'  => '50px',
-            'index'  => 'reservation_state',
-            'type'   => 'options',
-            'options' => array(
-                Ess_M2ePro_Model_Order_Reserve::STATE_UNKNOWN  => Mage::helper('M2ePro')->__('Not Reserved'),
-                Ess_M2ePro_Model_Order_Reserve::STATE_PLACED   => Mage::helper('M2ePro')->__('Reserved'),
-                Ess_M2ePro_Model_Order_Reserve::STATE_RELEASED => Mage::helper('M2ePro')->__('Released'),
-                Ess_M2ePro_Model_Order_Reserve::STATE_CANCELED => Mage::helper('M2ePro')->__('Canceled'),
-            )
+            'is_afn_channel',
+            array(
+                'header'         => Mage::helper('M2ePro')->__('Fulfillment'),
+                'width'          => '100px',
+                'index'          => 'is_afn_channel',
+                'filter_index'   => 'second_table.is_afn_channel',
+                'type'           => 'options',
+                'sortable'       => false,
+                'options'        => array(
+                    0 => Mage::helper('M2ePro')->__('Merchant'),
+                    1 => Mage::helper('M2ePro')->__('Amazon')
+                ),
+                'frame_callback' => array($this, 'callbackColumnAfnChannel')
             )
         );
 
         $helper = Mage::helper('M2ePro');
 
         $this->addColumn(
-            'status', array(
-            'header'  => Mage::helper('M2ePro')->__('Status'),
-            'align'   => 'left',
-            'width'   => '50px',
-            'index'   => 'status',
-            'filter_index' => 'second_table.status',
-            'type'    => 'options',
-            'options' => array(
-                Ess_M2ePro_Model_Amazon_Order::STATUS_PENDING             => $helper->__('Pending'),
-                Ess_M2ePro_Model_Amazon_Order::STATUS_UNSHIPPED           => $helper->__('Unshipped'),
-                Ess_M2ePro_Model_Amazon_Order::STATUS_SHIPPED_PARTIALLY   => $helper->__('Partially Shipped'),
-                Ess_M2ePro_Model_Amazon_Order::STATUS_SHIPPED             => $helper->__('Shipped'),
-                Ess_M2ePro_Model_Amazon_Order::STATUS_INVOICE_UNCONFIRMED => $helper->__('Invoice Not Confirmed'),
-                Ess_M2ePro_Model_Amazon_Order::STATUS_UNFULFILLABLE       => $helper->__('Unfulfillable'),
-                Ess_M2ePro_Model_Amazon_Order::STATUS_CANCELED            => $helper->__('Canceled')
-            ),
-            'frame_callback' => array($this, 'callbackColumnStatus')
+            'status',
+            array(
+                'header'         => Mage::helper('M2ePro')->__('Status'),
+                'align'          => 'left',
+                'width'          => '50px',
+                'index'          => 'status',
+                'filter_index'   => 'second_table.status',
+                'type'           => 'options',
+                'options'        => array(
+                    Ess_M2ePro_Model_Amazon_Order::STATUS_PENDING             => $helper->__('Pending'),
+                    Ess_M2ePro_Model_Amazon_Order::STATUS_PENDING_RESERVED    => $helper->__('Pending / QTY Reserved'),
+                    Ess_M2ePro_Model_Amazon_Order::STATUS_UNSHIPPED           => $helper->__('Unshipped'),
+                    Ess_M2ePro_Model_Amazon_Order::STATUS_SHIPPED_PARTIALLY   => $helper->__('Partially Shipped'),
+                    Ess_M2ePro_Model_Amazon_Order::STATUS_SHIPPED             => $helper->__('Shipped'),
+                    Ess_M2ePro_Model_Amazon_Order::STATUS_INVOICE_UNCONFIRMED => $helper->__('Invoice Not Confirmed'),
+                    Ess_M2ePro_Model_Amazon_Order::STATUS_UNFULFILLABLE       => $helper->__('Unfulfillable'),
+                    Ess_M2ePro_Model_Amazon_Order::STATUS_CANCELED            => $helper->__('Canceled'),
+                ),
+                'frame_callback' => array($this, 'callbackColumnStatus'),
+                'filter_condition_callback' => array($this, 'callbackFilterStatus')
             )
         );
 
         $back = Mage::helper('M2ePro')->makeBackUrlParam('*/adminhtml_amazon_order/index');
 
         $this->addColumn(
-            'action', array(
-            'header'   => Mage::helper('M2ePro')->__('Action'),
-            'width'    => '80px',
-            'type'     => 'action',
-            'getter'   => 'getId',
-            'renderer' => 'M2ePro/adminhtml_grid_column_renderer_action',
-            'actions' => array(
-                array(
-                    'caption' => Mage::helper('M2ePro')->__('View'),
-                    'url'     => array('base' => '*/adminhtml_amazon_order/view'),
-                    'field'   => 'id'
+            'action',
+            array(
+                'header'    => Mage::helper('M2ePro')->__('Action'),
+                'width'     => '80px',
+                'type'      => 'action',
+                'getter'    => 'getId',
+                'renderer'  => 'M2ePro/adminhtml_grid_column_renderer_action',
+                'actions'   => array(
+                    array(
+                        'caption' => Mage::helper('M2ePro')->__('View'),
+                        'url'     => array('base' => '*/adminhtml_amazon_order/view'),
+                        'field'   => 'id'
+                    ),
+                    array(
+                        'caption' => Mage::helper('M2ePro')->__('Edit Shipping Address'),
+                        'url'     => array(
+                            'base' => '*/adminhtml_amazon_order/editShippingAddress/back/' . $back . '/'
+                        ),
+                        'field'   => 'id'
+                    ),
+                    array(
+                        'caption' => Mage::helper('M2ePro')->__('Create Order'),
+                        'url'     => array('base' => '*/adminhtml_amazon_order/createMagentoOrder'),
+                        'field'   => 'id'
+                    ),
+                    array(
+                        'caption'        => Mage::helper('M2ePro')->__('Mark As Shipped'),
+                        'field'          => 'id',
+                        'onclick_action' => 'AmazonOrderMerchantFulfillmentObj.markAsShippedAction'
+                    ),
+                    array(
+                        'caption'        => Mage::helper('M2ePro')->__('Amazon\'s Shipping Services'),
+                        'field'          => 'id',
+                        'onclick_action' => 'AmazonOrderMerchantFulfillmentObj.getPopupAction'
+                    )
                 ),
-                array(
-                    'caption' => Mage::helper('M2ePro')->__('Edit Shipping Address'),
-                    'url'     => array('base' => '*/adminhtml_amazon_order/editShippingAddress/back/'.$back.'/'),
-                    'field'   => 'id'
-                ),
-                array(
-                    'caption' => Mage::helper('M2ePro')->__('Create Order'),
-                    'url'     => array('base' => '*/adminhtml_amazon_order/createMagentoOrder'),
-                    'field'   => 'id'
-                ),
-                array(
-                    'caption' => Mage::helper('M2ePro')->__('Mark As Shipped'),
-                    'field'   => 'id',
-                    'onclick_action' => 'AmazonOrderMerchantFulfillmentObj.markAsShippedAction'
-                ),
-                array(
-                    'caption' => Mage::helper('M2ePro')->__('Amazon\'s Shipping Services'),
-                    'field'   => 'id',
-                    'onclick_action' => 'AmazonOrderMerchantFulfillmentObj.getPopupAction'
-                )
-            ),
-            'filter'    => false,
-            'sortable'  => false,
-            'is_system' => true
+                'filter'    => false,
+                'sortable'  => false,
+                'is_system' => true
             )
         );
 
@@ -273,61 +277,63 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Order_Grid extends Mage_Adminhtml_Block_
 
     protected function _prepareMassaction()
     {
-        // Set massaction identifiers
-        // ---------------------------------------
         $this->setMassactionIdField('main_table.id');
         $this->getMassactionBlock()->setFormFieldName('ids');
-        // ---------------------------------------
 
-        // Set mass-action
-        // ---------------------------------------
         $this->getMassactionBlock()->addItem(
-            'reservation_place', array(
-             'label'    => Mage::helper('M2ePro')->__('Reserve QTY'),
-             'url'      => $this->getUrl('*/adminhtml_order/reservationPlace'),
-             'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
+            'reservation_place',
+            array(
+                'label'   => Mage::helper('M2ePro')->__('Reserve QTY'),
+                'url'     => $this->getUrl('*/adminhtml_order/reservationPlace'),
+                'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
             )
         );
 
         $this->getMassactionBlock()->addItem(
-            'reservation_cancel', array(
-             'label'    => Mage::helper('M2ePro')->__('Cancel QTY Reserve'),
-             'url'      => $this->getUrl('*/adminhtml_order/reservationCancel'),
-             'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
+            'reservation_cancel',
+            array(
+                'label'   => Mage::helper('M2ePro')->__('Cancel QTY Reserve'),
+                'url'     => $this->getUrl('*/adminhtml_order/reservationCancel'),
+                'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
             )
         );
 
         $this->getMassactionBlock()->addItem(
-            'ship', array(
-             'label'    => Mage::helper('M2ePro')->__('Mark Order(s) as Shipped'),
-             'url'      => $this->getUrl('*/adminhtml_amazon_order/updateShippingStatus'),
-             'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
+            'ship',
+            array(
+                'label'   => Mage::helper('M2ePro')->__('Mark Order(s) as Shipped'),
+                'url'     => $this->getUrl('*/adminhtml_amazon_order/updateShippingStatus'),
+                'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
             )
         );
 
         $this->getMassactionBlock()->addItem(
-            'resend_shipping', array(
-             'label'    => Mage::helper('M2ePro')->__('Resend Shipping Information'),
-             'url'      => $this->getUrl('*/adminhtml_order/resubmitShippingInfo'),
-             'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
+            'resend_shipping',
+            array(
+                'label'   => Mage::helper('M2ePro')->__('Resend Shipping Information'),
+                'url'     => $this->getUrl('*/adminhtml_order/resubmitShippingInfo'),
+                'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
             )
         );
 
         $this->getMassactionBlock()->addItem(
-            'resend_invoice_creditmemo', array(
-                'label'    => Mage::helper('M2ePro')->__('Resend Invoice / Credit Memo'),
-                'url'      => $this->getUrl('*/adminhtml_amazon_order/resendInvoiceCreditmemo'),
-                'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
+            'resend_invoice_creditmemo',
+            array(
+                'label'   => Mage::helper('M2ePro')->__('Resend Invoice / Credit Memo'),
+                'url'     => $this->getUrl('*/adminhtml_amazon_order/resendInvoiceCreditmemo'),
+                'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
             )
         );
 
         $this->getMassactionBlock()->addItem(
-            'create_order', array(
-            'label'    => Mage::helper('M2ePro')->__('Create Magento Order'),
-            'url'      => $this->getUrl('*/adminhtml_amazon_order/createMagentoOrder'),
-            'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
+            'create_order',
+            array(
+                'label'   => Mage::helper('M2ePro')->__('Create Magento Order'),
+                'url'     => $this->getUrl('*/adminhtml_amazon_order/createMagentoOrder'),
+                'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
             )
         );
+
         // ---------------------------------------
 
         return parent::_prepareMassaction();
@@ -337,8 +343,16 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Order_Grid extends Mage_Adminhtml_Block_
 
     public function callbackColumnAmazonOrderId($value, $row, $column, $isExport)
     {
+        $helper = Mage::helper('M2ePro');
+        $back = Mage::helper('M2ePro')->makeBackUrlParam('*/adminhtml_amazon_order/index');
+        $itemUrl = $this->getUrl('*/adminhtml_amazon_order/view', array('id' => $row->getId(), 'back' => $back));
+
         $orderId = Mage::helper('M2ePro')->escapeHtml($row->getData('amazon_order_id'));
         $url = Mage::helper('M2ePro/Component_Amazon')->getOrderUrl($orderId, $row->getData('marketplace_id'));
+
+        $returnString = <<<HTML
+<a href="{$itemUrl}">{$orderId}</a>
+HTML;
 
         $primeImageHtml = '';
         if ($row['is_prime']) {
@@ -348,11 +362,16 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Order_Grid extends Mage_Adminhtml_Block_
         $businessImageHtml = '';
         if ($row['is_business']) {
             $businessImageHtml = '<div><img width="100px" src="'
-                                 . $this->getSkinUrl('M2ePro/images/amazon-business.png')
-                                 . '" /></div>';
+                . $this->getSkinUrl('M2ePro/images/amazon-business.png')
+                . '" /></div>';
         }
 
-        $returnString = '<a href="' . $url . '" target="_blank">' . $orderId . '</a> ';
+        $returnString .= <<<HTML
+<a title="{$helper->__('View on Amazon')}" target="_blank" href="{$url}">
+<img style="margin-bottom: -3px; float: right"
+ src="{$this->getSkinUrl('M2ePro/images/view_amazon.png')}" alt="{$helper->__('View on Amazon')}" /></a>
+HTML;
+
         $returnString .= $primeImageHtml;
         $returnString .= $businessImageHtml;
 
@@ -360,7 +379,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Order_Grid extends Mage_Adminhtml_Block_
         $notes = $this->_notesCollection->getItemsByColumnValue('order_id', $row->getData('id'));
 
         if ($notes) {
-            $htmlNotesCount = Mage::helper('M2ePro/Data')->__(
+            $htmlNotesCount = $helper->__(
                 'You have a custom note for the order. It can be reviewed on the order detail page.'
             );
 
@@ -394,7 +413,7 @@ HTML;
                 $orderUrl = $this->getUrl('adminhtml/sales_order/view', array('order_id' => $magentoOrderId));
                 $returnString = '<a href="' . $orderUrl . '" target="_blank">' . $magentoOrderNumber . '</a>';
             } else {
-                $returnString = '<span style="color: red;">'.Mage::helper('M2ePro')->__('Deleted').'</span>';
+                $returnString = '<span style="color: red;">' . Mage::helper('M2ePro')->__('Deleted') . '</span>';
             }
         }
 
@@ -470,6 +489,12 @@ HTML;
             if ($item->getSku()) {
                 $skuLabel = Mage::helper('M2ePro')->__('SKU');
                 $sku = Mage::helper('M2ePro')->escapeHtml($item->getSku());
+                if ($product !== null) {
+                    $productUrl = $this->getUrl('adminhtml/catalog_product/edit', array('id' => $product->getId()));
+                    $sku = <<<STRING
+<a href="{$productUrl}" target="_blank">{$sku}</a>
+STRING;
+                }
 
                 $skuHtml = <<<STRING
 <span style="padding-left: 10px;"><b>{$skuLabel}:</b>&nbsp;{$sku}</span><br/>
@@ -484,7 +509,7 @@ STRING;
                 $row->getData('marketplace_id')
             );
 
-            $itemLink = '<a href="'.$itemUrl.'" target="_blank">'.$generalId.'</a>';
+            $itemLink = '<a href="' . $itemUrl . '" target="_blank">' . $generalId . '</a>';
 
             $generalIdHtml = <<<STRING
 <span style="padding-left: 10px;"><b>{$generalIdLabel}:</b>&nbsp;{$itemLink}</span><br/>
@@ -511,14 +536,7 @@ HTML;
             return Mage::helper('M2ePro')->__('N/A');
         }
 
-        $html = Mage::helper('M2ePro')->escapeHtml($row->getData('buyer_name'));
-
-        if ($row->getData('buyer_email') != '') {
-            $html .= '<br/>';
-            $html .= '&lt;' . Mage::helper('M2ePro')->escapeHtml($row->getData('buyer_email')) . '&gt;';
-        }
-
-        return $html;
+        return Mage::helper('M2ePro')->escapeHtml($row->getData('buyer_name'));
     }
 
     public function callbackColumnTotal($value, $row, $column, $isExport)
@@ -528,7 +546,8 @@ HTML;
         if (empty($currency)) {
             /** @var Ess_M2ePro_Model_Marketplace $marketplace */
             $marketplace = Mage::helper('M2ePro/Component_Amazon')->getCachedObject(
-                'Marketplace', $row->getData('marketplace_id')
+                'Marketplace',
+                $row->getData('marketplace_id')
             );
             /** @var Ess_M2ePro_Model_Amazon_Marketplace $amazonMarketplace */
             $amazonMarketplace = $marketplace->getChildObject();
@@ -564,12 +583,12 @@ HTML;
         );
 
         $color = isset($statusColors[$status]) ? $statusColors[$status] : 'black';
-        $value = '<span style="color: '.$color.';">'.$value.'</span>';
+        $value = '<span style="color: ' . $color . ';">' . $value . '</span>';
 
         if ($row->isSetProcessingLock('update_order_status')) {
             $value .= '<br/>';
             $value .= '<span style="color: gray;">['
-                      .Mage::helper('M2ePro')->__('Status Update in Progress...').']</span>';
+                . Mage::helper('M2ePro')->__('Status Update in Progress...') . ']</span>';
         }
 
         return $value;
@@ -590,7 +609,10 @@ HTML;
         $orderItemsCollection->getSelect()->columns('order_id');
         $orderItemsCollection->getSelect()->distinct(true);
 
-        $orderItemsCollection->getSelect()->where('title LIKE ? OR sku LIKE ? or general_id LIKE ?', '%'.$value.'%');
+        $orderItemsCollection->getSelect()->where(
+            'title LIKE ? OR sku LIKE ? or general_id LIKE ?',
+            '%' . $value . '%'
+        );
 
         $totalResult = $orderItemsCollection->getColumnValues('order_id');
         $collection->addFieldToFilter('main_table.id', array('in' => $totalResult));
@@ -605,7 +627,72 @@ HTML;
 
         $collection
             ->getSelect()
-                ->where('buyer_email LIKE ? OR buyer_name LIKE ?', '%'.$value.'%');
+            ->where('buyer_email LIKE ? OR buyer_name LIKE ?', '%' . $value . '%');
+    }
+
+    protected function callbackFilterStatus($collection, $column)
+    {
+        $value = $column->getFilter()->getValue();
+        if ($value == null) {
+            return;
+        }
+        
+        switch ($value) {
+            case Ess_M2ePro_Model_Amazon_Order::STATUS_PENDING:
+                $collection->addFieldToFilter(
+                    'second_table.status',
+                    array(Ess_M2ePro_Model_Amazon_Order::STATUS_PENDING)
+                );
+                break;
+
+            case Ess_M2ePro_Model_Amazon_Order::STATUS_UNSHIPPED:
+                $collection->addFieldToFilter(
+                    'second_table.status',
+                    array(Ess_M2ePro_Model_Amazon_Order::STATUS_UNSHIPPED)
+                );
+                break;
+
+            case Ess_M2ePro_Model_Amazon_Order::STATUS_SHIPPED_PARTIALLY:
+                $collection->addFieldToFilter(
+                    'second_table.status',
+                    array(Ess_M2ePro_Model_Amazon_Order::STATUS_SHIPPED_PARTIALLY)
+                );
+                break;
+            case Ess_M2ePro_Model_Amazon_Order::STATUS_SHIPPED:
+                $collection->addFieldToFilter(
+                    'second_table.status',
+                    array(Ess_M2ePro_Model_Amazon_Order::STATUS_SHIPPED)
+                );
+                break;
+            case Ess_M2ePro_Model_Amazon_Order::STATUS_UNFULFILLABLE:
+                $collection->addFieldToFilter(
+                    'second_table.status',
+                    array(Ess_M2ePro_Model_Amazon_Order::STATUS_UNFULFILLABLE)
+                );
+                break;
+            case Ess_M2ePro_Model_Amazon_Order::STATUS_CANCELED:
+                $collection->addFieldToFilter(
+                    'second_table.status',
+                    array(Ess_M2ePro_Model_Amazon_Order::STATUS_CANCELED)
+                );
+                break;
+            case Ess_M2ePro_Model_Amazon_Order::STATUS_INVOICE_UNCONFIRMED:
+                $collection->addFieldToFilter(
+                    'second_table.status',
+                    array(Ess_M2ePro_Model_Amazon_Order::STATUS_INVOICE_UNCONFIRMED)
+                );
+                break;
+            case Ess_M2ePro_Model_Amazon_Order::STATUS_PENDING_RESERVED:
+                $collection->addFieldToFilter(
+                    'second_table.status',
+                    array(Ess_M2ePro_Model_Amazon_Order::STATUS_PENDING)
+                );
+                $collection->addFieldToFilter(
+                    'reservation_state',
+                    array(Ess_M2ePro_Model_Order_Reserve::STATE_PLACED)
+                );
+                break;
+        }
     }
 
     //########################################
@@ -617,9 +704,7 @@ HTML;
 
     public function getRowUrl($row)
     {
-        $back = Mage::helper('M2ePro')->makeBackUrlParam('*/adminhtml_amazon_order/index');
-
-        return $this->getUrl('*/adminhtml_amazon_order/view', array('id' => $row->getId(), 'back' => $back));
+        return false;
     }
 
     protected function _toHtml()

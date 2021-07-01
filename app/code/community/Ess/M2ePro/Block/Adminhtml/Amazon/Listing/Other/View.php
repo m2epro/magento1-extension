@@ -82,9 +82,9 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_View extends Mage_Adminhtm
             '*/adminhtml_amazon_listing_repricing/getUpdatedPriceBySkus'
         );
 
-        $someProductsWereNotMappedMessage = 'No matches were found. Please change the Mapping Attributes in <strong>';
+        $someProductsWereNotMappedMessage = 'No matches were found. Please change the Linking Attributes in <strong>';
         $someProductsWereNotMappedMessage .= 'Configuration > Account > Unmanaged Listings</strong> ';
-        $someProductsWereNotMappedMessage .= 'or try to map manually.';
+        $someProductsWereNotMappedMessage .= 'or try to link manually.';
         $someProductsWereNotMappedMessage = $helper->escapeJs($helper->__($someProductsWereNotMappedMessage));
 
         $createListing = $helper->escapeJs(
@@ -97,25 +97,25 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_View extends Mage_Adminhtm
 
         $processingDataMessage = $helper->escapeJs($helper->__('Processing %product_title% Product(s).'));
 
-        $autoMapProgressTitle = $helper->escapeJs($helper->__('Map Item(s) to Products'));
+        $autoMapProgressTitle = $helper->escapeJs($helper->__('Link Item(s) to Products'));
 
         $translations = Mage::helper('M2ePro')->jsonEncode(
             array(
-                'Product was Mapped.'      => $helper->__('Product was Mapped.'),
-                'Product(s) was Mapped.'   => $helper->__('Product(s) was Mapped.'),
-                'Product(s) was Unmapped.' => $helper->__('Product(s) was Unmapped.'),
+                'Product was Linked.'      => $helper->__('Product was Linked.'),
+                'Product(s) was Linked.'   => $helper->__('Product(s) was Linked.'),
+                'Product(s) was Unlinked.' => $helper->__('Product(s) was Unlinked.'),
                 'Product(s) was Removed.'  => $helper->__('Product(s) was Removed.'),
                 'Not enough data'          => $helper->__('Not enough data'),
 
-                'Mapping Product'         => $helper->__('Mapping Product'),
+                'Linking Product'         => $helper->__('Linking Product'),
                 'Product does not exist.' => $helper->__('Product does not exist.'),
 
                 'Current version only supports Simple Products. Please, choose Simple Product.' => $helper->__(
                     'Current version only supports Simple Products. Please, choose Simple Product.'
                 ),
 
-                'Item was not Mapped as the chosen %product_id% Simple Product has Custom Options.' => $helper->__(
-                    'Item was not Mapped as the chosen %product_id% Simple Product has Custom Options.'
+                'Item was not Linked as the chosen %product_id% Simple Product has Custom Options.' => $helper->__(
+                    'Item was not Linked as the chosen %product_id% Simple Product has Custom Options.'
                 )
 
             )

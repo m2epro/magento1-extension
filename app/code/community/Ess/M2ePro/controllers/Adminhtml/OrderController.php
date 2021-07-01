@@ -192,7 +192,7 @@ class Ess_M2ePro_Adminhtml_OrderController
                 Mage::helper('M2ePro')->jsonEncode(
                     array(
                         'title' => Mage::helper('M2ePro')->__(
-                            'Mapping Product "%title%"',
+                            'Linking Product "%title%"',
                             $item->getChildObject()->getTitle()
                         ),
                         'html' => $block->toHtml(),
@@ -289,7 +289,7 @@ class Ess_M2ePro_Adminhtml_OrderController
 
         $orderItem->getOrder()->getLog()->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_USER);
         $orderItem->getOrder()->addSuccessLog(
-            'Order Item "%title%" was Mapped.',
+            'Order Item "%title%" was Linked.',
             array(
                 'title' => $orderItem->getChildObject()->getTitle(),
             )
@@ -304,7 +304,7 @@ class Ess_M2ePro_Adminhtml_OrderController
         $this->getResponse()->setBody(
             Mage::helper('M2ePro')->jsonEncode(
                 array(
-                    'success'  => Mage::helper('M2ePro')->__('Order Item was Mapped.'),
+                    'success'  => Mage::helper('M2ePro')->__('Order Item was Linked.'),
                     'continue' => $orderItem->getMagentoProduct()->isProductWithVariations() && !$isPretendedToBeSimple
                 )
             )
@@ -448,7 +448,7 @@ class Ess_M2ePro_Adminhtml_OrderController
         $orderItem->unassignProduct();
 
         $orderItem->getOrder()->addSuccessLog(
-            'Item "%title%" was Unmapped.',
+            'Item "%title%" was Unlinked.',
             array(
                 'title' => $orderItem->getChildObject()->getTitle()
             )
@@ -457,7 +457,7 @@ class Ess_M2ePro_Adminhtml_OrderController
         $this->getResponse()->setBody(
             Mage::helper('M2ePro')->jsonEncode(
                 array(
-                    'success' => Mage::helper('M2ePro')->__('Item was Unmapped.')
+                    'success' => Mage::helper('M2ePro')->__('Item was Unlinked.')
                 )
             )
         );

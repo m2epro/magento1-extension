@@ -113,7 +113,7 @@ class Ess_M2ePro_Adminhtml_Listing_MappingController
             Mage::helper('M2ePro')->jsonEncode(
                 array(
                     'result'  => true,
-                    'message' => Mage::helper('M2ePro')->__('Product(s) was Mapped.')
+                    'message' => Mage::helper('M2ePro')->__('Product(s) was Linked.')
                 )
             )
         );

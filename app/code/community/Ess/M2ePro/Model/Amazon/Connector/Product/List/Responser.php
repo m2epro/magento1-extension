@@ -20,16 +20,22 @@ class Ess_M2ePro_Model_Amazon_Connector_Product_List_Responser
         $currency = Mage::app()->getLocale()->currency(
             $this->_listingProduct->getMarketplace()->getChildObject()->getCurrency()
         );
-
-        $parts = array(
-            sprintf('Product was Listed with QTY %d', $this->_listingProduct->getChildObject()->getOnlineQty())
-        );
-
-        if ($regularPrice = $this->_listingProduct->getChildObject()->getOnlineRegularPrice()) {
+        
+        /** @var  Ess_M2ePro_Model_Amazon_Listing_Product $amazonListingProduct */
+        $amazonListingProduct = $this->_listingProduct->getChildObject(); 
+        $parts = array();
+        
+        if ($amazonListingProduct->getVariationManager()->isRelationParentType()) {
+            $parts[] = 'Parent Product was Listed'; 
+        } else {
+            $parts[] = sprintf('Product was Listed with QTY %d', $amazonListingProduct->getOnlineQty());
+        }
+        
+        if ($regularPrice = $amazonListingProduct->getOnlineRegularPrice()) {
             $parts[] = sprintf('Regular Price %s', $currency->toCurrency($regularPrice));
         }
 
-        if ($businessPrice = $this->_listingProduct->getChildObject()->getOnlineBusinessPrice()) {
+        if ($businessPrice = $amazonListingProduct->getOnlineBusinessPrice()) {
             $parts[] = sprintf('Business Price %s', $currency->toCurrency($businessPrice));
         }
 

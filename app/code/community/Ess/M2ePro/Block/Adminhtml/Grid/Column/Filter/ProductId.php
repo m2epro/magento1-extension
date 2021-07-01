@@ -29,7 +29,7 @@ class Ess_M2ePro_Block_Adminhtml_Grid_Column_Filter_ProductId
 <div class="range" style="width: 145px;">
     <div class="range-line" style="width: auto;">
         <span class="label" style="width: auto;">
-            {$helper->__('Mapped')}:&nbsp;
+            {$helper->__('Linked')}:&nbsp;
         </span>
         <select id="{$this->_getHtmlName()}"
                 style="margin-left:6px; float:none; width:auto !important;"

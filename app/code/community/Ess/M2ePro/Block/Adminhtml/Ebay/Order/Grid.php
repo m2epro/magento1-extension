@@ -20,18 +20,12 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_Grid extends Mage_Adminhtml_Block_Wi
     {
         parent::__construct();
 
-        // Initialization block
-        // ---------------------------------------
         $this->setId('ebayOrderGrid');
-        // ---------------------------------------
 
-        // Set default values
-        // ---------------------------------------
         $this->setDefaultSort('purchase_create_date');
         $this->setDefaultDir('DESC');
         $this->setSaveParametersInSession(true);
         $this->setUseAjax(true);
-        // ---------------------------------------
     }
 
     public function getMassactionBlockName()
@@ -153,6 +147,18 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_Grid extends Mage_Adminhtml_Block_Wi
         );
 
         $this->addColumn(
+            'shipping_date_to',
+            array(
+                'header' => Mage::helper('M2ePro')->__('Ship By Date'),
+                'align'  => 'left',
+                'type'   => 'datetime',
+                'format' => Mage::app()->getLocale()->getDateTimeFormat(Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM),
+                'index'  => 'shipping_date_to',
+                'width'  => '170px'
+            )
+        );
+
+        $this->addColumn(
             'magento_order_num',
             array(
                 'header'         => Mage::helper('M2ePro')->__('Magento Order #'),
@@ -213,23 +219,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_Grid extends Mage_Adminhtml_Block_Wi
             )
         );
 
-        $this->addColumn(
-            'reservation_state',
-            array(
-                'header'  => Mage::helper('M2ePro')->__('Reservation'),
-                'align'   => 'left',
-                'width'   => '50px',
-                'index'   => 'reservation_state',
-                'type'    => 'options',
-                'options' => array(
-                    Ess_M2ePro_Model_Order_Reserve::STATE_UNKNOWN  => Mage::helper('M2ePro')->__('Not Reserved'),
-                    Ess_M2ePro_Model_Order_Reserve::STATE_PLACED   => Mage::helper('M2ePro')->__('Reserved'),
-                    Ess_M2ePro_Model_Order_Reserve::STATE_RELEASED => Mage::helper('M2ePro')->__('Released'),
-                    Ess_M2ePro_Model_Order_Reserve::STATE_CANCELED => Mage::helper('M2ePro')->__('Canceled'),
-                )
-            )
-        );
-
         $helper = Mage::helper('M2ePro');
 
         $this->addColumn(
@@ -241,10 +230,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_Grid extends Mage_Adminhtml_Block_Wi
                 'index'                     => 'status',
                 'type'                      => 'options',
                 'options'                   => array(
-                    Ess_M2ePro_Model_Ebay_Order::STATUS_PENDING   => $helper->__('Pending'),
-                    Ess_M2ePro_Model_Ebay_Order::STATUS_UNSHIPPED => $helper->__('Unshipped'),
-                    Ess_M2ePro_Model_Ebay_Order::STATUS_SHIPPED   => $helper->__('Shipped'),
-                    Ess_M2ePro_Model_Ebay_Order::STATUS_CANCELED  => $helper->__('Canceled')
+                    Ess_M2ePro_Model_Ebay_Order::STATUS_PENDING          => $helper->__('Pending'),
+                    Ess_M2ePro_Model_Ebay_Order::STATUS_PENDING_RESERVED => $helper->__('Pending / QTY Reserved'),
+                    Ess_M2ePro_Model_Ebay_Order::STATUS_UNSHIPPED        => $helper->__('Unshipped'),
+                    Ess_M2ePro_Model_Ebay_Order::STATUS_SHIPPED          => $helper->__('Shipped'),
+                    Ess_M2ePro_Model_Ebay_Order::STATUS_CANCELED         => $helper->__('Canceled')
                 ),
                 'frame_callback'            => array($this, 'callbackColumnStatus'),
                 'filter_condition_callback' => array($this, 'callbackFilterStatus'),
@@ -303,11 +293,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_Grid extends Mage_Adminhtml_Block_Wi
 
     protected function _prepareMassaction()
     {
-        // Set massaction identifiers
-        // ---------------------------------------
         $this->setMassactionIdField('main_table.id');
         $this->getMassactionBlock()->setFormFieldName('ids');
-        // ---------------------------------------
 
         $groups = array(
             'general' => Mage::helper('M2ePro')->__('General'),
@@ -450,8 +437,13 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_Grid extends Mage_Adminhtml_Block_Wi
 
     public function callbackColumnEbayOrder($value, $row, $column, $isExport)
     {
-        $returnString = $value;
-        if ($row['selling_manager_id'] > 0) {
+        $back = Mage::helper('M2ePro')->makeBackUrlParam('*/adminhtml_ebay_order/index');
+        $itemUrl = $this->getUrl('*/adminhtml_ebay_order/view', array('id' => $row->getId(), 'back' => $back));
+
+        $returnString = <<<HTML
+<a href="{$itemUrl}">{$value}</a>
+HTML;
+        if ($row['selling_manager_id']) {
             $returnString .= '<br/> [ <b>SM: </b> # ' . $row['selling_manager_id'] . ' ]';
         }
 
@@ -559,6 +551,12 @@ HTML;
             if ($item->getSku()) {
                 $skuLabel = Mage::helper('M2ePro')->__('SKU');
                 $sku = Mage::helper('M2ePro')->escapeHtml($item->getSku());
+                if ($product !== null) {
+                    $productUrl = $this->getUrl('adminhtml/catalog_product/edit', array('id' => $product->getId()));
+                    $sku = <<<STRING
+<a href="{$productUrl}" target="_blank">{$sku}</a>
+STRING;
+                }
 
                 $skuHtml = <<<HTML
 <span style="padding-left: 10px;"><b>{$skuLabel}:</b>&nbsp;{$sku}</span><br/>
@@ -627,14 +625,7 @@ HTML;
 
     public function callbackColumnBuyer($value, $row, $column, $isExport)
     {
-        $returnString = '';
-        $returnString .= Mage::helper('M2ePro')->escapeHtml($row->getData('buyer_name')) . '<br/>';
-
-        $buyerEmail = $row->getData('buyer_email');
-        if ($buyerEmail && $buyerEmail != 'Invalid Request') {
-            $returnString .= '&lt;' . $buyerEmail . '&gt;<br/>';
-        }
-
+        $returnString = Mage::helper('M2ePro')->escapeHtml($row->getData('buyer_name')) . '<br/>';
         $returnString .= Mage::helper('M2ePro')->escapeHtml($row->getData('buyer_user_id'));
 
         return $returnString;
@@ -761,6 +752,16 @@ HTML;
                     array('neq' => Ess_M2ePro_Model_Ebay_Order::SHIPPING_STATUS_COMPLETED)
                 );
                 break;
+            case Ess_M2ePro_Model_Ebay_Order::STATUS_PENDING_RESERVED:
+                $collection->addFieldToFilter(
+                    'payment_status',
+                    array('neq' => Ess_M2ePro_Model_Ebay_Order::PAYMENT_STATUS_COMPLETED)
+                );
+                $collection->addFieldToFilter(
+                    'reservation_state',
+                    array(Ess_M2ePro_Model_Order_Reserve::STATE_PLACED)
+                );
+                break;
         }
     }
 
@@ -773,11 +774,7 @@ HTML;
 
     public function getRowUrl($row)
     {
-        $back = Mage::helper('M2ePro')->makeBackUrlParam(
-            '*/adminhtml_ebay_order/index'
-        );
-
-        return $this->getUrl('*/adminhtml_ebay_order/view', array('id' => $row->getId(), 'back' => $back));
+        return false;
     }
 
     //########################################

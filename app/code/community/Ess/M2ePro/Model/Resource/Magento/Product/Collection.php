@@ -374,11 +374,7 @@ SQL;
                     `indexer`.`max_regular_price`
                 )
             )'
-            ),
-
-            'is_repricing' => new Zend_Db_Expr('`alp`.`is_repricing`'),
-
-            'variation_parent_repricing_state' => new Zend_Db_Expr('`alp`.`variation_parent_repricing_state`')
+            )
         );
     }
 

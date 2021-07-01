@@ -71,7 +71,8 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_View_Grid extends Mage_Adm
     protected function _prepareColumns()
     {
         $this->addColumn(
-            'product_id', array(
+            'product_id',
+            array(
                 'header'                    => Mage::helper('M2ePro')->__('Product ID'),
                 'align'                     => 'left',
                 'width'                     => '80px',
@@ -85,7 +86,8 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_View_Grid extends Mage_Adm
         );
 
         $this->addColumn(
-            'title', array(
+            'title',
+            array(
                 'header'                    => Mage::helper('M2ePro')->__('Title / SKU'),
                 'align'                     => 'left',
                 'type'                      => 'text',
@@ -97,7 +99,8 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_View_Grid extends Mage_Adm
         );
 
         $this->addColumn(
-            'general_id', array(
+            'general_id',
+            array(
                 'header'         => Mage::helper('M2ePro')->__('ASIN / ISBN'),
                 'align'          => 'left',
                 'width'          => '120px',
@@ -109,7 +112,8 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_View_Grid extends Mage_Adm
         );
 
         $this->addColumn(
-            'online_qty', array(
+            'online_qty',
+            array(
                 'header'                    => Mage::helper('M2ePro')->__('QTY'),
                 'align'                     => 'right',
                 'width'                     => '110px',
@@ -123,13 +127,13 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_View_Grid extends Mage_Adm
         );
 
         $priceColumn = array(
-            'header' => Mage::helper('M2ePro')->__('Price'),
-            'align' => 'right',
-            'width' => '100px',
-            'type' => 'number',
-            'index' => 'online_price',
-            'filter_index' => 'online_price',
-            'frame_callback' => array($this, 'callbackColumnPrice'),
+            'header'                    => Mage::helper('M2ePro')->__('Price'),
+            'align'                     => 'right',
+            'width'                     => '100px',
+            'type'                      => 'number',
+            'index'                     => 'online_price',
+            'filter_index'              => 'online_price',
+            'frame_callback'            => array($this, 'callbackColumnPrice'),
             'filter_condition_callback' => array($this, 'callbackFilterPrice')
         );
 
@@ -140,7 +144,8 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_View_Grid extends Mage_Adm
         $this->addColumn('online_price', $priceColumn);
 
         $this->addColumn(
-            'status', array(
+            'status',
+            array(
                 'header'         => Mage::helper('M2ePro')->__('Status'),
                 'width'          => '100px',
                 'index'          => 'status',
@@ -152,7 +157,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_View_Grid extends Mage_Adm
                     Ess_M2ePro_Model_Listing_Product::STATUS_LISTED  => Mage::helper('M2ePro')->__('Active'),
                     Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED => Mage::helper('M2ePro')->__('Inactive'),
                     Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED => Mage::helper('M2ePro')
-                                                                            ->__('Inactive (Blocked)')
+                        ->__('Inactive (Blocked)')
                 ),
                 'frame_callback' => array($this, 'callbackColumnStatus')
             )
@@ -171,7 +176,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_View_Grid extends Mage_Adm
 
         $this->getMassactionBlock()->setGroups(
             array(
-                'mapping' => Mage::helper('M2ePro')->__('Mapping'),
+                'mapping' => Mage::helper('M2ePro')->__('Linking'),
                 'other'   => Mage::helper('M2ePro')->__('Other')
             )
         );
@@ -179,33 +184,42 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_View_Grid extends Mage_Adm
         // Set mass-action
         // ---------------------------------------
         $this->getMassactionBlock()->addItem(
-            'autoMapping', array(
-            'label'   => Mage::helper('M2ePro')->__('Map Item(s) Automatically'),
-            'url'     => '',
-            'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
-            ), 'mapping'
+            'autoMapping',
+            array(
+                'label'   => Mage::helper('M2ePro')->__('Link Item(s) Automatically'),
+                'url'     => '',
+                'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
+            ),
+            'mapping'
         );
         $this->getMassactionBlock()->addItem(
-            'moving', array(
-            'label'   => Mage::helper('M2ePro')->__('Move Item(s) to Listing'),
-            'url'     => '',
-            'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
-            ), 'other'
+            'moving',
+            array(
+                'label'   => Mage::helper('M2ePro')->__('Move Item(s) to Listing'),
+                'url'     => '',
+                'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
+            ),
+            'other'
         );
         $this->getMassactionBlock()->addItem(
-            'removing', array(
-            'label'   => Mage::helper('M2ePro')->__('Remove Item(s)'),
-            'url'     => '',
-            'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
-            ), 'other'
+            'removing',
+            array(
+                'label'   => Mage::helper('M2ePro')->__('Remove Item(s)'),
+                'url'     => '',
+                'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
+            ),
+            'other'
         );
         $this->getMassactionBlock()->addItem(
-            'unmapping', array(
-            'label'   => Mage::helper('M2ePro')->__('Unmap Item(s)'),
-            'url'     => '',
-            'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
-            ), 'mapping'
+            'unmapping',
+            array(
+                'label'   => Mage::helper('M2ePro')->__('Unlink Item(s)'),
+                'url'     => '',
+                'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
+            ),
+            'mapping'
         );
+
         // ---------------------------------------
 
         return parent::_prepareMassaction();
@@ -224,28 +238,28 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_View_Grid extends Mage_Adm
 
             $htmlValue = '&nbsp;<a href="javascript:void(0);"
                                     onclick="ListingOtherMappingObj.openPopUp(
-                                    '. (int)$row->getId(). ',
-                                    \''. $productTitle. '\'
-                                    );">' . Mage::helper('M2ePro')->__('Map') . '</a>';
+                                    ' . (int)$row->getId() . ',
+                                    \'' . $productTitle . '\'
+                                    );">' . Mage::helper('M2ePro')->__('Link') . '</a>';
 
             return $htmlValue;
         }
 
         $htmlValue = '&nbsp<a href="'
-                    .$this->getUrl(
-                        'adminhtml/catalog_product/edit',
-                        array('id' => $row->getData('product_id'))
-                    )
-                     .'" target="_blank">'
-                     .$row->getData('product_id')
-                     .'</a>';
+            . $this->getUrl(
+                'adminhtml/catalog_product/edit',
+                array('id' => $row->getData('product_id'))
+            )
+            . '" target="_blank">'
+            . $row->getData('product_id')
+            . '</a>';
 
         $htmlValue .= '&nbsp&nbsp&nbsp<a href="javascript:void(0);"'
-                      .' onclick="AmazonListingOtherGridObj.movingHandler.getGridHtml('
-                      .Mage::helper('M2ePro')->jsonEncode(array((int)$row->getData('id')))
-                      .')">'
-                      .Mage::helper('M2ePro')->__('Move')
-                      .'</a>';
+            . ' onclick="AmazonListingOtherGridObj.movingHandler.getGridHtml('
+            . Mage::helper('M2ePro')->jsonEncode(array((int)$row->getData('id')))
+            . ')">'
+            . Mage::helper('M2ePro')->__('Move')
+            . '</a>';
 
         return $htmlValue;
     }
@@ -255,16 +269,16 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_View_Grid extends Mage_Adm
         if ($value === null) {
             $value = '<i style="color:gray;">receiving...</i>';
         } else {
-            $value = '<span>' .Mage::helper('M2ePro')->escapeHtml($value). '</span>';
+            $value = '<span>' . Mage::helper('M2ePro')->escapeHtml($value) . '</span>';
         }
 
         $tempSku = $row->getData('sku');
         empty($tempSku) && $tempSku = Mage::helper('M2ePro')->__('N/A');
 
         $value .= '<br/><strong>'
-                  .Mage::helper('M2ePro')->__('SKU')
-                  .':</strong> '
-                  .Mage::helper('M2ePro')->escapeHtml($tempSku);
+            . Mage::helper('M2ePro')->__('SKU')
+            . ':</strong> '
+            . Mage::helper('M2ePro')->escapeHtml($tempSku);
 
         return $value;
     }
@@ -272,7 +286,8 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_View_Grid extends Mage_Adm
     public function callbackColumnGeneralId($value, $row, $column, $isExport)
     {
         $url = Mage::helper('M2ePro/Component_Amazon')->getItemUrl($value, $row->getData('marketplace_id'));
-        return '<a href="'.$url.'" target="_blank">'.$value.'</a>';
+
+        return '<a href="' . $url . '" target="_blank">' . $value . '</a>';
     }
 
     public function callbackColumnAvailableQty($value, $row, $column, $isExport)
@@ -346,7 +361,7 @@ HTML;
 <span style="float:right; text-align: left;">&nbsp;
     <img class="tool-tip-image"
          style="vertical-align: middle; width: 16px;"
-         src="{$this->getSkinUrl('M2ePro/images/'.$image.'.png')}">
+         src="{$this->getSkinUrl('M2ePro/images/' . $image . '.png')}">
     <span class="tool-tip-message tool-tip-message tip-left" style="display:none;">
         <img src="{$this->getSkinUrl('M2ePro/images/i_icon.png')}">
         <span>{$text}</span>
@@ -364,9 +379,9 @@ HTML;
         }
 
         $currency = Mage::helper('M2ePro/Component_Amazon')
-                                ->getCachedObject('Marketplace', $row->getData('marketplace_id'))
-                                ->getChildObject()
-                                ->getDefaultCurrency();
+            ->getCachedObject('Marketplace', $row->getData('marketplace_id'))
+            ->getChildObject()
+            ->getDefaultCurrency();
 
         $priceValue = Mage::app()->getLocale()->currency($currency)->toCurrency($value);
 
@@ -377,7 +392,7 @@ HTML;
             $accountId = $row->getData('account_id');
             $sku = $row->getData('sku');
 
-            $priceValue =<<<HTML
+            $priceValue = <<<HTML
 <a id="m2epro_repricing_price_value_{$sku}"
    class="m2epro-repricing-price-value"
    sku="{$sku}"
@@ -388,7 +403,7 @@ HTML;
 HTML;
         }
 
-        return $priceValue.$html;
+        return $priceValue . $html;
     }
 
     public function callbackColumnStatus($value, $row, $column, $isExport)
@@ -464,7 +479,7 @@ HTML;
             return;
         }
 
-        $collection->getSelect()->where('second_table.title LIKE ? OR second_table.sku LIKE ?', '%'.$value.'%');
+        $collection->getSelect()->where('second_table.title LIKE ? OR second_table.sku LIKE ?', '%' . $value . '%');
     }
 
     protected function callbackFilterQty($collection, $column)
@@ -555,7 +570,7 @@ HTML;
 </script>
 HTML;
 
-        return parent::_toHtml().$javascriptsMain;
+        return parent::_toHtml() . $javascriptsMain;
     }
 
     //########################################

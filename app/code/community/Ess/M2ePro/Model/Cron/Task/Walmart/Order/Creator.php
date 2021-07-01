@@ -106,9 +106,7 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Order_Creator
             $order->createInvoice();
         }
 
-        if ($order->getChildObject()->canCreateShipment()) {
-            $order->createShipment();
-        }
+        $order->createShipment();
 
         if ($order->getStatusUpdateRequired()) {
             $order->updateMagentoOrderStatus();

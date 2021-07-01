@@ -766,6 +766,17 @@ class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
 
     public function createShipment()
     {
+        if (!$this->getChildObject()->canCreateShipment()) {
+            if ($this->getMagentoOrder() && $this->getMagentoOrder()->getIsVirtual()) {
+                $this->addNoticeLog(
+                    'Magento Order was created without the Shipping Address since your Virtual Product ' .
+                    'has no weight and cannot be shipped.'
+                );
+            }
+            
+            return null;
+        }
+
         $shipment = null;
 
         try {

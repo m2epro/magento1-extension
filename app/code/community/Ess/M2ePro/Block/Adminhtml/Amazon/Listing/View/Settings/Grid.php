@@ -234,7 +234,9 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Settings_Grid
                 'width'          => '170px',
                 'type'           => 'text',
                 'index'          => 'template_description_title',
-                'filter_index'   => 'template_description_title',
+                'filter' => 'M2ePro/adminhtml_amazon_grid_column_filter_policySettings',
+                'filter_index' => 'template_description_title',
+                'filter_condition_callback' => array($this, 'callbackFilterDescriptionSettings'),
                 'frame_callback' => array($this, 'callbackColumnTemplateDescription')
             )
         );
@@ -245,11 +247,10 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Settings_Grid
                 'header'                    => Mage::helper('M2ePro')->__('Shipping Policy'),
                 'align'                     => 'left',
                 'width'                     => '170px',
-                'type'                      => 'options',
-                'options'                   => array(
-                    0 => Mage::helper('M2ePro')->__('Use from Listing Settings'),
-                    1 => Mage::helper('M2ePro')->__('Policies')
-                ),
+                'type'                      => 'text',
+                'index'                     => 'template_shipping_title',
+                'filter' => 'M2ePro/adminhtml_amazon_grid_column_filter_policySettings',
+                'filter_index'              => 'template_shipping_title',
                 'filter_condition_callback' => array($this, 'callbackFilterShippingSettings'),
                 'frame_callback'            => array($this, 'callbackColumnTemplateShipping')
             )
@@ -764,12 +765,55 @@ HTML;
     protected function callbackFilterShippingSettings($collection, $column)
     {
         $value = $column->getFilter()->getValue();
+        $inputValue = null;
 
-        if ($value) {
-            $collection->addFieldToFilter('template_shipping_id', array('notnull' => true));
-        } else {
-            if ($this->_listing->getData('template_shipping_id')) {
-                $collection->addFieldToFilter('template_shipping_id', array('null' => true));
+        if (is_array($value) && isset($value['input'])) {
+            $inputValue = $value['input'];
+        } elseif (is_string($value)) {
+            $inputValue = $value;
+        }
+
+        if ($inputValue !== null) {
+            /** @var $collection Ess_M2ePro_Model_Resource_Magento_Product_Collection */
+            $collection->addAttributeToFilter('template_shipping_title',  array('like' => '%' . $inputValue . '%'));
+        }
+
+        if (isset($value['select'])) {
+            switch ($value['select']) {
+                case '0':
+                    $collection->addAttributeToFilter('template_shipping_id', array('null' => true));
+                    break;
+                case '1':
+                    $collection->addAttributeToFilter('template_shipping_id', array('notnull' => true));
+                    break;
+            }
+        }
+    }
+
+    protected function callbackFilterDescriptionSettings($collection, $column)
+    {
+        $value = $column->getFilter()->getValue();
+        $inputValue = null;
+
+        if (is_array($value) && isset($value['input'])) {
+            $inputValue = $value['input'];
+        } elseif (is_string($value)) {
+            $inputValue = $value;
+        }
+
+        if ($inputValue !== null) {
+            /** @var $collection Ess_M2ePro_Model_Resource_Magento_Product_Collection */
+            $collection->addAttributeToFilter('template_description_title',  array('like' => '%' . $inputValue . '%'));
+        }
+
+        if (isset($value['select'])) {
+            switch ($value['select']) {
+                case '0':
+                    $collection->addAttributeToFilter('template_description_id', array('null' => true));
+                    break;
+                case '1':
+                    $collection->addAttributeToFilter('template_description_id', array('notnull' => true));
+                    break;
             }
         }
     }

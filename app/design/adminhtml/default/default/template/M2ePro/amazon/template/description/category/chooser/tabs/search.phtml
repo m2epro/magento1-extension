@@ -21,7 +21,8 @@
 
 <div id="chooser_search_input_container">
     <input id="query" type="text" placeholder="<?php echo Mage::helper('M2ePro')->__('Enter keyword(s) or browsenode ID...'); ?>" onkeypress="AmazonTemplateDescriptionCategoryChooserObj.keyPressQuery(event)">
-    <button onclick="AmazonTemplateDescriptionCategoryChooserObj.search()"><?php echo Mage::helper('M2ePro')->__('Search'); ?></button>&nbsp;&nbsp;&nbsp;&nbsp;<button onclick="AmazonTemplateDescriptionCategoryChooserObj.searchReset()"><?php echo Mage::helper('M2ePro')->__('Reset'); ?></button>
+    <button id="search" onclick="AmazonTemplateDescriptionCategoryChooserObj.search()"><?php echo Mage::helper('M2ePro')
+            ->__('Search'); ?></button>&nbsp;&nbsp;&nbsp;&nbsp;<button onclick="AmazonTemplateDescriptionCategoryChooserObj.searchReset()"><?php echo Mage::helper('M2ePro')->__('Reset'); ?></button>
 </div>
 
 <div id="chooser_search_results">

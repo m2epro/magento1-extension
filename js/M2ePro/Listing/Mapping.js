@@ -12,7 +12,7 @@ window.ListingMapping = Class.create(Common, {
     openPopUp: function(otherProductId, productTitle) {
         this.gridHandler.unselectAll();
         let self = this;
-        let title = M2ePro.translator.translate('Mapping Product');
+        let title = M2ePro.translator.translate('Linking Product');
 
         if (productTitle) {
             title = title + ' "' + productTitle + '"';
@@ -81,7 +81,7 @@ window.ListingMapping = Class.create(Common, {
                     this.gridHandler.unselectAllAndReload();
                     this.popUp.close();
                     this.scroll_page_to_top();
-                    MessageObj.addSuccess(M2ePro.translator.translate('Product(s) was Mapped.'));
+                    MessageObj.addSuccess(M2ePro.translator.translate('Product(s) was Linked.'));
                 } else {
                     alert(M2ePro.translator.translate('Product does not exist.'));
                 }

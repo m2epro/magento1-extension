@@ -249,7 +249,7 @@ HTML;
 
         $editLink = '';
         if (!$row->getProductId()) {
-            $editLink = sprintf($jsTemplate, 'edit', $dataHelper->__('Map to Magento Product'));
+            $editLink = sprintf($jsTemplate, 'edit', $dataHelper->__('Link to Magento Product'));
         }
 
         $isPretendedToBeSimple = false;
@@ -265,7 +265,7 @@ HTML;
 
         $discardLink = '';
         if ($row->getProductId()) {
-            $discardLink = sprintf($jsTemplate, 'unassignProduct', $dataHelper->__('Unmap'));
+            $discardLink = sprintf($jsTemplate, 'unassignProduct', $dataHelper->__('Unlink'));
         }
 
         return <<<HTML

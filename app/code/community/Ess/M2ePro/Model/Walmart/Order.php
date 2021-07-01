@@ -90,6 +90,11 @@ class Ess_M2ePro_Model_Walmart_Order extends Ess_M2ePro_Model_Component_Child_Wa
         return (float)$this->getData('shipping_price');
     }
 
+    public function getShippingDateTo()
+    {
+        return $this->getData('shipping_date_to');
+    }
+
     /**
      * @return Ess_M2ePro_Model_Walmart_Order_ShippingAddress
      */

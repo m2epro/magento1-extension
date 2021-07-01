@@ -306,7 +306,7 @@ HTML;
                 'Compatibility Attribute'                  => $helper->__('Compatibility Attribute'),
                 'Sell on Another Marketplace'              => $helper->__('Sell on Another Marketplace'),
                 'Create new'                               => $helper->__('Create new'),
-                'Mapping Product'                          => $helper->__('Mapping Product')
+                'Linking Product'                          => $helper->__('Linking Product')
             )
         );
         // ---------------------------------------

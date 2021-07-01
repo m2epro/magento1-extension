@@ -373,7 +373,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View extends Mage_Adminhtml_Blo
                 'Rule with the same Title already exists.' => $helper->__('Rule with the same Title already exists.'),
                 'Edit SKU'                                 => $helper->__('Edit SKU'),
                 'Edit Product ID'                          => $helper->__('Edit Product ID'),
-                'Mapping Product'                          => $helper->__('Mapping Product'),
+                'Linking Product'                          => $helper->__('Linking Product'),
 
                 'Updating SKU has submitted to be processed.'  =>
                     $helper->__('Updating SKU has submitted to be processed.'),

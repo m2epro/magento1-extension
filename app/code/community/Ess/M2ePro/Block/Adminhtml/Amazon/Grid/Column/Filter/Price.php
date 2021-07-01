@@ -50,7 +50,7 @@ HTML;
 
     //########################################
 
-    public function getValue($index=null)
+    public function getValue($index = null)
     {
         if ($index) {
             return $this->getData('value', $index);

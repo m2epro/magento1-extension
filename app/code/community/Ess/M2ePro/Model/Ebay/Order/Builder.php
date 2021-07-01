@@ -89,6 +89,7 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
         $this->setData('paid_amount', (float)$data['selling']['paid_amount']);
         $this->setData('saved_amount', (float)$data['selling']['saved_amount']);
         $this->setData('currency', $data['selling']['currency']);
+        $this->setData('tax_reference', $data['selling']['tax_reference']);
 
         if (empty($data['selling']['tax_details']) || !is_array($data['selling']['tax_details'])) {
             $this->setData('tax_details', null);
@@ -113,6 +114,8 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
         $this->setData('payment_status', $paymentStatus);
 
         $this->setData('shipping_details', $data['shipping']);
+
+        $this->setData('shipping_date_to', $data['handle_by_time']);
 
         $shippingStatus = $this->_helper->getShippingStatus(
             $data['shipping']['date'], !empty($data['shipping']['service'])

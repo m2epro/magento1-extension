@@ -1,4 +1,26 @@
-* 6.13.2 (r16287) (08/06/2021) 
+* 6.14.0 (r16340) (01/07/2021) 
+
+[Common] [Added] Add Ship By Date filter to Orders grid [M1-1282]
+[Common] [Added] Display Ship By Date in Channel Orders [M1-1105]
+[Common] [Added] Pass Ship By Date value to Magento Orders [M1-1286]
+[Common] [Fixed] Exception after clicking the Ship button on the Magento Order View page if the order is created not via M2E Pro [M1-1313]
+[Common] [Fixed] Syntax error or access violation: 1118 Row size too large. The maximum row size for the used table type, not counting BLOBs at the step of extension upgrade [M1-1126]
+[Common] [Improved] Channel Orders grid and viewing Orders [M1-1073]
+[Common] [Improved] Detect End Date expiration for Special Price and submit Product Price value during the Revise action [M1-1118]
+[Common] [Improved] "Map" renamed to "Link" across the Unmanaged Listings functionality [M1-1083]
+[Common] [Improved] Notification about the non-created Magento Orders appears only when actual errors are detected [M1-1204]
+[eBay] [Fixed] Default set of Item Specifics is displayed as Custom after moving Products from Unmanaged Listings to M2E Pro Listings [M1-1294]
+[eBay] [Fixed] MPN is submitted as variation specific when listing Variational Products [M1-1104]
+[eBay] [Improved] Display IOSS/OSS number in Channel and Magento Orders [M1-1297]
+[eBay] [Improved] Filter Products in Listings by Policy title [M1-1132]
+[eBay] [Improved] Resend newly required specifics during the Relist or Revise actions after the error is received [M1-1238]
+[eBay] [Improved] Sort products via the "Available QTY" filter in the Listing grid [M1-1058]
+[eBay] [Improved] Variational Product data is updated automatically if the data is changed on eBay [M1-1211]
+[Amazon] [Fixed] Column already exists: 1060 Duplicate column name 'is_repricing' error when trying to filter items on Repricing in Listing [M1-1288]
+[Amazon] [Improved] Filter Products in Listings by Policy title [M1-1132]
+[Walmart] [Fixed] "The Item was not listed due to the unexpected error on Walmart side" received instead of the actual error [M1-1169]
+
+* 6.13.2 (r16286) (08/06/2021)
 
 Walmart: [Fixed] Some Walmart orders cannot be updated to Shipped status [M1-1274]
 Walmart: [Fixed] Custom attributes values are not saved for duplicated Walmart Description policy [M1-1260]

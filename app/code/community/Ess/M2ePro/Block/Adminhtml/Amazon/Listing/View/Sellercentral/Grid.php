@@ -126,27 +126,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Sellercentral_Grid
             '{{table}}.is_variation_parent = 0'
         );
 
-        $collection->getSelect()->columns(
-            array(
-            'min_online_price' => new Zend_Db_Expr(
-                '
-                IF (
-                    `alp`.`online_regular_price` IS NULL,
-                    `alp`.`online_business_price`,
-                    IF (
-                        `alp`.`online_regular_sale_price` IS NOT NULL AND
-                        `alp`.`online_regular_sale_price_end_date` IS NOT NULL AND
-                        `alp`.`online_regular_sale_price_start_date` <= CURRENT_DATE() AND
-                        `alp`.`online_regular_sale_price_end_date` >= CURRENT_DATE(),
-                        `alp`.`online_regular_sale_price`,
-                        `alp`.`online_regular_price`
-                    )
-                )
-            '
-            )
-            )
-        );
-
         $collection->getSelect()->joinLeft(
             array('malpr' => Mage::getResourceModel('M2ePro/Amazon_Listing_Product_Repricing')->getMainTable()),
             '(`alp`.`listing_product_id` = `malpr`.`listing_product_id`)',

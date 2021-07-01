@@ -401,9 +401,7 @@ class Ess_M2ePro_Adminhtml_Ebay_OrderController extends Ess_M2ePro_Controller_Ad
                 $order->createInvoice();
             }
 
-            if ($order->getChildObject()->canCreateShipment()) {
-                $order->createShipment();
-            }
+            $order->createShipment();
 
             if ($order->getChildObject()->canCreateTracks()) {
                 $order->getChildObject()->createTracks();

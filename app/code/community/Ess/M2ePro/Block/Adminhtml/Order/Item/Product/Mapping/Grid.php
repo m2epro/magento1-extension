@@ -157,7 +157,7 @@ class Ess_M2ePro_Block_Adminhtml_Order_Item_Product_Mapping_Grid extends Mage_Ad
     {
         $productId = (int)$row->getId();
         $productSku = $row->getSku();
-        $label = Mage::helper('M2ePro')->__('Map To This Product');
+        $label = Mage::helper('M2ePro')->__('Link To This Product');
 
         $js = <<<JS
 OrderEditItemObj.assignProduct('{$productId}', '{$productSku}');

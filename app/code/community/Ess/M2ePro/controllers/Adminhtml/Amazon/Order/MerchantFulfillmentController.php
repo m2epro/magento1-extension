@@ -88,6 +88,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Order_MerchantFulfillmentController
         }
 
         $fulfillmentCachedFields = array(
+            'package_dimension_source',
             'package_dimension_measure',
             'package_dimension_length',
             'package_dimension_width',

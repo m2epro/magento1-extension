@@ -488,7 +488,8 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_order')}` (
   `shipping_service` VARCHAR(255) DEFAULT NULL,
   `shipping_address` TEXT NOT NULL,
   `shipping_price` DECIMAL(12, 4) UNSIGNED NOT NULL,
-  `shipping_dates` TEXT DEFAULT NULL,
+  `shipping_date_to` DATETIME DEFAULT NULL,
+  `delivery_date_to` DATETIME DEFAULT NULL,
   `paid_amount` DECIMAL(12, 4) UNSIGNED NOT NULL,
   `tax_details` TEXT DEFAULT NULL,
   `discount_details` TEXT DEFAULT NULL,
@@ -508,6 +509,7 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_order')}` (
   INDEX `is_credit_memo_sent` (`is_credit_memo_sent`),
   INDEX `buyer_email` (`buyer_email`),
   INDEX `buyer_name` (`buyer_name`),
+  INDEX `shipping_date_to` (`shipping_date_to`),
   INDEX `paid_amount` (`paid_amount`),
   INDEX `purchase_create_date` (`purchase_create_date`)
 )

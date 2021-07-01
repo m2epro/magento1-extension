@@ -33,14 +33,12 @@ class Ess_M2ePro_Observer_Shipment_Item extends Ess_M2ePro_Observer_Abstract
 
         try {
             /** @var $order Ess_M2ePro_Model_Order */
-            $order = Mage::helper('M2ePro/Component')->getUnknownObject(
-                'Order', $shipment->getOrderId(), 'magento_order_id'
-            );
+            $order = Mage::getModel('M2ePro/Order')->load($shipment->getOrderId(), 'magento_order_id');
         } catch (Exception $e) {
             return;
         }
 
-        if ($order === null) {
+        if ($order->isEmpty()) {
             return;
         }
 

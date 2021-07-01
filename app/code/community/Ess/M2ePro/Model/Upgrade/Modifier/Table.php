@@ -14,14 +14,17 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Table extends Ess_M2ePro_Model_Upgrade_M
     const COMMIT_KEY_ADD_INDEX     = 'add_index';
     const COMMIT_KEY_DROP_INDEX    = 'drop_index';
 
-    protected $_sqlForCommit                = array();
+    protected $_sqlForCommit = array();
     protected $_columnsForCheckBeforeCommit = array();
+
+    protected $_checkedTableRowFormat = false;
 
     //########################################
 
     public function truncate()
     {
         $this->getConnection()->truncate($this->getTableName());
+
         return $this;
     }
 
@@ -79,7 +82,9 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Table extends Ess_M2ePro_Model_Upgrade_M
         } else {
             $this->addQueryToCommit(
                 self::COMMIT_KEY_CHANGE_COLUMN,
-                'CHANGE COLUMN %s %s %s', array($from, $to), $definition
+                'CHANGE COLUMN %s %s %s',
+                array($from, $to),
+                $definition
             );
         }
 
@@ -109,6 +114,10 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Table extends Ess_M2ePro_Model_Upgrade_M
             return $this;
         }
 
+        if ($this->isNeedChangeRowFormat()) {
+            $this->changeRowFormat();
+        }
+
         $definition = $this->buildColumnDefinition($type, $default, $after, $autoCommit);
 
         if (empty($definition)) {
@@ -122,7 +131,9 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Table extends Ess_M2ePro_Model_Upgrade_M
         } else {
             $this->addQueryToCommit(
                 self::COMMIT_KEY_ADD_COLUMN,
-                'ADD COLUMN %s %s', array($name), $definition
+                'ADD COLUMN %s %s',
+                array($name),
+                $definition
             );
         }
 
@@ -162,7 +173,9 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Table extends Ess_M2ePro_Model_Upgrade_M
         } else {
             $this->addQueryToCommit(
                 self::COMMIT_KEY_CHANGE_COLUMN,
-                'MODIFY COLUMN %s %s', array($name), $definition
+                'MODIFY COLUMN %s %s',
+                array($name),
+                $definition
             );
         }
 
@@ -258,6 +271,7 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Table extends Ess_M2ePro_Model_Upgrade_M
     public function isIndexExists($name)
     {
         $indexList = $this->getConnection()->getIndexList($this->getTableName());
+
         return isset($indexList[strtoupper($name)]);
     }
 
@@ -372,7 +386,7 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Table extends Ess_M2ePro_Model_Upgrade_M
         // In some cases Magento does not cut "UNSIGNED" modifier out of column data type info
         $type = trim(str_replace('UNSIGNED', '', strtoupper($columnInfo['DATA_TYPE'])));
         if (is_numeric($columnInfo['LENGTH']) && $columnInfo['LENGTH'] > 0) {
-            $type .= '('.$columnInfo['LENGTH'].')';
+            $type .= '(' . $columnInfo['LENGTH'] . ')';
         } elseif (is_numeric($columnInfo['PRECISION']) && is_numeric($columnInfo['SCALE'])) {
             $type .= sprintf('(%d,%d)', $columnInfo['PRECISION'], $columnInfo['SCALE']);
         }
@@ -387,10 +401,10 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Table extends Ess_M2ePro_Model_Upgrade_M
         return sprintf(
             '%s %s %s %s %s',
             $type,
-            $columnInfo['UNSIGNED']  ? 'UNSIGNED' : '',
+            $columnInfo['UNSIGNED'] ? 'UNSIGNED' : '',
             !$columnInfo['NULLABLE'] ? 'NOT NULL' : '',
             $default,
-            $columnInfo['IDENTITY']  ? 'AUTO_INCREMENT' : ''
+            $columnInfo['IDENTITY'] ? 'AUTO_INCREMENT' : ''
         );
     }
 
@@ -410,6 +424,7 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Table extends Ess_M2ePro_Model_Upgrade_M
         }
 
         $this->_sqlForCommit[$key][] = $tempQuery;
+
         return $this;
     }
 
@@ -423,15 +438,18 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Table extends Ess_M2ePro_Model_Upgrade_M
 
             foreach ($this->_sqlForCommit as $key => $sqlData) {
                 if (!is_array($sqlData) || in_array(
-                    $key, array(self::COMMIT_KEY_ADD_INDEX,
-                                                                self::COMMIT_KEY_DROP_INDEX,
-                    self::COMMIT_KEY_DROP_COLUMN)
-                )
+                        $key,
+                        array(
+                            self::COMMIT_KEY_ADD_INDEX,
+                            self::COMMIT_KEY_DROP_INDEX,
+                            self::COMMIT_KEY_DROP_COLUMN
+                        )
+                    )
                 ) {
                     continue;
                 }
 
-                $pattern = '/COLUMN\s(`'.$columnForCheck.'`|`[^`]+`\s`'.$columnForCheck.'`)/';
+                $pattern = '/COLUMN\s(`' . $columnForCheck . '`|`[^`]+`\s`' . $columnForCheck . '`)/';
                 $tempSql = implode(', ', $sqlData);
 
                 if (preg_match($pattern, $tempSql)) {
@@ -484,7 +502,7 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Table extends Ess_M2ePro_Model_Upgrade_M
 
         if (!$this->checkColumnsBeforeCommit()) {
             $this->_sqlForCommit = array();
-            $failedColumns       = implode("', '", $this->_columnsForCheckBeforeCommit);
+            $failedColumns = implode("', '", $this->_columnsForCheckBeforeCommit);
 
             throw new Ess_M2ePro_Model_Exception_Setup(
                 "Commit for '{$this->getTableName()}' table is failed
@@ -494,7 +512,42 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Table extends Ess_M2ePro_Model_Upgrade_M
 
         $this->runQuery($resultSql);
         $this->_sqlForCommit = array();
+
         return $this;
+    }
+
+    /**
+     * @return bool
+     * @throws \Ess\M2ePro\Model\Exception\Logic
+     * @throws \Zend_Db_Statement_Exception
+     */
+    protected function isNeedChangeRowFormat()
+    {
+        if ($this->_checkedTableRowFormat) {
+            return false;
+        }
+
+        $databaseName = Mage::helper('M2ePro/Magento')->getDatabaseName();
+
+        $result = array_change_key_case(
+            $this->getConnection()->select()
+                ->from('tables', array('row_format'), 'information_schema')
+                ->where('table_schema =?', $databaseName)
+                ->where('table_name =?', $this->_tableName)->query()->fetch()
+        );
+
+        $this->_checkedTableRowFormat = true;
+
+        return strtolower($result['row_format']) != 'dynamic';
+    }
+
+    /**
+     * @throws \Zend_Db_Statement_Exception
+     */
+    protected function changeRowFormat()
+    {
+        $sql = sprintf('ALTER TABLE %s ROW_FORMAT = DYNAMIC', $this->_tableName);
+        $this->getConnection()->query($sql)->execute();
     }
 
     //########################################

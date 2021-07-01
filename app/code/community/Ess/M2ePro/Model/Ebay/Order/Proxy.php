@@ -292,42 +292,56 @@ class Ess_M2ePro_Model_Ebay_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
      */
     public function getShippingData()
     {
-        $shippingData = array(
-            'shipping_price'  => $this->getBaseShippingPrice(),
-            'carrier_title'   => Mage::helper('M2ePro')->__('eBay Shipping'),
-            'shipping_method' => $this->_order->getShippingService(),
-        );
+        $additionalData = '';
+
+        if ($this->_order->isUseClickAndCollect() || $this->_order->isUseInStorePickup()) {
+            if ($this->_order->isUseClickAndCollect()) {
+                $additionalData .= 'Click And Collect | ';
+                $details = $this->_order->getClickAndCollectDetails();
+            } else {
+                $additionalData .= 'In Store Pickup | ';
+                $details = $this->_order->getInStorePickupDetails();
+            }
+
+            if (!empty($details['location_id'])) {
+                $additionalData .= 'Store ID: ' . $details['location_id'] . ' | ';
+            }
+
+            if (!empty($details['reference_id'])) {
+                $additionalData .= 'Reference ID: ' . $details['reference_id'] . ' | ';
+            }
+
+            if (!empty($details['delivery_date'])) {
+                $additionalData .= 'Delivery Date: ' . $details['delivery_date' . ' | '];
+            }
+        }
+
+        if ($shippingDateTo = $this->_order->getShippingDateTo()) {
+            $additionalData .= 'Ship By Date: '
+                . Mage::helper('core')->formatDate($shippingDateTo, 'medium', true)
+                . ' | ';
+        }
+
+        if ($taxReference = $this->_order->getTaxReference()) {
+            $additionalData .= 'IOSS/OSS Number: ' . $taxReference . ' | ';
+        }
+
+        $shippingMethod = $this->_order->getShippingService();
 
         if ($this->_order->isUseGlobalShippingProgram()) {
             $globalShippingDetails = $this->_order->getGlobalShippingDetails();
             $globalShippingDetails = $globalShippingDetails['service_details'];
 
             if (!empty($globalShippingDetails['service_details']['service'])) {
-                $shippingData['shipping_method'] = $globalShippingDetails['service_details']['service'];
+                $shippingMethod = $globalShippingDetails['service_details']['service'];
             }
         }
 
-        if ($this->_order->isUseClickAndCollect() || $this->_order->isUseInStorePickup()) {
-            if ($this->_order->isUseClickAndCollect()) {
-                $shippingData['shipping_method'] = 'Click And Collect | '.$shippingData['shipping_method'];
-                $details = $this->_order->getClickAndCollectDetails();
-            } else {
-                $shippingData['shipping_method'] = 'In Store Pickup | '.$shippingData['shipping_method'];
-                $details = $this->_order->getInStorePickupDetails();
-            }
-
-            if (!empty($details['location_id'])) {
-                $shippingData['shipping_method'] .= ' | Store ID: '.$details['location_id'];
-            }
-
-            if (!empty($details['reference_id'])) {
-                $shippingData['shipping_method'] .= ' | Reference ID: '.$details['reference_id'];
-            }
-
-            if (!empty($details['delivery_date'])) {
-                $shippingData['shipping_method'] .= ' | Delivery Date: '.$details['delivery_date'];
-            }
-        }
+        $shippingData = array(
+            'carrier_title'   => $additionalData . Mage::helper('M2ePro')->__('eBay Shipping'),
+            'shipping_method' => $shippingMethod,
+            'shipping_price'  => $this->getBaseShippingPrice()
+        );
 
         return $shippingData;
     }

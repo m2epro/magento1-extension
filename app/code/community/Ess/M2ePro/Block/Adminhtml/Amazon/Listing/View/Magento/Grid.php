@@ -63,7 +63,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Magento_Grid
             'product_id=entity_id',
             array(
                 'id' => 'id',
-                'status' => 'status',
+                'amazon_status' => 'status',
                 'additional_data' => 'additional_data'
             ),
             array(

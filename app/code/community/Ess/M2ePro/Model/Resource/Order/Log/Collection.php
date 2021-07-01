@@ -26,6 +26,7 @@ class Ess_M2ePro_Model_Resource_Order_Log_Collection
     ) {
         $this->addFieldToFilter('main_table.initiator', $initiator);
         $this->addFieldToFilter('main_table.description', array('like' => '%' . $text . '%'));
+        $this->addFieldToFilter('main_table.type', Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR);
 
         if (!empty($lastFromDate)) {
             $lastFromDate = new DateTime($lastFromDate, new DateTimeZone('UTC'));

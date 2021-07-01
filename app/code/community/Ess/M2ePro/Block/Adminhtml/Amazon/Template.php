@@ -91,6 +91,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Template extends Mage_Adminhtml_Block_Wi
         );
 
         $data['items'][] = array(
+            'id'    => 'add_policy_tax_code',
             'url'   => $this->getUrl(
                 '*/adminhtml_amazon_template/new',
                 array(

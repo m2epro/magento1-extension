@@ -31,6 +31,7 @@ class Ess_M2ePro_Model_Order_Reserve
     public function setFlag($action, $flag)
     {
         $this->_flags[$action] = (bool)$flag;
+
         return $this;
     }
 
@@ -96,14 +97,17 @@ class Ess_M2ePro_Model_Order_Reserve
             }
         } catch (Exception $e) {
             $this->_order->addErrorLog(
-                'QTY was not reserved. Reason: %msg%', array(
+                'QTY was not reserved. Reason: %msg%',
+                array(
                     'msg' => $e->getMessage()
                 )
             );
+
             return false;
         }
 
         $this->_order->addSuccessLog('QTY has been reserved.');
+
         return true;
     }
 
@@ -129,14 +133,17 @@ class Ess_M2ePro_Model_Order_Reserve
             }
         } catch (Exception $e) {
             $this->_order->addErrorLog(
-                'QTY was not released. Reason: %msg%', array(
+                'QTY was not released. Reason: %msg%',
+                array(
                     'msg' => $e->getMessage()
                 )
             );
+
             return false;
         }
 
         $this->_order->addSuccessLog('QTY has been released.');
+
         return true;
     }
 
@@ -162,14 +169,17 @@ class Ess_M2ePro_Model_Order_Reserve
             }
         } catch (Exception $e) {
             $this->_order->addErrorLog(
-                'QTY reserve was not canceled. Reason: %msg%', array(
+                'QTY reserve was not canceled. Reason: %msg%',
+                array(
                     'msg' => $e->getMessage()
                 )
             );
+
             return false;
         }
 
         $this->_order->addSuccessLog('QTY reserve has been canceled.');
+
         return true;
     }
 
@@ -184,8 +194,8 @@ class Ess_M2ePro_Model_Order_Reserve
         $transaction = Mage::getModel('core/resource_transaction');
 
         $productsAffectedCount = 0;
-        $productsDeletedCount  = 0;
-        $productsExistCount    = 0;
+        $productsDeletedCount = 0;
+        $productsExistCount = 0;
 
         $stockItems = array();
 
@@ -258,8 +268,7 @@ class Ess_M2ePro_Model_Order_Reserve
         if ($productsExistCount == 0 && $productsDeletedCount == 0) {
             $this->_order->setData('reservation_state', self::STATE_UNKNOWN)->save();
             throw new Ess_M2ePro_Model_Exception_Logic(
-                'The Order Item(s) was not Mapped to Magento Product(s) or
-                Mapped incorrect.'
+                'The Order Item(s) was not Linked to Magento Product(s) or Linked incorrect.'
             );
         }
 
@@ -321,9 +330,10 @@ class Ess_M2ePro_Model_Order_Reserve
                         'QTY for Product "%name%" cannot be reserved. Reason: %msg%',
                         array(
                             '!name' => $magentoProduct->getName(),
-                            'msg' => $e->getMessage()
+                            'msg'   => $e->getMessage()
                         )
                     );
+
                     return false;
                 }
                 break;
@@ -358,7 +368,7 @@ class Ess_M2ePro_Model_Order_Reserve
             case self::ACTION_SUB:
                 if ($item->getProductId() &&
                     ($item->getMagentoProduct()->isSimpleType() ||
-                     $item->getMagentoProduct()->isDownloadableType())
+                        $item->getMagentoProduct()->isDownloadableType())
                 ) {
                     $products[] = $item->getProductId();
                 } else {

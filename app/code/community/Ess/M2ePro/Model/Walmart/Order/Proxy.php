@@ -78,10 +78,18 @@ class Ess_M2ePro_Model_Walmart_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
      */
     public function getShippingData()
     {
+        $additionalData = '';
+
+        if ($shippingDateTo = $this->_order->getShippingDateTo()) {
+            $additionalData .= 'Ship By Date: '
+                . Mage::helper('core')->formatDate($shippingDateTo, 'medium', true)
+                . ' | ';
+        }
+
         $shippingData = array(
+            'carrier_title'   => $additionalData . Mage::helper('M2ePro')->__('Walmart Shipping'),
             'shipping_method' => $this->_order->getShippingService(),
-            'shipping_price'  => $this->getBaseShippingPrice(),
-            'carrier_title'   => Mage::helper('M2ePro')->__('Walmart Shipping')
+            'shipping_price'  => $this->getBaseShippingPrice()
         );
 
         return $shippingData;

@@ -85,6 +85,7 @@ class Ess_M2ePro_Model_Walmart_Order_Builder extends Mage_Core_Model_Abstract
         $this->setData('shipping_service', $data['shipping']['level']);
         $this->setData('shipping_address', Mage::helper('M2ePro')->jsonEncode($data['shipping']['address']));
         $this->setData('shipping_price', (float)$data['shipping']['price']);
+        $this->setData('shipping_date_to', $data['shipping']['estimated_ship_date']);
         // ---------------------------------------
 
         $this->_items = $data['items'];

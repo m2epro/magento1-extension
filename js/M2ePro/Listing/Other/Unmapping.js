@@ -22,7 +22,7 @@ window.ListingOtherUnmapping = Class.create(Action, {
                 MessageObj.clearAll();
 
                 if (transport.responseText == '1') {
-                    MessageObj.addSuccess(M2ePro.translator.translate('Product(s) was Unmapped.'));
+                    MessageObj.addSuccess(M2ePro.translator.translate('Product(s) was Unlinked.'));
                 } else {
                     MessageObj.addError(M2ePro.translator.translate('Not enough data'));
                 }
