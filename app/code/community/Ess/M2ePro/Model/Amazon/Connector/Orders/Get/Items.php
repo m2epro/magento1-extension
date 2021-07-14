@@ -192,6 +192,7 @@ class Ess_M2ePro_Model_Amazon_Connector_Orders_Get_Items extends Ess_M2ePro_Mode
                         'gift_message'         => trim($item['gift_message']),
                         'currency'             => trim($item['prices']['product']['currency']),
                         'tax_details'          => $item['taxes'],
+                        'ioss_number'          => $item['ioss_number'],
                         'discount_details'     => $item['discounts'],
                         'qty_purchased'        => (int)$item['qty']['ordered'],
                         'qty_shipped'          => (int)$item['qty']['shipped']

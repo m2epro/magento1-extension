@@ -1,4 +1,8 @@
-* 6.14.0 (r16340) (01/07/2021) 
+* 6.14.1 (r16362) (14/07/2021) 
+
+[Common] [Improved] Display shipping service in the beginning of the line in Magento Orders [M1-1354]
+[Ebay] [Fixed] Magento Order was not created. Reason: Notice: Undefined index: delivery_date [M1-1361]
+[Amazon] [Improved] Import IOSS for Amazon Orders [M1-1356]
 
 [Common] [Added] Add Ship By Date filter to Orders grid [M1-1282]
 [Common] [Added] Display Ship By Date in Channel Orders [M1-1105]

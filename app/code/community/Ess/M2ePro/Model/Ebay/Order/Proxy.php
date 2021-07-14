@@ -312,7 +312,7 @@ class Ess_M2ePro_Model_Ebay_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
             }
 
             if (!empty($details['delivery_date'])) {
-                $additionalData .= 'Delivery Date: ' . $details['delivery_date' . ' | '];
+                $additionalData .= 'Delivery Date: ' . $details['delivery_date'] . ' | ';
             }
         }
 
@@ -324,6 +324,10 @@ class Ess_M2ePro_Model_Ebay_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
 
         if ($taxReference = $this->_order->getTaxReference()) {
             $additionalData .= 'IOSS/OSS Number: ' . $taxReference . ' | ';
+        }
+
+        if (!empty($additionalData)) {
+            $additionalData = ' | ' . $additionalData;
         }
 
         $shippingMethod = $this->_order->getShippingService();
@@ -338,8 +342,8 @@ class Ess_M2ePro_Model_Ebay_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
         }
 
         $shippingData = array(
-            'carrier_title'   => $additionalData . Mage::helper('M2ePro')->__('eBay Shipping'),
-            'shipping_method' => $shippingMethod,
+            'carrier_title'   => Mage::helper('M2ePro')->__('eBay Shipping'),
+            'shipping_method' => $shippingMethod . $additionalData,
             'shipping_price'  => $this->getBaseShippingPrice()
         );
 

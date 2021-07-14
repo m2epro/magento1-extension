@@ -360,20 +360,27 @@ if (empty($currency)) {
 
                 <table class="form-list" cellspacing="0">
                     <tbody>
-                    <tr>
-                        <td class="label"><?php echo Mage::helper('M2ePro')->__('Ship By Date');?>:</td>
-                        <td class="value">
-                            <strong>
-                                <?php
-                                $shippingDateTo = $this->order->getChildObject()->getShippingDateTo();
-                                if (empty($shippingDateTo)) { ?>
-                                    <?php echo Mage::helper('M2ePro')->__('N/A'); ?>
-                                <?php } else { ?>
-                                    <?php echo Mage::helper('core')->formatDate($shippingDateTo, 'medium', true); ?>
-                                <?php } ?>
-                            </strong>
-                        </td>
-                    </tr>
+                        <tr>
+                            <td class="label"><?php echo Mage::helper('M2ePro')->__('Ship By Date');?>:</td>
+                            <td class="value">
+                                <strong>
+                                    <?php
+                                    $shippingDateTo = $this->order->getChildObject()->getShippingDateTo();
+                                    if (empty($shippingDateTo)) { ?>
+                                        <?php echo Mage::helper('M2ePro')->__('N/A'); ?>
+                                    <?php } else { ?>
+                                        <?php echo Mage::helper('core')->formatDate($shippingDateTo, 'medium', true); ?>
+                                    <?php } ?>
+                                </strong>
+                            </td>
+                        </tr>
+
+                    <?php if ($iossNumber = $this->order->getChildObject()->getIossNumber()): ?>
+                        <tr>
+                            <td class="label"><?php echo Mage::helper('M2ePro')->__('IOSS Number');?>:</td>
+                            <td class="value"><strong><?php echo $iossNumber; ?></strong></td>
+                        </tr>
+                    <?php endif; ?>
 
                         <tr>
                             <td class="label"><?php echo Mage::helper('M2ePro')->__('Shipping Service');?>:</td>

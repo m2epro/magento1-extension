@@ -190,9 +190,17 @@ class Ess_M2ePro_Model_Amazon_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
                 . ' | ';
         }
 
+        if ($iossNumber = $this->_order->getIossNumber()) {
+            $additionalData .= 'IOSS Number: ' . $iossNumber . ' | ';
+        }
+
+        if (!empty($additionalData)) {
+            $additionalData = ' | ' . $additionalData;
+        }
+
         $shippingData = array(
-            'carrier_title'   => $additionalData . Mage::helper('M2ePro')->__('Amazon Shipping'),
-            'shipping_method' => $this->_order->getShippingService(),
+            'carrier_title'   => Mage::helper('M2ePro')->__('Amazon Shipping'),
+            'shipping_method' => $this->_order->getShippingService() . $additionalData,
             'shipping_price'  => $this->getBaseShippingPrice()
         );
 

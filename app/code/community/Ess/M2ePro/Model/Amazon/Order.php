@@ -146,6 +146,11 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
 
     //########################################
 
+    public function getIossNumber()
+    {
+        return $this->getData('ioss_number');
+    }
+
     /**
      * @return array
      * @throws Ess_M2ePro_Model_Exception_Logic
