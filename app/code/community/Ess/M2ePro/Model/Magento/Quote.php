@@ -282,21 +282,18 @@ class Ess_M2ePro_Model_Magento_Quote
             // ---------------------------------------
 
             foreach ($products as $associatedProduct) {
-
                 $item->setQty($associatedProduct->getQty() * $item->getOriginalQty());
 
                 $productPriceInSetPercent = ($associatedProduct->getPrice() / $totalPrice) * 100;
                 $productPriceInItem = (($item->getOriginalPrice() * $productPriceInSetPercent) / 100);
                 $item->setPrice($productPriceInItem / $associatedProduct->getQty());
 
-                $associatedProduct->setTaxClassId($product->getTaxClassId());
-
                 $quoteItemBuilder->init($this->_quote, $item);
 
                 $this->initializeQuoteItem(
                     $item,
                     $quoteItemBuilder,
-                    $associatedProduct,
+                    $quoteItemBuilder->setTaxClassIntoProduct($associatedProduct),
                     $quoteItemBuilder->getRequest()
                 );
             }

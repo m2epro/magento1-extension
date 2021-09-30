@@ -57,9 +57,7 @@ class Ess_M2ePro_Model_Magento_Quote_Item
         }
 
         // tax class id should be set before price calculation
-        $this->_product->setTaxClassId($this->getProductTaxClassId());
-
-        return $this->_product;
+        return $this->setTaxClassIntoProduct($this->_product);
     }
 
     // ---------------------------------------
@@ -78,7 +76,10 @@ class Ess_M2ePro_Model_Magento_Quote_Item
 
     //########################################
 
-    protected function getProductTaxClassId()
+    /**
+     * @return Mage_Catalog_Model_Product
+     */
+    public function setTaxClassIntoProduct(Mage_Catalog_Model_Product $product)
     {
         $proxyOrder = $this->_proxyItem->getProxyOrder();
         $itemTaxRate = $this->_proxyItem->getTaxRate();
@@ -93,14 +94,14 @@ class Ess_M2ePro_Model_Magento_Quote_Item
             || ($proxyOrder->isTaxModeMagento() && !$hasRatesForCountry && !$calculationBasedOnOrigin)
             || ($proxyOrder->isTaxModeMixed() && $itemTaxRate <= 0 && $isOrderHasTax)
         ) {
-            return Ess_M2ePro_Model_Magento_Product::TAX_CLASS_ID_NONE;
+            return $product->setTaxClassId(Ess_M2ePro_Model_Magento_Product::TAX_CLASS_ID_NONE);
         }
 
         if ($proxyOrder->isTaxModeMagento()
             || $itemTaxRate <= 0
-            || $itemTaxRate == $this->getProductTaxRate()
+            || $itemTaxRate == $this->getProductTaxRate($product->getTaxClassId())
         ) {
-            return $this->getProduct()->getTaxClassId();
+            return $product;
         }
 
         // Create tax rule according to channel tax rate
@@ -117,10 +118,10 @@ class Ess_M2ePro_Model_Magento_Quote_Item
         $productTaxClasses = $taxRule->getProductTaxClasses();
         // ---------------------------------------
 
-        return array_shift($productTaxClasses);
+        return $product->setTaxClassId(array_shift($productTaxClasses));
     }
 
-    protected function getProductTaxRate()
+    protected function getProductTaxRate($productTaxClassId)
     {
         /** @var $taxCalculator Mage_Tax_Model_Calculation */
         $taxCalculator = Mage::getSingleton('tax/calculation');
@@ -131,7 +132,7 @@ class Ess_M2ePro_Model_Magento_Quote_Item
             $this->_quote->getCustomerTaxClassId(),
             $this->_quote->getStore()
         );
-        $request->setProductClassId($this->getProduct()->getTaxClassId());
+        $request->setProductClassId($productTaxClassId);
 
         return $taxCalculator->getRate($request);
     }

@@ -129,7 +129,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Order_Refund extends Ess_M2ePro_Model_Cron
             );
             $dispatcherObject->process($connectorObj);
 
-            $cancelResponseData = $connectorObj->getRequestData();
+            $cancelResponseData = $connectorObj->getResponseData();
 
             if (!$cancelResponseData['result'] && $cancelResponseData['cancelId'] === null) {
                 continue;

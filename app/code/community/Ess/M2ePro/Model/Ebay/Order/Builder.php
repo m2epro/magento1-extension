@@ -807,7 +807,7 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
         $oldStatus = $this->_order->getChildObject()->getData('cancellation_status');
         $newStatus = $this->getData('cancellation_status');
 
-        if ($newStatus == 0 && ($oldStatus != $newStatus)) {
+        if ($newStatus == 1 && ($oldStatus != $newStatus)) {
             return true;
         }
 

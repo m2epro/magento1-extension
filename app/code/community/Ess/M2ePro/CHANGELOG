@@ -1,4 +1,12 @@
-* 6.14.1 (r16362) (14/07/2021) 
+* 6.14.2 (30/09/2021) 
+
+[eBay] [Fixed] eBay order was not refunded as per Magento credit memo creation [#1220]
+[eBay] [Fixed] Magento Order was not created. Reason: Warning: A non-numeric value encountered [#2594]
+[Amazon] [Fixed] Different Grand Totals in Amazon and Magento orders for Grouped Products listed as Set [#1218]
+[Amazon] [Fixed] Internal Server Error(s) [Marketplace ID is not valid. It differs from the current.] occurs when trying to update the MWS token [#1215]
+[Amazon] [Improved] Self-upload of Amazon invoices without receiving and checking the results of the GetFeedSubmissionResult command [#2939]
+
+* 6.14.1 (r16362) (14/07/2021)
 
 [Common] [Improved] Display shipping service in the beginning of the line in Magento Orders [M1-1354]
 [Ebay] [Fixed] Magento Order was not created. Reason: Notice: Undefined index: delivery_date [M1-1361]

@@ -14,7 +14,14 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_SendInvoice
     extends Ess_M2ePro_Model_Cron_Task_Abstract
 {
     const NICK = 'amazon/order/send_invoice';
-    const ORDER_CHANGES_PER_ACCOUNT = 100;
+
+    /** ~4-10 seconds on call, ~5-10 invoices per minute, 50 requests in 10 minutes */
+    const LIMIT_ORDER_CHANGES = 50;
+
+    /** @var int $_interval (in seconds) */
+    protected $_interval = 600;
+
+    protected $_maxOrderChangesPerTask = 0;
 
     //####################################
 
@@ -55,6 +62,10 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_SendInvoice
 
         foreach ($permittedAccounts as $account) {
             /** @var Ess_M2ePro_Model_Account $account */
+
+            if ($this->_maxOrderChangesPerTask === self::LIMIT_ORDER_CHANGES) {
+                break;
+            }
 
             $this->getOperationHistory()->addText('Starting account "' . $account->getTitle() . '"');
 
@@ -399,8 +410,10 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_SendInvoice
             array()
         );
         $changesCollection->addFieldToFilter('pl.id', array('null' => true));
-        $changesCollection->getSelect()->limit(self::ORDER_CHANGES_PER_ACCOUNT);
+        $changesCollection->getSelect()->limit(self::LIMIT_ORDER_CHANGES);
         $changesCollection->getSelect()->group(array('order_id'));
+
+        $this->_maxOrderChangesPerTask += $changesCollection->count();
 
         return $changesCollection->getItems();
     }

@@ -5,6 +5,7 @@
  * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
+use Ess_M2ePro_Model_Order_Change as Change;
 
 class Ess_M2ePro_Model_Cron_Task_Ebay_Order_Update extends Ess_M2ePro_Model_Cron_Task_Abstract
 {
@@ -101,6 +102,8 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Order_Update extends Ess_M2ePro_Model_Cron
         $changesCollection = Mage::getModel('M2ePro/Order_Change')->getCollection();
         $changesCollection->addAccountFilter($account->getId());
         $changesCollection->addProcessingAttemptDateFilter();
+        $changesCollection->addFieldToFilter('action', ['in' => [Change::ACTION_UPDATE_SHIPPING,
+            Change::ACTION_UPDATE_PAYMENT]]);
         $changesCollection->setPageSize(self::MAX_UPDATES_PER_TIME);
         $changesCollection->getSelect()->group(array('order_id'));
 

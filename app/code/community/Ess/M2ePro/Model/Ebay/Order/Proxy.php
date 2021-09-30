@@ -358,7 +358,7 @@ class Ess_M2ePro_Model_Ebay_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
     {
         if ($this->_order->isUseGlobalShippingProgram()) {
             $globalShippingDetails = $this->_order->getGlobalShippingDetails();
-            $price = $globalShippingDetails['service_details']['price'];
+            $price = (float)$globalShippingDetails['service_details']['price'];
         } else {
             $price = $this->_order->getShippingPrice();
         }

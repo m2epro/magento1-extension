@@ -13,7 +13,16 @@ class Ess_M2ePro_Model_Amazon_Connector_Account_Update_EntityRequester
 
     public function getRequestData()
     {
-        return $this->_params;
+        /** @var $marketplaceObject Ess_M2ePro_Model_Marketplace */
+        $marketplaceObject = Mage::helper('M2ePro/Component_Amazon')->getCachedObject(
+            'Marketplace', $this->_params['marketplace_id']
+        );
+
+        return array(
+            'merchant_id'    => $this->_params['merchant_id'],
+            'token'          => $this->_params['token'],
+            'marketplace_id' => $marketplaceObject->getNativeId(),
+        );
     }
 
     protected function getCommand()
