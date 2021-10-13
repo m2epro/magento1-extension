@@ -30,7 +30,8 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Price
         $data = array_merge(
             $data,
             $this->getPriceDiscountStpData(),
-            $this->getPriceDiscountMapData()
+            $this->getPriceDiscountMapData(),
+            $this->getBestOfferData()
         );
 
         return $data;
@@ -82,11 +83,26 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Price
         return array('price_discount_map' => $data);
     }
 
+    /**
+     * @return array
+     */
+    protected function getBestOfferData()
+    {
+        $data = array(
+            'bestoffer_mode' => $this->getEbayListingProduct()->getEbaySellingFormatTemplate()->isBestOfferEnabled(),
+        );
+
+        if ($data['bestoffer_mode']) {
+            $data['bestoffer_accept_price'] = $this->getEbayListingProduct()->getBestOfferAcceptPrice();
+            $data['bestoffer_reject_price'] = $this->getEbayListingProduct()->getBestOfferRejectPrice();
+        }
+
+        return $data;
+    }
+
     public static function getPriceDiscountMapExposureType($type)
     {
         switch ($type) {
-            case Ess_M2ePro_Model_Ebay_Template_SellingFormat::PRICE_DISCOUNT_MAP_EXPOSURE_NONE:
-                return self::PRICE_DISCOUNT_MAP_EXPOSURE_NONE;
 
             case Ess_M2ePro_Model_Ebay_Template_SellingFormat::PRICE_DISCOUNT_MAP_EXPOSURE_DURING_CHECKOUT:
                 return self::PRICE_DISCOUNT_MAP_EXPOSURE_DURING_CHECKOUT;

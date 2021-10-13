@@ -488,14 +488,14 @@ $isCustomDescription = ($formData['description_mode'] == Ess_M2ePro_Model_Ebay_T
             </tr>
 
             <?php if ($formData['watermark_image'] !== null): ?>
-                <input type="hidden" name="description[old_watermark_image]" value="<?php echo base64_encode($formData['watermark_image']); ?>">
+                <input type="hidden" name="description[old_watermark_image]" value="<?php echo $formData['watermark_image']; ?>">
 
                 <tr id="watermark_uploaded_image_container">
                     <td class="label">
                         <label for="watermark_uploaded_image"><?php echo Mage::helper('M2ePro')->__('Watermark Preview'); ?>:</label>
                     </td>
                     <td class="value">
-                        <img id="watermark_uploaded_image" src="data:image/png;base64,<?php echo base64_encode($formData['watermark_image']) ?>" style="max-width: 280px;">
+                        <img id="watermark_uploaded_image" src="data:image/png;base64,<?php echo $formData['watermark_image'] ?>" style="max-width: 280px;">
                     </td>
                 </tr>
             <?php endif; ?>

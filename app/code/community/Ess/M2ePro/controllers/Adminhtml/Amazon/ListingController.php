@@ -574,7 +574,7 @@ class Ess_M2ePro_Adminhtml_Amazon_ListingController
             /** @var Ess_M2ePro_Model_Amazon_Listing_Product_Action_Configurator $configurator */
             $configurator = Mage::getModel('M2ePro/Amazon_Listing_Product_Action_Configurator');
             $configurator->enableAll();
-            $tag = '/qty/price_regular/price_business/details/images/';
+            $tag = '/qty/price/details/images/';
 
             if (isset($params['switch_to'])) {
                 $configurator->disableAll();

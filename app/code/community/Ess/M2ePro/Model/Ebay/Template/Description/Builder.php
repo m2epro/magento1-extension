@@ -194,7 +194,7 @@ class Ess_M2EPro_Model_Ebay_Template_Description_Builder
         if (!empty($_FILES['watermark_image']['tmp_name'])) {
             $hashChange = true;
 
-            $data['watermark_image'] = file_get_contents($_FILES['watermark_image']['tmp_name']);
+            $data['watermark_image'] = base64_encode(file_get_contents($_FILES['watermark_image']['tmp_name']));
 
             if (isset($data['id'])) {
                 $varDir = new Ess_M2ePro_Model_VariablesDir(
@@ -207,7 +207,7 @@ class Ess_M2EPro_Model_Ebay_Template_Description_Builder
                 }
             }
         } elseif (!empty($this->_rawData['old_watermark_image']) && isset($data['id'])) {
-            $data['watermark_image'] = base64_decode($this->_rawData['old_watermark_image']);
+            $data['watermark_image'] = $this->_rawData['old_watermark_image'];
         }
 
         // ---------------------------------------

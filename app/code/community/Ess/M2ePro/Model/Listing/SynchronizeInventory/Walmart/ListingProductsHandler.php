@@ -48,6 +48,10 @@ class Ess_M2ePro_Model_Listing_SynchronizeInventory_Walmart_ListingProductsHandl
             $stmtTemp = $this->getPdoStatementExistingListings($wpids);
 
             while ($existingItem = $stmtTemp->fetch()) {
+                if (!isset($this->_responseData[$existingItem['wpid']])) {
+                    continue;
+                }
+
                 $receivedItem = $this->_responseData[$existingItem['wpid']];
                 unset($this->_responseData[$existingItem['wpid']]);
 

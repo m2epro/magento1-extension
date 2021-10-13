@@ -6,7 +6,7 @@
  * @license    Commercial use is forbidden
  */
 
-use Ess_M2ePro_Model_Ebay_Order_Helper as Helper;
+use Ess_M2ePro_Model_Ebay_Order_Helper as OrderHelper;
 
 class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
 {
@@ -124,7 +124,7 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
 
         // ---------------------------------------
 
-        $cancellationStatus = $data['statuses']['order'] == Helper::EBAY_ORDER_STATUS_CANCELLED ? 1 : 0;
+        $cancellationStatus = $data['statuses']['order'] == OrderHelper::EBAY_ORDER_STATUS_CANCELLED ? 1 : 0;
         $this->setData('cancellation_status', $cancellationStatus);
 
         // ---------------------------------------
@@ -460,11 +460,23 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
             return false;
         }
 
-        if (empty($this->_relatedOrders)) {
-            return true;
+        if ($this->_order->getId()) {
+            $newPurchaseUpdateDate = new DateTime(
+                $this->getData('purchase_update_date'),
+                new DateTimeZone('UTC')
+            );
+            $oldPurchaseUpdateDate = new DateTime(
+                $this->_order->getChildObject()->getPurchaseUpdateDate(),
+                new DateTimeZone('UTC')
+            );
+
+            if ($newPurchaseUpdateDate <= $oldPurchaseUpdateDate) {
+                return false;
+            }
         }
 
-        if ($this->getData('order_status') == Helper::EBAY_ORDER_STATUS_CANCELLED &&
+        if ($this->getData('order_status') == OrderHelper::EBAY_ORDER_STATUS_CANCELLED &&
+            $this->_order->getId() &&
             !$this->_order->getChildObject()->isCanceled()) {
             return true;
         }
@@ -473,8 +485,14 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
             return true;
         }
 
-        if ($this->getData('order_status') == Helper::EBAY_ORDER_STATUS_INACTIVE) {
+        if ($this->getData('order_status') == OrderHelper::EBAY_ORDER_STATUS_CANCELLED ||
+            $this->getData('order_status') == OrderHelper::EBAY_ORDER_STATUS_INACTIVE
+        ) {
             return false;
+        }
+
+        if (empty($this->relatedOrders)) {
+            return true;
         }
 
         if (count($this->_relatedOrders) == 1) {
@@ -510,7 +528,7 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
 
         $this->_order->setAccount($this->_account);
 
-        if ($this->getData('order_status') == Helper::EBAY_ORDER_STATUS_CANCELLED) {
+        if ($this->getData('order_status') == OrderHelper::EBAY_ORDER_STATUS_CANCELLED) {
             if ($this->_order->getReserve()->isPlaced()) {
                 $this->_order->getReserve()->cancel();
             }

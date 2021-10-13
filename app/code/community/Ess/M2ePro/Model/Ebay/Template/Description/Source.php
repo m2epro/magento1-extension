@@ -452,7 +452,7 @@ class Ess_M2ePro_Model_Ebay_Template_Description_Source
         $watermarkPath = $varDir->getPath().$this->getEbayDescriptionTemplate()->getId().'.png';
         if (!is_file($watermarkPath)) {
             $varDir->create();
-            @file_put_contents($watermarkPath, $this->getEbayDescriptionTemplate()->getWatermarkImage());
+            @file_put_contents($watermarkPath, base64_decode($this->getEbayDescriptionTemplate()->getWatermarkImage()));
         }
 
         $watermarkPositions = array(

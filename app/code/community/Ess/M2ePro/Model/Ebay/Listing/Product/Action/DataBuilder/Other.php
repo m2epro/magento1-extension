@@ -17,7 +17,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Other
             $this->getConditionData(),
             $this->getConditionNoteData(),
             $this->getVatTaxData(),
-            $this->getBestOfferData(),
             $this->getCharityData(),
             $this->getLotSizeData()
         );
@@ -75,23 +74,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Other
             $data['use_tax_table'] = $this->getEbayListingProduct()
                 ->getEbaySellingFormatTemplate()
                 ->isTaxTableEnabled();
-        }
-
-        return $data;
-    }
-
-    /**
-     * @return array
-     */
-    protected function getBestOfferData()
-    {
-        $data = array(
-            'bestoffer_mode' => $this->getEbayListingProduct()->getEbaySellingFormatTemplate()->isBestOfferEnabled(),
-        );
-
-        if ($data['bestoffer_mode']) {
-            $data['bestoffer_accept_price'] = $this->getEbayListingProduct()->getBestOfferAcceptPrice();
-            $data['bestoffer_reject_price'] = $this->getEbayListingProduct()->getBestOfferRejectPrice();
         }
 
         return $data;

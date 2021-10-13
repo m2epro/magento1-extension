@@ -6,14 +6,12 @@
  * @license    Commercial use is forbidden
  */
 
+use Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor_StatusResolver as StatusResolver;
+
 class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
 {
     const INSTRUCTION_INITIATOR = 'channel_changes_synchronization';
-
-    const EBAY_STATUS_ACTIVE    = 'Active';
-    const EBAY_STATUS_ENDED     = 'Ended';
-    const EBAY_STATUS_COMPLETED = 'Completed';
-
+    
     const INCREASE_SINCE_TIME_MAX_ATTEMPTS     = 10;
     const INCREASE_SINCE_TIME_BY               = 2;
     const INCREASE_SINCE_TIME_MIN_INTERVAL_SEC = 10;
@@ -60,7 +58,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
     protected function processAccount(Ess_M2ePro_Model_Account $account)
     {
         $changesByAccount = $this->getChangesByAccount($account);
-
+        
         if (!isset($changesByAccount['items']) || !isset($changesByAccount['to_time'])) {
             return;
         }
@@ -95,15 +93,25 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
                     continue;
                 }
 
-                // Listing product isn't listed and it child must have another item_id
-                if ($listingProduct->getStatus() != Ess_M2ePro_Model_Listing_Product::STATUS_LISTED &&
-                    $listingProduct->getStatus() != Ess_M2ePro_Model_Listing_Product::STATUS_HIDDEN) {
+                /** @var StatusResolver $statusResolver */
+                $statusResolver = Mage::getModel(
+                    'M2ePro/Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor_StatusResolver'
+                );
+
+                $isStatusResolved = $statusResolver->resolveStatus(
+                    (int)$change['quantity'] <= 0 ? 0 : (int)$change['quantity'],
+                    (int)$change['quantitySold'] <= 0 ? 0 : (int)$change['quantitySold'],
+                    $change['listingStatus'],
+                    $listingProduct
+                );
+                
+                if (!$isStatusResolved) {
                     continue;
                 }
 
                 $dataForUpdate = array_merge(
+                    $this->getProductStatusChanges($listingProduct, $statusResolver),
                     $this->getProductDatesChanges($change),
-                    $this->getProductStatusChanges($listingProduct, $change),
                     $this->getProductQtyChanges($listingProduct, $change)
                 );
 
@@ -295,37 +303,22 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
             'end_date' => Mage::helper('M2ePro/Component_Ebay')->timeToString($change['endTime'])
         );
     }
-
-    protected function getProductStatusChanges(Ess_M2ePro_Model_Listing_Product $listingProduct, array $change)
-    {
+    
+    protected function getProductStatusChanges(
+        Ess_M2ePro_Model_Listing_Product $listingProduct,
+        StatusResolver $statusResolver
+    ) {
         $data = array();
+        $data['status'] = $statusResolver->getProductStatus();
 
-        $qty = (int)$change['quantity'] < 0 ? 0 : (int)$change['quantity'];
-        $qtySold = (int)$change['quantitySold'] < 0 ? 0 : (int)$change['quantitySold'];
-
-        if (($change['listingStatus'] == self::EBAY_STATUS_COMPLETED ||
-             $change['listingStatus'] == self::EBAY_STATUS_ENDED) &&
-             $listingProduct->getStatus() != Ess_M2ePro_Model_Listing_Product::STATUS_HIDDEN &&
-             $qty == $qtySold
-        ) {
-            $data['status'] = Ess_M2ePro_Model_Listing_Product::STATUS_SOLD;
-        } else if ($change['listingStatus'] == self::EBAY_STATUS_COMPLETED) {
-            $data['status'] = Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED;
-        } else if ($change['listingStatus'] == self::EBAY_STATUS_ENDED) {
-            $data['status'] = Ess_M2ePro_Model_Listing_Product::STATUS_FINISHED;
-        } else if ($change['listingStatus'] == self::EBAY_STATUS_ACTIVE && $qty - $qtySold <= 0) {
-            $data['status'] = Ess_M2ePro_Model_Listing_Product::STATUS_HIDDEN;
-        } else if ($change['listingStatus'] == self::EBAY_STATUS_ACTIVE) {
-            $data['status'] = Ess_M2ePro_Model_Listing_Product::STATUS_LISTED;
+        if ($onlineDuration = $statusResolver->getOnlineDuration()) {
+            $data['online_duration'] = $onlineDuration;    
         }
-
-        if ($data['status'] == Ess_M2ePro_Model_Listing_Product::STATUS_HIDDEN) {
-            // Listed Hidden Status can be only for GTC items
-            if ($listingProduct->getChildObject()->getOnlineDuration() === null) {
-                $data['online_duration'] = Ess_M2ePro_Helper_Component_Ebay::LISTING_DURATION_GTC;
-            }
+        
+        if ($additionalData = $statusResolver->getProductAdditionalData()) {
+            $data['additional_data'] = $additionalData;
         }
-
+        
         if ($listingProduct->getStatus() == $data['status']) {
             return $data;
         }

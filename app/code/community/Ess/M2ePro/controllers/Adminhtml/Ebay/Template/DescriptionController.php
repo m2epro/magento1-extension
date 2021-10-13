@@ -33,7 +33,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Template_DescriptionController
         $template->updateWatermarkHashes();
 
         $data = array(
-            'watermark_image' => file_get_contents($_FILES['watermark_image']['tmp_name'])
+            'watermark_image' => base64_encode(file_get_contents($_FILES['watermark_image']['tmp_name']))
         );
 
         $template->addData($data);
