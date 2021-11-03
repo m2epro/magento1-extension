@@ -17,6 +17,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Configurator
     const DATA_TYPE_DESCRIPTION = 'description';
     const DATA_TYPE_IMAGES      = 'images';
     const DATA_TYPE_CATEGORIES  = 'categories';
+    const DATA_TYPE_PARTS       = 'parts';
     const DATA_TYPE_SHIPPING    = 'shipping';
     const DATA_TYPE_PAYMENT     = 'payment';
     const DATA_TYPE_RETURN      = 'return';
@@ -39,6 +40,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Configurator
             self::DATA_TYPE_DESCRIPTION,
             self::DATA_TYPE_IMAGES,
             self::DATA_TYPE_CATEGORIES,
+            self::DATA_TYPE_PARTS,
             self::DATA_TYPE_SHIPPING,
             self::DATA_TYPE_PAYMENT,
             self::DATA_TYPE_RETURN,
@@ -253,6 +255,32 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Configurator
     public function disallowCategories()
     {
         return $this->disallow(self::DATA_TYPE_CATEGORIES);
+    }
+
+    // ---------------------------------------
+
+    /**
+     * @return bool
+     */
+    public function isPartsAllowed()
+    {
+        return $this->isAllowed(self::DATA_TYPE_PARTS);
+    }
+
+    /**
+     * @return $this
+     */
+    public function allowParts()
+    {
+        return $this->allow(self::DATA_TYPE_PARTS);
+    }
+
+    /**
+     * @return $this
+     */
+    public function disallowParts()
+    {
+        return $this->disallow(self::DATA_TYPE_PARTS);
     }
 
     // ---------------------------------------

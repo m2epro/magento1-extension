@@ -18,21 +18,33 @@ class Ess_M2ePro_Model_Ebay_Motor_Filter extends Ess_M2ePro_Model_Component_Abst
 
     //########################################
 
-    public function deleteInstance()
+    public function delete()
     {
-        if (!parent::deleteInstance()) {
-            return false;
+        /** @var Ess_M2ePro_Helper_Component_Ebay_Motors $ebayMotorsHelper */
+        $ebayMotorsHelper = Mage::helper('M2ePro/Component_Ebay_Motors');
+        $groupsIds = $ebayMotorsHelper->getGroupsAssociatedWithFilter($this->getId());
+
+        foreach ($groupsIds as $groupId) {
+            /** @var Ess_M2ePro_Model_Ebay_Motor_Group $group */
+            $group = Mage::getModel('M2ePro/Ebay_Motor_Group')->load($groupId);
+            $group->removeFiltersByIds(array($this->getId()));
         }
 
-        /** @var $connWrite Varien_Db_Adapter_Pdo_Mysql */
-        $connWrite = Mage::getSingleton('core/resource')->getConnection('core_write');
+        $associatedProductsIds = $ebayMotorsHelper->getAssociatedProducts($this->getId(), 'FILTER');
+        $ebayMotorsHelper->resetOnlinePartsData($associatedProductsIds);
 
-        $filterGroupRelation = Mage::helper('M2ePro/Module_Database_Structure')
-            ->getTableNameWithPrefix('m2epro_ebay_motor_filter_to_group');
+        $temp = parent::deleteInstance();
+        if ($temp) {
+            /** @var $connWrite Varien_Db_Adapter_Pdo_Mysql */
+            $connWrite = Mage::getSingleton('core/resource')->getConnection('core_write');
 
-        $connWrite->delete($filterGroupRelation, array('filter_id = ?' => $this->getId()));
+            $filterGroupRelation = Mage::helper('M2ePro/Module_Database_Structure')
+                ->getTableNameWithPrefix('m2epro_ebay_motor_filter_to_group');
 
-        return true;
+            $connWrite->delete($filterGroupRelation, array('filter_id = ?' => $this->getId()));
+        }
+
+        return $temp;
     }
 
     //########################################

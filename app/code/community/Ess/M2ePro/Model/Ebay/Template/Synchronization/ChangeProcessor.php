@@ -31,6 +31,9 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization_ChangeProcessor
     const INSTRUCTION_TYPE_REVISE_CATEGORIES_ENABLED     = 'template_synchronization_revise_categories_enabled';
     const INSTRUCTION_TYPE_REVISE_CATEGORIES_DISABLED    = 'template_synchronization_revise_categories_disabled';
 
+    const INSTRUCTION_TYPE_REVISE_PARTS_ENABLED          = 'template_synchronization_revise_parts_enabled';
+    const INSTRUCTION_TYPE_REVISE_PARTS_DISABLED         = 'template_synchronization_revise_parts_disabled';
+
     const INSTRUCTION_TYPE_REVISE_PAYMENT_ENABLED        = 'template_synchronization_revise_payment_enabled';
     const INSTRUCTION_TYPE_REVISE_PAYMENT_DISABLED       = 'template_synchronization_revise_payment_disabled';
 
@@ -142,13 +145,27 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization_ChangeProcessor
 
         if ($diff->isReviseCategoriesEnabled()) {
             $data[] = array(
-                'type'      => self::INSTRUCTION_TYPE_REVISE_CATEGORIES_ENABLED,
-                'priority'  => $status === Ess_M2ePro_Model_Listing_Product::STATUS_LISTED ? 30 : 5,
+                'type'     => self::INSTRUCTION_TYPE_REVISE_CATEGORIES_ENABLED,
+                'priority' => $status === Ess_M2ePro_Model_Listing_Product::STATUS_LISTED ? 30 : 5,
             );
         } elseif ($diff->isReviseCategoriesDisabled()) {
             $data[] = array(
-                'type'      => self::INSTRUCTION_TYPE_REVISE_CATEGORIES_DISABLED,
-                'priority'  => 5,
+                'type'     => self::INSTRUCTION_TYPE_REVISE_CATEGORIES_DISABLED,
+                'priority' => 5,
+            );
+        }
+
+        //----------------------------------------
+
+        if ($diff->isRevisePartsEnabled()) {
+            $data[] = array(
+                'type'     => self::INSTRUCTION_TYPE_REVISE_PARTS_ENABLED,
+                'priority' => $status === Ess_M2ePro_Model_Listing_Product::STATUS_LISTED ? 30 : 5,
+            );
+        } elseif ($diff->isRevisePartsDisabled()) {
+            $data[] = array(
+                'type'     => self::INSTRUCTION_TYPE_REVISE_PARTS_DISABLED,
+                'priority' => 5,
             );
         }
 
@@ -156,13 +173,13 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization_ChangeProcessor
 
         if ($diff->isRevisePaymentEnabled()) {
             $data[] = array(
-                'type'      => self::INSTRUCTION_TYPE_REVISE_PAYMENT_ENABLED,
-                'priority'  => $status === Ess_M2ePro_Model_Listing_Product::STATUS_LISTED ? 30 : 5,
+                'type'     => self::INSTRUCTION_TYPE_REVISE_PAYMENT_ENABLED,
+                'priority' => $status === Ess_M2ePro_Model_Listing_Product::STATUS_LISTED ? 30 : 5,
             );
         } elseif ($diff->isRevisePaymentDisabled()) {
             $data[] = array(
-                'type'      => self::INSTRUCTION_TYPE_REVISE_PAYMENT_DISABLED,
-                'priority'  => 5,
+                'type'     => self::INSTRUCTION_TYPE_REVISE_PAYMENT_DISABLED,
+                'priority' => 5,
             );
         }
 

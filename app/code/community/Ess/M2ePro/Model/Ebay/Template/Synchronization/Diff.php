@@ -28,6 +28,8 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization_Diff
                $this->isReviseImagesDisabled() ||
                $this->isReviseCategoriesEnabled() ||
                $this->isReviseCategoriesDisabled() ||
+               $this->isRevisePartsEnabled() ||
+               $this->isRevisePartsDisabled() ||
                $this->isRevisePaymentEnabled() ||
                $this->isRevisePaymentDisabled() ||
                $this->isReviseShippingEnabled() ||
@@ -179,7 +181,27 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization_Diff
         $oldSnapshotData = $this->_oldSnapshot;
 
         return !empty($oldSnapshotData['revise_update_categories'])
-               && empty($newSnapshotData['revise_update_categories']);
+            && empty($newSnapshotData['revise_update_categories']);
+    }
+
+    //########################################
+
+    public function isRevisePartsEnabled()
+    {
+        $newSnapshotData = $this->_newSnapshot;
+        $oldSnapshotData = $this->_oldSnapshot;
+
+        return empty($oldSnapshotData['revise_update_parts'])
+            && !empty($newSnapshotData['revise_update_parts']);
+    }
+
+    public function isRevisePartsDisabled()
+    {
+        $newSnapshotData = $this->_newSnapshot;
+        $oldSnapshotData = $this->_oldSnapshot;
+
+        return !empty($oldSnapshotData['revise_update_parts'])
+            && empty($newSnapshotData['revise_update_parts']);
     }
 
     //########################################

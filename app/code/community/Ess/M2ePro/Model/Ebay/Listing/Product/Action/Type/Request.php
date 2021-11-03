@@ -22,6 +22,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Request
         'images',
         'variations',
         'categories',
+        'parts',
         'shipping',
         'payment',
         'return',
@@ -481,6 +482,24 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Request
         $data = $dataBuilder->getData();
 
         $this->addMetaData('categories_data', $data);
+
+        return $data;
+    }
+
+    /**
+     * @return array
+     */
+    public function getPartsData()
+    {
+        if (!$this->getConfigurator()->isPartsAllowed()) {
+            return array();
+        }
+
+        $dataBuilder = $this->getDataBuilder('parts');
+        $data = $dataBuilder->getData();
+        $hash = $dataBuilder->getHash();
+
+        $this->addMetaData('parts_data_hash', $hash);
 
         return $data;
     }

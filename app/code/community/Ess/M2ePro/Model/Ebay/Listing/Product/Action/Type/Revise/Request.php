@@ -17,7 +17,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Revise_Request
     public function getActionData()
     {
         $data = array_merge(
-
             array(
                 'item_id' => $this->getEbayListingProduct()->getEbayItemIdReal()
             ),
@@ -29,6 +28,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Revise_Request
             $this->getDescriptionData(),
             $this->getImagesData(),
             $this->getCategoriesData(),
+            $this->getPartsData(),
             $this->getPaymentData(),
             $this->getReturnData(),
             $this->getShippingData(),

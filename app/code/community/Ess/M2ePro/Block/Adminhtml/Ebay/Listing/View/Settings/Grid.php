@@ -719,10 +719,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Settings_Grid
         $countOfFilters = count($motorsData['filters']);
         $countOfGroups = count($motorsData['groups']);
 
-        $showAll = false;
-
         if ($countOfItems + $countOfFilters + $countOfGroups === 0) {
-            $showAll = true;
+            return Mage::helper('M2ePro')->__('N/A');
         }
 
         if (Mage::helper('M2ePro/Component_Ebay_Motors')->isTypeBasedOnEpids($this->getMotorsType())) {
@@ -736,55 +734,40 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Settings_Grid
         $labelFilters = Mage::helper('M2ePro')->__('Filters');
         $labelGroups = Mage::helper('M2ePro')->__('Groups');
 
-        if ($showAll || $countOfItems > 0) {
+        if ($countOfItems > 0) {
             $html .= <<<HTML
 <span style="text-decoration: underline; font-weight: bold">{$motorsTypeTitle}</span>:
 <span>{$countOfItems}</span><br/>
-HTML;
-
-            if ($countOfItems) {
-                $html .= <<<HTML
 [<a href="javascript:void(0);"
     onclick="EbayMotorsObj.openViewItemPopup(
         {$row->getData('id')},
         EbayListingSettingsGridObj
     );">{$label}</a>]<br/>
 HTML;
-            }
         }
 
-        if ($showAll || $countOfFilters > 0) {
+        if ($countOfFilters > 0) {
             $html .= <<<HTML
 <span style="text-decoration: underline; font-weight: bold">{$labelFilters}</span>:
 <span>{$countOfFilters}</span><br/>
-HTML;
-
-            if ($countOfFilters) {
-                $html .= <<<HTML
 [<a href="javascript:void(0);"
     onclick="EbayMotorsObj.openViewFilterPopup(
         {$row->getData('id')},
         EbayListingSettingsGridObj
     );">{$label}</a>]<br/>
 HTML;
-            }
         }
 
-        if ($showAll || $countOfGroups > 0) {
+        if ($countOfGroups > 0) {
             $html .= <<<HTML
 <span style="text-decoration: underline; font-weight: bold">{$labelGroups}</span>:
 <span>{$countOfGroups}</span><br/>
-HTML;
-
-            if ($countOfGroups) {
-                $html .= <<<HTML
 [<a href="javascript:void(0);"
     onclick="EbayMotorsObj.openViewGroupPopup(
         {$row->getData('id')},
         EbayListingSettingsGridObj
     );">{$label}</a>]
 HTML;
-            }
         }
 
         $html .= '</div>';

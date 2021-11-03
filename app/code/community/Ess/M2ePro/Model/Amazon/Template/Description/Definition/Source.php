@@ -376,7 +376,7 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition_Source
 
         $unitOfMeasure = $src['custom_value'];
         if ($this->getDescriptionDefinitionTemplate()->isItemDimensionsVolumeUnitOfMeasureModeCustomAttribute()) {
-            $unitOfMeasure = trim($this->getMagentoProduct()->getAttributeValue($src['custom_attribute']));
+            $unitOfMeasure = trim($this->getMagentoProduct()->getAttributeValue($src['custom_attribute'], false));
         }
 
         return $unitOfMeasure;
@@ -684,7 +684,7 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition_Source
     protected function getMagentoProductAttributeValue($attributeCode, $store)
     {
         if ($store === null) {
-            return $this->getMagentoProduct()->getAttributeValue($attributeCode);
+            return $this->getMagentoProduct()->getAttributeValue($attributeCode, false);
         }
 
         $currency = $this->getDescriptionDefinitionTemplate()

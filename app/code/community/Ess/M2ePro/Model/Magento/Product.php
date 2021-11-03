@@ -1187,7 +1187,7 @@ class Ess_M2ePro_Model_Magento_Product
         return $attribute->getFrontendInput();
     }
 
-    public function getAttributeValue($attributeCode)
+    public function getAttributeValue($attributeCode, $convertBoolean = true)
     {
         $productObject = $this->getProduct();
 
@@ -1240,8 +1240,12 @@ class Ess_M2ePro_Model_Magento_Product
 
         // YES NO
         }  else if ($attribute->getFrontendInput() == 'boolean') {
-            (bool)$value ? $value = Mage::helper('M2ePro')->__('Yes') :
-                           $value = Mage::helper('M2ePro')->__('No');
+            if ($convertBoolean) {
+                (bool)$value ? $value = Mage::helper('M2ePro')->__('Yes') :
+                    $value = Mage::helper('M2ePro')->__('No');
+            } else {
+                (bool)$value ? $value = 'true' : $value = 'false';
+            }
 
         // PRICE
         }  else if ($attribute->getFrontendInput() == 'price') {

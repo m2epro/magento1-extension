@@ -504,8 +504,9 @@ class Ess_M2ePro_Adminhtml_Ebay_AccountController extends Ess_M2ePro_Controller_
 
         try {
             $params = $this->getDataForServer($data);
+            $paramsOld = $this->getDataForServer($oldData);
 
-            if (!$this->isNeedSendDataToServer($params, $oldData)) {
+            if (!$this->isNeedSendDataToServer($params, $paramsOld)) {
                 return $account;
             }
 

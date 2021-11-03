@@ -42,6 +42,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_List_Response
         $data = $this->appendDescriptionValues($data);
         $data = $this->appendImagesValues($data);
         $data = $this->appendCategoriesValues($data);
+        $data = $this->appendPartsValues($data);
         $data = $this->appendPaymentValues($data);
         $data = $this->appendShippingValues($data);
         $data = $this->appendReturnValues($data);

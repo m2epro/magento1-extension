@@ -108,6 +108,10 @@ class Ess_M2EPro_Model_Ebay_Template_Synchronization_Builder
             $data['revise_update_categories'] = (int)$this->_rawData['revise_update_categories'];
         }
 
+        if (isset($this->_rawData['revise_update_parts'])) {
+            $data['revise_update_parts'] = (int)$this->_rawData['revise_update_parts'];
+        }
+
         if (isset($this->_rawData['revise_update_shipping'])) {
             $data['revise_update_shipping'] = (int)$this->_rawData['revise_update_shipping'];
         }
@@ -255,6 +259,7 @@ class Ess_M2EPro_Model_Ebay_Template_Synchronization_Builder
             'revise_update_description'                      => 0,
             'revise_update_images'                           => 0,
             'revise_update_categories'                       => 0,
+            'revise_update_parts'                            => 0,
             'revise_update_shipping'                         => 0,
             'revise_update_payment'                          => 0,
             'revise_update_return'                           => 0,

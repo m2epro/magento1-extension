@@ -20,6 +20,7 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Specific extends Ess_M2ePro_M
     const TYPE_INT      = 'int';
     const TYPE_FLOAT    = 'float';
     const TYPE_DATETIME = 'date_time';
+    const TYPE_BOOLEAN  = 'boolean';
 
     /**
      * @var Ess_M2ePro_Model_Template_Description
@@ -80,7 +81,7 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Specific extends Ess_M2ePro_M
      */
     public function getAmazonDescriptionTemplate()
     {
-        $this->getDescriptionTemplate()->getChildObject();
+        return $this->getDescriptionTemplate()->getChildObject();
     }
 
     //########################################
@@ -207,6 +208,21 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Specific extends Ess_M2ePro_M
     public function isTypeDateTime()
     {
         return $this->getType() == self::TYPE_DATETIME;
+    }
+
+    public function isTypeBoolean()
+    {
+        $value = $this->getData($this->getMode());
+
+        if ($this->getType() == self::TYPE_BOOLEAN || is_bool($value)) {
+            return true;
+        }
+
+        if (is_string($value) && in_array($value, array('true', 'false'), true)) {
+            return true;
+        }
+
+        return false;
     }
 
     //########################################

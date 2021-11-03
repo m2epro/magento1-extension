@@ -18,7 +18,7 @@ class Ess_M2ePro_Adminhtml_ControlPanel_InspectionController
 
     public function cacheSettingsAction()
     {
-        return $this->getResponse()->setBody('<pre>'.print_r(Mage::app()->getCache(), true).'</pre>');
+        return $this->getResponse()->setBody('<pre>' . print_r(Mage::app()->getCache(), true) . '</pre>');
     }
 
     public function resourcesSettingsAction()
@@ -43,7 +43,7 @@ class Ess_M2ePro_Adminhtml_ControlPanel_InspectionController
             }
         }
 
-        return $this->getResponse()->setBody('<pre>'.print_r($resourcesConfig, true).'</pre>');
+        return $this->getResponse()->setBody('<pre>' . print_r($resourcesConfig, true) . '</pre>');
     }
 
     //########################################
@@ -54,12 +54,14 @@ class Ess_M2ePro_Adminhtml_ControlPanel_InspectionController
 
         if ($this->getRequest()->isXmlHttpRequest()) {
             $block = $this->getLayout()->createBlock('M2ePro/adminhtml_ControlPanel_inspection_cronScheduleTable_grid');
+
             return $this->getResponse()->setBody($block->toHtml());
         }
 
         $block = $this->getLayout()->createBlock('M2ePro/adminhtml_ControlPanel_inspection_cronScheduleTable');
 
         $this->_addContent($block);
+
         return $this->renderLayout();
     }
 
@@ -84,6 +86,7 @@ class Ess_M2ePro_Adminhtml_ControlPanel_InspectionController
         }
 
         $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Changed.'));
+
         return $this->_redirectUrl(Mage::helper('M2ePro/View_ControlPanel')->getPageUrl());
     }
 
@@ -94,6 +97,7 @@ class Ess_M2ePro_Adminhtml_ControlPanel_InspectionController
         $version = $this->getRequest()->getParam('version');
         if (!$version) {
             $this->_getSession()->addWarning('Version is not provided.');
+
             return $this->_redirectUrl(Mage::helper('M2ePro/View_ControlPanel')->getPageUrl());
         }
 
@@ -105,6 +109,7 @@ class Ess_M2ePro_Adminhtml_ControlPanel_InspectionController
                     Ess_M2ePro_Model_Upgrade_MySqlSetup::MIN_SUPPORTED_VERSION_FOR_UPGRADE
                 )
             );
+
             return $this->_redirectUrl(Mage::helper('M2ePro/View_ControlPanel')->getPageUrl());
         }
 
@@ -120,6 +125,7 @@ class Ess_M2ePro_Adminhtml_ControlPanel_InspectionController
         Mage::helper('M2ePro/Magento')->clearCache();
 
         $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Extension upgrade was completed.'));
+
         return $this->_redirectUrl(Mage::helper('M2ePro/View_ControlPanel')->getPageUrl());
     }
 
@@ -128,7 +134,36 @@ class Ess_M2ePro_Adminhtml_ControlPanel_InspectionController
     public function getInspectionsGridAction()
     {
         $grid = $this->loadLayout()->getLayout()->createBlock('M2ePro/adminhtml_controlPanel_inspection_grid');
+
         return $this->getResponse()->setBody($grid->toHtml());
+    }
+
+    public function checkInspectionAction()
+    {
+        /** @var  Ess_M2ePro_Model_ControlPanel_Inspection_Manager $manager */
+        $manager = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Manager');
+        $inspectionName = $this->getRequest()->getParam('name');
+        $results = $manager->runInspection($inspectionName);
+
+        $isSuccess = false;
+        $metadata = '';
+        $message = Mage::helper('M2ePro')->__('Success');
+        foreach ($results as $result) {
+            if ($result->isSuccess()) {
+                $isSuccess = true;
+                break;
+            }
+            $metadata = $result->getMetadata();
+            $message = $result->getMessage();
+        }
+
+        $this->_addJsonContent(
+            array(
+                'result'   => $isSuccess,
+                'metadata' => $metadata,
+                'message'  => $message
+            )
+        );
     }
 
     //########################################

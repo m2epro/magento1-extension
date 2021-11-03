@@ -266,18 +266,7 @@ class Ess_M2ePro_Adminhtml_Ebay_MotorController extends Ess_M2ePro_Controller_Ad
 
         /** @var Ess_M2ePro_Model_Ebay_Motor_Group $model */
         $model = Mage::getModel('M2ePro/Ebay_Motor_Group')->load($groupId);
-        $items = $model->getItems();
-
-        foreach ($itemsIds as $itemId) {
-            unset($items[$itemId]);
-        }
-
-        if (!empty($items)) {
-            $model->setItemsData(Mage::helper('M2ePro/Component_Ebay_Motors')->buildItemsAttributeValue($items));
-            $model->save();
-        } else {
-            $model->deleteInstance();
-        }
+        $model->removeItemsByIds($itemsIds);
 
         $this->getResponse()->setBody(0);
     }
@@ -330,26 +319,7 @@ class Ess_M2ePro_Adminhtml_Ebay_MotorController extends Ess_M2ePro_Controller_Ad
             ->addFieldToFilter('id', array('in' => $filtersIds));
 
         foreach ($filters->getItems() as $filter) {
-            $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
-            $table = Mage::helper('M2ePro/Module_Database_Structure')
-                ->getTableNameWithPrefix('m2epro_ebay_motor_filter_to_group');
-
-            $select = $connRead->select();
-            $select->from(array('emftg' => $table), array('group_id'))
-                ->where('filter_id IN (?)', $filter->getId());
-
-            $groupIds = Mage::getResourceModel('core/config')->getReadConnection()->fetchCol($select);
-
-            $filter->deleteInstance();
-
-            foreach ($groupIds as $groupId) {
-                /** @var Ess_M2ePro_Model_Ebay_Motor_Group $group */
-                $group = Mage::getModel('M2ePro/Ebay_Motor_Group')->load($groupId);
-
-                if (count($group->getFiltersIds()) === 0) {
-                    $group->deleteInstance();
-                }
-            }
+            $filter->delete();
         }
 
         $this->getResponse()->setBody(0);
@@ -366,26 +336,9 @@ class Ess_M2ePro_Adminhtml_Ebay_MotorController extends Ess_M2ePro_Controller_Ad
             $filtersIds = explode(',', $filtersIds);
         }
 
-        /** @var $connWrite Varien_Db_Adapter_Pdo_Mysql */
-        $connWrite = Mage::getSingleton('core/resource')->getConnection('core_write');
-
-        $filterGroupRelation = Mage::helper('M2ePro/Module_Database_Structure')
-            ->getTableNameWithPrefix('m2epro_ebay_motor_filter_to_group');
-
-        $connWrite->delete(
-            $filterGroupRelation, array(
-            'filter_id in (?)' => $filtersIds,
-            'group_id = ?' => $groupId,
-            )
-        );
-
         /** @var Ess_M2ePro_Model_Ebay_Motor_Group $model */
         $model = Mage::getModel('M2ePro/Ebay_Motor_Group')->load($groupId);
-        $ids = $model->getFiltersIds();
-
-        if (empty($ids)) {
-            $model->deleteInstance();
-        }
+        $model->removeFiltersByIds($filtersIds);
 
         $this->getResponse()->setBody(0);
     }

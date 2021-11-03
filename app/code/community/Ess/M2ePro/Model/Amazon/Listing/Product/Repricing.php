@@ -364,7 +364,8 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Repricing extends Ess_M2ePro_Model
 
         if ($source['mode'] == Ess_M2ePro_Model_Amazon_Account_Repricing::DISABLE_MODE_ATTRIBUTE) {
             return filter_var(
-                $this->getActualMagentoProduct()->getAttributeValue($source['attribute']), FILTER_VALIDATE_BOOLEAN
+                $this->getActualMagentoProduct()->getAttributeValue($source['attribute'], false),
+                FILTER_VALIDATE_BOOLEAN
             );
         }
 

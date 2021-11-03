@@ -329,7 +329,8 @@ class Ess_M2ePro_Helper_Component_Ebay_Motors extends Mage_Core_Helper_Abstract
     /**
      * @return bool
      */
-    public function isKTypeMarketplacesEnabled() {
+    public function isKTypeMarketplacesEnabled()
+    {
 
         /** @var Ess_M2ePro_Model_Resource_Marketplace_Collection $marketplaceCollection */
         $marketplaceCollection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Marketplace');
@@ -337,6 +338,117 @@ class Ess_M2ePro_Helper_Component_Ebay_Motors extends Mage_Core_Helper_Abstract
         $marketplaceCollection->addFieldToFilter('status', Ess_M2ePro_Model_Marketplace::STATUS_ENABLE);
 
         return (bool)$marketplaceCollection->getSize();
+    }
+
+    //########################################
+
+    public function getGroupsAssociatedWithFilter($filterId)
+    {
+        $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
+        $table = Mage::helper('M2ePro/Module_Database_Structure')
+            ->getTableNameWithPrefix('m2epro_ebay_motor_filter_to_group');
+
+        $select = $connRead->select();
+        $select->from(array('emftg' => $table), array('group_id'))
+            ->where('filter_id = ?', $filterId);
+
+        return Mage::getResourceModel('core/config')->getReadConnection()->fetchCol($select);
+    }
+
+    /**
+     * @return array
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
+    public function getAssociatedProducts($objectId, $objectType)
+    {
+        if ($objectType !== 'GROUP' && $objectType !== 'FILTER') {
+            throw new Ess_M2ePro_Model_Exception_Logic("Incorrect object type: $objectType");
+        }
+
+        $attributesIds = $this->getPartsCompatibilityAttributesIds();
+        if (empty($attributesIds)) {
+            return array();
+        }
+
+        /** @var $collection Mage_Catalog_Model_Resource_Product_Collection */
+        $collection = Mage::getResourceModel('catalog/product_collection');
+
+        $sqlTemplateLike = "%\"$objectType\"|\"$objectId\"%";
+
+        $attributesIdsTemplate = implode(',', $attributesIds);
+        $collection->getSelect()->joinInner(
+            array(
+                'pet' => Mage::helper('M2ePro/Module_Database_Structure')
+                    ->getTableNameWithPrefix('catalog_product_entity_text')
+            ),
+            '(`pet`.`entity_id` = `e`.`entity_id` AND pet.attribute_id IN(' . $attributesIdsTemplate . ')
+                AND value LIKE \'' . $sqlTemplateLike . '\')',
+            array('value' => 'pet.value')
+        );
+        $collection->getSelect()->where('value IS NOT NULL');
+
+        $collection->getSelect()->joinInner(
+            array(
+                'lp' => Mage::helper('M2ePro/Module_Database_Structure')
+                    ->getTableNameWithPrefix('M2ePro/Listing_Product')
+            ),
+            '(`lp`.`product_id` = `e`.`entity_id` AND `lp`.`component_mode` = "' .
+            Ess_M2ePro_Helper_Component_Ebay::NICK . '")',
+            array('listing_product_id' => 'lp.id')
+        );
+
+        $data = $collection->getData();
+        $listingProductIds = array();
+        foreach ($data as $product) {
+            $listingProductIds[] = $product['listing_product_id'];
+        }
+
+        return array_unique($listingProductIds);
+    }
+
+    public function resetOnlinePartsData($listingProductIds)
+    {
+        if (empty($listingProductIds)) {
+            return;
+        }
+
+        /** @var $connWrite Varien_Db_Adapter_Pdo_Mysql */
+        $connWrite = Mage::getSingleton('core/resource')->getConnection('core_write');
+
+        $ebayListingProductTable = Mage::helper('M2ePro/Module_Database_Structure')
+            ->getTableNameWithPrefix('m2epro_ebay_listing_product');
+
+        $connWrite->update(
+            $ebayListingProductTable,
+            array('online_parts_data' => ''),
+            array('listing_product_id IN(?)' => $listingProductIds)
+        );
+    }
+
+    public function getPartsCompatibilityAttributesIds()
+    {
+        $result = array();
+        $keys = array(
+            'motors_epids_attribute',
+            'uk_epids_attribute',
+            'de_epids_attribute',
+            'au_epids_attribute',
+            'ktypes_attribute'
+        );
+
+        /** @var Ess_M2ePro_Model_Config_Manager $config */
+        $config = Mage::helper('M2ePro/Module')->getConfig();
+
+        foreach ($keys as $attributeConfigKey) {
+            $motorsEpidAttribute = $config->getGroupValue('/ebay/configuration/', $attributeConfigKey);
+            $attribute = Mage::getModel('eav/config')->getAttribute('catalog_product', $motorsEpidAttribute);
+
+            if ($attributeId = $attribute->getId()) {
+                $result[] = $attributeId;
+            }
+        }
+
+        return $result;
     }
 
     //########################################

@@ -42,9 +42,7 @@ window.WalmartConfigurationGeneral = Class.create(Common, {
     {
         var self = WalmartConfigurationGeneralObj;
 
-        if ($('sku_modification_mode').value == self.SKU_MODIFICATION_MODE_TEMPLATE) {
-            $('sku_modification_custom_value').value = '%value%';
-        } else {
+        if ($('sku_modification_mode').value != self.SKU_MODIFICATION_MODE_TEMPLATE) {
             $('sku_modification_custom_value').value = '';
         }
 

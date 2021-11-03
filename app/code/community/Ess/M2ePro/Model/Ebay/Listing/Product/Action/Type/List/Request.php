@@ -49,7 +49,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_List_Request
         }
 
         $data = array_merge(
-
             array(
                 'sku'       => $this->getSku(),
                 'item_uuid' => $uuid,
@@ -62,6 +61,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_List_Request
             $this->getDescriptionData(),
             $this->getImagesData(),
             $this->getCategoriesData(),
+            $this->getPartsData(),
             $this->getPaymentData(),
             $this->getReturnData(),
             $this->getShippingData(),

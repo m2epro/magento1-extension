@@ -380,7 +380,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Source
         }
 
         if ($this->getAmazonListing()->isGiftWrapModeAttribute()) {
-            $attributeValue = $this->getMagentoProduct()->getAttributeValue($src['attribute']);
+            $attributeValue = $this->getMagentoProduct()->getAttributeValue($src['attribute'], false);
 
             if ($attributeValue == Mage::helper('M2ePro')->__('Yes')) {
                 $result = true;
@@ -411,7 +411,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Source
         }
 
         if ($this->getAmazonListing()->isGiftMessageModeAttribute()) {
-            $attributeValue = $this->getMagentoProduct()->getAttributeValue($src['attribute']);
+            $attributeValue = $this->getMagentoProduct()->getAttributeValue($src['attribute'], false);
 
             if ($attributeValue == Mage::helper('M2ePro')->__('Yes')) {
                 $result = true;

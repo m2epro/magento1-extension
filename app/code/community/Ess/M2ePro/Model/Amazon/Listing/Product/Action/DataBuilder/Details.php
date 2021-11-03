@@ -289,7 +289,8 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Details
         foreach ($this->getDescriptionTemplate()->getSpecifics(true) as $specific) {
             $source = $specific->getSource($this->getAmazonListingProduct()->getActualMagentoProduct());
 
-            if (!$specific->isRequired() && !$specific->isModeNone() && !$source->getValue()) {
+            if (!$specific->isRequired() && !$specific->isModeNone()
+                && ($source->getValue() === null || $source->getValue() === '' || $source->getValue() === array())) {
                 continue;
             }
 

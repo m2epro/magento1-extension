@@ -21,6 +21,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_ProcessScheduledActions
     const REVISE_DESCRIPTION_PRIORITY = 50;
     const REVISE_IMAGES_PRIORITY      = 50;
     const REVISE_CATEGORIES_PRIORITY  = 50;
+    const REVISE_PARTS_PRIORITY       = 50;
     const REVISE_PAYMENT_PRIORITY     = 50;
     const REVISE_SHIPPING_PRIORITY    = 50;
     const REVISE_RETURN_PRIORITY      = 50;
@@ -154,6 +155,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_ProcessScheduledActions
                 $this->getReviseDescriptionScheduledActionsPreparedCollection()->getSelect(),
                 $this->getReviseImagesScheduledActionsPreparedCollection()->getSelect(),
                 $this->getReviseCategoriesScheduledActionsPreparedCollection()->getSelect(),
+                $this->getRevisePartsScheduledActionsPreparedCollection()->getSelect(),
                 $this->getRevisePaymentScheduledActionsPreparedCollection()->getSelect(),
                 $this->getReviseShippingScheduledActionsPreparedCollection()->getSelect(),
                 $this->getReviseReturnScheduledActionsPreparedCollection()->getSelect(),
@@ -335,6 +337,23 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_ProcessScheduledActions
                 Ess_M2ePro_Model_Listing_Product::ACTION_REVISE
             )
             ->addTagFilter('categories');
+    }
+
+    /**
+     * @return Ess_M2ePro_Model_Resource_Listing_Product_ScheduledAction_Collection
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
+    protected function getRevisePartsScheduledActionsPreparedCollection()
+    {
+        /** @var Ess_M2ePro_Model_Resource_Listing_Product_ScheduledAction_Collection $collection */
+        $collection = Mage::getResourceModel('M2ePro/Listing_Product_ScheduledAction_Collection');
+
+        return $collection->setComponentMode(Ess_M2ePro_Helper_Component_Ebay::NICK)
+            ->getScheduledActionsPreparedCollection(
+                self::REVISE_PARTS_PRIORITY,
+                Ess_M2ePro_Model_Listing_Product::ACTION_REVISE
+            )
+            ->addTagFilter('parts');
     }
 
     /**

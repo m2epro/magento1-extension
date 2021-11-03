@@ -134,7 +134,8 @@ abstract class Ess_M2ePro_Block_Adminhtml_Log_Order_AbstractGrid extends Ess_M2e
                 'width'          => '150px',
                 'index'          => 'so.increment_id',
                 'sortable'       => false,
-                'frame_callback' => array($this, 'callbackColumnMagentoOrderNumber')
+                'frame_callback' => array($this, 'callbackColumnMagentoOrderNumber'),
+                'filter_condition_callback' => array($this, 'callbackFilterMagentoOrderNumber')
             )
         );
 
@@ -265,6 +266,23 @@ abstract class Ess_M2ePro_Block_Adminhtml_Log_Order_AbstractGrid extends Ess_M2e
         $collection->addFieldToFilter('main_table.order_id', array('in' => $ordersIds));
     }
 
+    public function callbackFilterMagentoOrderNumber($collection, $column)
+    {
+        $cond = $column->getFilter()->getCondition();
+
+        if (empty($cond)) {
+            return;
+        }
+
+        if ($column->getFilter()->getValue() == 'N/A') {
+            $collection->addFieldToFilter('mo.magento_order_id', array('null' => true));
+
+            return;
+        }
+
+        $collection->addFieldToFilter('mo.magento_order_id', $cond);
+    }
+
     //########################################
 
     protected function addOrderCreateDateToFilter($collection, $filter)
@@ -279,6 +297,9 @@ abstract class Ess_M2ePro_Block_Adminhtml_Log_Order_AbstractGrid extends Ess_M2e
                 $field = ($column->getFilterIndex()) ? $column->getFilterIndex() : $column->getIndex();
                 $cond = $column->getFilter()->getCondition();
                 if ($field && isset($cond)) {
+                    $date = new Zend_Date;
+                    $date->set(Mage::helper('M2ePro/Order_Notification')->getNotificationDate(), Zend_Date::ISO_8601);
+                    $cond['from'] = $date;
                     $collection->addFieldToFilter($field, $cond);
                 }
             }

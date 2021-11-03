@@ -34,7 +34,7 @@ class Ess_M2ePro_Model_ControlPanel_Inspection_Manager
 
     protected function initInspections($dirName)
     {
-        $directoryIterator = new DirectoryIterator(__DIR__ .DS. $dirName);
+        $directoryIterator = new DirectoryIterator(__DIR__ . DS . $dirName);
         foreach ($directoryIterator as $item) {
             if ($item->isDot()) {
                 continue;
@@ -54,6 +54,15 @@ class Ess_M2ePro_Model_ControlPanel_Inspection_Manager
             $this->_byExecution[$model->getGroup()][] = $id;
             $this->_byGroup[$model->getExecutionSpeed()][] = $id;
         }
+    }
+
+    public function runInspection($name)
+    {
+        /** @var Ess_M2ePro_Model_ControlPanel_Inspection_AbstractInspection $model */
+        $modelName = "M2ePro/ControlPanel_Inspection_Inspector_" . $name;
+        $model = Mage::getModel($modelName);
+
+        return $model->getResults();
     }
 
     //########################################
@@ -120,7 +129,9 @@ class Ess_M2ePro_Model_ControlPanel_Inspection_Manager
 
     public function getId(Ess_M2ePro_Model_ControlPanel_Inspection_AbstractInspection $inspection)
     {
-        return get_class($inspection);
+        $fullName = explode('_', get_class($inspection));
+
+        return end($fullName);
     }
 
     //########################################

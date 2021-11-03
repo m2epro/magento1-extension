@@ -203,6 +203,14 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization extends Ess_M2ePro_Model_Co
     /**
      * @return bool
      */
+    public function isReviseUpdateParts()
+    {
+        return $this->getData('revise_update_parts') != 0;
+    }
+
+    /**
+     * @return bool
+     */
     public function isReviseUpdateShipping()
     {
         return $this->getData('revise_update_shipping') != 0;

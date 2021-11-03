@@ -69,6 +69,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
 
     public function process(array $params = array())
     {
+        /** @var Ess_M2ePro_Model_Listing_Product_ScheduledAction $scheduledAction */
         $scheduledAction = $this->_input->getScheduledAction();
         if ($scheduledAction === null) {
             $scheduledAction = Mage::getModel('M2ePro/Listing_Product_ScheduledAction');
@@ -97,6 +98,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
                     $actionType = Ess_M2ePro_Model_Listing_Product::ACTION_REVISE;
                     $additionalData['params']['replaced_action'] = Ess_M2ePro_Model_Listing_Product::ACTION_STOP;
 
+                    /** @var Ess_M2ePro_Model_Ebay_Listing_Product_Action_Configurator $configurator */
                     $configurator = Mage::getModel('M2ePro/Ebay_Listing_Product_Action_Configurator');
                     $configurator->disableAll()->allowQty()->allowVariations();
 
@@ -141,6 +143,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
             return;
         }
 
+        /** @var Ess_M2ePro_Model_Ebay_Listing_Product_Action_Configurator $configurator */
         $configurator = Mage::getModel('M2ePro/Ebay_Listing_Product_Action_Configurator');
         $configurator->disableAll();
 
@@ -236,6 +239,16 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
             } else {
                 $configurator->disallowCategories();
                 unset($tags['categories']);
+            }
+        }
+
+        if ($this->_input->hasInstructionWithTypes($this->getRevisePartsInstructionTypes())) {
+            if ($this->isMeetRevisePartsRequirements()) {
+                $configurator->allowParts();
+                $tags['parts'] = true;
+            } else {
+                $configurator->disallowParts();
+                unset($tags['parts']);
             }
         }
 
@@ -629,6 +642,31 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
         $actionDataBuilder->setListingProduct($listingProduct);
 
         if ($actionDataBuilder->getData() == $ebayListingProduct->getOnlineCategoriesData()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    // ---------------------------------------
+
+    public function isMeetRevisePartsRequirements()
+    {
+        $listingProduct = $this->_input->getListingProduct();
+
+        /** @var Ess_M2ePro_Model_Ebay_Listing_Product $ebayListingProduct */
+        $ebayListingProduct = $listingProduct->getChildObject();
+
+        $ebaySynchronizationTemplate = $ebayListingProduct->getEbaySynchronizationTemplate();
+
+        if (!$ebaySynchronizationTemplate->isReviseUpdateParts()) {
+            return false;
+        }
+
+        $actionDataBuilder = Mage::getModel('M2ePro/Ebay_Listing_Product_Action_DataBuilder_Parts');
+        $actionDataBuilder->setListingProduct($listingProduct);
+
+        if ($actionDataBuilder->getHash() == $ebayListingProduct->getData('online_parts_data')) {
             return false;
         }
 

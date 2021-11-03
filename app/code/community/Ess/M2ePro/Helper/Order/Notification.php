@@ -23,21 +23,7 @@ class Ess_M2ePro_Helper_Order_Notification extends Mage_Core_Helper_Abstract
 
     public function buildMessage()
     {
-        Mage::getSingleton('core/layout')->getBlock('head')->addJs(
-            'M2ePro/Order/LogNotification.js'
-        );
-
-        $orderNotCreatedDate= explode(' ', $this->_collectionOrderLogs->getFirstItem()->getData('create_date'));
-        $message = <<<HTML
-<script type="text/javascript">
-    if (typeof LogNotificationObj == 'undefined') {
-       LogNotificationObj = new LogNotification();
-    }
-</script>
-
-  Since {$orderNotCreatedDate[0]}, some Magento orders have not been created:
- {$this->_collectionOrderLogs->getSize()}, check your 
-HTML;
+        Mage::getSingleton('core/layout')->getBlock('head')->addJs('M2ePro/Order/LogNotification.js');
         $hasAmazonLog = false;
         $hasEbayLog = false;
         $hasWalmartLog = false;
@@ -52,9 +38,35 @@ HTML;
             }
         }
 
+
+        /** @var Ess_M2ePro_Model_Order_Log $orderLogFirst */
+        $orderLogFirst = $this->_collectionOrderLogs->getFirstItem();
+        /** @var Ess_M2ePro_Model_Order_Log $orderLogLast */
+        $orderLogLast = $this->_collectionOrderLogs->getLastItem();
+
+        $orderNotCreatedDate = Mage::helper('core')->formatDate(
+            $orderLogFirst->getData('create_date'), Mage_Core_Model_Locale::FORMAT_TYPE_LONG
+        );
+        $this->_collectionOrderLogs->clear();
+        $count = $this->_collectionOrderLogs->addFieldToSelect('order_id')->distinct(true)->count();
+
+        $message = <<<HTML
+<script type="text/javascript">
+    if (typeof LogNotificationObj == 'undefined') {
+       LogNotificationObj = new LogNotification();
+    }
+</script>
+
+  Since {$orderNotCreatedDate}, some Magento orders have not been created: {$count}, check your 
+HTML;
+
         $filter = base64_encode(
-            'order_create_date[from]=' . $this->getFormatDate($orderNotCreatedDate[0]) . '&' .
+            'order_create_date[from]=' .
+            Mage::helper('core')->formatDate(
+                Mage::app()->getLocale()->storeDate(null, $orderLogFirst->getData('create_date'))
+            ) . '&' .
             'description=Magento Order was not created&' .
+            'magento_order_number=N/A&' .
             'initiator=' . Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION
         );
 
@@ -65,52 +77,32 @@ HTML;
 
         if ($hasAmazonLog) {
             $url = Mage::helper('adminhtml')->getUrl('M2ePro/adminhtml_amazon_log/order', array('filter' => $filter));
-            $message .= ' / <a href="' . $url . '" target="_blank"> Amazon orders logs</a>';
+            if ($hasEbayLog) {
+                $message .= ' / ';
+            }
+
+            $message .= '<a href="' . $url . '" target="_blank"> Amazon orders logs</a>';
         }
 
         if ($hasWalmartLog) {
             $url = Mage::helper('adminhtml')->getUrl('M2ePro/adminhtml_walmart_log/order', array('filter' => $filter));
-            $message .= ' / <a href="' . $url . '" target="_blank">Walmart orders logs</a>';
+            if ($hasEbayLog || $hasAmazonLog) {
+                $message .= ' / ';
+            }
+
+            $message .= '<a href="' . $url . '" target="_blank">Walmart orders logs</a>';
         }
 
-        $url = Mage::helper('adminhtml')->getUrl('M2ePro/adminhtml_order/skipLogNotificationToCurrentDate');
+        $url = Mage::helper('adminhtml')->getUrl(
+            'M2ePro/adminhtml_order/skipLogNotificationToCurrentDate',
+            array('last_order_create_date' => $orderLogLast->getData('create_date'))
+        );
 
         $message .= <<<HTML
 . <a href="javascript:void(0);" onclick="LogNotificationObj.skipLogToCurrentDate('{$url}')">Skip this message</a>.
 HTML;
 
         return $message;
-    }
-
-    protected function getFormatDate($orderNotCreatedDate)
-    {
-        list($yyyy, $m, $d)  = explode('-', $orderNotCreatedDate);
-
-        $format = Zend_Locale_Data::getContent(
-            Mage::app()->getLocale()->getLocaleCode(),
-            'date',
-            array('gregorian', 'short')
-        );
-
-        $datePosition = array();
-        foreach (array('m', 'd', 'y') as $value) {
-            $datePosition[stripos($format, $value)] = $value;
-        }
-
-        ksort($datePosition);
-
-        $newDateFormat = '';
-        foreach ($datePosition as $value) {
-            if ($value == 'd') {
-                $newDateFormat .= $d . '/';
-            } elseif ($value == 'm') {
-                $newDateFormat .= $m . '/';
-            } else {
-                $newDateFormat .= $yyyy . '/';
-            }
-        };
-
-        return rtrim($newDateFormat, '/');
     }
 
     //########################################

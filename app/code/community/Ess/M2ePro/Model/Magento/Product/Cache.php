@@ -160,7 +160,7 @@ class Ess_M2ePro_Model_Magento_Product_Cache extends Ess_M2ePro_Model_Magento_Pr
 
     //########################################
 
-    public function getAttributeValue($attributeCode)
+    public function getAttributeValue($attributeCode, $convertBoolean = true)
     {
         $args = func_get_args();
         return $this->getMethodData(__FUNCTION__, $args);

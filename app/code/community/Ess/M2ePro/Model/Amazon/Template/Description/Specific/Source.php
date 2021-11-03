@@ -118,12 +118,13 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Specific_Source
         $value = $templateObj->getData($templateObj->getMode());
 
         if ($templateObj->isModeCustomAttribute()) {
-            $value = $this->getMagentoProduct()->getAttributeValue($value);
+            $value = $this->getMagentoProduct()->getAttributeValue($value, false);
         }
 
         $templateObj->isTypeInt()      && $value = (int)$value;
         $templateObj->isTypeFloat()    && $value = (float)str_replace(',', '.', $value);
         $templateObj->isTypeDateTime() && $value = str_replace(' ', 'T', $value);
+        $templateObj->isTypeBoolean()  && $value = $this->convertValueToBoolean($value);
 
         return $value;
     }
@@ -141,7 +142,7 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Specific_Source
 
             $attributeValue = $attributeData['mode'] == DescriptionSpecific::DICTIONARY_MODE_CUSTOM_VALUE
                 ? $attributeData['custom_value']
-                : $this->getMagentoProduct()->getAttributeValue($attributeData['custom_attribute']);
+                : $this->getMagentoProduct()->getAttributeValue($attributeData['custom_attribute'], false);
 
             $attributes[$index] = array(
                 'name'  => str_replace(' ', '', $attributeName),
@@ -150,6 +151,19 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Specific_Source
         }
 
         return Mage::helper('M2ePro')->jsonEncode($attributes);
+    }
+
+    //########################################
+
+    private function convertValueToBoolean($value)
+    {
+        if ($value === true) {
+            $value = 'true';
+        } elseif ($value === false) {
+            $value = 'false';
+        }
+
+        return $value;
     }
 
     //########################################

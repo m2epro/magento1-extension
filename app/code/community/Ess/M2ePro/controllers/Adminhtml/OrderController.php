@@ -691,11 +691,12 @@ class Ess_M2ePro_Adminhtml_OrderController
 
     public function skipLogNotificationToCurrentDateAction()
     {
-        $currentDate = new DateTime('now', new DateTimeZone('UTC'));
+        $lastOrderCreateDate = new DateTime($this->getRequest()->getParam('last_order_create_date'), new DateTimeZone('UTC'));
+        $lastOrderCreateDate->modify('+1 seconds');
 
         /** @var Ess_M2ePro_Helper_Order_Notification $configHelper */
         $configHelper = Mage::helper('M2ePro/Order_Notification');
-        $configHelper->setNotificationDate($currentDate->format('Y-m-d'));
+        $configHelper->setNotificationDate($lastOrderCreateDate->format('Y-m-d H:i:s'));
 
         return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('result' => true)));
     }

@@ -21,14 +21,6 @@ class Ess_M2ePro_Block_Adminhtml_ControlPanel_Inspection_Grid
         parent::__construct();
 
         $this->setId('controlPanelInspectionsGrid');
-
-        $this->setDefaultSort('state');
-        $this->setDefaultDir('DESC');
-        $this->setDefaultFilter(
-            array(
-                'state' => self::NOT_SUCCESS_FILTER
-            )
-        );
         $this->setSaveParametersInSession(true);
         $this->setUseAjax(true);
     }
@@ -43,18 +35,16 @@ class Ess_M2ePro_Block_Adminhtml_ControlPanel_Inspection_Grid
         foreach ($manager->getInspections() as $inspection) {
             /** @var Ess_M2ePro_Model_ControlPanel_Inspection_AbstractInspection $inspection */
             $row = array(
-                'id'              => $manager->getId($inspection),
-                'title'           => $inspection->getTitle(),
-                'description'     => $inspection->getDescription(),
-                'execution_speed' => $inspection->getExecutionSpeed(),
-                'state'           => (string)$inspection->getState(),
-                'need_attention'  => (string)(int)($inspection->getState() > Result::STATE_SUCCESS),
-                'inspection'      => $inspection
+                'id'          => $manager->getId($inspection),
+                'title'       => $inspection->getTitle(),
+                'description' => $inspection->getDescription(),
+                'inspection'  => $inspection
             );
             $collection->addItem(new Varien_Object($row));
         }
 
         $this->setCollection($collection);
+
         return parent::_prepareCollection();
     }
 
@@ -63,65 +53,62 @@ class Ess_M2ePro_Block_Adminhtml_ControlPanel_Inspection_Grid
         $this->addColumn(
             'title',
             array(
-                'header'       => Mage::helper('M2ePro')->__('Title'),
-                'align'        => 'left',
-                'type'         => 'text',
-                'width'        => '20%',
-                'index'        => 'title',
-                'filter_index' => 'title',
+                'header'                    => Mage::helper('M2ePro')->__('Title'),
+                'align'                     => 'left',
+                'type'                      => 'text',
+                'width'                     => '20%',
+                'index'                     => 'title',
+                'filter_index'              => 'title',
                 'filter_condition_callback' => array($this, 'callbackFilterLike'),
-                'frame_callback' => array($this, 'callbackColumnTitle')
+                'frame_callback'            => array($this, 'callbackColumnTitle')
             )
         );
 
         $this->addColumn(
             'details',
             array(
-                'header'       => Mage::helper('M2ePro')->__('Details'),
-                'align'        => 'left',
-                'type'         => 'text',
-                'width'        => '40%',
-                'filter_index' => false,
-                'frame_callback' => array($this, 'callbackColumnDetails')
+                'header'           => Mage::helper('M2ePro')->__('Details'),
+                'align'            => 'left',
+                'type'             => 'text',
+                'column_css_class' => 'details',
+                'width'            => '40%',
+                'filter_index'     => false,
             )
         );
 
         $this->addColumn(
-            'state',
+            'actions',
             array(
-                'header'    => Mage::helper('M2ePro')->__('State'),
-                'align'     => 'right',
-                'width'     => '10%',
-                'index'     => 'state',
-                'type'      => 'options',
-                'options'   => array(
-                    self::NOT_SUCCESS_FILTER => Mage::helper('M2ePro')->__('Error | Warning | Notice'),
-                    Result::STATE_ERROR      => Mage::helper('M2ePro')->__('Error'),
-                    Result::STATE_WARNING    => Mage::helper('M2ePro')->__('Warning'),
-                    Result::STATE_NOTICE     => Mage::helper('M2ePro')->__('Notice'),
-                    Result::STATE_SUCCESS    => Mage::helper('M2ePro')->__('Success'),
+                'header'   => Mage::helper('M2ePro')->__('Actions'),
+                'align'    => 'left',
+                'width'    => '150px',
+                'type'     => 'action',
+                'index'    => 'actions',
+                'filter'   => false,
+                'sortable' => false,
+                'getter'   => 'getId',
+                'renderer' => 'M2ePro/adminhtml_grid_column_renderer_action',
+                'actions'  => array(
+                    'checkAction' => array(
+                        'caption' => Mage::helper('M2ePro')->__('Check'),
+                        'field'   => 'id',
+                        'onclick' => 'ControlPanelInspectionObj.checkAction()',
+                    )
                 ),
-                'filter_index' => 'state',
-                'filter_condition_callback' => array($this, 'callbackFilterMatch'),
-                'frame_callback' => array($this, 'callbackColumnState')
             )
         );
 
         $this->addColumn(
-            'execution_speed',
+            'id',
             array(
-                'header'       => Mage::helper('M2ePro')->__('Execution Speed'),
-                'align'        => 'right',
-                'type'         => 'options',
-                'options'      => array(
-                    Manager::EXECUTION_SPEED_FAST => Mage::helper('M2ePro')->__('Fast'),
-                    Manager::EXECUTION_SPEED_SLOW => Mage::helper('M2ePro')->__('Slow')
-                ),
-                'width'        => '10%',
-                'index'        => 'execution_speed',
-                'filter_index' => 'execution_speed',
-                'filter_condition_callback' => array($this, 'callbackFilterMatch'),
-                'frame_callback' => array($this, 'callbackColumnSpeed')
+                'header'           => Mage::helper('M2ePro')->__('ID'),
+                'align'            => 'right',
+                'width'            => '100px',
+                'type'             => 'text',
+                'index'            => 'id',
+                'column_css_class' => 'no-display id',//this sets a css class to the column row item
+                'header_css_class' => 'no-display',//this sets a css class to the column header
+
             )
         );
 
@@ -146,7 +133,9 @@ class Ess_M2ePro_Block_Adminhtml_ControlPanel_Inspection_Grid
         }
 
         $this->getCollection()->addFilter(
-            $field, $value, Ess_M2ePro_Model_Collection_Custom::CONDITION_LIKE
+            $field,
+            $value,
+            Ess_M2ePro_Model_Collection_Custom::CONDITION_LIKE
         );
     }
 
@@ -164,7 +153,9 @@ class Ess_M2ePro_Block_Adminhtml_ControlPanel_Inspection_Grid
         }
 
         $this->getCollection()->addFilter(
-            $field, $value, Ess_M2ePro_Model_Collection_Custom::CONDITION_MATCH
+            $field,
+            $value,
+            Ess_M2ePro_Model_Collection_Custom::CONDITION_MATCH
         );
     }
 
@@ -198,69 +189,23 @@ HTML;
 HTML;
     }
 
-    public function callbackColumnDetails($value, $row, $column, $isExport)
-    {
-        /** @var Ess_M2ePro_Model_ControlPanel_Inspection_AbstractInspection $inspection */
-        $inspection = $row->getData('inspection');
-
-        $html = '';
-        foreach ($inspection->getResults() as $result) {
-            $html .= '<div>';
-            $html .= <<<HTML
-{$this->getMarkupByResult($result->getState(), $result->getMessage())}
-HTML;
-            if ($result->getMetadata()) {
-                $html .= <<<HTML
-&nbsp;&nbsp;
-<a href="javascript://" onclick="ControlPanelInspectionObj.showMetaData(this);">[{$this->__('details')}]</a>
-<div class="no-display"><div>{$result->getMetadata()}</div></div>
-HTML;
-            }
-
-            $html .= '</div>';
-        }
-
-        return $html;
-    }
-
-    public function callbackColumnState($value, $row, $column, $isExport)
-    {
-        return $this->getMarkupByResult($row->getData($column->getIndex()), $value);
-    }
-
-    public function callbackColumnSpeed($value, $row, $column, $isExport)
-    {
-        /** @var Ess_M2ePro_Model_ControlPanel_Inspection_AbstractInspection $inspection */
-        $inspection = $row->getData('inspection');
-
-        return <<<HTML
-{$value} <span style="color: grey;">[{$inspection->getTimeToExecute()} sec.]</span>
-HTML;
-    }
-
     //########################################
-
-    protected function getMarkupByResult($result, $text)
-    {
-        switch ($result) {
-            case Result::STATE_ERROR:
-                return "<span style='color: red; font-weight: bold;'>{$text}</span>";
-
-            case Result::STATE_WARNING:
-                return "<span style='color: darkorange; font-weight: bold;'>{$text}</span>";
-
-            case Result::STATE_NOTICE:
-                return "<span style='color: dodgerblue; font-weight: bold;'>{$text}</span>";
-
-            case Result::STATE_SUCCESS:
-                return "<span style='color: green; font-weight: bold;'>{$text}</span>";
-        }
-
-        return $text;
-    }
 
     public function _toHtml()
     {
+        $urls = Mage::helper('M2ePro')->jsonEncode(
+            array(
+                'checkInspection' => $this->getUrl('M2ePro/adminhtml_controlPanel_Inspection/checkInspection')
+            )
+        );
+
+        $jsUrl = <<<JS
+<script type="text/javascript">
+
+M2ePro.url.add({$urls});
+</script>
+JS;
+
         $css = <<<HTML
 <style>
 .data tr {
@@ -272,7 +217,7 @@ vertical-align: inherit;
 </style>
 HTML;
 
-        return $css . parent::_toHtml();
+        return $jsUrl . $css . parent::_toHtml();
     }
 
     //########################################

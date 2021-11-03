@@ -186,6 +186,22 @@ More detailed information on how to work with this Page can be found <a href="%u
 
                 <tr>
                     <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('eBay Parts Compatibility'); ?>:</label>
+                    </td>
+                    <td class="value" style="width: auto;">
+                        <select id="revise_update_parts" name="synchronization[revise_update_parts]"
+                                class="required-entry">
+                            <option value="0" <?php if ($formData['revise_update_parts'] == 0): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
+                            <option value="1" <?php if ($formData['revise_update_parts'] == 1): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
+                        </select>
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__('Automatically revises Parts Compatibility data on eBay once the related data is modified.'); ?></span>
+                        </p>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="label">
                         <label><?php echo Mage::helper('M2ePro')->__('Shipping'); ?>:</label>
                     </td>
                     <td class="value" style="width: auto;">

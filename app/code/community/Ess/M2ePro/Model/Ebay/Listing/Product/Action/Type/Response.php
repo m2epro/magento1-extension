@@ -595,6 +595,18 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Response
         return $data;
     }
 
+    protected function appendPartsValues($data)
+    {
+        $requestMetadata = $this->getRequestMetaData();
+        if (!isset($requestMetadata['parts_data_hash'])) {
+            return $data;
+        }
+
+        $data['online_parts_data'] = $requestMetadata['parts_data_hash'];
+
+        return $data;
+    }
+
     protected function appendPaymentValues($data)
     {
         $requestMetadata = $this->getRequestMetaData();

@@ -16,6 +16,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Relist_Response
     const INSTRUCTION_TYPE_CHECK_DESCRIPTION = 'success_relist_check_description';
     const INSTRUCTION_TYPE_CHECK_IMAGES      = 'success_relist_check_images';
     const INSTRUCTION_TYPE_CHECK_CATEGORIES  = 'success_relist_check_categories';
+    const INSTRUCTION_TYPE_CHECK_PARTS       = 'success_relist_check_parts';
     const INSTRUCTION_TYPE_CHECK_PAYMENT     = 'success_relist_check_payment';
     const INSTRUCTION_TYPE_CHECK_SHIPPING    = 'success_relist_check_shipping';
     const INSTRUCTION_TYPE_CHECK_RETURN      = 'success_relist_check_return';

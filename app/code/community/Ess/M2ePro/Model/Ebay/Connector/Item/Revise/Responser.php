@@ -45,6 +45,11 @@ class Ess_M2ePro_Model_Ebay_Connector_Item_Revise_Responser
             $isPlural = true;
         }
 
+        if ($this->getConfigurator()->isPartsAllowed()) {
+            $sequenceStrings[] = 'eBay Parts Compatibility';
+            $isPlural = true;
+        }
+
         if ($this->getConfigurator()->isPaymentAllowed()) {
             $sequenceStrings[] = 'Payment';
         }
