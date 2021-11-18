@@ -12,7 +12,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Receive_Details
     const NICK = 'amazon/order/receive/details';
 
     /** @var int $_interval (in seconds) */
-    protected $_interval = 7200;
+    protected $_interval = 86400;
 
     //####################################
 

@@ -242,6 +242,10 @@ HTML;
 
     public function callbackColumnStockAvailability($value, $row, $column, $isExport)
     {
+        if (!$row->isMagentoProductExists()) {
+            return '<span style="color: red;">'.$this->__('Product Not Found').'</span>';
+        }
+
         if ($row->getData('is_in_stock') === null) {
             return Mage::helper('M2ePro')->__('N/A');
         }

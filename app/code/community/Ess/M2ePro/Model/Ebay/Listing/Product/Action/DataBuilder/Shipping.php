@@ -182,6 +182,10 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Shipping
             $data['rate_table_id'] = $this->getShippingTemplate()->getLocalShippingRateTableId($this->getAccount());
         }
 
+        if ($this->getEbayAccount()->isRateTablesExist()) {
+            $data['account_moved_to_rate_table_id'] = 1;
+        }
+
         if ($this->getShippingTemplate()->isLocalShippingCalculatedEnabled()) {
             $data['handing_cost'] = $this->getCalculatedShippingTemplate()->getLocalHandlingCost();
         }
@@ -277,6 +281,10 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Shipping
                 ->isInternationalShippingRateTableEnabled($this->getAccount());
             $data['rate_table_id'] = $this->getShippingTemplate()
                 ->getInternationalShippingRateTableId($this->getAccount());
+        }
+
+        if ($this->getEbayAccount()->isRateTablesExist()) {
+            $data['account_moved_to_rate_table_id'] = 1;
         }
 
         if ($this->getShippingTemplate()->isInternationalShippingCalculatedEnabled()) {

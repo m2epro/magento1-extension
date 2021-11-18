@@ -163,6 +163,10 @@ class Ess_M2ePro_Model_Order_Item extends Ess_M2ePro_Model_Component_Parent_Abst
             return null;
         }
 
+        if (!$this->isMagentoProductExists()) {
+            return null;
+        }
+
         return $this->getMagentoProduct()->getProduct();
     }
 
@@ -494,6 +498,20 @@ class Ess_M2ePro_Model_Order_Item extends Ess_M2ePro_Model_Component_Parent_Abst
     public function getAdditionalData()
     {
         return $this->getSettings('additional_data');
+    }
+
+    //########################################
+
+    /**
+     * @return bool
+     */
+    public function isMagentoProductExists()
+    {
+        /** @var $magentoProduct Ess_M2ePro_Model_Magento_Product */
+        $magentoProduct = Mage::getModel('M2ePro/Magento_Product');
+        $magentoProduct->setProductId($this->getProductId());
+
+        return $magentoProduct->exists();
     }
 
     //########################################

@@ -1086,6 +1086,11 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
         $this->setData('rate_tables', Mage::helper('M2ePro')->jsonEncode($responseData))->save();
     }
 
+    public function isRateTablesExist()
+    {
+        return !empty($this->getRateTables());
+    }
+
     //########################################
 
     public function isPickupStoreEnabled()
