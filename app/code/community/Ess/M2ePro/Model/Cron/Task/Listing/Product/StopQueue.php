@@ -140,7 +140,7 @@ class Ess_M2ePro_Model_Cron_Task_Listing_Product_StopQueue extends Ess_M2ePro_Mo
             );
 
             $dispatcher = Mage::getModel('M2ePro/Ebay_Connector_Dispatcher');
-            $connector = $dispatcher->getVirtualConnector('item', 'update', 'revise', $requestData);
+            $connector = $dispatcher->getVirtualConnector('item', 'update', 'reviseManager', $requestData);
             $dispatcher->process($connector);
         }
     }

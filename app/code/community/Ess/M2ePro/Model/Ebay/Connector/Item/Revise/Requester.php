@@ -13,7 +13,7 @@ class Ess_M2ePro_Model_Ebay_Connector_Item_Revise_Requester
 
     protected function getCommand()
     {
-        return array('item','update','revise');
+        return array('item','update','reviseManager');
     }
 
     protected function getActionType()

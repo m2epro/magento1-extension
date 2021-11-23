@@ -6,18 +6,13 @@
  * @license    Commercial use is forbidden
  */
 
-class Ess_M2ePro_Model_Ebay_Connector_Protocol extends Ess_M2ePro_Model_Connector_Protocol
+class Ess_M2ePro_Sql_Upgrade_v6_15_1__v6_16_0_Config extends Ess_M2ePro_Model_Upgrade_Feature_AbstractConfig
 {
     //########################################
 
-    public function getComponent()
+    public function getFeaturesList()
     {
-        return 'Ebay';
-    }
-
-    public function getComponentVersion()
-    {
-        return 17;
+        return array();
     }
 
     //########################################

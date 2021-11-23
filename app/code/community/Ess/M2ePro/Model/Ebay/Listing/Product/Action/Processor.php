@@ -472,7 +472,7 @@ final class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processor
                 return array('item', 'update', 'relist');
 
             case Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processing::TYPE_REVISE:
-                return array('item', 'update', 'revise');
+                return array('item', 'update', 'reviseManager');
 
             case Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processing::TYPE_STOP:
                 return array('item', 'update', 'end');
@@ -489,7 +489,7 @@ final class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processor
             case array('item', 'update', 'relist'):
                 return 3;
 
-            case array('item', 'update', 'revise'):
+            case array('item', 'update', 'reviseManager'):
                 return 4;
 
             case array('item', 'update', 'end'):
