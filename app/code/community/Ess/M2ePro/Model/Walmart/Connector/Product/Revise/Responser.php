@@ -29,7 +29,8 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_Revise_Responser
         $isPlural = false;
 
         if ($this->getConfigurator()->isPromotionsAllowed()) {
-            $sequenceStrings[] = 'Promotions';
+            $sequenceStrings[] = 'Promotions details';
+            $isPlural = true;
         }
 
         if ($this->getConfigurator()->isDetailsAllowed()) {

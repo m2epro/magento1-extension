@@ -900,6 +900,12 @@
                             <input id="key_features_<?php echo $i; ?>" onkeyup="WalmartTemplateDescriptionObj.multi_element_keyup('key_features',this)"
                                    name="key_features[]" type="text" class="input-text M2ePro-required-when-visible"
                                    value="<?php echo !empty($formData['key_features'][$i]) ? Mage::helper('M2ePro')->escapeHtml($formData['key_features'][$i]) : ''; ?>">
+                            <p class="note">
+                                <span><?php echo Mage::helper('M2ePro')->__(
+                                    'Either enter the value manually or select a Magento Attribute with the 
+                                    relevant value and click <strong>Insert</strong>. Max. 50 characters allowed.'); ?>
+                                </span>
+                            </p>
                         </td>
                         <td></td>
                         <td class="value attributes-container-td">
@@ -961,7 +967,10 @@
                                    name="other_features[]" type="text" class="input-text M2ePro-required-when-visible"
                                    value="<?php echo !empty($formData['other_features'][$i]) ? Mage::helper('M2ePro')->escapeHtml($formData['other_features'][$i]) : ''; ?>">
                             <p class="note">
-                                <span><?php echo Mage::helper('M2ePro')->__('Max. 50 characters.'); ?></span>
+                                <span><?php echo Mage::helper('M2ePro')->__(
+                                    'Either enter the value manually or select a Magento Attribute with the 
+                                    relevant value and click <strong>Insert</strong>. Max. 50 characters allowed.'); ?>
+                                </span>
                             </p>
                         </td>
                         <td class="value">
@@ -1019,7 +1028,11 @@
                             </optgroup>
                         </select>
                         <p class="note">
-                            <span><?php echo Mage::helper('M2ePro')->__('Specify the relevant keywords that buyer would use to find your Item.'); ?></span>
+                            <span>
+                                <?php echo Mage::helper('M2ePro')->__(
+                                    'Specify the relevant keywords that buyers would use to find your Item.<br> Either 
+                                    enter the value manually or use the value from a selected Magento Attribute.'); ?>
+                            </span>
                         </p>
                     </td>
                 </tr>
@@ -1055,7 +1068,14 @@
                             <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::ATTRIBUTES_MODE_CUSTOM; ?>" <?php if ($formData['attributes_mode'] == Ess_M2ePro_Model_Walmart_Template_Description::ATTRIBUTES_MODE_CUSTOM): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Custom Value'); ?></option>
                         </select>
                         <p class="note">
-                            <span><?php echo Mage::helper('M2ePro')->__('Add up to 5 custom attributes that describe your Item.'); ?></span>
+                            <span>
+                                <?php echo Mage::helper('M2ePro')->__(
+                                    'Specify up to 5 additional features that describe your Item.<br>
+                                        To add Attributes, you can either:<br>
+                                        - Enter both the name and the value manually<br>
+                                        - Enter the name manually, then select a Magento Attribute with the relevant 
+                                        value and click <strong>Insert</strong>.'); ?>
+                            </span>
                         </p>
                     </td>
                 </tr>

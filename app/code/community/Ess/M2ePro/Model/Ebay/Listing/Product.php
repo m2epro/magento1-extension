@@ -1139,10 +1139,11 @@ class Ess_M2ePro_Model_Ebay_Listing_Product extends Ess_M2ePro_Model_Component_C
     //########################################
 
     /**
-     * @return int
+     * @param false $magentoMode
+     * @return int|null
      * @throws Ess_M2ePro_Model_Exception_Logic
      */
-    public function getQty()
+    public function getQty($magentoMode = false)
     {
         if ($this->isListingTypeAuction()) {
             return 1;
@@ -1153,7 +1154,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product extends Ess_M2ePro_Model_Component_C
 
             foreach ($this->getVariations(true) as $variation) {
                 /** @var $variation Ess_M2ePro_Model_Listing_Product_Variation */
-                $qty += $variation->getChildObject()->getQty();
+                $qty += $variation->getChildObject()->getQty($magentoMode);
             }
 
             return $qty;
@@ -1162,6 +1163,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product extends Ess_M2ePro_Model_Component_C
         /** @var $calculator Ess_M2ePro_Model_Ebay_Listing_Product_QtyCalculator */
         $calculator = Mage::getModel('M2ePro/Ebay_Listing_Product_QtyCalculator');
         $calculator->setProduct($this->getParentObject());
+        $calculator->setIsMagentoMode($magentoMode);
 
         return $calculator->getProductValue();
     }

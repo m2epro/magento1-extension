@@ -148,6 +148,11 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
 
     //########################################
 
+    /**
+     * @param Ess_M2ePro_Model_Account $account
+     * @return array
+     * @throws Exception
+     */
     protected function getChangesByAccount(Ess_M2ePro_Model_Account $account)
     {
         $now = new DateTime('now', new DateTimeZone('UTC'));
@@ -164,6 +169,8 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
                 $sinceTime->modify('- 1 minute');
             }
         }
+
+        $toTime = $this->modifyToTimeConsideringOrderLastSynch($account, $toTime);
 
         $response = $this->receiveChangesFromEbay(
             $account,
@@ -233,6 +240,28 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
         // --
 
         return array();
+    }
+
+    /**
+     * @param Ess_M2ePro_Model_Account $account
+     * @param DateTime $toTime
+     * @return DateTime
+     * @throws Exception
+     *
+     * Do not download inventory events until order will be imported to avoid excessive relist action
+     */
+    protected function modifyToTimeConsideringOrderLastSynch(Ess_M2ePro_Model_Account $account, DateTime $toTime)
+    {
+        $orderLastSynchDate = new DateTime(
+            $account->getChildObject()->getData('orders_last_synchronization'),
+            new DateTimeZone('UTC')
+        );
+
+        if ($orderLastSynchDate->getTimestamp() < $toTime->getTimestamp()) {
+            return $orderLastSynchDate;
+        }
+
+        return $toTime;
     }
 
     //########################################

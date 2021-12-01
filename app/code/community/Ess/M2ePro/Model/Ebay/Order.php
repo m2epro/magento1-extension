@@ -722,7 +722,7 @@ class Ess_M2ePro_Model_Ebay_Order extends Ess_M2ePro_Model_Component_Child_Ebay_
         $shippingDetails = $this->getShippingDetails();
         $shippingDetails['address'] = $buyerInfo['address'];
 
-        $buyerName = trim($buyerInfo['first_name']) . ' ' . trim($buyerInfo['last_name']);
+        $buyerName = trim($buyerInfo['name']);
 
         $this->getParentObject()->setData('buyer_name', $buyerName);
         $this->getParentObject()->setSettings('shipping_details', $shippingDetails);

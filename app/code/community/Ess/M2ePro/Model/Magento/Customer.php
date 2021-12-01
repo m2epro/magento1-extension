@@ -33,12 +33,14 @@ class Ess_M2ePro_Model_Magento_Customer extends Mage_Core_Model_Abstract
          * Customers -> Customer Configuration -> Create new account options -> Automatic Assignment to Customer Group
          */
         $this->_customer = Mage::getModel('customer/customer')
-                               ->setData('firstname', $this->getData('customer_firstname'))
-                               ->setData('middlename', $this->getData('customer_middlename'))
-                               ->setData('lastname', $this->getData('customer_lastname'))
-                               ->setData('website_id', $this->getData('website_id'))
-                               ->setData('group_id', $this->getData('group_id'))
-                               ->setData('email', $this->getData('email'));
+            ->setData('prefix', $this->getData('customer_prefix'))
+            ->setData('firstname', $this->getData('customer_firstname'))
+            ->setData('middlename', $this->getData('customer_middlename'))
+            ->setData('lastname', $this->getData('customer_lastname'))
+            ->setData('suffix', $this->getData('customer_suffix'))
+            ->setData('website_id', $this->getData('website_id'))
+            ->setData('group_id', $this->getData('group_id'))
+            ->setData('email', $this->getData('email'));
 
         if ($this->_customer->isConfirmationRequired()) {
             $this->_customer->setData('confirmation', $password);
@@ -54,9 +56,11 @@ class Ess_M2ePro_Model_Magento_Customer extends Mage_Core_Model_Abstract
         // Add customer address
         // do not replace setCustomerId with setData('customer_id', ..)
         $customerAddress = Mage::getModel('customer/address')
+            ->setData('prefix', $this->getData('prefix'))
             ->setData('firstname', $this->getData('firstname'))
             ->setData('middlename', $this->getData('middlename'))
             ->setData('lastname', $this->getData('lastname'))
+            ->setData('suffix', $this->getData('suffix'))
             ->setData('country_id', $this->getData('country_id'))
             ->setData('region', $this->getData('region'))
             ->setData('region_id', $this->getData('region_id'))

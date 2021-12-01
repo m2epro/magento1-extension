@@ -6,6 +6,8 @@
  * @license    Commercial use is forbidden
  */
 
+use Ess_M2ePro_Helper_Component_Walmart_Configuration as ConfigurationHelper;
+
 class Ess_M2ePro_Model_Walmart_Listing_Product_Action_DataBuilder_Details
     extends Ess_M2ePro_Model_Walmart_Listing_Product_Action_DataBuilder_Abstract
 {
@@ -33,14 +35,14 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_DataBuilder_Details
         if (!empty($startDate)) {
             $data['start_date'] = $startDate;
         } else {
-            $data['start_date'] = Mage::helper('M2ePro')->getCurrentGmtDate(false, 'Y-m-d');
+            $data['start_date'] = '1970-01-01 00:00:00';
         }
 
         $endDate = $this->getWalmartListingProduct()->getSellingFormatTemplateSource()->getEndDate();
         if (!empty($endDate)) {
             $data['end_date'] = $endDate;
         } else {
-            $data['end_date'] = '9999-01-01';
+            $data['end_date'] = '9999-01-01 00:00:00';
         }
 
         $mapPrice = $this->getWalmartListingProduct()->getMapPrice();
@@ -118,6 +120,52 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_DataBuilder_Details
 
     protected function getProductIdsData()
     {
+        if (empty($this->_cachedData)) {
+            $walmartListingProduct = $this->getListingProduct()->getChildObject();
+
+            /** @var Ess_M2ePro_Helper_Data $helperData */
+            $helperData = Mage::helper('M2ePro');
+
+            $ids = array(
+                'gtin' => $walmartListingProduct->getGtin(),
+                'upc' => $walmartListingProduct->getUpc(),
+                'ean' => $walmartListingProduct->getEan(),
+                'isbn' => $walmartListingProduct->getIsbn()
+            );
+
+            if (!$ids['gtin'] ||
+                (strtoupper($ids['gtin']) !== ConfigurationHelper::PRODUCT_ID_OVERRIDE_CUSTOM_CODE &&
+                    !$helperData->isGTIN($ids['gtin']))
+            ) {
+                unset($ids['gtin']);
+            }
+
+            if (!$ids['upc'] ||
+                (strtoupper($ids['upc']) !== ConfigurationHelper::PRODUCT_ID_OVERRIDE_CUSTOM_CODE &&
+                    !$helperData->isUPC($ids['upc']))
+            ) {
+                unset($ids['upc']);
+            }
+
+            if (!$ids['ean'] ||
+                (strtoupper($ids['ean']) !== ConfigurationHelper::PRODUCT_ID_OVERRIDE_CUSTOM_CODE &&
+                    !$helperData->isEAN($ids['ean']))
+            ) {
+                unset($ids['ean']);
+            }
+
+            if (!$ids['isbn'] ||
+                (strtoupper($ids['isbn']) !== ConfigurationHelper::PRODUCT_ID_OVERRIDE_CUSTOM_CODE &&
+                    !$helperData->isISBN($ids['isbn']))
+            ) {
+                unset($ids['isbn']);
+            }
+
+            foreach ($ids as $idType => $value) {
+                $this->_cachedData[$idType] = $value;
+            }
+        }
+
         $data = array();
 
         $idsTypes = array('gtin', 'upc', 'ean', 'isbn');

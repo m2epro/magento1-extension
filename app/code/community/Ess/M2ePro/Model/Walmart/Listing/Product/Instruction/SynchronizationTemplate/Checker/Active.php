@@ -466,25 +466,11 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_SynchronizationTempla
 
         $currentDetailsData = $actionDataBuilder->getData();
 
-        $currentStartDate = $currentDetailsData['start_date'];
-        unset($currentDetailsData['start_date']);
-
-        $currentEndDate = $currentDetailsData['end_date'];
-        unset($currentDetailsData['end_date']);
-
         $hashDetailsData = Mage::helper('M2ePro')->hashString(
             Mage::helper('M2ePro')->jsonEncode($currentDetailsData),
             'md5'
         );
         if ($hashDetailsData != $walmartListingProduct->getOnlineDetailsData()) {
-            return true;
-        }
-
-        if ($currentStartDate != $walmartListingProduct->getOnlineStartDate()) {
-            return true;
-        }
-
-        if ($currentEndDate != $walmartListingProduct->getOnlineEndDate()) {
             return true;
         }
 

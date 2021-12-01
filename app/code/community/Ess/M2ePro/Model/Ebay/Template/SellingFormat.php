@@ -25,6 +25,9 @@ class Ess_M2ePro_Model_Ebay_Template_SellingFormat extends Ess_M2ePro_Model_Comp
     const QTY_MODIFICATION_MODE_OFF = 0;
     const QTY_MODIFICATION_MODE_ON = 1;
 
+    const VAT_MODE_NO = 0;
+    const VAT_MODE_YES = 1;
+
     const QTY_MIN_POSTED_DEFAULT_VALUE = 1;
     const QTY_MAX_POSTED_DEFAULT_VALUE = 100;
 
@@ -465,6 +468,14 @@ class Ess_M2ePro_Model_Ebay_Template_SellingFormat extends Ess_M2ePro_Model_Comp
     }
 
     // ---------------------------------------
+
+    /**
+     * @return int
+     */
+    public function getVatMode()
+    {
+        return (int)$this->getData('vat_mode');
+    }
 
     /**
      * @return float

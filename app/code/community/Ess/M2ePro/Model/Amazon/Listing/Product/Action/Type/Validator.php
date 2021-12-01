@@ -254,6 +254,17 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Validator
         }
 
         $qty = $this->getQty();
+        $clearQty = $this->getClearQty();
+
+        if ($clearQty > 0 && $qty <= 0) {
+            $message = 'You’re submitting an item with QTY contradicting the QTY settings in your Selling Policy. 
+            Please check Minimum Quantity to Be Listed and Quantity Percentage options.';
+
+            $this->addMessage($message);
+
+            return false;
+        }
+
         if ($qty <= 0) {
             if (isset($this->_params['status_changer']) &&
                 $this->_params['status_changer'] == Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_USER) {
@@ -281,6 +292,7 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Validator
         }
 
         $this->_data['qty'] = $qty;
+        $this->_data['clear_qty'] = $clearQty;
 
         return true;
     }
@@ -446,6 +458,15 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Validator
         }
 
         return $this->getAmazonListingProduct()->getQty();
+    }
+
+    protected function getClearQty()
+    {
+        if (isset($this->_data['clear_qty'])) {
+            return $this->_data['clear_qty'];
+        }
+
+        return $this->getAmazonListingProduct()->getQty(true);
     }
 
     //########################################

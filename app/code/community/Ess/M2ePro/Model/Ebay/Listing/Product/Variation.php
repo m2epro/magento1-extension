@@ -472,13 +472,17 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation extends Ess_M2ePro_Model_C
     }
 
     /**
+     * @param false $magentoMode
      * @return int
+     * @throws Ess_M2ePro_Model_Exception_Logic
      */
-    public function getQty()
+    public function getQty($magentoMode = false)
     {
         /** @var $calculator Ess_M2ePro_Model_Ebay_Listing_Product_QtyCalculator */
         $calculator = Mage::getModel('M2ePro/Ebay_Listing_Product_QtyCalculator');
         $calculator->setProduct($this->getListingProduct());
+        $calculator->setIsMagentoMode($magentoMode);
+
         return $calculator->getVariationValue($this->getParentObject());
     }
 

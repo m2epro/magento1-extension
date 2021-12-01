@@ -125,30 +125,34 @@ class Ess_M2ePro_Model_Ebay_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
         }
 
         $addressModel = $this->_order->isUseGlobalShippingProgram() ? $this->_order->getGlobalShippingWarehouseAddress()
-                                                                   : $this->_order->getShippingAddress();
+            : $this->_order->getShippingAddress();
 
         $rawAddressData = $addressModel->getRawData();
 
         $addressData = array();
 
         $recipientNameParts = $this->getNameParts($rawAddressData['recipient_name']);
-        $addressData['firstname']   = $recipientNameParts['firstname'];
-        $addressData['lastname']    = $recipientNameParts['lastname'];
-        $addressData['middlename']  = $recipientNameParts['middlename'];
+        $addressData['prefix'] = $recipientNameParts['prefix'];
+        $addressData['firstname'] = $recipientNameParts['firstname'];
+        $addressData['middlename'] = $recipientNameParts['middlename'];
+        $addressData['lastname'] = $recipientNameParts['lastname'];
+        $addressData['suffix'] = $recipientNameParts['suffix'];
 
         $customerNameParts = $this->getNameParts($rawAddressData['buyer_name']);
-        $addressData['customer_firstname']   = $customerNameParts['firstname'];
-        $addressData['customer_lastname']    = $customerNameParts['lastname'];
-        $addressData['customer_middlename']  = $customerNameParts['middlename'];
+        $addressData['customer_prefix'] = $customerNameParts['prefix'];
+        $addressData['customer_firstname'] = $customerNameParts['firstname'];
+        $addressData['customer_middlename'] = $customerNameParts['middlename'];
+        $addressData['customer_lastname'] = $customerNameParts['lastname'];
+        $addressData['customer_suffix'] = $customerNameParts['suffix'];
 
-        $addressData['email']      = $rawAddressData['email'];
+        $addressData['email'] = $rawAddressData['email'];
         $addressData['country_id'] = $rawAddressData['country_id'];
-        $addressData['region']     = $rawAddressData['region'];
-        $addressData['region_id']  = $addressModel->getRegionId();
-        $addressData['city']       = $rawAddressData['city'];
-        $addressData['postcode']   = $rawAddressData['postcode'];
-        $addressData['telephone']  = $rawAddressData['telephone'];
-        $addressData['company']    = !empty($rawAddressData['company']) ? $rawAddressData['company'] : '';
+        $addressData['region'] = $rawAddressData['region'];
+        $addressData['region_id'] = $addressModel->getRegionId();
+        $addressData['city'] = $rawAddressData['city'];
+        $addressData['postcode'] = $rawAddressData['postcode'];
+        $addressData['telephone'] = $rawAddressData['telephone'];
+        $addressData['company'] = !empty($rawAddressData['company']) ? $rawAddressData['company'] : '';
 
         // Adding reference id into street array
         // ---------------------------------------
@@ -158,7 +162,7 @@ class Ess_M2ePro_Model_Ebay_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
         if ($this->_order->isUseGlobalShippingProgram()) {
             $details = $this->_order->getGlobalShippingDetails();
             isset($details['warehouse_address']['reference_id']) &&
-                  $referenceId = 'Ref #'.$details['warehouse_address']['reference_id'];
+            $referenceId = 'Ref #'.$details['warehouse_address']['reference_id'];
         }
 
         if ($this->_order->isUseClickAndCollect()) {
@@ -207,9 +211,11 @@ class Ess_M2ePro_Model_Ebay_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
         $customerNameParts = $this->getNameParts($this->_order->getBuyerName());
 
         return array(
+            'prefix'     => $customerNameParts['prefix'],
             'firstname'  => $customerNameParts['firstname'],
             'middlename' => $customerNameParts['middlename'],
             'lastname'   => $customerNameParts['lastname'],
+            'suffix'     => $customerNameParts['suffix'],
             'country_id' => '',
             'region'     => '',
             'region_id'  => '',

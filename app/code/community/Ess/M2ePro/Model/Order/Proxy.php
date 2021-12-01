@@ -259,15 +259,19 @@ abstract class Ess_M2ePro_Model_Order_Proxy
         if (empty($this->_addressData)) {
             $rawAddressData = $this->_order->getShippingAddress()->getRawData();
 
-            $recipientNameParts               = $this->getNameParts($rawAddressData['recipient_name']);
-            $this->_addressData['firstname']  = $recipientNameParts['firstname'];
-            $this->_addressData['lastname']   = $recipientNameParts['lastname'];
+            $recipientNameParts = $this->getNameParts($rawAddressData['recipient_name']);
+            $this->_addressData['prefix'] = $recipientNameParts['prefix'];
+            $this->_addressData['firstname'] = $recipientNameParts['firstname'];
             $this->_addressData['middlename'] = $recipientNameParts['middlename'];
+            $this->_addressData['lastname'] = $recipientNameParts['lastname'];
+            $this->_addressData['suffix'] = $recipientNameParts['suffix'];
 
-            $customerNameParts                         = $this->getNameParts($rawAddressData['buyer_name']);
-            $this->_addressData['customer_firstname']  = $customerNameParts['firstname'];
-            $this->_addressData['customer_lastname']   = $customerNameParts['lastname'];
+            $customerNameParts = $this->getNameParts($rawAddressData['buyer_name']);
+            $this->_addressData['customer_prefix'] = $customerNameParts['prefix'];
+            $this->_addressData['customer_firstname'] = $customerNameParts['firstname'];
             $this->_addressData['customer_middlename'] = $customerNameParts['middlename'];
+            $this->_addressData['customer_lastname'] = $customerNameParts['lastname'];
+            $this->_addressData['customer_suffix'] = $customerNameParts['suffix'];
 
             $this->_addressData['email']                = $rawAddressData['email'];
             $this->_addressData['country_id']           = $rawAddressData['country_id'];
@@ -305,33 +309,47 @@ abstract class Ess_M2ePro_Model_Order_Proxy
     /**
      * @param $fullName
      * @return array
+     * @throws Ess_M2ePro_Model_Exception
      */
     protected function getNameParts($fullName)
     {
         $fullName = trim($fullName);
+        $parts = explode(' ', $fullName);
 
-        $parts      = explode(' ', $fullName);
-        $partsCount = count($parts);
+        $currentInfo = array(
+            'prefix'     => null,
+            'middlename' => null,
+            'suffix'     => null
+        );
 
-        $firstName  = '';
-        $middleName = '';
-        $lastName   = '';
-
-        if ($partsCount > 1) {
-            $firstName = array_shift($parts);
-            $lastName  = array_pop($parts);
-            if (!empty($parts)) {
-                $middleName = implode(' ', $parts);
+        if (count($parts) > 2) {
+            $prefixOptions = Mage::helper('customer')->getNamePrefixOptions($this->getStore());
+            if (isset($prefixOptions[$parts[0]])) {
+                $currentInfo['prefix'] = array_shift($parts);
             }
-        } else {
-            $firstName = $fullName;
         }
 
-        return array(
-            'firstname'  => $firstName ? $firstName : 'N/A',
-            'middlename' => $middleName ? trim($middleName) : '',
-            'lastname'   => $lastName ? $lastName : 'N/A'
-        );
+        $partsCount = count($parts);
+        if ($partsCount > 2) {
+            $suffixOptions = Mage::helper('customer')->getNameSuffixOptions($this->getStore());
+            if (isset($suffixOptions[$parts[$partsCount - 1]])) {
+                $currentInfo['suffix'] = array_pop($parts);
+            }
+        }
+
+        if (count($parts) >= 2) {
+            $currentInfo['firstname'] = array_shift($parts);
+            $currentInfo['lastname'] = array_pop($parts);
+            if (!empty($parts)) {
+                $currentInfo['middlename'] = implode(' ', $parts);
+            }
+        } else {
+            throw new Ess_M2ePro_Model_Exception(
+                "Full name must consist of at least firstname and lastname. Name `$fullName` is incorrect."
+            );
+        }
+
+        return $currentInfo;
     }
 
     //########################################

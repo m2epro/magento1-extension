@@ -16,9 +16,11 @@ class Ess_M2ePro_Model_Ebay_Order_ShippingAddress extends Ess_M2ePro_Model_Order
      */
     public function getRawData()
     {
+        $buyerName = $this->_order->getChildObject()->getBuyerName();
+        $recipientName = $this->getData('recipient_name');
         return array(
-            'buyer_name'     => $this->_order->getChildObject()->getBuyerName(),
-            'recipient_name' => $this->getData('recipient_name'),
+            'buyer_name'     => $buyerName,
+            'recipient_name' => $recipientName ? $recipientName : $buyerName,
             'email'          => $this->getBuyerEmail(),
             'country_id'     => $this->getData('country_code'),
             'region'         => $this->getData('state'),

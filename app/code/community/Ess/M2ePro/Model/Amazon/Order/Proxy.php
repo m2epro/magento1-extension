@@ -94,9 +94,11 @@ class Ess_M2ePro_Model_Amazon_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
         $customerNameParts = $this->getNameParts($this->_order->getBuyerName());
 
         return array(
+            'prefix'     => $customerNameParts['prefix'],
             'firstname'  => $customerNameParts['firstname'],
             'middlename' => $customerNameParts['middlename'],
             'lastname'   => $customerNameParts['lastname'],
+            'suffix'     => $customerNameParts['suffix'],
             'country_id' => '',
             'region'     => '',
             'region_id'  => '',

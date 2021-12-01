@@ -530,7 +530,7 @@ HTML
                 'class'              => 'textarea M2ePro-required-when-visible',
                 'required'           => true,
                 'after_element_html' => $attributesSelect->toHtml() . $attributesButton->toHtml(),
-                'value'              => $this->getData('condition_note_value')
+                'value'              => $formData['condition_note_value']
             )
         );
 

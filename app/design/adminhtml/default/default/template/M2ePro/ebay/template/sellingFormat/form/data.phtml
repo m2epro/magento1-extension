@@ -116,6 +116,10 @@ $taxCategories = $this->getTaxCategoriesInfo();
             .observe('change', EbayTemplateSellingFormatObj.lotSizeMode_change)
             .simulate('change');
 
+        $('vat_mode')
+            .observe('change', EbayTemplateSellingFormatObj.vatModeChange)
+            .simulate('change');
+
         if ($('tax_category_mode')) {
             $('tax_category_mode')
                 .observe('change', EbayTemplateSellingFormatObj.taxCategoryChange)
@@ -611,6 +615,24 @@ Otherwise, the Item will be Listed with Quantity according to the Settings in th
 
             <table class="form-list" cellspacing="0" cellpadding="0">
 
+                <tr id="vat_mode_tr">
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Add VAT Rate'); ?>:</label>
+                    </td>
+                    <td class="value" style="width: auto;">
+                        <select id="vat_mode" name="selling_format[vat_mode]">
+                            <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_SellingFormat::VAT_MODE_NO; ?>" <?php if (Ess_M2ePro_Model_Ebay_Template_SellingFormat::VAT_MODE_NO == $formData['vat_mode']): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_SellingFormat::VAT_MODE_YES; ?>" <?php if (Ess_M2ePro_Model_Ebay_Template_SellingFormat::VAT_MODE_YES == $formData['vat_mode']): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
+                        </select>
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__(<<<HTML
+Set "<b>Yes</b>" if you want VAT Rate to be added to your items.
+HTML
+                                ); ?></span>
+                        </p>
+                    </td>
+                </tr>
+
                 <tr id="vat_percent_tr">
                     <td class="label">
                         <label><?php echo Mage::helper('M2ePro')->__('VAT Rate, %'); ?>:</label>
@@ -618,7 +640,7 @@ Otherwise, the Item will be Listed with Quantity according to the Settings in th
                     <td class="value" style="width: auto;">
                         <input name="selling_format[vat_percent]" value="<?php echo $formData['vat_percent']; ?>" type="text" class="M2ePro-validate-vat input-text" />
                         <p class="note">
-                            <span><?php echo Mage::helper('M2ePro')->__('Specify a VAT Rate that will be applied to your items.'); ?></span>
+                            <span><?php echo Mage::helper('M2ePro')->__('Specify the amount(%) of VAT that will be applied to your items.'); ?></span>
                         </p>
                     </td>
                 </tr>
@@ -712,7 +734,7 @@ Otherwise, the Item will be Listed with Quantity according to the Settings in th
 
                 <tr>
                     <td class="label">
-                        <label><?php echo Mage::helper('M2ePro')->__('Add VAT Percentage'); ?>:</label>
+                        <label><?php echo Mage::helper('M2ePro')->__('Add VAT% on top of Price'); ?>:</label>
                     </td>
                     <td class="value" style="width: auto;">
                         <select id="price_increase_vat_percent" name="selling_format[price_increase_vat_percent]" class="M2ePro-required-when-visible">
@@ -724,13 +746,13 @@ Otherwise, the Item will be Listed with Quantity according to the Settings in th
                                     "Choose whether you want to add VAT Rate to the price when an item is listed on eBay:
                                     <br/>
                                     <br/>
-                                    <b>Yes</b> - VAT Rate will act as excluded and will be added to the item price.
+                                    <b>Yes</b> - VAT Rate will be added on top of an item price.
                                     <br/>
                                     <br/>
-                                    <b>No</b> - VAT Rate will be included in the final item price.
+                                    <b>No</b> - VAT Rate will stay included and an item price won't be changed.
                                     <br/>
                                     <br/>
-                                    See <a href='%url%' target='_blank'>our docs</a> to learn how the final eBay item price is calculated.",
+                                    See our <a href='%url%' target='_blank'>article</a> to learn how the final eBay item price is calculated.",
                                     Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'x/PQAJAQ#SetupSellingPolicy-Price')
                                 ); ?></span>
                         </p>

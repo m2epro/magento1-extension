@@ -259,7 +259,7 @@ abstract class Ess_M2ePro_Model_Listing_Product_QtyCalculator
         return $value;
     }
 
-    // ---------------------------------------
+    //########################################
 
     protected function applyValuePercentageModifications($value)
     {
@@ -274,6 +274,8 @@ abstract class Ess_M2ePro_Model_Listing_Product_QtyCalculator
 
         return (int)$roundingFunction(($value/100) * $percents);
     }
+
+    //########################################
 
     protected function applyValueMinMaxModifications($value)
     {

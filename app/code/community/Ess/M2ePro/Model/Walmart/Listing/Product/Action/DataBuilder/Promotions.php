@@ -19,7 +19,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_DataBuilder_Promotions
         $data = array();
 
         if (!isset($this->_cachedData['promotions'])) {
-            $this->_cachedData['promotions'] = $this->getWalmartListingProduct()->getPromotions();
+            $this->_cachedData['promotions'] = $this->getWalmartListingProduct()->getValidPromotions();
         }
 
         $data['promotion_prices'] = $this->_cachedData['promotions'];

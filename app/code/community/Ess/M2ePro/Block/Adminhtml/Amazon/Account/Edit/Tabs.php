@@ -8,11 +8,11 @@
 
 class Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit_Tabs extends Ess_M2ePro_Block_Adminhtml_Widget_Tabs
 {
-    const TAB_ID_GENERAL = 'general';
-    const TAB_ID_LISTING_OTHER = 'listingOther';
-    const TAB_ID_ORDERS = 'orders';
+    const TAB_ID_GENERAL                = 'general';
+    const TAB_ID_LISTING_OTHER          = 'listingOther';
+    const TAB_ID_ORDERS                 = 'orders';
     const TAB_ID_INVOICES_AND_SHIPMENTS = 'invoices_and_shipments';
-    const TAB_ID_REPRICING = 'repricing';
+    const TAB_ID_REPRICING              = 'repricing';
 
     //########################################
 
@@ -77,7 +77,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit_Tabs extends Ess_M2ePro_Blo
             );
         }
 
-        if (Mage::helper('M2ePro/Component_Amazon_Repricing')->isEnabled() && $account->getId()) {
+        if ($this->isRepricingSupported($account)) {
             $this->addTab(
                 self::TAB_ID_REPRICING,
                 array(
@@ -93,6 +93,28 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit_Tabs extends Ess_M2ePro_Blo
         $this->setActiveTab($this->getRequest()->getParam('tab', self::TAB_ID_GENERAL));
 
         return parent::_prepareLayout();
+    }
+
+    //########################################
+
+    protected function isRepricingSupported($account)
+    {
+        $supportedMarketplaces = array(
+            Ess_M2ePro_Helper_Component_Amazon::MARKETPLACE_US,
+            Ess_M2ePro_Helper_Component_Amazon::MARKETPLACE_CA,
+            Ess_M2ePro_Helper_Component_Amazon::MARKETPLACE_MX,
+            Ess_M2ePro_Helper_Component_Amazon::MARKETPLACE_UK,
+            Ess_M2ePro_Helper_Component_Amazon::MARKETPLACE_DE,
+            Ess_M2ePro_Helper_Component_Amazon::MARKETPLACE_IT,
+            Ess_M2ePro_Helper_Component_Amazon::MARKETPLACE_FR,
+            Ess_M2ePro_Helper_Component_Amazon::MARKETPLACE_ES,
+            Ess_M2ePro_Helper_Component_Amazon::MARKETPLACE_AU,
+        );
+
+        return $account !== null
+            && $account->getId()
+            && Mage::helper('M2ePro/Component_Amazon_Repricing')->isEnabled()
+            && in_array($account->getChildObject()->getMarketplaceId(), $supportedMarketplaces);
     }
 
     //########################################

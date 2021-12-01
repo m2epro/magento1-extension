@@ -184,6 +184,8 @@ class Ess_M2ePro_Adminhtml_Ebay_CategoryController extends Ess_M2ePro_Controller
         $changeProcessor = Mage::getModel('M2ePro/Ebay_Template_Category_ChangeProcessor');
         $changeProcessor->process($diff, $affectedListingsProducts->getData(array('id', 'status')));
 
+        $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Category data was saved.'));
+
         if ($this->getRequest()->getParam('back') === 'edit') {
             return $this->_redirect('*/*/view', array('template_id' => $post['template_id']));
         }

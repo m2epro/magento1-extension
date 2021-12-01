@@ -32,8 +32,8 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges extends Ess_M2e
 
     protected function performActions()
     {
-        $this->processItemsChanges();
         $this->processOrdersChanges();
+        $this->processItemsChanges();
     }
 
     //########################################

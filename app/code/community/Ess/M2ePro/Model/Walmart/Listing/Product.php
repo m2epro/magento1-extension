@@ -619,7 +619,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product extends Ess_M2ePro_Model_Componen
                 throw new Ess_M2ePro_Model_Exception_Logic(
                     'There are no variations for a variation product.',
                     array(
-                                                         'listing_product_id' => $this->getId()
+                        'listing_product_id' => $this->getId()
                     )
                 );
             }
@@ -760,6 +760,106 @@ class Ess_M2ePro_Model_Walmart_Listing_Product extends Ess_M2ePro_Model_Componen
         }
 
         return $resultPromotions;
+    }
+
+    /**
+     * @return array
+     * @throws Ess_M2ePro_Model_Exception
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
+    public function getValidPromotions()
+    {
+        $promotionsData = $this->getValidPromotionsData();
+
+        return $promotionsData['promotions'];
+    }
+
+    /**
+     * @return array
+     * @throws Ess_M2ePro_Model_Exception
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
+    public function getPromotionsErrorMessages()
+    {
+        $promotionsData = $this->getValidPromotionsData();
+
+        return $promotionsData['messages'];
+    }
+
+    /**
+     * @return array
+     * @throws Ess_M2ePro_Model_Exception
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
+    private function getValidPromotionsData()
+    {
+        $translationHelper = Mage::helper('M2ePro');
+        $requiredAttributesMap = array(
+            'start_date'       => $translationHelper->__('Start Date'),
+            'end_date'         => $translationHelper->__('End Date'),
+            'price'            => $translationHelper->__('Promotion Price'),
+            'comparison_price' => $translationHelper->__('Comparison Price'),
+        );
+
+        $messages = array();
+        $promotions = $this->getPromotions();
+
+        foreach ($promotions as $promotionIndex => $promotionRow) {
+            $isValidPromotion = true;
+
+            foreach ($requiredAttributesMap as $requiredAttributeKey => $requiredAttributeTitle) {
+                if (empty($promotionRow[$requiredAttributeKey])) {
+                    $message = <<<HTML
+Invalid Promotion #%s. The Promotion Price has no defined value.
+ Please adjust Magento Attribute "%s" value set for the Promotion Price in your Selling Policy.
+HTML;
+                    $messages[] = sprintf($message, $promotionIndex + 1, $requiredAttributeTitle);
+                    $isValidPromotion = false;
+                }
+            }
+
+            if (!strtotime($promotionRow['start_date'])) {
+                $message = <<<HTML
+Invalid Promotion #%s. The Start Date has incorrect format.
+ Please adjust Magento Attribute value set for the Promotion Start Date in your Selling Policy.
+HTML;
+                $messages[] = sprintf($message, $promotionIndex + 1);
+                $isValidPromotion = false;
+            }
+
+            if (!strtotime($promotionRow['end_date'])) {
+                $message = <<<HTML
+Invalid Promotion #%s. The End Date has incorrect format.
+ Please adjust Magento Attribute value set for the Promotion End Date in your Selling Policy.
+HTML;
+                $messages[] = sprintf($message, $promotionIndex + 1);
+                $isValidPromotion = false;
+            }
+
+            if (strtotime($promotionRow['end_date']) < strtotime($promotionRow['start_date'])) {
+                $message = <<<HTML
+Invalid Promotion #%s. The Start and End Date range is incorrect.
+ Please adjust the Promotion Dates set in your Selling Policy.
+HTML;
+                $messages[] = sprintf($message, $promotionIndex + 1);
+                $isValidPromotion = false;
+            }
+
+            if ($promotionRow['comparison_price'] <= $promotionRow['price']) {
+                $message = <<<HTML
+Invalid Promotion #%s. Comparison Price must be greater than Promotion Price.
+ Please adjust the Price settings for the given Promotion in your Selling Policy.
+HTML;
+                $messages[] = sprintf($message, $promotionIndex + 1);
+                $isValidPromotion = false;
+            }
+
+            if (!$isValidPromotion) {
+                unset($promotions[$promotionIndex]);
+            }
+        }
+
+        return array('messages' => $messages, 'promotions' => $promotions);
     }
 
     //########################################
