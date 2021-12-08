@@ -70,21 +70,9 @@ HTML
                     0 => Mage::helper('M2ePro')->__('Disabled'),
                     1 => Mage::helper('M2ePro')->__('Enabled'),
                 ),
-                'after_element_html' => Mage::helper('M2ePro')->__(
+                'tooltip'            => Mage::helper('M2ePro')->__(
                     <<<HTML
-<span>
-    <img class="tool-tip-image"
-     style="vertical-align: middle;" src="{$this->getSkinUrl('M2ePro/images/tool-tip-icon.png')}" />
-    <span class="tool-tip-message" style="display:none; text-align: left; width: 120px;">
-        <img src="{$this->getSkinUrl('M2ePro/images/help.png')}" />
-        <span>
-           Enable to automatically create Shipment when shipping is completed.
-        </span>
-    </span>
-</span>
-<div style="padding: 15px 0;">
-    <hr style="border: 1px solid silver; border-bottom: none;">
-</div>
+Enable to automatically create shipment for the Magento order when the associated order on Channel is shipped.
 HTML
                 )
             )

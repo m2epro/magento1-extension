@@ -60,6 +60,9 @@
 </div>
 
 <div id="data_container">
+
+    <?php echo $this->getChildHtml('help_block'); ?>
+
     <div id="block_notice_listing_auto_action_mode_category" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Rules For Magento Categories'); ?>">
         <?php echo Mage::helper('M2ePro')->__('Rules for Products added or deleted from particularly Magento Category.<br/>
         To add a new Rule click on the <i class="underline">Add New Rule</i> Button.'); ?>

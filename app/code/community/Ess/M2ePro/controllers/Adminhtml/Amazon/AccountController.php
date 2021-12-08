@@ -412,11 +412,22 @@ class Ess_M2ePro_Adminhtml_Amazon_AccountController
 
     public function checkAuthAction()
     {
-        $merchantId    = $this->getRequest()->getParam('merchant_id');
-        $token         = $this->getRequest()->getParam('token');
+        if (!Mage::helper('M2ePro/Module')->isProductionEnvironment()) {
+            return $this->getResponse()->setBody(
+                Mage::helper('M2ePro')->jsonEncode(
+                    array(
+                        'result' => true,
+                        'reason' => null
+                    )
+                )
+            );
+        }
+
+        $merchantId = $this->getRequest()->getParam('merchant_id');
+        $token = $this->getRequest()->getParam('token');
         $marketplaceId = $this->getRequest()->getParam('marketplace_id');
 
-        $result = array (
+        $result = array(
             'result' => false,
             'reason' => null
         );

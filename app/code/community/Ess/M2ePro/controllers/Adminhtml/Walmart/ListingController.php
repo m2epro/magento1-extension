@@ -693,6 +693,8 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
         $logger->setAction(Ess_M2ePro_Model_Listing_Log::ACTION_RESET_BLOCKED_PRODUCT);
         $logger->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_USER);
 
+        $message = Mage::getModel('M2ePro/Connector_Connection_Response_Message');
+
         $instructionsData = array();
         foreach ($listingsProducts->getItems() as $index => $listingProduct) {
             /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
@@ -701,7 +703,7 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
             if (!$isVariationParent && ($listingProduct->getChildObject()->isOnlinePriceInvalid() ||
                     $listingProduct->getStatus() != Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED)) {
                 $result = 'error';
-                $message = Mage::getModel('M2ePro/Connector_Connection_Response_Message');
+
                 $message->initFromPreparedData(
                     'Item cannot be reset. Most probably it is not blocked or requires a price adjusting.',
                     Ess_M2ePro_Model_Response_Message::TYPE_ERROR
@@ -744,6 +746,13 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
                 'is_missed_on_channel'    => 0,
                 )
             );
+
+            $message->initFromPreparedData(
+                'Item has been reset and is no longer blocked.',
+                Ess_M2ePro_Model_Response_Message::TYPE_SUCCESS
+            );
+            $logger->logListingProductMessage($listingProduct, $message);
+
             $listingProduct->save();
 
             if ($listingProduct->getChildObject()->getVariationManager()->isRelationChildType()) {

@@ -598,16 +598,51 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_Variation_Product_ManageController
             $generalId = $parentTypeModel->getChannelVariationGeneralId($channelOptions);
         }
 
-        $parentTypeModel->createChildListingProduct(
+        /** @var Ess_M2ePro_Model_Listing_Product $childListingProduct */
+        $childListingProduct = $parentTypeModel->createChildListingProduct(
             $productOptions, $channelOptions, $generalId
         );
 
+        $addedProductOptions = $childListingProduct->getChildObject()->getVariationManager()
+            ->getTypeModel()->getProductOptions();
+
+        // Don't use $childListingProduct anymore, because it might be removed after calling the following method
         $parentTypeModel->getProcessor()->process();
 
-        $result = array(
-            'type' => 'success',
-            'msg'  => Mage::helper('M2ePro')->__('New Amazon Child Product was created.')
-        );
+        $isProductOptionWasAdded = false;
+        foreach ($addedProductOptions as $addedProductOption) {
+            if ($productOptions == $addedProductOption) {
+                $isProductOptionWasAdded = true;
+            }
+        }
+
+        if (!$isProductOptionWasAdded) {
+            $parentListingProduct->logProductMessage(
+                'New Child Product cannot be created. There is no correspondence between the Magento Attribute
+                 value of a new Child Product and available Magento Attribute values of the Parent Product.',
+                Ess_M2ePro_Helper_Data::INITIATOR_USER,
+                Ess_M2ePro_Model_Listing_Log::ACTION_ADD_NEW_CHILD_LISTING_PRODUCT,
+                Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR
+            );
+
+            $message = Mage::helper('M2ePro')->__(
+                'New Child Product was not created.
+ Please view <a target="_blank" href="%url%">Listing Logs</a> for details.',
+                $this->getUrl(
+                    '*/adminhtml_amazon_log/listingProduct',
+                    array('listing_product_id' => $parentListingProduct->getId())
+                )
+            );
+            $result = array(
+                'type' => 'error',
+                'msg'  => $message
+            );
+        } else {
+            $result = array(
+                'type' => 'success',
+                'msg'  => Mage::helper('M2ePro')->__('New Amazon Child Product was created.')
+            );
+        }
 
         if ($createNewAsin) {
             return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode($result));

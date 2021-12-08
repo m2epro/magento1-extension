@@ -58,6 +58,11 @@ $categoriesTemplates = $collection->getData();
 
 <div id="data_container" style="padding-bottom: 10px;">
 
+    <?php
+    $this->createHelpBlock(Mage::getBlockSingleton('M2ePro/adminhtml_walmart_listing_autoAction_mode')->getHelpPageUrl());
+    echo $this->getChildHtml('help_block');
+    ?>
+
     <form id="<?php echo $this->getForm()->getId(); ?>" action="<?php echo $this->getForm()->getData('action'); ?>" method="post" enctype="multipart/form-data">
 
         <input name="form_key" value="<?php echo $this->getFormKey(); ?>" type="hidden" />

@@ -55,6 +55,11 @@ $formData = array_merge($this->getDefault(), $this->getFormData());
 
 <div id="data_container">
 
+    <?php
+    $this->createHelpBlock(Mage::getBlockSingleton('M2ePro/adminhtml_ebay_listing_autoAction_mode')->getHelpPageUrl());
+    echo $this->getChildHtml('help_block');
+    ?>
+
     <form id="<?php echo $this->getForm()->getId(); ?>" action="<?php echo $this->getForm()->getData('action'); ?>" method="post" enctype="multipart/form-data">
 
         <input name="form_key" value="<?php echo $this->getFormKey(); ?>" type="hidden" />

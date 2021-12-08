@@ -337,17 +337,15 @@ abstract class Ess_M2ePro_Model_Order_Proxy
             }
         }
 
-        if (count($parts) >= 2) {
-            $currentInfo['firstname'] = array_shift($parts);
-            $currentInfo['lastname'] = array_pop($parts);
-            if (!empty($parts)) {
-                $currentInfo['middlename'] = implode(' ', $parts);
-            }
-        } else {
-            throw new Ess_M2ePro_Model_Exception(
-                "Full name must consist of at least firstname and lastname. Name `$fullName` is incorrect."
-            );
+        $partsCount = count($parts);
+        if ($partsCount > 2) {
+            $middleName = array_slice($parts, 1, $partsCount - 2);
+            $currentInfo['middlename'] = implode(' ', $middleName);
+            $parts = array($parts[0], $parts[$partsCount - 1]);
         }
+
+        $currentInfo['firstname'] = isset($parts[0]) ? $parts[0] : 'N/A';
+        $currentInfo['lastname'] = isset($parts[1]) ? $parts[1] : 'N/A';
 
         return $currentInfo;
     }

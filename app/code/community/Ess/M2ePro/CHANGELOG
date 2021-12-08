@@ -1,4 +1,17 @@
-* 6.17.0 (01/12/2021) 
+* 6.18.0 (08/12/2021) 
+
+Common: [Fixed] Unable to create Magento order. Reason: Full name must consist of at least firstname and lastname [#3113]
+Common: [Improved] Prevent item duplicates in the Listings when using Auto Add/Remove Rules [#7]
+eBay: [Fixed] Flat Shipping Package type is submitted incorrectly to eBay [#3047]
+eBay: [Improved] Hint for Import Unmanaged Listings option in Account Settings [#3110]
+eBay: [Improved] Some UI texts changes [#1004]
+eBay: [Improved] Process of importing Unmanaged Items to M2E Pro [#2967]
+Amazon: [Added] Log if Child Product was not created due to Parent and Child Magento Attribute values mismatch [#3035]
+Amazon: [Improved] Some UI texts changes [#1004]
+Walmart: [Added] Log if item status was successfully changed from 'Inactive (Blocked)' on Сhannel [#1188]
+Walmart: [Added] Log if Child Product was not created due to Parent and Child Magento Attribute values mismatch [#3035]
+
+* 6.17.0 (01/12/2021)
 
 Common: [Added] Compatibility with prefixes and suffixes of customer names in Magento [#2443]
 Common: [Improved] Error log appears if the Product was not listed due to the contradicting Quantity settings in Selling Policy [#1091]

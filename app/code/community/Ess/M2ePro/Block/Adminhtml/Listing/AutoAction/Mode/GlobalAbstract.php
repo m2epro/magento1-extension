@@ -96,4 +96,32 @@ abstract class Ess_M2ePro_Block_Adminhtml_Listing_AutoAction_Mode_GlobalAbstract
     }
 
     //########################################
+
+    /**
+     * @param string $link
+     */
+    protected function createHelpBlock($link)
+    {
+        $helpBlock = Mage::app()->getLayout()->createBlock('M2ePro/adminhtml_helpBlock')->setData(
+            array(
+                'id' => 'block_notice_listing_auto_action_mode',
+                'title' => Mage::helper('M2ePro')->__('Auto Add/Remove Rules'),
+                'content' => Mage::helper('M2ePro')->__(
+                    'These Rules of the automatic product adding and removal act globally for all Magento Catalog. 
+                    When a new Magento Product is added to Magento Catalog, it will be automatically added to the 
+                    current M2E Pro Listing if the settings are enabled.<br><br>
+                    Please note if a product is already presented in another M2E Pro Listing with the related Channel 
+                    account and marketplace, the Item won’t be added to the Listing to prevent listing duplicates on 
+                    the Channel.<br><br>
+                    Accordingly, if a Magento Product presented in the M2E Pro Listing is removed from Magento Catalog, 
+                    the Item will be removed from the Listing and its sale will be stopped on Channel.<br><br>
+                    More detailed information you can find <a href="%url%" target="_blank">here</a>',
+                    $link
+                )
+            )
+        );
+        $this->setChild('help_block', $helpBlock);
+    }
+
+    //########################################
 }

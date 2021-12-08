@@ -77,7 +77,8 @@ HTML
     <span class="tool-tip-message" style="display:none; text-align: left; width: 120px;">
         <img src="{$this->getSkinUrl('M2ePro/images/help.png')}" />
         <span>
-           Enable to automatically create Shipment when shipping is completed.
+           Enable to automatically create shipment for the Magento order when 
+           the associated order on Channel is shipped.
         </span>
     </span>
 </span>

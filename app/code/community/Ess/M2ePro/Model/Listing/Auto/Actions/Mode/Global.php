@@ -33,6 +33,10 @@ class Ess_M2ePro_Model_Listing_Auto_Actions_Mode_Global
                 }
             }
 
+            if ($this->existsDuplicateListingProduct($listing)) {
+                continue;
+            }
+
             $this->getListingObject($listing)->addProductByGlobalListing($this->getProduct(), $listing);
         }
     }

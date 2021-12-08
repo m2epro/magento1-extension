@@ -603,7 +603,10 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager_Type_Relation_P
                 ->getVariationInstance()
                 ->getVariationTypeStandard($productOptions);
 
-            $childTypeModel->setProductVariation($productVariation);
+            if ($productVariation !== null) {
+                $childTypeModel->setProductVariation($productVariation);
+            }
+
             $childTypeModel->setChannelVariation($channelOptions);
         }
 

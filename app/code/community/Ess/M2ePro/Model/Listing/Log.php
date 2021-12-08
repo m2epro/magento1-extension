@@ -24,6 +24,9 @@ class Ess_M2ePro_Model_Listing_Log extends Ess_M2ePro_Model_Log_Abstract
     const ACTION_DELETE_PRODUCT_FROM_LISTING  = 5;
     const _ACTION_DELETE_PRODUCT_FROM_LISTING = 'Delete Item from Listing';
 
+    const ACTION_ADD_NEW_CHILD_LISTING_PRODUCT  = 35;
+    const _ACTION_ADD_NEW_CHILD_LISTING_PRODUCT = 'Add New Child Product';
+
     const ACTION_ADD_PRODUCT_TO_MAGENTO       = 6;
     const _ACTION_ADD_PRODUCT_TO_MAGENTO      = 'Add new Product to Magento Store';
     const ACTION_DELETE_PRODUCT_FROM_MAGENTO  = 7;

@@ -11,6 +11,14 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_AutoAction_Mode_Category
 {
     //########################################
 
+    public function __construct()
+    {
+        parent::__construct();
+        $this->createHelpBlock($this->getLink('M2ePro/adminhtml_ebay_listing_autoAction_mode'));
+    }
+
+    //########################################
+
     protected function prepareGroupsGrid()
     {
         $groupGrid = $this->getLayout()->createBlock(

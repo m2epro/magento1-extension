@@ -81,4 +81,45 @@ abstract class Ess_M2ePro_Block_Adminhtml_Listing_AutoAction_Mode_CategoryAbstra
     }
 
     //########################################
+
+    /**
+     * @param string $link
+     */
+    protected function createHelpBlock($link)
+    {
+        $helpBlock = Mage::app()->getLayout()->createBlock('M2ePro/adminhtml_helpBlock')->setData(
+            array(
+                'id' => 'block_notice_listing_auto_action_mode',
+                'title' => Mage::helper('M2ePro')->__('Auto Add/Remove Rules'),
+                'content' => Mage::helper('M2ePro')->__(
+                    'These Rules of automatic product adding and removal come into action when a Magento Product is 
+                    added to the Magento Category with regard to the Store View selected for the M2E Pro Listing. 
+                    In other words, after a Magento Product is added to the selected Magento Category, it can be 
+                    automatically added to M2E Pro Listing if the settings are enabled.<br><br>
+                    Please note if a product is already presented in another M2E Pro Listing with the related Channel 
+                    account and marketplace, the Item won’t be added to the Listing to prevent listing duplicates on 
+                    the Channel.<br><br>
+                    Accordingly, if a Magento Product presented in the M2E Pro Listing is removed from the Magento 
+                    Category, the Item will be removed from the Listing and its sale will be stopped on Channel.<br><br>
+                    You should combine Magento Categories into groups to apply the Auto Add/Remove Rules. You can 
+                    create as many groups as you need, but one Magento Category can be used only in one Rule.<br><br>
+                    More detailed information you can find <a href="%url%" target="_blank">here</a>.',
+                    $link
+                )
+            )
+        );
+        $this->setChild('help_block', $helpBlock);
+    }
+
+    //########################################
+
+    /**
+     * @return string
+     */
+    protected function getLink($path)
+    {
+        return Mage::getBlockSingleton($path)->getHelpPageUrl();
+    }
+
+    //########################################
 }
