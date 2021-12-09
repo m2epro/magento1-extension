@@ -1,4 +1,8 @@
-* 6.18.0 (08/12/2021) 
+* 6.18.1 (09/12/2021) 
+
+Common: [Fixed] Unable to create Magento order. Warning: in_array() expects parameter 2 to be array, bool given [#3123]
+
+* 6.18.0 (08/12/2021)
 
 Common: [Fixed] Unable to create Magento order. Reason: Full name must consist of at least firstname and lastname [#3113]
 Common: [Improved] Prevent item duplicates in the Listings when using Auto Add/Remove Rules [#7]

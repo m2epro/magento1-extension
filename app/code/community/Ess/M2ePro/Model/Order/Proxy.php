@@ -324,7 +324,7 @@ abstract class Ess_M2ePro_Model_Order_Proxy
 
         if (count($parts) > 2) {
             $prefixOptions = Mage::helper('customer')->getNamePrefixOptions($this->getStore());
-            if (isset($prefixOptions[$parts[0]])) {
+            if (is_array($prefixOptions) && isset($prefixOptions[$parts[0]])) {
                 $currentInfo['prefix'] = array_shift($parts);
             }
         }
@@ -332,7 +332,7 @@ abstract class Ess_M2ePro_Model_Order_Proxy
         $partsCount = count($parts);
         if ($partsCount > 2) {
             $suffixOptions = Mage::helper('customer')->getNameSuffixOptions($this->getStore());
-            if (isset($suffixOptions[$parts[$partsCount - 1]])) {
+            if (is_array($suffixOptions) && isset($suffixOptions[$parts[$partsCount - 1]])) {
                 $currentInfo['suffix'] = array_pop($parts);
             }
         }
