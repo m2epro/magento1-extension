@@ -62,14 +62,19 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Account_Grid extends Ess_M2ePro_Block_A
         /** @var Ess_M2ePro_Model_Account $row */
         $helper = Mage::helper('M2ePro');
 
-        $consumerId = $row->getData('client_id');
-        empty($consumerId) && $consumerId = $row->getData('consumer_id');
+        if ($row->getChildObject()->getData('marketplace_id') == Ess_M2ePro_Helper_Component_Walmart::MARKETPLACE_US) {
+            $titleLabel = $helper->__('Client ID');
+            $titleValue = $row->getChildObject()->getData('client_id');
+        } else {
+            $titleLabel = $helper->__('Consumer ID');
+            $titleValue = $row->getChildObject()->getData('consumer_id');
+        }
 
         return <<<HTML
 <div>
     {$value}<br/>
-    <span style="font-weight: bold">{$helper->__('Consumer ID')}</span>:
-    <span style="color: #505050">{$consumerId}</span>
+    <span style="font-weight: bold">{$titleLabel}</span>:
+    <span style="color: #505050">{$titleValue}</span>
     <br/>
     <span style="font-weight: bold">{$helper->__('Marketplace')}</span>:
     <span style="color: #505050">{$row->getData('marketplace_title')}</span>

@@ -866,7 +866,7 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
         return $this->getBillingAddressMode() == self::USE_SHIPPING_ADDRESS_AS_BILLING_IF_SAME_CUSTOMER_AND_RECIPIENT;
     }
 
-    private function getBillingAddressMode()
+    protected function getBillingAddressMode()
     {
         return $this->getSetting(
             'magento_orders_settings',
@@ -916,6 +916,23 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
         $setting = $this->getSetting('magento_orders_settings', array('fba', 'mode'), 1);
 
         return $setting == 1;
+    }
+
+    public function isMagentoOrdersFbaStoreModeEnabled()
+    {
+        $setting = $this->getSetting('magento_orders_settings', array('fba', 'store_mode'), 0);
+
+        return $setting == 1;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMagentoOrdersFbaStoreId()
+    {
+        $setting = $this->getSetting('magento_orders_settings', array('fba', 'store_id'), 0);
+
+        return (int)$setting;
     }
 
     public function isMagentoOrdersFbaStockEnabled()

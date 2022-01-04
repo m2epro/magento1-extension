@@ -254,14 +254,25 @@ class Ess_M2ePro_Model_Amazon_Order_Item extends Ess_M2ePro_Model_Component_Chil
         // Item was listed by M2E
         // ---------------------------------------
         if ($this->getChannelItem() !== null) {
-            return $this->getAmazonAccount()->isMagentoOrdersListingsStoreCustom()
+            $storeId = $this->getAmazonAccount()->isMagentoOrdersListingsStoreCustom()
                 ? $this->getAmazonAccount()->getMagentoOrdersListingsStoreId()
                 : $this->getChannelItem()->getStoreId();
+        } else {
+            $storeId = $this->getAmazonAccount()->getMagentoOrdersListingsOtherStoreId();
         }
 
         // ---------------------------------------
 
-        return $this->getAmazonAccount()->getMagentoOrdersListingsOtherStoreId();
+        // If order fulfilled by Amazon it has priority
+        // ---------------------------------------
+        if ($this->getAmazonOrder()->isFulfilledByAmazon() &&
+            $this->getAmazonAccount()->isMagentoOrdersFbaStoreModeEnabled()) {
+            $storeId = $this->getAmazonAccount()->getMagentoOrdersFbaStoreId();
+        }
+
+        // ---------------------------------------
+
+        return $storeId;
     }
 
     //########################################
@@ -353,9 +364,11 @@ class Ess_M2ePro_Model_Amazon_Order_Item extends Ess_M2ePro_Model_Component_Chil
     protected function createProduct()
     {
         if (!$this->getAmazonAccount()->isMagentoOrdersListingsOtherProductImportEnabled()) {
-            throw new Ess_M2ePro_Model_Exception(Mage::helper('M2ePro')->__(
-                'Product creation is disabled in "Account > Orders > Product Not Found".'
-            ));
+            throw new Ess_M2ePro_Model_Exception(
+                Mage::helper('M2ePro')->__(
+                    'Product creation is disabled in "Account > Orders > Product Not Found".'
+                )
+            );
         }
 
         $storeId = $this->getAmazonAccount()->getMagentoOrdersListingsOtherStoreId();

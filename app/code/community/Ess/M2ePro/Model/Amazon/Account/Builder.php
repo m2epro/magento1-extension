@@ -222,6 +222,8 @@ class Ess_M2ePro_Model_Amazon_Account_Builder extends Ess_M2ePro_Model_ActiveRec
 
         $keys = array(
             'mode',
+            'store_mode',
+            'store_id',
             'stock_mode'
         );
         foreach ($keys as $key) {
@@ -397,6 +399,8 @@ class Ess_M2ePro_Model_Amazon_Account_Builder extends Ess_M2ePro_Model_ActiveRec
                 ),
                 'fba'                     => array(
                     'mode'       => 1,
+                    'store_mode' => 0,
+                    'store_id'   => null,
                     'stock_mode' => 0
                 )
             ),

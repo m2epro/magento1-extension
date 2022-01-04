@@ -103,9 +103,6 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
         return (float)$this->getData('shipping_price');
     }
 
-    /**
-     * @return Ess_M2ePro_Model_Amazon_Order_ShippingAddress
-     */
     public function getShippingAddress()
     {
         $address = Mage::helper('M2ePro')->jsonDecode($this->getData('shipping_address'));
@@ -462,6 +459,10 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
             // ---------------------------------------
         }
 
+        if ($this->isFulfilledByAmazon() && $this->getAmazonAccount()->isMagentoOrdersFbaStoreModeEnabled()) {
+            $storeId = $this->getAmazonAccount()->getMagentoOrdersFbaStoreId();
+        }
+
         if ($storeId == 0) {
             $storeId = Mage::helper('M2ePro/Magento_Store')->getDefaultStoreId();
         }
@@ -700,17 +701,19 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
 
         if (!empty($trackingDetails['carrier_title'])) {
             if ($trackingDetails['carrier_title'] == Ess_M2ePro_Model_Order_Shipment_Handler::CUSTOM_CARRIER_CODE &&
-                !empty($trackingDetails['shipping_method']))
-            {
+                !empty($trackingDetails['shipping_method'])) {
                 $trackingDetails['carrier_title'] = $trackingDetails['shipping_method'];
             }
         }
 
-        $params = array_merge(array(
-            'amazon_order_id'  => $this->getAmazonOrderId(),
-            'fulfillment_date' => $trackingDetails['fulfillment_date'],
-            'items'            => array()
-        ), $trackingDetails);
+        $params = array_merge(
+            array(
+                'amazon_order_id'  => $this->getAmazonOrderId(),
+                'fulfillment_date' => $trackingDetails['fulfillment_date'],
+                'items'            => array()
+            ),
+            $trackingDetails
+        );
 
         foreach ($items as $item) {
             if (!isset($item['amazon_order_item_id']) || !isset($item['qty'])) {

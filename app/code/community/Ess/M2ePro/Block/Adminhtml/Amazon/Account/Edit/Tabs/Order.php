@@ -16,11 +16,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit_Tabs_Order extends Mage_Adm
     {
         parent::__construct();
 
-        // Initialization block
-        // ---------------------------------------
         $this->setId('amazonAccountEditTabsOrder');
-        // ---------------------------------------
-
         $this->setTemplate('M2ePro/amazon/account/tabs/order.phtml');
     }
 
@@ -51,7 +47,8 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit_Tabs_Order extends Mage_Adm
             array(
                 'id'       => 'magento_orders_listings_store_id',
                 'name'     => 'magento_orders_settings[listing][store_id]',
-                'selected' => $selectedStore
+                'selected' => $selectedStore,
+                'required_option' => true
             )
         );
         $blockStoreSwitcher->hasDefaultOption(false);
@@ -67,11 +64,28 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit_Tabs_Order extends Mage_Adm
             array(
                 'id'       => 'magento_orders_listings_other_store_id',
                 'name'     => 'magento_orders_settings[listing_other][store_id]',
-                'selected' => $selectedStore
+                'selected' => $selectedStore,
+                'required_option' => true
             )
         );
         $blockStoreSwitcher->hasDefaultOption(false);
         $this->setChild('magento_orders_listings_other_store_id', $blockStoreSwitcher);
+        // ---------------------------------------
+
+        // ---------------------------------------
+        $selectedStore = !empty($magentoOrdersSettings['fba']['store_id'])
+            ? $magentoOrdersSettings['fba']['store_id'] : '';
+        $blockStoreSwitcher = $this->getLayout()->createBlock(
+            'M2ePro/adminhtml_storeSwitcher', '',
+            array(
+                'id'       => 'magento_orders_fba_store_id',
+                'name'     => 'magento_orders_settings[fba][store_id]',
+                'selected' => $selectedStore,
+                'required_option' => true
+            )
+        );
+        $blockStoreSwitcher->hasDefaultOption(false);
+        $this->setChild('magento_orders_fba_store_id', $blockStoreSwitcher);
         // ---------------------------------------
 
         // ---------------------------------------

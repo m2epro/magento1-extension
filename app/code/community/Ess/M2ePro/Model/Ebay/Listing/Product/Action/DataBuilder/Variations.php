@@ -117,7 +117,13 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Variations
                 $this->_variationsThatCanNotBeDeleted[] = $oneMoreVariation;
             }
 
-            //--
+            if (isset($item['price']) && $variation->getChildObject()->getOnlinePrice() == $item['price']) {
+                $item['price_not_changed'] = true;
+            }
+
+            if (isset($item['qty']) && $variation->getChildObject()->getOnlineQty() == $item['qty']) {
+                $item['qty_not_changed'] = true;
+            }
 
             $data[] = $item;
             $variationMetaData[$variation->getId()] = array(

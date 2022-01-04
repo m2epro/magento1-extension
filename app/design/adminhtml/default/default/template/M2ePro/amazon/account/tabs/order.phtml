@@ -59,8 +59,8 @@
 
     Event.observe(window, 'load', function() {
 
-        $('magento_orders_listings_mode').observe('change', AmazonAccountObj.magentoOrdersListingsModeChange);
-        $('magento_orders_listings_store_mode').observe('change', AmazonAccountObj.magentoOrdersListingsStoreModeChange);
+        $('magento_orders_listings_mode').observe('change', AmazonAccountObj.magentoOrdersListingsModeChange).simulate('change');
+        $('magento_orders_listings_store_mode').observe('change', AmazonAccountObj.magentoOrdersListingsStoreModeChange).simulate('change');
 
         $('magento_orders_listings_other_mode').observe('change', AmazonAccountObj.magentoOrdersListingsOtherModeChange);
         $('magento_orders_listings_other_product_mode').observe('change', AmazonAccountObj.magentoOrdersListingsOtherProductModeChange);
@@ -73,7 +73,8 @@
         $('magento_orders_number_prefix_b2b').observe('keyup', AmazonAccountObj.magentoOrdersNumberPrefixPrefixChange);
         AmazonAccountObj.renderOrderNumberExample();
 
-        $('magento_orders_fba_mode').observe('change', AmazonAccountObj.magentoOrdersFbaModeChange);
+        $('magento_orders_fba_mode').observe('change', AmazonAccountObj.magentoOrdersFbaModeChange).simulate('change');
+        $('magento_orders_fba_store_mode').observe('change', AmazonAccountObj.magentoOrdersFbaStoreModeChange);
 
         $('magento_orders_customer_mode').observe('change', AmazonAccountObj.magentoOrdersCustomerModeChange);
         $('magento_orders_tax_mode').observe('change', AmazonAccountObj.magentoOrdersTaxModeChange).simulate('change');
@@ -242,6 +243,84 @@
     </div>
 
 </div>
+
+<div class="entry-edit" id="magento_block_amazon_accounts_magento_orders_fba">
+    <div class="entry-edit-head">
+        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('FBA Orders Settings'); ?></h4>
+    </div>
+
+    <div class="fieldset">
+        <div class="hor-scroll">
+
+            <div id="block_notice_amazon_accounts_orders_fba" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('FBA Orders Settings'); ?>">
+                <?php echo Mage::helper('M2ePro')->__('In this Block you can manage Stock Inventory of Products fulfilled by Amazon  (FBA Orders).<br/>
+                <ul class=list>
+
+                <li><b>Yes</b> - after Magento Order Creation of FBA Order, Quantity of Product reduces in Magento.</li>
+                <li><b>No</b> - Magento Order Creation of FBA Order does not affect Quantity of Magento Product.</li>
+                </ul>'); ?>
+            </div>
+
+            <table class="form-list" cellspacing="0" cellpadding="0">
+
+                <tr>
+                    <td class="label">
+                        <label for="magento_orders_fba_mode"><?php echo Mage::helper('M2ePro')->__('Create Order in Magento'); ?>:</label>
+                    </td>
+                    <td class="value" style="width: auto;">
+                        <select id="magento_orders_fba_mode" name="magento_orders_settings[fba][mode]" class="required-entry">
+                            <option value="0" <?php if ($formData['magento_orders_settings']['fba']['mode'] == 0) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
+                            <option value="1" <?php if ($formData['magento_orders_settings']['fba']['mode'] == 1) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
+                        </select>
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__('Whether an Order has to be created in Magento if a sold Product is fulfilled by Amazon.'); ?></span>
+                        </p>
+                    </td>
+                </tr>
+
+                <tr id="magento_orders_fba_store_mode_container">
+                    <td class="label">
+                        <label for="magento_orders_fba_store_mode"><?php echo Mage::helper('M2ePro')->__('Create in separate Store View'); ?>:</label>
+                    </td>
+                    <td class="value" style="width: auto;">
+                        <select id="magento_orders_fba_store_mode" name="magento_orders_settings[fba][store_mode]" class="M2ePro-required-when-visible">
+                            <option value="0" <?php if ($formData['magento_orders_settings']['fba']['store_mode'] == 0) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
+                            <option value="1" <?php if ($formData['magento_orders_settings']['fba']['store_mode'] == 1) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
+                        </select>
+                    </td>
+                </tr>
+
+                <tr id="magento_orders_fba_store_id_container">
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Store View'); ?>: <span class="required">*</span></label>
+                    </td>
+                    <td class="value">
+                        <?php echo $this->getChildHtml('magento_orders_fba_store_id'); ?>
+                    </td>
+                </tr>
+
+                <tr id="magento_orders_fba_stock_mode_container">
+                    <td class="label">
+                        <label for="magento_orders_fba_stock_mode"><?php echo Mage::helper('M2ePro')->__('Manage Stock'); ?>:</label>
+                    </td>
+                    <td class="value" style="width: auto;">
+                        <select id="magento_orders_fba_stock_mode" name="magento_orders_settings[fba][stock_mode]" class="M2ePro-required-when-visible">
+                            <option value="0" <?php if ($formData['magento_orders_settings']['fba']['stock_mode'] == 0) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
+                            <option value="1" <?php if ($formData['magento_orders_settings']['fba']['stock_mode'] == 1) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
+                        </select>
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__('If <i>Yes</i>, after Magento Order Creation QTY of Magento Product reduces.'); ?></span>
+                        </p>
+                    </td>
+                </tr>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
 
 <div class="entry-edit" id="magento_block_amazon_accounts_magento_orders_number" <?php if(($formData['magento_orders_settings']['listing']['mode'] == 0 && $formData['magento_orders_settings']['listing_other']['mode'] == 0)) echo 'style="display: none;"'; ?>>
 
@@ -429,64 +508,6 @@
                             <option value="0" <?php if (!$formData['magento_orders_settings']['refund_and_cancellation']['refund_mode']): ?>selected="selected"<?php endif; ?>><?php echo Mage::helper('M2ePro')->__('No') ?></option>
                             <option value="1" <?php if ($formData['magento_orders_settings']['refund_and_cancellation']['refund_mode']): ?>selected="selected"<?php endif; ?>><?php echo Mage::helper('M2ePro')->__('Yes') ?></option>
                         </select>
-                    </td>
-                </tr>
-
-            </table>
-
-        </div>
-    </div>
-
-</div>
-
-<?php $canShowBlock = (($formData['magento_orders_settings']['listing']['mode'] == 1 || $formData['magento_orders_settings']['listing_other']['mode'] == 1)); ?>
-<div class="entry-edit" id="magento_block_amazon_accounts_magento_orders_fba" <?php if (!$canShowBlock): ?>style="display: none;"<?php endif; ?>>
-    <div class="entry-edit-head">
-        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('FBA Orders Settings'); ?></h4>
-    </div>
-
-    <div class="fieldset">
-        <div class="hor-scroll">
-
-            <div id="block_notice_amazon_accounts_orders_fba" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('FBA Orders Settings'); ?>">
-                <?php echo Mage::helper('M2ePro')->__('In this Block you can manage Stock Inventory of Products fulfilled by Amazon  (FBA Orders).<br/>
-                <ul class=list>
-
-                <li><b>Yes</b> - after Magento Order Creation of FBA Order, Quantity of Product reduces in Magento.</li>
-                <li><b>No</b> - Magento Order Creation of FBA Order does not affect Quantity of Magento Product.</li>
-                </ul>'); ?>
-            </div>
-
-            <table class="form-list" cellspacing="0" cellpadding="0">
-
-                <tr>
-                    <td class="label">
-                        <label for="magento_orders_fba_mode"><?php echo Mage::helper('M2ePro')->__('Create Order in Magento'); ?>:</label>
-                    </td>
-                    <td class="value" style="width: auto;">
-                        <select id="magento_orders_fba_mode" name="magento_orders_settings[fba][mode]" class="required-entry">
-                            <option value="0" <?php if ($formData['magento_orders_settings']['fba']['mode'] == 0) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
-                            <option value="1" <?php if ($formData['magento_orders_settings']['fba']['mode'] == 1) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
-                        </select>
-                        <p class="note">
-                            <span><?php echo Mage::helper('M2ePro')->__('Whether an Order has to be created in Magento if a sold Product is fulfilled by Amazon.'); ?></span>
-                        </p>
-                    </td>
-                </tr>
-
-                <?php $canShowBlock = $formData['magento_orders_settings']['fba']['mode'] == 1 ?>
-                <tr id="magento_orders_fba_stock_mode_container" <?php if (!$canShowBlock): ?>style="display: none;"<?php endif; ?>>
-                    <td class="label">
-                        <label for="magento_orders_fba_stock_mode"><?php echo Mage::helper('M2ePro')->__('Manage Stock'); ?>:</label>
-                    </td>
-                    <td class="value" style="width: auto;">
-                        <select id="magento_orders_fba_stock_mode" name="magento_orders_settings[fba][stock_mode]" class="M2ePro-required-when-visible">
-                            <option value="0" <?php if ($formData['magento_orders_settings']['fba']['stock_mode'] == 0) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
-                            <option value="1" <?php if ($formData['magento_orders_settings']['fba']['stock_mode'] == 1) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
-                        </select>
-                        <p class="note">
-                            <span><?php echo Mage::helper('M2ePro')->__('If <i>Yes</i>, after Magento Order Creation QTY of Magento Product reduces.'); ?></span>
-                        </p>
                     </td>
                 </tr>
 

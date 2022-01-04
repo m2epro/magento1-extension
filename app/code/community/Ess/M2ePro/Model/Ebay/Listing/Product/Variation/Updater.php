@@ -99,8 +99,8 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Updater
 
                 foreach ($listingProductVariationOptions as $listingProductVariationOption) {
                     foreach ($magentoVariationOptions as $magentoVariationOption) {
-                        if ($listingProductVariationOption['attribute'] != $magentoVariationOption['attribute'] ||
-                            $listingProductVariationOption['option'] != $magentoVariationOption['option']) {
+                        if ($listingProductVariationOption['attribute'] !== $magentoVariationOption['attribute'] ||
+                            $listingProductVariationOption['option'] !== $magentoVariationOption['option']) {
                             continue;
                         }
 

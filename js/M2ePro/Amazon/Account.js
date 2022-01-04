@@ -295,9 +295,9 @@ window.AmazonAccount = Class.create(Common, {
             $('magento_orders_listings_store_mode_container').show();
         } else {
             $('magento_orders_listings_store_mode_container').hide();
+            $('magento_orders_listings_store_mode').value = M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_LISTINGS_STORE_MODE_DEFAULT');
         }
 
-        $('magento_orders_listings_store_mode').value = M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_LISTINGS_STORE_MODE_DEFAULT');
         self.magentoOrdersListingsStoreModeChange();
 
         self.changeVisibilityForOrdersModesRelatedBlocks();
@@ -308,9 +308,8 @@ window.AmazonAccount = Class.create(Common, {
             $('magento_orders_listings_store_id_container').show();
         } else {
             $('magento_orders_listings_store_id_container').hide();
+            $('magento_orders_listings_store_id').value = '';
         }
-
-        $('magento_orders_listings_store_id').value = '';
     },
 
     magentoOrdersListingsOtherModeChange: function() {
@@ -322,10 +321,9 @@ window.AmazonAccount = Class.create(Common, {
         } else {
             $('magento_orders_listings_other_product_mode_container').hide();
             $('magento_orders_listings_other_store_id_container').hide();
+            $('magento_orders_listings_other_product_mode').value = M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_LISTINGS_OTHER_PRODUCT_MODE_IGNORE');
+            $('magento_orders_listings_other_store_id').value = '';
         }
-
-        $('magento_orders_listings_other_product_mode').value = M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_LISTINGS_OTHER_PRODUCT_MODE_IGNORE');
-        $('magento_orders_listings_other_store_id').value = '';
 
         self.magentoOrdersListingsOtherProductModeChange();
         self.changeVisibilityForOrdersModesRelatedBlocks();
@@ -377,11 +375,27 @@ window.AmazonAccount = Class.create(Common, {
     },
 
     magentoOrdersFbaModeChange: function() {
+        var self = AmazonAccountObj;
+
         if ($('magento_orders_fba_mode').value == 0) {
-            $('magento_orders_fba_stock_mode_container').hide();
+            $('magento_orders_fba_store_mode').value = 0;
+            $('magento_orders_fba_store_mode_container').hide();
             $('magento_orders_fba_stock_mode').value = 0;
+            $('magento_orders_fba_stock_mode_container').hide();
         } else {
+            $('magento_orders_fba_store_mode_container').show();
             $('magento_orders_fba_stock_mode_container').show();
+        }
+
+        self.magentoOrdersFbaStoreModeChange();
+    },
+
+    magentoOrdersFbaStoreModeChange: function() {
+        if ($('magento_orders_fba_store_mode').value == 0) {
+            $('magento_orders_fba_store_id').value = '';
+            $('magento_orders_fba_store_id_container').hide();
+        } else {
+            $('magento_orders_fba_store_id_container').show();
         }
     },
 
@@ -499,6 +513,7 @@ window.AmazonAccount = Class.create(Common, {
 
             $('magento_block_amazon_accounts_magento_orders_fba').hide();
             $('magento_orders_fba_mode').value = 1;
+            $('magento_orders_fba_store_mode').value = 0;
             $('magento_orders_fba_stock_mode').value = 1;
 
             $('magento_block_amazon_accounts_magento_orders_refund_and_cancellation').hide();

@@ -53,7 +53,7 @@ class Ess_M2ePro_Model_Ebay_Connector_Order_Cancellation_Cancel
             $this->_orderChange->deleteInstance();
         }
 
-        if ($this->_responseData['result'] && $this->_responseData['cancelId'] !== null) {
+        if ($this->_responseData['result'] && $this->_responseData['cancel_id'] !== null) {
             $this->_order->getChildObject()->setData('cancellation_status', 1);
             $this->_order->getChildObject()->save();
             $this->_order->addSuccessLog('Order is canceled. Status is updated on eBay.');

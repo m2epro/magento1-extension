@@ -27,7 +27,7 @@ class Ess_M2ePro_Adminhtml_ControlPanel_Tools_M2ePro_InstallController
         }
 
         $inspector = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Manager')
-            ->getInspection('Ess_M2ePro_Model_ControlPanel_Inspection_Inspector_TablesStructureValidity');
+            ->getInspection('TablesStructureValidity');
 
         foreach ($columnsInfo as $columnInfo) {
             $inspector->fix($columnInfo);

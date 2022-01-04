@@ -23,7 +23,7 @@ class Ess_M2ePro_Adminhtml_ControlPanel_Tools_M2ePro_GeneralController
         }
 
         $inspection = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Manager')
-            ->getInspection('Ess_M2ePro_Model_ControlPanel_Inspection_Inspector_BrokenTables');
+            ->getInspection('BrokenTables');
         $inspection->fix($tableNames);
     }
 
@@ -42,7 +42,7 @@ class Ess_M2ePro_Adminhtml_ControlPanel_Tools_M2ePro_GeneralController
         $tableName = array_pop($tableNames);
 
         $inspection = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Manager')
-            ->getInspection('Ess_M2ePro_Model_ControlPanel_Inspection_Inspector_BrokenTables');
+            ->getInspection('BrokenTables');
 
         $info = $inspection->getBrokenRecordsInfo($tableName);
 
@@ -70,7 +70,7 @@ class Ess_M2ePro_Adminhtml_ControlPanel_Tools_M2ePro_GeneralController
         }
 
         $manager = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Manager');
-        $manager->getInspection('Ess_M2ePro_Model_ControlPanel_Inspection_Inspector_RemovedStores')->fix(
+        $manager->getInspection('RemovedStores')->fix(
             array(
                 $replaceIdFrom => $replaceIdTo
             )
@@ -99,7 +99,7 @@ class Ess_M2ePro_Adminhtml_ControlPanel_Tools_M2ePro_GeneralController
         }
 
         $inspector = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Manager')
-            ->getInspection('Ess_M2ePro_Model_ControlPanel_Inspection_Inspector_ListingProductStructure');
+            ->getInspection('ListingProductStructure');
         $inspector->fix($dataForRepair);
     }
 
@@ -117,7 +117,7 @@ class Ess_M2ePro_Adminhtml_ControlPanel_Tools_M2ePro_GeneralController
         $dataForRepair = (array)Mage::helper('M2ePro')->jsonDecode($repairInfo);
 
         $inspector = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Manager')
-            ->getInspection('Ess_M2ePro_Model_ControlPanel_Inspection_Inspector_OrderItemStructure');
+            ->getInspection('OrderItemStructure');
         $inspector->fix($dataForRepair);
     }
 
@@ -135,7 +135,7 @@ class Ess_M2ePro_Adminhtml_ControlPanel_Tools_M2ePro_GeneralController
         $dataForRepair = (array)Mage::helper('M2ePro')->jsonDecode($ids);
 
         $inspector = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Manager')
-            ->getInspection('Ess_M2ePro_Model_ControlPanel_Inspection_Inspector_EbayItemIdStructure');
+            ->getInspection('EbayItemIdStructure');
         $inspector->fix($dataForRepair);
     }
 
@@ -153,7 +153,7 @@ class Ess_M2ePro_Adminhtml_ControlPanel_Tools_M2ePro_GeneralController
         $dataForRepair = (array)Mage::helper('M2ePro')->jsonDecode($ids);
 
         $inspector = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Manager')
-            ->getInspection('Ess_M2ePro_Model_ControlPanel_Inspection_Inspector_AmazonProductsWithoutVariations');
+            ->getInspection('AmazonProductsWithoutVariations');
         $inspector->fix($dataForRepair);
     }
 

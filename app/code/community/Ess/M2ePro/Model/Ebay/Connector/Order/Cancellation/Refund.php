@@ -19,8 +19,8 @@ class Ess_M2ePro_Model_Ebay_Connector_Order_Cancellation_Refund
     public function getRequestData()
     {
         return array(
-            'cancelId'   => $this->_params['cancelId'],
-            'refundDate' => $this->_params['refundDate'],
+            'cancel_id'   => $this->_params['cancel_id'],
+            'refund_date' => $this->_params['refund_date'],
         );
     }
 

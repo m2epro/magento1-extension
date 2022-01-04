@@ -36,7 +36,9 @@ abstract class Ess_M2ePro_Model_Order_Shipment_Handler
         Mage_Sales_Model_Order_Shipment_Item $shipmentItem
     ) {
         $additionalData = Mage::helper('M2ePro')->unserialize($shipmentItem->getOrderItem()->getAdditionalData());
-        $data = $additionalData[Helper::CUSTOM_IDENTIFIER];
+        $data = isset($additionalData[Helper::CUSTOM_IDENTIFIER])
+            ? $additionalData[Helper::CUSTOM_IDENTIFIER]
+            : array();
 
         $componentMode = ucfirst($this->getComponentMode());
         if (isset($data['pretended_to_be_simple']) && $data['pretended_to_be_simple'] === true) {

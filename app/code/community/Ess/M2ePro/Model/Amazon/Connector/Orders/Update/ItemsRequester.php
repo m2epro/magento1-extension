@@ -54,7 +54,7 @@ abstract class Ess_M2ePro_Model_Amazon_Connector_Orders_Update_ItemsRequester
         $fulfillmentDate = new DateTime($order['fulfillment_date'], new DateTimeZone('UTC'));
 
         $request = array(
-            'id'               => $order['change_id'],
+            'id'               => $order['order_id'],
             'order_id'         => $order['amazon_order_id'],
             'tracking_number'  => $order['tracking_number'],
             'carrier_name'     => $order['carrier_name'],
