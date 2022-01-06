@@ -1,4 +1,9 @@
-* 6.19.0 (04/01/2022) 
+* 6.19.1 (06/01/2022) 
+
+Common: [Fixed] Compatibility with PHP v5.3 and v5.4 [#3259]
+eBay: [Fixed] Fatal error: Can't use method return value in write context after the upgrade to 6.18.1 [#3259]
+
+* 6.19.0 (04/01/2022)
 
 Common: [Fixed] Undefined index: m2epro_extension in Ess/M2ePro/Model/Order/Shipment/Handler.php on line 63 when trying to resend Shipping Information [#2973]
 eBay: [Added] Mark "Name", "Mode" and "Value" fields as required when adding Item Specifics [#2634]

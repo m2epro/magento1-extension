@@ -19,7 +19,8 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Revise_Validator
             return false;
         }
 
-        if (empty($this->getEbayListingProduct()->getEbayItemIdReal())) {
+        $ebayItemIdReal = $this->getEbayListingProduct()->getEbayItemIdReal();
+        if (empty($ebayItemIdReal)) {
             return false;
         }
 

@@ -102,8 +102,12 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Order_Update extends Ess_M2ePro_Model_Cron
         $changesCollection = Mage::getModel('M2ePro/Order_Change')->getCollection();
         $changesCollection->addAccountFilter($account->getId());
         $changesCollection->addProcessingAttemptDateFilter();
-        $changesCollection->addFieldToFilter('action', ['in' => [Change::ACTION_UPDATE_SHIPPING,
-            Change::ACTION_UPDATE_PAYMENT]]);
+        $changesCollection->addFieldToFilter('action', array(
+            'in' => array(
+                Change::ACTION_UPDATE_SHIPPING,
+                Change::ACTION_UPDATE_PAYMENT,
+            ),
+        ));
         $changesCollection->setPageSize(self::MAX_UPDATES_PER_TIME);
         $changesCollection->getSelect()->group(array('order_id'));
 

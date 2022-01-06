@@ -137,12 +137,12 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Order_Refund extends Ess_M2ePro_Model_Cron
 
             // ---------------------------------------
 
+            $refundDate = new DateTime($change->getData('create_date'), new DateTimeZone('UTC'));
             $refundParams = array(
                 'order_id'    => $change->getOrderId(),
                 'change_id'   => $change->getId(),
                 'cancel_id'   => $cancelResponseData['cancel_id'],
-                'refund_date' => (new DateTime($change->getData('create_date'), new DateTimeZone('UTC')))
-                    ->format('Y-m-d H:i:s')
+                'refund_date' => $refundDate->format('Y-m-d H:i:s')
             );
 
             $connectorObj = $dispatcherObject->getCustomConnector(
