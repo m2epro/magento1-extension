@@ -1,4 +1,10 @@
-* 6.19.1 (06/01/2022) 
+* 6.19.2 (18/01/2022) 
+
+Common: [Fixed] Warning: "Failed to set memory limit" in some software environments [#3252]
+Common: [Improved] Optimization of listing management speed [#3057]
+eBay: [Fixed] Canceled orders are not imported to M2E Pro [#3134]
+
+* 6.19.1 (06/01/2022)
 
 Common: [Fixed] Compatibility with PHP v5.3 and v5.4 [#3259]
 eBay: [Fixed] Fatal error: Can't use method return value in write context after the upgrade to 6.18.1 [#3259]

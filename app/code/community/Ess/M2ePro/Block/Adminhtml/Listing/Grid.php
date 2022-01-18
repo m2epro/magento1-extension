@@ -91,8 +91,6 @@ class Ess_M2ePro_Block_Adminhtml_Listing_Grid extends Mage_Adminhtml_Block_Widge
             )
         );
 
-        $this->setColumns();
-
         $this->addColumn(
             'actions', array(
                 'header'    => Mage::helper('M2ePro')->__('Actions'),
@@ -112,11 +110,6 @@ class Ess_M2ePro_Block_Adminhtml_Listing_Grid extends Mage_Adminhtml_Block_Widge
         return parent::_prepareColumns();
     }
 
-    protected function setColumns()
-    {
-        return null;
-    }
-
     //########################################
 
     public function callbackColumnTitle($value, $row, $column, $isExport)
@@ -127,23 +120,6 @@ class Ess_M2ePro_Block_Adminhtml_Listing_Grid extends Mage_Adminhtml_Block_Widge
     protected function callbackFilterTitle($collection, $column)
     {
         return null;
-    }
-
-    // ---------------------------------------
-
-    public function callbackColumnTotalProducts($value, $row, $column, $isExport)
-    {
-        return $this->getColumnValue($value);
-    }
-
-    public function callbackColumnListedProducts($value, $row, $column, $isExport)
-    {
-        return $this->getColumnValue($value);
-    }
-
-    public function callbackColumnInactiveProducts($value, $row, $column, $isExport)
-    {
-        return $this->getColumnValue($value);
     }
 
     //########################################

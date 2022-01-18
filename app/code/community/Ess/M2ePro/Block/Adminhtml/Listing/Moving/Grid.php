@@ -29,10 +29,6 @@ class Ess_M2ePro_Block_Adminhtml_Listing_Moving_Grid extends Mage_Adminhtml_Bloc
         $componentMode = $this->getRequest()->getParam('componentMode');
         $ignoreListings = (array)Mage::helper('M2ePro')->jsonDecode($this->getRequest()->getParam('ignoreListings'));
 
-        // Update statistic table values
-        Mage::getResourceModel('M2ePro/Listing')->updateStatisticColumns();
-        Mage::getResourceModel('M2ePro/' . ucfirst($componentMode) . '_Listing')->updateStatisticColumns();
-
         $collection = Mage::helper('M2ePro/Component')
             ->getComponentModel($componentMode, 'Listing')
             ->getCollection();
@@ -142,14 +138,16 @@ class Ess_M2ePro_Block_Adminhtml_Listing_Moving_Grid extends Mage_Adminhtml_Bloc
         return '&nbsp;'.$storeName;
     }
 
-    public function callbackColumnSource($value, $row, $column, $isExport)
-    {
-        return '&nbsp;'.$value;
-    }
-
     public function callbackColumnSourceTotalItems($value, $row, $column, $isExport)
     {
-        return $value.'&nbsp;';
+        $componentMode = $this->getRequest()->getParam('componentMode');
+        $value = Mage::getResourceModel('M2ePro/' . ucfirst($componentMode) . '_Listing')->getStatisticTotalCount($row->id);
+
+        if ($value <= 0) {
+            $value = '<span style="color: red;">0</span>';
+        }
+
+        return $value;
     }
 
     public function callbackColumnActions($value, $row, $column, $isExport)

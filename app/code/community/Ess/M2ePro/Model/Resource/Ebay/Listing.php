@@ -10,91 +10,13 @@ class Ess_M2ePro_Model_Resource_Ebay_Listing
     extends Ess_M2ePro_Model_Resource_Component_Child_Abstract
 {
     protected $_isPkAutoIncrement = false;
+    protected $_statisticDataCount = null;
 
     //########################################
 
     public function _construct()
     {
         $this->_init('M2ePro/Ebay_Listing', 'listing_id');
-        $this->_isPkAutoIncrement = false;
-    }
-
-    //########################################
-
-    public function updateStatisticColumns()
-    {
-        $this->updateProductsSoldCount();
-        $this->updateItemsActiveCount();
-        $this->updateItemsSoldCount();
-    }
-
-    // ---------------------------------------
-
-    protected function updateProductsSoldCount()
-    {
-        $listingProductTable = Mage::getResourceModel('M2ePro/Listing_Product')->getMainTable();
-
-        $select = $this->_getReadAdapter()
-                       ->select()
-                       ->from($listingProductTable, new Zend_Db_Expr('COUNT(*)'))
-                       ->where("`listing_id` = `{$this->getMainTable()}`.`listing_id`")
-                       ->where("`status` = ?", (int)Ess_M2ePro_Model_Listing_Product::STATUS_SOLD);
-
-        $query = "UPDATE `{$this->getMainTable()}`
-                  SET `products_sold_count` =  (".$select->__toString().")";
-
-        $this->_getWriteAdapter()->query($query);
-    }
-
-    protected function updateItemsActiveCount()
-    {
-        $listingTable = Mage::getResourceModel('M2ePro/Listing')->getMainTable();
-        $listingProductTable = Mage::getResourceModel('M2ePro/Listing_Product')->getMainTable();
-        $ebayListingProductTable = Mage::getResourceModel('M2ePro/Ebay_Listing_Product')->getMainTable();
-
-        $select = $this->_getReadAdapter()
-                       ->select()
-                    ->from(
-                        array('lp' => $listingProductTable),
-                        new Zend_Db_Expr('SUM(`online_qty` - `online_qty_sold`)')
-                    )
-                    ->join(
-                        array('elp' => $ebayListingProductTable),
-                        'lp.id = elp.listing_product_id',
-                        array()
-                    )
-                       ->where("`listing_id` = `{$listingTable}`.`id`")
-                       ->where("`status` = ?", (int)Ess_M2ePro_Model_Listing_Product::STATUS_LISTED);
-
-        $query = "UPDATE `{$listingTable}`
-                  SET `items_active_count` =  IFNULL((".$select->__toString()."),0)
-                  WHERE `component_mode` = '".Ess_M2ePro_Helper_Component_Ebay::NICK."'";
-
-        $this->_getWriteAdapter()->query($query);
-    }
-
-    protected function updateItemsSoldCount()
-    {
-        $listingProductTable = Mage::getResourceModel('M2ePro/Listing_Product')->getMainTable();
-        $ebayListingProductTable = Mage::getResourceModel('M2ePro/Ebay_Listing_Product')->getMainTable();
-
-        $select = $this->_getReadAdapter()
-                       ->select()
-                    ->from(
-                        array('lp' => $listingProductTable),
-                        new Zend_Db_Expr('SUM(`online_qty_sold`)')
-                    )
-                    ->join(
-                        array('elp' => $ebayListingProductTable),
-                        'lp.id = elp.listing_product_id',
-                        array()
-                    )
-                       ->where("`listing_id` = `{$this->getMainTable()}`.`listing_id`");
-
-        $query = "UPDATE `{$this->getMainTable()}`
-                  SET `items_sold_count` =  (".$select->__toString().")";
-
-        $this->_getWriteAdapter()->query($query);
     }
 
     //########################################
@@ -175,4 +97,73 @@ class Ess_M2ePro_Model_Resource_Ebay_Listing
     }
 
     //########################################
+
+    public function getStatisticTotalCount($listingId)
+    {
+        $statisticData = $this->getStatisticData();
+        if (!isset($statisticData[$listingId]['total'])) {
+            return 0;
+        }
+
+        return (int)$statisticData[$listingId]['total'];
+    }
+
+    //########################################
+
+    public function getStatisticActiveCount($listingId)
+    {
+        $statisticData = $this->getStatisticData();
+        if (!isset($statisticData[$listingId]['active'])) {
+            return 0;
+        }
+
+        return (int)$statisticData[$listingId]['active'];
+    }
+
+    //########################################
+
+    public function getStatisticInactiveCount($listingId)
+    {
+        $statisticData = $this->getStatisticData();
+        if (!isset($statisticData[$listingId]['inactive'])) {
+            return 0;
+        }
+
+        return (int)$statisticData[$listingId]['inactive'];
+    }
+
+    //########################################
+
+    protected function getStatisticData()
+    {
+        if ($this->_statisticDataCount) {
+            return $this->_statisticDataCount;
+        }
+
+        $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
+        $structureHelper = Mage::helper('M2ePro/Module_Database_Structure');
+
+        $m2eproListing = $structureHelper->getTableNameWithPrefix('m2epro_listing');
+        $m2eproEbayListing = $structureHelper->getTableNameWithPrefix('m2epro_ebay_listing');
+        $m2eproListingProduct = $structureHelper->getTableNameWithPrefix('m2epro_listing_product');
+
+        $sql = "SELECT
+                    l.id                                           AS listing_id,
+                    COUNT(lp.id)                                   AS total,
+                    COUNT(CASE WHEN lp.status = 2 THEN lp.id END)  AS active,
+                    COUNT(CASE WHEN lp.status != 2 THEN lp.id END) AS inactive
+                FROM `{$m2eproListing}` AS `l`
+                    INNER JOIN `{$m2eproEbayListing}` AS `el` ON l.id = el.listing_id
+                    LEFT JOIN `{$m2eproListingProduct}` AS `lp` ON l.id = lp.listing_id
+                GROUP BY listing_id;";
+
+        $result = $connRead->query($sql)->fetchAll();
+
+        $data = array();
+        foreach($result as $value){
+            $data[$value['listing_id']] = $value;
+        }
+
+        return $this->_statisticDataCount = $data;
+    }
 }

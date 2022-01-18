@@ -8,19 +8,20 @@
 
 class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Grid extends Ess_M2ePro_Block_Adminhtml_Listing_Grid
 {
+    /** @var Ess_M2ePro_Model_Resource_Amazon_Listing */
+    protected $_amazonListingResourceModel;
+
     //########################################
 
     public function __construct()
     {
         parent::__construct();
         $this->setId('amazonListingGrid');
+        $this->_amazonListingResourceModel = Mage::getResourceModel('M2ePro/Amazon_Listing');
     }
 
     protected function _prepareCollection()
     {
-        // Update statistic table values
-        Mage::getResourceModel('M2ePro/Amazon_Listing')->updateStatisticColumns();
-
         // Get collection of listings
         $collection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing');
 
@@ -247,10 +248,44 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Grid extends Ess_M2ePro_Block_Ad
 
     //########################################
 
-    public function callbackColumnSoldProducts($value, $row, $column, $isExport)
+    public function callbackColumnTotalProducts($value, $row, $column, $isExport)
     {
-        return $this->getColumnValue($value);
+        $value = $this->_amazonListingResourceModel->getStatisticTotalCount($row->id);
+
+        if ($value == 0) {
+            $value = '<span style="color: red;">0</span>';
+        }
+
+        return $value;
     }
+
+    //########################################
+
+    public function callbackColumnListedProducts($value, $row, $column, $isExport)
+    {
+        $value = $this->_amazonListingResourceModel->getStatisticActiveCount($row->id);
+
+        if ($value == 0) {
+            $value = '<span style="color: red;">0</span>';
+        }
+
+        return $value;
+    }
+
+    //########################################
+
+    public function callbackColumnInactiveProducts($value, $row, $column, $isExport)
+    {
+        $value = $this->_amazonListingResourceModel->getStatisticInactiveCount($row->id);
+
+        if ($value == 0) {
+            $value = '<span style="color: red;">0</span>';
+        }
+
+        return $value;
+    }
+
+    //########################################
 
     public function callbackColumnTitle($value, $row, $column, $isExport)
     {

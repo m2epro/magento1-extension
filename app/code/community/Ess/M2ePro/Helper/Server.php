@@ -8,7 +8,7 @@
 
 class Ess_M2ePro_Helper_Server extends Mage_Core_Helper_Abstract
 {
-    const MAX_INTERVAL_OF_RETURNING_TO_DEFAULT_BASEURL = 86400;
+    const MAX_INTERVAL_OF_RETURNING_TO_DEFAULT_BASEURL = 600;
 
     //########################################
 

@@ -10,20 +10,20 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Grid extends Ess_M2ePro_Block_Admi
 {
     const MASS_ACTION_ID_EDIT_PARTS_COMPATIBILITY = 'editPartsCompatibilityMode';
 
+    /** @var Ess_M2ePro_Model_Resource_Ebay_Listing */
+    protected $_ebayListingResourceModel;
+
     //########################################
 
     public function __construct()
     {
         parent::__construct();
         $this->setId('ebayListingGrid');
+        $this->_ebayListingResourceModel = Mage::getResourceModel('M2ePro/Ebay_Listing');
     }
 
     protected function _prepareCollection()
     {
-        // Update statistic table values
-        Mage::getResourceModel('M2ePro/Listing')->updateStatisticColumns();
-        Mage::getResourceModel('M2ePro/Ebay_Listing')->updateStatisticColumns();
-
         // Get collection of listings
         $collection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Listing');
         $collection->getSelect()->join(
@@ -86,23 +86,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Grid extends Ess_M2ePro_Block_Admi
     }
 
     //########################################
-
-    protected function setColumns()
-    {
-        $this->addColumn(
-            'items_sold_count', array(
-                'header'         => Mage::helper('M2ePro')->__('Sold QTY'),
-                'align'          => 'right',
-                'width'          => '100px',
-                'type'           => 'number',
-                'index'          => 'items_sold_count',
-                'filter_index'   => 'second_table.items_sold_count',
-                'frame_callback' => array($this, 'callbackColumnSoldQTY')
-            )
-        );
-
-        return $this;
-    }
 
     protected function getColumnActionsItems()
     {
@@ -228,6 +211,45 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Grid extends Ess_M2ePro_Block_Admi
 
     //########################################
 
+    public function callbackColumnTotalProducts($value, $row, $column, $isExport)
+    {
+        $value = $this->_ebayListingResourceModel->getStatisticTotalCount($row->id);
+
+        if ($value == 0) {
+            $value = '<span style="color: red;">0</span>';
+        }
+
+        return $value;
+    }
+
+    //########################################
+
+    public function callbackColumnListedProducts($value, $row, $column, $isExport)
+    {
+        $value = $this->_ebayListingResourceModel->getStatisticActiveCount($row->id);
+
+        if ($value == 0) {
+            $value = '<span style="color: red;">0</span>';
+        }
+
+        return $value;
+    }
+
+    //########################################
+
+    public function callbackColumnInactiveProducts($value, $row, $column, $isExport)
+    {
+        $value = $this->_ebayListingResourceModel->getStatisticInactiveCount($row->id);
+
+        if ($value == 0) {
+            $value = '<span style="color: red;">0</span>';
+        }
+
+        return $value;
+    }
+
+    //########################################
+
     public function callbackColumnTitle($value, $row, $column, $isExport)
     {
         $title = Mage::helper('M2ePro')->escapeHtml($value);
@@ -263,11 +285,6 @@ HTML;
 HTML;
 
         return $value;
-    }
-
-    public function callbackColumnSoldQTY($value, $row, $column, $isExport)
-    {
-        return $this->getColumnValue($value);
     }
 
     //########################################

@@ -684,6 +684,10 @@ class Ess_M2ePro_Model_Ebay_Order extends Ess_M2ePro_Model_Component_Child_Ebay_
      */
     public function canCreateMagentoOrder()
     {
+        if ($this->isCanceled()) {
+            return false;
+        }
+
         $ebayAccount = $this->getEbayAccount();
 
         if (!$this->isCheckoutCompleted() &&
@@ -705,7 +709,7 @@ class Ess_M2ePro_Model_Ebay_Order extends Ess_M2ePro_Model_Component_Child_Ebay_
      */
     public function isReservable()
     {
-        return true;
+        return !$this->isCanceled();
     }
 
     //########################################

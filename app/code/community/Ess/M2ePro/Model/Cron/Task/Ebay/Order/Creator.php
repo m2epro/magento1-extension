@@ -92,6 +92,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Order_Creator
                 $order->addNoticeLog(
                     'Magento order creation rules are met. M2E Pro will attempt to create Magento order.'
                 );
+
                 $order->createMagentoOrder();
             } catch (Exception $exception) {
                 return;

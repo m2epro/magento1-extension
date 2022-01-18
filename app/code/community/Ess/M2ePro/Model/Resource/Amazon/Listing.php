@@ -10,144 +10,84 @@ class Ess_M2ePro_Model_Resource_Amazon_Listing
     extends Ess_M2ePro_Model_Resource_Component_Child_Abstract
 {
     protected $_isPkAutoIncrement = false;
+    protected $_statisticDataCount = null;
 
     //########################################
 
     public function _construct()
     {
         $this->_init('M2ePro/Amazon_Listing', 'listing_id');
-        $this->_isPkAutoIncrement = false;
     }
 
     //########################################
 
-    public function updateStatisticColumns()
+    public function getStatisticTotalCount($listingId)
     {
-        $this->updateStatisticCountColumns();
+        $statisticData = $this->getStatisticData();
+        if (!isset($statisticData[$listingId]['total'])) {
+            return 0;
+        }
 
-        $listingTable = Mage::getResourceModel('M2ePro/Listing')->getMainTable();
-        $listingProductTable = Mage::getResourceModel('M2ePro/Listing_Product')->getMainTable();
-        $amazonListingProductTable = Mage::getResourceModel('M2ePro/Amazon_Listing_Product')->getMainTable();
-
-        $select = $this->_getReadAdapter()
-                       ->select()
-                    ->from(
-                        array('lp' => $listingProductTable),
-                        new Zend_Db_Expr('SUM(`online_qty`)')
-                    )
-                    ->join(
-                        array('alp' => $amazonListingProductTable),
-                        'lp.id = alp.listing_product_id',
-                        array()
-                    )
-                       ->where("`listing_id` = `{$listingTable}`.`id`")
-                       ->where("`status` = ?", (int)Ess_M2ePro_Model_Listing_Product::STATUS_LISTED);
-
-        $query = "UPDATE `{$listingTable}`
-                  SET `items_active_count` =  IFNULL((".$select->__toString()."),0)
-                  WHERE `component_mode` = '".Ess_M2ePro_Helper_Component_Amazon::NICK."'";
-
-        $this->_getWriteAdapter()->query($query);
+        return (int)$statisticData[$listingId]['total'];
     }
 
-    protected function updateStatisticCountColumns()
+    //########################################
+
+    public function getStatisticActiveCount($listingId)
     {
-        $listingTable = Mage::getResourceModel('M2ePro/Listing')->getMainTable();
-        $listingProductTable = Mage::getResourceModel('M2ePro/Listing_Product')->getMainTable();
-        $amazonListingProductTable = Mage::getResourceModel('M2ePro/Amazon_Listing_Product')->getMainTable();
-
-        $statisticsData = array();
-        $statusListed = Ess_M2ePro_Model_Listing_Product::STATUS_LISTED;
-
-        $totalCountSelect = $this->_getReadAdapter()
-            ->select()
-            ->from(
-                array('lp' => $listingProductTable),
-                array(
-                    'listing_id' => 'listing_id',
-                    'count'      => new Zend_Db_Expr('COUNT(*)')
-                )
-            )
-            ->join(
-                array('alp' => $amazonListingProductTable),
-                'lp.id = alp.listing_product_id',
-                array()
-            )
-            ->where("`variation_parent_id` IS NULL")
-            ->group('listing_id')
-            ->query();
-
-        while ($row = $totalCountSelect->fetch()) {
-            if (empty($row['listing_id'])) {
-                continue;
-            }
-
-            $statisticsData[$row['listing_id']] = array(
-                'total'    => (int)$row['count'],
-                'active'   => 0,
-                'inactive' => 0
-            );
+        $statisticData = $this->getStatisticData();
+        if (!isset($statisticData[$listingId]['active'])) {
+            return 0;
         }
 
-        $activeCountSelect = $this->_getReadAdapter()
-            ->select()
-            ->from(
-                array('lp' => $listingProductTable),
-                array(
-                    'listing_id' => 'listing_id',
-                    'count'      => new Zend_Db_Expr('COUNT(*)')
-                )
-            )
-            ->join(
-                array('alp' => $amazonListingProductTable),
-                'lp.id = alp.listing_product_id',
-                array()
-            )
-            ->where("`variation_parent_id` IS NULL")
-            ->where(
-                "lp.status = {$statusListed} OR
-                    (alp.is_variation_parent = 1 AND alp.variation_child_statuses REGEXP '\"{$statusListed}\":[^0]')"
-            )
-            ->group('listing_id')
-            ->query();
+        return (int)$statisticData[$listingId]['active'];
+    }
 
-        while ($row = $activeCountSelect->fetch()) {
-            if (empty($row['listing_id'])) {
-                continue;
-            }
+    //########################################
 
-            $total = $statisticsData[$row['listing_id']]['total'];
-
-            $statisticsData[$row['listing_id']]['active']   = (int)$row['count'];
-            $statisticsData[$row['listing_id']]['inactive'] = $total - (int)$row['count'];
+    public function getStatisticInactiveCount($listingId)
+    {
+        $statisticData = $this->getStatisticData();
+        if (!isset($statisticData[$listingId]['inactive'])) {
+            return 0;
         }
 
-        $existedListings = $this->_getReadAdapter()
-             ->select()
-            ->from(
-                array('l' => $listingTable),
-                array('id' => 'id')
-            )
-             ->where('component_mode = ?', Ess_M2ePro_Helper_Component_Amazon::NICK)
-             ->query();
+        return (int)$statisticData[$listingId]['inactive'];
+    }
 
-        while ($listingId = $existedListings->fetchColumn()) {
-            $totalCount    = isset($statisticsData[$listingId]) ? $statisticsData[$listingId]['total'] : 0;
-            $activeCount   = isset($statisticsData[$listingId]) ? $statisticsData[$listingId]['active'] : 0;
-            $inactiveCount = isset($statisticsData[$listingId]) ? $statisticsData[$listingId]['inactive'] : 0;
+    //########################################
 
-            if ($inactiveCount == 0 && $activeCount == 0) {
-                $inactiveCount = $totalCount;
-            }
-
-            $query = "UPDATE `{$listingTable}`
-                      SET `products_total_count` = {$totalCount},
-                          `products_active_count` = {$activeCount},
-                          `products_inactive_count` = {$inactiveCount}
-                      WHERE `id` = {$listingId}";
-
-            $this->_getWriteAdapter()->query($query);
+    protected function getStatisticData()
+    {
+        if ($this->_statisticDataCount) {
+            return $this->_statisticDataCount;
         }
+
+        $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
+        $structureHelper = Mage::helper('M2ePro/Module_Database_Structure');
+
+        $m2eproListing = $structureHelper->getTableNameWithPrefix('m2epro_listing');
+        $m2eproAmazonListing = $structureHelper->getTableNameWithPrefix('m2epro_amazon_listing');
+        $m2eproListingProduct = $structureHelper->getTableNameWithPrefix('m2epro_listing_product');
+
+        $sql = "SELECT
+                    l.id                                           AS listing_id,
+                    COUNT(lp.id)                                   AS total,
+                    COUNT(CASE WHEN lp.status = 2 THEN lp.id END)  AS active,
+                    COUNT(CASE WHEN lp.status != 2 THEN lp.id END) AS inactive
+                FROM `{$m2eproListing}` AS `l`
+                    INNER JOIN `{$m2eproAmazonListing}` AS `al` ON l.id = al.listing_id
+                    LEFT JOIN `{$m2eproListingProduct}` AS `lp` ON l.id = lp.listing_id
+                GROUP BY listing_id;";
+
+        $result = $connRead->query($sql)->fetchAll();
+
+        $data = array();
+        foreach($result as $value){
+            $data[$value['listing_id']] = $value;
+        }
+
+        return $this->_statisticDataCount = $data;
     }
 
     //########################################

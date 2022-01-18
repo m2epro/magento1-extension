@@ -6,14 +6,13 @@
  * @license    Commercial use is forbidden
  */
 
-class Ess_M2ePro_Model_Resource_Listing
-    extends Ess_M2ePro_Model_Resource_Component_Parent_Abstract
+class Ess_M2ePro_Sql_Upgrade_v6_19_1__v6_19_2_Config extends Ess_M2ePro_Model_Upgrade_Feature_AbstractConfig
 {
     //########################################
 
-    public function _construct()
+    public function getFeaturesList()
     {
-        $this->_init('M2ePro/Listing', 'id');
+        return array();
     }
 
     //########################################

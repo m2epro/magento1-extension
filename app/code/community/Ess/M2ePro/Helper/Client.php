@@ -303,28 +303,26 @@ class Ess_M2ePro_Helper_Client extends Mage_Core_Helper_Abstract
         return $memoryLimit;
     }
 
-    public function setMemoryLimit($maxSize = 512)
+    public function setMemoryLimit($maxSize)
     {
         $minSize = 32;
         $currentMemoryLimit = $this->getMemoryLimit();
 
-        if ($maxSize < $minSize || (int)$currentMemoryLimit >= $maxSize || (float)$currentMemoryLimit <= 0) {
-            return false;
+        if ($currentMemoryLimit <= 0 || $maxSize < $minSize || $currentMemoryLimit >= $maxSize) {
+            return;
         }
 
         // @codingStandardsIgnoreStart
-        for ($i=$minSize; $i<=$maxSize; $i*=2) {
-            if (@ini_set('memory_limit', "{$i}M") === false) {
-                if ($i == $minSize) {
-                    return false;
-                } else {
-                    return $i/2;
-                }
-            }
-        }
-        // @codingStandardsIgnoreEnd
+        $i = max($minSize, $currentMemoryLimit);
+        do {
+            $i *= 2;
+            $k = min($i, $maxSize);
 
-        return true;
+            if (@ini_set('memory_limit', "{$k}M") === false) {
+                return;
+            }
+        } while ($i < $maxSize);
+        // @codingStandardsIgnoreEnd
     }
 
     public function testMemoryLimit($bytes = null)
