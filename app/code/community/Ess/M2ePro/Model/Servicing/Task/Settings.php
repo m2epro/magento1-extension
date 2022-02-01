@@ -48,6 +48,7 @@ class Ess_M2ePro_Model_Servicing_Task_Settings extends Ess_M2ePro_Model_Servicin
         $this->updateLastVersion($data);
         $this->updateSendLogs($data);
         $this->updateAnalytics($data);
+        $this->updateStatistic($data);
     }
 
     //########################################
@@ -179,6 +180,24 @@ class Ess_M2ePro_Model_Servicing_Task_Settings extends Ess_M2ePro_Model_Servicin
         if (isset($data['analytics']['planned_at']) && $data['analytics']['planned_at'] !== $registry->getPlannedAt()) {
             $registry->markPlannedAt($data['analytics']['planned_at']);
         }
+    }
+
+    protected function updateStatistic(array $data)
+    {
+        // A list of tasks to be enabled/disabled from the server
+        $tasks = array(
+            Ess_M2ePro_Model_Servicing_Task_Statistic_Manager::TASK_LISTING_PRODUCT_INSTRUCTION_TYPE => false
+        );
+
+        if (isset($data['statistic']['tasks'])) {
+            foreach ($data['statistic']['tasks'] as $key => $value) {
+                if (isset($tasks[$key])) {
+                    $tasks[$key] = (bool)$value;
+                }
+            }
+        }
+
+        Mage::getModel('M2ePro/Servicing_Task_Statistic_Manager')->setTasksStates($tasks);
     }
 
     //########################################

@@ -106,7 +106,21 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Order_MerchantFulfillment_Configuration
 
     public function getUserData()
     {
-        return Mage::helper('M2ePro/Module')->getRegistry()->getValueFromJson('/wizard/license_form_data/');
+        $userData = array();
+
+        if (Mage::helper('M2ePro/Module')->getRegistration()->isExistInfo()) {
+            $userDataObj = Mage::helper('M2ePro/Module')->getRegistration()->getInfo();
+
+            $userData['email'] = $userDataObj->getEmail();
+            $userData['firstname'] = $userDataObj->getFirstname();
+            $userData['lastname'] = $userDataObj->getLastname();
+            $userData['phone'] = $userDataObj->getPhone();
+            $userData['country'] = $userDataObj->getCountry();
+            $userData['city'] = $userDataObj->getCity();
+            $userData['postal_code'] = $userDataObj->getPostalCode();
+        }
+
+        return $userData;
     }
 
     public function canUseProductAttributes()

@@ -13,6 +13,10 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Instruction_SynchronizationTemplat
 
     public function isAllowed()
     {
+        if (!parent::isAllowed()) {
+            return false;
+        }
+
         $listingProduct = $this->_input->getListingProduct();
 
         if (!$listingProduct->isListable() || !$listingProduct->isNotListed()) {

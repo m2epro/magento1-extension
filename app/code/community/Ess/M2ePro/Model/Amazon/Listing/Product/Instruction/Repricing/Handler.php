@@ -42,6 +42,10 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Instruction_Repricing_Handler
 
         $listingProduct = $input->getListingProduct();
 
+        if (!$listingProduct->getMagentoProduct()->exists()) {
+            return;
+        }
+
         /** @var Ess_M2ePro_Model_Amazon_Listing_Product $amazonListingProduct */
         $amazonListingProduct = $listingProduct->getChildObject();
 

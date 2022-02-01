@@ -196,10 +196,6 @@ class Ess_M2ePro_Sql_Upgrade_v6_3_2__v6_3_3_AllFeatures extends Ess_M2ePro_Model
     WHERE `key` = 'wizard_new_amazon_description_templates';
 
     UPDATE `{$this->_installer->getTable('m2epro_registry')}`
-    SET `key` = '/wizard/license_form_data/'
-    WHERE `key` = 'wizard_license_form_data';
-
-    UPDATE `{$this->_installer->getTable('m2epro_registry')}`
     SET `key` = '/wizard/migrationToV6_notes_html/'
     WHERE `key` = 'wizard_migrationToV6_notes_html';
 

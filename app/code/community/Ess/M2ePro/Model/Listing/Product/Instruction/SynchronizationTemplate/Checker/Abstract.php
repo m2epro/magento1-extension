@@ -21,7 +21,10 @@ abstract class Ess_M2ePro_Model_Listing_Product_Instruction_SynchronizationTempl
 
     //########################################
 
-    abstract public function isAllowed();
+    public function isAllowed()
+    {
+        return $this->_input->getListingProduct()->getMagentoProduct()->exists();
+    }
 
     abstract public function process(array $params = array());
 

@@ -59,47 +59,22 @@ class Ess_M2ePro_Helper_Module_License extends Mage_Core_Helper_Abstract
 
     //########################################
 
-    public function obtainRecord(
-        $email = null,
-        $firstName = null,
-        $lastName = null,
-        $country = null,
-        $city = null,
-        $postalCode = null,
-        $phone = null
-    ) {
-        if (Mage::helper('M2ePro/Server_Maintenance')->isNow()) {
-            return false;
-        }
-
+    public function obtainRecord(Ess_M2ePro_Model_Registration_Info $info) {
         $requestParams = array(
             'domain'    => Mage::helper('M2ePro/Client')->getDomain(),
             'directory' => Mage::helper('M2ePro/Client')->getBaseDirectory()
         );
 
-        $data = array(
-            'email'       => $email,
-            'first_name'  => $firstName,
-            'last_name'   => $lastName,
-            'phone'       => $phone,
-            'country'     => $country,
-            'city'        => $city,
-            'postal_code' => $postalCode
-        );
-
-        foreach ($data as $key => $value) {
-            if ($value === null) {
-                continue;
-            }
-
-            $requestParams[$key] = $value;
-        }
+        $requestParams['email'] = $info->getEmail();
+        $requestParams['first_name'] = $info->getFirstname();
+        $requestParams['last_name'] = $info->getLastname();
+        $requestParams['phone'] = $info->getPhone();
+        $requestParams['country'] = $info->getCountry();
+        $requestParams['city'] = $info->getCity();
+        $requestParams['postal_code'] = $info->getPostalCode();
 
         $dispatcherObject = Mage::getModel('M2ePro/M2ePro_Connector_Dispatcher');
-        $connectorObj = $dispatcherObject->getVirtualConnector(
-            'license', 'add', 'record',
-            $requestParams
-        );
+        $connectorObj = $dispatcherObject->getVirtualConnector('license', 'add', 'record', $requestParams);
         $dispatcherObject->process($connectorObj);
         $response = $connectorObj->getResponseData();
 
@@ -108,53 +83,6 @@ class Ess_M2ePro_Helper_Module_License extends Mage_Core_Helper_Abstract
         }
 
         Mage::helper('M2ePro/Module')->getConfig()->setGroupValue('/license/', 'key', (string)$response['key']);
-
-        Mage::getModel('M2ePro/Servicing_Dispatcher')->processTask(
-            Mage::getModel('M2ePro/Servicing_Task_License')->getPublicNick()
-        );
-
-        return true;
-    }
-
-    //########################################
-
-    public function updateLicenseUserInfo(
-        $email = null,
-        $firstName = null,
-        $lastName = null,
-        $country = null,
-        $city = null,
-        $postalCode = null,
-        $phone = null
-    ) {
-        if (Mage::helper('M2ePro/Server_Maintenance')->isNow()) {
-            return false;
-        }
-
-        $requestParams['key'] = $this->getKey();
-
-        $data = array(
-            'email'       => $email,
-            'first_name'  => $firstName,
-            'last_name'   => $lastName,
-            'phone'       => $phone,
-            'country'     => $country,
-            'city'        => $city,
-            'postal_code' => $postalCode
-        );
-
-        foreach ($data as $key => $value) {
-            if ($value === null) {
-                continue;
-            }
-
-            $requestParams[$key] = $value;
-        }
-
-        /** @var Ess_M2ePro_Model_M2ePro_Connector_Dispatcher $dispatcherObject */
-        $dispatcherObject = Mage::getModel('M2ePro/M2ePro_Connector_Dispatcher');
-        $connectorObj = $dispatcherObject->getVirtualConnector('license', 'update', 'record', $requestParams);
-        $dispatcherObject->process($connectorObj);
 
         return true;
     }

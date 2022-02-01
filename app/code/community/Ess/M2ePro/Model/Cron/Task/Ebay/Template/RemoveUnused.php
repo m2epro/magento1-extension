@@ -23,6 +23,8 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Template_RemoveUnused extends Ess_M2ePro_M
 
     protected function performActions()
     {
+        return true;
+
         $this->removeUnusedTemplates(Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SYNCHRONIZATION);
         $this->removeUnusedTemplates(Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SELLING_FORMAT);
         $this->removeUnusedTemplates(Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_DESCRIPTION);

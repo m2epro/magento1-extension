@@ -17,6 +17,10 @@ class Ess_M2ePro_Model_Cron_Task_Repository
 
     /** @var array */
     public static $registeredTasks = array(
+        Ess_M2ePro_Model_Cron_Task_System_Servicing_Statistic_InstructionType::NICK => array(
+            'component' => self::COMPONENT_GENERAL,
+            'group'     => self::GROUP_SYSTEM,
+        ),
         Ess_M2ePro_Model_Cron_Task_System_ArchiveOldOrders::NICK => array(
             'component' => self::COMPONENT_GENERAL,
             'group'     => self::GROUP_SYSTEM,
@@ -84,10 +88,6 @@ class Ess_M2ePro_Model_Cron_Task_Repository
         //----------------------------------------
 
         Ess_M2ePro_Model_Cron_Task_Ebay_UpdateAccountsPreferences::NICK => array(
-            'component' => Ess_M2ePro_Helper_Component_Ebay::NICK,
-            'group'     => self::GROUP_EBAY,
-        ),
-        Ess_M2ePro_Model_Cron_Task_Ebay_Template_RemoveUnused::NICK => array(
             'component' => Ess_M2ePro_Helper_Component_Ebay::NICK,
             'group'     => self::GROUP_EBAY,
         ),

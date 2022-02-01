@@ -31,16 +31,6 @@ HTML
             )
         );
 
-        if (!$this->getData('isLicenseStepFinished')) {
-            Mage::helper('M2ePro/View')->getCssRenderer()->add(
-                <<<CSS
-#licence_agreement .admin__field {
-    padding-top: 8px;
-}
-CSS
-            );
-        }
-
         parent::_prepareLayout();
     }
 
@@ -63,8 +53,19 @@ CSS
 
         $userInfo['country'] = Mage::helper('core')->getDefaultCountry($defaultStoreId);
 
-        $earlierFormData = Mage::helper('M2ePro/Module')->getRegistry()
-            ->getValueFromJson('/wizard/license_form_data/');
+        $earlierFormData = array();
+
+        if(Mage::helper('M2ePro/Module')->getRegistration()->isExistInfo()){
+            $earlierFormDataObj = Mage::helper('M2ePro/Module')->getRegistration()->getInfo();
+
+            $earlierFormData['email'] = $earlierFormDataObj->getEmail();
+            $earlierFormData['first_name'] = $earlierFormDataObj->getFirstname();
+            $earlierFormData['last_name'] = $earlierFormDataObj->getLastname();
+            $earlierFormData['phone'] = $earlierFormDataObj->getPhone();
+            $earlierFormData['country'] = $earlierFormDataObj->getCountry();
+            $earlierFormData['city'] = $earlierFormDataObj->getCity();
+            $earlierFormData['postal_code'] = $earlierFormDataObj->getPostalCode();
+        }
 
         $userInfo = array_merge($userInfo, $earlierFormData);
 
@@ -193,10 +194,8 @@ CSS
                 'licence_agreement',
                 'checkbox',
                 array(
-                    'field_extra_attributes' => 'id="licence_agreement"',
                     'name'                   => 'licence_agreement',
                     'class'                  => 'admin__control-checkbox',
-                    'style'                  => 'padding-top: 8px;',
                     'label'                  => Mage::helper('M2ePro')->__('Terms and Privacy'),
                     'checked'                => false,
                     'value'                  => 1,
@@ -214,30 +213,6 @@ HTML
         $this->setForm($form);
 
         return parent::_prepareForm();
-    }
-
-    protected function getCountryLabelByCode($code, $type = 'input')
-    {
-        foreach ($this->getData('available_countries') as $country) {
-            if ($country['value'] == $code) {
-                return $country['label'];
-            }
-        }
-
-        if (!empty($code)) {
-            return $code;
-        }
-
-        if ($type == 'input') {
-            return '';
-        }
-
-        $notSelectedWord = Mage::helper('M2ePro')->__('not selected');
-        return <<<HTML
-<span style="font-style: italic; color: grey;">
-    [{$notSelectedWord}]
-</span>
-HTML;
     }
 
     protected function getUserInfoValue($name, $type = 'input')

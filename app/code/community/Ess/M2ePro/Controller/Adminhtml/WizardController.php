@@ -84,8 +84,10 @@ abstract class Ess_M2ePro_Controller_Adminhtml_WizardController
 
     public function registrationAction()
     {
-        $licenseData = Mage::helper('M2ePro/Module')->getRegistry()->getValueFromJson('/wizard/license_form_data/');
-        if (!empty($licenseData)) {
+        $isExistInfo = Mage::helper('M2ePro/Module')->getRegistration()->isExistInfo();
+        $key = Mage::helper('M2ePro/Module_License')->getKey();
+
+        if ($isExistInfo && !empty($key)) {
             $this->setStep($this->getNextStep());
         }
 
@@ -106,24 +108,9 @@ abstract class Ess_M2ePro_Controller_Adminhtml_WizardController
 
     public function createLicenseAction()
     {
-        $requiredKeys = array(
-            'email',
-            'firstname',
-            'lastname',
-            'phone',
-            'country',
-            'city',
-            'postal_code',
-        );
-
-        $licenseData = array();
-        foreach ($requiredKeys as $key) {
-            if ($tempValue = $this->getRequest()->getParam($key)) {
-                $licenseData[$key] = Mage::helper('M2ePro')->escapeJs(
-                    Mage::helper('M2ePro')->escapeHtml($tempValue)
-                );
-                continue;
-            }
+        if (Mage::helper('M2ePro/Server_Maintenance')->isNow()) {
+            $message = 'The action is temporarily unavailable. M2E Pro Server is under maintenance.';
+            $message .= ' Please try again later.';
 
             return $this->getResponse()->setBody(
                 Mage::helper('M2ePro')->jsonEncode(
@@ -134,57 +121,6 @@ abstract class Ess_M2ePro_Controller_Adminhtml_WizardController
                 )
             );
         }
-
-        $message = null;
-
-        if (Mage::helper('M2ePro/Module_License')->getKey()) {
-            try {
-                $licenseResult = Mage::helper('M2ePro/Module_License')->updateLicenseUserInfo(
-                    $licenseData['email'],
-                    $licenseData['firstname'],
-                    $licenseData['lastname'],
-                    $licenseData['country'],
-                    $licenseData['city'],
-                    $licenseData['postal_code'],
-                    $licenseData['phone']
-                );
-            } catch (Exception $e) {
-                Mage::helper('M2ePro/Module_Exception')->process($e);
-                $licenseResult = false;
-                $message = Mage::helper('M2ePro')->__($e->getMessage());
-            }
-        } else {
-            try {
-                $licenseResult = Mage::helper('M2ePro/Module_License')->obtainRecord(
-                    $licenseData['email'],
-                    $licenseData['firstname'],
-                    $licenseData['lastname'],
-                    $licenseData['country'],
-                    $licenseData['city'],
-                    $licenseData['postal_code'],
-                    $licenseData['phone']
-                );
-            } catch (Exception $e) {
-                Mage::helper('M2ePro/Module_Exception')->process($e);
-                $licenseResult = false;
-                $message = Mage::helper('M2ePro')->__($e->getMessage());
-            }
-        }
-
-        Mage::helper('M2ePro/Module')->getRegistry()->setValue('/wizard/license_form_data/', $licenseData);
-
-        return $this->getResponse()->setBody(
-            Mage::helper('M2ePro')->jsonEncode(
-                array(
-                    'status'  => $licenseResult,
-                    'message' => $message
-                )
-            )
-        );
-    }
-
-    public function updateLicenseUserInfoAction()
-    {
 
         $requiredKeys = array(
             'email',
@@ -215,28 +151,55 @@ abstract class Ess_M2ePro_Controller_Adminhtml_WizardController
             );
         }
 
-        $licenseResult = true;
+        $info = Mage::getSingleton('M2ePro/Registration_Info_Factory')->createInfoInstance(
+            $licenseData['email'],
+            $licenseData['firstname'],
+            $licenseData['lastname'],
+            $licenseData['phone'],
+            $licenseData['country'],
+            $licenseData['city'],
+            $licenseData['postal_code']
+        );
+
+        Mage::helper('M2ePro/Module')->getRegistration()->saveInfo($info);
+
+        if(Mage::helper('M2ePro/Module_License')->getKey()){
+            return $this->getResponse()->setBody(
+                Mage::helper('M2ePro')->jsonEncode(array('status'  => true))
+            );
+        }
+
         $message = null;
 
-        if (Mage::helper('M2ePro/Module_License')->getKey()) {
-            try {
-                $licenseResult = Mage::helper('M2ePro/Module_License')->updateLicenseUserInfo(
-                    $licenseData['email'],
-                    $licenseData['firstname'],
-                    $licenseData['lastname'],
-                    $licenseData['country'],
-                    $licenseData['city'],
-                    $licenseData['postal_code'],
-                    $licenseData['phone']
-                );
-
-                Mage::helper('M2ePro/Module')->getRegistry()->setValue('/wizard/license_form_data/', $licenseData);
-            } catch (Exception $e) {
-                Mage::helper('M2ePro/Module_Exception')->process($e);
-                $licenseResult = false;
-                $message = Mage::helper('M2ePro')->__($e->getMessage());
-            }
+        try {
+            $licenseResult = Mage::helper('M2ePro/Module_License')->obtainRecord($info);
+        } catch (Exception $e) {
+            Mage::helper('M2ePro/Module_Exception')->process($e);
+            $licenseResult = false;
+            $message = Mage::helper('M2ePro')->__($e->getMessage());
         }
+
+        if (!$licenseResult) {
+            if (!$message) {
+                $message = $this->__('License Creation is failed. Please contact M2E Pro Support for resolution.');
+            }
+
+            return $this->getResponse()->setBody(
+                Mage::helper('M2ePro')->jsonEncode(
+                    array(
+                        'status'  => $licenseResult,
+                        'message' => $message
+                    )
+                )
+            );
+        }
+
+        try {
+            Mage::getModel('M2ePro/Servicing_Dispatcher')->processTask(
+                Mage::getModel('M2ePro/Servicing_Task_License')->getPublicNick()
+            );
+        }
+        catch (Exception $e) {}
 
         return $this->getResponse()->setBody(
             Mage::helper('M2ePro')->jsonEncode(

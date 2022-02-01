@@ -336,6 +336,7 @@ class Ess_M2ePro_Model_Servicing_Task_Statistic extends Ess_M2ePro_Model_Servici
 
         $this->fillUpDataByMethod($data, 'appendExtensionListingsInfo');
         $this->fillUpDataByMethod($data, 'appendExtensionListingsProductsInfo');
+        $this->fillUpDataByMethod($data, 'appendExtensionListingProductInstructionInfo');
         $this->fillUpDataByMethod($data, 'appendExtensionListingsOtherInfo');
 
         $this->fillUpDataByMethod($data, 'appendExtensionPoliciesInfo');
@@ -739,6 +740,36 @@ class Ess_M2ePro_Model_Servicing_Task_Statistic extends Ess_M2ePro_Model_Servici
             $data['listings_products'][$row['component']]['marketplaces'][$markTitle] += (int)$row['products_count'];
             $data['listings_products'][$row['component']]['accounts'][$accountTitle] += (int)$row['products_count'];
         }
+    }
+
+    private function appendExtensionListingProductInstructionInfo(&$data)
+    {
+        $instructionTypeTiming = Mage::helper('M2ePro/Module')->getRegistry()
+            ->getValueFromJson(
+                Ess_M2ePro_Model_Cron_Task_System_Servicing_Statistic_InstructionType::REGISTRY_KEY_DATA
+            );
+
+        $currentDateTime = Mage::helper('M2ePro/Data')->createCurrentGmtDateTime();
+        $currentDate = $currentDateTime->format('Y-m-d');
+        $currentHour = $currentDateTime->format('H-00');
+
+        $lastHourTiming = array();
+
+        // Cut the last hour from the instruction type array to prevent overlapping time ranges next time
+        // Save the last hour to a new instruction type array
+        if (isset($instructionTypeTiming[$currentDate][$currentHour])) {
+            $lastHourTiming[$currentDate][$currentHour] = $instructionTypeTiming[$currentDate][$currentHour];
+
+            unset($instructionTypeTiming[$currentDate][$currentHour]);
+        }
+
+        $data['listing_product_instruction_type_statistic'] = $instructionTypeTiming;
+
+        Mage::helper('M2ePro/Module')->getRegistry()
+            ->setValue(
+                Ess_M2ePro_Model_Cron_Task_System_Servicing_Statistic_InstructionType::REGISTRY_KEY_DATA,
+                $lastHourTiming
+            );
     }
 
     protected function appendExtensionListingsOtherInfo(&$data)

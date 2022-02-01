@@ -52,11 +52,15 @@ class Ess_M2ePro_Model_StopQueue extends Ess_M2ePro_Model_Abstract
         try {
             $requestData = $this->getRequestData($listingProduct, $actionType);
         } catch (\Exception $exception) {
+            $sku = $listingProduct->isComponentModeEbay()
+                ? $listingProduct->getChildObject()->getOnlineSku()
+                : $listingProduct->getChildObject()->getSku();
+
             Mage::helper('M2ePro/Module_Logger')->process(
                 sprintf(
                     'Product [Listing Product ID: %s, SKU %s] was not added to stop queue because of the error: %s',
                     $listingProduct->getId(),
-                    $listingProduct->getChildObject()->getSku(),
+                    $sku,
                     $exception->getMessage()
                 ),
                 'Product was not added to stop queue',

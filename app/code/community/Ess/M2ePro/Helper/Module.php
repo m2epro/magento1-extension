@@ -42,6 +42,16 @@ class Ess_M2ePro_Helper_Module extends Mage_Core_Helper_Abstract
 
     //########################################
 
+    /**
+     * @return Ess_M2ePro_Model_Registration_Manager
+     */
+    public function getRegistration()
+    {
+        return Mage::getSingleton('M2ePro/Registration_Manager');
+    }
+
+    //########################################
+
     public function getName()
     {
         return 'm2epro';
