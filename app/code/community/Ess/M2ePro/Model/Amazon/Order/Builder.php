@@ -74,6 +74,7 @@ class Ess_M2ePro_Model_Amazon_Order_Builder extends Mage_Core_Model_Abstract
         $this->setData('paid_amount', (float)$data['paid_amount']);
         $this->setData('tax_details', Mage::helper('M2ePro')->jsonEncode($this->prepareTaxDetails($data)));
         $this->setData('ioss_number', $data['items'][0]['ioss_number']);
+        $this->setData('tax_registration_id', $this->prepareTaxRegistrationId($data));
         $this->setData('discount_details', Mage::helper('M2ePro')->jsonEncode($data['discount_details']));
         $this->setData('currency', $data['currency']);
         $this->setData('qty_shipped', $data['qty_shipped']);
@@ -170,6 +171,17 @@ class Ess_M2ePro_Model_Amazon_Order_Builder extends Mage_Core_Model_Abstract
         }
 
         return $data['tax_details'];
+    }
+
+    protected function prepareTaxRegistrationId($data)
+    {
+        if (empty($data['tax_registration_details'][0])) {
+            return null;
+        }
+
+        $item = $data['tax_registration_details'][0];
+        return !empty($item['tax_registration_id']) && is_string($item['tax_registration_id']) ?
+            $item['tax_registration_id'] : null;
     }
 
     protected function isNeedSkipTax($data)

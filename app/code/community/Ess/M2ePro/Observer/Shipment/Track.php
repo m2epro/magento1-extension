@@ -6,7 +6,7 @@
  * @license    Commercial use is forbidden
  */
 
-class Ess_M2ePro_Observer_Shipment_Track extends Ess_M2ePro_Observer_Abstract
+class Ess_M2ePro_Observer_Shipment_Track extends Ess_M2ePro_Observer_Shipment_Abstract
 {
     //########################################
 
@@ -19,7 +19,19 @@ class Ess_M2ePro_Observer_Shipment_Track extends Ess_M2ePro_Observer_Abstract
         /** @var $track Mage_Sales_Model_Order_Shipment_Track */
         $track = $this->getEvent()->getTrack();
 
-        $shipment = $track->getShipment();
+        $shipment = $this->getShipment($track);
+
+        if (!$shipment) {
+            $class = get_class($this);
+            Mage::helper('M2ePro/Module_Logger')->process(
+                array(),
+                "M2ePro observer $class cannot get shipment data from event or database",
+                false
+            );
+
+            return;
+        }
+
         $magentoOrderId = $shipment->getOrderId();
 
         /**

@@ -148,6 +148,11 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
         return $this->getData('ioss_number');
     }
 
+    public function getTaxRegistrationId()
+    {
+        return $this->getData('tax_registration_id');
+    }
+
     /**
      * @return array
      * @throws Ess_M2ePro_Model_Exception_Logic

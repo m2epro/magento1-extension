@@ -761,6 +761,30 @@
 
                 </tr>
 
+                <tr id="tr_magento_orders_tax_import_tax_id_in_magento_order">
+                    <td class="label">
+                        <label for="magento_orders_tax_import_tax_id_in_magento_order"><?php echo Mage::helper('M2ePro')->__('Import Tax Registration Number to Magento Order');
+                            ?>:</label>
+                    </td>
+
+                    <td class="value" style="width: auto;">
+                        <select id="magento_orders_tax_import_tax_id_in_magento_order"
+                                name="magento_orders_settings[tax][import_tax_id_in_magento_order]" class="M2ePro-required-when-visible">
+                            <option value="0" <?php if ($formData['magento_orders_settings']['tax']['import_tax_id_in_magento_order'] == 0) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
+                            <option value="1" <?php if ($formData['magento_orders_settings']['tax']['import_tax_id_in_magento_order'] == 1) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
+                        </select>
+                    </td>
+
+                    <td class="value" style="display: none">
+                        <p class="note">
+                            <span>
+                                <?php echo Mage::helper('M2ePro')->__(
+                                    'Once enabled, find the Tax Registration Number displayed as VAT in the Shipping Address of your Magento Order.'
+                                ); ?>
+                            </span>
+                        </p>
+                    </td>
+                </tr>
 
             </table>
 

@@ -172,6 +172,8 @@ class Ess_M2ePro_Model_Amazon_Connector_Orders_Get_Items extends Ess_M2ePro_Mode
                 $order['currency']    = isset($orderData['currency']) ? trim($orderData['currency']) : '';
                 $order['paid_amount'] = isset($orderData['amount_paid']) ? (float)$orderData['amount_paid'] : 0;
                 $order['tax_details'] = isset($orderData['price']['taxes']) ? $orderData['price']['taxes'] : array();
+                $order['tax_registration_details'] = isset($orderData['tax_registration_details']) ?
+                    $orderData['tax_registration_details'] : array();
 
                 $order['discount_details'] = isset($orderData['price']['discounts'])
                     ? $orderData['price']['discounts'] : array();

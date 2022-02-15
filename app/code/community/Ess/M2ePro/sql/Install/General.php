@@ -845,7 +845,6 @@ INSERT INTO `{$this->_installer->getTable('m2epro_config')}` (`group`,`key`,`val
   ('/support/', 'clients_portal_url', 'https://clients.m2epro.com/', NOW(), NOW()),
   ('/support/', 'website_url', 'https://m2epro.com/', NOW(), NOW()),
   ('/support/', 'support_url', 'https://support.m2epro.com/', NOW(), NOW()),
-  ('/support/', 'forum_url', 'https://community.m2epro.com/', NOW(), NOW()),
   ('/support/', 'magento_marketplace_url', 'https://marketplace.magento.com/m2e-m2epro-ebay-magento.html', NOW(), NOW()),
   ('/support/', 'contact_email', 'support@m2epro.com', NOW(), NOW()),
   ('/general/configuration/', 'listing_product_inspector_mode', '0', NOW(), NOW()),

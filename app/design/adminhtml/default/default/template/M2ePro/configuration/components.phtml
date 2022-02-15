@@ -43,15 +43,22 @@ HTML;
     });
 </script>
 
-<div id="block_notice_configuration_module_channel" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Module & Channels'); ?>">
+<div id="block_notice_configuration_module_channel" class="block_notices_module"
+     title="<?php echo Mage::helper('M2ePro')->__('Module & Channels'); ?>">
     <p><?php echo Mage::helper('M2ePro')->__('
-                Here you can manage the Module and Automatic Synchronization running, enable Channels you want to sell on. 
-                Read the <a href="%url%" target="_blank">article</a> for more details.',
+                Here you can manage the Module and Automatic Synchronization running, enable Channels you want to sell 
+                on. Total sales will be counted through eBay, Walmart, and Amazon accounts connected to the M2E Pro 
+                subscription. If you want to stop the service for a certain account, please delete it from your 
+                subscription on <a href="%url_1%" target="_blank">Clients</a>. 
+                Read the <a href="%url_2%" target="_blank">article</a> for more details.',
+            Mage::helper('M2ePro/Module_Support')->getClientsPortalUrl(),
             Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'x/CwAJAQ')
-        ); ?></p>
+        ); ?>
+    </p>
 </div>
 
-<form id="<?php echo $this->getForm()->getId(); ?>" action="<?php echo $this->getForm()->getData('action'); ?>" method="post" enctype="multipart/form-data">
+<form id="<?php echo $this->getForm()->getId(); ?>" action="<?php echo $this->getForm()->getData('action'); ?>"
+      method="post" enctype="multipart/form-data">
 
     <input name="form_key" value="<?php echo $this->getFormKey(); ?>" type="hidden" />
 
@@ -60,7 +67,9 @@ HTML;
         <div class="entry-edit" id="magento_block_configuration_module" collapseable="no">
 
             <div class="entry-edit-head">
-                <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Module'); ?></h4>
+                <h4 class="icon-head head-edit-form fieldset-legend">
+                    <?php echo Mage::helper('M2ePro')->__('Module'); ?>
+                </h4>
             </div>
 
             <div class="fieldset">
@@ -74,7 +83,9 @@ HTML;
 
                             <tr>
                                 <td class="label" style="width: auto">
-                                    <label style="width: auto"><?php echo Mage::helper('M2ePro')->__('Automatic Synchronization'); ?>: </label>
+                                    <label style="width: auto">
+                                        <?php echo Mage::helper('M2ePro')->__('Automatic Synchronization'); ?>:
+                                    </label>
                                 </td>
 
                                 <td class="value">
@@ -106,7 +117,10 @@ HTML;
 
                         <tr>
                             <td class="label" style="width: auto">
-                                <label style="width: auto"><?php echo Mage::helper('M2ePro')->__('Module Interface and Automatic Synchronization'); ?>: </label>
+                                <label style="width: auto">
+                                    <?php echo Mage::helper('M2ePro')->
+                                    __('Module Interface and Automatic Synchronization'); ?>:
+                                </label>
                             </td>
 
                             <td class="value">
@@ -117,7 +131,8 @@ HTML;
                                 <p class="note">
                             <span>
                                 <?php echo Mage::helper('M2ePro')->__(
-                                    'Inventory and Order synchronization stops. The Module interface becomes unavailable.'
+                                    'Inventory and Order synchronization stops. 
+                                    The Module interface becomes unavailable.'
                                 ) ?>
                             </span>
                                 </p>
@@ -157,7 +172,9 @@ HTML;
         <div class="entry-edit" id="magento_block_configuration_channel_mode" collapseable="no">
 
             <div class="entry-edit-head">
-                <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Channels'); ?></h4>
+                <h4 class="icon-head head-edit-form fieldset-legend">
+                    <?php echo Mage::helper('M2ePro')->__('Channels'); ?>
+                </h4>
             </div>
 
             <div class="fieldset">

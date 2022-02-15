@@ -54,7 +54,7 @@ used when you list products to Amazon via the Module.</p>
 <p>Click <a href="%url2%" target="_blank" class="external-link">here</a> for more detailed information.</p>
 HTML
                     ,
-                    Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'x/C4gVAQ'),
+                    Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'x/J4kVAQ'),
                     Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'x/FYgVAQ')
                 ),
                 'title'   => Mage::helper('M2ePro')->__('Search Settings')

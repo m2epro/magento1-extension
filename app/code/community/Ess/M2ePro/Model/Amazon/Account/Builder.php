@@ -241,7 +241,8 @@ class Ess_M2ePro_Model_Amazon_Account_Builder extends Ess_M2ePro_Model_ActiveRec
         $keys = array(
             'mode',
             'amazon_collects',
-            'amazon_collect_for_uk'
+            'amazon_collect_for_uk',
+            'import_tax_id_in_magento_order'
         );
         foreach ($keys as $key) {
             if (isset($tempSettings[$key])) {
@@ -369,10 +370,11 @@ class Ess_M2ePro_Model_Amazon_Account_Builder extends Ess_M2ePro_Model_ActiveRec
                     'apply_to_amazon' => 0
                 ),
                 'tax'                     => array(
-                    'mode'                  => Account::MAGENTO_ORDERS_TAX_MODE_MIXED,
-                    'amazon_collects'       => 1,
-                    'excluded_states'       => $this->getGeneralExcludedStates(),
-                    'amazon_collect_for_uk' => Account::SKIP_TAX_FOR_UK_SHIPMENT_NONE
+                    'mode' =>                        Account::MAGENTO_ORDERS_TAX_MODE_MIXED,
+                    'amazon_collects'                => 1,
+                    'excluded_states'                => $this->getGeneralExcludedStates(),
+                    'amazon_collect_for_uk'          => Account::SKIP_TAX_FOR_UK_SHIPMENT_NONE,
+                    'import_tax_id_in_magento_order' => 0
                 ),
                 'customer'                => array(
                     'mode'                 => Account::MAGENTO_ORDERS_CUSTOMER_MODE_GUEST,

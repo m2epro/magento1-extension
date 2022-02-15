@@ -605,8 +605,18 @@ abstract class Ess_M2ePro_Model_Listing_Product_PriceCalculator
     ) {
         $value = 0;
 
-        $attributeName = strtolower($option->getAttribute());
-        $optionName = strtolower($option->getOption());
+        $attributeName = $this->prepareAttributeTitles(
+            array(
+                strtolower($option->getAttribute())
+            )
+        );
+        $attributeName = $attributeName[0];
+        $optionName = $this->prepareOptionTitles(
+            array(
+                strtolower($option->getOption())
+            )
+        );
+        $optionName = $optionName[0];
 
         $simpleAttributes = $this->getMagentoProduct()->getProduct()->getOptions();
 

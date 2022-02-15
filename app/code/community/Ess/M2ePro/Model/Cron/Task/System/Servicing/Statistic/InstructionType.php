@@ -114,9 +114,11 @@ class Ess_M2ePro_Model_Cron_Task_System_Servicing_Statistic_InstructionType exte
         $date = $this->currentDateTime->format('Y-m-d');
 
         $connection = Mage::getSingleton('core/resource')->getConnection('core_read');
+        $tableName = Mage::getResourceModel('M2ePro/Listing_Product_Instruction')->getMainTable();
+
         $query = "
             SELECT `type`, COUNT(*) as `qty`
-            FROM `m2epro_listing_product_instruction`
+            FROM `{$tableName}`
             WHERE `create_date` BETWEEN '{$startTime}' AND '{$endTime}'
             GROUP BY `type`
         ";

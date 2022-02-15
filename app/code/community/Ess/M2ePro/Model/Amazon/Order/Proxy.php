@@ -127,6 +127,24 @@ class Ess_M2ePro_Model_Amazon_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
         return true;
     }
 
+    /**
+     * @return array
+     */
+    public function getAddressData()
+    {
+        parent::getAddressData(); // init $this->_addressData
+
+        $amazonAccount = $this->_order->getAmazonAccount();
+        $data = $amazonAccount->getData('magento_orders_settings');
+        $data = !empty($data) ? Mage::helper('M2ePro')->jsonDecode($data) : array();
+
+        if (!empty($data['tax']['import_tax_id_in_magento_order'])) {
+            $this->_addressData['vat_id'] = $this->_order->getTaxRegistrationId();
+        }
+
+        return $this->_addressData;
+    }
+
     //########################################
 
     /**
