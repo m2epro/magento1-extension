@@ -7,7 +7,6 @@
  */
 
 class Ess_M2ePro_Model_ControlPanel_Inspection_Inspector_LocalPoolOverwrites
-    extends Ess_M2ePro_Model_ControlPanel_Inspection_AbstractInspection
     implements Ess_M2ePro_Model_ControlPanel_Inspection_InspectorInterface
 {
     /**@var array */
@@ -18,37 +17,18 @@ class Ess_M2ePro_Model_ControlPanel_Inspection_Inspector_LocalPoolOverwrites
 
     //########################################
 
-    public function getTitle()
-    {
-        return 'Show Local Pool Overwrites';
-    }
-
-    public function getGroup()
-    {
-        return Ess_M2ePro_Model_ControlPanel_Inspection_Manager::GROUP_STRUCTURE;
-    }
-
-    public function getExecutionSpeed()
-    {
-        return Ess_M2ePro_Model_ControlPanel_Inspection_Manager::EXECUTION_SPEED_FAST;
-    }
-
-    //########################################
-
     public function process()
     {
         $issues = array();
         $this->checkLocalPool();
 
         if ($this->_extensionFilesOverwritten) {
-            $issues[] = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Result_Factory')->createError(
-                $this,
+            $issues[] = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Issue_Factory')->createIssue(
                 'Local Pool overwrites extension files',
                 $this->renderMetadata($this->_overwrittenFiles)
             );
         } elseif (!empty($this->_overwrittenFiles)) {
-            $issues[] = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Result_Factory')->createNotice(
-                $this,
+            $issues[] = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Issue_Factory')->createIssue(
                 'Local Pool overwrites',
                 $this->renderMetadata($this->_overwrittenFiles)
             );

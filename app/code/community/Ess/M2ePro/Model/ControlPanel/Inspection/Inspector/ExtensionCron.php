@@ -7,35 +7,8 @@
  */
 
 class Ess_M2ePro_Model_ControlPanel_Inspection_Inspector_ExtensionCron
-    extends Ess_M2ePro_Model_ControlPanel_Inspection_AbstractInspection
     implements Ess_M2ePro_Model_ControlPanel_Inspection_InspectorInterface
 {
-    //########################################
-
-    public function getTitle()
-    {
-        return 'Extension Cron';
-    }
-
-    public function getDescription()
-    {
-        return <<<HTML
-- Cron [runner] does not work<br>
-- Cron [runner] is not working more than 30 min<br>
-- Cron [runner] is disabled by developer
-HTML;
-    }
-
-    public function getGroup()
-    {
-        return Ess_M2ePro_Model_ControlPanel_Inspection_Manager::GROUP_GENERAL;
-    }
-
-    public function getExecutionSpeed()
-    {
-        return Ess_M2ePro_Model_ControlPanel_Inspection_Manager::EXECUTION_SPEED_FAST;
-    }
-
     //########################################
 
     public function process()
@@ -45,8 +18,7 @@ HTML;
         $moduleConfig = Mage::helper('M2ePro/Module')->getConfig();
 
         if ($helper->getLastRun() === null) {
-            $issues[] = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Result_Factory')->createError(
-                $this,
+            $issues[] = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Issue_Factory')->createIssue(
                 "Cron [{$helper->getRunner()}] does not work"
             );
         } elseif (Mage::helper('M2ePro/Module_Cron')->isLastRunMoreThan(1800)) {
@@ -54,8 +26,7 @@ HTML;
             $cron = new \DateTime($helper->getLastRun(), new \DateTimeZone('UTC'));
             $diff = round(($now->getTimestamp() - $cron->getTimestamp()) / 60, 0);
 
-            $issues[] = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Result_Factory')->createError(
-                $this,
+            $issues[] = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Issue_Factory')->createIssue(
                 "Cron [{$helper->getRunner()}] is not working for {$diff} min",
                 <<<HTML
 Last run: {$helper->getLastRun()}
@@ -66,8 +37,7 @@ HTML
 
         foreach (array('magento', 'service') as $runner) {
             if ($moduleConfig->getGroupValue("/cron/{$runner}/", 'disabled')) {
-                $issues[] = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Result_Factory')->createNotice(
-                    $this,
+                $issues[] = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Issue_Factory')->createIssue(
                     "Cron [{$runner}] is disabled by developer"
                 );
             }

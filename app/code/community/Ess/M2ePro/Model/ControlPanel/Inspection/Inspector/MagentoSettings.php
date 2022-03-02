@@ -7,38 +7,8 @@
  */
 
 class Ess_M2ePro_Model_ControlPanel_Inspection_Inspector_MagentoSettings
-    extends Ess_M2ePro_Model_ControlPanel_Inspection_AbstractInspection
     implements Ess_M2ePro_Model_ControlPanel_Inspection_InspectorInterface
 {
-    //########################################
-
-    public function getTitle()
-    {
-        return 'Magento settings';
-    }
-
-    public function getDescription()
-    {
-        return <<<HTML
-- Non-default Magento timezone set<br>
-- GD library is installed<br>
-- Has conflicted modules<br>
-- Compilation is enabled<br>
-- Wrong cache configuration<br>
-- [APC|Memchached|Redis] Cache is enabled<br>
-HTML;
-    }
-
-    public function getGroup()
-    {
-        return Ess_M2ePro_Model_ControlPanel_Inspection_Manager::GROUP_STRUCTURE;
-    }
-
-    public function getExecutionSpeed()
-    {
-        return Ess_M2ePro_Model_ControlPanel_Inspection_Manager::EXECUTION_SPEED_FAST;
-    }
-
     //########################################
 
     public function process()
@@ -46,39 +16,34 @@ HTML;
         $issues = array();
 
         if (!extension_loaded('gd') || !function_exists('gd_info')) {
-            $issues[] = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Result_Factory')->createError(
-                $this,
+            $issues[] = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Issue_Factory')->createIssue(
                 'GD library is not installed.'
             );
         }
 
         if (Mage_Core_Model_Locale::DEFAULT_TIMEZONE !== 'UTC') {
-            $issues[] = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Result_Factory')->createError(
-                $this,
+            $issues[] = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Issue_Factory')->createIssue(
                 'Non-default Magento timezone set.',
                 Mage_Core_Model_Locale::DEFAULT_TIMEZONE
             );
         }
 
         if ($modules = $this->getConflictedModules()) {
-            $issues[] = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Result_Factory')->createError(
-                $this,
+            $issues[] = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Issue_Factory')->createIssue(
                 'Has conflicted modules.',
                 $modules
             );
         }
 
         if (defined('COMPILER_INCLUDE_PATH')) {
-            $issues[] = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Result_Factory')->createNotice(
-                $this,
+            $issues[] = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Issue_Factory')->createIssue(
                 'Compilation is enabled.'
             );
         }
 
         if (Mage::helper('M2ePro/Client_Cache')->isWrongCacheConfiguration()) {
             $url = Mage::helper('adminhtml')->getUrl('*/adminhtml_controlPanel_inspection/cacheSettings');
-            $issues[] = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Result_Factory')->createError(
-                $this,
+            $issues[] = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Issue_Factory')->createIssue(
                 'Wrong cache configuration.',
                 <<<HTML
 <a href="{$url}" target="_blank">show Settings</a>
@@ -87,22 +52,19 @@ HTML
         }
 
         if (Mage::helper('M2ePro/Client_Cache')->isApcEnabled()) {
-            $issues[] = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Result_Factory')->createNotice(
-                $this,
+            $issues[] = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Issue_Factory')->createIssue(
                 'APC Cache is enabled.'
             );
         }
 
         if (Mage::helper('M2ePro/Client_Cache')->isMemchachedEnabled()) {
-            $issues[] = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Result_Factory')->createNotice(
-                $this,
+            $issues[] = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Issue_Factory')->createIssue(
                 'Memchached Cache is enabled.'
             );
         }
 
         if (Mage::helper('M2ePro/Client_Cache')->isRedisEnabled()) {
-            $issues[] = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Result_Factory')->createNotice(
-                $this,
+            $issues[] = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Issue_Factory')->createIssue(
                 'Redis Cache is enabled.'
             );
         }

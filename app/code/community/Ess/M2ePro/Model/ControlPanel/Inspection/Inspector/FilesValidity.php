@@ -7,26 +7,8 @@
  */
 
 class Ess_M2ePro_Model_ControlPanel_Inspection_Inspector_FilesValidity
-    extends Ess_M2ePro_Model_ControlPanel_Inspection_AbstractInspection
     implements Ess_M2ePro_Model_ControlPanel_Inspection_InspectorInterface
 {
-    //########################################
-
-    public function getTitle()
-    {
-        return 'Files validity';
-    }
-
-    public function getGroup()
-    {
-        return Ess_M2ePro_Model_ControlPanel_Inspection_Manager::GROUP_STRUCTURE;
-    }
-
-    public function getExecutionSpeed()
-    {
-        return Ess_M2ePro_Model_ControlPanel_Inspection_Manager::EXECUTION_SPEED_FAST;
-    }
-
     //########################################
 
     public function process()
@@ -36,8 +18,7 @@ class Ess_M2ePro_Model_ControlPanel_Inspection_Inspector_FilesValidity
         try {
             $responseData = $this->getDiff();
         } catch (Exception $exception) {
-            $issues[] = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Result_Factory')->createError(
-                $this,
+            $issues[] = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Issue_Factory')->createIssue(
                 $exception->getMessage()
             );
 
@@ -45,8 +26,7 @@ class Ess_M2ePro_Model_ControlPanel_Inspection_Inspector_FilesValidity
         }
 
         if (empty($responseData['files_info'])) {
-            $issues[] = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Result_Factory')->createNotice(
-                $this,
+            $issues[] = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Issue_Factory')->createIssue(
                 'No info for this M2E Pro version.'
             );
 
@@ -78,8 +58,7 @@ class Ess_M2ePro_Model_ControlPanel_Inspection_Inspector_FilesValidity
         }
 
         if (!empty($problems)) {
-            $issues[] = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Result_Factory')->createError(
-                $this,
+            $issues[] = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Issue_Factory')->createIssue(
                 'Wrong files validity',
                 $this->renderMetadata($problems)
             );

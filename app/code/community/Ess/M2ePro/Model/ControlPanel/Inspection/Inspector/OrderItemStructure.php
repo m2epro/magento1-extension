@@ -7,27 +7,9 @@
  */
 
 class Ess_M2ePro_Model_ControlPanel_Inspection_Inspector_OrderItemStructure
-    extends Ess_M2ePro_Model_ControlPanel_Inspection_AbstractInspection
     implements Ess_M2ePro_Model_ControlPanel_Inspection_InspectorInterface,
     Ess_M2ePro_Model_ControlPanel_Inspection_FixerInterface
 {
-    //########################################
-
-    public function getTitle()
-    {
-        return 'Order item structure';
-    }
-
-    public function getGroup()
-    {
-        return Ess_M2ePro_Model_ControlPanel_Inspection_Manager::GROUP_ORDERS;
-    }
-
-    public function getExecutionSpeed()
-    {
-        return Ess_M2ePro_Model_ControlPanel_Inspection_Manager::EXECUTION_SPEED_FAST;
-    }
-
     //########################################
 
     public function process()
@@ -51,8 +33,7 @@ class Ess_M2ePro_Model_ControlPanel_Inspection_Inspector_OrderItemStructure
         }
 
         if (!empty($brokenOrdersItem)) {
-            $issues[] = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Result_Factory')->createError(
-                $this,
+            $issues[] = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Issue_Factory')->createIssue(
                 'Has broken order item',
                 $this->renderMetadata($brokenOrdersItem)
             );

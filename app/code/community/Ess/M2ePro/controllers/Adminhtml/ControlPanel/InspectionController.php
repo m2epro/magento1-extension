@@ -140,21 +140,34 @@ class Ess_M2ePro_Adminhtml_ControlPanel_InspectionController
 
     public function checkInspectionAction()
     {
-        /** @var  Ess_M2ePro_Model_ControlPanel_Inspection_Manager $manager */
-        $manager = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Manager');
         $inspectionName = $this->getRequest()->getParam('name');
-        $results = $manager->runInspection($inspectionName);
 
-        $isSuccess = false;
+        /** @var Ess_M2ePro_Model_ControlPanel_Inspection_Repository $repository */
+        $repository = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Repository');
+        $definition = $repository->getDefinition($inspectionName);
+
+        /** @var Ess_M2ePro_Model_ControlPanel_Inspection_Processor $processor */
+        $processor = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Processor');
+
+        $result = $processor->process($definition);
+
+        $isSuccess = true;
         $metadata = '';
-        $message = Mage::helper('M2ePro')->__('Success');
-        foreach ($results as $result) {
-            if ($result->isSuccess()) {
-                $isSuccess = true;
-                break;
+        $message = $this->__('Success');
+
+        if ($result->isSuccess()) {
+            $issues = $result->getIssues();
+
+            if (!empty($issues)) {
+                $isSuccess = false;
+                $lastIssue = end($issues);
+
+                $metadata = $lastIssue->getMetadata();
+                $message = $lastIssue->getMessage();
             }
-            $metadata = $result->getMetadata();
-            $message = $result->getMessage();
+        } else {
+            $message = $result->getErrorMessage();
+            $isSuccess = false;
         }
 
         $this->_addJsonContent(

@@ -6,42 +6,45 @@
  * @license    Commercial use is forbidden
  */
 
-use Ess_M2ePro_Model_ControlPanel_Inspection_AbstractInspection as Inspection;
-use Ess_M2ePro_Model_ControlPanel_Inspection_Result as Result;
 
 class Ess_M2ePro_Model_ControlPanel_Inspection_Result_Factory
 {
-    //########################################
-
-    public function create($inspector, $state, $message, $metadata)
+    /**
+     * @param bool $status
+     * @param string|null $errorMessage
+     * @param Ess_M2ePro_Model_ControlPanel_Inspection_Issue[]|null $issues
+     *
+     * @return Ess_M2ePro_Model_ControlPanel_Inspection_Result
+     */
+    private function create($status, $errorMessage, $issues = array())
     {
         return Mage::getModel(
             'M2ePro/ControlPanel_Inspection_Result',
-            array($inspector, $state, $message, $metadata)
+            array(
+                'status'       => $status,
+                'errorMessage' => $errorMessage,
+                'issues'       => $issues,
+            )
         );
     }
 
-    //########################################
-
-    public function createSuccess(Inspection $inspector, $message = null, $metadata = null)
+    /**
+     * @param Ess_M2ePro_Model_ControlPanel_Inspection_Issue[] $issues
+     *
+     * @return Ess_M2ePro_Model_ControlPanel_Inspection_Result
+     */
+    public function createSuccess($issues)
     {
-        return $this->create($inspector, Result::STATE_SUCCESS, $message, $metadata);
+        return $this->create(true, null, $issues);
     }
 
-    public function createNotice(Inspection $inspector, $message, $metadata = null)
+    /**
+     * @param string $errorMessage
+     *
+     * @return Ess_M2ePro_Model_ControlPanel_Inspection_Result
+     */
+    public function createFailed($errorMessage)
     {
-        return $this->create($inspector, Result::STATE_NOTICE, $message, $metadata);
+        return $this->create(false, $errorMessage);
     }
-
-    public function createWarning(Inspection $inspector, $message, $metadata = null)
-    {
-        return $this->create($inspector, Result::STATE_WARNING, $message, $metadata);
-    }
-
-    public function createError(Inspection $inspector, $message, $metadata = null)
-    {
-        return $this->create($inspector, Result::STATE_ERROR, $message, $metadata);
-    }
-
-    //########################################
 }

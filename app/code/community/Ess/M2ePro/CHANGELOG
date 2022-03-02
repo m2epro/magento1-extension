@@ -1,4 +1,10 @@
-* 6.20.0 (15/02/2022) 
+* 6.20.1 (02/03/2022) 
+
+Common: [Fixed] Magento Shipment is not updated automatically after M2E Pro upgrade to v6.20.0 [#3421]
+eBay: [Fixed] Some variation errors couldn't be fixed automatically [#3331]
+Amazon [Fixed] Empty values are sent to the Channel during shipment update [#3338]
+
+* 6.20.0 (15/02/2022)
 
 Common: [Improved] Compatibility with external shipping tools [#3118]
 Common [Improved] Optimize M2E Pro upgrade from v.6.13.2 to v.6.14.0 (M1) and from v.1.13.2 to v.1.14.0 (M2) [#3367]

@@ -7,7 +7,6 @@
  */
 
 class Ess_M2ePro_Model_ControlPanel_Inspection_Inspector_OverwrittenModel
-    extends Ess_M2ePro_Model_ControlPanel_Inspection_AbstractInspection
     implements Ess_M2ePro_Model_ControlPanel_Inspection_InspectorInterface
 {
     /**@var array */
@@ -15,23 +14,6 @@ class Ess_M2ePro_Model_ControlPanel_Inspection_Inspector_OverwrittenModel
 
     /**@var bool */
     protected $_extensionFilesOverwritten = false;
-
-    //########################################
-
-    public function getTitle()
-    {
-        return 'Show overwritten models';
-    }
-
-    public function getGroup()
-    {
-        return Ess_M2ePro_Model_ControlPanel_Inspection_Manager::GROUP_STRUCTURE;
-    }
-
-    public function getExecutionSpeed()
-    {
-        return Ess_M2ePro_Model_ControlPanel_Inspection_Manager::EXECUTION_SPEED_FAST;
-    }
 
     //########################################
 
@@ -45,14 +27,12 @@ class Ess_M2ePro_Model_ControlPanel_Inspection_Inspector_OverwrittenModel
         }
 
         if ($this->_extensionFilesOverwritten) {
-            $issues[] = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Result_Factory')->createError(
-                $this,
+            $issues[] = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Issue_Factory')->createIssue(
                 'Overwritten extension models',
                 $this->renderMetadata($this->_overwrittenFiles)
             );
         } else {
-            $issues[] = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Result_Factory')->createNotice(
-                $this,
+            $issues[] = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Issue_Factory')->createIssue(
                 'Overwritten models',
                 $this->renderMetadata($this->_overwrittenFiles)
             );

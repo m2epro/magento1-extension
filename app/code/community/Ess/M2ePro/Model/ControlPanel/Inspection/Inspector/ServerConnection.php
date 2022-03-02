@@ -7,26 +7,8 @@
  */
 
 class Ess_M2ePro_Model_ControlPanel_Inspection_Inspector_ServerConnection
-    extends Ess_M2ePro_Model_ControlPanel_Inspection_AbstractInspection
     implements Ess_M2ePro_Model_ControlPanel_Inspection_InspectorInterface
 {
-    //########################################
-
-    public function getTitle()
-    {
-        return 'Connection with server';
-    }
-
-    public function getGroup()
-    {
-        return Ess_M2ePro_Model_ControlPanel_Inspection_Manager::GROUP_GENERAL;
-    }
-
-    public function getExecutionSpeed()
-    {
-        return Ess_M2ePro_Model_ControlPanel_Inspection_Manager::EXECUTION_SPEED_FAST;
-    }
-
     //########################################
 
     public function process()
@@ -40,8 +22,7 @@ class Ess_M2ePro_Model_ControlPanel_Inspection_Inspector_ServerConnection
 
             $decoded = Mage::helper('M2ePro')->jsonDecode($response['body']);
             if (empty($decoded['response']['result'])) {
-                $issues[] = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Result_Factory')->createError(
-                    $this,
+                $issues[] = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Issue_Factory')->createIssue(
                     'Connection Failed',
                     $response['curl_info']
                 );
@@ -54,8 +35,7 @@ class Ess_M2ePro_Model_ControlPanel_Inspection_Inspector_ServerConnection
                 $curlInfo = $additionalData['curl_info'];
             }
 
-            $issues[] = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Result_Factory')->createError(
-                $this,
+            $issues[] = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Issue_Factory')->createIssue(
                 $exception->getMessage(),
                 $curlInfo
             );

@@ -7,29 +7,11 @@
  */
 
 class Ess_M2ePro_Model_ControlPanel_Inspection_Inspector_BrokenTables
-    extends Ess_M2ePro_Model_ControlPanel_Inspection_AbstractInspection
     implements Ess_M2ePro_Model_ControlPanel_Inspection_InspectorInterface,
     Ess_M2ePro_Model_ControlPanel_Inspection_FixerInterface
 {
     /**@var array */
     protected $_brokenTables = array();
-
-    //########################################
-
-    public function getTitle()
-    {
-        return 'Broken tables';
-    }
-
-    public function getGroup()
-    {
-        return Ess_M2ePro_Model_ControlPanel_Inspection_Manager::GROUP_STRUCTURE;
-    }
-
-    public function getExecutionSpeed()
-    {
-        return Ess_M2ePro_Model_ControlPanel_Inspection_Manager::EXECUTION_SPEED_FAST;
-    }
 
     //########################################
 
@@ -39,8 +21,7 @@ class Ess_M2ePro_Model_ControlPanel_Inspection_Inspector_BrokenTables
         $this->getBrokenTables();
 
         if (!empty($this->_brokenTables)) {
-            $issues[] = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Result_Factory')->createError(
-                $this,
+            $issues[] = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Issue_Factory')->createIssue(
                 'Has broken data in table',
                 $this->renderMetadata($this->_brokenTables)
             );

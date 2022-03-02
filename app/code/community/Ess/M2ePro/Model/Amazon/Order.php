@@ -689,7 +689,7 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
      */
     public function updateShippingStatus(array $trackingDetails = array(), array $items = array())
     {
-        if (!$this->canUpdateShippingStatus($trackingDetails)) {
+        if (!$this->canUpdateShippingStatus($trackingDetails) || empty($trackingDetails['carrier_code'])) {
             return false;
         }
 
@@ -697,12 +697,10 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
             $trackingDetails['fulfillment_date'] = Mage::helper('M2ePro')->getCurrentGmtDate();
         }
 
-        if (!empty($trackingDetails['carrier_code'])) {
-            $trackingDetails['carrier_title'] = Mage::helper('M2ePro/Component_Amazon')->getCarrierTitle(
-                $trackingDetails['carrier_code'],
-                isset($trackingDetails['carrier_title']) ? $trackingDetails['carrier_title'] : ''
-            );
-        }
+        $trackingDetails['carrier_title'] = Mage::helper('M2ePro/Component_Amazon')->getCarrierTitle(
+            $trackingDetails['carrier_code'],
+            isset($trackingDetails['carrier_title']) ? $trackingDetails['carrier_title'] : ''
+        );
 
         if (!empty($trackingDetails['carrier_title'])) {
             if ($trackingDetails['carrier_title'] == Ess_M2ePro_Model_Order_Shipment_Handler::CUSTOM_CARRIER_CODE &&

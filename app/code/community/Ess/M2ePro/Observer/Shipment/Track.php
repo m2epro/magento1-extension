@@ -40,7 +40,6 @@ class Ess_M2ePro_Observer_Shipment_Track extends Ess_M2ePro_Observer_Shipment_Ab
          */
         $eventKey = 'skip_' . $shipment->getId() .'##'. spl_object_hash($track);
         if (Mage::helper('M2ePro/Data_Global')->getValue($eventKey)) {
-            Mage::helper('M2ePro/Data_Global')->unsetValue($eventKey);
             return;
         }
 

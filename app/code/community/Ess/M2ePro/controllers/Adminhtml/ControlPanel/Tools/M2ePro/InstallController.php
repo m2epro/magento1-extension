@@ -26,8 +26,11 @@ class Ess_M2ePro_Adminhtml_ControlPanel_Tools_M2ePro_InstallController
             $columnsInfo[] = (array)Mage::helper('M2ePro')->jsonDecode($item);
         }
 
-        $inspector = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Manager')
-            ->getInspection('TablesStructureValidity');
+        /** @var Ess_M2ePro_Model_ControlPanel_Inspection_Inspector_TablesStructureValidity $inspector */
+        $inspector = Mage::getModel(
+            Mage::getSingleton('M2ePro/ControlPanel_Inspection_Repository')->getDefinition('TablesStructureValidity')
+                ->getHandler()
+        );
 
         foreach ($columnsInfo as $columnInfo) {
             $inspector->fix($columnInfo);

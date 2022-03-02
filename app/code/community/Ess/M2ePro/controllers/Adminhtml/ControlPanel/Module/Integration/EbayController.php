@@ -126,8 +126,12 @@ class Ess_M2ePro_Adminhtml_ControlPanel_Module_Integration_EbayController
             'template_id' => $this->getRequest()->getParam('template_id', false)
         );
 
-        $inspector = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Manager')
-            ->getInspection('NonexistentTemplates');
+        /** @var Ess_M2ePro_Model_ControlPanel_Inspection_Inspector_NonexistentTemplates $inspector */
+        $inspector = Mage::getModel(
+            Mage::getSingleton('M2ePro/ControlPanel_Inspection_Repository')->getDefinition('NonexistentTemplates')
+                ->getHandler()
+        );
+
         $inspector->fix($fixData);
     }
 

@@ -7,7 +7,6 @@
  */
 
 class Ess_M2ePro_Model_ControlPanel_Inspection_Inspector_FilesPermissions
-    extends Ess_M2ePro_Model_ControlPanel_Inspection_AbstractInspection
     implements Ess_M2ePro_Model_ControlPanel_Inspection_InspectorInterface
 {
     /** @var array */
@@ -21,23 +20,6 @@ class Ess_M2ePro_Model_ControlPanel_Inspection_Inspector_FilesPermissions
 
     //########################################
 
-    public function getTitle()
-    {
-        return 'Files and Folders permissions';
-    }
-
-    public function getGroup()
-    {
-        return Ess_M2ePro_Model_ControlPanel_Inspection_Manager::GROUP_STRUCTURE;
-    }
-
-    public function getExecutionSpeed()
-    {
-        return Ess_M2ePro_Model_ControlPanel_Inspection_Manager::EXECUTION_SPEED_SLOW;
-    }
-
-    //########################################
-
     public function process()
     {
         $this->processRootDirs();
@@ -46,16 +28,14 @@ class Ess_M2ePro_Model_ControlPanel_Inspection_Inspector_FilesPermissions
         $issues = array();
 
         if (!empty($this->_unWritable)) {
-            $issues[] = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Result_Factory')->createError(
-                $this,
+            $issues[] = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Issue_Factory')->createIssue(
                 'Has unwriteable files \ directories',
                 array_keys($this->_unWritable)
             );
         }
 
         if (!empty($this->_notExisting)) {
-            $issues[] = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Result_Factory')->createWarning(
-                $this,
+            $issues[] = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Issue_Factory')->createIssue(
                 'Following directories are missing',
                 $this->_notExisting
             );

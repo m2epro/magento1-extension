@@ -7,27 +7,9 @@
  */
 
 class Ess_M2ePro_Model_ControlPanel_Inspection_Inspector_AmazonProductsWithoutVariations
-    extends Ess_M2ePro_Model_ControlPanel_Inspection_AbstractInspection
     implements Ess_M2ePro_Model_ControlPanel_Inspection_InspectorInterface,
     Ess_M2ePro_Model_ControlPanel_Inspection_FixerInterface
 {
-    //########################################
-
-    public function getTitle()
-    {
-        return 'Amazon products without variations';
-    }
-
-    public function getGroup()
-    {
-        return Ess_M2ePro_Model_ControlPanel_Inspection_Manager::GROUP_PRODUCTS;
-    }
-
-    public function getExecutionSpeed()
-    {
-        return Ess_M2ePro_Model_ControlPanel_Inspection_Manager::EXECUTION_SPEED_FAST;
-    }
-
     //########################################
 
     public function process()
@@ -53,8 +35,7 @@ class Ess_M2ePro_Model_ControlPanel_Inspection_Inspector_AmazonProductsWithoutVa
         }
 
         if (!empty($brokenItems)) {
-            $issues[] = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Result_Factory')->createError(
-                $this,
+            $issues[] = Mage::getSingleton('Ess_M2ePro_Model_ControlPanel_Inspection_Issue_Factory')->createIssue(
                 'Has products without variation',
                 $this->renderMetadata($brokenItems)
             );

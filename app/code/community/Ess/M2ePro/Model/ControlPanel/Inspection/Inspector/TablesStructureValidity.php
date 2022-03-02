@@ -7,7 +7,6 @@
  */
 
 class Ess_M2ePro_Model_ControlPanel_Inspection_Inspector_TablesStructureValidity
-    extends Ess_M2ePro_Model_ControlPanel_Inspection_AbstractInspection
     implements Ess_M2ePro_Model_ControlPanel_Inspection_InspectorInterface,
     Ess_M2ePro_Model_ControlPanel_Inspection_FixerInterface
 {
@@ -24,23 +23,6 @@ class Ess_M2ePro_Model_ControlPanel_Inspection_Inspector_TablesStructureValidity
 
     //########################################
 
-    public function getTitle()
-    {
-        return 'Tables structure validity';
-    }
-
-    public function getGroup()
-    {
-        return Ess_M2ePro_Model_ControlPanel_Inspection_Manager::GROUP_STRUCTURE;
-    }
-
-    public function getExecutionSpeed()
-    {
-        return Ess_M2ePro_Model_ControlPanel_Inspection_Manager::EXECUTION_SPEED_FAST;
-    }
-
-    //########################################
-
     public function process()
     {
         $issues = array();
@@ -48,8 +30,7 @@ class Ess_M2ePro_Model_ControlPanel_Inspection_Inspector_TablesStructureValidity
         try {
             $responseData = $this->getDiff();
         } catch (Exception $exception) {
-            $issues[] = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Result_Factory')->createError(
-                $this,
+            $issues[] = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Issue_Factory')->createIssue(
                 $exception->getMessage()
             );
 
@@ -57,15 +38,13 @@ class Ess_M2ePro_Model_ControlPanel_Inspection_Inspector_TablesStructureValidity
         }
 
         if (!isset($responseData['diff'])) {
-            $issues[] = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Result_Factory')->createNotice(
-                $this,
+            $issues[] = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Issue_Factory')->createIssue(
                 'No info for this M2E Pro version.'
             );
         }
 
         if (!empty($responseData['diff'])) {
-            $issues[] = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Result_Factory')->createError(
-                $this,
+            $issues[] = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Issue_Factory')->createIssue(
                 'Wrong tables structure',
                 $this->renderMetadata($responseData)
             );

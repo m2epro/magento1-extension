@@ -7,12 +7,14 @@
  */
 
 use Ess_M2ePro_Model_ControlPanel_Inspection_Result as Result;
-use Ess_M2ePro_Model_ControlPanel_Inspection_Manager as Manager;
 
 class Ess_M2ePro_Block_Adminhtml_ControlPanel_Inspection_Grid
     extends Mage_Adminhtml_Block_Widget_Grid
 {
     const NOT_SUCCESS_FILTER = 'not-success';
+
+    /** @var Ess_M2ePro_Model_ControlPanel_Inspection_Repository $repository */
+    protected $repository;
 
     //########################################
 
@@ -20,7 +22,9 @@ class Ess_M2ePro_Block_Adminhtml_ControlPanel_Inspection_Grid
     {
         parent::__construct();
 
-        $this->setId('controlPanelInspectionsGrid');
+        $this->repository = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Repository');
+
+        $this->setId('controlPanelInspectionGrid');
         $this->setSaveParametersInSession(true);
         $this->setUseAjax(true);
     }
@@ -30,15 +34,13 @@ class Ess_M2ePro_Block_Adminhtml_ControlPanel_Inspection_Grid
     protected function _prepareCollection()
     {
         $collection = new Ess_M2ePro_Model_Collection_Custom();
-        $manager = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Manager');
 
-        foreach ($manager->getInspections() as $inspection) {
-            /** @var Ess_M2ePro_Model_ControlPanel_Inspection_AbstractInspection $inspection */
+        foreach ($this->repository->getDefinitions() as $definition) {
             $row = array(
-                'id'          => $manager->getId($inspection),
-                'title'       => $inspection->getTitle(),
-                'description' => $inspection->getDescription(),
-                'inspection'  => $inspection
+                'id'          => $definition->getNick(),
+                'title'       => $definition->getTitle(),
+                'description' => $definition->getDescription(),
+                'group'       => $definition->getGroup(),
             );
             $collection->addItem(new Varien_Object($row));
         }
@@ -108,11 +110,44 @@ class Ess_M2ePro_Block_Adminhtml_ControlPanel_Inspection_Grid
                 'index'            => 'id',
                 'column_css_class' => 'no-display id',//this sets a css class to the column row item
                 'header_css_class' => 'no-display',//this sets a css class to the column header
-
             )
         );
 
         return parent::_prepareColumns();
+    }
+
+    //########################################
+
+    protected function _prepareMassaction()
+    {
+        // Set massaction identifiers
+        // ---------------------------------------
+        $this->setMassactionIdField('id');
+        $this->getMassactionBlock()->setFormFieldName('ids');
+        // ---------------------------------------
+
+        $this->getMassactionBlock()->addItem(
+            'checkAll',
+            array(
+                'label'    => $this->__('Run'),
+                'url'      => '',
+            )
+        );
+
+        return parent::_prepareMassaction();
+    }
+
+    //########################################
+
+    protected function _addColumnFilterToCollection($column)
+    {
+        $field = ($column->getFilterIndex()) ? $column->getFilterIndex() : $column->getIndex();
+
+        if ($field === 'id') {
+            return $this;
+        }
+
+        return parent::_addColumnFilterToCollection($column);
     }
 
     //########################################
@@ -163,11 +198,8 @@ class Ess_M2ePro_Block_Adminhtml_ControlPanel_Inspection_Grid
 
     public function callbackColumnTitle($value, $row, $column, $isExport)
     {
-        /** @var Ess_M2ePro_Model_ControlPanel_Inspection_AbstractInspection $inspection */
-        $inspection = $row->getData('inspection');
-
         $value = <<<HTML
-<span style="color: grey;">[{$inspection->getGroup()}]</span> {$value}
+<span style="color: grey;">[{$row->getData('group')}]</span> {$value}
 HTML;
 
         if (!$row->getData('description')) {
@@ -199,25 +231,38 @@ HTML;
             )
         );
 
+        // Set ids to be able to use option "Select All"
+        $ids = array();
+
+        foreach ($this->repository->getDefinitions() as $definition) {
+            $ids[] = $definition->getNick();
+        }
+
+        $allIdsStr = implode(",", $ids);
+
         $jsUrl = <<<JS
 <script type="text/javascript">
-
 M2ePro.url.add({$urls});
+
+ControlPanelInspectionObj = new ControlPanelInspection('{$this->getId()}');
+
+ControlPanelInspectionObj.afterInitPage();
+ControlPanelInspectionObj.getGridMassActionObj().setGridIds('{$allIdsStr}');
 </script>
 JS;
 
         $css = <<<HTML
 <style>
 .data tr {
-height: 30px;
+    height: 30px;
 }
 .data td {
-vertical-align: inherit;
+    vertical-align: inherit;
 }
 </style>
 HTML;
 
-        return $jsUrl . $css . parent::_toHtml();
+        return parent::_toHtml() . $jsUrl . $css;
     }
 
     //########################################

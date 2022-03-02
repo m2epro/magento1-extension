@@ -11,16 +11,6 @@
 
 ?>
 
-<script>
-    <?php if ($this->getRequest()->isXmlHttpRequest()): ?>
-        ControlPanelInspectionObj = new ControlPanelInspection();
-    <?php else: ?>
-    Event.observe(window, 'load', function() {
-        ControlPanelInspectionObj = new ControlPanelInspection();
-    });
-    <?php endif; ?>
-</script>
-
 <div>
     <?php echo $this->getChildHtml('inspections') ?>
 </div>

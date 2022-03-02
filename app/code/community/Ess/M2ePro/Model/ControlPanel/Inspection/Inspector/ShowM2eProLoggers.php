@@ -7,30 +7,12 @@
  */
 
 class Ess_M2ePro_Model_ControlPanel_Inspection_Inspector_ShowM2eProLoggers
-    extends Ess_M2ePro_Model_ControlPanel_Inspection_AbstractInspection
     implements Ess_M2ePro_Model_ControlPanel_Inspection_InspectorInterface
 {
     /** @var array */
     protected $_loggers = array();
 
-    //########################################
-
-    public function getTitle()
-    {
-        return 'Show M2ePro loggers';
-    }
-
-    public function getGroup()
-    {
-        return Ess_M2ePro_Model_ControlPanel_Inspection_Manager::GROUP_STRUCTURE;
-    }
-
-    public function getExecutionSpeed()
-    {
-        return Ess_M2ePro_Model_ControlPanel_Inspection_Manager::EXECUTION_SPEED_SLOW;
-    }
-
-    //########################################
+   //########################################
 
     public function process()
     {
@@ -38,8 +20,7 @@ class Ess_M2ePro_Model_ControlPanel_Inspection_Inspector_ShowM2eProLoggers
         $this->searchLoggers();
 
         if (!empty($this->_loggers)) {
-            $issues[] = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Result_Factory')->createNotice(
-                $this,
+            $issues[] = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Issue_Factory')->createIssue(
                 'M2ePro loggers were found in magento files',
                 $this->_loggers
             );

@@ -1,6 +1,23 @@
-window.ControlPanelInspection = Class.create(Common, {
+window.ControlPanelInspection = Class.create(Grid, {
 
     // ---------------------------------------
+
+    initialize: function(gridId)
+    {
+        this.gridId = gridId;
+        this.prepareActions();
+
+        window[this.gridId + '_massactionJsObject'] = window[this.gridId + 'JsObject'].massaction;
+    },
+
+    prepareActions: function()
+    {
+        this.actions = {
+            checkAllAction: function() {
+                this.checkAllAction();
+            }.bind(this),
+        }
+    },
 
     showMetaData: function(element) {
         var content = '<div style="padding: 10px 10px; max-height: 450px; overflow: auto;">' +
@@ -41,15 +58,18 @@ window.ControlPanelInspection = Class.create(Common, {
         });
     },
 
-    checkAction: function() {
-        var tr = event.target.closest("tr"),
-            id = tr.querySelector(".id").textContent,
+    checkAction: function(nick = null, details = null) {
+        if (!nick && !details) {
+            var tr = event.target.closest("tr");
+
+            nick = tr.querySelector(".id").textContent;
             details = tr.querySelector(".details");
+        }
 
         new Ajax.Request(M2ePro.url.get('checkInspection'), {
             method: 'post',
             parameters: {
-                name: id.trim()
+                name: nick.trim()
             },
             asynchronous: true,
             onSuccess: function(transport) {
@@ -73,6 +93,22 @@ window.ControlPanelInspection = Class.create(Common, {
                 }
             }
         });
+    },
+
+    checkAllAction: function () {
+        var selectedIds = this.getSelectedProductsArray(),
+            rows = document.querySelector("#controlPanelInspectionGrid_table").querySelectorAll(".id"),
+            details;
+
+        for (var row of rows) {
+            for (var nick of selectedIds) {
+                if (row.textContent.trim() === nick) {
+                    details = row.closest("tr").querySelector(".details");
+                    this.checkAction(nick, details);
+                    break;
+                }
+            }
+        }
     }
     // ---------------------------------------
 });

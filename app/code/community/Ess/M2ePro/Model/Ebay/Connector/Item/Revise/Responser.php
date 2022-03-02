@@ -255,8 +255,7 @@ class Ess_M2ePro_Model_Ebay_Connector_Item_Revise_Responser
         $additionalData = $this->_listingProduct->getAdditionalData();
 
         if ($this->isVariationErrorAppeared($responseMessages) &&
-            $this->getRequestDataObject()->hasVariations() &&
-            !isset($additionalData['is_variation_mpn_filled'])
+            $this->getRequestDataObject()->hasVariations()
         ) {
             $this->tryToResolveVariationErrors();
         }

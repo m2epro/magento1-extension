@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Ess_M2ePro>
-            <version>6.20.0</version>
+            <version>6.20.1</version>
         </Ess_M2ePro>
     </modules>
     <default>
@@ -475,6 +475,15 @@
                 </observers>
             </sales_order_invoice_save_after>
 
+            <sales_shipment_item_save_after>
+                <observers>
+                    <M2ePro_observer>
+                        <type>model</type>
+                        <class>Ess_M2ePro_Observer_Dispatcher</class>
+                        <method>salesShipmentItemSaveAfter</method>
+                    </M2ePro_observer>
+                </observers>
+            </sales_shipment_item_save_after>
             <sales_shipment_item_save_commit_after>
                 <observers>
                     <M2ePro_observer>
@@ -485,6 +494,15 @@
                 </observers>
             </sales_shipment_item_save_commit_after>
 
+            <sales_order_shipment_track_save_after>
+                <observers>
+                    <M2ePro_observer>
+                        <type>model</type>
+                        <class>Ess_M2ePro_Observer_Dispatcher</class>
+                        <method>salesOrderShipmentTrackSaveAfter</method>
+                    </M2ePro_observer>
+                </observers>
+            </sales_order_shipment_track_save_after>
             <sales_order_shipment_track_save_commit_after>
                 <observers>
                     <M2ePro_observer>

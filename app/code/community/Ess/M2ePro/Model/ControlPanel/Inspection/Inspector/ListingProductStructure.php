@@ -7,29 +7,11 @@
  */
 
 class Ess_M2ePro_Model_ControlPanel_Inspection_Inspector_ListingProductStructure
-    extends Ess_M2ePro_Model_ControlPanel_Inspection_AbstractInspection
     implements Ess_M2ePro_Model_ControlPanel_Inspection_InspectorInterface,
     Ess_M2ePro_Model_ControlPanel_Inspection_FixerInterface
 {
     /**@var array */
     protected $_brokenData    = array();
-
-    //########################################
-
-    public function getTitle()
-    {
-        return 'Listing product structure';
-    }
-
-    public function getGroup()
-    {
-        return Ess_M2ePro_Model_ControlPanel_Inspection_Manager::GROUP_STRUCTURE;
-    }
-
-    public function getExecutionSpeed()
-    {
-        return Ess_M2ePro_Model_ControlPanel_Inspection_Manager::EXECUTION_SPEED_FAST;
-    }
 
     //########################################
 
@@ -43,8 +25,7 @@ class Ess_M2ePro_Model_ControlPanel_Inspection_Inspector_ListingProductStructure
         $this->getBrokenListingProduct();
 
         if (!empty($this->_brokenData)) {
-            $issues[] = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Result_Factory')->createError(
-                $this,
+            $issues[] = Mage::getSingleton('M2ePro/ControlPanel_Inspection_Issue_Factory')->createIssue(
                 'Has broken listing or listing product',
                 $this->renderMetadata($this->_brokenData)
             );
