@@ -841,7 +841,7 @@ INSERT INTO `{$this->_installer->getTable('m2epro_config')}` (`group`,`key`,`val
   ('/logs/grouped/', 'max_records_count', '100000', NOW(), NOW()),
   ('/logs/listings/', 'last_action_id', '0', NOW(), NOW()),
   ('/logs/ebay_pickup_store/', 'last_action_id', '0', NOW(), NOW()),
-  ('/support/', 'documentation_url', 'https://docs.m2epro.com', NOW(), NOW()),
+  ('/support/', 'documentation_url', 'https://m2e.atlassian.net/wiki', NOW(), NOW()),
   ('/support/', 'clients_portal_url', 'https://clients.m2epro.com/', NOW(), NOW()),
   ('/support/', 'website_url', 'https://m2epro.com/', NOW(), NOW()),
   ('/support/', 'support_url', 'https://support.m2epro.com/', NOW(), NOW()),

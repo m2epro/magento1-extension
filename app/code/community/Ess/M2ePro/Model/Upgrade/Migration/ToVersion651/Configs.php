@@ -68,7 +68,7 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion651_Configs extends Ess_M2ePro
             ->getEntity('/support/', 'knowledge_base_url')->updateValue('https://support.m2epro.com/knowledgebase');
 
         $this->_installer->getMainConfigModifier()
-                         ->getEntity('/support/', 'documentation_url')->updateValue('https://docs.m2epro.com');
+                         ->getEntity('/support/', 'documentation_url')->updateValue('https://m2e.atlassian.net/wiki');
 
         $this->_installer->getMainConfigModifier()
                          ->getEntity('/support/', 'main_website_url')->updateValue('https://m2epro.com/');

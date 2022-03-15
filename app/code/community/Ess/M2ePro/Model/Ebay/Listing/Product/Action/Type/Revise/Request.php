@@ -53,7 +53,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Revise_Request
 
         $data = $this->insertHasSaleFlagToVariations($data);
         $data = $this->removeNodesIfItemHasTheSaleOrBid($data);
-        $data = $this->removeDurationIfItCanNotBeChanged($data);
 
         $data = $this->removePriceFromVariationsIfNotAllowed($data);
 
@@ -169,7 +168,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Revise_Request
             unset($data['subtitle']);
         }
 
-        if (isset($data['duration']) && ($deleteByAuctionFlag || $deleteByFixedFlag)) {
+        if (isset($data['duration']) && $deleteByAuctionFlag) {
             $warningMessageReasons[] = Mage::helper('M2ePro')->__('Duration');
             unset($data['duration']);
         }
@@ -187,33 +186,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Revise_Request
                     implode(', ', $warningMessageReasons)
                 )
             );
-        }
-
-        return $data;
-    }
-
-    protected function removeDurationIfItCanNotBeChanged(array $data)
-    {
-        if (isset($data['duration']) && isset($data['bestoffer_mode']) && $data['bestoffer_mode']) {
-            $this->addWarningMessage(
-                Mage::helper('M2ePro')->__(
-                    'Duration field(s) was ignored because '.
-                    'eBay doesn\'t allow Revise the Item if Best Offer is enabled.'
-                )
-            );
-            unset($data['duration']);
-        }
-
-        if (isset($data['duration']) && $data['duration'] == Ess_M2ePro_Helper_Component_Ebay::LISTING_DURATION_GTC &&
-            $this->getEbayListingProduct()->getOnlineDuration() &&
-            !$this->getEbayListingProduct()->isOnlineDurationGtc()) {
-            $this->addWarningMessage(
-                Mage::helper('M2ePro')->__(
-                    'Duration value was not sent to eBay, because you are trying to change the Duration of your
-                    Listing to \'Goot Till Cancelled\' which is not allowed by eBay.'
-                )
-            );
-            unset($data['duration']);
         }
 
         return $data;

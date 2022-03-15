@@ -517,7 +517,7 @@ Policies for the Listing.</p>
 <p>More details in <a href="%url%" target="_blank">our documentation</a>.</p>
 HTML
                     ,
-                    Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'x/awAJAQ')
+                    Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'x/CVsJAg')
                 ),
                 'title'   => Mage::helper('M2ePro')->__('Policies')
             )

@@ -223,7 +223,7 @@ class Ess_M2ePro_Adminhtml_Amazon_ListingController
         // ---------------------------------------
 
         $this->_initAction();
-        $this->setPageHelpLink(null, null, "x/b4IVAQ");
+        $this->setPageHelpLink(null, null, "x/Dd0VAg");
 
         $this->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_amazon_listing_view'))
             ->renderLayout();

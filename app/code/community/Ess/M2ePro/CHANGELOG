@@ -1,4 +1,12 @@
-* 6.20.1 (02/03/2022) 
+* 6.20.2 (15/03/2022) 
+
+Common: [Fixed] Notice: Undefined index: m2epro_extension in …y20_m08/GroupedProduct.php when trying to upgrade M2E Pro from v6.8.1 to v6.9.0 via Composer [#2621]
+Common: [Improved] Documentation links updates [#3369]
+eBay: [Added] New condition names for eBay refurbished items [#3431]
+eBay: [Fixed] Duplicate order records in eBay Orders grid [#3428]
+Amazon: [Fixed] Weight value of a Child Product is not sent to Channel when listing Grouped Product as Product Set [#2970]
+
+* 6.20.1 (02/03/2022)
 
 Common: [Fixed] Magento Shipment is not updated automatically after M2E Pro upgrade to v6.20.0 [#3421]
 eBay: [Fixed] Some variation errors couldn't be fixed automatically [#3331]

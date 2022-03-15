@@ -56,7 +56,7 @@ class Ess_M2ePro_Observer_Order_View_After extends Ess_M2ePro_Observer_Abstract
 
             Mage::helper('adminhtml')->setPageHelpUrl(
                 Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(
-                    null, null, "x/So0VAQ"
+                    null, null, "x/41oJAg"
                 )
             );
         }

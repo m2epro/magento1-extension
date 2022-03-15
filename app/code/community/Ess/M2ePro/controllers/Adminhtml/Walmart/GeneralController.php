@@ -22,7 +22,7 @@ class Ess_M2ePro_Adminhtml_Walmart_GeneralController
 
         $this->_initPopUp();
 
-        $this->setPageHelpLink(null, null, "x/L4taAQ");
+        $this->setPageHelpLink(null, null, "x/zeVaAg");
 
         return $this;
     }

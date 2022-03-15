@@ -27,7 +27,7 @@ class Ess_M2ePro_Adminhtml_Walmart_OrderController
 
         $this->_initPopUp();
 
-        $this->setPageHelpLink(null, null, "x/L4taAQ");
+        $this->setPageHelpLink(null, null, "x/zeVaAg");
 
         return $this;
     }
@@ -69,7 +69,7 @@ class Ess_M2ePro_Adminhtml_Walmart_OrderController
 
         $this->_initAction();
 
-        $this->setPageHelpLink(null, null, "x/L4taAQ");
+        $this->setPageHelpLink(null, null, "x/zeVaAg");
 
         $this->_initPopUp();
         $this->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_walmart_order_view'))

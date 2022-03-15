@@ -387,7 +387,18 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition_Source
      */
     public function getItemDimensionsWeight()
     {
-        return $this->getWeight(self::WEIGHT_TYPE_ITEM_DIMENSIONS);
+        $itemDimensionsWeight = $this->getWeight(self::WEIGHT_TYPE_ITEM_DIMENSIONS);
+
+        if ($itemDimensionsWeight !== '') {
+            return $itemDimensionsWeight;
+        } elseif ($this->getMagentoProduct()->isGroupedType()) {
+            $weight = $this->getMagentoProduct()->getGroupedWeight();
+            !empty($weight) && $this->getMagentoProduct()->clearNotFoundAttributes();
+
+            return $weight;
+        }
+
+        return '';
     }
 
     /**

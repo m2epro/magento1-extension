@@ -1537,6 +1537,24 @@ class Ess_M2ePro_Model_Magento_Product
 
     //########################################
 
+    public function getGroupedWeight()
+    {
+        $groupedProductWeight = 0;
+
+        if ($this->isGroupedType()) {
+            foreach ($this->getTypeInstance()->getAssociatedProducts($this->getProduct()) as $childProduct) {
+                $storeId = $childProduct->getStoreId();
+                $productId = $childProduct->getId();
+                $product = Mage::getModel('catalog/product')->setStoreId($storeId)->load($productId);
+                $groupedProductWeight += $childProduct->getQty() * $product->getWeight();
+            }
+        }
+
+        return $groupedProductWeight;
+    }
+
+    //########################################
+
     /**
      * @return Ess_M2ePro_Model_Magento_Product_Variation
      */

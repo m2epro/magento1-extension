@@ -70,7 +70,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_ProductAddController
 
         $this->_initPopUp();
 
-        $this->setPageHelpLink(null, null, "x/SAAJAQ");
+        $this->setPageHelpLink(null, null, "x/5loJAg");
 
         return $this;
     }
@@ -237,7 +237,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_ProductAddController
 
         $this->_initAction();
 
-        $this->setPageHelpLink(null, null, "x/RgAJAQ");
+        $this->setPageHelpLink(null, null, "x/5loJAg");
 
         $this->getLayout()->getBlock('head')
              ->setCanLoadExtJs(true)

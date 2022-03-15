@@ -38,7 +38,7 @@ class Ess_M2ePro_Adminhtml_Ebay_TemplateController extends Ess_M2ePro_Controller
 
         $this->_initPopUp();
 
-        $this->setPageHelpLink(null, null, "x/MQAJAQ");
+        $this->setPageHelpLink(null, null, "x/z1oJAg");
 
         if (Mage::helper('M2ePro/Magento')->isTinyMceAvailable()) {
             $this->getLayout()->getBlock('head')->setCanLoadTinyMce(true);
@@ -122,11 +122,11 @@ class Ess_M2ePro_Adminhtml_Ebay_TemplateController extends Ess_M2ePro_Controller
 
         switch ($nick) {
             case Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_RETURN_POLICY:
-                $this->setPageHelpLink(null, null, "x/ZAAJAQ");
+                $this->setPageHelpLink(null, null, "x/AlsJAg");
                 break;
 
             case Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_PAYMENT:
-                $this->setPageHelpLink(null, null, "x/XgAJAQ");
+                $this->setPageHelpLink(null, null, "x/-FoJAg");
                 break;
 
             case Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SHIPPING:
@@ -134,15 +134,15 @@ class Ess_M2ePro_Adminhtml_Ebay_TemplateController extends Ess_M2ePro_Controller
                 break;
 
             case Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_DESCRIPTION:
-                $this->setPageHelpLink(null, null, "x/PgAJAQ");
+                $this->setPageHelpLink(null, null, "x/3FoJAg");
                 break;
 
             case Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SELLING_FORMAT:
-                $this->setPageHelpLink(null, null, "x/PQAJAQ");
+                $this->setPageHelpLink(null, null, "x/21oJAg");
                 break;
 
             case Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SYNCHRONIZATION:
-                $this->setPageHelpLink(null, null, "x/KQAJAQ");
+                $this->setPageHelpLink(null, null, "x/x1oJAg");
                 break;
         }
 

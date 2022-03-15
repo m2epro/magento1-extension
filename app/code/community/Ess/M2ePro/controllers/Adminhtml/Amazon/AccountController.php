@@ -29,7 +29,7 @@ class Ess_M2ePro_Adminhtml_Amazon_AccountController
             ->addCss('M2ePro/css/Plugin/DropDown.css');
         $this->_initPopUp();
 
-        $this->setPageHelpLink(null, null, "x/mIIVAQ");
+        $this->setPageHelpLink(null, null, "x/Nt0VAg");
         return $this;
     }
 

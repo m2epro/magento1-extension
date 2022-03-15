@@ -279,7 +279,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
 
         $this->_initAction();
 
-        $this->setPageHelpLink(null, null, "x/J4kVAQ");
+        $this->setPageHelpLink(null, null, "x/xeMVAg");
 
         $this->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_amazon_listing_product_add_searchAsin'))
             ->renderLayout();
@@ -299,7 +299,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
 
         $this->_initAction();
 
-        $this->setPageHelpLink(null, null, "x/zYgVAQ");
+        $this->setPageHelpLink(null, null, "x/a_MVAg");
 
         $this->_addContent($block)->renderLayout();
     }
@@ -865,7 +865,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
 
         $this->_initAction();
 
-        $this->setPageHelpLink(null, null, "x/zYgVAQ");
+        $this->setPageHelpLink(null, null, "x/a_MVAg");
 
         $this->_addContent($block)->renderLayout();
     }
@@ -888,7 +888,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
 
         $this->_initAction();
 
-        $this->setPageHelpLink(null, null, "x/zYgVAQ");
+        $this->setPageHelpLink(null, null, "x/a_MVAg");
 
         $this->_addContent(
             $this->getLayout()->createBlock(

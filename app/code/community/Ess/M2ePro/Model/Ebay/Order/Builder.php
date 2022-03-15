@@ -241,13 +241,18 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
             ->addFieldToFilter('account_id', $this->_account->getId())
             ->setOrder('id', Varien_Data_Collection_Db::SORT_ORDER_DESC);
 
-        $existed->getSelect()->where(
-            sprintf(
-                'ebay_order_id IN (%s) OR selling_manager_id = %s',
-                implode(',', $orderIds),
-                $this->getData('selling_manager_id')
-            )
+        $whereExpression = sprintf(
+            "ebay_order_id IN (%s)",
+            implode(',', array_map(function ($orderId) {
+                return "'$orderId'";
+            }, $orderIds))
         );
+
+        if ($this->getData('selling_manager_id')) {
+            $whereExpression .= sprintf(' OR selling_manager_id = %s', $this->getData('selling_manager_id'));
+        }
+
+        $existed->getSelect()->where($whereExpression);
 
         return $existed->getItems();
     }

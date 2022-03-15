@@ -278,7 +278,7 @@ found Amazon Product.</p>
 <p>More detailed information you can find <a href="%url%" target="_blank" class="external-link">here</a>.</p>
 HTML
                     ,
-                    Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'x/FYgVAQ')
+                    Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'x/s_IVAg')
                 ),
                 'title'   => Mage::helper('M2ePro')->__('Search Settings')
             )

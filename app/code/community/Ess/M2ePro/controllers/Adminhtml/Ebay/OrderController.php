@@ -28,7 +28,7 @@ class Ess_M2ePro_Adminhtml_Ebay_OrderController extends Ess_M2ePro_Controller_Ad
              ->addJs('M2ePro/Order/Note.js')
              ->addJs('M2ePro/Plugin/ActionColumn.js');
 
-        $this->setPageHelpLink(null, null, "x/RQAJAQ");
+        $this->setPageHelpLink(null, null, "x/41oJAg");
 
         return $this;
     }
@@ -67,7 +67,7 @@ class Ess_M2ePro_Adminhtml_Ebay_OrderController extends Ess_M2ePro_Controller_Ad
 
         $this->_initAction();
 
-        $this->setPageHelpLink(null, null, "x/wYwVAQ");
+        $this->setPageHelpLink(null, null, "x/41oJAg");
 
         $this->_initPopUp();
 

@@ -63,7 +63,7 @@ The Sell on Another Marketplace feature allows you to list products on multiple 
 To do it, you have to choose From and To Accounts, Marketplaces, Store Views and Listings.
 Click <a href="%url%" target="_blank">here</a> to learn more detailed information.
 HTML
-                , Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'x/MIKMAQ')),
+                , Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'x/ztyMAg')),
                 'style'   => 'margin-top: 15px;',
                 'title'   => Mage::helper('M2ePro')->__('Sell on Another Marketplace')
             )

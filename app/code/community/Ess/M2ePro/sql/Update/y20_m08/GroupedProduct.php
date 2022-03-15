@@ -158,6 +158,11 @@ class Ess_M2ePro_Sql_Update_y20_m08_GroupedProduct extends Ess_M2ePro_Model_Upgr
             ->query();
 
         while ($row = $magentoOrderItemStmt->fetch()) {
+
+            if (empty($row['additional_data'])) {
+                continue;
+            }
+
             $additionalData = (array)Mage::helper('M2ePro')->unserialize($row['additional_data'], true);
             $orderItemId = $additionalData['m2epro_extension']['items'][0]['order_item_id'];
 

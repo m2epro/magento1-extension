@@ -542,7 +542,7 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
                 Mage::helper("M2ePro/Module_Support")->getDocumentationUrl(
                     null,
                     null,
-                    "x/wRhPAQ#eBayGuaranteedDelivery-HowtodownloadeBayShippingRateTablestoM2EPro?"
+                    "x/X3NPAg#eBayGuaranteedDelivery-HowtodownloadeBayShippingRateTablestoM2EPro?"
                 )
             )
         );
