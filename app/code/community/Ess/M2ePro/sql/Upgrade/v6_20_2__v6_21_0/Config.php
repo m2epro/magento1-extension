@@ -6,18 +6,13 @@
  * @license    Commercial use is forbidden
  */
 
-class Ess_M2ePro_Model_Amazon_Connector_Protocol extends Ess_M2ePro_Model_Connector_Protocol
+class Ess_M2ePro_Sql_Upgrade_v6_20_2__v6_21_0_Config extends Ess_M2ePro_Model_Upgrade_Feature_AbstractConfig
 {
     //########################################
 
-    public function getComponent()
+    public function getFeaturesList()
     {
-        return 'Amazon';
-    }
-
-    public function getComponentVersion()
-    {
-        return 13;
+        return array();
     }
 
     //########################################

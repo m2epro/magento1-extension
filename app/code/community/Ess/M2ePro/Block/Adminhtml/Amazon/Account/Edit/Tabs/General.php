@@ -29,6 +29,16 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit_Tabs_General extends Mage_A
         $confirm = $this->getLayout()->createBlock('M2ePro/adminhtml_widget_dialog_confirm');
         $this->setChild('confirm_popup', $confirm);
 
+        // ---------------------------------------
+        $data = array(
+            'label'   => Mage::helper('M2ePro')->__('Check Token Validity'),
+            'onclick' => 'AmazonAccountObj.check_click()',
+            'class'   => 'check M2ePro_check_button'
+        );
+        $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
+        $this->setChild('check_token_validity', $buttonBlock);
+        // ---------------------------------------
+
         return parent::_beforeToHtml();
     }
 

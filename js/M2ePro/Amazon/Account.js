@@ -163,6 +163,14 @@ window.AmazonAccount = Class.create(Common, {
         this.accountHandler.on_delete_popup(accountId);
     },
 
+    check_click: function() {
+        this.submitForm(M2ePro.url.get(
+            'adminhtml_amazon_account/check'
+        ));
+
+        return false;
+    },
+
     // ---------------------------------------
 
     get_token: function(marketplaceId) {

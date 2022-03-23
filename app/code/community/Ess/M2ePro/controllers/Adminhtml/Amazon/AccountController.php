@@ -358,6 +358,46 @@ class Ess_M2ePro_Adminhtml_Amazon_AccountController
 
     //########################################
 
+    public function checkAction()
+    {
+        $id = $this->getRequest()->getParam('id', 0);
+
+        /** @var Ess_M2ePro_Model_Account $account */
+        $account = Mage::helper('M2ePro/Component_Amazon')->getModel('Account')->load($id);
+
+        if (!$id || !$account->getId()) {
+            $this->_getSession()->addError(Mage::helper('M2ePro')->__('Account does not exist.'));
+
+            return $this->indexAction();
+        }
+
+        /** @var Ess_M2ePro_Model_Amazon_Connector_Dispatcher $dispatcherObject */
+        $dispatcherObject = Mage::getModel('M2ePro/Amazon_Connector_Dispatcher');
+
+        /** @var Ess_M2ePro_Model_Amazon_Connector_Account_Check_EntityRequester $connectorObj */
+        $connectorObj = $dispatcherObject->getConnector(
+            'account',
+            'check',
+            'entityRequester',
+            array('account_server_hash' => $account->getChildObject()->getServerHash())
+        );
+
+        $dispatcherObject->process($connectorObj);
+        $responseData = $connectorObj->getResponseData();
+
+        if ($responseData['status']) {
+            $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Amazon account token is valid.'));
+        } else {
+            $this->_getSession()->addError(
+                Mage::helper('M2ePro')->__('Amazon account token is invalid. Please re-get token.')
+            );
+        }
+
+        $this->_forward('edit');
+    }
+
+    //########################################
+
     public function deleteAction()
     {
         $ids = $this->getRequestIds();

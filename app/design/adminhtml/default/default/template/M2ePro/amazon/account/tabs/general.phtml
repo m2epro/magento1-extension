@@ -82,6 +82,7 @@
         '*/*/delete' => $this->getUrl('M2ePro/adminhtml_amazon_account/delete'),
 
         'adminhtml_amazon_account/beforeGetToken' => $this->getUrl('M2ePro/adminhtml_amazon_account/beforeGetToken', array('wizard' => (bool)$this->getRequest()->getParam('wizard', false))),
+        'adminhtml_amazon_account/check' => $this->getUrl('M2ePro/adminhtml_amazon_account/check', array('id' => $this->getRequest()->getParam('id')))
     )); ?>);
 
     M2ePro.translator.add(<?php echo json_encode(array(
@@ -262,6 +263,11 @@
                             <span><?php echo Mage::helper('M2ePro')->__('Paste generated MWS Auth Token from Amazon. (It must look like: amzn.mws.bna3f75c-a683-49c7-6da0-749y33313dft).'); ?></span>
                         </p>
                     </td>
+                    <?php if ($isEdit): ?>
+                        <td id="check_token_validity" class='value'>
+                            <?php echo $this->getChildHtml('check_token_validity'); ?>
+                        </td>
+                    <?php endif; ?>
                 </tr>
 
             </table>
