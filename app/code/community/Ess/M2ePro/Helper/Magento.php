@@ -96,6 +96,11 @@ class Ess_M2ePro_Helper_Magento extends Mage_Core_Helper_Abstract
         return (bool)Mage::getStoreConfigFlag('admin/security/use_form_key');
     }
 
+    public function getTimeZone()
+    {
+        return Mage::getStoreConfig(Mage_Core_Model_Locale::XML_PATH_DEFAULT_TIMEZONE);
+    }
+
     public function getCurrentSecretKey()
     {
         if (!$this->isSecretKeyToUrl()) {

@@ -629,8 +629,8 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
             $haveOption = false;
 
             foreach ($changeVariation['specifics'] as $changeVariationOption=>$changeVariationValue) {
-                if ($variationSnapshotOptionName == trim($changeVariationOption) &&
-                    $variationSnapshotOptionValue == trim($changeVariationValue))
+                if ($variationSnapshotOptionName === trim($changeVariationOption) &&
+                    $variationSnapshotOptionValue === trim($changeVariationValue))
                 {
                     $haveOption = true;
                     break;

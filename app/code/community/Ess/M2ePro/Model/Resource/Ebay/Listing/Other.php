@@ -23,31 +23,66 @@ class Ess_M2ePro_Model_Resource_Ebay_Listing_Other
 
     public function resetEntities()
     {
-        $listingOther = Mage::getModel('M2ePro/Listing_Other');
-        $ebayListingOther = Mage::getModel('M2ePro/Ebay_Listing_Other');
+        $listingOtherTable = Mage::helper('M2ePro/Module_Database_Structure')
+            ->getTableNameWithPrefix('m2epro_listing_other');
+        $ebayItemTable = Mage::helper('M2ePro/Module_Database_Structure')
+            ->getTableNameWithPrefix('m2epro_ebay_item');
+        $ebayListingOtherTable = Mage::helper('M2ePro/Module_Database_Structure')
+            ->getTableNameWithPrefix('m2epro_ebay_listing_other');
+        $ebayListingProductTable = Mage::helper('M2ePro/Module_Database_Structure')
+            ->getTableNameWithPrefix('m2epro_ebay_listing_product');
 
-        $stmt = Mage::helper('M2ePro/Component_Ebay')->getCollection('Listing_Other')->getSelect()->query();
+        $componentName = Ess_M2ePro_Helper_Component_Ebay::NICK;
 
-        $itemIds = array();
-        foreach ($stmt as $row) {
-            $listingOther->setData($row);
-            $ebayListingOther->setData($row);
+        $ebayItemIdsQuery = <<<SQL
+SELECT `ei`.`item_id`
+FROM `{$ebayItemTable}` AS `ei`
+INNER JOIN `{$ebayListingOtherTable}` AS `elo`
+ON `ei`.`item_id` = `elo`.`item_id`
+WHERE `ei`.`id` NOT IN (
+    SELECT `elp`.`ebay_item_id`
+    FROM `{$ebayListingProductTable}` AS `elp`
+    WHERE `elp`.`ebay_item_id` IS NOT NULL
+)
+SQL;
 
-            $listingOther->setChildObject($ebayListingOther);
-            $ebayListingOther->setParentObject($listingOther);
-            $itemIds[] = $ebayListingOther->getItemId();
+        $listingOtherIdsQuery = <<<SQL
+SELECT `id`
+FROM `{$listingOtherTable}`
+WHERE `component_mode` = '{$componentName}'
+SQL;
 
-            $listingOther->deleteInstance();
-        }
+        $ebayListingOtherIdsQuery = <<<SQL
+SELECT `listing_other_id`
+FROM `{$ebayListingOtherTable}`
+SQL;
 
-        $tableName = Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('m2epro_ebay_item');
-        $writeConnection = Mage::getSingleton('core/resource')->getConnection('core_write');
-        foreach(array_chunk($itemIds, 1000) as $chunkItemIds) {
-            $writeConnection->delete($tableName, array('item_id IN (?)' => $chunkItemIds));
-        }
+        $this->removeRecords($ebayItemIdsQuery, 'item_id', $ebayItemTable);
+        $this->removeRecords($listingOtherIdsQuery, 'id', $listingOtherTable);
+        $this->removeRecords($ebayListingOtherIdsQuery, 'listing_other_id', $ebayListingOtherTable);
 
         foreach (Mage::helper('M2ePro/Component_Ebay')->getCollection('Account') as $account) {
             $account->setData('other_listings_last_synchronization', null)->save();
+        }
+    }
+
+    /**
+     * @param string $sql
+     * @param string $key
+     * @param string $table
+     */
+    private function removeRecords($sql, $key, $table)
+    {
+        $itemIds = array();
+
+        $connection = Mage::getSingleton('core/resource')->getConnection('core_write');
+
+        foreach ($connection->fetchAll($sql) as $row) {
+            $itemIds[] = $row[$key];
+        }
+
+        foreach (array_chunk($itemIds, 1000) as $itemIdsSet) {
+            $connection->delete($table, array('`' . $key . '` IN (?)' => $itemIdsSet));
         }
     }
 

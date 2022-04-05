@@ -598,7 +598,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Response
     protected function appendPartsValues($data)
     {
         $requestMetadata = $this->getRequestMetaData();
-        if (!isset($requestMetadata['parts_data_hash'])) {
+        if (!array_key_exists('parts_data_hash', $requestMetadata)) {
             return $data;
         }
 

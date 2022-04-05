@@ -969,7 +969,7 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_template_selling_format'
   `lot_size_custom_value` INT(11) UNSIGNED DEFAULT NULL,
   `lot_size_attribute` VARCHAR(255) DEFAULT NULL,
   `vat_mode` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
-  `vat_percent` FLOAT UNSIGNED NOT NULL DEFAULT 0,
+  `vat_percent` DECIMAL(10,2) UNSIGNED NOT NULL DEFAULT 0,
   `tax_table_mode` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `tax_category_mode` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `tax_category_value` VARCHAR(255) NOT NULL,

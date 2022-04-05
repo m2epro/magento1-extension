@@ -504,7 +504,7 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_walmart_template_selling_form
   `map_price_custom_attribute` VARCHAR(255) NOT NULL,
   `price_coefficient` VARCHAR(255) NOT NULL,
   `price_variation_mode` TINYINT(2) UNSIGNED NOT NULL,
-  `price_vat_percent` FLOAT UNSIGNED DEFAULT NULL,
+  `price_vat_percent` DECIMAL(10,2) UNSIGNED DEFAULT NULL,
   `promotions_mode` TINYINT(2) NOT NULL DEFAULT 0,
   `lag_time_mode` TINYINT(2) UNSIGNED NOT NULL,
   `lag_time_value` INT(11) UNSIGNED NOT NULL,

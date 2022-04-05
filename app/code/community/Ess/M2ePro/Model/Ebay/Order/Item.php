@@ -244,7 +244,7 @@ class Ess_M2ePro_Model_Ebay_Order_Item extends Ess_M2ePro_Model_Component_Child_
         }
 
         foreach ($channelItem->getVariations() as $variation) {
-            if ($variation['channel_options'] != $this->getVariationChannelOptions()) {
+            if ($variation['channel_options'] !== $this->getVariationChannelOptions()) {
                 continue;
             }
 

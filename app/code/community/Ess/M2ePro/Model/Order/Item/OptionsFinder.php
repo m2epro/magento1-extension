@@ -317,7 +317,7 @@ class Ess_M2ePro_Model_Order_Item_OptionsFinder
 
         foreach ($this->_magentoOptions as $option) {
             // return product if it's name is equal to variation name
-            if ($variationName === null || trim(strtolower($option->getName())) == trim(strtolower($variationName))) {
+            if ($variationName === null || trim(strtolower($option->getName())) === trim(strtolower($variationName))) {
                 return $option;
             }
         }
