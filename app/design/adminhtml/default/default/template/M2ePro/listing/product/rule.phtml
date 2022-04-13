@@ -46,19 +46,6 @@ $hideParam === null && $hideParam = true;
                                         <option value="1" <?php if ($hideParam == 1): ?>selected="selected"<?php endif; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
                                     </select>
                                 </td>
-                                <td>
-                                    <img src="<?php echo $this->getSkinUrl('M2ePro/images/tool-tip-icon.png'); ?>"
-                                         class="tool-tip-image"
-                                         style="display: block; margin: 2px 0 0 6px;">
-                                    <span class="tool-tip-message tip-left" style="left: 650px; display: none; width: 200px;">
-                                        <img src="<?php echo $this->getSkinUrl('M2ePro/images/help.png'); ?>">
-                                        <span>
-                                            <?php echo Mage::helper('M2ePro')->__(
-                                                '<b>Note:</b> the Products from current Listing are not shown also.'
-                                            ); ?>
-                                        </span>
-                                    </span>
-                                </td>
                             </tr>
                         </table>
                     </div>

@@ -102,7 +102,7 @@ class Ess_M2ePro_Model_Servicing_Task_Settings extends Ess_M2ePro_Model_Servicin
                 $connectorObj = $dispatcherObject->getConnector(
                     'server', 'check', 'state',
                     array(
-                       'base_url' => $change['baseurl'].'index.php',
+                       'base_url' => $this->cleaningBaseUrl($change['baseurl']) . '/index.php',
                        'hostname' => $change['hostname'],
                     )
                 );
@@ -121,6 +121,13 @@ class Ess_M2ePro_Model_Servicing_Task_Settings extends Ess_M2ePro_Model_Servicin
             $config->setGroupValue('/server/location/'.$index.'/', 'hostname', $change['hostname']);
             $config->setGroupValue('/server/location/'.$index.'/', 'baseurl', $change['baseurl']);
         }
+    }
+
+    protected function cleaningBaseUrl($baseUrl)
+    {
+        $baseUrl = str_replace('index.php', '', $baseUrl);
+
+        return rtrim($baseUrl, '/');
     }
 
     protected function updateDefaultServerBaseUrlIndex(array $data)

@@ -15,7 +15,6 @@ class Ess_M2ePro_Helper_Module_Logger extends Mage_Core_Helper_Abstract
         try {
             $info  = $this->getLogMessage($logData, $class);
             $info .= $this->getStackTraceInfo();
-            $info .= $this->getCurrentUserActionInfo();
 
             $this->systemLog($class, null, $info);
 
@@ -26,7 +25,8 @@ class Ess_M2ePro_Helper_Module_Logger extends Mage_Core_Helper_Abstract
                 return;
             }
 
-            $info .= Mage::helper('M2ePro/Module_Support')->getSummaryInfo();
+            $info .= Mage::helper('M2ePro/Module_Log')->platformInfo();
+            $info .= Mage::helper('M2ePro/Module_Log')->moduleInfo();
 
             $this->send($info, $class);
 
@@ -77,25 +77,6 @@ class Ess_M2ePro_Helper_Module_Logger extends Mage_Core_Helper_Abstract
 TRACE;
 
         return $stackTraceInfo;
-    }
-
-    protected function getCurrentUserActionInfo()
-    {
-        // @codingStandardsIgnoreStart
-        $server = print_r(Mage::app()->getRequest()->getServer(), true);
-        $get = print_r(Mage::app()->getRequest()->getQuery(), true);
-        $post = print_r(Mage::app()->getRequest()->getPost(), true);
-        // @codingStandardsIgnoreEnd
-
-        $actionInfo = <<<ACTION
--------------------------------- ACTION INFO -------------------------------------
-SERVER: {$server}
-GET: {$get}
-POST: {$post}
-
-ACTION;
-
-        return $actionInfo;
     }
 
     //########################################

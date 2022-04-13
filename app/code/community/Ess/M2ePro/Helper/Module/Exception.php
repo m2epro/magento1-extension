@@ -157,9 +157,9 @@ class Ess_M2ePro_Helper_Module_Exception extends Mage_Core_Helper_Abstract
     {
         $info = $this->getFatalInfo($error, 'Fatal Error');
         $info .= $traceInfo;
-        $info .= $this->getCurrentUserActionInfo();
         $info .= $this->getAdditionalActionInfo();
-        $info .= Mage::helper('M2ePro/Module_Support')->getSummaryInfo();
+        $info .= Mage::helper('M2ePro/Module_Log')->platformInfo();
+        $info .= Mage::helper('M2ePro/Module_Log')->moduleInfo();
 
         return $info;
     }
@@ -168,9 +168,9 @@ class Ess_M2ePro_Helper_Module_Exception extends Mage_Core_Helper_Abstract
     {
         $info = $this->getExceptionInfo($exception, get_class($exception));
         $info .= $this->getExceptionStackTraceInfo($exception);
-        $info .= $this->getCurrentUserActionInfo();
         $info .= $this->getAdditionalActionInfo();
-        $info .= Mage::helper('M2ePro/Module_Support')->getSummaryInfo();
+        $info .= Mage::helper('M2ePro/Module_Log')->platformInfo();
+        $info .= Mage::helper('M2ePro/Module_Log')->moduleInfo();
 
         return $info;
     }
@@ -317,25 +317,6 @@ TRACE;
     }
 
     // ---------------------------------------
-
-    protected function getCurrentUserActionInfo()
-    {
-        // @codingStandardsIgnoreStart
-        $server = print_r(Mage::app()->getRequest()->getServer(), true);
-        $get = print_r(Mage::app()->getRequest()->getQuery(), true);
-        $post = print_r(Mage::app()->getRequest()->getPost(), true);
-        // @codingStandardsIgnoreEnd
-
-        $actionInfo = <<<ACTION
--------------------------------- ACTION INFO -------------------------------------
-SERVER: {$server}
-GET: {$get}
-POST: {$post}
-
-ACTION;
-
-        return $actionInfo;
-    }
 
     protected function getAdditionalActionInfo()
     {

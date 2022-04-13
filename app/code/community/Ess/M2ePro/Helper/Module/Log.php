@@ -210,5 +210,35 @@ class Ess_M2ePro_Helper_Module_Log extends Mage_Core_Helper_Abstract
         return Mage::helper('M2ePro/Data_Session')->setValue($sessionName, $mode);
     }
 
+    public function platformInfo()
+    {
+        $platformInfo = array(
+            'edition' => Mage::helper('M2ePro/Magento')->getEditionName(),
+            'version' => Mage::helper('M2ePro/Magento')->getVersion()
+        );
+
+        return <<<DATA
+-------------------------------- PLATFORM INFO -----------------------------------
+Edition: {$platformInfo['edition']}
+Version: {$platformInfo['version']}
+
+DATA;
+    }
+
+    public function moduleInfo()
+    {
+        $moduleInfo = array(
+            'name'    => Mage::helper('M2ePro/Module')->getName(),
+            'version' => Mage::helper('M2ePro/Module')->getPublicVersion()
+        );
+
+        return <<<DATA
+-------------------------------- MODULE INFO -------------------------------------
+Name: {$moduleInfo['name']}
+Version: {$moduleInfo['version']}
+
+DATA;
+    }
+
     //########################################
 }

@@ -27,7 +27,7 @@ class Ess_M2ePro_Helper_Server extends Mage_Core_Helper_Abstract
             }
         }
 
-        return $this->getCurrentBaseUrl().'index.php';
+        return $this->getCurrentBaseUrl() . '/index.php';
     }
 
     public function switchEndpoint()
@@ -62,17 +62,20 @@ class Ess_M2ePro_Helper_Server extends Mage_Core_Helper_Abstract
 
     //########################################
 
-    public function getCurrentBaseUrl()
-    {
-        return $this->getBaseUrlByIndex($this->getCurrentIndex());
-    }
-
     public function getCurrentHostName()
     {
         return $this->getHostNameByIndex($this->getCurrentIndex());
     }
 
     // ---------------------------------------
+
+    protected function getCurrentBaseUrl()
+    {
+        $dbBaseUrl = $this->getBaseUrlByIndex($this->getCurrentIndex());
+        $dbBaseUrl = str_replace('index.php', '', $dbBaseUrl);
+
+        return rtrim($dbBaseUrl, '/');
+    }
 
     protected function getDefaultIndex()
     {
