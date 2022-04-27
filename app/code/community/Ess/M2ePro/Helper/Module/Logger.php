@@ -10,27 +10,13 @@ class Ess_M2ePro_Helper_Module_Logger extends Mage_Core_Helper_Abstract
 {
     //########################################
 
-    public function process($logData, $class = 'undefined', $sendToServer = true)
+    public function process($logData, $class = 'undefined')
     {
         try {
             $info  = $this->getLogMessage($logData, $class);
             $info .= $this->getStackTraceInfo();
 
             $this->systemLog($class, null, $info);
-
-            $sendConfig = (bool)(int)Mage::helper('M2ePro/Module')->getConfig()
-                ->getGroupValue('/server/logging/', 'send');
-
-            if (!$sendToServer || !$sendConfig) {
-                return;
-            }
-
-            $info .= Mage::helper('M2ePro/Module_Log')->platformInfo();
-            $info .= Mage::helper('M2ePro/Module_Log')->moduleInfo();
-
-            $this->send($info, $class);
-
-        // @codingStandardsIgnoreLine
         } catch (Exception $exceptionTemp) {}
     }
 
@@ -77,21 +63,6 @@ class Ess_M2ePro_Helper_Module_Logger extends Mage_Core_Helper_Abstract
 TRACE;
 
         return $stackTraceInfo;
-    }
-
-    //########################################
-
-    protected function send($logData, $type)
-    {
-        $dispatcherObject = Mage::getModel('M2ePro/M2ePro_Connector_Dispatcher');
-        $connectorObj = $dispatcherObject->getVirtualConnector(
-            'logger', 'add', 'entity',
-            array(
-                'info' => $logData,
-                'type' => $type
-            )
-        );
-        $dispatcherObject->process($connectorObj);
     }
 
     //########################################

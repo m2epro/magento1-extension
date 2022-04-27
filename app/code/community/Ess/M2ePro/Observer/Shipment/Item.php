@@ -25,8 +25,7 @@ class Ess_M2ePro_Observer_Shipment_Item extends Ess_M2ePro_Observer_Shipment_Abs
             $class = get_class($this);
             Mage::helper('M2ePro/Module_Logger')->process(
                 array(),
-                "M2ePro observer $class cannot get shipment data from event or database",
-                false
+                "M2ePro observer $class cannot get shipment data from event or database"
             );
 
             return;

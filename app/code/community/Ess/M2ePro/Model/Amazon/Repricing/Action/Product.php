@@ -58,7 +58,7 @@ class Ess_M2ePro_Model_Amazon_Repricing_Action_Product extends Ess_M2ePro_Model_
                 )
             );
         } catch (Exception $e) {
-            Mage::helper('M2ePro/Module_Exception')->process($e, false);
+            Mage::helper('M2ePro/Module_Exception')->process($e);
             $this->getSynchronizationLog()->addMessageFromException($e);
 
             return false;
@@ -96,7 +96,7 @@ class Ess_M2ePro_Model_Amazon_Repricing_Action_Product extends Ess_M2ePro_Model_
                 )
             );
         } catch (Exception $e) {
-            Mage::helper('M2ePro/Module_Exception')->process($e, false);
+            Mage::helper('M2ePro/Module_Exception')->process($e);
             $this->getSynchronizationLog()->addMessageFromException($e);
 
             return false;

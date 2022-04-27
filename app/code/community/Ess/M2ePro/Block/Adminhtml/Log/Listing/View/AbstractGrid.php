@@ -270,7 +270,9 @@ abstract class Ess_M2ePro_Block_Adminhtml_Log_Listing_View_AbstractGrid extends
 
         $value .= '<div style="font-size: 11px; color: grey;">';
         foreach ($additionalData['variation_options'] as $attribute => $option) {
-            !$option && $option = '--';
+            if ($option === '' || $option === null) {
+                $option = '--';
+            }
             $value .= '<strong>'.
                 Mage::helper('M2ePro')->escapeHtml($attribute) .
                 '</strong>:&nbsp;'.
@@ -291,7 +293,9 @@ abstract class Ess_M2ePro_Block_Adminhtml_Log_Listing_View_AbstractGrid extends
 
         $result = '<div style="font-size: 11px; color: grey;">';
         foreach ($additionalData['variation_options'] as $attribute => $option) {
-            !$option && $option = '--';
+            if ($option === '' || $option === null) {
+                $option = '--';
+            }
             $result .= '<strong>'.
                 Mage::helper('M2ePro')->escapeHtml($attribute) .
                 '</strong>:&nbsp;'.

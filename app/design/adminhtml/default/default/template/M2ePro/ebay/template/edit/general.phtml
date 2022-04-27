@@ -17,6 +17,7 @@ $urls = json_encode(array(
             'account_id' => null,
             'id' => $this->getTemplateId(),
             'nick' => $this->getTemplateNick(),
+            'wizard' => $this->getRequest()->getParam('wizard', null),
             'mode' => Ess_M2ePro_Model_Ebay_Template_Manager::MODE_TEMPLATE,
             'data_force' => true
         )

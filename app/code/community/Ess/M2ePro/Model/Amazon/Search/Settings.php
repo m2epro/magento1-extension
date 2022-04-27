@@ -242,7 +242,7 @@ class Ess_M2ePro_Model_Amazon_Search_Settings
         try {
             $typeModel->getProcessor()->process();
         } catch (\Exception $exception) {
-            Mage::helper('M2ePro/Module_Exception')->process($exception, false);
+            Mage::helper('M2ePro/Module_Exception')->process($exception);
         }
     }
 

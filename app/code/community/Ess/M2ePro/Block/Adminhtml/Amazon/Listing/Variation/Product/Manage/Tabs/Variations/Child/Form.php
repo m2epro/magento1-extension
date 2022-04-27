@@ -175,7 +175,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Variation_Product_Manage_Tabs_Va
                     $attributesOptions[$attr] = array();
                 }
 
-                if (!in_array($option, $attributesOptions[$attr])) {
+                if (!in_array($option, $attributesOptions[$attr], true)) {
                     $attributesOptions[$attr][] = $option;
                 }
             }

@@ -81,7 +81,7 @@ $virtualChannelAttributes = $this->getVirtualChannelAttributes();
         </tr>
 
     </table>
-    <div id="variation_manager_unused_product_variations_tree" style="display: none;"><?php echo json_encode($this->getProductVariationsTree()) ?></div>
+    <div id="variation_manager_unused_product_variations_tree" style="display: none;"><?php echo json_encode($this->getProductVariationsTree(), JSON_FORCE_OBJECT) ?></div>
 
     <table id="manage_variations_new_child_channel_variation" class="manage-variations form-list" style="padding-left: 25px;" cellspacing="0" cellpadding="0">
         <tr>

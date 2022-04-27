@@ -460,7 +460,9 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Sellercentral_Grid
                     $style = 'border-bottom: 2px dotted grey';
                 }
 
-                !$option && $option = '--';
+                if ($option === '' || $option === null) {
+                    $option = '--';
+                }
                 $value .= '<span style="' . $style . '"><b>' . Mage::helper('M2ePro')->escapeHtml($attribute) .
                     '</b>:&nbsp;' . Mage::helper('M2ePro')->escapeHtml($option) . '</span><br/>';
             }
@@ -476,7 +478,9 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Sellercentral_Grid
                     $style = 'border-bottom: 2px dotted grey';
                 }
 
-                !$option && $option = '--';
+                if ($option === '' || $option === null) {
+                    $option = '--';
+                }
                 $value .= '<span style="' . $style . '"><b>' . Mage::helper('M2ePro')->escapeHtml($attribute) .
                     '</b>:&nbsp;' . Mage::helper('M2ePro')->escapeHtml($option) . '</span><br/>';
             }
@@ -494,7 +498,9 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Sellercentral_Grid
 
         $value .= '<div style="font-size: 11px; color: grey; margin-left: 7px"><br/>';
         foreach ($productOptions as $attribute => $option) {
-            !$option && $option = '--';
+            if ($option === '' || $option === null) {
+                $option = '--';
+            }
             $value .= '<b>' . Mage::helper('M2ePro')->escapeHtml($attribute) .
                 '</b>:&nbsp;' . Mage::helper('M2ePro')->escapeHtml($option) . '<br/>';
         }

@@ -52,7 +52,7 @@ class Ess_M2ePro_Model_Cron_Task_System_Processing_ProcessResult extends Ess_M2e
 
         if (!empty($logData)) {
             Mage::helper('M2ePro/Module_Logger')->process(
-                $logData, 'Processing Locks Records were broken and removed', false
+                $logData, 'Processing Locks Records were broken and removed'
             );
         }
     }

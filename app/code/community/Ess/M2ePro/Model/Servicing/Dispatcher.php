@@ -163,7 +163,6 @@ final class Ess_M2ePro_Model_Servicing_Dispatcher
             'license',
             'messages',
             'settings',
-            'exceptions',
             'marketplaces',
             'cron',
             'statistic',
@@ -179,7 +178,6 @@ final class Ess_M2ePro_Model_Servicing_Dispatcher
     public function getSlowTasks()
     {
         return array(
-            'exceptions',
             'statistic',
             'analytics'
         );

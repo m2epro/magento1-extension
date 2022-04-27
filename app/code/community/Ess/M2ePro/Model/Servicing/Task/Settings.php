@@ -46,7 +46,6 @@ class Ess_M2ePro_Model_Servicing_Task_Settings extends Ess_M2ePro_Model_Servicin
         $this->updateServersBaseUrls($data);
         $this->updateDefaultServerBaseUrlIndex($data);
         $this->updateLastVersion($data);
-        $this->updateSendLogs($data);
         $this->updateAnalytics($data);
         $this->updateStatistic($data);
     }
@@ -161,17 +160,6 @@ class Ess_M2ePro_Model_Servicing_Task_Settings extends Ess_M2ePro_Model_Servicin
         Mage::helper('M2ePro/Module')->getRegistry()->setValue(
             '/installation/build_last_version/',
             $data['last_version']['magento_1']['build']
-        );
-    }
-
-    protected function updateSendLogs(array $data)
-    {
-        if (!isset($data['send_logs'])) {
-            return;
-        }
-
-        Mage::helper('M2ePro/Module')->getConfig()->setGroupValue(
-            '/server/logging/', 'send', (int)$data['send_logs']
         );
     }
 

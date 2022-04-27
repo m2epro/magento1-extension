@@ -108,8 +108,8 @@ class Ess_M2ePro_Block_Adminhtml_Order_Item_Product_Options_Mapping extends Ess_
         } else {
             foreach ($magentoVariations as $magentoVariation) {
                 $magentoOptionLabel = array_shift($magentoVariation['labels']);
-                if (!$magentoOptionLabel) {
-                    $magentoOptionLabel = Mage::helper('M2ePro')->__('N/A');
+                if ($magentoValueLabel === '' || $magentoValueLabel === null) {
+                    $magentoValueLabel = Mage::helper('M2ePro')->__('N/A');
                 }
 
                 $magentoOption = array(
@@ -120,7 +120,7 @@ class Ess_M2ePro_Block_Adminhtml_Order_Item_Product_Options_Mapping extends Ess_
 
                 foreach ($magentoVariation['values'] as $magentoOptionValue) {
                     $magentoValueLabel = array_shift($magentoOptionValue['labels']);
-                    if (!$magentoValueLabel) {
+                    if ($magentoValueLabel === '' || $magentoValueLabel === null) {
                         $magentoValueLabel = Mage::helper('M2ePro')->__('N/A');
                     }
 

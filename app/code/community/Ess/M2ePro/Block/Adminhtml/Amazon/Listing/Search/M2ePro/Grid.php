@@ -248,7 +248,9 @@ HTML;
 
             foreach ($productOptions as $attribute => $option) {
                 $attribute = $dataHelper->escapeHtml($attribute);
-                !$option && $option = '--';
+                if ($option === '' || $option === null) {
+                    $option = '--';
+                }
                 $option = $dataHelper->escapeHtml($option);
 
                 $optionsStr .= <<<HTML

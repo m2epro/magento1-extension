@@ -81,7 +81,7 @@ $virtualChannelAttributes = $this->getVirtualChannelAttributes();
         </tr>
 
     </table>
-    <div id="variation_manager_unused_product_variations_tree" style="display: none;"><?php echo json_encode($this->getProductVariationsTree()) ?></div>
+    <div id="variation_manager_unused_product_variations_tree" style="display: none;"><?php echo json_encode($this->getProductVariationsTree(), JSON_FORCE_OBJECT) ?></div>
 
     <table id="manage_variations_new_child_channel_variation" class="<?php echo $this->isGeneralIdOwner() ? 'manage-variations' : '' ?> form-list" style="float: left; padding-left: 25px;" cellspacing="0" cellpadding="0">
         <tr>
@@ -153,7 +153,7 @@ $virtualChannelAttributes = $this->getVirtualChannelAttributes();
         </tr>
 
     </table>
-    <div id="variation_manager_unused_channel_variations_tree" style="display: none;"><?php echo json_encode($this->getChannelVariationsTree()) ?></div>
+    <div id="variation_manager_unused_channel_variations_tree" style="display: none;"><?php echo json_encode($this->getChannelVariationsTree(), JSON_FORCE_OBJECT) ?></div>
 
     <div style="text-align: right; padding-top: 5px; clear: both;">
         <a href="javascript:void(0);" onclick="ListingGridObj.closeNewChildForm(this);" ><?php echo Mage::helper('M2ePro')->__('Cancel'); ?></a>&nbsp;&nbsp;

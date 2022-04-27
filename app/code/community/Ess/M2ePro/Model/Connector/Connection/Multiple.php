@@ -68,11 +68,11 @@ class Ess_M2ePro_Model_Connector_Connection_Multiple extends Ess_M2ePro_Model_Co
             } catch (Ess_M2ePro_Model_Exception_Connection_InvalidResponse $exception) {
                 $responseError = true;
                 $this->_responses[$key] = $this->createFailedResponse($this->getConnectionErrorMessage());
-                Mage::helper('M2ePro/Module_Logger')->process($response, 'Invalid Response Format', false);
+                Mage::helper('M2ePro/Module_Logger')->process($response, 'Invalid Response Format');
             } catch (Exception $exception) {
                 $responseError = true;
                 $this->_responses[$key] = $this->createFailedResponse($this->getConnectionErrorMessage());
-                Mage::helper('M2ePro/Module_Exception')->process($exception, false);
+                Mage::helper('M2ePro/Module_Exception')->process($exception);
             }
         }
 

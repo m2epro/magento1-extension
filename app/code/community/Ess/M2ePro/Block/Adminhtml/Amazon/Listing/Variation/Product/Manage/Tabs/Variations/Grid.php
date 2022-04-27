@@ -351,17 +351,20 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Variation_Product_Manage_Tabs_Va
 
             foreach ($productOptions as $attribute => $option) {
                 $style = '';
-                if (in_array($attribute, $virtualProductAttributes)) {
+                if (in_array($attribute, $virtualProductAttributes, true)) {
                     $style = 'border-bottom: 2px dotted grey';
                 }
 
-                !$option && $option = '--';
+                if ($option === '' || $option === null) {
+                    $option = '--';
+                }
+
                 $optionHtml = '<span class="attribute-row" style="' . $style . '"><span class="attribute"><strong>' .
                     Mage::helper('M2ePro')->escapeHtml($attribute) .
                     '</strong></span>:&nbsp;<span class="value">' . Mage::helper('M2ePro')->escapeHtml($option) .
                     '</span></span>';
 
-                if ($uniqueProductsIds && $option !== '--' && !in_array($attribute, $virtualProductAttributes)) {
+                if ($uniqueProductsIds && $option !== '--' && !in_array($attribute, $virtualProductAttributes, true)) {
                     $url = $this->getUrl('adminhtml/catalog_product/edit', array('id' => $productsIds[$attribute]));
                     $html .= '<a href="' . $url . '" target="_blank">' . $optionHtml . '</a><br/>';
                 } else {
@@ -385,7 +388,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Variation_Product_Manage_Tabs_Va
             $linkContent = Mage::helper('M2ePro')->__('Change Variation');
 
             $attributes = Mage::helper('M2ePro')->escapeHtml(Mage::helper('M2ePro')->jsonEncode($attributes));
-            $variationsTree = Mage::helper('M2ePro')->escapeHtml(Mage::helper('M2ePro')->jsonEncode($variationsTree));
+            $variationsTree = Mage::helper('M2ePro')->escapeHtml(json_encode($variationsTree, JSON_FORCE_OBJECT));
 
             $html .= <<<HTML
 <form action="javascript:void(0);" class="product-options-edit"></form>
@@ -465,11 +468,13 @@ HTML;
 
         foreach ($options as $attribute => $option) {
             $style = '';
-            if (in_array($attribute, $virtualChannelAttributes)) {
+            if (in_array($attribute, $virtualChannelAttributes, true)) {
                 $style = 'border-bottom: 2px dotted grey';
             }
 
-            !$option && $option = '--';
+            if ($option === '' || $option === null) {
+                $option = '--';
+            }
 
             $attrName = Mage::helper('M2ePro')->escapeHtml($attribute);
             $optionName = Mage::helper('M2ePro')->escapeHtml($option);
@@ -1341,7 +1346,7 @@ HTML;
                     $attributesOptions[$attr] = array();
                 }
 
-                if (!in_array($option, $attributesOptions[$attr])) {
+                if (!in_array($option, $attributesOptions[$attr], true)) {
                     $attributesOptions[$attr][] = $option;
                 }
             }

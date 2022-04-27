@@ -52,7 +52,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_RemoveHandler extends Ess_M2ePro_M
         try {
             $parentTypeModel->getProcessor()->process();
         } catch (\Exception $exception) {
-            Mage::helper('M2ePro/Module_Exception')->process($exception, false);
+            Mage::helper('M2ePro/Module_Exception')->process($exception);
         }
     }
 

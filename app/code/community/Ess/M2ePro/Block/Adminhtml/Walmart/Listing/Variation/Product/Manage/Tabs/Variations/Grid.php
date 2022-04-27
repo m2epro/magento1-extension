@@ -377,7 +377,9 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_V
                     $style = 'border-bottom: 2px dotted grey';
                 }
 
-                !$option && $option = '--';
+                if ($option === '' || $option === null) {
+                    $option = '--';
+                }
                 $optionHtml = '<span class="attribute-row" style="' . $style . '"><span class="attribute"><strong>' .
                     Mage::helper('M2ePro')->escapeHtml($attribute) .
                     '</strong></span>:&nbsp;<span class="value">' . Mage::helper('M2ePro')->escapeHtml($option) .
@@ -478,7 +480,9 @@ HTML;
                 $style = 'border-bottom: 2px dotted grey';
             }
 
-            !$option && $option = '--';
+            if ($option === '' || $option === null) {
+                $option = '--';
+            }
 
             $attrName = Mage::helper('M2ePro')->escapeHtml($attribute);
             $optionName = Mage::helper('M2ePro')->escapeHtml($option);

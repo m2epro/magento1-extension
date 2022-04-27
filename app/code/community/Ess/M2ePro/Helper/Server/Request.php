@@ -49,8 +49,7 @@ class Ess_M2ePro_Helper_Server_Request extends Mage_Core_Helper_Abstract
                     'curl_error_message' => $response['curl_error_message'],
                     'curl_info' => $response['curl_info']
                 ),
-                'Curl Empty Response',
-                false
+                'Curl Empty Response'
             );
 
             if ($this->canRepeatRequest(
@@ -169,8 +168,7 @@ class Ess_M2ePro_Helper_Server_Request extends Mage_Core_Helper_Abstract
                         'curl_error_message' => $response['curl_error_message'],
                         'curl_info'          => $response['curl_info']
                     ),
-                    'Curl Empty Response',
-                    false
+                    'Curl Empty Response'
                 );
                 break;
             }

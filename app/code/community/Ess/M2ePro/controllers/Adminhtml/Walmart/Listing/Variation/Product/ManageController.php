@@ -224,7 +224,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_Variation_Product_ManageController
                 $result['vocabulary_attribute_options'] = $optionsForAddingToVocabulary;
             }
 
-            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode($result));
+            return $this->getResponse()->setBody(json_encode($result, JSON_FORCE_OBJECT));
         }
 
         foreach ($optionsForAddingToVocabulary as $channelAttribute => $options) {

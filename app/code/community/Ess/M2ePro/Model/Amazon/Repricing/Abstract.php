@@ -78,7 +78,7 @@ class Ess_M2ePro_Model_Amazon_Repricing_Abstract
             );
 
             $exception = new Exception($message->getText());
-            Mage::helper('M2ePro/Module_Exception')->process($exception, false);
+            Mage::helper('M2ePro/Module_Exception')->process($exception);
         }
     }
 

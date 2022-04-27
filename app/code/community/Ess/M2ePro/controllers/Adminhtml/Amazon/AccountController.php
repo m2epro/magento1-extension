@@ -334,7 +334,7 @@ class Ess_M2ePro_Adminhtml_Amazon_AccountController
                     /** @var Ess_M2ePro_Model_Listing $listing */
                     $storeData = Mage::getStoreConfig('general/store_information', $listing->getStoreId());
 
-                    if (empty($storeData['name']) || empty($storeData['address '])) {
+                    if (empty($storeData['name']) || empty($storeData['address'])) {
                         $result = false;
                         break;
                     }

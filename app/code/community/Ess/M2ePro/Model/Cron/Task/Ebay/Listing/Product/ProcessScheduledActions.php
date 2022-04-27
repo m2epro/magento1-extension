@@ -68,7 +68,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_ProcessScheduledActions
                 $listingProduct = $scheduledAction->getListingProduct();
                 $additionalData = $scheduledAction->getAdditionalData();
             } catch (\Ess_M2ePro_Model_Exception_Logic $e) {
-                Mage::helper('M2ePro/Module_Exception')->process($e, false);
+                Mage::helper('M2ePro/Module_Exception')->process($e);
                 $scheduledAction->delete();
 
                 continue;

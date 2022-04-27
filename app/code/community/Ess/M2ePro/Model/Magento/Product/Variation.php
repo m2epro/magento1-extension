@@ -46,7 +46,7 @@ class Ess_M2ePro_Model_Magento_Product_Variation
                 $tempOption[$variationOption['attribute']] = $variationOption['option'];
             }
 
-            if ($options == $tempOption) {
+            if (!array_diff_assoc($options,$tempOption)) {
                 return $variation;
             }
         }
@@ -242,7 +242,7 @@ class Ess_M2ePro_Model_Magento_Product_Variation
                     ->setProduct($childProduct)
                     ->getAttributeValue($attributeCode);
 
-                if (empty($attributeValue)) {
+                if ($attributeValue === '' || $attributeValue === null) {
                     break;
                 }
 

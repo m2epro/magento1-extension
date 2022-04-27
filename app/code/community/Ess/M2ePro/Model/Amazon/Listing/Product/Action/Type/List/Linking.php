@@ -215,7 +215,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Linking
         try {
             $parentTypeModel->getProcessor()->process();
         } catch (\Exception $exception) {
-            Mage::helper('M2ePro/Module_Exception')->process($exception, false);
+            Mage::helper('M2ePro/Module_Exception')->process($exception);
             return false;
         }
 
@@ -264,7 +264,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Linking
         try {
             $typeModel->getProcessor()->process();
         } catch (\Exception $exception) {
-            Mage::helper('M2ePro/Module_Exception')->process($exception, false);
+            Mage::helper('M2ePro/Module_Exception')->process($exception);
             return false;
         }
 

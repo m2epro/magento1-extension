@@ -559,7 +559,9 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Settings_Grid
         if (!empty($productOptions)) {
             $value .= '<div style="font-size: 11px; color: grey; margin-left: 7px"><br/>';
             foreach ($productOptions as $attribute => $option) {
-                !$option && $option = '--';
+                if ($option === '' || $option === null) {
+                    $option = '--';
+                }
                 $value .= '<strong>' . Mage::helper('M2ePro')->escapeHtml($attribute) .
                     '</strong>:&nbsp;' . Mage::helper('M2ePro')->escapeHtml($option) . '<br/>';
             }

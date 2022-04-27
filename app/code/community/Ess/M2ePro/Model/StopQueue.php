@@ -63,8 +63,7 @@ class Ess_M2ePro_Model_StopQueue extends Ess_M2ePro_Model_Abstract
                     $sku,
                     $exception->getMessage()
                 ),
-                'Product was not added to stop queue',
-                false
+                'Product was not added to stop queue'
             );
 
             Mage::helper('M2ePro/Module_Exception')->process($exception);

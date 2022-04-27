@@ -8,15 +8,12 @@
 
 class Ess_M2ePro_Helper_Module_Exception extends Mage_Core_Helper_Abstract
 {
-    const FILTER_TYPE_TYPE    = 1;
-    const FILTER_TYPE_INFO    = 2;
-    const FILTER_TYPE_MESSAGE = 3;
 
     protected $systemLogTableName;
 
     //########################################
 
-    public function process(Exception $exception, $sendToServer = true)
+    public function process(Exception $exception)
     {
         try {
             $class = get_class($exception);
@@ -33,27 +30,6 @@ class Ess_M2ePro_Helper_Module_Exception extends Mage_Core_Helper_Abstract
                 $exception->getMessage(),
                 $info
             );
-
-            $sendConfig = (bool)(int)Mage::helper('M2ePro/Module')->getConfig()
-                ->getGroupValue('/server/exceptions/', 'send');
-
-            if (!$sendToServer ||
-                ($exception instanceof Ess_M2ePro_Model_Exception && !$exception->isSendToServer()) ||
-                !$sendConfig || $this->isExceptionFiltered($info, $exception->getMessage(), $class)
-            ) {
-                return;
-            }
-
-            $temp = Mage::helper('M2ePro/Data_Global')->getValue('send_exception_to_server');
-            if (!empty($temp)) {
-                return;
-            }
-
-            Mage::helper('M2ePro/Data_Global')->setValue('send_exception_to_server', true);
-
-            $this->send($info, $exception->getMessage(), $class);
-
-            Mage::helper('M2ePro/Data_Global')->unsetValue('send_exception_to_server');
 
             // @codingStandardsIgnoreLine
         } catch (Exception $exceptionTemp) {
@@ -84,24 +60,6 @@ class Ess_M2ePro_Helper_Module_Exception extends Mage_Core_Helper_Abstract
                 $error['message'],
                 $info
             );
-
-            $sendConfig = (bool)(int)Mage::helper('M2ePro/Module')->getConfig()
-                ->getGroupValue('/server/fatal_error/', 'send');
-
-            if (!$sendConfig || $this->isExceptionFiltered($info, $error['message'], $class)) {
-                return;
-            }
-
-            $temp = Mage::helper('M2ePro/Data_Global')->getValue('send_exception_to_server');
-            if (!empty($temp)) {
-                return;
-            }
-
-            Mage::helper('M2ePro/Data_Global')->setValue('send_exception_to_server', true);
-
-            $this->send($info, $error['message'], $class);
-
-            Mage::helper('M2ePro/Data_Global')->unsetValue('send_exception_to_server');
 
             // @codingStandardsIgnoreLine
         } catch (Exception $exceptionTemp) {
@@ -329,50 +287,6 @@ Current Store: {$currentStoreId}
 ACTION;
 
         return $actionInfo;
-    }
-
-    //########################################
-
-    protected function send($info, $message, $type)
-    {
-        $dispatcherObject = Mage::getModel('M2ePro/M2ePro_Connector_Dispatcher');
-        $connectorObj = $dispatcherObject->getVirtualConnector(
-            'exception', 'add', 'entity',
-            array(
-                'info'    => $info,
-                'message' => $message,
-                'type'    => $type
-            )
-        );
-
-        $dispatcherObject->process($connectorObj);
-    }
-
-    protected function isExceptionFiltered($info, $message, $type)
-    {
-        if (!(bool)(int)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue('/server/exceptions/', 'filters')) {
-            return false;
-        }
-
-        $exceptionFilters = Mage::helper('M2ePro/Module')->getRegistry()->getValueFromJson('/exceptions_filters/');
-        foreach ($exceptionFilters as $exceptionFilter) {
-            try {
-                $searchSubject = '';
-                $exceptionFilter['type'] == self::FILTER_TYPE_TYPE && $searchSubject = $type;
-                $exceptionFilter['type'] == self::FILTER_TYPE_MESSAGE && $searchSubject = $message;
-                $exceptionFilter['type'] == self::FILTER_TYPE_INFO && $searchSubject = $info;
-
-                $tempResult = preg_match($exceptionFilter['preg_match'], $searchSubject);
-            } catch (Exception $exception) {
-                return false;
-            }
-
-            if ($tempResult) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     //########################################

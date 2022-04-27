@@ -45,7 +45,7 @@ class Ess_M2ePro_Model_Connector_Connection_Single extends Ess_M2ePro_Model_Conn
         } catch (Ess_M2ePro_Model_Exception_Connection_InvalidResponse $exception) {
             $this->isTryToSwitchEndpointOnError() && Mage::helper('M2ePro/Server')->switchEndpoint();
 
-            Mage::helper('M2ePro/Module_Logger')->process($result, 'Invalid Response Format', false);
+            Mage::helper('M2ePro/Module_Logger')->process($result, 'Invalid Response Format');
             throw new Ess_M2ePro_Model_Exception_Connection($this->getConnectionErrorMessage(), $result);
         }
 
