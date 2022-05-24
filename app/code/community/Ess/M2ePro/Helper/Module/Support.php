@@ -135,9 +135,6 @@ class Ess_M2ePro_Helper_Module_Support extends Mage_Core_Helper_Abstract
 
 ----- PHP INFO -----
 {$this->getPhpInfo()}
-
------ MYSQL INFO -----
-{$this->getMysqlInfo()}
 DATA;
     }
 
@@ -156,17 +153,10 @@ DATA;
             'version' => Mage::helper('M2ePro/Module')->getPublicVersion()
         );
 
-        $licenseKey = Mage::helper('M2ePro/Module_License')->getKey();
-        $installationKey = Mage::helper('M2ePro/Module')->getInstallationKey();
-
         return <<<INFO
 Platform: {$platformInfo['name']} {$platformInfo['edition']} {$platformInfo['version']}
 ---------------------------
 Extension: {$extensionInfo['name']} {$extensionInfo['version']}
----------------------------
-License Key: {$licenseKey}
----------------------------
-Installation Key: {$installationKey}
 ---------------------------
 INFO;
     }
@@ -176,15 +166,12 @@ INFO;
         $locationInfo = array(
             'domain' => Mage::helper('M2ePro/Client')->getDomain(),
             'ip' => Mage::helper('M2ePro/Client')->getIp(),
-            'directory' => Mage::helper('M2ePro/Client')->getBaseDirectory()
         );
 
         return <<<INFO
 Domain: {$locationInfo['domain']}
 ---------------------------
 Ip: {$locationInfo['ip']}
----------------------------
-Directory: {$locationInfo['directory']}
 ---------------------------
 INFO;
     }
@@ -194,7 +181,6 @@ INFO;
         $phpInfo = Mage::helper('M2ePro/Client')->getPhpSettings();
         $phpInfo['api'] = Mage::helper('M2ePro/Client')->getPhpApiName();
         $phpInfo['version'] = Mage::helper('M2ePro/Client')->getPhpVersion();
-        $phpInfo['ini_file_location'] = Mage::helper('M2ePro/Client')->getPhpIniFileLoaded();
 
         return <<<INFO
 Version: {$phpInfo['version']}
@@ -205,35 +191,6 @@ Memory Limit: {$phpInfo['memory_limit']}
 ---------------------------
 Max Execution Time: {$phpInfo['max_execution_time']}
 ---------------------------
-PHP ini file: {$phpInfo['ini_file_location']}
----------------------------
 INFO;
     }
-
-    public function getMysqlInfo()
-    {
-        $mysqlInfo = Mage::helper('M2ePro/Client')->getMysqlSettings();
-        $mysqlInfo['api'] = Mage::helper('M2ePro/Client')->getMysqlApiName();
-        $prefix = Mage::helper('M2ePro/Magento')->getDatabaseTablesPrefix();
-        $mysqlInfo['prefix'] = $prefix != '' ? $prefix : 'Disabled';
-        $mysqlInfo['version'] = Mage::helper('M2ePro/Client')->getMysqlVersion();
-        $mysqlInfo['database'] = Mage::helper('M2ePro/Magento')->getDatabaseName();
-
-        return <<<INFO
-Version: {$mysqlInfo['version']}
----------------------------
-Api: {$mysqlInfo['api']}
----------------------------
-Database: {$mysqlInfo['database']}
----------------------------
-Tables Prefix: {$mysqlInfo['prefix']}
----------------------------
-Connection Timeout: {$mysqlInfo['connect_timeout']}
----------------------------
-Wait Timeout: {$mysqlInfo['wait_timeout']}
----------------------------
-INFO;
-    }
-
-    //########################################
 }

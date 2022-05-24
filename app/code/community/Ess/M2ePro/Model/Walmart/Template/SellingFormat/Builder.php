@@ -32,9 +32,9 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat_Builder extends Ess_M2ePro
                 false, 'Y-m-d 00:00:00'
             );
         } else {
-            $data['sale_time_start_date_value'] = Mage::helper('M2ePro')->getDate(
-                $data['sale_time_start_date_value'], false, 'Y-m-d 00:00:00'
-            );
+            $data['sale_time_start_date_value'] = Mage::helper('M2ePro')
+                ->createGmtDateTime($data['sale_time_start_date_value'])
+                ->format('Y-m-d 00:00:00');
         }
 
         if ($data['sale_time_end_date_value'] === '') {
@@ -42,9 +42,9 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat_Builder extends Ess_M2ePro
                 false, 'Y-m-d 00:00:00'
             );
         } else {
-            $data['sale_time_end_date_value'] = Mage::helper('M2ePro')->getDate(
-                $data['sale_time_end_date_value'], false, 'Y-m-d 00:00:00'
-            );
+            $data['sale_time_end_date_value'] = Mage::helper('M2ePro')
+                ->createGmtDateTime($data['sale_time_end_date_value'])
+                ->format('Y-m-d 00:00:00');
         }
 
         $data['attributes'] = Mage::helper('M2ePro')->jsonEncode(

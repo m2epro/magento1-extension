@@ -50,9 +50,10 @@ abstract class Ess_M2ePro_Model_Amazon_Connector_Orders_SendInvoice_ItemsRequest
                 array(
                     'component'       => Ess_M2ePro_Helper_Component_Amazon::NICK,
                     'server_hash'     => $this->_processingServerHash,
-                    'expiration_date' => Mage::helper('M2ePro')->getDate(
+                    'expiration_date' => gmdate(
+                        'Y-m-d H:i:s',
                         Mage::helper('M2ePro')->getCurrentGmtDate(true)
-                        + Ess_M2ePro_Model_Amazon_Order_Action_Processor::PENDING_REQUEST_MAX_LIFE_TIME
+                            + Ess_M2ePro_Model_Amazon_Order_Action_Processor::PENDING_REQUEST_MAX_LIFE_TIME
                     )
                 )
             );

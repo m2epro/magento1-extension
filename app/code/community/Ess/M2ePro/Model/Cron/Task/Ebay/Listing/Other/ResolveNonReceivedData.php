@@ -168,6 +168,9 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Other_ResolveNonReceivedData exten
 
     protected function updateNotReceivedItems($listingOthers, $toTimeReceived)
     {
+        /** @var Ess_M2ePro_Helper_Data $helper */
+        $helper = Mage::helper('M2ePro');
+
         foreach ($listingOthers as $listingOther) {
             /** @var Ess_M2ePro_Model_Ebay_Listing_Other $ebayListingOther */
             $ebayListingOther = $listingOther->getChildObject();
@@ -180,10 +183,16 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Other_ResolveNonReceivedData exten
                 continue;
             }
 
-            if ($toTimeReceived !== null &&
-                strtotime($ebayListingOther->getStartDate()) >= strtotime($toTimeReceived)
-            ) {
-                continue;
+            if ($toTimeReceived !== null) {
+                $startTimestamp = (int)$helper->createGmtDateTime(
+                    $ebayListingOther->getStartDate()
+                )->format('U');
+                $toTimeReceivedTimestamp = (int)$helper->createGmtDateTime($toTimeReceived)
+                    ->format('U');
+
+                if ($startTimestamp >= $toTimeReceivedTimestamp) {
+                    continue;
+                }
             }
 
             $onlineMainCategory === null && $ebayListingOther->setData('online_main_category', '');

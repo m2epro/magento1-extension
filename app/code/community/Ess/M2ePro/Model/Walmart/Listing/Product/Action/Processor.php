@@ -634,11 +634,13 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Processor
         $requestPendingSingle = Mage::getModel('M2ePro/Request_Pending_Single');
         $requestPendingSingle->setData(
             array(
-            'component'       => Ess_M2ePro_Helper_Component_Walmart::NICK,
-            'server_hash'     => $responseData['processing_id'],
-            'expiration_date' => Mage::helper('M2ePro')->getDate(
-                Mage::helper('M2ePro')->getCurrentGmtDate(true)+self::PENDING_REQUEST_MAX_LIFE_TIME
-            )
+                'component'       => Ess_M2ePro_Helper_Component_Walmart::NICK,
+                'server_hash'     => $responseData['processing_id'],
+                'expiration_date' => gmdate(
+                    'Y-m-d H:i:s',
+                    Mage::helper('M2ePro')->getCurrentGmtDate(true)
+                        + self::PENDING_REQUEST_MAX_LIFE_TIME
+                )
             )
         );
         $requestPendingSingle->save();

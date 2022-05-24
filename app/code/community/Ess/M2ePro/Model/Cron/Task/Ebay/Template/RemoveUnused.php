@@ -73,7 +73,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Template_RemoveUnused extends Ess_M2ePro_M
         );
 
         $minCreateDate = Mage::helper('M2ePro')->getCurrentGmtDate(true) - self::SAFE_CREATE_DATE_INTERVAL;
-        $minCreateDate = Mage::helper('M2ePro')->getDate($minCreateDate);
+        $minCreateDate = gmdate('Y-m-d H:i:s', $minCreateDate);
 
         $collection = $templateManager->getTemplateCollection();
         $collection->getSelect()->where('`id` NOT IN ('.$unionSelect->__toString().')');
@@ -171,7 +171,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Template_RemoveUnused extends Ess_M2ePro_M
         );
 
         $minCreateDate = Mage::helper('M2ePro')->getCurrentGmtDate(true) - self::SAFE_CREATE_DATE_INTERVAL;
-        $minCreateDate = Mage::helper('M2ePro')->getDate($minCreateDate);
+        $minCreateDate = gmdate('Y-m-d H:i:s', $minCreateDate);
 
         $collection = Mage::getModel('M2ePro/Ebay_Template_Category')->getCollection();
         $collection->getSelect()->where('id NOT IN ('.$unionSelect->__toString().')');
@@ -292,7 +292,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Template_RemoveUnused extends Ess_M2ePro_M
         );
 
         $minCreateDate = Mage::helper('M2ePro')->getCurrentGmtDate(true) - self::SAFE_CREATE_DATE_INTERVAL;
-        $minCreateDate = Mage::helper('M2ePro')->getDate($minCreateDate);
+        $minCreateDate = gmdate('Y-m-d H:i:s', $minCreateDate);
 
         $collection = Mage::getModel('M2ePro/Ebay_Template_StoreCategory')->getCollection();
         $collection->getSelect()->where('id NOT IN ('.$unionSelect->__toString().')');

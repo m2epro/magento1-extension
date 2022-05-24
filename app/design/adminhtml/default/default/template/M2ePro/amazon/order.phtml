@@ -119,7 +119,9 @@ if (empty($currency)) {
                                         <span style="color: gray;"><?php echo Mage::helper('M2ePro')->__('Pending') ?></span>
                                     <?php } ?>
 
-                                    <?php if ($this->order->getChildObject()->isUnshipped()) { ?>
+                                    <?php if ($this->order->getChildObject()->isCancellationRequested()) { ?>
+                                        <span style="color: red;"><?php echo Mage::helper('M2ePro')->__('Unshipped (Cancellation Requested)') ?></span>
+                                    <?php } elseif ($this->order->getChildObject()->isUnshipped()) { ?>
                                         <span><?php echo Mage::helper('M2ePro')->__('Unshipped') ?></span>
                                     <?php } ?>
 

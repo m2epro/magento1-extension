@@ -225,7 +225,9 @@ class Ess_M2ePro_Adminhtml_Amazon_Order_MerchantFulfillmentController
         );
 
         if ($post['must_arrive_by_date']) {
-            $mustArriveByDateTimestamp = strtotime($post['must_arrive_by_date']);
+            $mustArriveByDateTimestamp = (int)Mage::helper('M2ePro')
+                ->createGmtDateTime($post['must_arrive_by_date'])
+                ->format('U');
             $mustArriveByDate = new DateTime();
             $mustArriveByDate->setTimestamp($mustArriveByDateTimestamp);
             $requestData['arrive_by_date'] = $mustArriveByDate->format(DATE_ISO8601);

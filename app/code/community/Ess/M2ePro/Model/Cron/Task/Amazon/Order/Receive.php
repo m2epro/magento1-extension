@@ -147,8 +147,14 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Receive
         $fromDate = $this->prepareFromDate($updateSinceTime);
         $toDate   = $this->prepareToDate();
 
-        if (strtotime($fromDate) >= strtotime($toDate)) {
-            $fromDate = new DateTime($toDate, new DateTimeZone('UTC'));
+        /** @var Ess_M2ePro_Helper_Data $helper */
+        $helper = Mage::helper('M2ePro');
+        $fromTimestamp = (int)$helper->createGmtDateTime($fromDate)
+            ->format('U');
+        $toTimestamp = (int)$helper->createGmtDateTime($toDate)
+            ->format('U');
+        if ($fromTimestamp >= $toTimestamp) {
+            $fromDate = $helper->createGmtDateTime($toDate);
             $fromDate->modify('- 5 minutes');
 
             $fromDate = $fromDate->format('Y-m-d H:i:s');

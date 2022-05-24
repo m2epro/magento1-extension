@@ -131,7 +131,7 @@ abstract class Ess_M2ePro_Model_Order_Shipment_Handler
     {
         $track = $shipment->getTracksCollection()->getLastItem();
         $number = (string)trim($track->getData('number'));
-        if (empty($number)) {
+        if (empty($number) && $order->getComponentMode() != Ess_M2ePro_Helper_Component_Amazon::NICK) {
             return array();
         }
 

@@ -187,8 +187,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Auto_Actions_Listing extends Ess_M2ePro_M
         $listingProduct->save();
 
         if ($walmartListingProduct->getVariationManager()->isRelationParentType()) {
-            $processor = $walmartListingProduct->getVariationManager()->getTypeModel()->getProcessor();
-            $processor->process();
+            $walmartListingProduct->addVariationAttributes();
         }
     }
 

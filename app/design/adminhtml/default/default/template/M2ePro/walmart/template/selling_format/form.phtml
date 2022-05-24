@@ -64,30 +64,30 @@
     $formData = array_merge($default, $formData);
 
     if ($formData['sale_time_start_date_value'] != '') {
-        $formData['sale_time_start_date_value'] = Mage::helper('M2ePro')->getDate(
-            $formData['sale_time_start_date_value'], false, 'Y-m-d'
-        );
+        $formData['sale_time_start_date_value'] = Mage::helper('M2ePro')
+            ->createGmtDateTime($formData['sale_time_start_date_value'])
+            ->format('Y-m-d');
     }
 
     if ($formData['sale_time_end_date_value'] != '') {
-        $formData['sale_time_end_date_value'] = Mage::helper('M2ePro')->getDate(
-            $formData['sale_time_end_date_value'], false, 'Y-m-d'
-        );
+        $formData['sale_time_end_date_value'] = Mage::helper('M2ePro')
+            ->createGmtDateTime($formData['sale_time_end_date_value'])
+            ->format('Y-m-d');
     }
 
     if (!empty($formData['promotions'])) {
         foreach ($formData['promotions'] as &$promotion) {
 
             if ($promotion['start_date_value'] != '') {
-                $promotion['start_date_value'] = Mage::helper('M2ePro')->getDate(
-                    $promotion['start_date_value'], false, 'Y-m-d H:i'
-                );
+                $promotion['start_date_value'] = Mage::helper('M2ePro')
+                    ->createGmtDateTime($promotion['start_date_value'])
+                    ->format('Y-m-d H:i');
             }
 
             if ($promotion['end_date_value'] != '') {
-                $promotion['end_date_value'] = Mage::helper('M2ePro')->getDate(
-                    $promotion['end_date_value'], false, 'Y-m-d H:i'
-                );
+                $promotion['end_date_value'] = Mage::helper('M2ePro')
+                    ->createGmtDateTime($promotion['end_date_value'])
+                    ->format('Y-m-d H:i');
             }
         }
         unset($promotion);

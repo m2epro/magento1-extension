@@ -36,13 +36,14 @@ class Ess_M2ePro_Block_Adminhtml_Widget_Button_DropDown extends Ess_M2ePro_Block
 
             $url = $item['url'];
             $label = $item['label'];
+            $id = isset($item['id']) ? $item['id'] : '';
             $target = isset($item['target']) ? $item['target'] : '_self';
             $onclick = isset($item['onclick']) ? $item['onclick'] : '';
 
             $style = (string)$this->getStyle();
 
             $html .= <<<HTML
-<li href="{$url}" target="{$target}" onclick="{$onclick}">{$label}</li>
+<li href="{$url}" id="{$id}" target="{$target}" onclick="{$onclick}">{$label}</li>
 HTML;
         }
 

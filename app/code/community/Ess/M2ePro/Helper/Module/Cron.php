@@ -76,7 +76,11 @@ class Ess_M2ePro_Helper_Module_Cron extends Mage_Core_Helper_Abstract
             return false;
         }
 
-        return Mage::helper('M2ePro')->getCurrentGmtDate(true) > strtotime($lastRunnerChange) + $interval;
+        /** @var Ess_M2ePro_Helper_Data $helper */
+        $helper = Mage::helper('M2ePro');
+        $lastRunnerChangeTimestamp = (int)$helper->createGmtDateTime($lastRunnerChange)
+            ->format('U');
+        return $helper->getCurrentGmtDate(true) > $lastRunnerChangeTimestamp + $interval;
     }
 
     //########################################
@@ -102,7 +106,11 @@ class Ess_M2ePro_Helper_Module_Cron extends Mage_Core_Helper_Abstract
             return false;
         }
 
-        return Mage::helper('M2ePro')->getCurrentGmtDate(true) > strtotime($lastAccess) + $interval;
+        /** @var Ess_M2ePro_Helper_Data $helper */
+        $helper = Mage::helper('M2ePro');
+        $lastAccessTimestamp = (int)$helper->createGmtDateTime($lastAccess)
+            ->format('U');
+        return $helper->getCurrentGmtDate(true) > $lastAccessTimestamp + $interval;
     }
 
     //########################################
@@ -128,7 +136,11 @@ class Ess_M2ePro_Helper_Module_Cron extends Mage_Core_Helper_Abstract
             return false;
         }
 
-        return Mage::helper('M2ePro')->getCurrentGmtDate(true) > strtotime($lastRun) + $interval;
+        /** @var Ess_M2ePro_Helper_Data $helper */
+        $helper = Mage::helper('M2ePro');
+        $lastRunTimestamp = (int)$helper->createGmtDateTime($lastRun)
+            ->format('U');
+        return $helper->getCurrentGmtDate(true) > $lastRunTimestamp + $interval;
     }
 
     //########################################

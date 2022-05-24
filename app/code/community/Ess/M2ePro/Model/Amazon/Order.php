@@ -12,14 +12,15 @@
  */
 class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Amazon_Abstract
 {
-    const STATUS_PENDING             = 0;
-    const STATUS_UNSHIPPED           = 1;
-    const STATUS_SHIPPED_PARTIALLY   = 2;
-    const STATUS_SHIPPED             = 3;
-    const STATUS_UNFULFILLABLE       = 4;
-    const STATUS_CANCELED            = 5;
-    const STATUS_INVOICE_UNCONFIRMED = 6;
-    const STATUS_PENDING_RESERVED    = 7;
+    const STATUS_PENDING                = 0;
+    const STATUS_UNSHIPPED              = 1;
+    const STATUS_SHIPPED_PARTIALLY      = 2;
+    const STATUS_SHIPPED                = 3;
+    const STATUS_UNFULFILLABLE          = 4;
+    const STATUS_CANCELED               = 5;
+    const STATUS_INVOICE_UNCONFIRMED    = 6;
+    const STATUS_PENDING_RESERVED       = 7;
+    const STATUS_CANCELLATION_REQUESTED = 8;
 
     const INVOICE_SOURCE_MAGENTO = 'magento';
     const INVOICE_SOURCE_EXTENSION = 'extension';
@@ -151,6 +152,19 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
     public function getTaxRegistrationId()
     {
         return $this->getData('tax_registration_id');
+    }
+
+    /**
+     * @return bool
+     */
+    public function isBuyerRequestedCancel()
+    {
+        return (bool)$this->getData('is_buyer_requested_cancel');
+    }
+
+    public function getBuyerCancelReason()
+    {
+        return $this->getData('buyer_cancel_reason');
     }
 
     /**
@@ -329,7 +343,9 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
      */
     public function isUnshipped()
     {
-        return $this->getStatus() == self::STATUS_UNSHIPPED;
+        $status = $this->getStatus();
+
+        return $status == self::STATUS_UNSHIPPED || $status == self::STATUS_CANCELLATION_REQUESTED;
     }
 
     /**
@@ -370,6 +386,14 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
     public function isInvoiceUnconfirmed()
     {
         return $this->getStatus() == self::STATUS_INVOICE_UNCONFIRMED;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isCancellationRequested()
+    {
+        return $this->getStatus() == self::STATUS_CANCELLATION_REQUESTED;
     }
 
     //########################################
@@ -689,7 +713,7 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
      */
     public function updateShippingStatus(array $trackingDetails = array(), array $items = array())
     {
-        if (!$this->canUpdateShippingStatus($trackingDetails) || empty($trackingDetails['carrier_code'])) {
+        if (!$this->canUpdateShippingStatus($trackingDetails)) {
             return false;
         }
 
@@ -697,10 +721,12 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
             $trackingDetails['fulfillment_date'] = Mage::helper('M2ePro')->getCurrentGmtDate();
         }
 
-        $trackingDetails['carrier_title'] = Mage::helper('M2ePro/Component_Amazon')->getCarrierTitle(
-            $trackingDetails['carrier_code'],
-            isset($trackingDetails['carrier_title']) ? $trackingDetails['carrier_title'] : ''
-        );
+        if (!empty($trackingDetails['carrier_code'])) {
+            $trackingDetails['carrier_title'] = Mage::helper('M2ePro/Component_Amazon')->getCarrierTitle(
+                $trackingDetails['carrier_code'],
+                isset($trackingDetails['carrier_title']) ? $trackingDetails['carrier_title'] : ''
+            );
+        }
 
         if (!empty($trackingDetails['carrier_title'])) {
             if ($trackingDetails['carrier_title'] == Ess_M2ePro_Model_Order_Shipment_Handler::CUSTOM_CARRIER_CODE &&
@@ -819,12 +845,11 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
             'items'    => $items,
         );
 
-        $totalItemsCount = $this->getParentObject()->getItemsCollection()->getSize();
         $orderId     = $this->getParentObject()->getId();
 
         $action = Ess_M2ePro_Model_Order_Change::ACTION_CANCEL;
         if ($this->isShipped() || $this->isPartiallyShipped() ||
-            count($items) != $totalItemsCount || $this->getParentObject()->isStatusUpdatingToShipped()
+            $this->getParentObject()->isStatusUpdatingToShipped()
         ) {
             if (empty($items)) {
                 $this->getParentObject()->addErrorLog(
@@ -838,6 +863,11 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
             }
 
             $action = Ess_M2ePro_Model_Order_Change::ACTION_REFUND;
+        }
+
+        if ($action == Ess_M2ePro_Model_Order_Change::ACTION_CANCEL && $this->isCancellationRequested()) {
+            $params['cancel_reason'] =
+                Ess_M2ePro_Model_Amazon_Order_Creditmemo_Handler::AMAZON_REFUND_REASON_BUYER_CANCELED;
         }
 
         Mage::getModel('M2ePro/Order_Change')->create(

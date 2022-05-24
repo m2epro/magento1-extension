@@ -37,6 +37,9 @@ window.DropDown = Class.create({
 
         $(ulObj).childElements().each(function(object) {
             tempHtml += '<li><a href="'+$(object).readAttribute('href')+'"';
+            if ($(object).readAttribute('id') != null) {
+                tempHtml += ' id="'+$(object).readAttribute('id')+'"';
+            }
             if ($(object).readAttribute('target') != null) {
                 tempHtml += ' target="'+$(object).readAttribute('target')+'"';
             }

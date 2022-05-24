@@ -175,6 +175,11 @@ class Ess_M2ePro_Model_Amazon_Connector_Orders_Get_Items extends Ess_M2ePro_Mode
                 $order['tax_registration_details'] = isset($orderData['tax_registration_details']) ?
                     $orderData['tax_registration_details'] : array();
 
+                $order['is_buyer_requested_cancel'] = isset($orderData['is_buyer_requested_cancel']) ?
+                    (int)$orderData['is_buyer_requested_cancel'] : 0;
+                $order['buyer_cancel_reason'] = isset($orderData['buyer_cancel_reason']) ?
+                    $orderData['buyer_cancel_reason'] : null;
+
                 $order['discount_details'] = isset($orderData['price']['discounts'])
                     ? $orderData['price']['discounts'] : array();
 

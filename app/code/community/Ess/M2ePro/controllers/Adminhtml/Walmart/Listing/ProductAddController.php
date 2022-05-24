@@ -304,6 +304,8 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
 
         $additionalData = $this->getListing()->getSettings('additional_data');
 
+        $this->addVariationAttributes($additionalData['adding_listing_products_ids']);
+
         Mage::helper('M2ePro/Data_Session')->setValue(
             'added_products_ids',
             $additionalData['adding_listing_products_ids']
@@ -657,6 +659,19 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
         }
 
         Mage::helper('M2ePro/Data_Global')->setValue('rule_model', $ruleModel);
+    }
+
+
+    private function addVariationAttributes($productsIds)
+    {
+        $listingProductCollection = Mage::helper('M2ePro/Component_Walmart')->getCollection('Listing_Product');
+        $listingProductCollection->addFieldToFilter('listing_product_id', array('in' => $productsIds));
+        $listingProductCollection->addFieldToFilter('is_variation_product', 1);
+
+        /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
+        foreach ($listingProductCollection as $listingProduct) {
+            $listingProduct->getChildObject()->addVariationAttributes();
+        }
     }
 
     protected function getHideProductsInOtherListingsPrefix()

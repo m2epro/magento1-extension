@@ -51,7 +51,10 @@ class Ess_M2ePro_Helper_Client extends Mage_Core_Helper_Abstract
     {
         $dateLastCheck = Mage::helper('M2ePro/Module')->getRegistry()->getValue('/location/date_last_check/');
         if ($dateLastCheck !== null) {
-            $dateLastCheck = strtotime($dateLastCheck);
+            /** @var Ess_M2ePro_Helper_Data $helper */
+            $helper = Mage::helper('M2ePro');
+            $dateLastCheck = (int)$helper->createGmtDateTime($dateLastCheck)
+                ->format('U');
 
             if (!$forceUpdate && Mage::helper('M2ePro')->getCurrentGmtDate(true) < $dateLastCheck + 60*60*24) {
                 return;

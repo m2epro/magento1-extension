@@ -88,8 +88,11 @@ class Ess_M2ePro_Model_Lock_Item_Manager
             return true;
         }
 
-        $currentTimestamp = Mage::helper('M2ePro')->getCurrentGmtDate(true);
-        $updateTimestamp  = strtotime($lockItem->getUpdateDate());
+        /** @var Ess_M2ePro_Helper_Data $helper */
+        $helper = Mage::helper('M2ePro');
+        $currentTimestamp = $helper->getCurrentGmtDate(true);
+        $updateTimestamp  = (int)$helper->createGmtDateTime($lockItem->getUpdateDate())
+            ->format('U');
 
         if ($updateTimestamp < $currentTimestamp - $maxInactiveInterval) {
             return true;

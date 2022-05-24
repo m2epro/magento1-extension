@@ -18,7 +18,11 @@ class Ess_M2ePro_Model_Servicing_Task_Analytics_Registry
         $startedAt  = $this->getStartedAt();
         $finishedAt = $this->getFinishedAt();
 
-        if (empty($plannedAt) || strtotime($plannedAt) > Mage::helper('M2ePro')->getCurrentGmtDate(true)) {
+        /** @var Ess_M2ePro_Helper_Data $helper */
+        $helper = Mage::helper('M2ePro');
+        if (empty($plannedAt) ||
+            (int)$helper->createGmtDateTime($plannedAt)->format('U') > $helper->getCurrentGmtDate(true)
+        ) {
             return false;
         }
 

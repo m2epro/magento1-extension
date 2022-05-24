@@ -229,11 +229,16 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Other_Channel_SynchronizeData exte
 
     protected function prepareSinceTime($sinceTime)
     {
-        $minTime = new DateTime('now', new DateTimeZone('UTC'));
+        /** @var Ess_M2ePro_Helper_Data $helper */
+        $helper = Mage::helper('M2ePro');
+
+        $minTime = $helper->createCurrentGmtDateTime();
         $minTime->modify("-1 month");
 
-        if (empty($sinceTime) || strtotime($sinceTime) < (int)$minTime->format('U')) {
-            $sinceTime = new DateTime('now', new DateTimeZone('UTC'));
+        if (empty($sinceTime) ||
+            (int)$helper->createGmtDateTime($sinceTime)->format('U') < (int)$minTime->format('U')
+        ) {
+            $sinceTime = $helper->createCurrentGmtDateTime();
             $sinceTime = $sinceTime->format('Y-m-d H:i:s');
         }
 

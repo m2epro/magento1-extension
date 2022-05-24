@@ -34,9 +34,11 @@ class Ess_M2ePro_Model_Walmart_Magento_Product_Rule_Custom_WalmartStartDate
             return null;
         }
 
-        $date = new DateTime($date);
+        /** @var Ess_M2ePro_Helper_Data $helper */
+        $helper = Mage::helper('M2ePro');
+        $date = $helper->createGmtDateTime($date);
 
-        return strtotime($date->format('Y-m-d'));
+        return (int)$helper->createGmtDateTime($date->format('Y-m-d'))->format('U');
     }
 
     /**

@@ -14,15 +14,20 @@ class Ess_M2ePro_Helper_Server extends Mage_Core_Helper_Abstract
 
     public function getEndpoint()
     {
+        /** @var Ess_M2ePro_Helper_Data $helper */
+        $helper = Mage::helper('M2ePro');
+
         if ($this->getCurrentIndex() != $this->getDefaultIndex()) {
-            $currentTimeStamp = Mage::helper('M2ePro')->getCurrentGmtDate(true);
+            $currentTimeStamp = $helper->getCurrentGmtDate(true);
 
             $interval = self::MAX_INTERVAL_OF_RETURNING_TO_DEFAULT_BASEURL;
             $switchingDateTime = Mage::helper('M2ePro/Module')->getRegistry()->getValue(
                 '/server/location/datetime_of_last_switching'
             );
 
-            if ($switchingDateTime === null || strtotime($switchingDateTime) + $interval <= $currentTimeStamp) {
+            if ($switchingDateTime === null ||
+                (int)$helper->createGmtDateTime($switchingDateTime)->format('U') + $interval <= $currentTimeStamp
+            ) {
                 $this->setCurrentIndex($this->getDefaultIndex());
             }
         }

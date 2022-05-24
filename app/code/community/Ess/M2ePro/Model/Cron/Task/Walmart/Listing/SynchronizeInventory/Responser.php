@@ -44,11 +44,17 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_SynchronizeInventory_Responser
 
         /** @var Ess_M2ePro_Model_Account $account */
         $account = Mage::helper('M2ePro/Component_Walmart')->getObject('Account', $this->_params['account_id']);
-        $newSynchDate = Mage::helper('M2ePro')->getCurrentGmtDate();
+
+        /** @var Ess_M2ePro_Helper_Data $helper */
+        $helper = Mage::helper('M2ePro');
+        $newSynchDate = $helper->getCurrentGmtDate();
 
         if ($this->getResponse()->getMessages() && $this->getResponse()->getMessages()->hasErrorEntities()) {
+            $newSynchTimestamp = (int)$helper->createGmtDateTime($newSynchDate)
+                ->format('U');
+
             //try download inventory again in an hour
-            $newSynchDate = date('Y-m-d H:i:s', strtotime($newSynchDate) + 3600);
+            $newSynchDate = date('Y-m-d H:i:s', $newSynchTimestamp + 3600);
         }
 
         $account->setData('inventory_last_synchronization', $newSynchDate)->save();

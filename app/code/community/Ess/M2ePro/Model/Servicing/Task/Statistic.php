@@ -31,12 +31,14 @@ class Ess_M2ePro_Model_Servicing_Task_Statistic extends Ess_M2ePro_Model_Servici
     {
         $lastRun = Mage::helper('M2ePro/Module')->getRegistry()->getValue('/servicing/statistic/last_run/');
 
+        /** @var Ess_M2ePro_Helper_Data $helper */
+        $helper = Mage::helper('M2ePro');
         if ($this->getInitiator() === Ess_M2ePro_Helper_Data::INITIATOR_DEVELOPER ||
             $lastRun === null ||
-            Mage::helper('M2ePro')->getCurrentGmtDate(true) > strtotime($lastRun) + self::RUN_INTERVAL) {
+            $helper->getCurrentGmtDate(true) > (int)$helper->createGmtDateTime($lastRun)->format('U') + self::RUN_INTERVAL) {
             Mage::helper('M2ePro/Module')->getRegistry()->setValue(
                 '/servicing/statistic/last_run/',
-                Mage::helper('M2ePro')->getCurrentGmtDate()
+                $helper->getCurrentGmtDate()
             );
 
             return true;
@@ -628,18 +630,17 @@ class Ess_M2ePro_Model_Servicing_Task_Statistic extends Ess_M2ePro_Model_Servici
     {
         $structureHelper = Mage::helper('M2ePro/Module_Database_Structure');
 
-        $queryStmt = Mage::getSingleton('core/resource')->getConnection('core_read')
-            ->select()
-            ->from(
-                Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('m2epro_listing'),
-                array(
-                    'component'      => 'component_mode',
-                    'marketplace_id' => 'marketplace_id',
-                    'account_id'     => 'account_id',
-                    'products_count' => 'products_total_count'
-                )
-            )
-            ->query();
+        $m2eproListing = $structureHelper->getTableNameWithPrefix('m2epro_listing');
+        $m2eproListingProduct = $structureHelper->getTableNameWithPrefix('m2epro_listing_product');
+
+        $sql = "SELECT
+                    l.component_mode                                                         AS component,
+                    l.marketplace_id                                                         AS marketplace_id,
+                    l.account_id                                                             AS account_id,
+                    (SELECT COUNT(*) FROM `{$m2eproListingProduct}` WHERE listing_id = l.id) AS products_count
+                FROM `{$m2eproListing}` AS `l`;";
+
+        $queryStmt = Mage::getSingleton('core/resource')->getConnection('core_read')->query($sql);
 
         $productTypes = array(
             Ess_M2ePro_Model_Magento_Product::TYPE_SIMPLE_ORIGIN,
@@ -948,13 +949,14 @@ class Ess_M2ePro_Model_Servicing_Task_Statistic extends Ess_M2ePro_Model_Servici
                ->query();
 
         $statuses = array(
-            Ess_M2ePro_Model_Amazon_Order::STATUS_PENDING             => 'pending',
-            Ess_M2ePro_Model_Amazon_Order::STATUS_UNSHIPPED           => 'unshipped',
-            Ess_M2ePro_Model_Amazon_Order::STATUS_SHIPPED_PARTIALLY   => 'shipped_partially',
-            Ess_M2ePro_Model_Amazon_Order::STATUS_SHIPPED             => 'shipped',
-            Ess_M2ePro_Model_Amazon_Order::STATUS_UNFULFILLABLE       => 'unfulfillable',
-            Ess_M2ePro_Model_Amazon_Order::STATUS_CANCELED            => 'canceled',
-            Ess_M2ePro_Model_Amazon_Order::STATUS_INVOICE_UNCONFIRMED => 'invoice_uncorfirmed'
+            Ess_M2ePro_Model_Amazon_Order::STATUS_PENDING                => 'pending',
+            Ess_M2ePro_Model_Amazon_Order::STATUS_UNSHIPPED              => 'unshipped',
+            Ess_M2ePro_Model_Amazon_Order::STATUS_SHIPPED_PARTIALLY      => 'shipped_partially',
+            Ess_M2ePro_Model_Amazon_Order::STATUS_SHIPPED                => 'shipped',
+            Ess_M2ePro_Model_Amazon_Order::STATUS_UNFULFILLABLE          => 'unfulfillable',
+            Ess_M2ePro_Model_Amazon_Order::STATUS_CANCELED               => 'canceled',
+            Ess_M2ePro_Model_Amazon_Order::STATUS_INVOICE_UNCONFIRMED    => 'invoice_uncorfirmed',
+            Ess_M2ePro_Model_Amazon_Order::STATUS_CANCELLATION_REQUESTED => 'unshipped_cancellation_requested'
         );
 
         while ($row = $queryStmt->fetch()) {

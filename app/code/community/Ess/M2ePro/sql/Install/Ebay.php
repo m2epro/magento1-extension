@@ -294,8 +294,6 @@ COLLATE utf8_general_ci;
 DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_ebay_listing')}`;
 CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_listing')}` (
   `listing_id` INT(11) UNSIGNED NOT NULL,
-  `products_sold_count` INT(11) UNSIGNED NOT NULL DEFAULT 0,
-  `items_sold_count` INT(11) UNSIGNED NOT NULL DEFAULT 0,
   `auto_global_adding_template_category_id` INT(11) UNSIGNED DEFAULT NULL,
   `auto_global_adding_template_category_secondary_id` INT(11) UNSIGNED DEFAULT NULL,
   `auto_global_adding_template_store_category_id` INT(11) UNSIGNED DEFAULT NULL,
@@ -323,8 +321,6 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_listing')}` (
   INDEX `auto_website_adding_template_store_category_id` (`auto_website_adding_template_store_category_id`),
   INDEX `auto_website_adding_template_store_category_secondary_id`
       (`auto_website_adding_template_store_category_secondary_id`),
-  INDEX `items_sold_count` (`items_sold_count`),
-  INDEX `products_sold_count` (`products_sold_count`),
   INDEX `template_description_id` (`template_description_id`),
   INDEX `template_payment_id` (`template_payment_id`),
   INDEX `template_return_policy_id` (`template_return_policy_id`),

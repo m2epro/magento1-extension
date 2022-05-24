@@ -121,7 +121,7 @@ class Ess_M2ePro_Helper_Magento extends Mage_Core_Helper_Abstract
     {
         $minDateTime = new DateTime(Mage::helper('M2ePro')->getCurrentGmtDate(), new DateTimeZone('UTC'));
         $minDateTime->modify('-1 day');
-        $minDateTime = Mage::helper('M2ePro')->getDate($minDateTime->format('U'));
+        $minDateTime = $minDateTime->format('Y-m-d H:i:s');
 
         $collection = Mage::getModel('cron/schedule')->getCollection();
         $collection->addFieldToFilter('executed_at', array('gt'=>$minDateTime));

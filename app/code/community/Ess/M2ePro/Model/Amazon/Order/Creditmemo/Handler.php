@@ -10,6 +10,7 @@ class Ess_M2ePro_Model_Amazon_Order_Creditmemo_Handler extends Ess_M2ePro_Model_
 {
     const AMAZON_REFUND_REASON_CUSTOMER_RETURN = 'CustomerReturn';
     const AMAZON_REFUND_REASON_NO_INVENTORY    = 'NoInventory';
+    const AMAZON_REFUND_REASON_BUYER_CANCELED  = 'BuyerCanceled';
 
     //########################################
 

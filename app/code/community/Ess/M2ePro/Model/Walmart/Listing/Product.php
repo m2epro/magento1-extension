@@ -836,7 +836,11 @@ HTML;
                 $isValidPromotion = false;
             }
 
-            if (strtotime($promotionRow['end_date']) < strtotime($promotionRow['start_date'])) {
+            /** @var Ess_M2ePro_Helper_Data $helper */
+            $helper = Mage::helper('M2ePro');
+            $endDateTimestamp = (int)$helper->createGmtDateTime($promotionRow['end_date'])->format('U');
+            $startDateTimestamp = (int)$helper->createGmtDateTime($promotionRow['start_date'])->format('U');
+            if ($endDateTimestamp < $startDateTimestamp) {
                 $message = <<<HTML
 Invalid Promotion #%s. The Start and End Date range is incorrect.
  Please adjust the Promotion Dates set in your Selling Policy.
@@ -867,6 +871,57 @@ HTML;
     public function mapChannelItemProduct()
     {
         $this->getResource()->mapChannelItemProduct($this);
+    }
+
+    //########################################
+
+    public function addVariationAttributes()
+    {
+        if (!$this->getVariationManager()->isVariationProduct()) {
+            return;
+        }
+
+        $matchedAttributes = $this->findLocalMatchedAttributesByMagentoAttributes(
+            $this->getVariationManager()->getTypeModel()->getProductAttributes()
+        );
+
+        if (empty($matchedAttributes)) {
+            return;
+        }
+
+        $this->getVariationManager()->getTypeModel()->setMatchedAttributes($matchedAttributes);
+        $this->getVariationManager()->getTypeModel()->setChannelAttributes(array_values($matchedAttributes));
+        $this->getVariationManager()->getTypeModel()->getProcessor()->process();
+    }
+
+    private function findLocalMatchedAttributesByMagentoAttributes($magentoAttributes)
+    {
+        if (empty($magentoAttributes)) {
+            return array();
+        }
+
+        $vocabularyHelper = Mage::helper('M2ePro/Component_Amazon_Vocabulary');
+        $matchedAttributes = array();
+        foreach ($magentoAttributes as $magentoAttr) {
+            foreach ($vocabularyHelper->getLocalData() as $attribute => $attributeData) {
+                if (in_array($magentoAttr, $attributeData['names'])) {
+                    if (isset($matchedAttributes[$magentoAttr])) {
+                        return array();
+                    }
+                    $matchedAttributes[$magentoAttr] = $attribute;
+                }
+            }
+        }
+
+        if (empty($matchedAttributes)) {
+            return array();
+        }
+
+        if (count($magentoAttributes) != count($matchedAttributes)) {
+            return array();
+        }
+
+        return $matchedAttributes;
     }
 
     //########################################

@@ -255,10 +255,13 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Repricing_Synchronize
      */
     protected function isPossibleToSynchronizeGeneral($account)
     {
-        $currentTimeStamp = Mage::helper('M2ePro')->getCurrentGmtDate(true);
+        /** @var Ess_M2ePro_Helper_Data $helper */
+        $helper = Mage::helper('M2ePro');
+        $currentTimeStamp = $helper->getCurrentGmtDate(true);
 
         $startDate = $this->getAccountData($account, self::REGISTRY_GENERAL_START_DATE);
-        $startDate = !empty($startDate) ? strtotime($startDate) : 0;
+        $startDate = !empty($startDate) ?
+            (int)$helper->createGmtDateTime($startDate)->format('U') : 0;
 
         $lastListingProductId = $this->getAccountData($account, self::REGISTRY_GENERAL_LAST_LISTING_PRODUCT_ID);
         $lastListingOtherId = $this->getAccountData($account, self::REGISTRY_GENERAL_LAST_LISTING_OTHER_ID);
@@ -288,10 +291,13 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Repricing_Synchronize
      */
     protected function isPossibleToSynchronizeActualPrice($account)
     {
-        $currentTimeStamp = Mage::helper('M2ePro')->getCurrentGmtDate(true);
+        /** @var Ess_M2ePro_Helper_Data $helper */
+        $helper = Mage::helper('M2ePro');
+        $currentTimeStamp = $helper->getCurrentGmtDate(true);
 
         $startDate = $this->getAccountData($account, self::REGISTRY_ACTUAL_PRICE_START_DATE);
-        $startDate = !empty($startDate) ? strtotime($startDate) : 0;
+        $startDate = !empty($startDate) ?
+            (int)$helper->createGmtDateTime($startDate)->format('U') : 0;
 
         $lastListingProductId = $this->getAccountData($account, self::REGISTRY_ACTUAL_PRICE_LAST_LISTING_PRODUCT_ID);
         $lastListingOtherId = $this->getAccountData($account, self::REGISTRY_ACTUAL_PRICE_LAST_LISTING_OTHER_ID);

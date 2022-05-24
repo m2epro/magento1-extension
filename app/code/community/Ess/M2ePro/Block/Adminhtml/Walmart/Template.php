@@ -14,36 +14,27 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template extends Mage_Adminhtml_Block_W
     {
         parent::__construct();
 
-        // Initialization block
-        // ---------------------------------------
         $this->setId('walmartTemplate');
         $this->_blockGroup = 'M2ePro';
         $this->_controller = 'adminhtml_walmart_template';
-        // ---------------------------------------
 
-        // Set header text
-        // ---------------------------------------
         $this->_headerText = '';
-        // ---------------------------------------
 
-        // Set buttons actions
-        // ---------------------------------------
         $this->removeButton('back');
         $this->removeButton('reset');
         $this->removeButton('delete');
         $this->removeButton('save');
         $this->removeButton('edit');
-        // ---------------------------------------
 
-        // ---------------------------------------
         $this->_addButton(
-            'add', array(
-            'label'     => Mage::helper('M2ePro')->__('Add Policy'),
-            'onclick'   => '',
-            'class'     => 'add add-button-drop-down'
+            'add',
+            array(
+                'id'      => 'add_policy',
+                'label'   => Mage::helper('M2ePro')->__('Add Policy'),
+                'onclick' => '',
+                'class'   => 'add add-button-drop-down'
             )
         );
-        // -------------------------------------
     }
 
     public function getHeaderHtml()
@@ -52,6 +43,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template extends Mage_Adminhtml_Block_W
             'target_css_class' => 'add-button-drop-down',
             'items'            => array(
                 array(
+                    'id'    => 'add_policy_category',
                     'url'   => $this->getUrl(
                         '*/adminhtml_walmart_template/new',
                         array(
@@ -61,6 +53,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template extends Mage_Adminhtml_Block_W
                     'label' => Mage::helper('M2ePro')->__('Category')
                 ),
                 array(
+                    'id'    => 'add_policy_description',
                     'url'   => $this->getUrl(
                         '*/adminhtml_walmart_template/new',
                         array(
@@ -70,6 +63,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template extends Mage_Adminhtml_Block_W
                     'label' => Mage::helper('M2ePro')->__('Description')
                 ),
                 array(
+                    'id'    => 'add_policy_selling',
                     'url'   => $this->getUrl(
                         '*/adminhtml_walmart_template/new',
                         array(
@@ -79,6 +73,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template extends Mage_Adminhtml_Block_W
                     'label' => Mage::helper('M2ePro')->__('Selling')
                 ),
                 array(
+                    'id'    => 'add_policy_synchronization',
                     'url'   => $this->getUrl(
                         '*/adminhtml_walmart_template/new',
                         array(

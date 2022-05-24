@@ -12,17 +12,21 @@ class Ess_M2ePro_Model_Ebay_Template_StoreCategory_Builder extends Ess_M2ePro_Mo
 
     protected function prepareData()
     {
-        $allowedKeys = array_flip(array(
+        $data = array();
+
+        $keys = array(
             'account_id',
             'category_mode',
             'category_id',
             'category_attribute',
             'category_path'
-        ));
-
-        return array_filter(
-            array_intersect_key($this->_rawData, $allowedKeys)
         );
+
+        foreach ($keys as $key) {
+            isset($this->_rawData[$key]) && $data[$key] = $this->_rawData[$key];
+        }
+
+        return $data;
     }
 
     public function getDefaultData()

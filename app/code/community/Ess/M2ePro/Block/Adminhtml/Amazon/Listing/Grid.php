@@ -8,16 +8,10 @@
 
 class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Grid extends Ess_M2ePro_Block_Adminhtml_Listing_Grid
 {
-    /** @var Ess_M2ePro_Model_Resource_Amazon_Listing */
-    protected $_amazonListingResourceModel;
-
-    //########################################
-
     public function __construct()
     {
         parent::__construct();
         $this->setId('amazonListingGrid');
-        $this->_amazonListingResourceModel = Mage::getResourceModel('M2ePro/Amazon_Listing');
     }
 
     protected function _prepareCollection()
@@ -58,6 +52,32 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Grid extends Ess_M2ePro_Block_Ad
                 array('marketplace_title'=>'title')
             );
         // ---------------------------------------
+
+        $structureHelper = Mage::helper('M2ePro/Module_Database_Structure');
+
+        $m2eproListing = $structureHelper->getTableNameWithPrefix('m2epro_listing');
+        $m2eproAmazonListing = $structureHelper->getTableNameWithPrefix('m2epro_amazon_listing');
+        $m2eproListingProduct = $structureHelper->getTableNameWithPrefix('m2epro_listing_product');
+
+        $sql = "SELECT
+            l.id                                           AS listing_id,
+            COUNT(lp.id)                                   AS products_total_count,
+            COUNT(CASE WHEN lp.status = 2 THEN lp.id END)  AS products_active_count,
+            COUNT(CASE WHEN lp.status != 2 THEN lp.id END) AS products_inactive_count
+        FROM `{$m2eproListing}` AS `l`
+            INNER JOIN `{$m2eproAmazonListing}` AS `al` ON l.id = al.listing_id
+            LEFT JOIN `{$m2eproListingProduct}` AS `lp` ON l.id = lp.listing_id
+        GROUP BY listing_id";
+
+        $collection->getSelect()->joinLeft(
+            array('t' => new Zend_Db_Expr('('.$sql.')')),
+            'main_table.id=t.listing_id',
+            array(
+                'products_total_count'    => 'products_total_count',
+                'products_active_count'   => 'products_active_count',
+                'products_inactive_count' => 'products_inactive_count',
+            )
+        );
 
         $this->setCollection($collection);
 
@@ -244,45 +264,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Grid extends Ess_M2ePro_Block_Ad
         );
 
         return $actions;
-    }
-
-    //########################################
-
-    public function callbackColumnTotalProducts($value, $row, $column, $isExport)
-    {
-        $value = $this->_amazonListingResourceModel->getStatisticTotalCount($row->id);
-
-        if ($value == 0) {
-            $value = '<span style="color: red;">0</span>';
-        }
-
-        return $value;
-    }
-
-    //########################################
-
-    public function callbackColumnListedProducts($value, $row, $column, $isExport)
-    {
-        $value = $this->_amazonListingResourceModel->getStatisticActiveCount($row->id);
-
-        if ($value == 0) {
-            $value = '<span style="color: red;">0</span>';
-        }
-
-        return $value;
-    }
-
-    //########################################
-
-    public function callbackColumnInactiveProducts($value, $row, $column, $isExport)
-    {
-        $value = $this->_amazonListingResourceModel->getStatisticInactiveCount($row->id);
-
-        if ($value == 0) {
-            $value = '<span style="color: red;">0</span>';
-        }
-
-        return $value;
     }
 
     //########################################

@@ -8,16 +8,10 @@
 
 class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Grid extends Ess_M2ePro_Block_Adminhtml_Listing_Grid
 {
-    /** @var Ess_M2ePro_Model_Resource_Walmart_Listing */
-    protected $_walmartListingResourceModel;
-
-    //########################################
-
     public function __construct()
     {
         parent::__construct();
         $this->setId('walmartListingGrid');
-        $this->_walmartListingResourceModel = Mage::getResourceModel('M2ePro/Walmart_Listing');
     }
 
     protected function _prepareCollection()
@@ -65,6 +59,32 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Grid extends Ess_M2ePro_Block_A
                 array('marketplace_title'=>'title')
             );
         // ---------------------------------------
+
+        $structureHelper = Mage::helper('M2ePro/Module_Database_Structure');
+
+        $m2eproListing = $structureHelper->getTableNameWithPrefix('m2epro_listing');
+        $m2eproWalmartListing = $structureHelper->getTableNameWithPrefix('m2epro_walmart_listing');
+        $m2eproListingProduct = $structureHelper->getTableNameWithPrefix('m2epro_listing_product');
+
+        $sql = "SELECT
+            l.id                                           AS listing_id,
+            COUNT(lp.id)                                   AS products_total_count,
+            COUNT(CASE WHEN lp.status = 2 THEN lp.id END)  AS products_active_count,
+            COUNT(CASE WHEN lp.status != 2 THEN lp.id END) AS products_inactive_count
+        FROM `{$m2eproListing}` AS `l`
+            INNER JOIN `{$m2eproWalmartListing}` AS `wl` ON l.id = wl.listing_id
+            LEFT JOIN `{$m2eproListingProduct}` AS `lp` ON l.id = lp.listing_id
+        GROUP BY listing_id";
+
+        $collection->getSelect()->joinLeft(
+            array('t' => new Zend_Db_Expr('('.$sql.')')),
+            'main_table.id=t.listing_id',
+            array(
+                'products_total_count'    => 'products_total_count',
+                'products_active_count'   => 'products_active_count',
+                'products_inactive_count' => 'products_inactive_count',
+            )
+        );
 
         $this->setCollection($collection);
 
@@ -244,45 +264,6 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Grid extends Ess_M2ePro_Block_A
         );
 
         return $actions;
-    }
-
-    //########################################
-
-    public function callbackColumnTotalProducts($value, $row, $column, $isExport)
-    {
-        $value = $this->_walmartListingResourceModel->getStatisticTotalCount($row->id);
-
-        if ($value == 0) {
-            $value = '<span style="color: red;">0</span>';
-        }
-
-        return $value;
-    }
-
-    //########################################
-
-    public function callbackColumnListedProducts($value, $row, $column, $isExport)
-    {
-        $value = $this->_walmartListingResourceModel->getStatisticActiveCount($row->id);
-
-        if ($value == 0) {
-            $value = '<span style="color: red;">0</span>';
-        }
-
-        return $value;
-    }
-
-    //########################################
-
-    public function callbackColumnInactiveProducts($value, $row, $column, $isExport)
-    {
-        $value = $this->_walmartListingResourceModel->getStatisticInactiveCount($row->id);
-
-        if ($value == 0) {
-            $value = '<span style="color: red;">0</span>';
-        }
-
-        return $value;
     }
 
     //########################################

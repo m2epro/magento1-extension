@@ -345,8 +345,14 @@ INFO;
 
     protected function getTotalTime()
     {
-        $totalTime = strtotime($this->getObject()->getData('end_date')) -
-                     strtotime($this->getObject()->getData('start_date'));
+        /** @var Ess_M2ePro_Helper_Data $helper */
+        $helper = Mage::helper('M2ePro');
+        $endDateTimestamp = (int)$helper->createGmtDateTime($this->getObject()->getData('end_date'))
+            ->format('U');
+        $startDateTimestamp = (int)$helper->createGmtDateTime($this->getObject()->getData('start_date'))
+            ->format('U');
+
+        $totalTime = $endDateTimestamp - $startDateTimestamp;
 
         if ($totalTime < 0) {
             return 'n/a';

@@ -104,12 +104,14 @@ class Ess_M2ePro_Model_Connector_Command_Pending_Processing_Partial_Runner
         if (!$requestPendingPartial->getId()) {
             $requestPendingPartial->setData(
                 array(
-                'component'       => $params['component'],
-                'server_hash'     => $params['server_hash'],
-                'next_part'       => 1,
-                'expiration_date' => Mage::helper('M2ePro')->getDate(
-                    Mage::helper('M2ePro')->getCurrentGmtDate(true)+self::PENDING_REQUEST_MAX_LIFE_TIME
-                )
+                    'component'       => $params['component'],
+                    'server_hash'     => $params['server_hash'],
+                    'next_part'       => 1,
+                    'expiration_date' => gmdate(
+                        'Y-m-d H:i:s',
+                        Mage::helper('M2ePro')->getCurrentGmtDate(true)
+                            + self::PENDING_REQUEST_MAX_LIFE_TIME
+                    )
                 )
             );
 

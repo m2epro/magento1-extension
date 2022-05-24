@@ -361,7 +361,9 @@ HTML;
                 return false;
             }
 
-            if (strtotime($endDate) < Mage::helper('M2ePro')->getCurrentGmtDate(true)) {
+            /** @var Ess_M2ePro_Helper_Data $helper */
+            $helper = Mage::helper('M2ePro');
+            if ((int)$helper->createGmtDateTime($endDate)->format('U') < $helper->getCurrentGmtDate(true)) {
                 $this->addMessage('End Date must be greater than current date');
                 return false;
             }

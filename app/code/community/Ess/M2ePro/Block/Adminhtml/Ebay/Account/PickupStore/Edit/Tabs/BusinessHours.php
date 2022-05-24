@@ -72,11 +72,16 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_PickupStore_Edit_Tabs_BusinessHour
 
             $parsedSettings = array();
             foreach ($data[$key] as $day => $daySettings) {
-                $fromHours = date('G', strtotime($daySettings['open']));
-                $fromMinutes = date('i', strtotime($daySettings['open']));
+                /** @var Ess_M2ePro_Helper_Data $helper */
+                $helper = Mage::helper('M2ePro');
+                $openDateTime = $helper->createGmtDateTime($daySettings['open']);
+                $closeDateTime = $helper->createGmtDateTime($daySettings['close']);
 
-                $toHours = date('G', strtotime($daySettings['close']));
-                $toMinutes = date('i', strtotime($daySettings['close']));
+                $fromHours = $openDateTime->format('G');
+                $fromMinutes = $openDateTime->format('i');
+
+                $toHours = $closeDateTime->format('G');
+                $toMinutes = $closeDateTime->format('i');
 
                 $parsedSettings[$day] = array(
                     'from_hours'   => $fromHours == 0 ? 24 : $fromHours,

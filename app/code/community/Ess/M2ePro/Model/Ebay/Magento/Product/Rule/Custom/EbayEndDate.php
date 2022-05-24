@@ -34,9 +34,13 @@ class Ess_M2ePro_Model_Ebay_Magento_Product_Rule_Custom_EbayEndDate
             return null;
         }
 
-        $endDate = new DateTime($endDate);
+        /** @var Ess_M2ePro_Helper_Data $helper */
+        $helper = Mage::helper('M2ePro');
+        $endDate = $helper->createGmtDateTime($endDate);
 
-        return strtotime($endDate->format('Y-m-d'));
+        return (int)$helper->createGmtDateTime(
+            $endDate->format('Y-m-d')
+        )->format('U');
     }
 
     /**

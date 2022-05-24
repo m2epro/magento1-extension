@@ -14,36 +14,27 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template extends Mage_Adminhtml_Block_Widg
     {
         parent::__construct();
 
-        // Initialization block
-        // ---------------------------------------
         $this->setId('ebayTemplate');
         $this->_blockGroup = 'M2ePro';
         $this->_controller = 'adminhtml_ebay_template';
-        // ---------------------------------------
 
-        // Set header text
-        // ---------------------------------------
         $this->_headerText = '';
-        // ---------------------------------------
 
-        // Set buttons actions
-        // ---------------------------------------
         $this->removeButton('back');
         $this->removeButton('reset');
         $this->removeButton('delete');
         $this->removeButton('save');
         $this->removeButton('edit');
-        // ---------------------------------------
 
-        // ---------------------------------------
         $this->_addButton(
-            'add', array(
-            'label'     => Mage::helper('M2ePro')->__('Add Policy'),
-            'onclick'   => '',
-            'class'     => 'add add-button-drop-down'
+            'add',
+            array(
+                'id'      => 'add_policy',
+                'label'   => Mage::helper('M2ePro')->__('Add Policy'),
+                'onclick' => '',
+                'class'   => 'add add-button-drop-down'
             )
         );
-        // ---------------------------------------
     }
 
     //########################################
@@ -54,6 +45,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template extends Mage_Adminhtml_Block_Widg
             'target_css_class' => 'add-button-drop-down',
             'items'            => array(
                 array(
+                    'id'    => 'add_policy_payment',
                     'url'   => $this->getUrl(
                         '*/adminhtml_ebay_template/new',
                         array(
@@ -64,6 +56,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template extends Mage_Adminhtml_Block_Widg
                     'label' => Mage::helper('M2ePro')->__('Payment')
                 ),
                 array(
+                    'id'    => 'add_policy_shipping',
                     'url'   => $this->getUrl(
                         '*/adminhtml_ebay_template/new',
                         array(
@@ -74,6 +67,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template extends Mage_Adminhtml_Block_Widg
                     'label' => Mage::helper('M2ePro')->__('Shipping')
                 ),
                 array(
+                    'id'    => 'add_policy_return',
                     'url'   => $this->getUrl(
                         '*/adminhtml_ebay_template/new',
                         array(
@@ -84,6 +78,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template extends Mage_Adminhtml_Block_Widg
                     'label' => Mage::helper('M2ePro')->__('Return')
                 ),
                 array(
+                    'id'    => 'add_policy_selling',
                     'url'   => $this->getUrl(
                         '*/adminhtml_ebay_template/new',
                         array(
@@ -94,6 +89,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template extends Mage_Adminhtml_Block_Widg
                     'label' => Mage::helper('M2ePro')->__('Selling')
                 ),
                 array(
+                    'id'    => 'add_policy_description',
                     'url'   => $this->getUrl(
                         '*/adminhtml_ebay_template/new',
                         array(
@@ -104,6 +100,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template extends Mage_Adminhtml_Block_Widg
                     'label' => Mage::helper('M2ePro')->__('Description')
                 ),
                 array(
+                    'id'    => 'add_policy_synchronization',
                     'url'   => $this->getUrl(
                         '*/adminhtml_ebay_template/new',
                         array(

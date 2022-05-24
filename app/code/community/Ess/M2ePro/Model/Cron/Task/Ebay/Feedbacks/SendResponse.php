@@ -58,15 +58,22 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Feedbacks_SendResponse extends Ess_M2ePro_
     {
         $result = array();
 
+        /** @var Ess_M2ePro_Helper_Data $helper */
+        $helper = Mage::helper('M2ePro');
+
         foreach ($feedbacks as $feedback) {
 
             /** @var $feedback Ess_M2ePro_Model_Ebay_Feedback **/
             $lastResponseAttemptDate = $feedback->getData('last_response_attempt_date');
-            $currentGmtDate = Mage::helper('M2ePro')->getCurrentGmtDate(true);
+            $currentGmtDate = $helper->getCurrentGmtDate(true);
 
-            if ($lastResponseAttemptDate !== null &&
-                strtotime($lastResponseAttemptDate) + self::ATTEMPT_INTERVAL > $currentGmtDate) {
-                continue;
+            if ($lastResponseAttemptDate !== null) {
+                $lastResponseAttemptTimestamp = (int)$helper->createGmtDateTime($lastResponseAttemptDate)
+                    ->format('U');
+
+                if ($lastResponseAttemptTimestamp + self::ATTEMPT_INTERVAL > $currentGmtDate) {
+                    continue;
+                }
             }
 
             $ebayAccount = $feedback->getEbayAccount();

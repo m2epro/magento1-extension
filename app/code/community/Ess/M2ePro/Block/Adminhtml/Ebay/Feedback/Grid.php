@@ -190,7 +190,14 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Feedback_Grid extends Mage_Adminhtml_Block
 
     public function callbackColumnBuyerFeedbackDate($value, $row, $column, $isExport)
     {
-        if (strtotime($row->getData('buyer_feedback_date')) < strtotime('2001-01-02')) {
+        /** @var Ess_M2ePro_Helper_Data $helper */
+        $helper = Mage::helper('M2ePro');
+        $buyerFeedbackDate = (int)$helper->createGmtDateTime($row->getData('buyer_feedback_date'))
+            ->format('U');
+        $comparedDate = (int)$helper->createGmtDateTime('2001-01-02')
+            ->format('U');
+
+        if ($buyerFeedbackDate < $comparedDate) {
             return Mage::helper('M2ePro')->__('N/A');
         }
 
@@ -199,7 +206,14 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Feedback_Grid extends Mage_Adminhtml_Block
 
     public function callbackColumnSellerFeedbackDate($value, $row, $column, $isExport)
     {
-        if (strtotime($row->getData('seller_feedback_date')) < strtotime('2001-01-02')) {
+        /** @var Ess_M2ePro_Helper_Data $helper */
+        $helper = Mage::helper('M2ePro');
+        $sellerFeedbackDate = (int)$helper->createGmtDateTime($row->getData('seller_feedback_date'))
+            ->format('U');
+        $comparedDate = (int)$helper->createGmtDateTime('2001-01-02')
+            ->format('U');
+
+        if ($sellerFeedbackDate < $comparedDate) {
             return Mage::helper('M2ePro')->__('N/A');
         }
 

@@ -494,6 +494,8 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_order')}` (
   `tax_details` TEXT DEFAULT NULL,
   `ioss_number` VARCHAR(72) DEFAULT NULL,
   `tax_registration_id` VARCHAR(72) DEFAULT NULL,
+  `is_buyer_requested_cancel` SMALLINT(4) UNSIGNED NOT NULL DEFAULT 0,
+  `buyer_cancel_reason` TEXT DEFAULT NULL,
   `discount_details` TEXT DEFAULT NULL,
   `qty_shipped` INT(11) UNSIGNED NOT NULL DEFAULT 0,
   `qty_unshipped` INT(11) UNSIGNED NOT NULL DEFAULT 0,

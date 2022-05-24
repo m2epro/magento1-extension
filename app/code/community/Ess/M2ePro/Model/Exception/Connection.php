@@ -27,7 +27,9 @@ class Ess_M2ePro_Model_Exception_Connection extends Ess_M2ePro_Model_Exception
      */
     public function handleRepeatTimeout($key)
     {
-        $currentDate = Mage::helper('M2ePro')->getCurrentGmtDate();
+        /** @var Ess_M2ePro_Helper_Data $helper */
+        $helper = Mage::helper('M2ePro');
+        $currentDate = $helper->getCurrentGmtDate();
 
         $firstConnectionErrorDate = $this->getFirstConnectionErrorDate($key);
         if (empty($firstConnectionErrorDate)) {
@@ -36,8 +38,8 @@ class Ess_M2ePro_Model_Exception_Connection extends Ess_M2ePro_Model_Exception
             return true;
         }
 
-        $currentDateTimeStamp = strtotime($currentDate);
-        $errorDateTimeStamp   = strtotime($firstConnectionErrorDate);
+        $currentDateTimeStamp = (int)$helper->createGmtDateTime($currentDate)->format('U');
+        $errorDateTimeStamp   = (int)$helper->createGmtDateTime($firstConnectionErrorDate)->format('U');
         if ($currentDateTimeStamp - $errorDateTimeStamp < self::CONNECTION_ERROR_REPEAT_TIMEOUT) {
             return true;
         }

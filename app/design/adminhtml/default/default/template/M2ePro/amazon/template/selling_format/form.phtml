@@ -54,14 +54,14 @@
     $formData = array_merge($default, $formData);
 
     if ($formData['regular_sale_price_start_date_value'] != '') {
-        $formData['regular_sale_price_start_date_value'] = Mage::helper('M2ePro')->getDate(
-            $formData['regular_sale_price_start_date_value'],false,'Y-m-d'
-        );
+        $formData['regular_sale_price_start_date_value'] = Mage::helper('M2ePro')
+            ->createGmtDateTime($formData['regular_sale_price_start_date_value'])
+            ->format('Y-m-d');
     }
     if ($formData['regular_sale_price_end_date_value'] != '') {
-        $formData['regular_sale_price_end_date_value'] = Mage::helper('M2ePro')->getDate(
-            $formData['regular_sale_price_end_date_value'],false,'Y-m-d'
-        );
+        $formData['regular_sale_price_end_date_value'] = Mage::helper('M2ePro')
+            ->createGmtDateTime($formData['regular_sale_price_end_date_value'])
+            ->format('Y-m-d');
     }
 
     if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {

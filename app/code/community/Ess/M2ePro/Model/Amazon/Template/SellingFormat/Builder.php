@@ -29,9 +29,9 @@ class Ess_M2ePro_Model_Amazon_Template_SellingFormat_Builder extends Ess_M2ePro_
                 false, 'Y-m-d 00:00:00'
             );
         } else {
-            $data['regular_sale_price_start_date_value'] = Mage::helper('M2ePro')->getDate(
-                $data['regular_sale_price_start_date_value'], false, 'Y-m-d 00:00:00'
-            );
+            $data['regular_sale_price_start_date_value'] = Mage::helper('M2ePro')
+                ->createGmtDateTime($data['regular_sale_price_start_date_value'])
+                ->format('Y-m-d 00:00:00');
         }
 
         if ($data['regular_sale_price_end_date_value'] === '') {
@@ -39,9 +39,9 @@ class Ess_M2ePro_Model_Amazon_Template_SellingFormat_Builder extends Ess_M2ePro_
                 false, 'Y-m-d 00:00:00'
             );
         } else {
-            $data['regular_sale_price_end_date_value'] = Mage::helper('M2ePro')->getDate(
-                $data['regular_sale_price_end_date_value'], false, 'Y-m-d 00:00:00'
-            );
+            $data['regular_sale_price_end_date_value'] = Mage::helper('M2ePro')
+                ->createGmtDateTime($data['regular_sale_price_end_date_value'])
+                ->format('Y-m-d 00:00:00');
         }
 
         if (empty($data['is_business_customer_allowed'])) {

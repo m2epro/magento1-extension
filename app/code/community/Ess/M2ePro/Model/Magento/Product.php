@@ -830,8 +830,12 @@ class Ess_M2ePro_Model_Magento_Product
      */
     public function isSpecialPriceActual()
     {
-        $fromDate = strtotime($this->getSpecialPriceFromDate());
-        $toDate = strtotime($this->getSpecialPriceToDate());
+        /** @var Ess_M2ePro_Helper_Data $helper */
+        $helper = Mage::helper('M2ePro');
+        $fromDate = (int)$helper->createGmtDateTime($this->getSpecialPriceFromDate())
+            ->format('U');
+        $toDate = (int)$helper->createGmtDateTime($this->getSpecialPriceToDate())
+            ->format('U');
         $currentTimeStamp = Mage::helper('M2ePro')->getCurrentGmtDate(true);
 
         return $currentTimeStamp >= $fromDate && $currentTimeStamp < $toDate &&
@@ -845,10 +849,9 @@ class Ess_M2ePro_Model_Magento_Product
         $fromDate = $this->getProduct()->getSpecialFromDate();
 
         if ($fromDate === null || $fromDate === false || $fromDate == '') {
-            $currentDateTime = Mage::helper('M2ePro')->getCurrentGmtDate();
-            $fromDate = Mage::helper('M2ePro')->getDate($currentDateTime, false, 'Y-01-01 00:00:00');
+            $fromDate = Mage::helper('M2ePro')->createCurrentGmtDateTime()->format('Y-01-01 00:00:00');
         } else {
-            $fromDate = Mage::helper('M2ePro')->getDate($fromDate, false, 'Y-m-d 00:00:00');
+            $fromDate = Mage::helper('M2ePro')->createGmtDateTime($fromDate)->format('Y-m-d 00:00:00');
         }
 
         return $fromDate;
@@ -863,13 +866,13 @@ class Ess_M2ePro_Model_Magento_Product
 
             $toDate = new DateTime($currentDateTime, new DateTimeZone('UTC'));
             $toDate->modify('+1 year');
-            $toDate = Mage::helper('M2ePro')->getDate($toDate->format('U'), false, 'Y-01-01 00:00:00');
+            $toDate = $toDate->format('Y-01-01 00:00:00');
         } else {
-            $toDate = Mage::helper('M2ePro')->getDate($toDate, false, 'Y-m-d 00:00:00');
+            $toDate = Mage::helper('M2ePro')->createGmtDateTime($toDate)->format('Y-m-d 00:00:00');
 
             $toDate = new DateTime($toDate, new DateTimeZone('UTC'));
             $toDate->modify('+1 day');
-            $toDate = Mage::helper('M2ePro')->getDate($toDate->format('U'), false, 'Y-m-d 00:00:00');
+            $toDate = $toDate->format('Y-m-d 00:00:00');
         }
 
         return $toDate;

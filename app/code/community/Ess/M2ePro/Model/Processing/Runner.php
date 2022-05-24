@@ -100,8 +100,10 @@ abstract class Ess_M2ePro_Model_Processing_Runner
         $processingObject->setSettings('params', $this->getParams());
 
         $processingObject->setData(
-            'expiration_date', Mage::helper('M2ePro')->getDate(
-                Mage::helper('M2ePro')->getCurrentGmtDate(true)+static::MAX_LIFETIME
+            'expiration_date',
+            gmdate(
+                'Y-m-d H:i:s',
+                Mage::helper('M2ePro')->getCurrentGmtDate(true) + static::MAX_LIFETIME
             )
         );
 

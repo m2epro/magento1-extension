@@ -67,6 +67,15 @@ class Ess_M2ePro_Model_Amazon_Order_Builder extends Mage_Core_Model_Abstract
 
         $this->setData('purchase_update_date', $data['purchase_update_date']);
         $this->setData('purchase_create_date', $data['purchase_create_date']);
+
+        $this->setData('is_buyer_requested_cancel', $data['is_buyer_requested_cancel']);
+        $this->setData('buyer_cancel_reason', $data['buyer_cancel_reason']);
+        if ($data['is_buyer_requested_cancel'] &&
+            $this->getData('status') == Ess_M2ePro_Model_Amazon_Order::STATUS_UNSHIPPED
+        ) {
+            $this->setData('status', Ess_M2ePro_Model_Amazon_Order::STATUS_CANCELLATION_REQUESTED);
+        }
+
         // ---------------------------------------
 
         // Init sale data
@@ -360,6 +369,21 @@ class Ess_M2ePro_Model_Amazon_Order_Builder extends Mage_Core_Model_Abstract
                     break;
                 }
             }
+        }
+
+        if ($this->getData('status') == Ess_M2ePro_Model_Amazon_Order::STATUS_CANCELLATION_REQUESTED) {
+            if ($reason = $this->getData('buyer_cancel_reason')) {
+                $noteText = 'A buyer requested order cancellation. Reason: ' .
+                    Mage::helper('M2ePro')->escapeHtml($reason);
+            } else {
+                $noteText = 'A buyer requested order cancellation. The reason was not specified.';
+            }
+
+            /** @var Ess_M2ePro_Model_Order_Note $noteModel */
+            $noteModel = Mage::getModel('M2ePro/Order_Note');
+            $noteModel->setData('note', $noteText);
+            $noteModel->setData('order_id', $this->_order->getId());
+            $noteModel->save();
         }
 
         $this->_order->setAccount($this->_account);

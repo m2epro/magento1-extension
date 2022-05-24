@@ -57,6 +57,9 @@ class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Product
             return $this->validateAttribute($product->getAvailableInCategories());
         }
 
+        /** @var Ess_M2ePro_Helper_Data $helper */
+        $helper = Mage::helper('M2ePro');
+
         if (! isset($this->_entityAttributeValues[$product->getId()])) {
             if (!$product->getResource()) {
                 return false;
@@ -66,8 +69,12 @@ class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Product
 
             if ($attr && $attr->getBackendType() == 'datetime' && !is_int($this->getValue())) {
                 $oldValue = $this->getValue();
-                $this->setValue(strtotime($this->getValue()));
-                $value = strtotime($product->getData($attrCode));
+
+                $this->setValue(
+                    (int)$helper->createGmtDateTime($this->getValue())->format('U')
+                );
+                $value = (int)$helper->createGmtDateTime($product->getData($attrCode))
+                    ->format('U');
                 $result = $this->validateAttribute($value);
                 $this->setValue($oldValue);
                 return $result;
@@ -87,14 +94,21 @@ class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Product
                 $productStoreId = 0;
             }
 
+            if (!isset($this->_entityAttributeValues[(int)$product->getId()][(int)$productStoreId])) {
+                return false;
+            }
+
             $attributeValue = $this->_entityAttributeValues[(int)$product->getId()][(int)$productStoreId];
 
             $attr = $product->getResource()->getAttribute($attrCode);
             if ($attr && $attr->getBackendType() == 'datetime') {
-                $attributeValue = strtotime($attributeValue);
+                $attributeValue = (int)$helper->createGmtDateTime($attributeValue)
+                    ->format('U');
 
                 if (!is_int($this->getValueParsed())) {
-                    $this->setValueParsed(strtotime($this->getValue()));
+                    $this->setValueParsed(
+                        (int)$helper->createGmtDateTime($this->getValue())->format('U')
+                    );
                 }
             } else if ($attr && $attr->getFrontendInput() == 'multiselect') {
                 $attributeValue = strlen($attributeValue) ? explode(',', $attributeValue) : array();

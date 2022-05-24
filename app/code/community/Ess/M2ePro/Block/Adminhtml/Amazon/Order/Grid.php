@@ -213,14 +213,18 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Order_Grid extends Mage_Adminhtml_Block_
                 'filter_index'   => 'second_table.status',
                 'type'           => 'options',
                 'options'        => array(
-                    Ess_M2ePro_Model_Amazon_Order::STATUS_PENDING             => $helper->__('Pending'),
-                    Ess_M2ePro_Model_Amazon_Order::STATUS_PENDING_RESERVED    => $helper->__('Pending / QTY Reserved'),
-                    Ess_M2ePro_Model_Amazon_Order::STATUS_UNSHIPPED           => $helper->__('Unshipped'),
-                    Ess_M2ePro_Model_Amazon_Order::STATUS_SHIPPED_PARTIALLY   => $helper->__('Partially Shipped'),
-                    Ess_M2ePro_Model_Amazon_Order::STATUS_SHIPPED             => $helper->__('Shipped'),
-                    Ess_M2ePro_Model_Amazon_Order::STATUS_INVOICE_UNCONFIRMED => $helper->__('Invoice Not Confirmed'),
-                    Ess_M2ePro_Model_Amazon_Order::STATUS_UNFULFILLABLE       => $helper->__('Unfulfillable'),
-                    Ess_M2ePro_Model_Amazon_Order::STATUS_CANCELED            => $helper->__('Canceled'),
+                    Ess_M2ePro_Model_Amazon_Order::STATUS_PENDING                => $helper->__('Pending'),
+                    Ess_M2ePro_Model_Amazon_Order::STATUS_PENDING_RESERVED       =>
+                        $helper->__('Pending / QTY Reserved'),
+                    Ess_M2ePro_Model_Amazon_Order::STATUS_UNSHIPPED              => $helper->__('Unshipped'),
+                    Ess_M2ePro_Model_Amazon_Order::STATUS_SHIPPED_PARTIALLY      => $helper->__('Partially Shipped'),
+                    Ess_M2ePro_Model_Amazon_Order::STATUS_SHIPPED                => $helper->__('Shipped'),
+                    Ess_M2ePro_Model_Amazon_Order::STATUS_INVOICE_UNCONFIRMED    =>
+                        $helper->__('Invoice Not Confirmed'),
+                    Ess_M2ePro_Model_Amazon_Order::STATUS_UNFULFILLABLE          => $helper->__('Unfulfillable'),
+                    Ess_M2ePro_Model_Amazon_Order::STATUS_CANCELED               => $helper->__('Canceled'),
+                    Ess_M2ePro_Model_Amazon_Order::STATUS_CANCELLATION_REQUESTED =>
+                        $helper->__('Unshipped (Cancellation Requested)'),
                 ),
                 'frame_callback' => array($this, 'callbackColumnStatus'),
                 'filter_condition_callback' => array($this, 'callbackFilterStatus')
@@ -577,9 +581,10 @@ HTML;
         $status = $row->getData('status');
 
         $statusColors = array(
-            Ess_M2ePro_Model_Amazon_Order::STATUS_PENDING  => 'gray',
-            Ess_M2ePro_Model_Amazon_Order::STATUS_SHIPPED  => 'green',
-            Ess_M2ePro_Model_Amazon_Order::STATUS_CANCELED => 'red'
+            Ess_M2ePro_Model_Amazon_Order::STATUS_PENDING                => 'gray',
+            Ess_M2ePro_Model_Amazon_Order::STATUS_SHIPPED                => 'green',
+            Ess_M2ePro_Model_Amazon_Order::STATUS_CANCELED               => 'red',
+            Ess_M2ePro_Model_Amazon_Order::STATUS_CANCELLATION_REQUESTED => 'red'
         );
 
         $color = isset($statusColors[$status]) ? $statusColors[$status] : 'black';
@@ -690,6 +695,12 @@ HTML;
                 $collection->addFieldToFilter(
                     'reservation_state',
                     array(Ess_M2ePro_Model_Order_Reserve::STATE_PLACED)
+                );
+                break;
+            case Ess_M2ePro_Model_Amazon_Order::STATUS_CANCELLATION_REQUESTED:
+                $collection->addFieldToFilter(
+                    'second_table.status',
+                    array(Ess_M2ePro_Model_Amazon_Order::STATUS_CANCELLATION_REQUESTED)
                 );
                 break;
         }

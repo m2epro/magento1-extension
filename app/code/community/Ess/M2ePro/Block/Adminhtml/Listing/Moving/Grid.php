@@ -138,16 +138,14 @@ class Ess_M2ePro_Block_Adminhtml_Listing_Moving_Grid extends Mage_Adminhtml_Bloc
         return '&nbsp;'.$storeName;
     }
 
+    public function callbackColumnSource($value, $row, $column, $isExport)
+    {
+        return '&nbsp;'.$value;
+    }
+
     public function callbackColumnSourceTotalItems($value, $row, $column, $isExport)
     {
-        $componentMode = $this->getRequest()->getParam('componentMode');
-        $value = Mage::getResourceModel('M2ePro/' . ucfirst($componentMode) . '_Listing')->getStatisticTotalCount($row->id);
-
-        if ($value <= 0) {
-            $value = '<span style="color: red;">0</span>';
-        }
-
-        return $value;
+        return $value.'&nbsp;';
     }
 
     public function callbackColumnActions($value, $row, $column, $isExport)

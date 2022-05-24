@@ -10,16 +10,12 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Grid extends Ess_M2ePro_Block_Admi
 {
     const MASS_ACTION_ID_EDIT_PARTS_COMPATIBILITY = 'editPartsCompatibilityMode';
 
-    /** @var Ess_M2ePro_Model_Resource_Ebay_Listing */
-    protected $_ebayListingResourceModel;
-
     //########################################
 
     public function __construct()
     {
         parent::__construct();
         $this->setId('ebayListingGrid');
-        $this->_ebayListingResourceModel = Mage::getResourceModel('M2ePro/Ebay_Listing');
     }
 
     protected function _prepareCollection()
@@ -35,6 +31,36 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Grid extends Ess_M2ePro_Block_Admi
             array('m'=>Mage::getResourceModel('M2ePro/Marketplace')->getMainTable()),
             '(`m`.`id` = `main_table`.`marketplace_id`)',
             array('marketplace_title'=>'title')
+        );
+
+        $structureHelper = Mage::helper('M2ePro/Module_Database_Structure');
+
+        $m2eproListing = $structureHelper->getTableNameWithPrefix('m2epro_listing');
+        $m2eproEbayListing = $structureHelper->getTableNameWithPrefix('m2epro_ebay_listing');
+        $m2eproListingProduct = $structureHelper->getTableNameWithPrefix('m2epro_listing_product');
+        $m2eproEbayListingProduct = $structureHelper->getTableNameWithPrefix('m2epro_ebay_listing_product');
+
+        $sql = "SELECT
+            l.id                                           AS listing_id,
+            COUNT(lp.id)                                   AS products_total_count,
+            COUNT(CASE WHEN lp.status = 2 THEN lp.id END)  AS products_active_count,
+            COUNT(CASE WHEN lp.status != 2 THEN lp.id END) AS products_inactive_count,
+            IFNULL(SUM(elp.online_qty_sold), 0)            AS items_sold_count
+        FROM `{$m2eproListing}` AS `l`
+            INNER JOIN `{$m2eproEbayListing}` AS `el` ON l.id = el.listing_id
+            LEFT JOIN `{$m2eproListingProduct}` AS `lp` ON l.id = lp.listing_id
+            LEFT JOIN `{$m2eproEbayListingProduct}` AS `elp` ON lp.id = elp.listing_product_id
+        GROUP BY listing_id";
+
+        $collection->getSelect()->joinLeft(
+            array('t' => new Zend_Db_Expr('('.$sql.')')),
+            'main_table.id=t.listing_id',
+            array(
+                'products_total_count'    => 'products_total_count',
+                'products_active_count'   => 'products_active_count',
+                'products_inactive_count' => 'products_inactive_count',
+                'items_sold_count'        => 'items_sold_count'
+            )
         );
 
         $this->setCollection($collection);
@@ -86,6 +112,23 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Grid extends Ess_M2ePro_Block_Admi
     }
 
     //########################################
+
+    protected function setColumns()
+    {
+        $this->addColumn(
+            'items_sold_count', array(
+                'header'         => Mage::helper('M2ePro')->__('Sold QTY'),
+                'align'          => 'right',
+                'width'          => '100px',
+                'type'           => 'number',
+                'index'          => 'items_sold_count',
+                'filter_index'   => 't.items_sold_count',
+                'frame_callback' => array($this, 'callbackColumnProductsCount')
+            )
+        );
+
+        return $this;
+    }
 
     protected function getColumnActionsItems()
     {
@@ -207,45 +250,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Grid extends Ess_M2ePro_Block_Admi
         );
 
         return $result;
-    }
-
-    //########################################
-
-    public function callbackColumnTotalProducts($value, $row, $column, $isExport)
-    {
-        $value = $this->_ebayListingResourceModel->getStatisticTotalCount($row->id);
-
-        if ($value == 0) {
-            $value = '<span style="color: red;">0</span>';
-        }
-
-        return $value;
-    }
-
-    //########################################
-
-    public function callbackColumnListedProducts($value, $row, $column, $isExport)
-    {
-        $value = $this->_ebayListingResourceModel->getStatisticActiveCount($row->id);
-
-        if ($value == 0) {
-            $value = '<span style="color: red;">0</span>';
-        }
-
-        return $value;
-    }
-
-    //########################################
-
-    public function callbackColumnInactiveProducts($value, $row, $column, $isExport)
-    {
-        $value = $this->_ebayListingResourceModel->getStatisticInactiveCount($row->id);
-
-        if ($value == 0) {
-            $value = '<span style="color: red;">0</span>';
-        }
-
-        return $value;
     }
 
     //########################################

@@ -414,11 +414,16 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Item_Responser
             $getItemLastCallDate = $additionalData['get_item_calls_statistic']['last_call_date'];
         }
 
+        /** @var Ess_M2ePro_Helper_Data $helper */
+        $helper = Mage::helper('M2ePro');
+
         if ($getItemCallsCount >= $maxAllowedGetItemCallsCount) {
-            $minAllowedDate = new DateTime('now', new DateTimeZone('UTC'));
+            $minAllowedDate = $helper->createCurrentGmtDateTime();
             $minAllowedDate->modify('- 1 day');
 
-            if (strtotime($getItemLastCallDate) > $minAllowedDate->format('U')) {
+            $getItemLastCallTimestamp = (int)$helper->createGmtDateTime($getItemLastCallDate)->format('U');
+            $minAllowedTimestamp = (int)$minAllowedDate->format('U');
+            if ($getItemLastCallTimestamp > $minAllowedTimestamp) {
                 return false;
             }
 
@@ -426,7 +431,7 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Item_Responser
         }
 
         $getItemCallsCount++;
-        $getItemLastCallDate = Mage::helper('M2ePro')->getCurrentGmtDate();
+        $getItemLastCallDate = $helper->getCurrentGmtDate();
 
         $additionalData['get_item_calls_statistic']['count']           = $getItemCallsCount;
         $additionalData['get_item_calls_statistic']['last_call_date']  = $getItemLastCallDate;

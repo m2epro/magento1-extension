@@ -981,10 +981,17 @@ class Ess_M2ePro_Model_Amazon_Listing_Product extends Ess_M2ePro_Model_Component
             return false;
         }
 
-        $startDateTimestamp = strtotime($startDate);
-        $endDateTimestamp = strtotime($endDate);
+        /** @var Ess_M2ePro_Helper_Data $helper */
+        $helper = Mage::helper('M2ePro');
 
-        $currentTimestamp = strtotime(Mage::helper('M2ePro')->getCurrentGmtDate(false, 'Y-m-d 00:00:00'));
+        $startDateTimestamp = (int)$helper->createGmtDateTime($startDate)
+            ->format('U');
+        $endDateTimestamp = (int)$helper->createGmtDateTime($endDate)
+            ->format('U');
+
+        $currentTimestamp = (int)$helper->createGmtDateTime(
+            $helper->getCurrentGmtDate(false, 'Y-m-d 00:00:00')
+        )->format('U');
 
         if ($currentTimestamp > $endDateTimestamp ||
             $startDateTimestamp >= $endDateTimestamp
@@ -1030,7 +1037,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product extends Ess_M2ePro_Model_Component
             return false;
         }
 
-        return Mage::helper('M2ePro')->getDate($date, false, 'Y-m-d 00:00:00');
+        return Mage::helper('M2ePro')->createGmtDateTime($date)->format('Y-m-d 00:00:00');
     }
 
     protected function getRegularSalePriceEndDate()
@@ -1051,7 +1058,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product extends Ess_M2ePro_Model_Component
 
             $tempDate = new DateTime($date, new DateTimeZone('UTC'));
             $tempDate->modify('-1 day');
-            $date = Mage::helper('M2ePro')->getDate($tempDate->format('U'));
+            $date = $tempDate->format('Y-m-d H:i:s');
         } else {
             $src = $this->getAmazonSellingFormatTemplate()->getRegularSalePriceEndDateSource();
 
@@ -1066,7 +1073,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product extends Ess_M2ePro_Model_Component
             return false;
         }
 
-        return Mage::helper('M2ePro')->getDate($date, false, 'Y-m-d 00:00:00');
+        return Mage::helper('M2ePro')->createGmtDateTime($date)->format('Y-m-d 00:00:00');
     }
 
     // ---------------------------------------

@@ -554,8 +554,12 @@ abstract class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Abstract
             return false;
         }
 
+        /** @var Ess_M2ePro_Helper_Data $helper */
+        $helper = Mage::helper('M2ePro');
+
         if ($this->getInputType() == 'date' && !empty($validatedValue) && !is_numeric($validatedValue)) {
-            $validatedValue = strtotime($validatedValue);
+            $validatedValue = (int)$helper->createGmtDateTime($validatedValue)
+                ->format('U');
         }
 
         /**
@@ -564,7 +568,8 @@ abstract class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Abstract
         $value = $this->getValueParsed();
 
         if ($this->getInputType() == 'date' && !empty($value) && !is_numeric($value)) {
-            $value = strtotime($value);
+            $value = (int)$helper->createGmtDateTime($value)
+                ->format('U');
         }
 
         /**

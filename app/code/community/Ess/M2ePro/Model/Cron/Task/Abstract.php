@@ -165,10 +165,13 @@ abstract class Ess_M2ePro_Model_Cron_Task_Abstract
             return false;
         }
 
-        $currentTimeStamp = Mage::helper('M2ePro')->getCurrentGmtDate(true);
+        /** @var Ess_M2ePro_Helper_Data $helper */
+        $helper = Mage::helper('M2ePro');
+        $currentTimeStamp = $helper->getCurrentGmtDate(true);
 
         $startFrom = $this->getConfigValue('start_from');
-        $startFrom = !empty($startFrom) ? strtotime($startFrom) : $currentTimeStamp;
+        $startFrom = !empty($startFrom) ?
+            (int)$helper->createGmtDateTime($startFrom)->format('U') : $currentTimeStamp;
 
         return $startFrom <= $currentTimeStamp && $this->isIntervalExceeded();
     }
@@ -249,8 +252,12 @@ abstract class Ess_M2ePro_Model_Cron_Task_Abstract
             return true;
         }
 
-        $currentTimeStamp = Mage::helper('M2ePro')->getCurrentGmtDate(true);
-        return $currentTimeStamp > strtotime($lastRun) + $this->getInterval();
+        /** @var Ess_M2ePro_Helper_Data $helper */
+        $helper = Mage::helper('M2ePro');
+        $currentTimeStamp = $helper->getCurrentGmtDate(true);
+        $lastRunTimestamp = (int)$helper->createGmtDateTime($lastRun)->format('U');
+
+        return $currentTimeStamp > $lastRunTimestamp + $this->getInterval();
     }
 
     public function getInterval()

@@ -95,10 +95,16 @@ HTML;
 
         $salePrice = $row->getData('online_regular_sale_price');
         if ((float)$salePrice > 0) {
-            $currentTimestamp = strtotime(Mage::helper('M2ePro')->getCurrentGmtDate(false, 'Y-m-d 00:00:00'));
+            /** @var Ess_M2ePro_Helper_Data $helper */
+            $helper = Mage::helper('M2ePro');
+            $currentTimestamp = (int)$helper->createGmtDateTime(
+                $helper->getCurrentGmtDate(false, 'Y-m-d 00:00:00')
+            )->format('U');
 
-            $startDateTimestamp = strtotime($row->getData('online_regular_sale_price_start_date'));
-            $endDateTimestamp   = strtotime($row->getData('online_regular_sale_price_end_date'));
+            $startDateTimestamp = (int)$helper->createGmtDateTime($row->getData('online_regular_sale_price_start_date'))
+                ->format('U');
+            $endDateTimestamp = (int)$helper->createGmtDateTime($row->getData('online_regular_sale_price_end_date'))
+                ->format('U');
 
             if ($currentTimestamp <= $endDateTimestamp) {
                 $iconHelpPath = $this->getSkinUrl('M2ePro/images/i_logo.png');

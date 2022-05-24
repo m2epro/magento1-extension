@@ -100,7 +100,15 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Feedbacks_DownloadNew extends Ess_M2ePro_M
                              ->from($tableFeedbacks, new Zend_Db_Expr('MAX(`seller_feedback_date`)'))
                              ->where('`account_id` = ?', (int)$account->getId());
         $maxSellerDate = $connRead->fetchOne($dbSelect);
-        if (strtotime($maxSellerDate) < strtotime('2001-01-02')) {
+
+        /** @var Ess_M2ePro_Helper_Data $helper */
+        $helper = Mage::helper('M2ePro');
+        $comparedTimestamp = (int)$helper->createGmtDateTime('2001-01-02')
+            ->format('U');
+
+        $maxSellerTimestamp = (int)$helper->createGmtDateTime($maxSellerDate)
+            ->format('U');
+        if ($maxSellerTimestamp < $comparedTimestamp) {
             $maxSellerDate = null;
         }
 
@@ -108,7 +116,10 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Feedbacks_DownloadNew extends Ess_M2ePro_M
                              ->from($tableFeedbacks, new Zend_Db_Expr('MAX(`buyer_feedback_date`)'))
                              ->where('`account_id` = ?', (int)$account->getId());
         $maxBuyerDate = $connRead->fetchOne($dbSelect);
-        if (strtotime($maxBuyerDate) < strtotime('2001-01-02')) {
+
+        $maxBuyerTimestamp = (int)$helper->createGmtDateTime($maxBuyerDate)
+            ->format('U');
+        if ($maxBuyerTimestamp < $comparedTimestamp) {
             $maxBuyerDate = null;
         }
 

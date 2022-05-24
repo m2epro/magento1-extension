@@ -32,9 +32,9 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat_Promotion_Builder extends
     protected function prepareData()
     {
         if (!empty($this->_rawData['from_date']['value'])) {
-            $startDate = Mage::helper('M2ePro')->getDate(
-                $this->_rawData['from_date']['value'], false, 'Y-m-d H:i'
-            );
+            $startDate = Mage::helper('M2ePro')
+                ->createGmtDateTime($this->_rawData['from_date']['value'])
+                ->format('Y-m-d H:i');
         } else {
             $startDate = Mage::helper('M2ePro')->getCurrentGmtDate(
                 false, 'Y-m-d H:i'
@@ -42,9 +42,9 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat_Promotion_Builder extends
         }
 
         if (!empty($this->_rawData['to_date']['value'])) {
-            $endDate = Mage::helper('M2ePro')->getDate(
-                $this->_rawData['to_date']['value'], false, 'Y-m-d H:i'
-            );
+            $endDate = Mage::helper('M2ePro')
+                ->createGmtDateTime($this->_rawData['to_date']['value'])
+                ->format('Y-m-d H:i');
         } else {
             $endDate = Mage::helper('M2ePro')->getCurrentGmtDate(
                 false, 'Y-m-d H:i'

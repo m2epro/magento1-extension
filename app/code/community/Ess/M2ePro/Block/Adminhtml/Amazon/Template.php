@@ -14,36 +14,27 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Template extends Mage_Adminhtml_Block_Wi
     {
         parent::__construct();
 
-        // Initialization block
-        // ---------------------------------------
         $this->setId('amazonTemplate');
         $this->_blockGroup = 'M2ePro';
         $this->_controller = 'adminhtml_amazon_template';
-        // ---------------------------------------
 
-        // Set header text
-        // ---------------------------------------
         $this->_headerText = '';
-        // ---------------------------------------
 
-        // Set buttons actions
-        // ---------------------------------------
         $this->removeButton('back');
         $this->removeButton('reset');
         $this->removeButton('delete');
         $this->removeButton('save');
         $this->removeButton('edit');
-        // ---------------------------------------
 
-        // ---------------------------------------
         $this->_addButton(
-            'add', array(
-            'label'     => Mage::helper('M2ePro')->__('Add Policy'),
-            'onclick'   => '',
-            'class'     => 'add add-button-drop-down'
+            'add',
+            array(
+                'id'      => 'add_policy',
+                'label'   => Mage::helper('M2ePro')->__('Add Policy'),
+                'onclick' => '',
+                'class'   => 'add add-button-drop-down'
             )
         );
-        // -------------------------------------
     }
 
     public function getHeaderHtml()
@@ -52,6 +43,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Template extends Mage_Adminhtml_Block_Wi
             'target_css_class' => 'add-button-drop-down',
             'items'            => array(
                 array(
+                    'id'    => 'add_policy_selling',
                     'url'   => $this->getUrl(
                         '*/adminhtml_amazon_template/new',
                         array(
@@ -61,6 +53,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Template extends Mage_Adminhtml_Block_Wi
                     'label' => Mage::helper('M2ePro')->__('Selling')
                 ),
                 array(
+                    'id'    => 'add_policy_description',
                     'url'   => $this->getUrl(
                         '*/adminhtml_amazon_template/new',
                         array(
@@ -70,6 +63,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Template extends Mage_Adminhtml_Block_Wi
                     'label' => Mage::helper('M2ePro')->__('Description')
                 ),
                 array(
+                    'id'    => 'add_policy_synchronization',
                     'url'   => $this->getUrl(
                         '*/adminhtml_amazon_template/new',
                         array(
@@ -79,6 +73,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Template extends Mage_Adminhtml_Block_Wi
                     'label' => Mage::helper('M2ePro')->__('Synchronization')
                 ),
                 array(
+                    'id'    => 'add_policy_shipping',
                     'url'   => $this->getUrl(
                         '*/adminhtml_amazon_template/new',
                         array(

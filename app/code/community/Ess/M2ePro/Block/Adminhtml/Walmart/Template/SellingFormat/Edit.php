@@ -25,7 +25,8 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_SellingFormat_Edit
 
             if ($this->isEditMode()) {
                 $this->_headerText = Mage::helper('M2ePro')->__(
-                    'Edit %component_name% Selling Policy "%template_title%"', $componentName,
+                    'Edit %component_name% Selling Policy "%template_title%"',
+                    $componentName,
                     $this->escapeHtml(Mage::helper('M2ePro/Data_Global')->getValue('temp_data')->getTitle())
                 );
             } else {
@@ -51,10 +52,12 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_SellingFormat_Edit
 
         $url = Mage::helper('M2ePro')->getBackUrl('list');
         $this->_addButton(
-            'back', array(
-            'label'   => Mage::helper('M2ePro')->__('Back'),
-            'onclick' => 'WalmartTemplateSellingFormatObj.back_click(\'' . $url . '\')',
-            'class'   => 'back'
+            'back',
+            array(
+                'id'      => 'back_button',
+                'label'   => Mage::helper('M2ePro')->__('Back'),
+                'onclick' => 'WalmartTemplateSellingFormatObj.back_click(\'' . $url . '\')',
+                'class'   => 'back'
             )
         );
 
@@ -64,19 +67,23 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_SellingFormat_Edit
             && Mage::helper('M2ePro/Data_Global')->getValue('temp_data')->getId()
         ) {
             $this->_addButton(
-                'duplicate', array(
-                'label'   => Mage::helper('M2ePro')->__('Duplicate'),
-                'onclick' => 'WalmartTemplateSellingFormatObj.duplicate_click'
-                    .'(\'walmart-template-sellingFormat\')',
-                'class'   => 'add M2ePro_duplicate_button'
+                'duplicate',
+                array(
+                    'id'      => 'duplicate_button',
+                    'label'   => Mage::helper('M2ePro')->__('Duplicate'),
+                    'onclick' => 'WalmartTemplateSellingFormatObj.duplicate_click'
+                        . '(\'walmart-template-sellingFormat\')',
+                    'class'   => 'add M2ePro_duplicate_button'
                 )
             );
 
             $this->_addButton(
-                'delete', array(
-                'label'   => Mage::helper('M2ePro')->__('Delete'),
-                'onclick' => 'WalmartTemplateSellingFormatObj.delete_click()',
-                'class'   => 'delete M2ePro_delete_button'
+                'delete',
+                array(
+                    'id'      => 'delete_button',
+                    'label'   => Mage::helper('M2ePro')->__('Delete'),
+                    'onclick' => 'WalmartTemplateSellingFormatObj.delete_click()',
+                    'class'   => 'delete M2ePro_delete_button'
                 )
             );
         }
@@ -87,7 +94,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_SellingFormat_Edit
             $this->_addButton(
                 'save',
                 array(
-                    'id'      => 'save_and_close',
+                    'id'      => 'save_and_close_button',
                     'label'   => Mage::helper('M2ePro')->__('Save And Close'),
                     'onclick' => 'WalmartTemplateSellingFormatObj.saveAndClose('
                         . '\'' . $this->getUrl('*/*/save', array('_current' => true)) . '\','
@@ -97,7 +104,9 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_SellingFormat_Edit
             );
         } else {
             $this->_addButton(
-                'save', array(
+                'save',
+                array(
+                    'id'      => 'save_button',
                     'label'   => Mage::helper('M2ePro')->__('Save'),
                     'onclick' => 'WalmartTemplateSellingFormatObj.save_click('
                         . '\'\','
@@ -109,7 +118,9 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_SellingFormat_Edit
             );
 
             $this->_addButton(
-                'save_and_continue', array(
+                'save_and_continue',
+                array(
+                    'id'      => 'save_and_continue_button',
                     'label'   => Mage::helper('M2ePro')->__('Save And Continue Edit'),
                     'onclick' => 'WalmartTemplateSellingFormatObj.save_and_edit_click('
                         . '\'\','
@@ -128,6 +139,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_SellingFormat_Edit
     protected function isEditMode()
     {
         $templateModel = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
+
         return $templateModel && $templateModel->getId();
     }
 

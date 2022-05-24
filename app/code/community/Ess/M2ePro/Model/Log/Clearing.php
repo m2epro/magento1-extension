@@ -49,7 +49,7 @@ class Ess_M2ePro_Model_Log_Clearing
         }
 
         $timestamp = Mage::helper('M2ePro')->getCurrentGmtDate(true);
-        $minTime = Mage::helper('M2ePro')->getDate($timestamp+60*60*24*365*10);
+        $minTime = gmdate('Y-m-d H:i:s', $timestamp+60*60*24*365*10);
 
         $this->clearLogByMinTime($log, $minTime);
 
@@ -107,7 +107,7 @@ class Ess_M2ePro_Model_Log_Clearing
 
         $timeStamp = mktime($hours, $minutes, $seconds, $month, $day - $days, $year);
 
-        return Mage::helper('M2ePro')->getDate($timeStamp);
+        return gmdate('Y-m-d H:i:s', $timeStamp);
     }
 
     protected function clearLogByMinTime($log, $minTime)

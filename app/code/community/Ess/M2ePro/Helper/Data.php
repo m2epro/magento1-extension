@@ -119,6 +119,11 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
 
     // ---------------------------------------
 
+    /**
+     * @param $returnTimestamp
+     * @param $format
+     * @return int|string
+     */
     public function getCurrentGmtDate($returnTimestamp = false, $format = null)
     {
         if ($returnTimestamp) {
@@ -135,29 +140,6 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
         }
 
         return Mage::getModel('core/date')->date($format);
-    }
-
-    // ---------------------------------------
-
-    public function getDate($date, $returnTimestamp = false, $format = null)
-    {
-        if (is_numeric($date)) {
-            $result = (int)$date;
-        } else {
-            $result = strtotime($date);
-        }
-
-        if ($format === null) {
-            $format = 'Y-m-d H:i:s';
-        }
-
-        $result = date($format, $result);
-
-        if ($returnTimestamp) {
-            return strtotime($result);
-        }
-
-        return $result;
     }
 
     // ---------------------------------------

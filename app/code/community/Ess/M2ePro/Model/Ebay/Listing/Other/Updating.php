@@ -77,8 +77,12 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Updating
                 'online_bids'            => (int)$receivedItem['bidCount'],
                 'online_main_category'   => null,
                 'online_categories_data' => null,
-                'start_date'             => (string)Mage::helper('M2ePro')->getDate($receivedItem['startTime']),
-                'end_date'               => (string)Mage::helper('M2ePro')->getDate($receivedItem['endTime'])
+                'start_date'             => (string)Mage::helper('M2ePro')
+                    ->createGmtDateTime($receivedItem['startTime'])
+                    ->format('Y-m-d H:i:s'),
+                'end_date'               => (string)Mage::helper('M2ePro')
+                    ->createGmtDateTime($receivedItem['endTime'])
+                    ->format('Y-m-d H:i:s')
             );
 
             if (!empty($receivedItem['categories'])) {
@@ -178,13 +182,15 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Updating
 
     protected function updateToTimeLastSynchronization($responseData)
     {
-        $tempToTime = Mage::helper('M2ePro')->getCurrentGmtDate();
+        /** @var Ess_M2ePro_Helper_Data $helper */
+        $helper = Mage::helper('M2ePro');
+        $tempToTime = $helper->getCurrentGmtDate();
 
         if (isset($responseData['to_time'])) {
             if (is_array($responseData['to_time'])) {
                 $tempToTime = array();
                 foreach ($responseData['to_time'] as $tempToTime2) {
-                    $tempToTime[] = strtotime($tempToTime2);
+                    $tempToTime[] = (int)$helper->createGmtDateTime($tempToTime2)->format('U');
                 }
 
                 sort($tempToTime, SORT_NUMERIC);
@@ -196,7 +202,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Updating
         }
 
         if (!is_string($tempToTime) || empty($tempToTime)) {
-            $tempToTime = Mage::helper('M2ePro')->getCurrentGmtDate();
+            $tempToTime = $helper->getCurrentGmtDate();
         }
 
         $childAccountObject = $this->getAccount()->getChildObject();

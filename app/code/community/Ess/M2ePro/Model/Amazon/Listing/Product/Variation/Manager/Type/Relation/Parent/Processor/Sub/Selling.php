@@ -61,10 +61,19 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Pa
             $actualOnlineRegularPrice = $amazonListingProduct->getOnlineRegularPrice();
 
             if ($regularSalePrice > 0) {
-                $startDateTimestamp = strtotime($amazonListingProduct->getOnlineRegularSalePriceStartDate());
-                $endDateTimestamp   = strtotime($amazonListingProduct->getOnlineRegularSalePriceEndDate());
+                /** @var Ess_M2ePro_Helper_Data $helper */
+                $helper = Mage::helper('M2ePro');
 
-                $currentTimestamp = strtotime(Mage::helper('M2ePro')->getCurrentGmtDate(false, 'Y-m-d 00:00:00'));
+                $startDateTimestamp = (int)$helper->createGmtDateTime(
+                    $amazonListingProduct->getOnlineRegularSalePriceStartDate()
+                )->format('U');
+                $endDateTimestamp = (int)$helper->createGmtDateTime(
+                    $amazonListingProduct->getOnlineRegularSalePriceEndDate()
+                )->format('U');
+
+                $currentTimestamp = (int)$helper->createGmtDateTime(
+                    $helper->getCurrentGmtDate(false, 'Y-m-d 00:00:00')
+                )->format('U');
 
                 if ($currentTimestamp >= $startDateTimestamp &&
                     $currentTimestamp <= $endDateTimestamp &&

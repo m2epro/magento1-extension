@@ -62,8 +62,8 @@ class Ess_M2ePro_Block_Adminhtml_Listing_Grid extends Mage_Adminhtml_Block_Widge
                 'width'     => '100px',
                 'type'      => 'number',
                 'index'     => 'products_total_count',
-                'filter_index' => 'main_table.products_total_count',
-                'frame_callback' => array($this, 'callbackColumnTotalProducts')
+                'filter_index' => 't.products_total_count',
+                'frame_callback' => array($this, 'callbackColumnProductsCount')
             )
         );
 
@@ -74,8 +74,8 @@ class Ess_M2ePro_Block_Adminhtml_Listing_Grid extends Mage_Adminhtml_Block_Widge
                 'width'     => '100px',
                 'type'      => 'number',
                 'index'     => 'products_active_count',
-                'filter_index' => 'main_table.products_active_count',
-                'frame_callback' => array($this, 'callbackColumnListedProducts')
+                'filter_index' => 't.products_active_count',
+                'frame_callback' => array($this, 'callbackColumnProductsCount')
             )
         );
 
@@ -86,10 +86,12 @@ class Ess_M2ePro_Block_Adminhtml_Listing_Grid extends Mage_Adminhtml_Block_Widge
                 'width'     => '100px',
                 'type'      => 'number',
                 'index'     => 'products_inactive_count',
-                'filter_index' => 'main_table.products_inactive_count',
-                'frame_callback' => array($this, 'callbackColumnInactiveProducts')
+                'filter_index' => 't.products_inactive_count',
+                'frame_callback' => array($this, 'callbackColumnProductsCount')
             )
         );
+
+        $this->setColumns();
 
         $this->addColumn(
             'actions', array(
@@ -110,6 +112,11 @@ class Ess_M2ePro_Block_Adminhtml_Listing_Grid extends Mage_Adminhtml_Block_Widge
         return parent::_prepareColumns();
     }
 
+    protected function setColumns()
+    {
+        return null;
+    }
+
     //########################################
 
     public function callbackColumnTitle($value, $row, $column, $isExport)
@@ -122,9 +129,9 @@ class Ess_M2ePro_Block_Adminhtml_Listing_Grid extends Mage_Adminhtml_Block_Widge
         return null;
     }
 
-    //########################################
+    // ---------------------------------------
 
-    protected function getColumnValue($value)
+    public function callbackColumnProductsCount($value, $row, $column, $isExport)
     {
         if ($value === null || $value === '') {
             $value = Mage::helper('M2ePro')->__('N/A');
