@@ -1,4 +1,8 @@
-* 6.22.1 (24/05/2022) 
+* 6.22.2 (27/05/2022) 
+
+eBay: [Fixed] Message "The Sell API token for eBay Account expires. You need to generate a new access token to reauthorize M2E Pro" after the upgrade to v6.22.1 [#3648]
+
+* 6.22.1 (24/05/2022)
 
 Common: [Fixed] End Date expiration for Special Price was not detected and Product Price value wasn't submitted during the Revise action [#3435]
 Common: [Improved] Some UI text updates [#3511]

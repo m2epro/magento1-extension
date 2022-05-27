@@ -132,16 +132,15 @@ TEXT
 
     protected function getSellApiTokenMessages(Ess_M2ePro_Model_Account $account)
     {
+        $expirationDate =  $account->getChildObject()->getSellApiTokenExpiredDate();
+        if (empty($expirationDate)) {
+            return array();
+        }
+
         /** @var Ess_M2ePro_Helper_Data $helper */
         $helper = Mage::helper('M2ePro');
         $currentTimeStamp = $helper->getCurrentGmtDate(true);
-        $tokenExpirationTimeStamp = (int)$helper->createGmtDateTime(
-            $account->getChildObject()->getSellApiTokenExpiredDate()
-        )->format('U');
-
-        if ($tokenExpirationTimeStamp <= 0) {
-            return array();
-        }
+        $tokenExpirationTimeStamp = (int)$helper->createGmtDateTime($expirationDate)->format('U');
 
         if ($tokenExpirationTimeStamp < $currentTimeStamp) {
             $tempMessage = Mage::helper('M2ePro')->__(
