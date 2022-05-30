@@ -222,7 +222,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_CreateController
         if ($this->getSessionValue('restock_date_value') === '') {
             $data['restock_date_value'] = Mage::helper('M2ePro')->getCurrentGmtDate();
         } else {
-            $data['restock_date_value'] = Mage::helper('M2ePro')->gmtDateToTimezone(
+            $data['restock_date_value'] = Mage::helper('M2ePro')->timezoneDateToGmt(
                 $this->getSessionValue('restock_date_value')
             );
         }

@@ -310,7 +310,13 @@ class Ess_M2ePro_Model_Amazon_Account_Builder extends Ess_M2ePro_Model_ActiveRec
             }
         }
 
-        $data['magento_orders_settings'] = Mage::helper('M2ePro')->jsonEncode($data['magento_orders_settings']);
+        $data['magento_orders_settings']['shipping_information']['ship_by_date']
+            = isset($this->_rawData['magento_orders_settings']['shipping_information']['ship_by_date'])
+            ? (int)$this->_rawData['magento_orders_settings']['shipping_information']['ship_by_date']
+            : 1;
+
+        $data['magento_orders_settings'] = Mage::helper('M2ePro')
+            ->jsonEncode($data['magento_orders_settings']);
 
         // tab: vat calculation service
         // ---------------------------------------
@@ -404,7 +410,10 @@ class Ess_M2ePro_Model_Amazon_Account_Builder extends Ess_M2ePro_Model_ActiveRec
                     'store_mode' => 0,
                     'store_id'   => null,
                     'stock_mode' => 0
-                )
+                ),
+                'shipping_information' => array(
+                    'ship_by_date' => 1,
+                ),
             ),
 
             // vcs_upload_invoices

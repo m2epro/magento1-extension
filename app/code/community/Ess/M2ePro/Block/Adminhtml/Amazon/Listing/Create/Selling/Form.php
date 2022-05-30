@@ -1247,7 +1247,7 @@ HTML
             $data = array_merge($this->getDefaultFieldsValues(), $data);
         }
 
-        if (!empty($data['restock_date_value']) && strtotime($data['restock_date_value'])) {
+        if ($this->getRequest()->getParam('id') !== null && !empty($data['restock_date_value']) && strtotime($data['restock_date_value'])) {
             $data['restock_date_value'] = Mage::helper('M2ePro')->gmtDateToTimezone($data['restock_date_value']);
         }
 

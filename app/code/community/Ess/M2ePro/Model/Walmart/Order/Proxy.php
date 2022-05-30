@@ -80,7 +80,12 @@ class Ess_M2ePro_Model_Walmart_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
     {
         $additionalData = '';
 
-        if ($shippingDateTo = $this->_order->getShippingDateTo()) {
+        $shippingDateTo = $this->_order->getShippingDateTo();
+        $isImportShipByDate = $this->_order
+            ->getWalmartAccount()
+            ->isImportShipByDateToMagentoOrder();
+
+        if ($shippingDateTo && $isImportShipByDate) {
             $additionalData .= 'Ship By Date: '
                 . Mage::helper('core')->formatDate($shippingDateTo, 'medium', true)
                 . ' | ';

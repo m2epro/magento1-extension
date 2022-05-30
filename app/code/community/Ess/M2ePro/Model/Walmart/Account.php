@@ -431,6 +431,18 @@ class Ess_M2ePro_Model_Walmart_Account extends Ess_M2ePro_Model_Component_Child_
         return $this->getOtherListingsMappingMode() == 1;
     }
 
+    /**
+     * @return bool
+     */
+    public function isImportShipByDateToMagentoOrder()
+    {
+        return (bool)$this->getSetting(
+            'magento_orders_settings',
+            array('shipping_information', 'ship_by_date'),
+            true
+        );
+    }
+
     // ---------------------------------------
 
     /**

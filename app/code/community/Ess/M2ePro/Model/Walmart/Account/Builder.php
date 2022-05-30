@@ -280,7 +280,13 @@ class Ess_M2ePro_Model_Walmart_Account_Builder extends Ess_M2ePro_Model_ActiveRe
             }
         }
 
-        $data['magento_orders_settings'] = Mage::helper('M2ePro')->jsonEncode($data['magento_orders_settings']);
+        $data['magento_orders_settings']['shipping_information']['ship_by_date']
+            = isset($this->_rawData['magento_orders_settings']['shipping_information']['ship_by_date'])
+            ? (int)$this->_rawData['magento_orders_settings']['shipping_information']['ship_by_date']
+            : 1;
+
+        $data['magento_orders_settings'] = Mage::helper('M2ePro')
+            ->jsonEncode($data['magento_orders_settings']);
 
         // tab invoice and shipment
         // ---------------------------------------
@@ -366,6 +372,9 @@ class Ess_M2ePro_Model_Walmart_Account_Builder extends Ess_M2ePro_Model_ActiveRe
                 ),
                 'refund_and_cancellation' => array(
                     'refund_mode' => 1,
+                ),
+                'shipping_information' => array(
+                    'ship_by_date' => 1,
                 ),
             ),
             'create_magento_invoice'  => 1,

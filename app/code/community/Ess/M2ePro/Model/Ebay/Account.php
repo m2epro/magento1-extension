@@ -183,6 +183,18 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
         return $this->getMode() == self::MODE_SANDBOX;
     }
 
+    /**
+     * @return bool
+     */
+    public function isImportShipByDateToMagentoOrder()
+    {
+        return (bool)$this->getSetting(
+            'magento_orders_settings',
+            array('shipping_information', 'ship_by_date'),
+            true
+        );
+    }
+
     // ---------------------------------------
 
     /**

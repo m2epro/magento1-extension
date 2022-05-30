@@ -321,7 +321,13 @@ class Ess_M2ePro_Model_Ebay_Account_Builder extends Ess_M2ePro_Model_ActiveRecor
             }
         }
 
-        $data['magento_orders_settings'] = Mage::helper('M2ePro')->jsonEncode($data['magento_orders_settings']);
+        $data['magento_orders_settings']['shipping_information']['ship_by_date']
+            = isset($this->_rawData['magento_orders_settings']['shipping_information']['ship_by_date'])
+            ? (int)$this->_rawData['magento_orders_settings']['shipping_information']['ship_by_date']
+            : 1;
+
+        $data['magento_orders_settings'] = Mage::helper('M2ePro')
+            ->jsonEncode($data['magento_orders_settings']);
 
         // tab invoice and shipment
         // ---------------------------------------
@@ -421,6 +427,9 @@ class Ess_M2ePro_Model_Ebay_Account_Builder extends Ess_M2ePro_Model_ActiveRecor
                 ),
                 'refund_and_cancellation' => array(
                     'refund_mode' => 0,
+                ),
+                'shipping_information' => array(
+                    'ship_by_date' => 1,
                 ),
             ),
 

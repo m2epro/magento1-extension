@@ -322,7 +322,12 @@ class Ess_M2ePro_Model_Ebay_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
             }
         }
 
-        if ($shippingDateTo = $this->_order->getShippingDateTo()) {
+        $shippingDateTo = $this->_order->getShippingDateTo();
+        $isImportShipByDate = $this->_order
+            ->getEbayAccount()
+            ->isImportShipByDateToMagentoOrder();
+
+        if ($shippingDateTo && $isImportShipByDate) {
             $additionalData .= 'Ship By Date: '
                 . Mage::helper('core')->formatDate($shippingDateTo, 'medium', true)
                 . ' | ';

@@ -289,6 +289,36 @@
 
 </div>
 
+<div class="entry-edit" id="magento_block_ebay_accounts_magento_orders_shipping_information">
+
+    <div class="entry-edit-head">
+        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Shipping information'); ?></h4>
+    </div>
+
+    <div class="fieldset">
+        <div class="hor-scroll">
+
+            <table class="form-list" cellspacing="0" cellpadding="0">
+
+                <tr>
+                    <td class="label">
+                        <label for="magento_orders_shipping_information_ship_by_date"><?php echo Mage::helper('M2ePro')->__('Import Ship by date to Magento order'); ?>: </label>
+                    </td>
+                    <td class="value" style="width: auto;">
+                        <select id="magento_orders_shipping_information_ship_by_date" name="magento_orders_settings[shipping_information][ship_by_date]" class="M2ePro-required-when-visible">
+                            <option value="1" <?php if ($formData['magento_orders_settings']['shipping_information']['ship_by_date'] == 1) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
+                            <option value="0" <?php if ($formData['magento_orders_settings']['shipping_information']['ship_by_date'] == 0) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
+                        </select>
+                    </td>
+                </tr>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
 <div class="entry-edit" id="magento_block_ebay_accounts_magento_orders_customer" <?php if(($formData['magento_orders_settings']['listing']['mode'] == 0 && $formData['magento_orders_settings']['listing_other']['mode'] == 0)) echo 'style="display: none;"'; ?>>
 
     <div class="entry-edit-head">

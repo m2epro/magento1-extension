@@ -1,4 +1,9 @@
-* 6.22.2 (27/05/2022) 
+* 6.23.0 (30/05/2022) 
+
+Common: [Added] Possibility to disable import of Ship by date to Magento orders [#3504]
+Amazon: [Fixed] The time is offset according to the Magento time zone when the Restock Date is set to a Custom Value [#3533]
+
+* 6.22.2 (27/05/2022)
 
 eBay: [Fixed] Message "The Sell API token for eBay Account expires. You need to generate a new access token to reauthorize M2E Pro" after the upgrade to v6.22.1 [#3648]
 
