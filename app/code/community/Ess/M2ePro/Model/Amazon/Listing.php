@@ -1138,9 +1138,7 @@ class Ess_M2ePro_Model_Amazon_Listing extends Ess_M2ePro_Model_Component_Child_A
         /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
         $listingProduct = $this->getParentObject()->addProduct(
             $sourceListingProduct->getProductId(),
-            Ess_M2ePro_Helper_Data::INITIATOR_USER,
-            false,
-            false
+            Ess_M2ePro_Helper_Data::INITIATOR_USER
         );
 
         $logModel = Mage::getModel('M2ePro/Listing_Log');
@@ -1167,37 +1165,6 @@ class Ess_M2ePro_Model_Amazon_Listing extends Ess_M2ePro_Model_Component_Child_A
                 Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE
             );
 
-            $listingProduct->getChildObject()->setData(
-                'general_id',
-                $sourceListingProduct->getChildObject()->getGeneralId()
-            );
-
-            $listingProduct->getChildObject()->setData(
-                'is_general_id_owner',
-                $sourceListingProduct->getChildObject()->isGeneralIdOwner()
-            );
-
-            $sourceAdditionalData = $sourceListingProduct->getSettings('additional_data');
-            $additionalData = $listingProduct->getSettings('additional_data');
-            $keys = array(
-                'variation_product_attributes',
-                'variation_virtual_channel_attributes',
-                'variation_channel_variations',
-                'variation_channel_attributes_sets',
-                'variation_virtual_product_attributes',
-                'variation_matched_attributes'
-            );
-
-            foreach ($keys as $key) {
-                if (!isset($sourceAdditionalData[$key])) {
-                    continue;
-                }
-
-                $additionalData[$key] = $sourceAdditionalData[$key];
-            }
-
-            $listingProduct->setSettings('additional_data', $additionalData);
-
             if ($sourceListing->getMarketplaceId() == $this->getParentObject()->getMarketplaceId()) {
                 $listingProduct->getChildObject()->setData(
                     'template_description_id',
@@ -1215,7 +1182,6 @@ class Ess_M2ePro_Model_Amazon_Listing extends Ess_M2ePro_Model_Component_Child_A
 
             // @codingStandardsIgnoreLine
             $listingProduct->getChildObject()->save();
-            $listingProduct->save();
 
             return $listingProduct;
         }

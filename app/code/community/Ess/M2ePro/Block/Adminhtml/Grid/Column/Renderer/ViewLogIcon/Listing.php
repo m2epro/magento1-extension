@@ -22,7 +22,7 @@ class Ess_M2ePro_Block_Adminhtml_Grid_Column_Renderer_ViewLogIcon_Listing
             Log::ACTION_STOP_PRODUCT_ON_COMPONENT   => $this->__('Stop'),
             Log::ACTION_REMAP_LISTING_PRODUCT       => $this->__('Relink'),
             Log::ACTION_STOP_AND_REMOVE_PRODUCT     => $this->__('Stop on Channel / Remove from Listing'),
-            Log::ACTION_CHANNEL_CHANGE              => $this->__('Channel Change')
+            Log::ACTION_CHANNEL_CHANGE              => $this->__('External Change')
         );
     }
 

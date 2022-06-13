@@ -264,7 +264,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View_Walmart_Grid
                 Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED => Mage::helper('M2ePro')->__('Not Listed'),
                 Ess_M2ePro_Model_Listing_Product::STATUS_LISTED => Mage::helper('M2ePro')->__('Active'),
                 Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED => Mage::helper('M2ePro')->__('Inactive'),
-                Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED => Mage::helper('M2ePro')->__('Inactive (Blocked)')
+                Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED => Mage::helper('M2ePro')->__('Incomplete')
             ),
             'frame_callback' => array($this, 'callbackColumnStatus'),
             'filter_condition_callback' => array($this, 'callbackFilterStatus')
@@ -346,7 +346,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View_Walmart_Grid
 
         $this->getMassactionBlock()->addItem(
             'resetProducts', array(
-                'label'    => Mage::helper('M2ePro')->__('Reset Inactive (Blocked) Item(s)'),
+                'label'    => Mage::helper('M2ePro')->__('Reset Incomplete Item(s)'),
                 'url'      => '',
                 'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
             ), 'other'

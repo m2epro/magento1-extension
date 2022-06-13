@@ -83,7 +83,7 @@ class Ess_M2ePro_Model_Walmart_Magento_Product_Rule_Custom_WalmartStatus
             ),
             array(
                 'value' => Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED,
-                'label' => Mage::helper('M2ePro')->__('Inactive (Blocked)'),
+                'label' => Mage::helper('M2ePro')->__('Incomplete'),
             ),
         );
     }

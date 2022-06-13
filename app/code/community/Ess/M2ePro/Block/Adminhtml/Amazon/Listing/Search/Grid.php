@@ -124,7 +124,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Search_Grid extends Mag
                 Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED => Mage::helper('M2ePro')->__('Not Listed'),
                 Ess_M2ePro_Model_Listing_Product::STATUS_LISTED     => Mage::helper('M2ePro')->__('Active'),
                 Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED    => Mage::helper('M2ePro')->__('Inactive'),
-                Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED    => Mage::helper('M2ePro')->__('Inactive (Blocked)')
+                Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED    => Mage::helper('M2ePro')->__('Incomplete')
             ),
             'frame_callback'            => array($this, 'callbackColumnStatus'),
             'filter_condition_callback' => array($this, 'callbackFilterStatus')
@@ -583,7 +583,7 @@ HTML;
 
             case Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED:
                 return'<span style="color: orange; font-weight: bold;">' .
-                Mage::helper('M2ePro')->__('Inactive (Blocked)') . '</span>';
+                Mage::helper('M2ePro')->__('Incomplete') . '</span>';
         }
 
         return '';

@@ -877,7 +877,7 @@ HTML;
 
     public function addVariationAttributes()
     {
-        if (!$this->getVariationManager()->isVariationProduct()) {
+        if (!$this->getVariationManager()->isRelationParentType()) {
             return;
         }
 

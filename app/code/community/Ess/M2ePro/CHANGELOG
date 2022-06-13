@@ -1,4 +1,13 @@
-* 6.23.0 (30/05/2022) 
+* 6.23.1 (13/06/2022) 
+
+Common: [Fixed] Log type was not updated from "Channel Change" to "External Change" for Products in M2E Pro Listing [#3455]
+eBay: [Fixed] Multi-variation listings were disabled for some supported eBay categories [#3429]
+Amazon: [Fixed] Product is added to M2E Pro Listing with incorrect ASIN/ISBN when using the "Sell on another Marketplace" feature [#3503]
+Amazon: [Improved] "Inactive/Blocked" product status replaced with "Incomplete" [#3657]
+Walmart: [Fixed] Server error appears at the step of configuring the Unmanaged item and moving it to M2E Pro Listing [#3652]
+Walmart: [Improved] "Inactive/Blocked" product status replaced with "Incomplete" [#3657]
+
+* 6.23.0 (30/05/2022)
 
 Common: [Added] Possibility to disable import of Ship by date to Magento orders [#3504]
 Amazon: [Fixed] The time is offset according to the Magento time zone when the Restock Date is set to a Custom Value [#3533]

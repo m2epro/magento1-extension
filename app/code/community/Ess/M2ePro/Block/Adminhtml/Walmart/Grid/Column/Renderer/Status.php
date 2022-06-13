@@ -157,7 +157,7 @@ HTML;
                 break;
             case Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED:
                 $html ='<span style="color: orange; font-weight: bold;">'
-                    . Mage::helper('M2ePro')->__('Inactive (Blocked)') . '</span>';
+                    . Mage::helper('M2ePro')->__('Incomplete') . '</span>';
                 break;
         }
 

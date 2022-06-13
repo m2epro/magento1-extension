@@ -220,7 +220,7 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Validator
     {
         if ($this->getListingProduct()->isBlocked() && $this->getWalmartListingProduct()->isOnlinePriceInvalid()) {
             $message = <<<HTML
-The action cannot be submitted. Your Item is in Inactive (Blocked) status because it violates Walmart pricing rules.
+The action cannot be submitted. Your Item is in Incomplete status because it violates Walmart pricing rules.
  Please adjust the Item Price to comply with the Walmart requirements.
  Once the changes are applied, Walmart Item will become Active automatically.
 HTML;
@@ -236,7 +236,7 @@ HTML;
     {
         if ($this->getListingProduct()->isBlocked() && $this->getWalmartListingProduct()->isMissedOnChannel()) {
             $message = <<<HTML
-The action cannot be submitted. Your Item is in Inactive (Blocked) status because it seems that the corresponding
+The action cannot be submitted. Your Item is in Incomplete status because it seems that the corresponding
  Walmart Item does not exist in your Channel inventory. Please contact Walmart Support Team to resolve the issue.
 HTML;
 
@@ -254,7 +254,7 @@ HTML;
             !$this->getWalmartListingProduct()->isOnlinePriceInvalid()
         ) {
             $message = <<<HTML
-The action cannot be submitted. Your Item is in Inactive (Blocked) status because some Item data may
+The action cannot be submitted. Your Item is in Incomplete status because some Item data may
  contradict Walmart rules. To restore the Item to Active status, please adjust the related Policy settings and
  click Reset next to that Item. M2E Pro will resubmit the Item automatically.
 HTML;

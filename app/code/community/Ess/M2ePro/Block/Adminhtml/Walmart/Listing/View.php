@@ -284,7 +284,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View extends Mage_Adminhtml_Blo
             Mage::helper('M2ePro')->__('Retiring From Walmart And Removing from Listing Selected Items')
         );
         $resetBlockedProductsMessage = Mage::helper('M2ePro')->escapeJs(
-            Mage::helper('M2ePro')->__('Reset Inactive (Blocked) Items')
+            Mage::helper('M2ePro')->__('Reset Incomplete Items')
         );
 
         $removingSelectedItemsMessage = $helper->escapeJs($helper->__('Removing From Listing Selected Items'));
