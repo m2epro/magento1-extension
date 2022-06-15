@@ -200,18 +200,33 @@ class Ess_M2ePro_Model_Config_Manager
 
     //########################################
 
+    /**
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     protected function prepareGroup($group)
     {
         if (empty($group)) {
-            return false;
+            throw new Ess_M2ePro_Model_Exception_Logic('Configuration group cannot be empty.');
+        }
+
+        $group = trim($group);
+        if ($group === '/') {
+            return $group;
         }
 
         return '/'.strtolower(trim($group, '/')).'/';
     }
 
+    /**
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     protected function prepareKey($key)
     {
-        return strtolower($key);
+        if (empty($key)) {
+            throw new Ess_M2ePro_Model_Exception_Logic('Configuration key cannot be empty.');
+        }
+
+        return strtolower(trim($key));
     }
 
     //########################################

@@ -96,7 +96,7 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Config extends Ess_M2ePro_Model_Upgrade_
     /**
      * @param string $field
      * @param string $value
-     * @param string $where
+     * @param string|array $where
      * @return int
      * @throws Ess_M2ePro_Model_Exception_Setup
      * @throws Zend_Db_Adapter_Exception
@@ -141,7 +141,7 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Config extends Ess_M2ePro_Model_Upgrade_
 
     /**
      * @param string $value
-     * @param string $where
+     * @param string|array $where
      * @return int
      */
     public function updateGroup($value, $where)
@@ -151,7 +151,7 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Config extends Ess_M2ePro_Model_Upgrade_
 
     /**
      * @param string $value
-     * @param string $where
+     * @param string|array $where
      * @return int
      */
     public function updateKey($value, $where)
@@ -161,7 +161,7 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Config extends Ess_M2ePro_Model_Upgrade_
 
     /**
      * @param string $value
-     * @param string $where
+     * @param string|array $where
      * @return int
      */
     public function updateValue($value, $where)

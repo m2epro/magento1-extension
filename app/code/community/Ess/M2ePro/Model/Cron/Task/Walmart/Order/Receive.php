@@ -145,7 +145,7 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Order_Receive
             $orders[] = $responseData['items'];
             $breakDate = $fromDate;
 
-            if (Mage::helper('M2ePro/Module')->isTestingManualEnvironment()) {
+            if ($fromDate > $toDate) {
                 break;
             }
         } while (!empty($responseData['items']));
