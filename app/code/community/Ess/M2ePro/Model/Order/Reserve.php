@@ -21,6 +21,8 @@ class Ess_M2ePro_Model_Order_Reserve
 
     protected $_flags = array();
 
+    protected $_qtyChangeInfo = array();
+
     //########################################
 
     public function __construct(Ess_M2ePro_Model_Order $order)
@@ -106,8 +108,7 @@ class Ess_M2ePro_Model_Order_Reserve
             return false;
         }
 
-        $this->_order->addSuccessLog('QTY has been reserved.');
-
+        $this->addSuccessLogQtyChange();
         return true;
     }
 
@@ -142,8 +143,7 @@ class Ess_M2ePro_Model_Order_Reserve
             return false;
         }
 
-        $this->_order->addSuccessLog('QTY has been released.');
-
+        $this->addSuccessLogQtyChange();
         return true;
     }
 
@@ -178,6 +178,7 @@ class Ess_M2ePro_Model_Order_Reserve
             return false;
         }
 
+        $this->addSuccessLogQtyChange();
         $this->_order->addSuccessLog('QTY reserve has been canceled.');
 
         return true;
@@ -251,7 +252,7 @@ class Ess_M2ePro_Model_Order_Reserve
                 }
 
                 $productsAffectedCount++;
-
+                $this->pushQtyChangeInfo($qty, $action, $magentoProduct);
                 $transaction->addObject($magentoStockItem->getStockItem());
 
                 if ($item->getMagentoProduct()->isSimpleType() || $item->getMagentoProduct()->isDownloadableType()) {
@@ -313,30 +314,33 @@ class Ess_M2ePro_Model_Order_Reserve
         $action,
         $qty
     ) {
-        $result = true;
+        $result = false;
 
-        switch ($action) {
-            case self::ACTION_ADD:
-                if ($magentoStockItem->canChangeQty()) {
-                    $result = $magentoStockItem->addQty($qty, false);
-                }
-                break;
+        if ($magentoStockItem->canChangeQty()) {
 
-            case self::ACTION_SUB:
-                try {
-                    $result = $magentoStockItem->subtractQty($qty, false);
-                } catch (Exception $e) {
+            if ($action == self::ACTION_ADD) {
+                $result = $magentoStockItem->addQty($qty, false);
+            }
+
+            if ($action == self::ACTION_SUB) {
+                $result = $magentoStockItem->subtractQty($qty, false);
+
+                if ($result === false &&
+                    !$magentoStockItem->isAllowedQtyBelowZero() &&
+                    $magentoStockItem->resultOfSubtractingQtyBelowZero($qty)
+                ) {
                     $this->_order->addErrorLog(
-                        'QTY for Product "%name%" cannot be reserved. Reason: %msg%',
+                        'QTY wasn’t reserved for "%name%". Magento QTY: "%magento_qty%". Ordered QTY: "%order_qty%".',
                         array(
                             '!name' => $magentoProduct->getName(),
-                            'msg'   => $e->getMessage()
+                            '!magento_qty' => $magentoStockItem->getStockItem()->getQty(),
+                            '!order_qty' => $qty,
                         )
                     );
 
                     return false;
                 }
-                break;
+            }
         }
 
         if ($result === false && $this->_order->getLog()->getInitiator() == Ess_M2ePro_Helper_Data::INITIATOR_USER) {
@@ -350,6 +354,35 @@ class Ess_M2ePro_Model_Order_Reserve
         }
 
         return $result;
+    }
+
+    protected function pushQtyChangeInfo($qty, $action, Ess_M2ePro_Model_Magento_Product $magentoProduct)
+    {
+        $this->_qtyChangeInfo[] = array(
+            'action'       => $action,
+            'quantity'     => $qty,
+            'product_name' => $magentoProduct->getName()
+        );
+    }
+
+    protected function addSuccessLogQtyChange()
+    {
+        $description = array(
+            self::ACTION_ADD => 'QTY was released for "%product_name%". Released QTY: %quantity%.',
+            self::ACTION_SUB => 'QTY was reserved for "%product_name%". Reserved QTY: %quantity%.'
+        );
+
+        foreach ($this->_qtyChangeInfo as $item) {
+            $this->_order->addSuccessLog(
+                $description[$item['action']],
+                array(
+                    '!product_name' => $item['product_name'],
+                    '!quantity'    => $item['quantity']
+                )
+            );
+        }
+
+        $this->_qtyChangeInfo = array();
     }
 
     /**

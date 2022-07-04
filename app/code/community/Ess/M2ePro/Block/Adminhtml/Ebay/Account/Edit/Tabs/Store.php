@@ -27,12 +27,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_Edit_Tabs_Store extends Mage_Admin
         // ---------------------------------------
         $data = array(
             'label'   => Mage::helper('M2ePro')->__('Refresh'),
-            'onclick' => 'EbayAccountObj.ebayStoreUpdate();',
+            'onclick' => 'EbayAccountObj.refreshStoreCategories();',
             'class'   => 'update_ebay_store'
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
-        $this->setChild('update_ebay_store', $buttonBlock);
-        // ---------------------------------------
+        $this->setChild('refresh_ebay_store', $buttonBlock);
 
         // ---------------------------------------
         $data = array(
@@ -44,6 +43,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_Edit_Tabs_Store extends Mage_Admin
         $this->setChild('hide_selected_category', $buttonBlock);
         // ---------------------------------------
 
+        Mage::helper('M2ePro/View')->getJsUrlsRenderer()->addControllerActions('adminhtml_ebay_accountStoreCategory');
         return parent::_beforeToHtml();
     }
 

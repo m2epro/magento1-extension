@@ -240,7 +240,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_CreateController
             $tempLog->getResource()->getNextActionId(),
             Ess_M2ePro_Model_Listing_Log::ACTION_ADD_LISTING,
             'Listing was Added',
-            Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE
+            Ess_M2ePro_Model_Log_Abstract::TYPE_INFO
         );
 
         return $listing;

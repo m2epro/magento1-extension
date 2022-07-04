@@ -335,5 +335,20 @@ class Ess_M2ePro_Model_Walmart_Order_Item extends Ess_M2ePro_Model_Component_Chi
         return $this->getQtyPurchased();
     }
 
-    //########################################
+    /**
+     * @return bool
+     */
+    public function isBuyerCancellationRequested()
+    {
+        return $this->getData('buyer_cancellation_requested') == '1';
+    }
+
+    /**
+     * @return bool
+     */
+    public function isBuyerCancellationPossible()
+    {
+        $status = $this->getStatus();
+        return $status === self::STATUS_CREATED || $status === self::STATUS_ACKNOWLEDGED;
+    }
 }

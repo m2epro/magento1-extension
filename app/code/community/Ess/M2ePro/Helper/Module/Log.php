@@ -185,7 +185,7 @@ class Ess_M2ePro_Helper_Module_Log extends Mage_Core_Helper_Abstract
     public function getStatusByResultType($resultType)
     {
         $typesStatusesMap = array(
-            Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE  => Ess_M2ePro_Helper_Data::STATUS_SUCCESS,
+            Ess_M2ePro_Model_Log_Abstract::TYPE_INFO  => Ess_M2ePro_Helper_Data::STATUS_SUCCESS,
             Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS => Ess_M2ePro_Helper_Data::STATUS_SUCCESS,
             Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING => Ess_M2ePro_Helper_Data::STATUS_WARNING,
             Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR   => Ess_M2ePro_Helper_Data::STATUS_ERROR,

@@ -251,13 +251,17 @@ class Ess_M2ePro_Model_Magento_Order_Updater
             return;
         }
 
+        if ($this->_magentoOrder->hasCreditmemos()) {
+            return;
+        }
+
         if ($this->_magentoOrder->canUnhold()) {
             throw new Ess_M2ePro_Model_Exception('Cancel is not allowed for Orders which were put on Hold.');
         }
 
         if ($this->_magentoOrder->getState() === Mage_Sales_Model_Order::STATE_COMPLETE ||
             $this->_magentoOrder->getState() === Mage_Sales_Model_Order::STATE_CLOSED) {
-            throw new Ess_M2ePro_Model_Exception('Cancel is not allowed for Orders which were Completed or Closed.');
+            return;
         }
 
         $allInvoiced = true;

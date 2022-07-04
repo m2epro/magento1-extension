@@ -25,13 +25,16 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
     const UPDATE_EMAIL              = 'email';
 
     /** @var $_helper Ess_M2ePro_Model_Ebay_Order_Helper */
-    protected $_helper = null;
+    protected $_helper;
 
     /** @var $order Ess_M2ePro_Model_Account */
-    protected $_account = null;
+    protected $_account;
 
     /** @var $_order Ess_M2ePro_Model_Order */
-    protected $_order = null;
+    protected $_order;
+
+    /** @var Ess_M2ePro_Model_Order[] */
+    protected $_relatedOrders = array();
 
     protected $_items = array();
 
@@ -40,9 +43,6 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
     protected $_status = self::STATUS_NOT_MODIFIED;
 
     protected $_updates = array();
-
-    /** @var Ess_M2ePro_Model_Order[] $_relatedOrders */
-    protected $_relatedOrders = array();
 
     //########################################
 
@@ -595,44 +595,74 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
      */
     protected function processOrdersContainingItemsFromCurrentOrder()
     {
-        /** @var $log Ess_M2ePro_Model_Order_Log */
-        $log = Mage::getModel('M2ePro/Order_Log');
-        $log->setComponentMode(Ess_M2ePro_Helper_Component_Ebay::NICK);
-
-        foreach ($this->_relatedOrders as $order) {
-            if ($order->canCancelMagentoOrder()) {
-                $description = 'Magento Order #%order_id% should be canceled '.
-                           'as new combined eBay order #%new_id% was created.';
-                $description = Mage::helper('M2ePro/Module_Log')->encodeDescription(
-                    $description, array(
-                    '!order_id' => $order->getMagentoOrder()->getRealOrderId(),
-                    '!new_id' => $this->_order->getData('ebay_order_id')
+        foreach ($this->_relatedOrders as $relatedOrder) {
+            if ($relatedOrder->canCancelMagentoOrder()) {
+                $relatedOrder->addWarningLog(
+                    'Magento Order #%order_id% should be canceled ' .
+                    'as new combined eBay order #%new_id% was created.',
+                    array(
+                        '!order_id' => $relatedOrder->getMagentoOrder()->getRealOrderId(),
+                        '!new_id' => $this->_order->getData('ebay_order_id')
                     )
                 );
 
-                $log->addMessage($order, $description, Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING);
-
                 try {
-                    $order->cancelMagentoOrder();
+                    $relatedOrder->cancelMagentoOrder();
                 } catch (Exception $e) {
                 }
             }
 
-            if ($order->getReserve()->isPlaced()) {
-                $order->getReserve()->release();
-            }
+            $relatedOrder->getReserve()->cancel();
+            $relatedOrder->getChildObject()->setData('cancellation_status', 1);
+            $relatedOrder->getChildObject()->save();
 
-            $description = 'eBay Order #%old_id% was deleted as new combined eBay order #%new_id% was created.';
-            $description = Mage::helper('M2ePro/Module_Log')->encodeDescription(
-                $description, array(
-                '!old_id' => $order->getData('ebay_order_id'),
-                '!new_id' => $this->_order->getData('ebay_order_id')
+            $relatedOrder->addWarningLog(
+                'eBay order #%old_id% was canceled. A new combined eBay order #%new_id% was created.',
+                array(
+                    '!old_id' => $relatedOrder->getChildObject()->getEbayOrderId(),
+                    '!new_id' => $this->_order->getChildObject()->getEbayOrderId(),
                 )
             );
+        }
 
-            $log->addMessage($order, $description, Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING);
+        $this->logOrdersContainingItemsFromCurrentOrder();
+        $this->logUnpaidOrdersContainingItemsFromCurrentOrder();
+    }
 
-            $order->deleteInstance();
+    private function logOrdersContainingItemsFromCurrentOrder()
+    {
+        $ebayOrderIds = array_map(function (Ess_M2ePro_Model_Order $order) {
+            return $order->getChildObject()->getEbayOrderId();
+        }, $this->_relatedOrders);
+
+        if (!empty($ebayOrderIds)) {
+            $this->_order->addWarningLog(
+                'Combined eBay order #%new_id% was created for canceled eBay order(s) #%old_ids%.',
+                array(
+                    '!old_ids' => implode(', ', $ebayOrderIds),
+                    '!new_id' => $this->_order->getChildObject()->getEbayOrderId(),
+                )
+            );
+        }
+    }
+
+    private function logUnpaidOrdersContainingItemsFromCurrentOrder()
+    {
+        $ebayOrderIds = array();
+        foreach ($this->_relatedOrders as $relatedOrder) {
+            if ($this->_order->getChildObject()->isPaymentCompleted() &&
+                !$relatedOrder->getChildObject()->isPaymentCompleted()
+            ) {
+                $ebayOrderIds[] = $relatedOrder->getChildObject()->getEbayOrderId();
+            }
+        }
+
+        if (!empty($ebayOrderIds)) {
+            $this->_order->addWarningLog(
+                'This combined order was created for unpaid eBay order(s) #%ids%.' .
+                ' Please check the order details on eBay.',
+                array('!ids' => implode(', ', $ebayOrderIds))
+            );
         }
     }
 

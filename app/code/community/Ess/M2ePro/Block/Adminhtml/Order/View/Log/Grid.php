@@ -111,8 +111,8 @@ class Ess_M2ePro_Block_Adminhtml_Order_View_Log_Grid extends Mage_Adminhtml_Bloc
             case Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS:
                 $message = '<span style="color: green;">'.Mage::helper('M2ePro')->__('Success').'</span>';
                 break;
-            case Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE:
-                $message = '<span style="color: blue;">'.Mage::helper('M2ePro')->__('Notice').'</span>';
+            case Ess_M2ePro_Model_Log_Abstract::TYPE_INFO:
+                $message = '<span style="color: blue;">'.Mage::helper('M2ePro')->__('Info').'</span>';
                 break;
             case Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING:
                 $message = '<span style="color: orange;">'.Mage::helper('M2ePro')->__('Warning').'</span>';

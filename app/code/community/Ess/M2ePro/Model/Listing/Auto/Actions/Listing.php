@@ -120,7 +120,7 @@ abstract class Ess_M2ePro_Model_Listing_Auto_Actions_Listing
             $actionId,
             Ess_M2ePro_Model_Listing_Log::ACTION_ADD_PRODUCT_TO_MAGENTO,
             'Product was Added',
-            Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE
+            Ess_M2ePro_Model_Log_Abstract::TYPE_INFO
         );
     }
 

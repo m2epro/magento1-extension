@@ -146,15 +146,15 @@ window.Order = Class.create(Common, {
             classContainer += ' hl_container_success';
         } else if (action.type == M2ePro.php.constant('Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING')) {
             classContainer += ' hl_container_warning';
-        } else if (action.type == M2ePro.php.constant('Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE')) {
-            classContainer += ' hl_container_notice';
+        } else if (action.type == M2ePro.php.constant('Ess_M2ePro_Model_Log_Abstract::TYPE_INFO')) {
+            classContainer += ' hl_container_info';
         } else if (action.type == M2ePro.php.constant('Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR')) {
             classContainer += ' hl_container_error';
         }
 
         var type = '<span style="color: green;">'+ M2ePro.translator.translate('Success')+'</span>';
-        if (action.type == M2ePro.php.constant('Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE')) {
-            type = '<span style="color: blue;">'+ M2ePro.translator.translate('Notice')+'</span>';
+        if (action.type == M2ePro.php.constant('Ess_M2ePro_Model_Log_Abstract::TYPE_INFO')) {
+            type = '<span style="color: blue;">'+ M2ePro.translator.translate('Info')+'</span>';
         } else if (action.type == M2ePro.php.constant('Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING')) {
             type = '<span style="color: orange;">'+ M2ePro.translator.translate('Warning')+'</span>';
         } else if (action.type == M2ePro.php.constant('Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR')) {

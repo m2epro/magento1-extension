@@ -36,12 +36,44 @@ class Ess_M2ePro_Model_Walmart_Order_Action_Handler_Shipping
         $resultItems = array();
         $params = $this->_orderChange->getParams();
 
+        $itemsToCheckCancellation = array();
         foreach ($params['items'] as $itemData) {
+            $itemsToCheckCancellation[] = $itemData['walmart_order_item_id'];
             $resultItems[] = array(
                 'number' => $itemData['walmart_order_item_id'],
                 'qty'    => $itemData['qty'],
                 'tracking_details' => $itemData['tracking_details'],
             );
+        }
+
+        /** @var Ess_M2ePro_Model_Resource_Order_Item_Collection $collection */
+        $collection = Mage::helper('M2ePro/Component_Walmart')
+            ->getCollection('Order_Item')
+            ->addFieldToFilter('order_id', $this->getOrder()->getId())
+            ->addFieldToFilter('walmart_order_item_id', array('in' => $itemsToCheckCancellation));
+
+        $walmartOrderItems = array();
+        /** @var Ess_M2ePro_Model_Order_Item $orderItem */
+        foreach ($collection->getItems() as $orderItem) {
+            $walmartOrderItemId = $orderItem->getChildObject()->getWalmartOrderItemId();
+            $walmartOrderItems[$walmartOrderItemId] = $orderItem->getChildObject();
+
+            /**
+             * Walmart returns the same Order Item more than one time with single QTY. That data was merged
+             */
+            $mergedWalmartOrderItemIds = $orderItem->getChildObject()->getMergedWalmartOrderItemIds();
+            foreach ($mergedWalmartOrderItemIds as $mergedWalmartOrderItemId) {
+                $walmartOrderItems[$mergedWalmartOrderItemId] = $orderItem->getChildObject();
+            }
+        }
+
+        foreach ($resultItems as &$item) {
+            $walmartOrderItem = $walmartOrderItems[$item['number']];
+            if ($walmartOrderItem->isBuyerCancellationRequested()
+                && $walmartOrderItem->isBuyerCancellationPossible()
+            ) {
+                $item['is_buyer_cancellation_ignored'] = true;
+            }
         }
 
         return array(

@@ -57,6 +57,8 @@ class Ess_M2ePro_Model_Resource_Ebay_Order
                 )
                 ->where($whereSql)
                 ->where('`main_table`.`account_id` = ?', $accountId)
+                ->where('`main_table`.`reservation_state` != ?', \Ess_M2ePro_Model_Order_Reserve::STATE_CANCELED)
+                ->where('`second_table`.`cancellation_status` = 0')
                 ->order(array('main_table.id ASC'));
         // ---------------------------------------
 

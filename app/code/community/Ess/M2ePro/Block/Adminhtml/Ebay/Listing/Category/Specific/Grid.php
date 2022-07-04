@@ -207,7 +207,8 @@ HTML;
         $helper = Mage::helper('M2ePro');
         $urls = array_merge(
             $helper->getControllerActions('adminhtml_ebay_listing_categorySettings', array('_current' => true)),
-            $helper->getControllerActions('adminhtml_ebay_category', array('_current' => true))
+            $helper->getControllerActions('adminhtml_ebay_category', array('_current' => true)),
+            $helper->getControllerActions('adminhtml_ebay_accountStoreCategory')
         );
 
         $urls['adminhtml_ebay_listing_categorySettings'] = $this->getUrl(

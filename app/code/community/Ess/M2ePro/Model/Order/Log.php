@@ -83,7 +83,7 @@ class Ess_M2ePro_Model_Order_Log extends Ess_M2ePro_Model_Log_Abstract
         }
 
         $map = array(
-            Message::TYPE_NOTICE  => self::TYPE_NOTICE,
+            Message::TYPE_NOTICE  => self::TYPE_INFO,
             Message::TYPE_SUCCESS => self::TYPE_SUCCESS,
             Message::TYPE_WARNING => self::TYPE_WARNING,
             Message::TYPE_ERROR   => self::TYPE_ERROR

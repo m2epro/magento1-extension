@@ -8,7 +8,7 @@
 
 abstract class Ess_M2ePro_Model_Log_Abstract extends Ess_M2ePro_Model_Abstract
 {
-    const TYPE_NOTICE   = 1;
+    const TYPE_INFO   = 1;
     const TYPE_SUCCESS  = 2;
     const TYPE_WARNING  = 3;
     const TYPE_ERROR    = 4;

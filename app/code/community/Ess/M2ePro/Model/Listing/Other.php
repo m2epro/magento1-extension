@@ -318,7 +318,7 @@ class Ess_M2ePro_Model_Listing_Other extends Ess_M2ePro_Model_Component_Parent_A
                 $actionId,
                 Ess_M2ePro_Model_Listing_Log::ACTION_MOVE_FROM_OTHER_LISTING,
                 'Item was Moved.',
-                Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE
+                Ess_M2ePro_Model_Log_Abstract::TYPE_INFO
             );
         }
 

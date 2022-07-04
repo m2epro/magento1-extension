@@ -332,9 +332,9 @@ class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
         $this->addLog($description, Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS, $params, $links);
     }
 
-    public function addNoticeLog($description, array $params = array(), array $links = array())
+    public function addInfoLog($description, array $params = array(), array $links = array())
     {
-        $this->addLog($description, Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE, $params, $links);
+        $this->addLog($description, Ess_M2ePro_Model_Log_Abstract::TYPE_INFO, $params, $links);
     }
 
     public function addWarningLog($description, array $params = array(), array $links = array())
@@ -704,7 +704,12 @@ class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
     {
         $magentoOrder = $this->getMagentoOrder();
 
-        if ($magentoOrder === null || $magentoOrder->isCanceled()) {
+        if ($magentoOrder === null || $magentoOrder->isCanceled() || $magentoOrder->hasCreditmemos()) {
+            return false;
+        }
+
+        if ($magentoOrder->getState() === Mage_Sales_Model_Order::STATE_COMPLETE ||
+            $magentoOrder->getState() === Mage_Sales_Model_Order::STATE_CLOSED) {
             return false;
         }
 
@@ -768,7 +773,7 @@ class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
     {
         if (!$this->getChildObject()->canCreateShipment()) {
             if ($this->getMagentoOrder() && $this->getMagentoOrder()->getIsVirtual()) {
-                $this->addNoticeLog(
+                $this->addInfoLog(
                     'Magento Order was created without the Shipping Address since your Virtual Product ' .
                     'has no weight and cannot be shipped.'
                 );

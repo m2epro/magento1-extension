@@ -752,7 +752,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Resolver
     protected function addNotice($messageText)
     {
         $message = Mage::getModel('M2ePro/Response_Message');
-        $message->initFromPreparedData($messageText, $message::TYPE_NOTICE);
+        $message->initFromPreparedData($messageText, $message::TYPE_INFO);
 
         $this->getMessagesSet()->addEntity($message);
     }

@@ -18,13 +18,13 @@ class Ess_M2ePro_Model_Walmart_Order_Builder extends Mage_Core_Model_Abstract
 
     //########################################
 
-    /** @var $_helper Ess_M2ePro_Model_Walmart_Order_Helper */
+    /** @var Ess_M2ePro_Model_Walmart_Order_Helper */
     protected $_helper = null;
 
-    /** @var $order Ess_M2ePro_Model_Account */
+    /** @var Ess_M2ePro_Model_Account */
     protected $_account = null;
 
-    /** @var $_order Ess_M2ePro_Model_Order */
+    /** @var Ess_M2ePro_Model_Order */
     protected $_order = null;
 
     protected $_status = self::STATUS_NOT_MODIFIED;
@@ -37,6 +37,7 @@ class Ess_M2ePro_Model_Walmart_Order_Builder extends Mage_Core_Model_Abstract
 
     public function __construct()
     {
+        parent::__construct();
         $this->_helper = Mage::getSingleton('M2ePro/Walmart_Order_Helper');
     }
 
@@ -196,6 +197,20 @@ class Ess_M2ePro_Model_Walmart_Order_Builder extends Mage_Core_Model_Abstract
 
             $item = $itemBuilder->process();
             $item->setOrder($this->_order);
+            if ($item->getChildObject()->isBuyerCancellationRequested()
+                && !$itemBuilder->getPreviousBuyerCancellationRequested()
+            ) {
+                $description = 'A buyer requested to cancel the item(s) "%item_name%"'
+                    . ' from the order #%order_number%.';
+
+                $this->_order->addWarningLog(
+                    $description,
+                    array(
+                        '!order_number' => $this->_order->getChildObject()->getWalmartOrderId(),
+                        '!item_name'    => $item->getChildObject()->getTitle()
+                    )
+                );
+            }
 
             $itemsCollection->removeItemByKey($item->getId());
             $itemsCollection->addItem($item);

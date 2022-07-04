@@ -259,6 +259,7 @@ HTML;
         $urls = Mage::helper('M2ePro')->jsonEncode(
             array_merge(
                 $helper->getControllerActions('adminhtml_ebay_account'),
+                $helper->getControllerActions('adminhtml_ebay_accountStoreCategory'),
                 $helper->getControllerActions('adminhtml_ebay_listing_categorySettings'),
                 $helper->getControllerActions('adminhtml_ebay_marketplace'),
                 $helper->getControllerActions('adminhtml_ebay_listing', array('_current' => true)),

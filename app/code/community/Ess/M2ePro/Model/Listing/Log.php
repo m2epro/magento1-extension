@@ -205,7 +205,7 @@ class Ess_M2ePro_Model_Listing_Log extends Ess_M2ePro_Model_Log_Abstract
         $actionId = null,
         $action = self::ACTION_UNKNOWN,
         $description = null,
-        $type = self::TYPE_NOTICE,
+        $type = self::TYPE_INFO,
         array $additionalData = array()
     ) {
         return array(

@@ -498,7 +498,7 @@ class Ess_M2ePro_Model_Walmart_Order extends Ess_M2ePro_Model_Component_Child_Wa
         }
 
         if (empty($trackingDetails['tracking_number'])) {
-            $this->getParentObject()->addNoticeLog(
+            $this->getParentObject()->addInfoLog(
                 'Order status was not updated to Shipped because tracking number is missing.
                 Please add the valid tracking number to the order.'
             );

@@ -390,6 +390,7 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_walmart_order_item')}` (
   `sku` VARCHAR(255) DEFAULT NULL,
   `price` DECIMAL(12, 4) UNSIGNED NOT NULL,
   `qty_purchased` INT(11) UNSIGNED NOT NULL DEFAULT 0,
+  `buyer_cancellation_requested` SMALLINT(4) UNSIGNED NOT NULL DEFAULT 0,
   PRIMARY KEY (`order_item_id`),
   INDEX `sku` (`sku`),
   INDEX `title` (`title`)

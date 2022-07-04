@@ -8,7 +8,8 @@
 
 class Ess_M2ePro_Model_Walmart_Order_Item_Builder extends Mage_Core_Model_Abstract
 {
-    //########################################
+    /** @var bool */
+    protected $_previousBuyerCancellationRequested;
 
     public function initialize(array $data)
     {
@@ -19,6 +20,7 @@ class Ess_M2ePro_Model_Walmart_Order_Item_Builder extends Mage_Core_Model_Abstra
         $this->setData('order_id', $data['order_id']);
         $this->setData('sku', trim($data['sku']));
         $this->setData('title', trim($data['title']));
+        $this->setData('buyer_cancellation_requested', $data['buyer_cancellation_requested']);
         // ---------------------------------------
 
         // Init sale data
@@ -55,6 +57,11 @@ class Ess_M2ePro_Model_Walmart_Order_Item_Builder extends Mage_Core_Model_Abstra
             ->addFieldToFilter('sku', $this->getData('sku'))
             ->getFirstItem();
 
+        $this->_previousBuyerCancellationRequested = false;
+        if ($existItem->getId()) {
+            $this->_previousBuyerCancellationRequested = $existItem->getChildObject()->isBuyerCancellationRequested();
+        }
+
         foreach ($this->getData() as $key => $value) {
             if (!$existItem->getId() || ($existItem->hasData($key) && $existItem->getData($key) != $value)) {
                 $existItem->addData($this->getData());
@@ -66,5 +73,11 @@ class Ess_M2ePro_Model_Walmart_Order_Item_Builder extends Mage_Core_Model_Abstra
         return $existItem;
     }
 
-    //########################################
+    /**
+     * @return bool
+     */
+    public function getPreviousBuyerCancellationRequested()
+    {
+        return $this->_previousBuyerCancellationRequested;
+    }
 }

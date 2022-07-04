@@ -114,7 +114,7 @@ abstract class Ess_M2ePro_Model_Listing_Auto_Actions_Mode_Abstract
             Ess_M2ePro_Model_Listing_Log::ACTION_ADD_PRODUCT_TO_LISTING,
             'Product was not added since the item is already presented in another Listing related to 
             the Channel account and marketplace.',
-            Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE
+            Ess_M2ePro_Model_Log_Abstract::TYPE_INFO
         );
     }
 

@@ -15,15 +15,15 @@ class Ess_M2ePro_Adminhtml_Ebay_AccountController extends Ess_M2ePro_Controller_
     protected function _initAction()
     {
         $this->loadLayout()
-             ->_title(Mage::helper('M2ePro')->__('Accounts'));
+            ->_title(Mage::helper('M2ePro')->__('Accounts'));
 
         $this->getLayout()->getBlock('head')
-             ->setCanLoadExtJs(true)
-             ->addJs('M2ePro/Plugin/ActionColumn.js')
-             ->addJs('M2ePro/Grid.js')
-             ->addJs('M2ePro/Account.js')
-             ->addJs('M2ePro/AccountGrid.js')
-             ->addJs('M2ePro/Ebay/Account.js');
+            ->setCanLoadExtJs(true)
+            ->addJs('M2ePro/Plugin/ActionColumn.js')
+            ->addJs('M2ePro/Grid.js')
+            ->addJs('M2ePro/Account.js')
+            ->addJs('M2ePro/AccountGrid.js')
+            ->addJs('M2ePro/Ebay/Account.js');
 
         $this->_initPopUp();
 
@@ -82,8 +82,8 @@ class Ess_M2ePro_Adminhtml_Ebay_AccountController extends Ess_M2ePro_Controller_
         $this->setPageHelpLink(null, null, "x/2VoJAg");
 
         $this->_addLeft($this->getLayout()->createBlock('M2ePro/adminhtml_ebay_account_edit_tabs'))
-             ->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_ebay_account_edit'))
-             ->renderLayout();
+            ->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_ebay_account_edit'))
+            ->renderLayout();
     }
 
     //########################################
@@ -332,7 +332,7 @@ class Ess_M2ePro_Adminhtml_Ebay_AccountController extends Ess_M2ePro_Controller_
         // Response for grid
         // ---------------------------------------
         $response = $this->loadLayout()->getLayout()
-                         ->createBlock('M2ePro/adminhtml_ebay_account_edit_tabs_feedback_grid')->toHtml();
+            ->createBlock('M2ePro/adminhtml_ebay_account_edit_tabs_feedback_grid')->toHtml();
         $this->getResponse()->setBody($response);
         // ---------------------------------------
     }
@@ -345,7 +345,7 @@ class Ess_M2ePro_Adminhtml_Ebay_AccountController extends Ess_M2ePro_Controller_
         return $this->getResponse()->setBody(
             Mage::helper('M2ePro')->jsonEncode(
                 array(
-                'ok' => (bool)$model->getChildObject()->hasFeedbackTemplate()
+                    'ok' => (bool)$model->getChildObject()->hasFeedbackTemplate()
                 )
             )
         );
@@ -382,8 +382,8 @@ class Ess_M2ePro_Adminhtml_Ebay_AccountController extends Ess_M2ePro_Controller_
             $dispatcherObject = Mage::getModel('M2ePro/M2ePro_Connector_Dispatcher');
             $connectorObj = $dispatcherObject->getVirtualConnector(
                 'account', 'get', 'info', array(
-                'account' => $account->getChildObject()->getServerHash(),
-                'channel' => Ess_M2ePro_Helper_Component_Ebay::NICK,
+                    'account' => $account->getChildObject()->getServerHash(),
+                    'channel' => Ess_M2ePro_Helper_Component_Ebay::NICK,
                 )
             );
 
@@ -471,7 +471,7 @@ class Ess_M2ePro_Adminhtml_Ebay_AccountController extends Ess_M2ePro_Controller_
 
         // Update eBay store
         // ---------------------------------------
-        $account->getChildObject()->updateEbayStoreInfo();
+        Mage::getModel('M2ePro/Ebay_Account_Store_Category_Update')->process($account->getChildObject());
 
         if (Mage::helper('M2ePro/Component_Ebay_Category_Store')->isExistDeletedCategories()) {
             $url = $this->getUrl('*/adminhtml_ebay_category/index', array('filter' => base64_encode('state=0')));
@@ -550,8 +550,8 @@ class Ess_M2ePro_Adminhtml_Ebay_AccountController extends Ess_M2ePro_Controller_
 
         // Update eBay store
         // ---------------------------------------
-        if ($isChangeTokenSession || (int)$this->getRequest()->getParam('update_ebay_store')) {
-            $account->getChildObject()->updateEbayStoreInfo();
+        if ($isChangeTokenSession) {
+            Mage::getModel('M2ePro/Ebay_Account_Store_Category_Update')->process($account->getChildObject());
 
             if (Mage::helper('M2ePro/Component_Ebay_Category_Store')->isExistDeletedCategories()) {
                 $url = $this->getUrl('*/adminhtml_ebay_category/index', array('filter' => base64_encode('state=0')));

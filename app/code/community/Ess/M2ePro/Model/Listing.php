@@ -113,7 +113,7 @@ class Ess_M2ePro_Model_Listing extends Ess_M2ePro_Model_Component_Parent_Abstrac
             $actionId,
             Ess_M2ePro_Model_Listing_Log::ACTION_DELETE_LISTING,
             'Listing was deleted',
-            Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE
+            Ess_M2ePro_Model_Log_Abstract::TYPE_INFO
         );
 
         $this->_accountModel = null;
@@ -511,7 +511,7 @@ class Ess_M2ePro_Model_Listing extends Ess_M2ePro_Model_Component_Parent_Abstrac
             $actionId,
             Ess_M2ePro_Model_Listing_Log::ACTION_ADD_PRODUCT_TO_LISTING,
             'Product was Added',
-            Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE,
+            Ess_M2ePro_Model_Log_Abstract::TYPE_INFO,
             $logAdditionalInfo
         );
         // ---------------------------------------
@@ -663,7 +663,7 @@ class Ess_M2ePro_Model_Listing extends Ess_M2ePro_Model_Component_Parent_Abstrac
             $actionId,
             Ess_M2ePro_Model_Listing_Log::ACTION_MOVE_TO_LISTING,
             $logMessage,
-            Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE
+            Ess_M2ePro_Model_Log_Abstract::TYPE_INFO
         );
 
         $logModel->addProductMessage(
@@ -674,7 +674,7 @@ class Ess_M2ePro_Model_Listing extends Ess_M2ePro_Model_Component_Parent_Abstrac
             $actionId,
             Ess_M2ePro_Model_Listing_Log::ACTION_MOVE_TO_LISTING,
             $logMessage,
-            Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE
+            Ess_M2ePro_Model_Log_Abstract::TYPE_INFO
         );
 
         // ---------------------------------------
@@ -794,7 +794,7 @@ class Ess_M2ePro_Model_Listing extends Ess_M2ePro_Model_Component_Parent_Abstrac
                 $actionId,
                 Ess_M2ePro_Model_Listing_Log::ACTION_DELETE_PRODUCT_FROM_MAGENTO,
                 $message,
-                Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE
+                Ess_M2ePro_Model_Log_Abstract::TYPE_INFO
             );
         }
 

@@ -359,7 +359,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Manually_Grid
         $helper = Mage::helper('M2ePro');
         $urls = array_merge(
             $helper->getControllerActions('adminhtml_ebay_listing_categorySettings', array('_current' => true)),
-            $helper->getControllerActions('adminhtml_ebay_category', array('_current' => true))
+            $helper->getControllerActions('adminhtml_ebay_category', array('_current' => true)),
+            $helper->getControllerActions('adminhtml_ebay_accountStoreCategory')
         );
 
         $path = 'adminhtml_ebay_listing_categorySettings';

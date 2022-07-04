@@ -39,6 +39,33 @@
                                         ->loadInstance($this->getRequest()->getParam('id'))
                                         ->buildEbayStoreCategoriesTree();
     }
+
+$blockTree = '<table id="ebay_store_categories_selected_container" class="form-list" cellspacing="0" cellpadding="0" style="display: none;">
+
+                    <tr>
+                        <td class="label">
+                            <label for="ebay_store_categories_selected">'.Mage::helper('M2ePro')->__('Category ID').':</label>
+                        </td>
+                        <td class="value" style="width: auto;">
+                            <input id="ebay_store_categories_selected" name="ebay_store_categories_selected" value="" type="text" readonly="readonly" class="input-text" />
+                            <p class="note">
+                                <span>'.Mage::helper('M2ePro')->__('Highlighted Category ID.').'</span>
+                            </p>
+                        </td>
+                        <td class="value" style="width: auto;">
+                            '.$this->getChildHtml('hide_selected_category').'
+                        </td>
+                    </tr>
+
+                </table>
+
+                <!-- TREE ###################### -->
+
+                <div class="categories-side-col">
+                    <div class="tree-holder">
+                        <div id="tree-div" style="width: 100%; overflow: auto;"></div>
+                    </div>
+                </div>';
 ?>
 
 <script type="text/javascript">
@@ -111,7 +138,7 @@
                     <tr>
                         <td class="label"></td>
                         <td class="value" style="width: auto;">
-                            <?php echo $this->getChildHtml('update_ebay_store'); ?>
+                            <?php echo $this->getChildHtml('refresh_ebay_store'); ?>
                             <p class="note">
                                 <?php echo Mage::helper('M2ePro')->__('Updates Store information.'); ?>
                             </p>
@@ -134,9 +161,11 @@
         <div class="fieldset">
             <div class="hor-scroll">
 
+                <?=$blockTree?>
+
                 <?php if(count($categoriesTreeArray) == 0) { ?>
 
-                    <table class="form-list" cellspacing="0" cellpadding="0">
+                    <table class="form-list" cellspacing="0" cellpadding="0" id="ebay_store_categories_not_found">
 
                         <tr>
                             <td class="label" style="font-weight: bold;">
@@ -147,33 +176,6 @@
                     </table>
 
                 <?php } else { ?>
-
-                    <table id="ebay_store_categories_selected_container" class="form-list" cellspacing="0" cellpadding="0" style="display: none;">
-
-                        <tr>
-                            <td class="label">
-                                <label for="ebay_store_categories_selected"><?php echo Mage::helper('M2ePro')->__('Category ID'); ?>:</label>
-                            </td>
-                            <td class="value" style="width: auto;">
-                                <input id="ebay_store_categories_selected" name="ebay_store_categories_selected" value="" type="text" readonly="readonly" class="input-text" />
-                                <p class="note">
-                                    <span><?php echo Mage::helper('M2ePro')->__('Highlighted Category ID.'); ?></span>
-                                </p>
-                            </td>
-                            <td class="value" style="width: auto;">
-                                <?php echo $this->getChildHtml('hide_selected_category'); ?>
-                            </td>
-                        </tr>
-
-                    </table>
-
-                    <!-- TREE ###################### -->
-
-                    <div class="categories-side-col">
-                        <div class="tree-holder">
-                            <div id="tree-div" style="width: 100%; overflow: auto;"></div>
-                        </div>
-                    </div>
 
                     <script type="text/javascript">
 
@@ -246,7 +248,7 @@
         <div class="fieldset">
             <div class="hor-scroll">
 
-                <table class="form-list" cellspacing="0" cellpadding="0">
+                <table class="form-list" cellspacing="0" cellpadding="0" id="ebay_store_categories_no_subscription_message">
 
                     <tr>
                         <td class="value" style="width: auto; font-weight: bold;">
@@ -260,7 +262,7 @@
 
                     <tr>
                         <td class="value" style="width: auto;">
-                            <?php echo $this->getChildHtml('update_ebay_store'); ?>
+                            <?php echo $this->getChildHtml('refresh_ebay_store'); ?>
                             <p class="note">
                                 <span><?php echo Mage::helper('M2ePro')->__('Updates Store information.'); ?></span>
                             </p>
@@ -268,6 +270,8 @@
                     </tr>
 
                </table>
+
+                <?=$blockTree?>
 
            </div>
         </div>

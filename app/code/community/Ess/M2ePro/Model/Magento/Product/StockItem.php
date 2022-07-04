@@ -48,26 +48,29 @@ class Ess_M2ePro_Model_Magento_Product_StockItem
             return false;
         }
 
-        $stockItem = $this->getStockItem();
-
-        if ($stockItem->getQty() - $stockItem->getMinQty() - $qty < 0) {
-            switch ($stockItem->getBackorders()) {
-                case Mage_CatalogInventory_Model_Stock::BACKORDERS_YES_NONOTIFY:
-                case Mage_CatalogInventory_Model_Stock::BACKORDERS_YES_NOTIFY:
-                    break;
-                default:
-                    throw new Ess_M2ePro_Model_Exception('The requested Quantity is not available.');
-                    break;
-            }
+        if (!$this->isAllowedQtyBelowZero() && $this->resultOfSubtractingQtyBelowZero($qty)) {
+            return false;
         }
 
-        $stockItem->subtractQty($qty);
+        $this->getStockItem()->subtractQty($qty);
 
         if ($save) {
-            $stockItem->save();
+            $this->getStockItem()->save();
         }
 
         return true;
+    }
+
+    public function resultOfSubtractingQtyBelowZero($qty)
+    {
+        return $this->getStockItem()->getQty() - $this->getStockItem()->getMinQty() - $qty < 0;
+    }
+
+    public function isAllowedQtyBelowZero()
+    {
+        $backordersStatus = $this->getStockItem()->getBackorders();
+        return $backordersStatus == Mage_CatalogInventory_Model_Stock::BACKORDERS_YES_NONOTIFY ||
+            $backordersStatus == Mage_CatalogInventory_Model_Stock::BACKORDERS_YES_NOTIFY;
     }
 
     /**

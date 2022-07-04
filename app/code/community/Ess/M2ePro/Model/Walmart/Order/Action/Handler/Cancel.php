@@ -65,10 +65,15 @@ class Ess_M2ePro_Model_Walmart_Order_Action_Handler_Cancel
                 continue;
             }
 
-            $resultItems[] = array(
+            $entry = array(
                 'number' => $itemData['item_id'],
                 'qty'    => $itemData['qty'],
             );
+            if (!empty($itemData['is_buyer_cancellation'])) {
+                $entry['is_buyer_cancellation'] = true;
+            }
+
+            $resultItems[] = $entry;
         }
 
         return array(

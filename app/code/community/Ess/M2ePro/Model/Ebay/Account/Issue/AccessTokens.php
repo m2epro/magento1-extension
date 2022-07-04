@@ -142,6 +142,10 @@ TEXT
         $currentTimeStamp = $helper->getCurrentGmtDate(true);
         $tokenExpirationTimeStamp = (int)$helper->createGmtDateTime($expirationDate)->format('U');
 
+        if ($tokenExpirationTimeStamp <= 0) { // if value in db = 0000-00-00
+            return array();
+        }
+
         if ($tokenExpirationTimeStamp < $currentTimeStamp) {
             $tempMessage = Mage::helper('M2ePro')->__(
                 <<<TEXT

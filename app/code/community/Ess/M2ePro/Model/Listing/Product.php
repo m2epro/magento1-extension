@@ -160,7 +160,7 @@ class Ess_M2ePro_Model_Listing_Product extends Ess_M2ePro_Model_Component_Parent
             'Item was Deleted',
             Ess_M2ePro_Helper_Data::INITIATOR_UNKNOWN,
             Ess_M2ePro_Model_Listing_Log::ACTION_DELETE_PRODUCT_FROM_LISTING,
-            Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE
+            Ess_M2ePro_Model_Log_Abstract::TYPE_INFO
         );
 
         $this->_listingModel = null;

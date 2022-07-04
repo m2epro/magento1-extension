@@ -118,7 +118,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Log_AbstractGrid extends Mage_Adminhtm
     protected function _getLogTypeList()
     {
         return array(
-            Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE  => Mage::helper('M2ePro')->__('Notice'),
+            Ess_M2ePro_Model_Log_Abstract::TYPE_INFO  => Mage::helper('M2ePro')->__('Info'),
             Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS => Mage::helper('M2ePro')->__('Success'),
             Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING => Mage::helper('M2ePro')->__('Warning'),
             Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR   => Mage::helper('M2ePro')->__('Error')
@@ -139,9 +139,6 @@ abstract class Ess_M2ePro_Block_Adminhtml_Log_AbstractGrid extends Mage_Adminhtm
     public function callbackColumnType($value, $row, $column, $isExport)
     {
         switch ($row->getData('type')) {
-            case Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE:
-                break;
-
             case Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS:
                 $value = '<span style="color: green;">'.$value.'</span>';
                 break;
@@ -205,7 +202,7 @@ HTML;
 
         if (isset($this->_messageCount[$row[$this->_entityIdFieldName]])) {
             $colorMap = array(
-                Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE  => 'gray',
+                Ess_M2ePro_Model_Log_Abstract::TYPE_INFO  => 'gray',
                 Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS => 'green',
                 Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING => 'orange',
                 Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR   => 'red',

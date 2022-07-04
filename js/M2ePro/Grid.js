@@ -292,7 +292,7 @@ window.Grid = Class.create(Common, {
 
         for (var i=0;i<action.items.length;i++) {
 
-            var type = M2ePro.translator.translate('Notice');
+            var type = M2ePro.translator.translate('Info');
 
             if (action.items[i].type == 2) {
                 if (action.items[i].count) {

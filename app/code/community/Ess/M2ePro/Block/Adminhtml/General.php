@@ -89,7 +89,7 @@ JS
                 'Hide Block',
                 'Show Tips',
                 'Hide Tips',
-                'Notice',
+                'Info',
                 'Error',
                 'Close',
                 'Success',

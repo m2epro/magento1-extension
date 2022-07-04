@@ -152,7 +152,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Update_SellerOrderId
                         Mage::helper('M2ePro')->__(
                             'Magento Order number has been set as Your Seller Order ID in Amazon Order details.'
                         ),
-                        Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE
+                        Ess_M2ePro_Model_Log_Abstract::TYPE_INFO
                     );
                 }
             }

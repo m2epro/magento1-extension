@@ -1162,7 +1162,7 @@ class Ess_M2ePro_Model_Amazon_Listing extends Ess_M2ePro_Model_Component_Child_A
                 $logModel->getResource()->getNextActionId(),
                 Ess_M2ePro_Model_Listing_Log::ACTION_SELL_ON_ANOTHER_SITE,
                 $logMessage,
-                Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE
+                Ess_M2ePro_Model_Log_Abstract::TYPE_INFO
             );
 
             if ($sourceListing->getMarketplaceId() == $this->getParentObject()->getMarketplaceId()) {

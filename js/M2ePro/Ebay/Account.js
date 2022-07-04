@@ -269,11 +269,6 @@ window.EbayAccount = Class.create(Common, {
 
     // ---------------------------------------
 
-    ebayStoreUpdate: function() {
-        var self = EbayAccountObj;
-        self.submitForm(M2ePro.url.get('formSubmit', {'update_ebay_store': 1, 'back': base64_encode('edit')}));
-    },
-
     ebayStoreSelectCategory: function(id) {
         $('ebay_store_categories_selected_container').show();
         $('ebay_store_categories_selected').value = id;
@@ -541,7 +536,103 @@ window.EbayAccount = Class.create(Common, {
         if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Account::OTHER_LISTINGS_MAPPING_ITEM_ID_MODE_CUSTOM_ATTRIBUTE')) {
             self.updateHiddenValue(this, attributeEl);
         }
-    }
+    },
+
+    refreshStoreCategories: function()
+    {
+        new Ajax.Request(M2ePro.url.get('adminhtml_ebay_accountStoreCategory/refresh'), {
+            method: 'post',
+            parameters: {
+                account_id: M2ePro.formData.id
+            },
+            onSuccess: function()
+            {
+                EbayAccountObj.renderCategories();
+            }
+        });
+    },
+
+    renderCategories: function()
+    {
+        new Ajax.Request(M2ePro.url.get('adminhtml_ebay_accountStoreCategory/getTree'), {
+            method: 'post',
+            parameters: {
+                account_id: M2ePro.formData.id
+            },
+            onSuccess: function(transport)
+            {
+                var categories = JSON.parse(transport.responseText);
+
+                if (categories.length !== 0) {
+                    if (document.getElementById('ebay_store_categories_not_found')) {
+                        document.getElementById('ebay_store_categories_not_found').hide();
+                    }
+
+                    if (document.getElementById('ebay_store_categories_no_subscription_message')) {
+                        document.getElementById('ebay_store_categories_no_subscription_message').hide();
+                    }
+
+                    if (document.getElementById('tree-div')) {
+                        document.getElementById('tree-div').innerHTML = "";
+                    }
+
+                    EbayAccountObj.ebayStoreInitExtTree(categories);
+                }
+            }
+        });
+    },
+
+    ebayStoreInitExtTree: function(categoriesTreeArray)
+    {
+        var tree = new Ext.tree.TreePanel('tree-div', {
+            animate: true,
+            enableDD: false,
+            containerScroll: true,
+            rootVisible: false
+        });
+
+        tree.on('click', function(node, clicked) {
+            varienElementMethods.setHasChanges(node.getUI().checkbox);
+            tree.getRootNode().cascade(function(n) {
+                var ui = n.getUI();
+                if (node !== n && ui.checkbox !== undefined) {
+                    ui.checkbox.checked = false;
+                }
+            });
+            EbayAccountObj.ebayStoreSelectCategory(node.attributes.id);
+        }, tree);
+
+        var root = new Ext.tree.TreeNode({
+            text: 'root',
+            draggable: false,
+            checked: 'false',
+            id: '__root__',
+        });
+
+        tree.setRootNode(root);
+
+        var buildCategoryTree = function(parent, config) {
+            if (!config) {
+                return null;
+            }
+
+            if (parent && config && config.length) {
+
+                for (var i = 0; i < config.length; i++) {
+                    var node = new Ext.tree.TreeNode(config[i]);
+                    parent.appendChild(node);
+                    if (config[i].children) {
+                        buildCategoryTree(node, config[i].children);
+                    }
+                }
+            }
+        };
+
+        buildCategoryTree(root, categoriesTreeArray);
+
+        tree.render();
+        root.expand();
+    },
 
     // ---------------------------------------
 });

@@ -99,7 +99,7 @@ class Ess_M2ePro_Model_Walmart_Order_Creditmemo_Handler extends Ess_M2ePro_Model
                     $tax = $item->getChildObject()->getTaxAmount();
                 }
 
-                $itemsForCancel[] = array(
+                $entry = array(
                     'item_id'  => $orderItemId,
                     'qty'      => $itemQty,
                     'prices'   => array(
@@ -109,6 +109,14 @@ class Ess_M2ePro_Model_Walmart_Order_Creditmemo_Handler extends Ess_M2ePro_Model
                         'product' => $tax,
                     ),
                 );
+
+                if ($item->getChildObject()->isBuyerCancellationRequested()
+                    && $item->getChildObject()->isBuyerCancellationPossible()
+                ) {
+                    $entry['is_buyer_cancellation'] = true;
+                }
+
+                $itemsForCancel[] = $entry;
 
                 $qtyAvailable -= $itemQty;
                 $data['refunded_qty'][$orderItemId] = $itemQty;

@@ -230,7 +230,7 @@ class Ess_M2ePro_Model_Ebay_Connector_AccountPickupStore_Synchronize_ProductsRes
         }
 
         if ($message->isNotice()) {
-            return Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE;
+            return Ess_M2ePro_Model_Log_Abstract::TYPE_INFO;
         }
 
         return Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR;

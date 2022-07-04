@@ -89,7 +89,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Order_Creator
         if ($order->canCreateMagentoOrder()) {
             try {
                 $order->getLog()->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION);
-                $order->addNoticeLog(
+                $order->addInfoLog(
                     'Magento order creation rules are met. M2E Pro will attempt to create Magento order.'
                 );
 

@@ -413,6 +413,15 @@ STRING;
             }
 
             $itemTitle = Mage::helper('M2ePro')->escapeHtml($item->getTitle());
+            $cancellationRequested = '';
+            if ($item->getChildObject()->isBuyerCancellationRequested()
+                && $item->getChildObject()->isBuyerCancellationPossible()
+            ) {
+                $cancellationRequested = <<<HTML
+<span style="color: red;">Cancellation Requested</span><br/>
+HTML;
+            }
+
             $qtyLabel = Mage::helper('M2ePro')->__('QTY');
             $qtyHtml = <<<HTML
 <span style="padding-left: 10px;"><b>{$qtyLabel}:</b> {$item->getQtyPurchased()}</span>
@@ -420,6 +429,7 @@ HTML;
 
             $html .= <<<HTML
 {$itemTitle}&nbsp;{$editItemHtml}<br/>
+{$cancellationRequested}
 <small>{$skuHtml}{$qtyHtml}</small>
 HTML;
         }

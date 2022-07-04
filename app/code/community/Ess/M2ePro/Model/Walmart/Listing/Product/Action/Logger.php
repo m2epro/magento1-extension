@@ -137,7 +137,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Logger
 
         if ($message->isNotice()) {
             $this->setStatus(Ess_M2ePro_Helper_Data::STATUS_SUCCESS);
-            return Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE;
+            return Ess_M2ePro_Model_Log_Abstract::TYPE_INFO;
         }
 
         $this->setStatus(Ess_M2ePro_Helper_Data::STATUS_ERROR);

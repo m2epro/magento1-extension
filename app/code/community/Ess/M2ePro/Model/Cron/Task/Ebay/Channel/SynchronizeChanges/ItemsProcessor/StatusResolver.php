@@ -116,7 +116,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor_
 
     protected function setProductStatusSold()
     {
-        if ($this->_listingProduct->isHidden() && $this->_channelQty == $this->_channelQtySold) {
+        if (!$this->_listingProduct->isHidden() && $this->_channelQty == $this->_channelQtySold) {
             $this->_productStatus = Ess_M2ePro_Model_Listing_Product::STATUS_SOLD;
             return true;
         }

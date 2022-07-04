@@ -156,7 +156,8 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationEbayController
         /** @var Ess_M2ePro_Model_Account $accountModel */
         $accountModel = Mage::helper('M2ePro/Component_Ebay')->getModel('Account');
         Mage::getModel('M2ePro/Ebay_Account_Builder')->build($accountModel, $data);
-        $accountModel->getChildObject()->updateEbayStoreInfo();
+
+        Mage::getModel('M2ePro/Ebay_Account_Store_Category_Update')->process($accountModel->getChildObject());
 
         $this->setStep($this->getNextStep());
 

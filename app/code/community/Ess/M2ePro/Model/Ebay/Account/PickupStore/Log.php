@@ -35,7 +35,7 @@ class Ess_M2ePro_Model_Ebay_Account_PickupStore_Log extends Ess_M2ePro_Model_Log
         $actionId = null,
         $action = self::ACTION_UNKNOWN,
         $description = null,
-        $type = self::TYPE_NOTICE,
+        $type = self::TYPE_INFO,
         array $additionalData = array()
     ) {
         $dataForAdd = array(

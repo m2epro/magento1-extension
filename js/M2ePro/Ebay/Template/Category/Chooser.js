@@ -497,13 +497,12 @@ window.EbayTemplateCategoryChooser = Class.create(Common, {
             return;
         }
 
-        new Ajax.Request(M2ePro.url.get('adminhtml_ebay_category/refreshStoreCategories'), {
+        new Ajax.Request(M2ePro.url.get('adminhtml_ebay_accountStoreCategory/refresh'), {
             method: 'post',
             parameters: {
                 account_id: self.accountId
             },
             onSuccess: function(transport) {
-
                 EbayTemplateCategoryChooserBrowseObj.renderTopLevelCategories('chooser_browser');
 
                 if ($('query').value.length != 0) {

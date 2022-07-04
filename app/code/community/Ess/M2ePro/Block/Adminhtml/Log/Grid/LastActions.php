@@ -24,7 +24,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Log_Grid_LastActions extends Mage_Admi
         LogModel::TYPE_SUCCESS  => 1,
         LogModel::TYPE_ERROR    => 2,
         LogModel::TYPE_WARNING  => 3,
-        LogModel::TYPE_NOTICE   => 4,
+        LogModel::TYPE_INFO   => 4,
     );
 
     //########################################
@@ -223,7 +223,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Log_Grid_LastActions extends Mage_Admi
                 LogModel::TYPE_SUCCESS  => 'Last Action was completed.',
                 LogModel::TYPE_ERROR    => 'Last Action was completed with error(s).',
                 LogModel::TYPE_WARNING  => 'Last Action was completed with warning(s).',
-                LogModel::TYPE_NOTICE   => 'Last Action was completed with notice(s).'
+                LogModel::TYPE_INFO   => 'Last Action was completed with info(s).'
             );
         }
 
@@ -237,7 +237,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Log_Grid_LastActions extends Mage_Admi
                 LogModel::TYPE_SUCCESS  => 'success',
                 LogModel::TYPE_ERROR    => 'error',
                 LogModel::TYPE_WARNING  => 'warning',
-                LogModel::TYPE_NOTICE   => 'notice',
+                LogModel::TYPE_INFO   => 'info',
             );
         }
 

@@ -40,6 +40,8 @@ class Ess_M2ePro_Block_Adminhtml_Listing_Moving_Grid extends Mage_Adminhtml_Bloc
         $collection->addFieldToFilter('main_table.marketplace_id', $this->getRequest()->getParam('marketplaceId'));
         $collection->addFieldToFilter('main_table.account_id', $this->getRequest()->getParam('accountId'));
 
+        $collection->addProductsTotalCount();
+
         $this->setCollection($collection);
 
         return parent::_prepareCollection();

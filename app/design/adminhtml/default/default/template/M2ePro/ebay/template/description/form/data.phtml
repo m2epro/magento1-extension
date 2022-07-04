@@ -736,7 +736,7 @@ $isCustomDescription = ($formData['description_mode'] == Ess_M2ePro_Model_Ebay_T
                     <label><?php echo Mage::helper('M2ePro')->__('Description Value'); ?>: <span class="required">*</span></label>
                 </td>
                 <td class="value">
-                    <?php if (Mage::helper('M2ePro/Magento')->isTinyMceAvailable()): ?>
+                    <?php if (false): ?>
                         <div id="buttonstext" class="buttons-set">
                             <?php echo $this->getChildHtml('show_hide_mce_button'); ?>
                         </div>
@@ -746,7 +746,7 @@ $isCustomDescription = ($formData['description_mode'] == Ess_M2ePro_Model_Ebay_T
 
                     <script type="text/javascript">
                         //<![CDATA[
-                        <?php if (Mage::helper('M2ePro/Magento')->isTinyMceAvailable()): ?>
+                        <?php if (false): ?>
                         tinyMceWysiwygSetup.prototype.notifyFirebug = function() {};
                         tinyMceWysiwygSetup.prototype.closePopups = function() {};
                         tinyMceWysiwygSetup.prototype.setup = function(mode)

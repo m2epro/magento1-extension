@@ -485,14 +485,6 @@ class Ess_M2ePro_Adminhtml_Ebay_CategoryController extends Ess_M2ePro_Controller
 
     //########################################
 
-    public function refreshStoreCategoriesAction()
-    {
-        $accountId = (int)$this->getRequest()->getParam('account_id');
-        Mage::getModel('M2ePro/Ebay_Account')->loadInstance($accountId)->updateEbayStoreInfo();
-    }
-
-    //########################################
-
     protected function setRuleData($prefix)
     {
         $prefix .= $this->getRequest()->getParam('active_tab', '');

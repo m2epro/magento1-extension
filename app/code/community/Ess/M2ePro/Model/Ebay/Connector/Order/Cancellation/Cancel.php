@@ -49,14 +49,16 @@ class Ess_M2ePro_Model_Ebay_Connector_Order_Cancellation_Cancel
             return;
         }
 
-        if ($this->_orderChange->getAction() === Ess_M2ePro_Model_Order_Change::ACTION_CANCEL) {
+        if ($isActionCancel = $this->_orderChange->getAction() === Ess_M2ePro_Model_Order_Change::ACTION_CANCEL) {
             $this->_orderChange->deleteInstance();
         }
 
         if ($this->_responseData['result'] && $this->_responseData['cancel_id'] !== null) {
             $this->_order->getChildObject()->setData('cancellation_status', 1);
             $this->_order->getChildObject()->save();
-            $this->_order->addSuccessLog('Order is canceled. Status is updated on eBay.');
+            if ($isActionCancel) {
+                $this->_order->addSuccessLog('Order is canceled. Status is updated on eBay.');
+            }
         }
     }
 
