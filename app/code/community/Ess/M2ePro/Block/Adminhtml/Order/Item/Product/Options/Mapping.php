@@ -108,8 +108,8 @@ class Ess_M2ePro_Block_Adminhtml_Order_Item_Product_Options_Mapping extends Ess_
         } else {
             foreach ($magentoVariations as $magentoVariation) {
                 $magentoOptionLabel = array_shift($magentoVariation['labels']);
-                if ($magentoValueLabel === '' || $magentoValueLabel === null) {
-                    $magentoValueLabel = Mage::helper('M2ePro')->__('N/A');
+                if ($magentoOptionLabel === '' || $magentoOptionLabel === null) {
+                    $magentoOptionLabel = Mage::helper('M2ePro')->__('N/A');
                 }
 
                 $magentoOption = array(
