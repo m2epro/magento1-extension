@@ -159,10 +159,15 @@ $attributesByInputTypes = array(
                             </optgroup>
                         </select>
                         <p class="note">
-                            <span><?php echo Mage::helper('M2ePro')->__('
-                                Specify Amazon Tax Code value or select Magento Attribute that contains appropriate Tax Code values.
-                                Only <strong>common</strong> Attributes are available for the selection.
-                            '); ?></span>
+                            <span><?php echo Mage::helper('M2ePro')->__(
+                                    'Apply Amazon Product Tax Codes to display VAT-exclusive prices to B2B customers.
+                                    Find more info in <a href="%url%" target="_blank">this article</a>.',
+                                    Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(
+                                        null,
+                                        null,
+                                        'x/tNtaAg'
+                                    )
+                                ); ?></span>
                         </p>
                     </td>
                 </tr>

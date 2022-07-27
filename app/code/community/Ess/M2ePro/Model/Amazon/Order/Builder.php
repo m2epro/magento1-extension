@@ -203,7 +203,33 @@ class Ess_M2ePro_Model_Amazon_Order_Builder extends Mage_Core_Model_Abstract
             return true;
         }
 
+        if ($this->isSkipTaxForEEAShipmentFromUkSite($data['shipping_address']['country_code'])) {
+            return true;
+        }
+
         return false;
+    }
+
+    /**
+     * @param string $countryCode
+     * @return bool
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
+    protected function isSkipTaxForEEAShipmentFromUkSite($countryCode)
+    {
+        if (!$this->_account->getChildObject()->isAmazonCollectsTaxForEEAShipmentFromUkSite()) {
+            return false;
+        }
+
+        if (!in_array(
+            strtoupper($countryCode),
+            $this->_account->getChildObject()->getExcludedCountries(),
+            true
+        )) {
+            return false;
+        }
+
+        return true;
     }
 
     protected function isSkipTaxForUkShipment(array $data)
@@ -479,23 +505,33 @@ class Ess_M2ePro_Model_Amazon_Order_Builder extends Mage_Core_Model_Abstract
 
     protected function cancelMagentoOrder()
     {
-        if (!$this->_order->canCancelMagentoOrder()) {
+        $magentoOrderComments = array();
+        $magentoOrderComments[] = '<b>Attention!</b> Order was canceled on Amazon.';
+        $result = $this->_order->canCancelMagentoOrder();
+        if ($result === true) {
+            try {
+                $this->_order->cancelMagentoOrder();
+            } catch (\Exception $e) {
+                Mage::helper('M2ePro/Module_Exception')->process($e);
+            }
+
+            $this->addCommentsToMagentoOrder($this->_order, $magentoOrderComments);
+        }
+
+        if ($result === false) {
             return;
         }
 
-        $magentoOrderComments = array();
-        $magentoOrderComments[] = '<b>Attention!</b> Order was canceled on Amazon.';
+        $magentoOrderComments[] = 'Order cannot be canceled in Magento. Reason: ' . $result;
+        $this->addCommentsToMagentoOrder($this->_order, $magentoOrderComments);
+    }
 
-        try {
-            $this->_order->cancelMagentoOrder();
-        } catch (Exception $e) {
-            $magentoOrderComments[] = 'Order cannot be canceled in Magento. Reason: ' . $e->getMessage();
-        }
-
+    private function addCommentsToMagentoOrder(Ess_M2ePro_Model_Order $order, $comments)
+    {
         /** @var $magentoOrderUpdater Ess_M2ePro_Model_Magento_Order_Updater */
         $magentoOrderUpdater = Mage::getModel('M2ePro/Magento_Order_Updater');
-        $magentoOrderUpdater->setMagentoOrder($this->_order->getMagentoOrder());
-        $magentoOrderUpdater->updateComments($magentoOrderComments);
+        $magentoOrderUpdater->setMagentoOrder($order->getMagentoOrder());
+        $magentoOrderUpdater->updateComments($comments);
         $magentoOrderUpdater->finishUpdate();
     }
 

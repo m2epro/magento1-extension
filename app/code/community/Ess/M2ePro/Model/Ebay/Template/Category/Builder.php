@@ -8,7 +8,8 @@
 
 class Ess_M2ePro_Model_Ebay_Template_Category_Builder extends Ess_M2ePro_Model_ActiveRecord_AbstractBuilder
 {
-    private $initDefaultSpecifics = false;
+    private $_initDefaultSpecifics = false;
+    private $_filteredData = array();
 
     //########################################
 
@@ -16,23 +17,8 @@ class Ess_M2ePro_Model_Ebay_Template_Category_Builder extends Ess_M2ePro_Model_A
     {
         /** @var Ess_M2ePro_Model_Ebay_Template_Category $model */
         $model = parent::build($model, $rawData);
-
-        if (!empty($this->_rawData['specific'])) {
-            foreach ($model->getSpecifics(true) as $specific) {
-                // @codingStandardsIgnoreLine
-                $specific->delete();
-            }
-
-            $specifics = array();
-            foreach ($this->_rawData['specific'] as $specific) {
-                $specifics[] = $this->serializeSpecific($specific);
-            }
-
-            $this->saveSpecifics($model, $specifics);
-        } else {
-            $this->initDefaultSpecifics && $this->initDefaultSpecifics($model);
-        }
-
+        $specifics = $this->getSpecifics($model);
+        $this->saveSpecifics($model, $specifics);
         return $model;
     }
 
@@ -40,7 +26,82 @@ class Ess_M2ePro_Model_Ebay_Template_Category_Builder extends Ess_M2ePro_Model_A
 
     protected function prepareData()
     {
-        $data = array();
+        $template = $this->getTemplate();
+        $this->initSpecificsFromTemplate($template);
+        $this->_model = $template;
+        return $this->getFilteredData();
+    }
+
+    //########################################
+
+    /**
+     * @return Ess_M2ePro_Model_Ebay_Template_Category
+     * @throws Ess_M2ePro_Model_Exception
+     */
+    protected function getTemplate()
+    {
+        if (isset($this->_rawData['template_id'])) {
+            return $this->loadTemplateById($this->_rawData['template_id']);
+        }
+
+        $isCustomTemplate = isset($this->_rawData['is_custom_template'])
+            ? $this->_rawData['is_custom_template']
+            : false;
+
+        return $isCustomTemplate
+            ? $this->createCustomTemplate()
+            : $this->getDefaultTemplate();
+    }
+
+    protected function createCustomTemplate()
+    {
+        /** @var Ess_M2ePro_Model_Ebay_Template_Category $template */
+        $template = Mage::getModel('M2ePro/Ebay_Template_Category');
+        $template->setData('is_custom_template', 1);
+        return $template;
+    }
+
+    protected function loadTemplateById($id)
+    {
+        /** @var Ess_M2ePro_Model_Ebay_Template_Category $template */
+        $template = Mage::getModel('M2ePro/Ebay_Template_Category');
+        $template->load($id);
+        $this->checkIfTemplateDataMatch($template);
+        return $template;
+    }
+
+    protected function getDefaultTemplate()
+    {
+        /** @var Ess_M2ePro_Model_Ebay_Template_Category $template */
+        $template = Mage::getModel('M2ePro/Ebay_Template_Category');
+
+        if (!isset($this->_rawData['category_mode'], $this->_rawData['marketplace_id'])) {
+            return $template->setData('is_custom_template', 0);
+        }
+
+        $value =  $this->_rawData['category_mode'] == Ess_M2ePro_Model_Ebay_Template_Category::CATEGORY_MODE_EBAY
+            ? $this->_rawData['category_id']
+            : $this->_rawData['category_attribute'];
+
+        $template->loadByCategoryValue(
+            $value,
+            $this->_rawData['category_mode'],
+            $this->_rawData['marketplace_id'],
+            0
+        );
+
+        if ($template->isObjectNew()) {
+            $this->_initDefaultSpecifics = true;
+        }
+
+        return $template;
+    }
+
+    protected function getFilteredData()
+    {
+        if (!empty($this->_filteredData)) {
+            return $this->_filteredData;
+        }
 
         $keys = array(
             'marketplace_id',
@@ -51,68 +112,47 @@ class Ess_M2ePro_Model_Ebay_Template_Category_Builder extends Ess_M2ePro_Model_A
         );
 
         foreach ($keys as $key) {
-            isset($this->_rawData[$key]) && $data[$key] = $this->_rawData[$key];
+            if (isset($this->_rawData[$key])) {
+                $this->_filteredData[$key] = $this->_rawData[$key];
+            }
         }
 
-        $template = $this->tryToLoadById($this->_rawData, $data);
-        $template->getId() === null && $template = $this->tryToLoadByData($this->_rawData, $data);
-        $this->initDefaultSpecifics = $template->getId() === null;
-        $this->_model = $template;
+        return $this->_filteredData;
+    }
 
-        return $data;
+    /**
+     * editing of category data is not allowed
+     */
+    protected function checkIfTemplateDataMatch(Ess_M2ePro_Model_Ebay_Template_Category $template)
+    {
+        $significantKeys = array(
+            'marketplace_id',
+            'category_mode',
+            'category_id',
+            'category_attribute',
+        );
+
+        foreach ($this->getFilteredData() as $key => $value) {
+            if (in_array($key, $significantKeys, true) && $template->getData($key) != $value) {
+                $this->initSpecificsFromTemplate($template);
+                $template->setData(array('is_custom_template' => 1));
+            }
+        }
     }
 
     //########################################
 
-    protected function tryToLoadById(array $data, array $newTemplateData)
+    protected function getSpecifics(Ess_M2ePro_Model_Ebay_Template_Category $template)
     {
-        /** @var Ess_M2ePro_Model_Ebay_Template_Category $template */
-        $template = Mage::getModel('M2ePro/Ebay_Template_Category');
-
-        if (!isset($data['template_id'])) {
-            return $template;
+        if (!empty($this->_rawData['specific'])) {
+            return $this->getNewSpecifics($template);
         }
 
-        $template->load($data['template_id']);
-        $this->checkIfTemplateDataMatch($template, $newTemplateData);
-
-        return $template;
-    }
-
-    protected function tryToLoadByData(array $data, array $newTemplateData)
-    {
-        /** @var Ess_M2ePro_Model_Ebay_Template_Category $template */
-        $template = Mage::getModel('M2ePro/Ebay_Template_Category');
-
-        if (!isset($data['category_mode'], $data['marketplace_id'])) {
-            return $template;
+        if ($this->_initDefaultSpecifics) {
+            return $this->initDefaultSpecifics($template);
         }
 
-        $template->loadByCategoryValue(
-            $data['category_mode'] == Ess_M2ePro_Model_Ebay_Template_Category::CATEGORY_MODE_EBAY
-                ? $data['category_id']
-                : $data['category_attribute'],
-            $data['category_mode'],
-            $data['marketplace_id'],
-            0
-        );
-
-        /* editing of category data is not allowed */
-        if ($template->getId() !== null && $template->isLocked()) {
-            $this->checkIfTemplateDataMatch($template, $newTemplateData);
-            if ($template->getId() === null) {
-                return $template;
-            }
-
-            if (empty($data['specific']) && !$template->getIsCustomTemplate()) {
-                return $template;
-            }
-
-            $this->initSpecificsFromTemplate($template);
-            $template->setData(array('is_custom_template' => 1));
-        }
-
-        return $template;
+        return array();
     }
 
     //########################################
@@ -135,10 +175,6 @@ class Ess_M2ePro_Model_Ebay_Template_Category_Builder extends Ess_M2ePro_Model_A
 
     protected function initDefaultSpecifics(Ess_M2ePro_Model_Ebay_Template_Category $template)
     {
-        if (!$template->isCategoryModeEbay()) {
-           return;
-        }
-
         $dictionarySpecifics = (array)Mage::helper('M2ePro/Component_Ebay_Category_Ebay')->getSpecifics(
             $template->getCategoryId(),
             $template->getMarketplaceId()
@@ -153,12 +189,26 @@ class Ess_M2ePro_Model_Ebay_Template_Category_Builder extends Ess_M2ePro_Model_A
             );
         }
 
-        $this->saveSpecifics($template, $specifics);
+        return $specifics;
+    }
+
+    protected function getNewSpecifics(Ess_M2ePro_Model_Ebay_Template_Category $template)
+    {
+        $specifics = array();
+        foreach ($template->getSpecifics(true) as $specific) {
+            // @codingStandardsIgnoreLine
+            $specific->delete();
+        }
+        foreach ($this->_rawData['specific'] as $specific) {
+            $specifics[] = $this->serializeSpecific($specific);
+        }
+
+        return $specifics;
     }
 
     protected function initSpecificsFromTemplate(Ess_M2ePro_Model_Ebay_Template_Category $template)
     {
-        if (!empty($this->_rawData['specific'])) {
+        if (!empty($this->_rawData['specific']) || $template->isObjectNew()) {
             return;
         }
 
@@ -200,30 +250,6 @@ class Ess_M2ePro_Model_Ebay_Template_Category_Builder extends Ess_M2ePro_Model_A
         }
 
         return $specificData;
-    }
-
-    //########################################
-
-    /**
-     * editing of category data is not allowed
-     */
-    protected function checkIfTemplateDataMatch(
-        Ess_M2ePro_Model_Ebay_Template_Category $template,
-        array $newTemplateData
-    ) {
-        $significantKeys = array(
-            'marketplace_id',
-            'category_mode',
-            'category_id',
-            'category_attribute',
-        );
-
-        foreach ($newTemplateData as $key => $value) {
-            if (in_array($key, $significantKeys, true) && $template->getData($key) != $value) {
-                $this->initSpecificsFromTemplate($template);
-                $template->setData(array('is_custom_template' => 1));
-            }
-        }
     }
 
     //########################################

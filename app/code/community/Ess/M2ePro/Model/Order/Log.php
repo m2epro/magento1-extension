@@ -48,11 +48,18 @@ class Ess_M2ePro_Model_Order_Log extends Ess_M2ePro_Model_Log_Abstract
      * @param string $description
      * @param int $type
      * @param array $additionalData
+     * @param bool $isUnique
+     * 
+     * @return bool
      */
-    public function addMessage($order, $description, $type, array $additionalData = array())
+    public function addMessage($order, $description, $type, array $additionalData = array(), $isUnique = false)
     {
         if (!($order instanceof Ess_M2ePro_Model_Order)) {
             $order = Mage::getModel('M2ePro/Order')->load($order);
+        }
+
+        if ($isUnique && $this->isExist($order->getId(), $description)) {
+            return false;
         }
 
         $dataForAdd = array(
@@ -70,6 +77,8 @@ class Ess_M2ePro_Model_Order_Log extends Ess_M2ePro_Model_Log_Abstract
         Mage::getModel('M2ePro/Order_Log')
             ->setData($dataForAdd)
             ->save();
+
+        return true;
     }
 
     /**
@@ -101,6 +110,21 @@ class Ess_M2ePro_Model_Order_Log extends Ess_M2ePro_Model_Log_Abstract
     public function deleteInstance()
     {
         return parent::delete();
+    }
+
+    //########################################
+
+    public function isExist($orderId, $message)
+    {
+        $collection = Mage::getModel('M2ePro/Order_Log')->getCollection();
+        $collection->addFieldToFilter('order_id', $orderId);
+        $collection->addFieldToFilter('description', $message);
+
+        if ($collection->getSize()) {
+            return true;
+        }
+
+        return false;
     }
 
     //########################################

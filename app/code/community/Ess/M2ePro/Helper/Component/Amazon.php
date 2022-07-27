@@ -28,12 +28,8 @@ class Ess_M2ePro_Helper_Component_Amazon extends Mage_Core_Helper_Abstract
     const MARKETPLACE_JP = 42;
     const MARKETPLACE_PL = 43;
 
-
     const MAX_ALLOWED_FEED_REQUESTS_PER_HOUR = 30;
-
     const SKU_MAX_LENGTH = 40;
-
-    //########################################
 
     public function getTitle()
     {
@@ -235,12 +231,62 @@ class Ess_M2ePro_Helper_Component_Amazon extends Mage_Core_Helper_Abstract
         return $states;
     }
 
-    //########################################
-
     public function clearCache()
     {
         Mage::helper('M2ePro/Data_Cache_Permanent')->removeTagValues(self::NICK);
     }
 
-    //########################################
+    /**
+     * @return string[]
+     */
+    public function getEEACountryCodes()
+    {
+        return array(
+            'AT', 'BE', 'BG', 'HR', 'CY',
+            'CZ', 'DK', 'EE', 'FI', 'FR',
+            'DE', 'GR', 'HU', 'IS', 'IE',
+            'IT', 'LV', 'LI', 'LT', 'LU',
+            'MT', 'NL', 'NO', 'PL', 'PT',
+            'RO', 'SK', 'SI', 'ES', 'SE',
+        );
+    }
+
+    /**
+     * @return array
+     */
+    public function getEEACountriesList()
+    {
+        $collection = Mage::getModel('directory/country')
+            ->getCollection()
+            ->addFieldToSelect(array('iso2_code'))
+            ->addFieldToFilter(
+                'iso2_code',
+                array('in' => $this->getEEACountryCodes())
+            );
+
+        $tempData = array();
+        /** @var Mage_Directory_Model_Country $item */
+        foreach ($collection->getItems() as $item) {
+            $tempData[] = array(
+                'name' => $item->getName(),
+                'code' => $item->getData('iso2_code')
+            );
+        }
+
+        $compare = function ($a, $b) {
+            if ($a['name'] === $b['name']) {
+                return 0;
+            }
+
+            return ($a['name'] < $b['name']) ? -1 : 1;
+        };
+        uasort($tempData, $compare);
+
+        $data = array();
+        foreach ($tempData as $value) {
+            $data[$value['code']] = $value['name'];
+        }
+
+        return $data;
+    }
 }

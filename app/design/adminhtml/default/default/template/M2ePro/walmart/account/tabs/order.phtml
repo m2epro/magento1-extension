@@ -467,17 +467,6 @@
 
     <div class="fieldset">
         <div class="hor-scroll">
-            <div id="block_notice_walmart_accounts_magento_orders_tax" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Order Tax Settings'); ?>">
-                <?php echo Mage::helper('M2ePro')->__('Select the Tax settings that should be applied to Magento Order:<br><br>
-                    <ul class="list">
-                        <li><b>Walmart</b> - the Tax settings configured in your Walmart Seller Center will be used.</li>
-                        <li><b>Magento</b> - the Tax settings configured in your Magento will be used.</li>
-                        <li><b>Walmart & Magento</b> - Walmart Tax settings will be applied if specified. Otherwise, Magento Tax settings will be used.</li>
-                        <li><b>None</b> - no Taxes will be applied.</li>
-                    </ul>'
-                ); ?>
-            </div>
-
             <table class="form-list" cellspacing="0" cellpadding="0">
 
                 <tr>
@@ -492,6 +481,17 @@
                             <option value="<?php echo Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_TAX_MODE_MAGENTO; ?>"<?php if ($formData['magento_orders_settings']['tax']['mode'] == Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_TAX_MODE_MAGENTO) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Magento'); ?></option>
                             <option value="<?php echo Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_TAX_MODE_MIXED; ?>"<?php if ($formData['magento_orders_settings']['tax']['mode'] == Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_TAX_MODE_MIXED) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Walmart & Magento'); ?></option>
                         </select>
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__(
+                                    'Choose where the tax settings for your Magento Order will be taken from.
+                                    See <a href="%url%" target="_blank">this article</a> for more details.',
+                                    Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(
+                                        null,
+                                        null,
+                                        'x/juJ0Aw#CalculationTaxSettings-TaxSource'
+                                    )
+                                ); ?></span>
+                        </p>
                     </td>
                 </tr>
 

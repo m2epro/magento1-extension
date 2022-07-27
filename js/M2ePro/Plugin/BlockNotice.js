@@ -386,7 +386,10 @@ window.BlockNotice = Class.create({
 
     onClickNoticeToolTip: function(event)
     {
-        Event.stop(event);
+        // prevent tooltip onClick processing for block hiding/showing, except for links handling
+        if (!event.target.href) {
+            Event.stop(event);
+        }
     },
 
     onToolTipIconMouseEnter: function(element)

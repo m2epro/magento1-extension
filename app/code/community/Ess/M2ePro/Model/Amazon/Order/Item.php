@@ -6,6 +6,8 @@
  * @license    Commercial use is forbidden
  */
 
+use Ess\M2ePro\Model\Order\Exception\ProductCreationDisabled;
+
 /**
  * @method Ess_M2ePro_Model_Order_Item getParentObject()
  */
@@ -364,10 +366,8 @@ class Ess_M2ePro_Model_Amazon_Order_Item extends Ess_M2ePro_Model_Component_Chil
     protected function createProduct()
     {
         if (!$this->getAmazonAccount()->isMagentoOrdersListingsOtherProductImportEnabled()) {
-            throw new Ess_M2ePro_Model_Exception(
-                Mage::helper('M2ePro')->__(
-                    'Product creation is disabled in "Account > Orders > Product Not Found".'
-                )
+            throw new Ess_M2ePro_Model_Order_Exception_ProductCreationDisabled(
+                Mage::helper('M2ePro')->__('Product creation is disabled in "Account > Orders > Product Not Found".')
             );
         }
 

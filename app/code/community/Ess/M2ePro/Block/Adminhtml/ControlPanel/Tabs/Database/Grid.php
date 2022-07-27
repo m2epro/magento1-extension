@@ -8,7 +8,8 @@
 
 class Ess_M2ePro_Block_Adminhtml_ControlPanel_Tabs_Database_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
-    //########################################
+    /* The table is excluded because it uses a composite primary key that causes magenta to fail */
+    private $excludedTables = array('m2epro_ebay_account_store_category');
 
     public function __construct()
     {
@@ -46,7 +47,7 @@ class Ess_M2ePro_Block_Adminhtml_ControlPanel_Tabs_Database_Grid extends Mage_Ad
 
         $collection = new Ess_M2ePro_Model_Collection_Custom();
         foreach ($tablesList as $tableName) {
-            if (!$structureHelper->isModuleTable($tableName)) {
+            if (in_array($tableName, $this->excludedTables, true) || !$structureHelper->isModuleTable($tableName)) {
                 continue;
             }
 

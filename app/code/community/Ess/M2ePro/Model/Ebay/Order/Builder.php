@@ -319,7 +319,7 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
             $paymentAdditionalData = Mage::helper('M2ePro')->unserialize(
                 $magentoOrder->getPayment()->getAdditionalData()
             );
-            if (!empty($paymentAdditionalData)) {
+            if (is_array($paymentAdditionalData) && !empty($paymentAdditionalData)) {
                 $paymentAdditionalData['channel_final_fee'] = $finalFee;
                 $magentoOrder->getPayment()->setAdditionalData(
                     Mage::helper('M2ePro')->serialize($paymentAdditionalData)
@@ -596,7 +596,7 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
     protected function processOrdersContainingItemsFromCurrentOrder()
     {
         foreach ($this->_relatedOrders as $relatedOrder) {
-            if ($relatedOrder->canCancelMagentoOrder()) {
+            if ($relatedOrder->canCancelMagentoOrder() === true) {
                 $relatedOrder->addWarningLog(
                     'Magento Order #%order_id% should be canceled ' .
                     'as new combined eBay order #%new_id% was created.',
@@ -609,6 +609,7 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
                 try {
                     $relatedOrder->cancelMagentoOrder();
                 } catch (Exception $e) {
+                    Mage::helper('M2ePro/Module_Exception')->process($e);
                 }
             }
 

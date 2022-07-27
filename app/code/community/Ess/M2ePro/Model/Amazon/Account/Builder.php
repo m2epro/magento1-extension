@@ -242,6 +242,7 @@ class Ess_M2ePro_Model_Amazon_Account_Builder extends Ess_M2ePro_Model_ActiveRec
             'mode',
             'amazon_collects',
             'amazon_collect_for_uk',
+            'amazon_collect_for_eea',
             'import_tax_id_in_magento_order'
         );
         foreach ($keys as $key) {
@@ -262,6 +263,13 @@ class Ess_M2ePro_Model_Amazon_Account_Builder extends Ess_M2ePro_Model_ActiveRec
             $data['magento_orders_settings'][$tempKey]['excluded_states'] = explode(
                 ',',
                 $tempSettings['excluded_states']
+            );
+        }
+
+        if (isset($tempSettings['excluded_countries'])) {
+            $data['magento_orders_settings'][$tempKey]['excluded_countries'] = explode(
+                ',',
+                $tempSettings['excluded_countries']
             );
         }
 
@@ -379,7 +387,9 @@ class Ess_M2ePro_Model_Amazon_Account_Builder extends Ess_M2ePro_Model_ActiveRec
                     'mode' =>                        Account::MAGENTO_ORDERS_TAX_MODE_MIXED,
                     'amazon_collects'                => 1,
                     'excluded_states'                => $this->getGeneralExcludedStates(),
+                    'excluded_countries'             => array(),
                     'amazon_collect_for_uk'          => Account::SKIP_TAX_FOR_UK_SHIPMENT_NONE,
+                    'amazon_collect_for_eea'         => 0,
                     'import_tax_id_in_magento_order' => 0
                 ),
                 'customer'                => array(
@@ -491,6 +501,4 @@ class Ess_M2ePro_Model_Amazon_Account_Builder extends Ess_M2ePro_Model_ActiveRec
             'WY',
         );
     }
-
-    //########################################
 }

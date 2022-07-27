@@ -364,9 +364,9 @@ class Ess_M2ePro_Model_Ebay_Order_Item extends Ess_M2ePro_Model_Component_Child_
     protected function createProduct()
     {
         if (!$this->getEbayAccount()->isMagentoOrdersListingsOtherProductImportEnabled()) {
-            throw new Ess_M2ePro_Model_Exception(Mage::helper('M2ePro')->__(
-                'Product creation is disabled in "Account > Orders > Product Not Found".'
-            ));
+            throw new Ess_M2ePro_Model_Order_Exception_ProductCreationDisabled(
+                Mage::helper('M2ePro')->__('Product creation is disabled in "Account > Orders > Product Not Found".')
+            );
         }
 
         $order = $this->getParentObject()->getOrder();

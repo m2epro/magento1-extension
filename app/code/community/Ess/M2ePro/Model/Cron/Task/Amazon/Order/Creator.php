@@ -90,7 +90,10 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Creator
             try {
                 $order->getLog()->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION);
                 $order->addInfoLog(
-                    'Magento order creation rules are met. M2E Pro will attempt to create Magento order.'
+                    'Magento order creation rules are met. M2E Pro will attempt to create Magento order.',
+                    array(),
+                    array(),
+                    true
                 );
 
                 $order->createMagentoOrder();

@@ -728,6 +728,12 @@ class Ess_M2ePro_Model_Ebay_Listing extends Ess_M2ePro_Model_Component_Child_Eba
             );
         }
 
+        if ($listingProduct->getMagentoProduct()->isGroupedType() &&
+            Mage::helper('M2ePro/Module_Configuration')->isGroupedProductModeSet()
+        ) {
+            $ebayItem->setAdditionalData(json_encode(array('grouped_product_mode' => 1)));
+        }
+
         $ebayItem->setData('store_id', $this->getParentObject()->getStoreId())
             ->save();
 
@@ -760,6 +766,13 @@ class Ess_M2ePro_Model_Ebay_Listing extends Ess_M2ePro_Model_Component_Child_Eba
             $listingProduct::MOVING_LISTING_OTHER_SOURCE_KEY,
             $listingOtherProduct->getId()
         );
+
+        if ($listingProduct->getMagentoProduct()->isGroupedType() &&
+            Mage::helper('M2ePro/Module_Configuration')->isGroupedProductModeSet()
+        ) {
+            $listingProduct->setSetting('additional_data', 'grouped_product_mode', 1);
+        }
+
         $listingProduct->save();
 
         $listingOtherProduct->setSetting(

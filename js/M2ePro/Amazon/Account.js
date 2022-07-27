@@ -445,7 +445,7 @@ window.AmazonAccount = Class.create(Common, {
                     closable: true,
                     className: "magento",
                     windowClassName: "popup-window",
-                    title: M2ePro.translator.translate('Select States where Amazon is responsible for tax calculation/collection'),
+                    title: M2ePro.translator.translate('Select states where tax will be excluded'),
                     width: 600,
                     height: 600,
                     zIndex: 100,
@@ -476,6 +476,52 @@ window.AmazonAccount = Class.create(Common, {
         Windows.getFocusedWindow().close();
     },
 
+    openExcludedCountriesPopup: function() {
+        var self = this;
+
+        new Ajax.Request(M2ePro.url.get('adminhtml_amazon_account/getExcludedCountriesPopupHtml'), {
+            method: 'post',
+            parameters: {
+                selected_countries: $('magento_orders_tax_excluded_countries').value
+            },
+            onSuccess: function(transport) {
+                var popup = Dialog.info(null, {
+                    draggable: true,
+                    resizable: true,
+                    closable: true,
+                    className: "magento",
+                    windowClassName: "popup-window",
+                    title: M2ePro.translator.translate('Select countries where VAT will be excluded'),
+                    width: 600,
+                    height: 600,
+                    zIndex: 100,
+                    border: false,
+                    hideEffect: Element.hide,
+                    showEffect: Element.show
+                });
+
+                popup.options.destroyOnClose = true;
+
+                $('modal_dialog_message').update(transport.responseText);
+                self.autoHeightFix();
+            }
+        });
+    },
+
+    confirmExcludedCountries: function() {
+        var excludedCountries = [];
+
+        $$('.excluded_country_checkbox').each(function(element) {
+            if (element.checked) {
+                excludedCountries.push(element.value);
+            }
+        });
+
+        $('magento_orders_tax_excluded_countries').value = excludedCountries.toString();
+
+        Windows.getFocusedWindow().close();
+    },
+
     magentoOrdersTaxModeChange: function() {
         if ($('magento_orders_tax_mode').value == M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_TAX_MODE_CHANNEL') ||
             $('magento_orders_tax_mode').value == M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_TAX_MODE_MIXED')) {
@@ -497,6 +543,14 @@ window.AmazonAccount = Class.create(Common, {
             $('show_excluded_states_button').show();
         } else {
             $('show_excluded_states_button').hide();
+        }
+    },
+
+    magentoOrdersTaxSkipTaxInEEAOrders: function() {
+        if ($('magento_orders_tax_amazon_collects_for_eea_shipment').value == 1) {
+            $('show_excluded_countries_button').show();
+        } else {
+            $('show_excluded_countries_button').hide();
         }
     },
 

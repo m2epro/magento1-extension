@@ -266,11 +266,11 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_AutoActionController
 
     public function saveAction()
     {
-        if (!$post = $this->getRequest()->getPost()) {
-            return;
-        }
+        $data = Mage::helper('M2ePro')->jsonDecode(
+            $this->getRequest()->getPost('auto_action_data')
+        );
 
-        if (!isset($post['auto_action_data'])) {
+        if ($data === null) {
             return;
         }
 
@@ -278,38 +278,6 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_AutoActionController
         $listing = Mage::helper('M2ePro/Component_Ebay')->getCachedObject(
             'Listing',
             $this->getRequest()->getParam('listing_id')
-        );
-
-        $data = Mage::helper('M2ePro')->jsonDecode($post['auto_action_data']);
-
-        $listingData = array(
-            'auto_mode'                                      => Listing::AUTO_MODE_NONE,
-            'auto_global_adding_mode'                        => Listing::ADDING_MODE_NONE,
-            'auto_global_adding_add_not_visible'             => Listing::AUTO_ADDING_ADD_NOT_VISIBLE_YES,
-            'auto_global_adding_template_category_id'                 => null,
-            'auto_global_adding_template_category_secondary_id'       => null,
-            'auto_global_adding_template_store_category_id'           => null,
-            'auto_global_adding_template_store_category_secondary_id' => null,
-
-            'auto_website_adding_mode'            => Listing::ADDING_MODE_NONE,
-            'auto_website_adding_add_not_visible' => Listing::AUTO_ADDING_ADD_NOT_VISIBLE_YES,
-            'auto_website_adding_template_category_id'                 => null,
-            'auto_website_adding_template_category_secondary_id'       => null,
-            'auto_website_adding_template_store_category_id'           => null,
-            'auto_website_adding_template_store_category_secondary_id' => null,
-
-            'auto_website_deleting_mode' => Listing::DELETING_MODE_NONE
-        );
-
-        $groupData = array(
-            'id'                     => null,
-            'category'               => null,
-            'title'                  => null,
-            'auto_mode'              => Listing::AUTO_MODE_NONE,
-            'adding_mode'            => Listing::ADDING_MODE_NONE,
-            'adding_add_not_visible' => Listing::AUTO_ADDING_ADD_NOT_VISIBLE_YES,
-            'deleting_mode'          => Listing::DELETING_MODE_NONE,
-            'categories'             => array()
         );
 
         /** @var Ess_M2ePro_Model_Ebay_Template_Category_Chooser_Converter $converter */
@@ -335,6 +303,25 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_AutoActionController
         $storeSecondaryTpl = Mage::getModel('M2ePro/Ebay_Template_StoreCategory_Builder')->build(
             Mage::getModel('M2ePro/Ebay_Template_StoreCategory'),
             $converter->getCategoryDataForTemplate(eBayCategory::TYPE_STORE_SECONDARY)
+        );
+
+        $listingData = array(
+            'auto_mode'                                      => Listing::AUTO_MODE_NONE,
+            'auto_global_adding_mode'                        => Listing::ADDING_MODE_NONE,
+            'auto_global_adding_add_not_visible'             => Listing::AUTO_ADDING_ADD_NOT_VISIBLE_YES,
+            'auto_global_adding_template_category_id'                 => null,
+            'auto_global_adding_template_category_secondary_id'       => null,
+            'auto_global_adding_template_store_category_id'           => null,
+            'auto_global_adding_template_store_category_secondary_id' => null,
+
+            'auto_website_adding_mode'            => Listing::ADDING_MODE_NONE,
+            'auto_website_adding_add_not_visible' => Listing::AUTO_ADDING_ADD_NOT_VISIBLE_YES,
+            'auto_website_adding_template_category_id'                 => null,
+            'auto_website_adding_template_category_secondary_id'       => null,
+            'auto_website_adding_template_store_category_id'           => null,
+            'auto_website_adding_template_store_category_secondary_id' => null,
+
+            'auto_website_deleting_mode' => Listing::DELETING_MODE_NONE
         );
 
         // mode global
@@ -379,10 +366,37 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_AutoActionController
         if ($data['auto_mode'] == Listing::AUTO_MODE_CATEGORY) {
             $listingData['auto_mode'] = Listing::AUTO_MODE_CATEGORY;
 
+            $groupData = array(
+                'id'                     => null,
+                'category'               => null,
+                'title'                  => null,
+                'auto_mode'              => Listing::AUTO_MODE_NONE,
+                'adding_mode'            => Listing::ADDING_MODE_NONE,
+                'adding_add_not_visible' => Listing::AUTO_ADDING_ADD_NOT_VISIBLE_YES,
+                'deleting_mode'          => Listing::DELETING_MODE_NONE,
+            );
+            $groupData = array_merge($groupData, $data);
+
+            $ebayGroupData = array(
+                'adding_template_category_id'                 => null,
+                'adding_template_category_secondary_id'       => null,
+                'adding_template_store_category_id'           => null,
+                'adding_template_store_category_secondary_id' => null
+            );
+
+            if ($data['adding_mode'] == eBayListing::ADDING_MODE_ADD_AND_ASSIGN_CATEGORY) {
+                $ebayGroupData['adding_template_category_id'] = $ebayTpl->getId();
+                $ebayGroupData['adding_template_category_secondary_id'] = $ebaySecondaryTpl->getId();
+                $ebayGroupData['adding_template_store_category_id'] = $storeTpl->getId();
+                $ebayGroupData['adding_template_store_category_secondary_id'] = $storeSecondaryTpl->getId();
+            }
+
             /** @var Ess_M2ePro_Model_Listing_Auto_Category_Group $group */
             $group = Mage::helper('M2ePro/Component')->getComponentModel(
                 $this->getCustomViewNick(), 'Listing_Auto_Category_Group'
             );
+            /** @var Ess_M2ePro_Model_Ebay_Listing_Auto_Category_Group $ebayGroup */
+            $ebayGroup = Mage::getModel('M2ePro/Ebay_Listing_Auto_Category_Group');
 
             if ((int)$data['id'] > 0) {
                 $group->loadInstance((int)$data['id']);
@@ -390,22 +404,14 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_AutoActionController
                 unset($data['id']);
             }
 
-            $group->addData(array_merge($groupData, $data));
+            $group->addData($groupData);
             $group->setData('listing_id', $listing->getId());
-
-            if ($data['adding_mode'] == eBayListing::ADDING_MODE_ADD_AND_ASSIGN_CATEGORY) {
-                $group->setData('adding_template_category_id', $ebayTpl->getId());
-                $group->setData('adding_template_category_secondary_id', $ebaySecondaryTpl->getId());
-                $group->setData('adding_template_store_category_id', $storeTpl->getId());
-                $group->setData('adding_template_store_category_secondary_id', $storeSecondaryTpl->getId());
-            } else {
-                $group->setData('adding_template_category_id', null);
-                $group->setData('adding_template_category_secondary_id', null);
-                $group->setData('adding_template_store_category_id', null);
-                $group->setData('adding_template_store_category_secondary_id', null);
-            }
-
             $group->save();
+
+            $ebayGroup->setId($group->getId());
+            $ebayGroup->addData($ebayGroupData);
+            $ebayGroup->save();
+
             $group->clearCategories();
 
             foreach ($data['categories'] as $categoryId) {

@@ -315,7 +315,7 @@ class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
 
     //########################################
 
-    public function addLog($description, $type, array $params = array(), array $links = array())
+    public function addLog($description, $type, array $params = array(), array $links = array(), $isUnique = false)
     {
         /** @var $log Ess_M2ePro_Model_Order_Log */
         $log = $this->getLog();
@@ -324,27 +324,27 @@ class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
             $description = Mage::helper('M2ePro/Module_Log')->encodeDescription($description, $params, $links);
         }
 
-        $log->addMessage($this, $description, $type);
+        return $log->addMessage($this, $description, $type, array(), $isUnique);
     }
 
-    public function addSuccessLog($description, array $params = array(), array $links = array())
+    public function addSuccessLog($description, array $params = array(), array $links = array(), $isUnique = false)
     {
-        $this->addLog($description, Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS, $params, $links);
+        return $this->addLog($description, Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS, $params, $links, $isUnique);
     }
 
-    public function addInfoLog($description, array $params = array(), array $links = array())
+    public function addInfoLog($description, array $params = array(), array $links = array(), $isUnique = false)
     {
-        $this->addLog($description, Ess_M2ePro_Model_Log_Abstract::TYPE_INFO, $params, $links);
+        return $this->addLog($description, Ess_M2ePro_Model_Log_Abstract::TYPE_INFO, $params, $links, $isUnique);
     }
 
-    public function addWarningLog($description, array $params = array(), array $links = array())
+    public function addWarningLog($description, array $params = array(), array $links = array(), $isUnique = false)
     {
-        $this->addLog($description, Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING, $params, $links);
+        return $this->addLog($description, Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING, $params, $links, $isUnique);
     }
 
-    public function addErrorLog($description, array $params = array(), array $links = array())
+    public function addErrorLog($description, array $params = array(), array $links = array(), $isUnique = false)
     {
-        $this->addLog($description, Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR, $params, $links);
+        return $this->addLog($description, Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR, $params, $links, $isUnique);
     }
 
     //########################################
@@ -645,10 +645,12 @@ class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
             );
             $this->save();
 
-            $this->addErrorLog(
-                'Magento Order was not created. Reason: %msg%',
-                array('msg' => $e->getMessage())
-            );
+            $message = 'Magento Order was not created. Reason: %msg%';
+            if ($e instanceof Ess_M2ePro_Model_Order_Exception_ProductCreationDisabled) {
+                $this->addInfoLog($message, array('msg' => $e->getMessage()), array(), true);
+            } else {
+                $this->addErrorLog($message, array('msg' => $e->getMessage()));
+            }
 
             if ($this->isReservable()) {
                 $this->getReserve()->place();
@@ -708,9 +710,47 @@ class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
             return false;
         }
 
+        if ($magentoOrder->canUnhold()) {
+            $errorMessage = 'Cancel is not allowed for Orders which were put on Hold.';
+            $messageAddedSuccessfully = $this->addErrorLog(
+                'Magento Order #%order_id% was not canceled. Reason: %msg%',
+                array(
+                    '!order_id' => $this->getMagentoOrder()->getRealOrderId(),
+                    'msg' => $errorMessage
+                ),
+                array(),
+                true
+            );
+
+            return $messageAddedSuccessfully ? $errorMessage : false;
+        }
+
         if ($magentoOrder->getState() === Mage_Sales_Model_Order::STATE_COMPLETE ||
             $magentoOrder->getState() === Mage_Sales_Model_Order::STATE_CLOSED) {
             return false;
+        }
+
+        $allInvoiced = true;
+        foreach ($magentoOrder->getAllItems() as $item) {
+            if ($item->getQtyToInvoice()) {
+                $allInvoiced = false;
+                break;
+            }
+        }
+
+        if ($allInvoiced) {
+            $errorMessage = 'Cancel is not allowed for Orders with Invoiced Items.';
+            $messageAddedSuccessfully = $this->addErrorLog(
+                'Magento Order #%order_id% was not canceled. Reason: %msg%',
+                array(
+                    '!order_id' => $this->getMagentoOrder()->getRealOrderId(),
+                    'msg' => $errorMessage
+                ),
+                array(),
+                true
+            );
+
+            return $messageAddedSuccessfully ? $errorMessage : false;
         }
 
         return true;
@@ -718,7 +758,7 @@ class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
 
     public function cancelMagentoOrder()
     {
-        if (!$this->canCancelMagentoOrder()) {
+        if ($this->canCancelMagentoOrder() !== true) {
             return;
         }
 
@@ -733,14 +773,8 @@ class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
                 '!order_id' => $this->getMagentoOrder()->getRealOrderId()
                 )
             );
-        } catch (Exception $e) {
-            $this->addErrorLog(
-                'Magento Order #%order_id% was not canceled. Reason: %msg%', array(
-                '!order_id' => $this->getMagentoOrder()->getRealOrderId(),
-                'msg' => $e->getMessage()
-                )
-            );
-            throw $e;
+        } catch (Exception $exception) {
+            Mage::helper('M2ePro/Module_Exception')->process($exception);
         }
     }
 

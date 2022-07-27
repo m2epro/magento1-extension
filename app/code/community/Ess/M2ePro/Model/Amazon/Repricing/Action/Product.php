@@ -8,8 +8,6 @@
 
 class Ess_M2ePro_Model_Amazon_Repricing_Action_Product extends Ess_M2ePro_Model_Amazon_Repricing_Abstract
 {
-    //########################################
-
     public function sendAddProductsActionData(array $listingsProductsIds, $backUrl)
     {
         return $this->sendData(
@@ -46,8 +44,6 @@ class Ess_M2ePro_Model_Amazon_Repricing_Action_Product extends Ess_M2ePro_Model_
         );
     }
 
-    //########################################
-
     public function getActionResponseData($responseToken)
     {
         try {
@@ -67,8 +63,6 @@ class Ess_M2ePro_Model_Amazon_Repricing_Action_Product extends Ess_M2ePro_Model_
         $this->processErrorMessages($result['response']);
         return $result['response'];
     }
-
-    //########################################
 
     protected function sendData($command, array $offersData, $backUrl)
     {
@@ -107,8 +101,6 @@ class Ess_M2ePro_Model_Amazon_Repricing_Action_Product extends Ess_M2ePro_Model_
 
         return !empty($response['request_token']) ? $response['request_token'] : false;
     }
-
-    //########################################
 
     /**
      * @param array $listingProductIds
@@ -192,6 +184,28 @@ class Ess_M2ePro_Model_Amazon_Repricing_Action_Product extends Ess_M2ePro_Model_
             $minPrice     = $listingProductRepricingObject->getMinPrice();
             $maxPrice     = $listingProductRepricingObject->getMaxPrice();
 
+            if ($regularPrice > $maxPrice) {
+                $this->logListingProductMessage(
+                    $listingProduct,
+                    Mage::helper('M2ePro')->__(
+                        'Item price was not updated. Regular Price must be equal to or lower than the Max Price value.'
+                    )
+                );
+
+                continue;
+            }
+
+            if ($regularPrice < $minPrice) {
+                $this->logListingProductMessage(
+                    $listingProduct,
+                    Mage::helper('M2ePro')->__(
+                        'Item price was not updated. Regular Price must be equal to or higher than the Min Price value.'
+                    )
+                );
+
+                continue;
+            }
+
             $isDisabled   = $listingProductRepricingObject->isDisabled();
 
             /** @var Ess_M2ePro_Model_Amazon_Listing_Product $amazonListingProduct */
@@ -212,5 +226,19 @@ class Ess_M2ePro_Model_Amazon_Repricing_Action_Product extends Ess_M2ePro_Model_
         return $offersData;
     }
 
-    //########################################
+    private function logListingProductMessage(Ess_M2ePro_Model_Listing_Product $listingProduct, $logMessage)
+    {
+        $logModel = Mage::getModel('M2ePro/Amazon_Listing_Log');
+
+        $logModel->addProductMessage(
+            $listingProduct->getListingId(),
+            $listingProduct->getProductId(),
+            $listingProduct->getId(),
+            Ess_M2ePro_Helper_Data::INITIATOR_USER,
+            $logModel->getResource()->getNextActionId(),
+            Ess_M2ePro_Model_Listing_Log::ACTION_UNKNOWN,
+            $logMessage,
+            Ess_M2ePro_Model_Log_Abstract::TYPE_INFO
+        );
+    }
 }

@@ -37,6 +37,10 @@
         unset($defaults['magento_orders_settings']['tax']['excluded_states']);
     }
 
+    if (isset($formData['magento_orders_settings']['tax']['excluded_countries'])) {
+        unset($defaults['magento_orders_settings']['tax']['excluded_countries']);
+    }
+
     $isEdit = !!$this->getRequest()->getParam('id');
     $isEdit && $defaults['magento_orders_settings']['refund_and_cancellation']['refund_mode'] = 0;
 
@@ -46,6 +50,10 @@
         $formData['magento_orders_settings']['tax']['excluded_states'] = implode(',', $formData['magento_orders_settings']['tax']['excluded_states']);
     }
 
+    if (is_array($formData['magento_orders_settings']['tax']['excluded_countries'])) {
+        $formData['magento_orders_settings']['tax']['excluded_countries'] = implode(',', $formData['magento_orders_settings']['tax']['excluded_countries']);
+    }
+
 ?>
 
 <script type="text/javascript">
@@ -53,8 +61,12 @@
     // Data for current tab
     //-----------------------------
     M2ePro.translator.add(<?php echo json_encode(array(
-        'No Customer entry is found for specified ID.' => Mage::helper('M2ePro')->__('No Customer entry is found for specified ID.'),
-        'Select States where Amazon is responsible for tax calculation/collection' => Mage::helper('M2ePro')->__('Select States where Amazon is responsible for tax calculation/collection'),
+        'No Customer entry is found for specified ID.' =>
+            Mage::helper('M2ePro')->__('No Customer entry is found for specified ID.'),
+        'Select states where tax will be excluded' =>
+            Mage::helper('M2ePro')->__('Select states where tax will be excluded'),
+        'Select countries where VAT will be excluded' =>
+            Mage::helper('M2ePro')->__('Select countries where VAT will be excluded'),
     )); ?>);
 
     Event.observe(window, 'load', function() {
@@ -79,6 +91,9 @@
         $('magento_orders_customer_mode').observe('change', AmazonAccountObj.magentoOrdersCustomerModeChange);
         $('magento_orders_tax_mode').observe('change', AmazonAccountObj.magentoOrdersTaxModeChange).simulate('change');
         $('magento_orders_tax_amazon_collects').observe('change', AmazonAccountObj.magentoOrdersTaxAmazonCollectsChange).simulate('change');
+        $('magento_orders_tax_amazon_collects_for_eea_shipment')
+            .observe('change', AmazonAccountObj.magentoOrdersTaxSkipTaxInEEAOrders)
+            .simulate('change');
         $('magento_orders_status_mapping_mode').observe('change', AmazonAccountObj.magentoOrdersStatusMappingModeChange);
     });
     //-----------------------------
@@ -694,16 +709,6 @@
 
     <div class="fieldset">
         <div class="hor-scroll">
-            <div id="block_notice_amazon_accounts_magento_orders_tax" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Order Tax Settings'); ?>">
-                <?php echo Mage::helper('M2ePro')->__('This Section allows you to choose Tax Settings for Magento Order:
-                    <ul class="list">
-                        <li><b>Amazon</b> - Magento Order(s) uses Tax Settings from Amazon Listing(s).</li>
-                        <li><b>Magento</b> - Magento Order(s) uses Magento Tax Settings.</li>
-                        <li><b>Amazon & Magento</b> - if there are Tax Settings in Amazon Order, they are used in Magento Order(s), otherwise, Magento Tax Settings are used.</li>
-                        <li><b>None</b> - Amazon and Magento Tax Settings are ignored.</li>
-                    </ul>'); ?>
-            </div>
-
             <table class="form-list" cellspacing="0" cellpadding="0">
 
                 <tr>
@@ -718,12 +723,23 @@
                             <option value="<?php echo Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_TAX_MODE_MAGENTO; ?>"<?php if ($formData['magento_orders_settings']['tax']['mode'] == Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_TAX_MODE_MAGENTO) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Magento'); ?></option>
                             <option value="<?php echo Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_TAX_MODE_MIXED; ?>"<?php if ($formData['magento_orders_settings']['tax']['mode'] == Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_TAX_MODE_MIXED) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Amazon & Magento'); ?></option>
                         </select>
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__(
+                                    'Choose where the tax settings for your Magento Order will be taken from. See
+                                    <a href="%url%" target="_blank">this article</a> for more details.',
+                                    Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(
+                                        null,
+                                        null,
+                                        'x/cuoVAg#TaxCalculationSettings-TaxSource'
+                                    )
+                                ); ?></span>
+                        </p>
                     </td>
                 </tr>
 
                 <tr id="tr_magento_orders_tax_excluded_states">
                     <td class="label">
-                        <label for="magento_orders_tax_amazon_collects"><?php echo Mage::helper('M2ePro')->__('Amazon Collects Tax'); ?>:</label>
+                        <label for="magento_orders_tax_amazon_collects"><?php echo Mage::helper('M2ePro')->__('Exclude tax collected by Amazon'); ?>:</label>
                     </td>
 
                     <td class="value" style="width: auto;">
@@ -737,16 +753,14 @@
                         <p class="note">
                             <span>
                                 <?php echo Mage::helper('M2ePro')->__(
-                                    'Please specify if Amazon is responsible for tax calculation/collection in certain States.<br>
-                                    More information you can find <a href="%url%" target="_blank">here</a>.',
-                                    'https://www.amazon.com/gp/help/customer/display.html?nodeId=202211260'
+                                    "Tax won't be included in orders shipped to the selected states."
                                 ); ?>
                             </span>
                         </p>
                     </td>
 
                     <td class="value" style="width: auto;" id="td_show_excluded_states_button">
-                        <button id="show_excluded_states_button" type="button" onclick="AmazonAccountObj.openExcludedStatesPopup()"><?php echo Mage::helper('M2ePro')->__('Show States'); ?></button>
+                        <button id="show_excluded_states_button" type="button" onclick="AmazonAccountObj.openExcludedStatesPopup()"><?php echo Mage::helper('M2ePro')->__('Select states'); ?></button>
                     </td>
 
                     <input type="hidden" id="magento_orders_tax_excluded_states" name="magento_orders_settings[tax][excluded_states]" value="<?php echo $formData['magento_orders_settings']['tax']['excluded_states']; ?>" />
@@ -754,7 +768,7 @@
 
                 <tr id="tr_magento_orders_tax_collect_for_uk">
                     <td class="label">
-                        <label for="magento_orders_tax_mode"><?php echo Mage::helper('M2ePro')->__('Skip Tax in UK Orders');
+                        <label for="magento_orders_tax_mode"><?php echo Mage::helper('M2ePro')->__('Exclude UK VAT collected by Amazon');
                         ?>:</label>
                     </td>
 
@@ -776,18 +790,49 @@
                         <p class="note">
                             <span>
                                 <?php echo Mage::helper('M2ePro')->__(
-                                    'The option allows skipping tax for orders with UK shipment.</br></br>
-
-<strong>None</strong> - the tax won\'t be skipped and will be displayed in all orders.</br></br>
-
-<strong>All orders with UK shipments</strong> - M2E Pro will skip tax for all orders with UK shipments.</br></br>
-
-<strong>Orders under 135GBP price</strong> - M2E Pro will skip tax only for orders with a total price of all products under 135GBP price.'
+                                    "VAT won't be included in orders with UK shipment. Find more info "
+                                    . '<a href="%url%" target="_blank">here</a>.',
+                                    Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(
+                                        null,
+                                        null,
+                                        'x/cuoVAg#TaxCalculationSettings-SkipTaxinUKOrders'
+                                    )
                                 ); ?>
                             </span>
                         </p>
                     </td>
 
+                </tr>
+
+                <tr id="tr_magento_orders_tax_collect_for_eea">
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Exclude EEA VAT collected by Amazon');
+                            ?>:</label>
+                    </td>
+
+                    <td class="value" style="width: auto;">
+                        <select id="magento_orders_tax_amazon_collects_for_eea_shipment"
+                                name="magento_orders_settings[tax][amazon_collect_for_eea]" class="M2ePro-required-when-visible">
+                            <option value="0"<?php if ($formData['magento_orders_settings']['tax']['amazon_collect_for_eea'] == 0) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
+                            <option value="1"<?php if ($formData['magento_orders_settings']['tax']['amazon_collect_for_eea'] == 1) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
+                        </select>
+                    </td>
+
+                    <td class="value" style="display: none">
+                        <p class="note">
+                            <span>
+                                <?php echo Mage::helper('M2ePro')->__(
+                                    "VAT won't be included in orders shipped to the selected countries."
+                                ); ?>
+                            </span>
+                        </p>
+                    </td>
+
+                    <td class="value" style="width: auto;" id="td_show_excluded_countries_button">
+                        <button id="show_excluded_countries_button" type="button" onclick="AmazonAccountObj.openExcludedCountriesPopup()"><?php echo Mage::helper('M2ePro')->__('Select countries'); ?></button>
+                    </td>
+
+                    <input type="hidden" id="magento_orders_tax_excluded_countries" name="magento_orders_settings[tax][excluded_countries]" value="<?php echo $formData['magento_orders_settings']['tax']['excluded_countries']; ?>" />
                 </tr>
 
                 <tr id="tr_magento_orders_tax_import_tax_id_in_magento_order">

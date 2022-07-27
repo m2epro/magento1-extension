@@ -154,15 +154,6 @@ class Ess_M2ePro_Model_Listing_SynchronizeInventory_Amazon_ListingProductsHandle
 
                 if ($this->isDataChanged($existingData, $newData, 'online_qty')) {
                     if ($this->isNeedSkipQTYChange($existingData, $newData)) {
-                        Mage::helper('M2ePro/Module_Logger')->process(
-                            array(
-                                'sku'       => $existingItem['sku'],
-                                'new_qty'   => $newData['online_qty'],
-                                'exist_qty' => $existingItem['online_qty']
-                            ),
-                            'amazon-skip-online-change'
-                        );
-
                         unset($newData['online_qty']);
                     } else {
                         $instructionsData[] = array(

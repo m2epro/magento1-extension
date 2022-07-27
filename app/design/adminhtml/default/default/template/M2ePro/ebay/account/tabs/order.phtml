@@ -551,15 +551,6 @@
 
     <div class="fieldset">
         <div class="hor-scroll">
-            <div id="block_notice_ebay_accounts_magento_orders_tax" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Order Tax Settings'); ?>">
-            <?php echo Mage::helper('M2ePro')->__(
-                'Choose the Tax Settings for your Magento Order:
-                <br/>
-                <br/><b>eBay</b> - Magento Orders use Tax Settings from the eBay Listing.
-                <br/><b>Magento</b> - Magento Orders use Magento Tax Settings.
-                <br/><b>eBay & Magento</b> - Magento Orders use Tax Settings from the eBay Listing. If there are no Tax Settings set in eBay, Magento Tax Settings are used.
-                <br/><b>None</b> - No Tax Settings are set.'); ?>
-            </div>
 
             <table class="form-list" cellspacing="0" cellpadding="0">
 
@@ -575,6 +566,17 @@
                             <option value="<?php echo Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_TAX_MODE_MAGENTO; ?>"<?php if ($formData['magento_orders_settings']['tax']['mode'] == Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_TAX_MODE_MAGENTO) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Magento'); ?></option>
                             <option value="<?php echo Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_TAX_MODE_MIXED; ?>"<?php if ($formData['magento_orders_settings']['tax']['mode'] == Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_TAX_MODE_MIXED) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('eBay & Magento'); ?></option>
                         </select>
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__(
+                                    'Choose where the tax settings for your Magento Order will be taken from. See
+                                    <a href="%url%" target="_blank">this article</a> for more details.',
+                                    Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(
+                                        null,
+                                        null,
+                                        'x/AOoVAg#Tax-Source'
+                                    )
+                                ); ?></span>
+                        </p>
                     </td>
                 </tr>
 

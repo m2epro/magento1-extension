@@ -319,6 +319,10 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationAmazonController
             ',', $data['magento_orders_settings']['tax']['excluded_states']
         );
 
+        $data['magento_orders_settings']['tax']['excluded_countries'] = implode(
+            ',', $data['magento_orders_settings']['tax']['excluded_countries']
+        );
+
         return $data;
     }
 

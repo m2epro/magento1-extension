@@ -601,6 +601,11 @@ window.EbayTemplateCategoryChooser = Class.create(Common, {
 
     confirmSpecifics: function()
     {
+        if (!EbayTemplateCategorySpecificsObj.specificsChanged()) {
+            Windows.getFocusedWindow().close();
+            return;
+        }
+
         var self             = EbayTemplateCategoryChooserObj,
             typeMain         = M2ePro.php.constant('Ess_M2ePro_Helper_Component_Ebay_Category::TYPE_EBAY_MAIN'),
             selectedCategory = this.getSelectedCategory(typeMain);
@@ -622,19 +627,14 @@ window.EbayTemplateCategoryChooser = Class.create(Common, {
                 category_type  : typeMain
             },
             onSuccess: function(transport) {
-
                 var response = transport.responseText.evalJSON();
 
+                self.selectedCategories[typeMain].template_id = null;
+
                 if (response.is_custom_template === null) {
-                    self.selectedCategories[typeMain].template_id = null;
                     self.selectedCategories[typeMain].is_custom_template = '0';
                 } else {
-                    self.selectedCategories[typeMain].template_id = null;
                     self.selectedCategories[typeMain].is_custom_template = '1';
-                }
-
-                if (typeof self.confirmSpecificsCallback == 'function') {
-                    self.confirmSpecificsCallback();
                 }
 
                 Windows.getFocusedWindow().close();

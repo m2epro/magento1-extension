@@ -161,4 +161,42 @@ JS
     }
 
     //########################################
+
+    protected function _toHtml()
+    {
+        $helper = Mage::helper('M2ePro');
+        $urls = array_merge(
+            $helper->getControllerActions('adminhtml_ebay_listing_categorySettings', array('_current' => true)),
+            $helper->getControllerActions('adminhtml_ebay_category', array('_current' => true)),
+            $helper->getControllerActions('adminhtml_ebay_accountStoreCategory')
+        );
+
+        $path = 'adminhtml_ebay_listing_categorySettings';
+        $urls[$path] = $this->getUrl(
+            '*/' . $path, array(
+                'step' => 3,
+                '_current' => true
+            )
+        );
+
+
+        $path = 'adminhtml_ebay_category/getChooserEditHtml';
+        $urls[$path] = $this->getUrl(
+            '*/' . $path,
+            array(
+                'account_id'     => $this->getListing()->getAccountId(),
+                'marketplace_id' => $this->getListing()->getMarketplaceId()
+            )
+        );
+
+        $urls = Mage::helper('M2ePro')->jsonEncode($urls);
+
+        $js =  <<<HTML
+        <script type="text/javascript">
+            M2ePro.url.add({$urls})
+        </script>    
+HTML;
+
+        return parent::_toHtml() . $js;
+    }
 }

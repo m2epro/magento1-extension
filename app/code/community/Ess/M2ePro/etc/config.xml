@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Ess_M2ePro>
-            <version>6.24.1</version>
+            <version>6.25.0</version>
         </Ess_M2ePro>
     </modules>
     <default>

@@ -98,12 +98,14 @@ class Ess_M2ePro_Model_Order_Reserve
                 return false;
             }
         } catch (Exception $e) {
-            $this->_order->addErrorLog(
-                'QTY was not reserved. Reason: %msg%',
-                array(
-                    'msg' => $e->getMessage()
-                )
-            );
+            $message = 'QTY was not reserved. Reason: %msg%';
+            if ($e instanceof Ess_M2ePro_Model_Order_Exception_ProductCreationDisabled) {
+                $this->_order->addInfoLog($message, array('msg' => $e->getMessage()), array(), true);
+
+                return false;
+            }
+
+            $this->_order->addErrorLog($message,  array('msg' => $e->getMessage()));
 
             return false;
         }

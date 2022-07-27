@@ -1068,10 +1068,6 @@ class Ess_M2ePro_Model_Amazon_Listing extends Ess_M2ePro_Model_Component_Child_A
             $variationManager->switchModeToAnother();
         }
 
-        $amazonListingProduct->getAmazonItem()
-            ->setData('store_id', $this->getParentObject()->getStoreId())
-            ->save();
-
         /** @var Ess_M2ePro_Model_Amazon_Listing_Other $amazonListingOther */
         $amazonListingOther = $listingOtherProduct->getChildObject();
 
@@ -1093,6 +1089,13 @@ class Ess_M2ePro_Model_Amazon_Listing extends Ess_M2ePro_Model_Component_Child_A
             $listingProduct::MOVING_LISTING_OTHER_SOURCE_KEY,
             $listingOtherProduct->getId()
         );
+
+        if ($listingProduct->getMagentoProduct()->isGroupedType() &&
+            Mage::helper('M2ePro/Module_Configuration')->isGroupedProductModeSet()
+        ) {
+            $listingProduct->setSetting('additional_data', 'grouped_product_mode', 1);
+        }
+
         $listingProduct->save();
 
         $listingOtherProduct->setSetting(
@@ -1101,6 +1104,16 @@ class Ess_M2ePro_Model_Amazon_Listing extends Ess_M2ePro_Model_Component_Child_A
             $listingProduct->getId()
         );
         $listingOtherProduct->save();
+
+        $amazonItem = $amazonListingProduct->getAmazonItem();
+        if ($listingProduct->getMagentoProduct()->isGroupedType() &&
+            Mage::helper('M2ePro/Module_Configuration')->isGroupedProductModeSet()
+        ) {
+            $amazonItem->setAdditionalData(json_encode(array('grouped_product_mode' => 1)));
+        }
+
+        $amazonItem->setData('store_id', $this->getParentObject()->getStoreId())
+            ->save();
 
         if ($amazonListingOther->isRepricing()) {
             $listingProductRepricing = Mage::getModel('M2ePro/Amazon_Listing_Product_Repricing');

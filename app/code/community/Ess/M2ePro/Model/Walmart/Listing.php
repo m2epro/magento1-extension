@@ -264,10 +264,6 @@ class Ess_M2ePro_Model_Walmart_Listing extends Ess_M2ePro_Model_Component_Child_
             $variationManager->switchModeToAnother();
         }
 
-        $walmartListingProduct->getWalmartItem()
-            ->setData('store_id', $this->getParentObject()->getStoreId())
-            ->save();
-
         /** @var Ess_M2ePro_Model_Walmart_Listing_Other $walmartListingOther */
         $walmartListingOther = $listingOtherProduct->getChildObject();
 
@@ -296,6 +292,12 @@ class Ess_M2ePro_Model_Walmart_Listing extends Ess_M2ePro_Model_Component_Child_
         $listingProduct->setSetting(
             'additional_data', $listingProduct::MOVING_LISTING_OTHER_SOURCE_KEY, $listingOtherProduct->getId()
         );
+        if ($listingProduct->getMagentoProduct()->isGroupedType() &&
+            Mage::helper('M2ePro/Module_Configuration')->isGroupedProductModeSet()
+        ) {
+            $listingProduct->setSetting('additional_data', 'grouped_product_mode', 1);
+        }
+
         $listingProduct->addData($dataForUpdate);
         $listingProduct->save();
 
@@ -303,6 +305,16 @@ class Ess_M2ePro_Model_Walmart_Listing extends Ess_M2ePro_Model_Component_Child_
             'additional_data', $listingOtherProduct::MOVING_LISTING_PRODUCT_DESTINATION_KEY, $listingProduct->getId()
         );
         $listingOtherProduct->save();
+
+        $walmartItem = $walmartListingProduct->getWalmartItem();
+        if ($listingProduct->getMagentoProduct()->isGroupedType() &&
+            Mage::helper('M2ePro/Module_Configuration')->isGroupedProductModeSet()
+        ) {
+            $walmartItem->setAdditionalData(json_encode(array('grouped_product_mode' => 1)));
+        }
+
+        $walmartItem->setData('store_id', $this->getParentObject()->getStoreId())
+            ->save();
 
         $instruction = Mage::getModel('M2ePro/Listing_Product_Instruction');
         $instruction->setData(

@@ -143,6 +143,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Category_Chooser_Specific_Edit
     M2ePro.php.setConstants({$constants}, 'Ess_M2ePro_Model_Ebay_Template_Category_Specific');
 
     EbayTemplateCategorySpecificsObj = new EbayTemplateCategorySpecifics();
+    EbayTemplateCategorySpecificsObj.createSpecificsSnapshot();
 </script>
 
 <div style="margin-top: 15px;">

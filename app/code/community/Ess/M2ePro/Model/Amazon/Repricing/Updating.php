@@ -8,8 +8,6 @@
 
 class Ess_M2ePro_Model_Amazon_Repricing_Updating extends Ess_M2ePro_Model_Amazon_Repricing_Abstract
 {
-    //########################################
-
     /**
      * @param Ess_M2ePro_Model_Amazon_Listing_Product_Repricing[] $listingsProductsRepricing
      * @return bool|array
@@ -38,8 +36,6 @@ class Ess_M2ePro_Model_Amazon_Repricing_Updating extends Ess_M2ePro_Model_Amazon
         return $updatedSkus;
     }
 
-    //########################################
-
     protected function getChangeData(Ess_M2ePro_Model_Amazon_Listing_Product_Repricing $listingProductRepricing)
     {
         $isDisabled = $listingProductRepricing->isDisabled();
@@ -57,6 +53,28 @@ class Ess_M2ePro_Model_Amazon_Repricing_Updating extends Ess_M2ePro_Model_Amazon
             $minPrice     == $listingProductRepricing->getLastUpdatedMinPrice() &&
             $maxPrice     == $listingProductRepricing->getLastUpdatedMaxPrice()
         ) {
+            return false;
+        }
+
+        if ($regularPrice > $maxPrice) {
+            $this->logListingProductMessage(
+                $listingProductRepricing->getListingProduct(),
+                Mage::helper('M2ePro')->__(
+                    'Item price was not updated. Regular Price must be equal to or lower than the Max Price value.'
+                )
+            );
+
+            return false;
+        }
+
+        if ($regularPrice < $minPrice) {
+            $this->logListingProductMessage(
+                $listingProductRepricing->getListingProduct(),
+                Mage::helper('M2ePro')->__(
+                    'Item price was not updated. Regular Price must be equal to or higher than the Min Price value.'
+                )
+            );
+
             return false;
         }
 
@@ -112,5 +130,19 @@ class Ess_M2ePro_Model_Amazon_Repricing_Updating extends Ess_M2ePro_Model_Amazon
         }
     }
 
-    //########################################
+    private function logListingProductMessage(Ess_M2ePro_Model_Listing_Product $listingProduct, $logMessage)
+    {
+        $logModel = Mage::getModel('M2ePro/Amazon_Listing_Log');
+
+        $logModel->addProductMessage(
+            $listingProduct->getListingId(),
+            $listingProduct->getProductId(),
+            $listingProduct->getId(),
+            Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION,
+            $logModel->getResource()->getNextActionId(),
+            Ess_M2ePro_Model_Listing_Log::ACTION_UNKNOWN,
+            $logMessage,
+            Ess_M2ePro_Model_Log_Abstract::TYPE_INFO
+        );
+    }
 }

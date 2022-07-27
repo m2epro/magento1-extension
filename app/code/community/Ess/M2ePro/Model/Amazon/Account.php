@@ -717,7 +717,7 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
     // ---------------------------------------
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isAmazonCollectsEnabled()
     {
@@ -744,6 +744,32 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
         $setting = $this->getSetting('magento_orders_settings', array('tax', 'amazon_collect_for_uk'), 0);
 
         return $setting == self::SKIP_TAX_FOR_UK_SHIPMENT_WITH_CERTAIN_PRICE;
+    }
+
+    /**
+     * @return array
+     */
+    public function getExcludedCountries()
+    {
+        return $this->getSetting(
+            'magento_orders_settings',
+            array('tax', 'excluded_countries'),
+            array()
+        );
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAmazonCollectsTaxForEEAShipmentFromUkSite()
+    {
+        $setting = $this->getSetting(
+            'magento_orders_settings',
+            array('tax', 'amazon_collect_for_eea'),
+            0
+        );
+
+        return $setting == 1;
     }
 
     // ---------------------------------------

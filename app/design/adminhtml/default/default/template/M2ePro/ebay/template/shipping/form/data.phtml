@@ -1332,6 +1332,7 @@ $missingAttributes = $this->getMissingAttributes();
                                         <?php if ($formData['package_size_mode'] == Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated::PACKAGE_SIZE_NONE): ?>selected="selected"<?php endif; ?> >
                                     <?php echo Mage::helper('M2ePro')->__('None'); ?>
                                 </option>
+                                <?php if (count($marketplaceData['packages']) > 0) : ?>
                                 <optgroup label="<?php echo Mage::helper('M2ePro')->__('eBay Values'); ?>">
                                     <?php foreach ($marketplaceData['packages'] as $package): ?>
                                         <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated::PACKAGE_SIZE_CUSTOM_VALUE; ?>" attribute_code="<?php echo Mage::helper('M2ePro')->escapeHtml($package['ebay_id']) ?>"
@@ -1341,6 +1342,7 @@ $missingAttributes = $this->getMissingAttributes();
                                         </option>
                                     <?php endforeach; ?>
                                 </optgroup>
+                                <?php endif; ?>
                                 <optgroup class="M2ePro-custom-attribute-optgroup" label="<?php echo Mage::helper('M2ePro')->__('Magento Attributes'); ?>">
                                     <?php if (isset($missingAttributes['package_size_attribute'])): ?>
                                         <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated::PACKAGE_SIZE_CUSTOM_ATTRIBUTE; ?>" attribute_code="<?php echo $formData['package_size_attribute'] ?>" selected="selected"><?php echo Mage::helper('M2ePro')->escapeHtml($missingAttributes['package_size_attribute']); ?></option>

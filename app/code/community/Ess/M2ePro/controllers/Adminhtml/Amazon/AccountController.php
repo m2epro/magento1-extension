@@ -662,8 +662,6 @@ class Ess_M2ePro_Adminhtml_Amazon_AccountController
         return $account->getSize();
     }
 
-    //########################################
-
     public function getExcludedStatesPopupHtmlAction()
     {
         /** @var Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit_Tabs_Order_ExcludedStates $block */
@@ -676,5 +674,15 @@ class Ess_M2ePro_Adminhtml_Amazon_AccountController
         $this->getResponse()->setBody($block->toHtml());
     }
 
-    //########################################
+    public function getExcludedCountriesPopupHtmlAction()
+    {
+        /** @var Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit_Tabs_Order_ExcludedCountries $block */
+        $block = $this->getLayout()->createBlock(
+            'M2ePro/adminhtml_amazon_account_edit_tabs_order_excludedCountries',
+            '',
+            array('selected_countries' => explode(',', $this->getRequest()->getParam('selected_countries')))
+        );
+
+        $this->getResponse()->setBody($block->toHtml());
+    }
 }

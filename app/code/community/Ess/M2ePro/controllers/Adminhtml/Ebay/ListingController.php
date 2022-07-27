@@ -59,7 +59,10 @@ class Ess_M2ePro_Adminhtml_Ebay_ListingController extends Ess_M2ePro_Controller_
             ->addJs('M2ePro/Ebay/Motor/Add/Group/Grid.js')
             ->addJs('M2ePro/Ebay/Motor/View/Item/Grid.js')
             ->addJs('M2ePro/Ebay/Motor/View/Filter/Grid.js')
-            ->addJs('M2ePro/Ebay/Motor/View/Group/Grid.js');
+            ->addJs('M2ePro/Ebay/Motor/View/Group/Grid.js')
+            ->addJs('M2ePro/Ebay/Template/Category/Chooser.js')
+            ->addJs('M2ePro/Ebay/Template/Category/Chooser/Browse.js')
+            ->addJs('M2ePro/Ebay/Template/Category/Specifics.js');
 
         $this->_initPopUp();
 
