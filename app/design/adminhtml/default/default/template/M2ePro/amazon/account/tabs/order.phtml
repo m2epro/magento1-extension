@@ -834,19 +834,27 @@
 
                     <input type="hidden" id="magento_orders_tax_excluded_countries" name="magento_orders_settings[tax][excluded_countries]" value="<?php echo $formData['magento_orders_settings']['tax']['excluded_countries']; ?>" />
                 </tr>
-
-                <tr id="tr_magento_orders_tax_import_tax_id_in_magento_order">
+                <?php
+                $style = 'display: none';
+                if ($account->getChildObject()->getMarketplaceId() == Ess_M2ePro_Helper_Component_Amazon::MARKETPLACE_TR) {
+                    $style = '';
+                }
+                ?>
+                <tr id="tr_magento_orders_tax_import_tax_id_in_magento_order" style="<?php echo $style ?>">
                     <td class="label">
                         <label for="magento_orders_tax_import_tax_id_in_magento_order"><?php echo Mage::helper('M2ePro')->__('Import Tax Registration Number to Magento Order');
                             ?>:</label>
                     </td>
 
                     <td class="value" style="width: auto;">
-                        <select id="magento_orders_tax_import_tax_id_in_magento_order"
-                                name="magento_orders_settings[tax][import_tax_id_in_magento_order]" class="M2ePro-required-when-visible">
+                        <?php if ($account->getChildObject()->getMarketplaceId() == Ess_M2ePro_Helper_Component_Amazon::MARKETPLACE_TR) {?>
+                        <select id="magento_orders_tax_import_tax_id_in_magento_order" name="magento_orders_settings[tax][import_tax_id_in_magento_order]" class="M2ePro-required-when-visible">
                             <option value="0" <?php if ($formData['magento_orders_settings']['tax']['import_tax_id_in_magento_order'] == 0) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
                             <option value="1" <?php if ($formData['magento_orders_settings']['tax']['import_tax_id_in_magento_order'] == 1) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
                         </select>
+                        <?php } else { ?>
+                            <input type="hidden" id="magento_orders_tax_import_tax_id_in_magento_order" name="magento_orders_settings[tax][import_tax_id_in_magento_order]" value="0" />
+                        <?php } ?>
                     </td>
 
                     <td class="value" style="display: none">

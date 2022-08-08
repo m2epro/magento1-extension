@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  * @author     M2E Pro Developers Team
  * @copyright  M2E LTD
  * @license    Commercial use is forbidden
@@ -9,25 +9,19 @@
 class Ess_M2ePro_Model_Amazon_Connector_Account_Update_EntityRequester
     extends Ess_M2ePro_Model_Amazon_Connector_Command_RealTime
 {
-    //########################################
-
     public function getRequestData()
     {
-        /** @var $marketplaceObject Ess_M2ePro_Model_Marketplace */
-        $marketplaceObject = Mage::helper('M2ePro/Component_Amazon')->getCachedObject(
-            'Marketplace', $this->_params['marketplace_id']
-        );
-
         return array(
+            'account'        => $this->_params['account_server_hash'],
             'merchant_id'    => $this->_params['merchant_id'],
             'token'          => $this->_params['token'],
-            'marketplace_id' => $marketplaceObject->getNativeId(),
+            'marketplace_id' => $this->_params['marketplace_id'],
         );
     }
 
     protected function getCommand()
     {
-        return array('account','update','entity');
+        return array('account', 'update', 'entity');
     }
 
     protected function validateResponse()
@@ -56,6 +50,4 @@ class Ess_M2ePro_Model_Amazon_Connector_Account_Update_EntityRequester
 
         $this->_responseData = $this->getResponse()->getData();
     }
-
-    //########################################
 }

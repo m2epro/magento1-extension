@@ -11,7 +11,8 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Receive
 {
     const NICK = 'amazon/order/receive';
 
-    //####################################
+    /** @var bool */
+    protected $_isErrorMessageReceived = false;
 
     /**
      * @return Ess_M2ePro_Model_Synchronization_Log
@@ -185,17 +186,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Receive
 
         $this->processResponseMessages($connectorObj->getResponseMessages());
 
-        if (!isset($responseData['items']) || !isset($responseData['to_update_date'])) {
-            $logData = array(
-                'from_update_date'  => $fromDate,
-                'to_update_date'    => $toDate,
-                'jobToken'          => $jobToken,
-                'account_id'        => $merchantId,
-                'response_data'     => $responseData,
-                'response_messages' => $connectorObj->getResponseMessages()
-            );
-            Mage::helper('M2ePro/Module_Logger')->process($logData, 'Amazon orders receive task - empty response');
-
+        if ($this->_isErrorMessageReceived) {
             return array();
         }
 
@@ -208,13 +199,18 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Receive
         $messagesSet = Mage::getModel('M2ePro/Connector_Connection_Response_Message_Set');
         $messagesSet->init($messages);
 
+        $this->_isErrorMessageReceived = false;
         foreach ($messagesSet->getEntities() as $message) {
             if (!$message->isError() && !$message->isWarning()) {
                 continue;
             }
 
-            $logType = $message->isError() ? Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR
-                                           : Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING;
+            if ($message->isError()) {
+                $logType = Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR;
+                $this->_isErrorMessageReceived = true;
+            } else {
+                $logType = Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING;
+            }
 
             $this->getSynchronizationLog()->addMessage(
                 Mage::helper('M2ePro')->__($message->getText()),

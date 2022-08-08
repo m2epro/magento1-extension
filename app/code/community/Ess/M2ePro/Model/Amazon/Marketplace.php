@@ -78,14 +78,6 @@ class Ess_M2ePro_Model_Amazon_Marketplace extends Ess_M2ePro_Model_Component_Chi
         return (bool)$this->getData('is_product_tax_code_policy_available');
     }
 
-    /**
-     * @return bool
-     */
-    public function isAutomaticTokenRetrievingAvailable()
-    {
-        return (bool)$this->getData('is_automatic_token_retrieving_available');
-    }
-
     //########################################
 
     public function save()

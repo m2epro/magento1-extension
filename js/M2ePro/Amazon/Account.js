@@ -204,7 +204,9 @@ window.AmazonAccount = Class.create(Common, {
 
         $('marketplaces_related_store_id_container').show();
         $('marketplaces_merchant_id_container').show();
-        $('marketplaces_token_container').show();
+        if ($('marketplaces_token_container')) {
+            $('marketplaces_token_container').show();
+        }
 
         self.showGetAccessData(id);
         self.magentoOrdersTaxModeChange();

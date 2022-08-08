@@ -120,17 +120,17 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
     // ---------------------------------------
 
     /**
-     * @param $returnTimestamp
-     * @param $format
+     * @param bool $returnTimestamp
+     * @param string $format
      * @return int|string
      */
-    public function getCurrentGmtDate($returnTimestamp = false, $format = null)
+    public function getCurrentGmtDate($returnTimestamp = false, $format = 'Y-m-d H:i:s')
     {
         if ($returnTimestamp) {
-            return (int)Mage::getModel('core/date')->gmtTimestamp();
+            return $this->createCurrentGmtDateTime()->getTimestamp();
         }
 
-        return Mage::getModel('core/date')->gmtDate($format);
+        return $this->createCurrentGmtDateTime()->format($format);
     }
 
     public function getCurrentTimezoneDate($returnTimestamp = false, $format = null)

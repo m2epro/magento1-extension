@@ -196,7 +196,7 @@ abstract class Ess_M2ePro_Controller_Adminhtml_WizardController
 
         try {
             Mage::getModel('M2ePro/Servicing_Dispatcher')->processTask(
-                Mage::getModel('M2ePro/Servicing_Task_License')->getPublicNick()
+                \Ess_M2ePro_Model_Servicing_Task_License::NAME
             );
         }
         catch (Exception $e) {}

@@ -123,7 +123,7 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationWalmartController
             $account->deleteInstance();
 
             Mage::getModel('M2ePro/Servicing_Dispatcher')->processTask(
-                Mage::getModel('M2ePro/Servicing_Task_License')->getPublicNick()
+                \Ess_M2ePro_Model_Servicing_Task_License::NAME
             );
 
             $error = 'The Walmart access obtaining is currently unavailable.<br/>Reason: %error_message%';

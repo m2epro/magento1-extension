@@ -21,8 +21,7 @@ class Ess_M2ePro_Model_Amazon_Account_Builder extends Ess_M2ePro_Model_ActiveRec
         $keys = array(
             'title',
             'marketplace_id',
-            'merchant_id',
-            'token',
+            'merchant_id'
         );
         foreach ($keys as $key) {
             if (isset($this->_rawData[$key])) {
@@ -343,6 +342,9 @@ class Ess_M2ePro_Model_Amazon_Account_Builder extends Ess_M2ePro_Model_ActiveRec
         return $data;
     }
 
+    /**
+     * @return array
+     */
     public function getDefaultData()
     {
         return array(
@@ -350,13 +352,12 @@ class Ess_M2ePro_Model_Amazon_Account_Builder extends Ess_M2ePro_Model_ActiveRec
             'title'            => '',
             'marketplace_id'   => 0,
             'merchant_id'      => '',
-            'token'            => '',
 
             // listing_other
             'related_store_id' => 0,
 
             'other_listings_synchronization'  => 1,
-            'other_listings_mapping_mode'     => 1,
+            'other_listings_mapping_mode'     => 0,
             'other_listings_mapping_settings' => array(),
 
             // order
@@ -370,7 +371,7 @@ class Ess_M2ePro_Model_Amazon_Account_Builder extends Ess_M2ePro_Model_ActiveRec
                     'mode'                 => 1,
                     'product_mode'         => Account::MAGENTO_ORDERS_LISTINGS_OTHER_PRODUCT_MODE_IGNORE,
                     'product_tax_class_id' => Ess_M2ePro_Model_Magento_Product::TAX_CLASS_ID_NONE,
-                    'store_id'             => null,
+                    'store_id'             => Mage::helper('M2ePro/Magento_Store')->getDefaultStoreId()
                 ),
                 'number'                  => array(
                     'source'          => Account::MAGENTO_ORDERS_NUMBER_SOURCE_MAGENTO,

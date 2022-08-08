@@ -16,6 +16,8 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
     const INCREASE_SINCE_TIME_BY               = 2;
     const INCREASE_SINCE_TIME_MIN_INTERVAL_SEC = 10;
 
+    const MESSAGE_CODE_RESULT_SET_TOO_LARGE    = 21917062;
+
     protected $_logsActionId = null;
 
     /** @var Ess_M2ePro_Model_Synchronization_Log */
@@ -23,7 +25,10 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
 
     protected $_receiveChangesToDate = null;
 
-    //####################################
+    /** @var bool */
+    protected $_isResultSetTooLarge = false;
+    /** @var bool */
+    protected $_isErrorMessageReceived = false;
 
     public function setSynchronizationLog(Ess_M2ePro_Model_Synchronization_Log $log)
     {
@@ -184,6 +189,10 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
             return (array)$response;
         }
 
+        if ($this->_isErrorMessageReceived) {
+            return array();
+        }
+
         // -- to many changes are received. try to receive changes for the latest day
         $currentInterval = $toTime->diff($sinceTime);
         if ($currentInterval->days >= 1) {
@@ -200,6 +209,10 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
 
             if ($response) {
                 return (array)$response;
+            }
+
+            if ($this->_isErrorMessageReceived) {
+                return array();
             }
         }
 
@@ -229,15 +242,28 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
                 array(
                     'since_time' => $sinceTime->format('Y-m-d H:i:s'),
                     'to_time'    => $toTime->format('Y-m-d H:i:s')
-                ),
-                $iteration
+                )
             );
 
             if ($response) {
                 return (array)$response;
             }
+
+            if ($this->_isErrorMessageReceived && !$this->_isResultSetTooLarge) {
+                return array();
+            }
         } while ($iteration <= self::INCREASE_SINCE_TIME_MAX_ATTEMPTS);
         // --
+
+        if ($this->_isResultSetTooLarge) {
+            $this->_synchronizationLog->addMessage(
+                Mage::helper('M2ePro')->__(
+                    'Some Channel updates failed to be processed due to eBay limitations. '
+                    . 'M2E Pro will reattempt to import them.'
+                ),
+                Ess_M2ePro_Model_Log_Abstract::TYPE_INFO
+            );
+        }
 
         return array();
     }
@@ -268,8 +294,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
 
     protected function receiveChangesFromEbay(
         Ess_M2ePro_Model_Account $account,
-        array $paramsConnector = array(),
-        $tryNumber = 0
+        array $paramsConnector = array()
     ) {
         $dispatcherObj = Mage::getModel('M2ePro/Ebay_Connector_Dispatcher');
         $connectorObj = $dispatcherObj->getVirtualConnector(
@@ -283,15 +308,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
 
         $responseData = $connectorObj->getResponseData();
 
-        if (!isset($responseData['items']) || !isset($responseData['to_time'])) {
-            $logData = array(
-                'params'            => $paramsConnector,
-                'account_id'        => $account->getId(),
-                'response_data'     => $responseData,
-                'response_messages' => $connectorObj->getResponseMessages()
-            );
-            Mage::helper('M2ePro/Module_Logger')->process($logData, "ebay no changes received - #{$tryNumber} try");
-
+        if ($this->_isErrorMessageReceived) {
             return null;
         }
 
@@ -304,17 +321,24 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
         $messagesSet = Mage::getModel('M2ePro/Connector_Connection_Response_Message_Set');
         $messagesSet->init($messages);
 
+        $this->_isResultSetTooLarge = false;
+        $this->_isErrorMessageReceived = false;
         foreach ($messagesSet->getEntities() as $message) {
-            if ($message->getCode() == 21917062) {
-                continue;
-            }
-
             if (!$message->isError() && !$message->isWarning()) {
                 continue;
             }
 
-            $logType = $message->isError() ? Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR
-                : Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING;
+            if ($message->isError()) {
+                $this->_isErrorMessageReceived = true;
+                if ($message->getCode() == self::MESSAGE_CODE_RESULT_SET_TOO_LARGE) {
+                    $this->_isResultSetTooLarge = true;
+                    continue;
+                }
+
+                $logType = Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR;
+            } else {
+                $logType = Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING;
+            }
 
             $this->_synchronizationLog->addMessage(
                 Mage::helper('M2ePro')->__($message->getText()),

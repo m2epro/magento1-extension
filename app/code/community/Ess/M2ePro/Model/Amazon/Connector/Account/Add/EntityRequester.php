@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  * @author     M2E Pro Developers Team
  * @copyright  M2E LTD
  * @license    Commercial use is forbidden
@@ -9,23 +9,15 @@
 class Ess_M2ePro_Model_Amazon_Connector_Account_Add_EntityRequester
     extends Ess_M2ePro_Model_Amazon_Connector_Command_RealTime
 {
-    //########################################
-
     /**
      * @return array
      */
     public function getRequestData()
     {
-        /** @var $marketplaceObject Ess_M2ePro_Model_Marketplace */
-        $marketplaceObject = Mage::helper('M2ePro/Component_Amazon')->getCachedObject(
-            'Marketplace', $this->_params['marketplace_id']
-        );
-
         return array(
-            'title'          => $this->_account->getTitle(),
             'merchant_id'    => $this->_params['merchant_id'],
             'token'          => $this->_params['token'],
-            'marketplace_id' => $marketplaceObject->getNativeId(),
+            'marketplace_id' => $this->_params['marketplace_id'],
         );
     }
 
@@ -34,7 +26,7 @@ class Ess_M2ePro_Model_Amazon_Connector_Account_Add_EntityRequester
      */
     protected function getCommand()
     {
-        return array('account','add','entity');
+        return array('account', 'add', 'entity');
     }
 
     //########################################

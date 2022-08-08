@@ -28,7 +28,7 @@ class Ess_M2ePro_Adminhtml_Configuration_LicenseController
 
         try {
             Mage::getModel('M2ePro/Servicing_Dispatcher')->processTask(
-                Mage::getModel('M2ePro/Servicing_Task_License')->getPublicNick()
+                \Ess_M2ePro_Model_Servicing_Task_License::NAME
             );
         } catch (Exception $e) {
             return $this->_getSession()->addError(
@@ -49,7 +49,7 @@ class Ess_M2ePro_Adminhtml_Configuration_LicenseController
     {
         try {
             Mage::getModel('M2ePro/Servicing_Dispatcher')->processTask(
-                Mage::getModel('M2ePro/Servicing_Task_License')->getPublicNick()
+                \Ess_M2ePro_Model_Servicing_Task_License::NAME
             );
         } catch (Exception $e) {
             $this->_getSession()->addError(

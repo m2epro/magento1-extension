@@ -151,10 +151,7 @@ class Ess_M2ePro_Adminhtml_Amazon_AccountController
 
         $requiredFields = array(
             'Merchant',
-            'Marketplace',
             'MWSAuthToken',
-            'Signature',
-            'SignedString'
         );
 
         foreach ($requiredFields as $requiredField) {
@@ -168,10 +165,11 @@ class Ess_M2ePro_Adminhtml_Amazon_AccountController
 
         $id = (int)Mage::helper('M2ePro/Data_Session')->getValue('account_id', true);
 
-        Mage::helper('M2ePro/Data_Session')->setValue('merchant_id', $params['Merchant']);
-        Mage::helper('M2ePro/Data_Session')->setValue('mws_token', $params['MWSAuthToken']);
+        // new account
+        if ($id <= 0) {
+            Mage::helper('M2ePro/Data_Session')->setValue('merchant_id', $params['Merchant']);
+            Mage::helper('M2ePro/Data_Session')->setValue('mws_token', $params['MWSAuthToken']);
 
-        if ((int)$id <= 0) {
             return $this->_redirect(
                 '*/*/new',
                 array('wizard' => (bool)$this->getRequest()->getParam('wizard', false))
@@ -179,12 +177,13 @@ class Ess_M2ePro_Adminhtml_Amazon_AccountController
         }
 
         try {
-            $this->updateAccount(
-                $id,
-                array(
-                    'merchant_id' => $params['Merchant'],
-                    'token'       => $params['MWSAuthToken']
-                )
+            /** @var Ess_M2ePro_Model_Account $account */
+            $account = Mage::helper('M2ePro/Component_Amazon')->getObject('Account', $id);
+            /** @var Ess_M2ePro_Model_Amazon_Account_Server_Update $serverUpdateAccount */
+            $serverUpdateAccount = Mage::getModel('M2ePro/Amazon_Account_Server_Update');
+            $serverUpdateAccount->process(
+                $account->getChildObject(),
+                $params['MWSAuthToken']
             );
         } catch (Exception $exception) {
             Mage::helper('M2ePro/Module_Exception')->process($exception);
@@ -218,21 +217,45 @@ class Ess_M2ePro_Adminhtml_Amazon_AccountController
             $this->_redirect('*/*/index');
         }
 
-        $id = $this->getRequest()->getParam('id');
+        $id = (int)$this->getRequest()->getParam('id');
 
-        try {
-            $account = $id ? $this->updateAccount($id, $data) : $this->addAccount($data);
-        } catch (Exception $exception) {
-            Mage::helper('M2ePro/Module_Exception')->process($exception);
+        // new account
+        if (empty($id)) {
+            if ($this->isAccountExists($data['merchant_id'], $data['marketplace_id'])) {
+                $this->_getSession()->addError(
+                    Mage::helper('M2ePro')->__(
+                        'An account with the same Amazon Merchant ID and Marketplace already exists.'
+                    )
+                );
 
-            $this->_getSession()->addError(
-                Mage::helper('M2ePro')->__(
-                    'The Amazon access obtaining is currently unavailable.<br/>Reason: %error_message%',
-                    $exception->getMessage()
-                )
-            );
+                return $this->indexAction();
+            }
 
-            return $this->indexAction();
+            try {
+                $result = Mage::getModel('M2ePro/Amazon_Account_Server_Create')->process(
+                    $data['token'],
+                    $data['merchant_id'],
+                    $data['marketplace_id']
+                );
+            } catch (Exception $exception) {
+                Mage::helper('M2ePro/Module_Exception')->process($exception);
+
+                $this->_getSession()->addError(
+                    Mage::helper('M2ePro')->__(
+                        'The Amazon access obtaining is currently unavailable.<br/>Reason: %error_message%',
+                        $exception->getMessage()
+                    )
+                );
+
+                return $this->indexAction();
+            }
+
+            $account = $this->createAccount($data, $result);
+        } else {
+            /** @var Ess_M2ePro_Model_Account $account */
+            $account = Mage::helper('M2ePro/Component_Amazon')->getObject('Account', $id);
+
+            $this->updateAccount($account, $data);
         }
 
         // Repricing
@@ -272,7 +295,7 @@ class Ess_M2ePro_Adminhtml_Amazon_AccountController
 
         $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Account was saved'));
 
-        /** @var $wizardHelper Ess_M2ePro_Helper_Module_Wizard */
+        /** @var Ess_M2ePro_Helper_Module_Wizard $wizardHelper */
         $wizardHelper = Mage::helper('M2ePro/Module_Wizard');
 
         $routerParams = array('id' => $account->getId());
@@ -422,7 +445,7 @@ class Ess_M2ePro_Adminhtml_Amazon_AccountController
         $deleted = $locked = 0;
         foreach ($accounts as $account) {
 
-            /** @var $account Ess_M2ePro_Model_Account */
+            /** @var Ess_M2ePro_Model_Account $account */
 
             if ($account->isLocked(true)) {
                 $locked++;
@@ -540,119 +563,42 @@ class Ess_M2ePro_Adminhtml_Amazon_AccountController
         return 'MessageObj.addError(\''.$errorMessage.'\');';
     }
 
-    //########################################
+    // ----------------------------------------
 
-    protected function addAccount($data)
+    private function createAccount($data, Ess_M2ePro_Model_Amazon_Account_Server_Create_Result $serverResult)
     {
-        if ($this->isAccountExists($data['merchant_id'], $data['marketplace_id'])) {
-            throw new Ess_M2ePro_Model_Exception(
-                'An account with the same Amazon Merchant ID and Marketplace already exists.'
-            );
-        }
-
         /** @var Ess_M2ePro_Model_Account $account */
         $account = Mage::helper('M2ePro/Component_Amazon')->getModel('Account');
 
-        Mage::getModel('M2ePro/Amazon_Account_Builder')->build($account, $data);
-
-        try {
-            $params = $this->getDataForServer($account);
-
-            /** @var $dispatcherObject Ess_M2ePro_Model_Amazon_Connector_Dispatcher */
-            $dispatcherObject = Mage::getModel('M2ePro/Amazon_Connector_Dispatcher');
-
-            /** @var Ess_M2ePro_Model_Amazon_Connector_Account_Add_EntityRequester $connectorObj */
-            $connectorObj = $dispatcherObject->getConnector(
-                'account',
-                'add',
-                'entityRequester',
-                $params,
-                $account
-            );
-            $dispatcherObject->process($connectorObj);
-            $responseData = $connectorObj->getResponseData();
-
-            $account->getChildObject()->addData(
-                array(
-                    'server_hash' => $responseData['hash'],
-                    'info'        => Mage::helper('M2ePro')->jsonEncode($responseData['info'])
-                )
-            );
-            $account->getChildObject()->save();
-        } catch (\Exception $exception) {
-            $account->deleteInstance();
-
-            throw $exception;
-        }
-
-        return $account;
-    }
-
-    protected function updateAccount($id, $data)
-    {
-        /** @var Ess_M2ePro_Model_Account $account */
-        $account = Mage::helper('M2ePro/Component_Amazon')->getObject('Account', $id);
-
-        $oldData = array_merge($account->getOrigData(), $account->getChildObject()->getOrigData());
-
-        Mage::getModel('M2ePro/Amazon_Account_Builder')->build($account, $data);
-
-        try {
-            $params = $this->getDataForServer($account);
-
-            if (!$this->isNeedSendDataToServer($params, $oldData)) {
-                return $account;
-            }
-
-            /** @var $dispatcherObject Ess_M2ePro_Model_Amazon_Connector_Dispatcher */
-            $dispatcherObject = Mage::getModel('M2ePro/Amazon_Connector_Dispatcher');
-
-            /** @var Ess_M2ePro_Model_Amazon_Connector_Account_Update_EntityRequester $connectorObj */
-            $connectorObj = $dispatcherObject->getConnector(
-                'account',
-                'update',
-                'entityRequester',
-                $params,
-                $account
-            );
-            $dispatcherObject->process($connectorObj);
-            $responseData = $connectorObj->getResponseData();
-
-            $account->getChildObject()->addData(
-                array(
-                    'info' => Mage::helper('M2ePro')->jsonEncode($responseData['info'])
-                )
-            );
-            $account->getChildObject()->save();
-        } catch (\Exception $exception) {
-            Mage::getModel('M2ePro/Amazon_Account_Builder')->build($account, $oldData);
-
-            throw $exception;
-        }
-
-        return $account;
-    }
-
-    //########################################
-
-    protected function getDataForServer(Ess_M2ePro_Model_Account $account)
-    {
-        return array(
-            'marketplace_id' => $account->getChildObject()->getMarketplaceId(),
-            'merchant_id'    => $account->getChildObject()->getMerchantId(),
-            'token'          => $account->getChildObject()->getToken(),
+        /** @var Ess_M2ePro_Model_Amazon_Account_Builder $builder */
+        $builder = Mage::getModel('M2ePro/Amazon_Account_Builder');
+        $builder->build(
+            $account,
+            $data
         );
 
+        /** @var Ess_M2ePro_Model_Amazon_Account $amazonAccount */
+        $amazonAccount = $account->getChildObject();
+        $amazonAccount->setServerHash($serverResult->getHash());
+        $amazonAccount->setInfo($serverResult->getInfo());
+
+        $amazonAccount->save();
+
+        return $account;
     }
 
-    protected function isNeedSendDataToServer($newData, $oldData)
+    private function updateAccount(Ess_M2ePro_Model_Account $account, $data)
     {
-        $diff = array_diff_assoc($newData, $oldData);
+        /** @var Ess_M2ePro_Model_Amazon_Account_Builder $builder */
+        $builder = Mage::getModel('M2ePro/Amazon_Account_Builder');
+        $builder->build($account, $data);
 
-        return !empty($diff);
+        return $account;
     }
 
-    protected function isAccountExists($merchantId, $marketplaceId)
+    // ----------------------------------------
+
+    private function isAccountExists($merchantId, $marketplaceId)
     {
         /** @var Ess_M2ePro_Model_Resource_Account_Collection $account */
         $account = Mage::getModel('M2ePro/Amazon_Account')->getCollection()
@@ -661,6 +607,8 @@ class Ess_M2ePro_Adminhtml_Amazon_AccountController
 
         return $account->getSize();
     }
+
+    // ----------------------------------------
 
     public function getExcludedStatesPopupHtmlAction()
     {

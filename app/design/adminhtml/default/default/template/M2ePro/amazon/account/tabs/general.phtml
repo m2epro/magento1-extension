@@ -5,8 +5,6 @@
  * @license    Commercial use is forbidden
  */
 
-// @codingStandardsIgnoreFile
-
 /** @var $this Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit_Tabs_General */
 
 ?>
@@ -39,7 +37,7 @@
     $formData = $account ? $account->toArray() : array();
 
     if (isset($formData['other_listings_mapping_settings'])) {
-        $formData['other_listings_mapping_settings'] = (array)json_decode($formData['other_listings_mapping_settings'],true);
+        $formData['other_listings_mapping_settings'] = (array)json_decode($formData['other_listings_mapping_settings'], true);
     }
 
     $defaults = Mage::getModel('M2ePro/Amazon_Account_Builder')->getDefaultData();
@@ -209,7 +207,6 @@
                         <?php if ($isEdit) : ?>
                             <input type="hidden" name="marketplace_id" value="<?php echo $formData['marketplace_id']; ?>" />
                             <input type="hidden" name="merchant_id" value="<?php echo $formData['merchant_id']; ?>" />
-                            <input type="hidden" name="token" value="<?php echo $formData['token']; ?>" />
                         <?php endif; ?>
 
                     </td>
@@ -230,16 +227,24 @@
                     <tr class="marketplaces_view_element" id="marketplaces_register_url_container_<?php echo $marketplaceRow['id']; ?>" style="display:none;">
                         <td class="label"></td>
                         <td class="value">
-                            <?php if($marketplaceRow['is_automatic_token_retrieving_available']): ?>
-                                <a id ="marketplaces_register_url" href="" onclick="return AmazonAccountObj.get_token(<?php echo
-                                $marketplaceRow['id'];?>)" target="_self"><?php echo Mage::helper('M2ePro')->__('Get Access Data') ?></a>
-                            <?php else: ?>
-                                <a id ="marketplaces_register_url" href="<?php echo Mage::helper('M2ePro/Component_Amazon')->getRegisterUrl($marketplaceRow['id']); ?>" target="_blank"><?php echo Mage::helper('M2ePro')->__('Get Access Data') ?></a>
-                            <?php endif; ?>
+                            <a id='marketplaces_register_url'
+                               href=''
+                               onclick="return AmazonAccountObj.get_token(<?php echo $marketplaceRow['id']; ?>)"
+                               target='_self'><?php echo Mage::helper('M2ePro')->__('Get Access Data') ?>
+                            </a>
                         </td>
                     </tr>
 
                 <?php } ?>
+
+                <?php if ($isEdit): ?>
+                <tr>
+                    <td class='label'></td>
+                    <td id="check_token_validity" class='value'>
+                        <?php echo $this->getChildHtml('check_token_validity'); ?>
+                    </td>
+                </tr>
+                <?php endif; ?>
 
                 <tr id="marketplaces_merchant_id_container" <?php if (!$isEdit && !$isAuthMode) echo ' style="display:none;"'; ?>>
                     <td class="label">
@@ -253,21 +258,16 @@
                     </td>
                 </tr>
 
-                <tr id="marketplaces_token_container" <?php if (!$isEdit && !$isAuthMode) echo ' style="display:none;"'; ?>>
+                <tr id="marketplaces_token_container" <?php if ($isEdit || !$isAuthMode) echo ' style="display:none;"'; ?>>
                     <td class="label">
                         <label><?php echo Mage::helper('M2ePro')->__('MWS Auth Token'); ?>: <span class="required">*</span></label>
                     </td>
                     <td class="value">
-                        <input id="token" type="text" class="M2ePro-marketplace-merchant input-text" name="token" <?php if ($isAuthMode) echo ' value="'.$mwsToken.'"'; elseif ($isEdit) echo ' value="'.$formData['token'].'"'; ?> class="input-text M2ePro-required-when-visible" />
+                        <input id="token" type="text" class="M2ePro-marketplace-merchant input-text" name="token" <?php if ($isAuthMode) echo ' value="'.$mwsToken.'"'; ?> class="input-text M2ePro-required-when-visible" />
                         <p class="note">
                             <span><?php echo Mage::helper('M2ePro')->__('Paste generated MWS Auth Token from Amazon. (It must look like: amzn.mws.bna3f75c-a683-49c7-6da0-749y33313dft).'); ?></span>
                         </p>
                     </td>
-                    <?php if ($isEdit): ?>
-                        <td id="check_token_validity" class='value'>
-                            <?php echo $this->getChildHtml('check_token_validity'); ?>
-                        </td>
-                    <?php endif; ?>
                 </tr>
 
             </table>

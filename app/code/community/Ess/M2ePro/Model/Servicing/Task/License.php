@@ -8,14 +8,14 @@
 
 class Ess_M2ePro_Model_Servicing_Task_License extends Ess_M2ePro_Model_Servicing_Task
 {
-    //########################################
+    const NAME = 'license';
 
     /**
      * @return string
      */
     public function getPublicNick()
     {
-        return 'license';
+        return self::NAME;
     }
 
     //########################################

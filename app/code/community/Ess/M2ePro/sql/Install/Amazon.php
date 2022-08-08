@@ -17,7 +17,6 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_account')}` (
   `server_hash` VARCHAR(255) NOT NULL,
   `marketplace_id` INT(11) UNSIGNED NOT NULL,
   `merchant_id` VARCHAR(255) NOT NULL,
-  `token` VARCHAR(255) DEFAULT NULL,
   `related_store_id` INT(11) NOT NULL DEFAULT 0,
   `other_listings_synchronization` TINYINT(2) UNSIGNED NOT NULL DEFAULT 1,
   `other_listings_mapping_mode` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
@@ -458,14 +457,12 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_marketplace')}` (
   `is_business_available` tinyint(2) UNSIGNED NOT NULL DEFAULT 0,
   `is_vat_calculation_service_available` tinyint(2) UNSIGNED NOT NULL DEFAULT 0,
   `is_product_tax_code_policy_available` tinyint(2) UNSIGNED NOT NULL DEFAULT 0,
-  `is_automatic_token_retrieving_available` tinyint(2) UNSIGNED NOT NULL DEFAULT 0,
   PRIMARY KEY (`marketplace_id`),
   INDEX `is_new_asin_available` (`is_new_asin_available`),
   INDEX `is_merchant_fulfillment_available` (`is_merchant_fulfillment_available`),
   INDEX `is_business_available` (`is_business_available`),
   INDEX `is_vat_calculation_service_available` (`is_vat_calculation_service_available`),
-  INDEX `is_product_tax_code_policy_available` (`is_product_tax_code_policy_available`),
-  INDEX `is_automatic_token_retrieving_available` (`is_automatic_token_retrieving_available`)
+  INDEX `is_product_tax_code_policy_available` (`is_product_tax_code_policy_available`)
 )
 ENGINE = INNODB
 CHARACTER SET utf8
@@ -880,20 +877,20 @@ INSERT INTO `{$this->_installer->getTable('m2epro_marketplace')}` VALUES
   (43, 15, 'Poland', 'PL', 'amazon.pl', 0, 17, 'Europe', 'amazon', NOW(), NOW());
 
 INSERT INTO `{$this->_installer->getTable('m2epro_amazon_marketplace')}` VALUES
-  (24, '8636-1433-4377', 'CAD',1,0,0,0,0,1),
-  (25, '7078-7205-1944', 'EUR',1,1,1,1,1,1),
-  (26, '7078-7205-1944', 'EUR',1,0,1,1,1,1),
-  (28, '7078-7205-1944', 'GBP',1,1,1,1,1,1),
-  (29, '8636-1433-4377', 'USD',1,1,1,0,0,1),
-  (30, '7078-7205-1944', 'EUR',1,0,1,1,1,1),
-  (31, '7078-7205-1944', 'EUR',1,0,1,1,1,1),
-  (34, '8636-1433-4377', 'MXN',1,0,0,0,0,1),
-  (35, '2770-5005-3793', 'AUD',1,0,0,0,0,1),
-  (39, '7078-7205-1944', 'EUR',1,1,1,0,1,1),
-  (40, '7078-7205-1944', 'TRY',1,1,0,0,0,1),
-  (41, '7078-7205-1944', 'SEK',1,1,0,0,0,1),
-  (42, '7078-7205-1944', 'JPY',0,1,0,0,0,1),
-  (43, '7078-7205-1944', 'PLN',1,1,0,0,0,1);
+  (24, '8636-1433-4377', 'CAD',1,0,0,0,0),
+  (25, '7078-7205-1944', 'EUR',1,1,1,1,1),
+  (26, '7078-7205-1944', 'EUR',1,0,1,1,1),
+  (28, '7078-7205-1944', 'GBP',1,1,1,1,1),
+  (29, '8636-1433-4377', 'USD',1,1,1,0,0),
+  (30, '7078-7205-1944', 'EUR',1,0,1,1,1),
+  (31, '7078-7205-1944', 'EUR',1,0,1,1,1),
+  (34, '8636-1433-4377', 'MXN',1,0,0,0,0),
+  (35, '2770-5005-3793', 'AUD',1,0,0,0,0),
+  (39, '7078-7205-1944', 'EUR',1,1,1,0,1),
+  (40, '7078-7205-1944', 'TRY',1,1,0,0,0),
+  (41, '7078-7205-1944', 'SEK',1,1,0,0,0),
+  (42, '7078-7205-1944', 'JPY',0,1,0,0,0),
+  (43, '7078-7205-1944', 'PLN',1,1,0,0,0);
 
 SQL
         );

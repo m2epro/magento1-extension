@@ -181,6 +181,11 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
 
     //########################################
 
+    public function setServerHash($value)
+    {
+        $this->setData('server_hash', $value);
+    }
+
     public function getServerHash()
     {
         return $this->getData('server_hash');
@@ -199,11 +204,6 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
         return $this->getData('merchant_id');
     }
 
-    public function getToken()
-    {
-        return $this->getData('token');
-    }
-
     /**
      * @return int
      */
@@ -213,6 +213,11 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
     }
 
     // ---------------------------------------
+
+    public function setInfo($value)
+    {
+        $this->setData('info', is_array($value) ? json_encode($value) : $value);
+    }
 
     public function getInfo()
     {
