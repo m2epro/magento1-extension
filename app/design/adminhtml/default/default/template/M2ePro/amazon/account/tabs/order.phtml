@@ -836,7 +836,7 @@
                 </tr>
                 <?php
                 $style = 'display: none';
-                if ($account->getChildObject()->getMarketplaceId() == Ess_M2ePro_Helper_Component_Amazon::MARKETPLACE_TR) {
+                if (isset($account) && $account->getId() && $account->getChildObject()->getMarketplaceId() == Ess_M2ePro_Helper_Component_Amazon::MARKETPLACE_TR) {
                     $style = '';
                 }
                 ?>
@@ -847,7 +847,7 @@
                     </td>
 
                     <td class="value" style="width: auto;">
-                        <?php if ($account->getChildObject()->getMarketplaceId() == Ess_M2ePro_Helper_Component_Amazon::MARKETPLACE_TR) {?>
+                        <?php if (isset($account) && $account->getId() && $account->getChildObject()->getMarketplaceId() == Ess_M2ePro_Helper_Component_Amazon::MARKETPLACE_TR) {?>
                         <select id="magento_orders_tax_import_tax_id_in_magento_order" name="magento_orders_settings[tax][import_tax_id_in_magento_order]" class="M2ePro-required-when-visible">
                             <option value="0" <?php if ($formData['magento_orders_settings']['tax']['import_tax_id_in_magento_order'] == 0) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
                             <option value="1" <?php if ($formData['magento_orders_settings']['tax']['import_tax_id_in_magento_order'] == 1) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
