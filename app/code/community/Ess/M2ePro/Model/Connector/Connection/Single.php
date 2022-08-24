@@ -56,12 +56,9 @@ class Ess_M2ePro_Model_Connector_Connection_Single extends Ess_M2ePro_Model_Conn
         if ($this->getResponse()->getMessages()->hasSystemErrorEntity()) {
             throw new Ess_M2ePro_Model_Exception(
                 Mage::helper('M2ePro')->__(
-                    "Internal Server Error(s) [%error_message%]",
+                    'Internal Server Error(s) [%error_message%]',
                     $this->getResponse()->getMessages()->getCombinedSystemErrorsString()
-                ),
-                array(),
-                0,
-                !$this->getResponse()->isServerInMaintenanceMode()
+                )
             );
         }
     }

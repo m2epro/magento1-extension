@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Ess_M2ePro>
-            <version>6.26.1</version>
+            <version>6.27.0</version>
         </Ess_M2ePro>
     </modules>
     <default>
@@ -652,6 +652,16 @@
                     </M2eProUpdater_observer>
                 </observers>
             </controller_action_layout_generate_blocks_after>
+
+            <sales_quote_address_collect_totals_after>
+                <observers>
+                    <M2eProUpdater_observer>
+                        <type>model</type>
+                        <class>Ess_M2ePro_Observer_Dispatcher</class>
+                        <method>orderQuoteTotal</method>
+                    </M2eProUpdater_observer>
+                </observers>
+            </sales_quote_address_collect_totals_after>
 
             <!-- internal orders -->
 

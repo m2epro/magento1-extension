@@ -9,9 +9,10 @@
 class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Variations
     extends Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Abstract
 {
+    /** @var array */
     protected $_variationsThatCanNotBeDeleted = array();
-
-    //########################################
+    /** @var bool */
+    protected $_isSomeVariationChangeQtyFromZero = false;
 
     public function getData()
     {
@@ -33,6 +34,10 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Variations
 
         if ($variationsThatCanNotBeDeleted = $this->getVariationsThatCanNotBeDeleted()) {
             $data['variations_that_can_not_be_deleted'] = $variationsThatCanNotBeDeleted;
+        }
+
+        if ($this->_isSomeVariationChangeQtyFromZero) {
+            $data['is_some_variation_change_qty_from_zero'] = true;
         }
 
         return $data;
@@ -123,6 +128,12 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Variations
 
             if (isset($item['qty']) && $variation->getChildObject()->getOnlineQty() == $item['qty']) {
                 $item['qty_not_changed'] = true;
+            }
+
+            if ($item['qty'] > 0 &&
+                $variation->getChildObject()->getOnlineQty() - $variation->getChildObject()->getOnlineQtySold() === 0
+            ) {
+                $this->_isSomeVariationChangeQtyFromZero = true;
             }
 
             $data[] = $item;

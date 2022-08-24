@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  * @author     M2E Pro Developers Team
  * @copyright  M2E LTD
  * @license    Commercial use is forbidden
@@ -9,15 +9,6 @@
 class Ess_M2ePro_Model_Exception_Connection extends Ess_M2ePro_Model_Exception
 {
     const CONNECTION_ERROR_REPEAT_TIMEOUT = 180;
-
-    //########################################
-
-    public function __construct($message, $additionalData = array())
-    {
-        parent::__construct($message, $additionalData, 0, false);
-    }
-
-    //########################################
 
     /**
      * @param string $key
@@ -78,6 +69,4 @@ class Ess_M2ePro_Model_Exception_Connection extends Ess_M2ePro_Model_Exception
     {
         Mage::helper('M2ePro/Module')->getRegistry()->deleteValue($key);
     }
-
-    //########################################
 }

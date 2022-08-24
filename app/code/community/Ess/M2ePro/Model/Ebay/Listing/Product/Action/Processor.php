@@ -287,12 +287,9 @@ final class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processor
                 if (!empty($systemErrorsMessages)) {
                     throw new Ess_M2ePro_Model_Exception(
                         Mage::helper('M2ePro')->__(
-                            "Internal Server Error(s) [%error_message%]",
+                            'Internal Server Error(s) [%error_message%]',
                             $this->getCombinedErrorMessage($systemErrorsMessages)
-                        ),
-                        array(),
-                        0,
-                        !$isServerInMaintenanceMode
+                        )
                     );
                 }
             }

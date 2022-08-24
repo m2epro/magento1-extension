@@ -239,13 +239,17 @@ class Ess_M2ePro_Model_Walmart_Account_Builder extends Ess_M2ePro_Model_ActiveRe
             }
         }
 
-        $notificationsKeys = array(
-            'order_created',
-            'invoice_created'
-        );
-        $tempSettings = !empty($tempSettings['notifications']) ? $tempSettings['notifications'] : array();
-        foreach ($notificationsKeys as $key) {
-            $data['magento_orders_settings'][$tempKey]['notifications'][$key] = in_array($key, $tempSettings);
+        // Check if input data contains another field from customer settings.
+        // It's used to determine if account data changed by user interface, or during token re-new.
+        if (isset($tempSettings['mode'])) {
+            $notificationsKeys = array(
+                'order_created',
+                'invoice_created'
+            );
+            $tempSettings = !empty($tempSettings['notifications']) ? $tempSettings['notifications'] : array();
+            foreach ($notificationsKeys as $key) {
+                $data['magento_orders_settings'][$tempKey]['notifications'][$key] = in_array($key, $tempSettings);
+            }
         }
 
         // status mapping settings

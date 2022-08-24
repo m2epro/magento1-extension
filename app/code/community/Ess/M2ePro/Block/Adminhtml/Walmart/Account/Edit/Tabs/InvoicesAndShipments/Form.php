@@ -93,7 +93,7 @@ HTML
         $otherCarriers = empty($formData['other_carriers']) ? array() : Mage::helper('M2ePro')->jsonDecode(
             $formData['other_carriers']
         );
-        for ($i = 0; $i < 5; $i++) {
+        for ($i = 0; $i < 30; $i++) {
             $code = $url = '';
 
             if (!empty($otherCarriers[$i])) {
@@ -192,7 +192,7 @@ CSS
 
         Mage::helper('M2ePro/View')->getJsRenderer()->addOnReadyJs(
             <<<JS
-    WalmartAccountObj.otherCarrierInit(5);
+    WalmartAccountObj.otherCarrierInit(30);
 JS
             ,
             2

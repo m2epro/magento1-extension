@@ -27,6 +27,10 @@ class Ess_M2ePro_Helper_Component_Amazon extends Mage_Core_Helper_Abstract
     const MARKETPLACE_SE = 41;
     const MARKETPLACE_JP = 42;
     const MARKETPLACE_PL = 43;
+    const MARKETPLACE_BR = 44;
+    const MARKETPLACE_SG = 45;
+    const MARKETPLACE_IN = 46;
+    const MARKETPLACE_AE = 47;
 
     const MAX_ALLOWED_FEED_REQUESTS_PER_HOUR = 30;
     const SKU_MAX_LENGTH = 40;
@@ -288,5 +292,28 @@ class Ess_M2ePro_Helper_Component_Amazon extends Mage_Core_Helper_Abstract
         }
 
         return $data;
+    }
+
+    /**
+     * @return int[]
+     */
+    private function getMarketplaceWithoutData()
+    {
+        return array(
+            self::MARKETPLACE_JP,
+            self::MARKETPLACE_BR,
+            self::MARKETPLACE_SG,
+            self::MARKETPLACE_IN,
+            self::MARKETPLACE_AE,
+        );
+    }
+
+    /**
+     * @param $marketplaceId
+     * @return bool
+     */
+    public function isMarketplacesWithoutData($marketplaceId)
+    {
+        return in_array((int)$marketplaceId, $this->getMarketplaceWithoutData(), true);
     }
 }

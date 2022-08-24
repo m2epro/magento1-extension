@@ -251,6 +251,9 @@ class Ess_M2ePro_Model_Magento_Quote
      */
     protected function initializeQuoteItems()
     {
+        $this->_quote->setUseM2eProDiscount(false);
+        $discountAmount = 0;
+
         foreach ($this->_proxyOrder->getItems() as $item) {
             $this->clearQuoteItemsCache();
 
@@ -288,6 +291,14 @@ class Ess_M2ePro_Model_Magento_Quote
                 $productPriceInItem = (($item->getOriginalPrice() * $productPriceInSetPercent) / 100);
                 $item->setPrice($productPriceInItem / $associatedProduct->getQty());
 
+                if (Mage::helper('M2ePro/Module_Configuration')->isGroupedProductModeSet()) {
+                    $discountAmount += $this->getDiscount(
+                        $productPriceInItem,
+                        $associatedProduct->getQty(),
+                        $item->getOriginalQty()
+                    );
+                }
+
                 $quoteItemBuilder->init($this->_quote, $item);
 
                 $this->initializeQuoteItem(
@@ -298,6 +309,23 @@ class Ess_M2ePro_Model_Magento_Quote
                 );
             }
         }
+
+        if ($this->_quote->getUseM2eProDiscount()) {
+            $this->_quote->setCoinDiscount($discountAmount);
+        }
+    }
+
+    private function getDiscount($productPriceInItem, $associatedProductQty, $OriginalQty)
+    {
+        $total = 0;
+        $roundPrice = round(($productPriceInItem / $associatedProductQty), 2) * $associatedProductQty;
+
+        if ($productPriceInItem !== $roundPrice) {
+            $this->_quote->setUseM2eProDiscount(true);
+            $total = ($roundPrice - $productPriceInItem) * $OriginalQty;
+        }
+
+        return $total;
     }
 
     /**

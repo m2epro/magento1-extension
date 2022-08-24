@@ -874,7 +874,11 @@ INSERT INTO `{$this->_installer->getTable('m2epro_marketplace')}` VALUES
   (40, 12, 'Turkey', 'TR', 'amazon.com.tr', 0, 14, 'Europe', 'amazon', NOW(), NOW()),
   (41, 13, 'Sweden', 'SE', 'amazon.se', 0, 15, 'Europe', 'amazon', NOW(), NOW()),
   (42, 14, 'Japan', 'JP', 'amazon.co.jp', 0, 16, 'Asia / Pacific', 'amazon', NOW(), NOW()),
-  (43, 15, 'Poland', 'PL', 'amazon.pl', 0, 17, 'Europe', 'amazon', NOW(), NOW());
+  (43, 15, 'Poland', 'PL', 'amazon.pl', 0, 17, 'Europe', 'amazon', NOW(), NOW()),
+  (44, 16, 'Brazil', 'BR', 'amazon.com.br', 0, 18, 'America', 'amazon', NOW(), NOW()),
+  (45, 17, 'Singapore', 'SG', 'amazon.sg', 0, 19, 'Asia / Pacific', 'amazon', NOW(), NOW()),
+  (46, 18, 'India', 'IN', 'amazon.in', 0, 20, 'Europe', 'amazon', NOW(), NOW()),
+  (47, 19, 'United Arab Emirates', 'AE', 'amazon.ae', 0, 21, 'Europe', 'amazon', NOW(), NOW());
 
 INSERT INTO `{$this->_installer->getTable('m2epro_amazon_marketplace')}` VALUES
   (24, '8636-1433-4377', 'CAD',1,0,0,0,0),
@@ -889,9 +893,12 @@ INSERT INTO `{$this->_installer->getTable('m2epro_amazon_marketplace')}` VALUES
   (39, '7078-7205-1944', 'EUR',1,1,1,0,1),
   (40, '7078-7205-1944', 'TRY',1,1,0,0,0),
   (41, '7078-7205-1944', 'SEK',1,1,0,0,0),
-  (42, '7078-7205-1944', 'JPY',0,1,0,0,0),
-  (43, '7078-7205-1944', 'PLN',1,1,0,0,0);
-
+  (42, '2770-5005-3793', 'JPY',0,1,0,0,0),
+  (43, '7078-7205-1944', 'PLN',1,1,0,0,0),
+  (44, '8636-1433-4377', 'BRL',0,1,1,0,0),
+  (45, '2770-5005-3793', 'SGD',0,1,1,0,0),
+  (46, '7078-7205-1944', 'INR',0,1,1,0,0),
+  (47, '7078-7205-1944', 'AED',0,1,1,0,0);
 SQL
         );
     }

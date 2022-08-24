@@ -138,6 +138,11 @@ class Ess_M2ePro_Observer_Dispatcher
         $this->process('Order_Notification', $eventObserver);
     }
 
+    public function orderQuoteTotal(Varien_Event_Observer $eventObserver)
+    {
+        $this->process('Order_Quote_Address_Collect_Totals_After', $eventObserver);
+    }
+
     public function salesOrderCreditmemoRefund(Varien_Event_Observer $eventObserver)
     {
         $this->process('Creditmemo', $eventObserver);

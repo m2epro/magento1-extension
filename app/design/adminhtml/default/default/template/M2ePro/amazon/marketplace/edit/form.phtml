@@ -103,11 +103,7 @@
                                         <span><?php echo Mage::helper('M2ePro')->__($marketplace['instance']->getData('url')); ?></span>
                                     </p>
                                 </td>
-                                <?php if($marketplace['instance']->getId() == Ess_M2ePro_Helper_Component_Amazon::MARKETPLACE_JP) { ?>
-                                    <td id="beta_<?php echo $marketplace['instance']->getId(); ?>" class="value" style="color: gray;">
-                                        &nbsp; <?php echo Mage::helper('M2ePro')->__('Beta'); ?>
-                                    </td>
-                                <?php } else { ?>
+                                <?php if(!Mage::helper('M2ePro/Component_Amazon')->isMarketplacesWithoutData($marketplace['instance']->getId())) { ?>
                                     <td id="run_single_button_<?php echo $marketplace['instance']->getId(); ?>" class="value" <?php if($marketplace['instance']->getStatus() == Ess_M2ePro_Model_Marketplace::STATUS_DISABLE): ?>style="display: none;"<?php endif; ?>>
                                         <?php echo $this->getChildHtml('run_single_button'); ?>
                                     </td>
