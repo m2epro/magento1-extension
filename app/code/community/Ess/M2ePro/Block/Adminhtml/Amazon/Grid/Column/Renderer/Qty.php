@@ -27,36 +27,10 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Grid_Column_Renderer_Qty
                 return '<span style="color: gray;">' . Mage::helper('M2ePro')->__('Not Listed') . '</span>';
             }
 
-            if ((bool)$row->getData('is_afn_channel')) {
-                $sku = $row->getData('amazon_sku');
-
-                if (empty($sku)) {
-                    return Mage::helper('M2ePro')->__('AFN');
-                }
-
-                /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
-                $listingProduct = Mage::helper('M2ePro/Component_Amazon')->getObject(
-                    'Listing_Product', $listingProductId
-                );
-
-                $afn = Mage::helper('M2ePro')->__('AFN');
-                $total = Mage::helper('M2ePro')->__('Total');
-                $inStock = Mage::helper('M2ePro')->__('In Stock');
-                $accountId = $listingProduct->getListing()->getAccountId();
-
-                return <<<HTML
-<div id="m2ePro_afn_qty_value_{$listingProductId}">
-    <span class="m2ePro-online-sku-value" productId="{$listingProductId}" style="display: none">{$sku}</span>
-    <span class="m2epro-empty-afn-qty-data" style="display: none">{$afn}</span>
-    <div class="m2epro-afn-qty-data" style="display: none">
-        <div class="total">{$total}: <span></span></div>
-        <div class="in-stock">{$inStock}: <span></span></div>
-    </div>
-    <a href="javascript:void(0)"
-        onclick="AmazonListingAfnQtyObj.showAfnQty(this,'{$sku}',{$listingProductId}, {$accountId})">
-        {$afn}</a>
-</div>
-HTML;
+            if ($row->getData('is_afn_channel')) {
+                $qty = $row->getData('online_afn_qty');
+                $qty = $qty !== null ? $qty : Mage::helper('M2ePro')->__('N/A');
+                return "AFN ($qty)";
             }
 
             $showReceiving = ($this->getColumn()->getData('show_receiving') !== null)

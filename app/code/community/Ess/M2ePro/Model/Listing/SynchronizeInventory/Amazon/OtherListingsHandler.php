@@ -43,6 +43,16 @@ class Ess_M2ePro_Model_Listing_SynchronizeInventory_Amazon_OtherListingsHandler
                 $receivedItem = $this->_responseData[$existingItem['sku']];
                 unset($this->_responseData[$existingItem['sku']]);
 
+                $existingData = array(
+                    'general_id'         => (string)$existingItem['general_id'],
+                    'title'              => (string)$existingItem['title'],
+                    'online_price'       => (float)$existingItem['online_price'],
+                    'online_qty'         => (int)$existingItem['online_qty'],
+                    'is_afn_channel'     => (bool)$existingItem['is_afn_channel'],
+                    'is_isbn_general_id' => (bool)$existingItem['is_isbn_general_id'],
+                    'status'             => (int)$existingItem['status']
+                );
+
                 $newData = array(
                     'general_id'         => (string)$receivedItem['identifiers']['general_id'],
                     'title'              => (string)$receivedItem['title'],
@@ -54,24 +64,19 @@ class Ess_M2ePro_Model_Listing_SynchronizeInventory_Amazon_OtherListingsHandler
 
                 if ($newData['is_afn_channel']) {
                     $newData['online_qty'] = null;
-                    $newData['status'] = Ess_M2ePro_Model_Listing_Product::STATUS_UNKNOWN;
+                    $newData['status'] = $existingData['is_afn_channel'] ?
+                        $existingData['status'] : Ess_M2ePro_Model_Listing_Product::STATUS_UNKNOWN;
                 } else {
+                    if ($existingItem['online_afn_qty'] !== null) {
+                        $newData['online_afn_qty'] = null;
+                    }
+
                     if ($newData['online_qty'] > 0) {
                         $newData['status'] = Ess_M2ePro_Model_Listing_Product::STATUS_LISTED;
                     } else {
                         $newData['status'] = Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED;
                     }
                 }
-
-                $existingData = array(
-                    'general_id'         => (string)$existingItem['general_id'],
-                    'title'              => (string)$existingItem['title'],
-                    'online_price'       => (float)$existingItem['online_price'],
-                    'online_qty'         => (int)$existingItem['online_qty'],
-                    'is_afn_channel'     => (bool)$existingItem['is_afn_channel'],
-                    'is_isbn_general_id' => (bool)$existingItem['is_isbn_general_id'],
-                    'status'             => (int)$existingItem['status']
-                );
 
                 if ($receivedItem['title'] === null ||
                     $receivedItem['title'] == Ess_M2ePro_Model_Amazon_Listing_Other::EMPTY_TITLE_PLACEHOLDER) {
@@ -177,6 +182,7 @@ class Ess_M2ePro_Model_Listing_SynchronizeInventory_Amazon_OtherListingsHandler
                 'second_table.title',
                 'second_table.online_price',
                 'second_table.online_qty',
+                'second_table.online_afn_qty',
                 'second_table.is_afn_channel',
                 'second_table.is_isbn_general_id',
                 'second_table.listing_other_id',
@@ -203,6 +209,4 @@ class Ess_M2ePro_Model_Listing_SynchronizeInventory_Amazon_OtherListingsHandler
     {
         return Ess_M2ePro_Helper_Component_Amazon::NICK;
     }
-
-    //########################################
 }

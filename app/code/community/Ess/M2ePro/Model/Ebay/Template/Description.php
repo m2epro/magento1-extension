@@ -54,13 +54,6 @@ class Ess_M2ePro_Model_Ebay_Template_Description extends Ess_M2ePro_Model_Compon
     const PRODUCT_DETAILS_MODE_DOES_NOT_APPLY = 1;
     const PRODUCT_DETAILS_MODE_ATTRIBUTE      = 2;
 
-    const HIT_COUNTER_NONE          = 'NoHitCounter';
-    const HIT_COUNTER_BASIC_STYLE   = 'BasicStyle';
-    const HIT_COUNTER_GREEN_LED     = 'GreenLED';
-    const HIT_COUNTER_HIDDEN_STYLE  = 'HiddenStyle';
-    const HIT_COUNTER_HONESTY_STYLE = 'HonestyStyle';
-    const HIT_COUNTER_RETRO_STYLE   = 'RetroStyle';
-
     const GALLERY_TYPE_EMPTY    = 4;
     const GALLERY_TYPE_NO       = 0;
     const GALLERY_TYPE_PICTURE  = 1;
@@ -564,11 +557,6 @@ class Ess_M2ePro_Model_Ebay_Template_Description extends Ess_M2ePro_Model_Compon
     public function isCutLongTitles()
     {
         return (bool)$this->getData('cut_long_titles');
-    }
-
-    public function getHitCounterType()
-    {
-        return $this->getData('hit_counter');
     }
 
     /**

@@ -52,7 +52,6 @@ class Ess_M2ePro_Adminhtml_Amazon_ListingController
             ->addJs('M2ePro/Amazon/Listing/VariationProductManage.js')
             ->addJs('M2ePro/Amazon/Listing/Fulfillment.js')
             ->addJs('M2ePro/Amazon/Listing/Repricing.js')
-            ->addJs('M2ePro/Amazon/Listing/AfnQty.js')
             ->addJs('M2ePro/Amazon/Listing/RepricingPrice.js')
             ->addJs('M2ePro/Amazon/Listing/Other/Grid.js')
 
@@ -1175,42 +1174,6 @@ class Ess_M2ePro_Adminhtml_Amazon_ListingController
             'switch_to' => Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Qty::FULFILLMENT_MODE_MFN,
             )
         );
-    }
-
-    // ---------------------------------------
-
-    public function getAFNQtyBySkuAction()
-    {
-        $accountId = $this->getRequest()->getParam('account_id');
-        $skus = $this->getRequest()->getParam('skus');
-
-        if (empty($skus) || empty($accountId)) {
-            return $this->getResponse()->setBody('You should provide correct parameters.');
-        }
-
-        if (!is_array($skus)) {
-            $skus = explode(',', $skus);
-        }
-
-        /** @var $dispatcherObject Ess_M2ePro_Model_Amazon_Connector_Dispatcher */
-        $dispatcherObject = Mage::getModel('M2ePro/Amazon_Connector_Dispatcher');
-        $connectorObj = $dispatcherObject->getVirtualConnector(
-            'inventory', 'get', 'qtyAfnItems',
-            array(
-                'items' => $skus,
-                'only_realtime' => true
-            ),
-            null,
-            $accountId
-        );
-
-        try {
-            $dispatcherObject->process($connectorObj);
-        } catch (Exception $e) {
-            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array()));
-        }
-
-        return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode($connectorObj->getResponseData()));
     }
 
     //########################################

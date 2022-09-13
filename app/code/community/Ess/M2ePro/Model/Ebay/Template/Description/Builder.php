@@ -81,10 +81,6 @@ class Ess_M2EPro_Model_Ebay_Template_Description_Builder
             $data['cut_long_titles'] = (int)$this->_rawData['cut_long_titles'];
         }
 
-        if (isset($this->_rawData['hit_counter'])) {
-            $data['hit_counter'] = $this->_rawData['hit_counter'];
-        }
-
         if (isset($this->_rawData['enhancement'])) {
             $data['enhancement'] = $this->_rawData['enhancement'];
 
@@ -264,7 +260,6 @@ class Ess_M2EPro_Model_Ebay_Template_Description_Builder
 
             'editor_type' => Description::EDITOR_TYPE_SIMPLE,
             'cut_long_titles' => Description::CUT_LONG_TITLE_ENABLED,
-            'hit_counter' => Description::HIT_COUNTER_NONE,
 
             'enhancement' => '',
             'gallery_type' => Description::GALLERY_TYPE_EMPTY,

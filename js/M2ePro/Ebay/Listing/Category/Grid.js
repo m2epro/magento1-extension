@@ -177,13 +177,13 @@ window.EbayListingCategoryGrid = Class.create(Grid, {
             button.addClassName('disabled');
             button.disable();
             if (parseInt(showErrorMessage)) {
-                MessageObj.removeError('category-data-must-be-specified');
-                MessageObj.addError(M2ePro.translator.translate('select_relevant_category'), 'category-data-must-be-specified');
+                MessageObj.removeWarning('category-data-must-be-specified');
+                MessageObj.addWarning(M2ePro.translator.translate('select_relevant_category'), 'category-data-must-be-specified');
             }
         } else {
             button.removeClassName('disabled');
             button.enable();
-            MessageObj.clear('error');
+            MessageObj.clear('warning');
         }
     },
 

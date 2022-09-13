@@ -61,6 +61,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Revise_Response
 
         if (!empty($params['switch_to']) && $params['switch_to'] === QtyBuilder::FULFILLMENT_MODE_MFN) {
             $data['is_afn_channel'] = Ess_M2ePro_Model_Amazon_Listing_Product::IS_AFN_CHANNEL_NO;
+            $data['online_afn_qty'] = null;
         }
 
         return parent::appendQtyValues($data);

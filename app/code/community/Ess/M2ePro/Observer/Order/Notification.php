@@ -53,6 +53,10 @@ class Ess_M2ePro_Observer_Order_Notification extends Ess_M2ePro_Observer_Abstrac
             return false;
         }
 
+        if (Mage::getSingleton('core/layout')->getBlock('head') === false) {
+            return false;
+        }
+
         /** @var Ess_M2ePro_Helper_Order_Notification $configHelper */
         $configHelper = Mage::helper('M2ePro/Order_Notification');
 

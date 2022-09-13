@@ -308,7 +308,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View extends Mage_Adminhtml_Bloc
         $switchToAFN = $this->getUrl('*/adminhtml_amazon_listing/switchToAFN');
         $switchToMFN = $this->getUrl('*/adminhtml_amazon_listing/switchToMFN');
 
-        $getAFNQtyBySku = $this->getUrl('*/adminhtml_amazon_listing/getAFNQtyBySku');
         $getUpdatedRepricingPriceBySkus = $this->getUrl(
             '*/adminhtml_amazon_listing_repricing/getUpdatedPriceBySkus'
         );
@@ -467,7 +466,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View extends Mage_Adminhtml_Bloc
     M2ePro.url.switchToAFN = '{$switchToAFN}';
     M2ePro.url.switchToMFN = '{$switchToMFN}';
 
-    M2ePro.url.getAFNQtyBySku = '{$getAFNQtyBySku}';
     M2ePro.url.getUpdatedRepricingPriceBySkus = '{$getUpdatedRepricingPriceBySkus}';
 
     M2ePro.url.variationProductManage = '{$variationProductManage}';
@@ -584,7 +582,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View extends Mage_Adminhtml_Bloc
             ListingAutoActionObj.loadAutoActionHtml();
         }
 
-        AmazonListingAfnQtyObj = new AmazonListingAfnQty();
         AmazonListingRepricingPriceObj = new AmazonListingRepricingPrice();
     });
 </script>

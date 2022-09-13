@@ -38,7 +38,6 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_Variation_Product_ManageController
             ->addJs('M2ePro/Amazon/Listing/VariationProductManageVariationsGrid.js')
             ->addJs('M2ePro/Amazon/Listing/Fulfillment.js')
             ->addJs('M2ePro/Amazon/Listing/Repricing.js')
-            ->addJs('M2ePro/Amazon/Listing/AfnQty.js')
             ->addJs('M2ePro/Amazon/Listing/RepricingPrice.js')
 
             ->addJs('M2ePro/TemplateManager.js')

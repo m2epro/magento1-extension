@@ -181,9 +181,8 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Revise_Request
         if (!empty($warningMessageReasons)) {
             $this->addWarningMessage(
                 Mage::helper('M2ePro')->__(
-                    '%field_title% field(s) were ignored because eBay doesn\'t allow Revise the Item if it has ' .
-                    'sales, bids for Auction Type or less than 12 hours remain before the Item end.',
-                    implode(', ', $warningMessageReasons)
+                    'Title, Subtitle, Duration and Private Listing setting can be revised only if the listing has ' .
+                    'no pending bids, previous sales and does not end within 12 hours.'
                 )
             );
         }

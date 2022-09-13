@@ -87,8 +87,8 @@ abstract class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Search_Grid extends Mag
                 'align'                     => 'right',
                 'width'                     => '70px',
                 'type'                      => 'number',
-                'index'                     => 'online_qty',
-                'filter_index'              => 'online_qty',
+                'index'                     => 'online_actual_qty',
+                'filter_index'              => 'online_actual_qty',
                 'frame_callback'            => array($this, 'callbackColumnAvailableQty'),
                 'filter'                    => 'M2ePro/adminhtml_amazon_grid_column_filter_qty',
                 'filter_condition_callback' => array($this, 'callbackFilterQty')
@@ -186,33 +186,10 @@ abstract class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Search_Grid extends Mag
                 return '<span style="color: gray;">' . Mage::helper('M2ePro')->__('Not Listed') . '</span>';
             }
 
-            if ((bool)$row->getData('is_afn_channel')) {
-                $sku = $row->getData('online_sku');
-
-                if (empty($sku)) {
-                    return Mage::helper('M2ePro')->__('AFN');
-                }
-
-                $productId = Mage::helper('M2ePro')->generateUniqueHash();
-
-                $afnWord     = Mage::helper('M2ePro')->__('AFN');
-                $totalWord   = Mage::helper('M2ePro')->__('Total');
-                $inStockWord = Mage::helper('M2ePro')->__('In Stock');
-                $accountId   = $row->getData('account_id');
-
-                return <<<HTML
-<div id="m2ePro_afn_qty_value_{$productId}">
-    <span class="m2ePro-online-sku-value" productId="{$productId}" style="display: none">{$sku}</span>
-    <span class="m2epro-empty-afn-qty-data" style="display: none">{$afnWord}</span>
-    <div class="m2epro-afn-qty-data" style="display: none">
-        <div class="total">{$totalWord}: <span></span></div>
-        <div class="in-stock">{$inStockWord}: <span></span></div>
-    </div>
-    <a href="javascript:void(0)"
-        onclick="AmazonListingAfnQtyObj.showAfnQty(this,'{$sku}','{$productId}',{$accountId})">
-        {$afnWord}</a>
-</div>
-HTML;
+            if ($row->getData('is_afn_channel')) {
+                $qty = $row->getData('online_afn_qty');
+                $qty = $qty !== null ? $qty : Mage::helper('M2ePro')->__('N/A');
+                return "AFN ($qty)";
             }
 
             if ($value === null || $value === '') {
@@ -640,18 +617,14 @@ HTML;
 
     protected function _toHtml()
     {
-
-        $getAFNQtyBySku = $this->getUrl('*/adminhtml_amazon_listing/getAFNQtyBySku');
         $getUpdatedRepricingPriceBySkus = $this->getUrl(
             '*/adminhtml_amazon_listing_repricing/getUpdatedPriceBySkus'
         );
 
         $js = <<<HTML
 <script type="text/javascript">
-    M2ePro.url.getAFNQtyBySku = '{$getAFNQtyBySku}';
     M2ePro.url.getUpdatedRepricingPriceBySkus = '{$getUpdatedRepricingPriceBySkus}';
 
-    AmazonListingAfnQtyObj = new AmazonListingAfnQty();
     AmazonListingRepricingPriceObj = new AmazonListingRepricingPrice();
 </script>
 HTML;

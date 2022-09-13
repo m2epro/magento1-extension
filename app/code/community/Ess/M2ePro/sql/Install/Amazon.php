@@ -264,6 +264,7 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_listing_other')}` (
   `title` TEXT DEFAULT NULL,
   `online_price` DECIMAL(12, 4) UNSIGNED NOT NULL DEFAULT 0.0000,
   `online_qty` INT(11) UNSIGNED DEFAULT NULL,
+  `online_afn_qty` INT(11) UNSIGNED DEFAULT NULL,
   `is_afn_channel` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `is_isbn_general_id` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `is_repricing` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
@@ -310,6 +311,7 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_listing_product')}` (
   `online_business_price` DECIMAL(12, 4) UNSIGNED DEFAULT NULL,
   `online_business_discounts` TEXT DEFAULT NULL,
   `online_qty` INT(11) UNSIGNED DEFAULT NULL,
+  `online_afn_qty` INT(11) UNSIGNED DEFAULT NULL,
   `online_handling_time` INT(11) UNSIGNED DEFAULT NULL,
   `online_restock_date` DATETIME DEFAULT NULL,
   `online_details_data` VARCHAR(40) DEFAULT NULL,
@@ -476,6 +478,7 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_order')}` (
   `is_afn_channel` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `is_prime` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `is_business` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
+  `is_replacement` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `status` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `is_invoice_sent` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `is_credit_memo_sent` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
@@ -878,7 +881,8 @@ INSERT INTO `{$this->_installer->getTable('m2epro_marketplace')}` VALUES
   (44, 16, 'Brazil', 'BR', 'amazon.com.br', 0, 18, 'America', 'amazon', NOW(), NOW()),
   (45, 17, 'Singapore', 'SG', 'amazon.sg', 0, 19, 'Asia / Pacific', 'amazon', NOW(), NOW()),
   (46, 18, 'India', 'IN', 'amazon.in', 0, 20, 'Europe', 'amazon', NOW(), NOW()),
-  (47, 19, 'United Arab Emirates', 'AE', 'amazon.ae', 0, 21, 'Europe', 'amazon', NOW(), NOW());
+  (47, 19, 'United Arab Emirates', 'AE', 'amazon.ae', 0, 21, 'Europe', 'amazon', NOW(), NOW()),
+  (48, 20, 'Belgium', 'BE', 'amazon.com.be', 0, 22, 'Europe', 'amazon', NOW(), NOW());
 
 INSERT INTO `{$this->_installer->getTable('m2epro_amazon_marketplace')}` VALUES
   (24, '8636-1433-4377', 'CAD',1,0,0,0,0),
@@ -898,7 +902,8 @@ INSERT INTO `{$this->_installer->getTable('m2epro_amazon_marketplace')}` VALUES
   (44, '8636-1433-4377', 'BRL',0,1,1,0,0),
   (45, '2770-5005-3793', 'SGD',0,1,1,0,0),
   (46, '7078-7205-1944', 'INR',0,1,1,0,0),
-  (47, '7078-7205-1944', 'AED',0,1,1,0,0);
+  (47, '7078-7205-1944', 'AED',0,1,1,0,0),
+  (48, '7078-7205-1944', 'EUR',0,1,1,0,0);
 SQL
         );
     }

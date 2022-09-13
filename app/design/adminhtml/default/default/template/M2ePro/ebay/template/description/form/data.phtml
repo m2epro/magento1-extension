@@ -1350,25 +1350,6 @@ $isCustomDescription = ($formData['description_mode'] == Ess_M2ePro_Model_Ebay_T
                     </td>
                 </tr>
 
-                <tr>
-                    <td class="label">
-                        <label><?php echo Mage::helper('M2ePro')->__('Hit Counter'); ?>:</label>
-                    </td>
-                    <td class="value">
-                        <select id="hit_counter" name="description[hit_counter]">
-                            <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Description::HIT_COUNTER_NONE; ?>" <?php if ($formData['hit_counter'] == Ess_M2ePro_Model_Ebay_Template_Description::HIT_COUNTER_NONE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('No Hit Counter'); ?></option>
-                            <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Description::HIT_COUNTER_BASIC_STYLE; ?>" <?php if ($formData['hit_counter'] == Ess_M2ePro_Model_Ebay_Template_Description::HIT_COUNTER_BASIC_STYLE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Basic Style'); ?></option>
-                            <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Description::HIT_COUNTER_GREEN_LED; ?>" <?php if ($formData['hit_counter'] == Ess_M2ePro_Model_Ebay_Template_Description::HIT_COUNTER_GREEN_LED): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Green LED'); ?></option>
-                            <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Description::HIT_COUNTER_HIDDEN_STYLE; ?>" <?php if ($formData['hit_counter'] == Ess_M2ePro_Model_Ebay_Template_Description::HIT_COUNTER_HIDDEN_STYLE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Hidden Style'); ?></option>
-                            <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Description::HIT_COUNTER_HONESTY_STYLE; ?>" <?php if ($formData['hit_counter'] == Ess_M2ePro_Model_Ebay_Template_Description::HIT_COUNTER_HONESTY_STYLE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Honesty Style'); ?></option>
-                            <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Description::HIT_COUNTER_RETRO_STYLE; ?>" <?php if ($formData['hit_counter'] == Ess_M2ePro_Model_Ebay_Template_Description::HIT_COUNTER_RETRO_STYLE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Retro Style'); ?></option>
-                        </select>
-                        <p class="note">
-                            <span><?php echo Mage::helper('M2ePro')->__('Count the number of visitors to your eBay Listing.<br/><b>Note:</b> Green LED and Honesty Style styles are available only in the US.'); ?></span>
-                        </p>
-                    </td>
-                </tr>
-
             </table>
 
         </div>

@@ -11,7 +11,8 @@ use Ess_M2ePro_Model_Amazon_Listing_Product as AmazonListingProduct;
 class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Search_Other_Grid
     extends Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Search_Grid
 {
-    //########################################
+    const ACTUAL_QTY_EXPRESSION =
+        'IF(second_table.is_afn_channel = 1, second_table.online_afn_qty, second_table.online_qty)';
 
     public function __construct()
     {
@@ -83,6 +84,8 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Search_Other_Grid
                 'online_sku'                   => 'second_table.sku',
                 'online_title'                 => new Zend_Db_Expr('NULL'),
                 'online_qty'                   => 'second_table.online_qty',
+                'online_afn_qty'               => 'second_table.online_afn_qty',
+                'online_actual_qty'            => self::ACTUAL_QTY_EXPRESSION,
                 'online_price'                 => 'second_table.online_price',
                 'online_sale_price'            => new Zend_Db_Expr('NULL'),
                 'online_sale_price_start_date' => new Zend_Db_Expr('NULL'),
@@ -289,7 +292,7 @@ HTML;
 
         if (isset($value['from']) && $value['from'] != '') {
             $quoted = $collection->getConnection()->quote($value['from']);
-            $where .= 'second_table.online_qty >= ' . $quoted;
+            $where .= self::ACTUAL_QTY_EXPRESSION . ' >= ' . $quoted;
         }
 
         if (isset($value['to']) && $value['to'] != '') {
@@ -298,12 +301,12 @@ HTML;
             }
 
             $quoted = $collection->getConnection()->quote($value['to']);
-            $where .= 'second_table.online_qty <= ' . $quoted;
+            $where .= self::ACTUAL_QTY_EXPRESSION . ' <= ' . $quoted;
         }
 
         if (isset($value['afn']) && $value['afn'] !== '') {
             if (!empty($where)) {
-                $where = '(' . $where . ') OR ';
+                $where .= ' AND ';
             }
 
             $where .= 'second_table.is_afn_channel = ' . (int)$value['afn'];

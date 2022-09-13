@@ -90,13 +90,15 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Repricing_UpdateSettings extends Ess_M2e
         $listingProductCollection->addFieldToFilter('is_variation_parent', 0);
         $listingProductCollection->addFieldToFilter('is_repricing', 1);
         $listingProductCollection->addFieldToFilter('l.account_id', $account->getId());
-        $listingProductCollection->addFieldToFilter(
-            'status',
-            array('in' => array(
-                Ess_M2ePro_Model_Listing_Product::STATUS_LISTED,
-                Ess_M2ePro_Model_Listing_Product::STATUS_UNKNOWN
-            ))
-        );
+
+        $statusListed = Ess_M2ePro_Model_Listing_Product::STATUS_LISTED;
+        $statusStopped = Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED;
+        $statusUnknown = Ess_M2ePro_Model_Listing_Product::STATUS_UNKNOWN;
+        $listingProductCollection->getSelect()
+            ->where(
+                "((is_afn_channel = 0 AND status = $statusListed)"
+                . " OR (is_afn_channel = 1 AND status IN ($statusListed, $statusStopped, $statusUnknown)))"
+            );
 
         $listingProductCollection->getSelect()->joinInner(
             array('alpr' => Mage::getResourceModel('M2ePro/Amazon_Listing_Product_Repricing')->getMainTable()),

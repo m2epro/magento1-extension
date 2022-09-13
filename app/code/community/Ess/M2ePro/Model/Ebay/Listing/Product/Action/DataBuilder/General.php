@@ -23,7 +23,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_General
             'duration' => $this->getEbayListingProduct()->getSellingFormatTemplateSource()->getDuration(),
             'is_private' => $this->getEbayListingProduct()->getEbaySellingFormatTemplate()->isPrivateListing(),
             'currency' => $this->getEbayMarketplace()->getCurrency(),
-            'hit_counter'          => $this->getEbayListingProduct()->getEbayDescriptionTemplate()->getHitCounterType(),
             'listing_enhancements' => $this->getEbayListingProduct()->getEbayDescriptionTemplate()->getEnhancements(),
             'product_details'      => $this->getProductDetailsData()
         );

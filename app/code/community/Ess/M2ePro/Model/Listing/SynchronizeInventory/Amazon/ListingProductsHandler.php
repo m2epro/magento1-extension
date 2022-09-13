@@ -55,6 +55,16 @@ class Ess_M2ePro_Model_Listing_SynchronizeInventory_Amazon_ListingProductsHandle
                 $receivedItem = $this->_responseData[$existingItem['sku']];
                 unset($this->_responseData[$existingItem['sku']]);
 
+                $existingData = array(
+                    'general_id'           => (string)$existingItem['general_id'],
+                    'online_regular_price' => !empty($existingItem['online_regular_price'])
+                        ? (float)$existingItem['online_regular_price'] : null,
+                    'online_qty'           => (int)$existingItem['online_qty'],
+                    'is_afn_channel'       => (bool)$existingItem['is_afn_channel'],
+                    'is_isbn_general_id'   => (bool)$existingItem['is_isbn_general_id'],
+                    'status'               => (int)$existingItem['status']
+                );
+
                 $newData = array(
                     'general_id'           => (string)$receivedItem['identifiers']['general_id'],
                     'online_regular_price' => !empty($receivedItem['price']) ? (float)$receivedItem['price'] : null,
@@ -65,24 +75,19 @@ class Ess_M2ePro_Model_Listing_SynchronizeInventory_Amazon_ListingProductsHandle
 
                 if ($newData['is_afn_channel']) {
                     $newData['online_qty'] = null;
-                    $newData['status'] = Ess_M2ePro_Model_Listing_Product::STATUS_UNKNOWN;
+                    $newData['status'] = $existingData['is_afn_channel'] ?
+                        $existingData['status'] : Ess_M2ePro_Model_Listing_Product::STATUS_UNKNOWN;
                 } else {
+                    if ($existingItem['online_afn_qty'] !== null) {
+                        $newData['online_afn_qty'] = null;
+                    }
+
                     if ($newData['online_qty'] > 0) {
                         $newData['status'] = Ess_M2ePro_Model_Listing_Product::STATUS_LISTED;
                     } else {
                         $newData['status'] = Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED;
                     }
                 }
-
-                $existingData = array(
-                    'general_id'           => (string)$existingItem['general_id'],
-                    'online_regular_price' => !empty($existingItem['online_regular_price'])
-                        ? (float)$existingItem['online_regular_price'] : null,
-                    'online_qty'           => (int)$existingItem['online_qty'],
-                    'is_afn_channel'       => (bool)$existingItem['is_afn_channel'],
-                    'is_isbn_general_id'   => (bool)$existingItem['is_isbn_general_id'],
-                    'status'               => (int)$existingItem['status']
-                );
 
                 $existingAdditionalData = Mage::helper('M2ePro')->jsonDecode($existingItem['additional_data']);
                 $lastSynchDates = !empty($existingAdditionalData['last_synchronization_dates'])
@@ -262,6 +267,7 @@ class Ess_M2ePro_Model_Listing_SynchronizeInventory_Amazon_ListingProductsHandle
                 'second_table.general_id',
                 'second_table.online_regular_price',
                 'second_table.online_qty',
+                'second_table.online_afn_qty',
                 'second_table.is_afn_channel',
                 'second_table.is_isbn_general_id',
                 'second_table.listing_product_id',

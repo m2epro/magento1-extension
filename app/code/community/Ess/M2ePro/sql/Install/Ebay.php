@@ -843,7 +843,6 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_template_description')}`
   `condition_note_template` TEXT NOT NULL,
   `product_details` TEXT DEFAULT NULL,
   `cut_long_titles` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
-  `hit_counter` VARCHAR(255) NOT NULL,
   `editor_type` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `enhancement` VARCHAR(255) NOT NULL,
   `gallery_type` TINYINT(2) UNSIGNED NOT NULL DEFAULT 4,

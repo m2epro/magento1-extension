@@ -27,7 +27,6 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_OtherController
             ->addJs('M2ePro/Grid.js')
             ->addJs('M2ePro/Listing/Other/Grid.js')
             ->addJs('M2ePro/Amazon/Listing/Other/Grid.js')
-            ->addJs('M2ePro/Amazon/Listing/AfnQty.js')
             ->addJs('M2ePro/Amazon/Listing/RepricingPrice.js')
             ->addJs('M2ePro/Amazon/Listing/Other/Grid.js')
             ->addJs('M2ePro/Action.js')

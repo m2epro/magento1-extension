@@ -13,9 +13,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Update_SellerOrderId
 
     const ORDERS_PER_MERCHANT = 1000;
 
-    /**
-     * @var int (in seconds)
-     */
+    /** @var int (in seconds) */
     protected $_interval = 3600;
 
     //####################################
@@ -57,52 +55,27 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Update_SellerOrderId
         $backToDate = new \DateTime('now', new \DateTimeZone('UTC'));
         $backToDate->modify('-1 day');
 
-        $amazonOrderTable = Mage::getResourceModel('M2ePro/Amazon_Order')->getMainTable();
+        // Processing orders from last 7 days for orders of replacement
+        $backToReplacementDate = new \DateTime('now', new \DateTimeZone('UTC'));
+        $backToReplacementDate->modify('-7 day');
+
         $connWrite = Mage::getSingleton('core/resource')->getConnection('core_write');
 
         $enabledMerchantIds = array_unique($enabledMerchantIds);
 
         foreach ($enabledMerchantIds as $enabledMerchantId) {
-            /** @var $ordersCollection Ess_M2ePro_Model_Resource_Order_Collection */
-            $ordersCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Order');
-
-            $ordersCollection->addFieldToFilter('main_table.account_id', array('in' => $enabledAccountIds));
-            $ordersCollection->addFieldToFilter('main_table.magento_order_id', array('notnull' => true));
-            $ordersCollection->addFieldToFilter(
-                'main_table.create_date', array('gt' => $backToDate->format('Y-m-d H:i:s'))
-            );
-            $ordersCollection->addFieldToFilter(
-                'second_table.status', array('neq' => Ess_M2ePro_Model_Amazon_Order::STATUS_CANCELED)
-            );
-            $ordersCollection->addFieldToFilter('second_table.seller_order_id', array('null' => true));
-
-            $ordersCollection->getSelect()->join(
-                array('sfo' => Mage::getModel('sales/order')->getResource()->getMainTable()),
-                '(`main_table`.`magento_order_id` = `sfo`.`entity_id`)',
-                array(
-                    'increment_id' => 'sfo.increment_id',
-                )
-            );
-
-            $ordersCollection->getSelect()->join(
-                array('maa' => Mage::getResourceModel('M2ePro/Amazon_Account')->getMainTable()),
-                '(`main_table`.`account_id` = `maa`.`account_id`)',
-                array(
-                    'merchant_id' => 'maa.merchant_id',
-                    'server_hash' => 'maa.server_hash',
-                )
-            );
-
-            $ordersCollection->addFieldToFilter('maa.merchant_id', array('eq' => $enabledMerchantId));
-
-            $ordersCollection->getSelect()->limit(self::ORDERS_PER_MERCHANT);
-
             // Preparing data structure for calls
             $orders = array();
             $accounts = array();
             $ordersToUpdate = array();
+            $collection = $this->getOrderCollection(
+                $enabledAccountIds,
+                $enabledMerchantId,
+                $backToDate->format('Y-m-d H:i:s'),
+                $backToReplacementDate->format('Y-m-d H:i:s')
+            );
 
-            foreach ($ordersCollection->getData() as $orderData) {
+            foreach ($collection->getItems() as $orderData) {
                 $orders[$orderData['order_id']] = array(
                     'amazon_order_id' => $orderData['amazon_order_id'],
                     'seller_order_id' => $orderData['increment_id']
@@ -140,7 +113,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Update_SellerOrderId
 
                 foreach ($ordersToUpdate as $orderId => $orderData) {
                     $connWrite->update(
-                        $amazonOrderTable,
+                        Mage::getResourceModel('M2ePro/Amazon_Order')->getMainTable(),
                         array(
                             'seller_order_id' => $orderData['seller_order_id']
                         ),
@@ -159,5 +132,48 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Update_SellerOrderId
         }
     }
 
+    /**
+     * @param $enabledAccountIds
+     * @param $enabledMerchantId
+     * @param $date
+     * @param $replacementDate
+     *
+     * @return Ess_M2ePro_Model_Resource_Order_Collection
+     */
+    private function getOrderCollection($enabledAccountIds, $enabledMerchantId, $date, $replacementDate)
+    {
+        /** @var Ess_M2ePro_Model_Resource_Order_Collection $collection*/
+        $collection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Order');
+        $collection->getSelect()->join(
+            array('sfo' => Mage::getModel('sales/order')->getResource()->getMainTable()),
+            '(`main_table`.`magento_order_id` = `sfo`.`entity_id`)',
+            array(
+                'increment_id' => 'sfo.increment_id',
+            )
+        );
+
+        $collection->getSelect()->join(
+            array('maa' => Mage::getResourceModel('M2ePro/Amazon_Account')->getMainTable()),
+            '(`main_table`.`account_id` = `maa`.`account_id`)',
+            array(
+                'merchant_id' => 'maa.merchant_id',
+                'server_hash' => 'maa.server_hash',
+            )
+        );
+
+        $collection->addFieldToFilter('main_table.account_id', array('in' => $enabledAccountIds));
+        $collection->addFieldToFilter('main_table.magento_order_id', array('notnull' => true));
+        $collection->addFieldToFilter(
+            'second_table.status', array('neq' => Ess_M2ePro_Model_Amazon_Order::STATUS_CANCELED)
+        );
+        $collection->addFieldToFilter('second_table.seller_order_id', array('null' => true));
+        $collection->addFieldToFilter('maa.merchant_id', array('eq' => $enabledMerchantId));
+        $where = "(`main_table`.`create_date` > '{$date}' AND `second_table`.`is_replacement` = 0)";
+        $where .= " OR (`main_table`.`create_date` > '{$replacementDate}' AND `second_table`.`is_replacement` = 1)";
+        $collection->getSelect()->where($where);
+        $collection->getSelect()->limit(self::ORDERS_PER_MERCHANT);
+
+        return $collection;
+    }
     //####################################
 }

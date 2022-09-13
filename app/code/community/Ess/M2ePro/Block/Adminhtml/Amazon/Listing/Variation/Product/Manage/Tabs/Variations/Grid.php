@@ -935,7 +935,6 @@ HTML;
         $viewTemplateDescriptionsGrid = $this->getUrl('*/adminhtml_amazon_listing/viewTemplateDescriptionsGrid');
         $templateDescriptionPopupTitle = $helper->escapeJs($helper->__('Assign Description Policy for Products'));
 
-        $getAFNQtyBySku = $this->getUrl('*/adminhtml_amazon_listing/getAFNQtyBySku');
         $getUpdatedRepricingPriceBySkus = $this->getUrl(
             '*/adminhtml_amazon_listing_repricing/getUpdatedPriceBySkus'
         );
@@ -977,7 +976,6 @@ HTML;
     M2ePro.url.validateProductsForTemplateDescriptionAssign = '{$validateProductsForTemplateDescriptionAssign}';
     M2ePro.url.viewTemplateDescriptionsGrid = '{$viewTemplateDescriptionsGrid}';
 
-    M2ePro.url.getAFNQtyBySku = '{$getAFNQtyBySku}';
     M2ePro.url.getUpdatedRepricingPriceBySkus = '{$getUpdatedRepricingPriceBySkus}';
 
     M2ePro.text.locked_obj_notice = '{$lockedObjNoticeMessage}';
@@ -1041,7 +1039,6 @@ HTML;
         ListingProgressBarObj = new ProgressBar('listing_view_progress_bar');
         GridWrapperObj = new AreaWrapper('listing_view_content_container');
 
-        AmazonListingAfnQtyObj = new AmazonListingAfnQty();
         AmazonListingRepricingPriceObj = new AmazonListingRepricingPrice();
 
         setTimeout(function() {

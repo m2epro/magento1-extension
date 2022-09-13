@@ -8,7 +8,8 @@
 
 class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_View_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
-    //########################################
+    const ACTUAL_QTY_EXPRESSION =
+        'IF(second_table.is_afn_channel = 1, second_table.online_afn_qty, second_table.online_qty)';
 
     public function __construct()
     {
@@ -61,6 +62,11 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_View_Grid extends Mage_Adm
                 $this->getRequest()->getParam('marketplace')
             );
         }
+
+        //@codingStandardsIgnoreLine
+        $collection->getSelect()->columns(
+            array('online_actual_qty' => self::ACTUAL_QTY_EXPRESSION)
+        );
 
         // Set collection to grid
         $this->setCollection($collection);
@@ -118,8 +124,8 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_View_Grid extends Mage_Adm
                 'align'                     => 'right',
                 'width'                     => '110px',
                 'type'                      => 'number',
-                'index'                     => 'online_qty',
-                'filter_index'              => 'online_qty',
+                'index'                     => 'online_actual_qty',
+                'filter_index'              => 'online_actual_qty',
                 'frame_callback'            => array($this, 'callbackColumnAvailableQty'),
                 'filter'                    => 'M2ePro/adminhtml_amazon_grid_column_filter_qty',
                 'filter_condition_callback' => array($this, 'callbackFilterQty')
@@ -296,28 +302,10 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_View_Grid extends Mage_Adm
             return Mage::helper('M2ePro')->__('N/A');
         }
 
-        if ((bool)$row->getData('is_afn_channel')) {
-            $sku = $row->getData('sku');
-
-            $afn = Mage::helper('M2ePro')->__('AFN');
-            $total = Mage::helper('M2ePro')->__('Total');
-            $inStock = Mage::helper('M2ePro')->__('In Stock');
-            $productId = $row->getData('id');
-            $accountId = $row->getData('account_id');
-
-            return <<<HTML
-<div id="m2ePro_afn_qty_value_{$productId}">
-    <span class="m2ePro-online-sku-value" productId="{$productId}" style="display: none">{$sku}</span>
-    <span class="m2epro-empty-afn-qty-data" style="display: none">{$afn}</span>
-    <div class="m2epro-afn-qty-data" style="display: none">
-        <div class="total">{$total}: <span></span></div>
-        <div class="in-stock">{$inStock}: <span></span></div>
-    </div>
-    <a href="javascript:void(0)"
-        onclick="AmazonListingAfnQtyObj.showAfnQty(this,'{$sku}',{$productId}, {$accountId})">
-        {$afn}</a>
-</div>
-HTML;
+        if ($row->getData('is_afn_channel')) {
+            $qty = $row->getData('online_afn_qty');
+            $qty = $qty !== null ? $qty : Mage::helper('M2ePro')->__('N/A');
+            return "AFN ($qty)";
         }
 
         if ($value === null || $value === '') {
@@ -493,7 +481,7 @@ HTML;
         $where = '';
 
         if (isset($value['from']) && $value['from'] != '') {
-            $where .= 'online_qty >= ' . (int)$value['from'];
+            $where .= self::ACTUAL_QTY_EXPRESSION . ' >= ' . (int)$value['from'];
         }
 
         if (isset($value['to']) && $value['to'] != '') {
@@ -501,12 +489,12 @@ HTML;
                 $where .= ' AND ';
             }
 
-            $where .= 'online_qty <= ' . (int)$value['to'];
+            $where .= self::ACTUAL_QTY_EXPRESSION . ' <= ' . (int)$value['to'];
         }
 
         if (isset($value['afn']) && $value['afn'] !== '') {
             if (!empty($where)) {
-                $where = '(' . $where . ') OR ';
+                $where .= ' AND ';
             }
 
             $where .= 'is_afn_channel = ' . (int)$value['afn'];

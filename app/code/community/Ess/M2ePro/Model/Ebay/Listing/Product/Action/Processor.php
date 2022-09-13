@@ -49,6 +49,7 @@ final class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processor
             array()
         );
         $actionCollection->addFieldToFilter('p.id', array('null' => true));
+        $actionCollection->removeAllFieldsFromSelect();
 
         /** @var Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processing[] $actions */
         $actions = $actionCollection->getItems();

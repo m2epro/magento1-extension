@@ -9,9 +9,9 @@
 class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Search_M2ePro_Grid
     extends Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Search_Grid
 {
-    protected $_parentAndChildReviseScheduledCache = array();
+    const ACTUAL_QTY_EXPRESSION = 'IF(alp.is_afn_channel = 1, alp.online_afn_qty, alp.online_qty)';
 
-    //########################################
+    protected $_parentAndChildReviseScheduledCache = array();
 
     public function __construct()
     {
@@ -72,6 +72,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Search_M2ePro_Grid
                 'variation_child_statuses'     => 'variation_child_statuses',
                 'online_sku'                   => 'sku',
                 'online_qty'                   => 'online_qty',
+                'online_afn_qty'               => 'online_afn_qty',
                 'online_regular_price'         => 'online_regular_price',
                 'online_regular_sale_price'            => 'online_regular_sale_price',
                 'online_regular_sale_price_start_date' => 'online_regular_sale_price_start_date',
@@ -114,6 +115,12 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Search_M2ePro_Grid
             ),
             null,
             'left'
+        );
+
+        $collection->addExpressionAttributeToSelect(
+            'online_actual_qty',
+            self::ACTUAL_QTY_EXPRESSION,
+            array()
         );
 
         $accountId = (int)$this->getRequest()->getParam('amazonAccount', false);
@@ -652,7 +659,7 @@ HTML;
 
         if (isset($value['from']) && $value['from'] != '') {
             $quoted = $collection->getConnection()->quote($value['from']);
-            $where .= 'online_qty >= ' . $quoted;
+            $where .= self::ACTUAL_QTY_EXPRESSION . ' >= ' . $quoted;
         }
 
         if (isset($value['to']) && $value['to'] != '') {
@@ -661,12 +668,12 @@ HTML;
             }
 
             $quoted = $collection->getConnection()->quote($value['to']);
-            $where .= 'online_qty <= ' . $quoted;
+            $where .= self::ACTUAL_QTY_EXPRESSION . ' <= ' . $quoted;
         }
 
         if (isset($value['afn']) && $value['afn'] !== '') {
             if (!empty($where)) {
-                $where = '(' . $where . ') OR ';
+                $where .= ' AND ';
             }
 
             if ((int)$value['afn'] == 1) {

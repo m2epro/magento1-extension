@@ -9,6 +9,8 @@
 class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Sellercentral_Grid
     extends Ess_M2ePro_Block_Adminhtml_Magento_Product_Grid_Abstract
 {
+    const ACTUAL_QTY_EXPRESSION = 'IF(alp.is_afn_channel = 1, alp.online_afn_qty, alp.online_qty)';
+
     /** @var $_sellingFormatTemplate Ess_M2ePro_Model_Amazon_Template_SellingFormat */
     protected $_sellingFormatTemplate;
 
@@ -101,6 +103,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Sellercentral_Grid
                 'search_settings_status'         => 'search_settings_status',
                 'amazon_sku'                     => 'sku',
                 'online_qty'                     => 'online_qty',
+                'online_afn_qty'                 => 'online_afn_qty',
                 'online_regular_price'           => 'online_regular_price',
                 'online_regular_sale_price'      => 'IF(
                   `alp`.`online_regular_sale_price_start_date` IS NOT NULL AND
@@ -133,6 +136,12 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Sellercentral_Grid
                 'is_repricing_disabled' => 'is_online_disabled',
                 'is_repricing_inactive' => 'is_online_inactive',
             )
+        );
+
+        $collection->addExpressionAttributeToSelect(
+            'online_actual_qty',
+            self::ACTUAL_QTY_EXPRESSION,
+            array()
         );
 
         if ($this->isFilterOrSortByPriceIsUsed('online_price', 'amazon_online_price')) {
@@ -237,8 +246,8 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Sellercentral_Grid
                 'align'                     => 'right',
                 'width'                     => '70px',
                 'type'                      => 'number',
-                'index'                     => 'online_qty',
-                'filter_index'              => 'online_qty',
+                'index'                     => 'online_actual_qty',
+                'filter_index'              => 'online_actual_qty',
                 'renderer'                  => 'M2ePro/adminhtml_amazon_grid_column_renderer_qty',
                 'filter'                    => 'M2ePro/adminhtml_amazon_grid_column_filter_qty',
                 'filter_condition_callback' => array($this, 'callbackFilterQty')
@@ -735,7 +744,7 @@ HTML;
         $where = '';
 
         if (isset($value['from']) && $value['from'] != '') {
-            $where .= 'online_qty >= ' . (int)$value['from'];
+            $where .= self::ACTUAL_QTY_EXPRESSION . ' >= ' . (int)$value['from'];
         }
 
         if (isset($value['to']) && $value['to'] != '') {
@@ -743,12 +752,12 @@ HTML;
                 $where .= ' AND ';
             }
 
-            $where .= 'online_qty <= ' . (int)$value['to'];
+            $where .= self::ACTUAL_QTY_EXPRESSION . ' <= ' . (int)$value['to'];
         }
 
         if (isset($value['afn']) && $value['afn'] !== '') {
             if (!empty($where)) {
-                $where = '(' . $where . ') AND ';
+                $where .= ' AND ';
             }
 
             if ((int)$value['afn'] == 1) {

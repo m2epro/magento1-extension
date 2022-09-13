@@ -77,7 +77,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_View extends Mage_Adminhtm
         $removingProductsUrl = $this->getUrl('*/adminhtml_amazon_listing_other/removing');
         $unmappingProductsUrl = $this->getUrl('*/adminhtml_listing_other_mapping/unmapping');
 
-        $getAFNQtyBySku = $this->getUrl('*/adminhtml_amazon_listing/getAFNQtyBySku');
         $getUpdatedRepricingPriceBySkus = $this->getUrl(
             '*/adminhtml_amazon_listing_repricing/getUpdatedPriceBySkus'
         );
@@ -148,7 +147,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_View extends Mage_Adminhtm
     M2ePro.url.removingProducts = '{$removingProductsUrl}';
     M2ePro.url.unmappingProducts = '{$unmappingProductsUrl}';
 
-    M2ePro.url.getAFNQtyBySku = '{$getAFNQtyBySku}';
     M2ePro.url.getUpdatedRepricingPriceBySkus = '{$getUpdatedRepricingPriceBySkus}';
 
     M2ePro.text.create_listing = '{$createListing}';
@@ -171,7 +169,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_View extends Mage_Adminhtm
             'amazon'
         );
 
-        AmazonListingAfnQtyObj = new AmazonListingAfnQty();
         AmazonListingRepricingPriceObj = new AmazonListingRepricingPrice();
     });
 

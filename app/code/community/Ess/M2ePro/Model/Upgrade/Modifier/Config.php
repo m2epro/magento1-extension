@@ -18,11 +18,19 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Config extends Ess_M2ePro_Model_Upgrade_
      */
     public function getRow($group, $key)
     {
+        $group = $this->prepareGroup($group);
+        $key = $this->prepareKey($key);
+
         $query = $this->getConnection()
                       ->select()
                       ->from($this->getTableName())
-                      ->where('`group` = ?', $this->prepareGroup($group))
-                      ->where('`key` = ?', $this->prepareKey($key));
+                      ->where('`key` = ?', $key);
+
+        if ($group === null) {
+            $query->where('`group` IS NULL');
+        } else {
+            $query->where('`group` = ?', $group);
+        }
 
         return $this->getConnection()->fetchRow($query);
     }
@@ -53,8 +61,14 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Config extends Ess_M2ePro_Model_Upgrade_
     {
         $query = $this->getConnection()
                       ->select()
-                      ->from($this->getTableName())
-                      ->where('`group` = ?', $this->prepareGroup($group));
+                      ->from($this->getTableName());
+
+        $group = $this->prepareGroup($group);
+        if ($group === null) {
+            $query->where('`group` IS NULL');
+        } else {
+            $query->where('`group` = ?', $group);
+        }
 
         if ($key !== null) {
             $query->where('`key` = ?', $this->prepareKey($key));
@@ -126,9 +140,12 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Config extends Ess_M2ePro_Model_Upgrade_
             return $this;
         }
 
-        $where = array(
-            '`group` = ?' => $this->prepareGroup($group)
-        );
+        $group = $this->prepareGroup($group);
+        if ($group === null) {
+            $where = array('`group` IS NULL');
+        } else {
+            $where = array('`group` = ?' => $group);
+        }
 
         if ($key !== null) {
             $where['`key` = ?'] = $this->prepareKey($key);
