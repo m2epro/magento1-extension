@@ -69,6 +69,10 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Table extends Ess_M2ePro_Model_Upgrade_M
             );
         }
 
+        if ($this->isNeedChangeRowFormat()) {
+            $this->changeRowFormat();
+        }
+
         $definition = $this->buildColumnDefinitionByName($from);
 
         if (empty($definition)) {
@@ -160,6 +164,10 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Table extends Ess_M2ePro_Model_Upgrade_M
             );
         }
 
+        if ($this->isNeedChangeRowFormat()) {
+            $this->changeRowFormat();
+        }
+
         $definition = $this->buildColumnDefinition($type, $default, $after, $autoCommit);
 
         if (empty($definition)) {
@@ -213,6 +221,10 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Table extends Ess_M2ePro_Model_Upgrade_M
             );
         }
 
+        if ($this->isNeedChangeRowFormat()) {
+            $this->changeRowFormat();
+        }
+
         $definition = $this->buildColumnDefinition($type, $default, $after, $autoCommit);
 
         if (empty($definition)) {
@@ -243,11 +255,16 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Table extends Ess_M2ePro_Model_Upgrade_M
      * @param bool $autoCommit
      * @return $this
      * @throws Ess_M2ePro_Model_Exception_Setup
+     * @throws Zend_Db_Adapter_Exception|Zend_Db_Statement_Exception
      */
     public function dropColumn($name, $dropIndex = true, $autoCommit = true)
     {
         if (!$this->isColumnExists($name)) {
             return $this;
+        }
+
+        if ($this->isNeedChangeRowFormat()) {
+            $this->changeRowFormat();
         }
 
         if ($autoCommit) {
@@ -518,8 +535,8 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Table extends Ess_M2ePro_Model_Upgrade_M
 
     /**
      * @return bool
-     * @throws \Ess\M2ePro\Model\Exception\Logic
-     * @throws \Zend_Db_Statement_Exception
+     * @throws Ess_M2ePro_Model_Exception_Setup
+     * @throws Zend_Db_Statement_Exception
      */
     protected function isNeedChangeRowFormat()
     {
@@ -542,7 +559,9 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Table extends Ess_M2ePro_Model_Upgrade_M
     }
 
     /**
-     * @throws \Zend_Db_Statement_Exception
+     * @return void
+     * @throws Ess_M2ePro_Model_Exception_Setup
+     * @throws Zend_Db_Adapter_Exception
      */
     protected function changeRowFormat()
     {
