@@ -263,7 +263,7 @@
                         <label><?php echo Mage::helper('M2ePro')->__('MWS Auth Token'); ?>: <span class="required">*</span></label>
                     </td>
                     <td class="value">
-                        <input id="token" type="text" class="M2ePro-marketplace-merchant input-text" name="token" <?php if ($isAuthMode) echo ' value="'.$mwsToken.'"'; ?> class="input-text M2ePro-required-when-visible" />
+                        <input id="token" type="text" class="M2ePro-marketplace-merchant input-text" name="token" <?php if ($isAuthMode) echo ' value="'.$mwsToken.'"'; ?> <?php if ($isEdit) echo 'disabled="disabled"'; ?>/>
                         <p class="note">
                             <span><?php echo Mage::helper('M2ePro')->__('Paste generated MWS Auth Token from Amazon. (It must look like: amzn.mws.bna3f75c-a683-49c7-6da0-749y33313dft).'); ?></span>
                         </p>
