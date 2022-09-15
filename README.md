@@ -1,4 +1,4 @@
-# eBay / Amazon / Walmart Integration for Magento v1.x.x
+# eBay / Amazon / Walmart Integration for OpenMage / Magento 1
  
 M2E Pro extension integrates Magento into eBay, Amazon and Walmart platforms to deliver the multi-channel retail experience.
 
