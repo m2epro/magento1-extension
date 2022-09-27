@@ -132,11 +132,12 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Order_Grid extends Mage_Adminhtml_Block
         $this->addColumn(
             'walmart_order_id',
             array(
-                'header'         => Mage::helper('M2ePro')->__('Walmart Order #'),
-                'align'          => 'left',
-                'width'          => '110px',
-                'index'          => 'walmart_order_id',
-                'frame_callback' => array($this, 'callbackColumnWalmartOrderId')
+                'header'                    => Mage::helper('M2ePro')->__('Walmart Purchase Order #'),
+                'align'                     => 'left',
+                'width'                     => '110px',
+                'index'                     => 'walmart_order_id',
+                'frame_callback'            => array($this, 'callbackColumnWalmartOrderId'),
+                'filter_condition_callback' => array($this, 'callbackFilterOrders'),
             )
         );
 
@@ -282,9 +283,16 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Order_Grid extends Mage_Adminhtml_Block
         $itemUrl = $this->getUrl('*/adminhtml_walmart_order/view', array('id' => $row->getId(), 'back' => $back));
         $walmartOrderId = Mage::helper('M2ePro')->escapeHtml($row->getData('walmart_order_id'));
 
-        $returnString = <<<HTML
-<a href="{$itemUrl}">{$walmartOrderId}</a>
-HTML;
+        $returnString = "<a href=\"{$itemUrl}\">{$walmartOrderId}</a>";
+
+        $customerOrderId = Mage::helper('M2ePro')->escapeHtml($row->getData('customer_order_id'));
+        if (!empty($customerOrderId)) {
+            $returnString .= sprintf(
+                "<br>[ <b>%s</b> %s ]",
+                Mage::helper('M2ePro/Data')->__('CO #'),
+                $customerOrderId
+            );
+        }
 
         /** @var $notes Ess_M2ePro_Model_Order_Note[] */
         $notes = $this->_notesCollection->getItemsByColumnValue('order_id', $row->getData('id'));
@@ -488,6 +496,19 @@ HTML;
     }
 
     //########################################
+
+    protected function callbackFilterOrders($collection, $column)
+    {
+        $value = $column->getFilter()->getValue();
+        if ($value == null) {
+            return;
+        }
+
+        $collection->getSelect()->where(
+            "second_table.walmart_order_id LIKE ? OR second_table.customer_order_id LIKE ?",
+            '%' . $value . '%'
+        );
+    }
 
     protected function callbackFilterItems($collection, $column)
     {

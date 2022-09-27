@@ -59,6 +59,7 @@ class Ess_M2ePro_Model_Walmart_Order_Builder extends Mage_Core_Model_Abstract
         // ---------------------------------------
         $this->setData('account_id', $this->_account->getId());
         $this->setData('walmart_order_id', $data['walmart_order_id']);
+        $this->setData('customer_order_id', $data['customer_order_id']);
         $this->setData('marketplace_id', $this->_account->getChildObject()->getMarketplaceId());
 
         $itemsStatuses = array();

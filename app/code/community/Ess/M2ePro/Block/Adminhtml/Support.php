@@ -32,7 +32,7 @@ class Ess_M2ePro_Block_Adminhtml_Support extends Mage_Adminhtml_Block_Widget_For
         $this->removeButton('save');
         $this->removeButton('edit');
 
-        $url = Mage::helper('M2ePro/Module_Support')->getKnowledgeBaseUrl();
+        $url = Mage::helper('M2ePro/Module_Support')->getSupportUrl('/support/solutions/9000117126');
         $this->_addButton(
             'knowledge_base',
             array(

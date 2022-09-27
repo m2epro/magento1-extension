@@ -26,7 +26,7 @@
                 <span>
                     <?php echo Mage::helper('M2ePro')->__(
                         'A background mechanism that provides permanent automatic synchronization. Find more details <a href="%url%" target="_blank">here</a>',
-                        Mage::helper('M2ePro/Module_Support')->getKnowledgeBaseUrl('1499822')
+                        Mage::helper('M2ePro/Module_Support')->getSupportUrl('/support/solutions/articles/9000200886')
                     ); ?>
                 </span>
             </span>
@@ -37,7 +37,7 @@
             <label style="padding-right: 10px;"><?php echo Mage::helper('M2ePro')->__('Last Run'); ?>: </label>
             <span <?php if ($this->cronIsNotWorking) : echo 'style="color: red;"'; endif; ?>><?php echo $this->cronLastRunTime ?></span>
             <?php if ($this->cronIsNotWorking) : ?>
-                &nbsp;<a href="<?php echo Mage::helper('M2ePro/Module_Support')->getKnowledgeBaseUrl('1577329'); ?>" target="_blank"><?php echo Mage::helper('M2ePro')->__('[read more]'); ?></a>
+                &nbsp;<a href="<?php echo Mage::helper('M2ePro/Module_Support')->getSupportUrl('/support/solutions/articles/9000200879'); ?>" target="_blank"><?php echo Mage::helper('M2ePro')->__('[read more]'); ?></a>
             <?php endif; ?>
         </td>
     </tr>

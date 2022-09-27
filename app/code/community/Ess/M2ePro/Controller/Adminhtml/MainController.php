@@ -216,7 +216,7 @@ abstract class Ess_M2ePro_Controller_Adminhtml_MainController
             !Mage::helper('M2ePro/Module')->isDevelopmentEnvironment()
         ) {
 
-            $url = Mage::helper('M2ePro/Module_Support')->getKnowledgebaseUrl('cron-running');
+            $url = Mage::helper('M2ePro/Module_Support')->getSupportUrl('/support/solutions/articles/9000200402');
 
             $message  = 'Attention! AUTOMATIC Synchronization is not running at the moment. ';
             $message .= 'It does not allow M2E Pro to work correctly.<br/>';
@@ -272,7 +272,7 @@ To start working with M2E Pro, you need to associate your current IP/Domain with
 HTML
             ,
             Mage::helper('M2ePro/View_Configuration')->getLicenseUrl($params),
-            Mage::helper('M2ePro/Module_Support')->getKnowledgeBaseUrl('1561756')
+            Mage::helper('M2ePro/Module_Support')->getSupportUrl('/support/solutions/articles/9000199815')
         );
 
         $this->_getSession()->addError($message);

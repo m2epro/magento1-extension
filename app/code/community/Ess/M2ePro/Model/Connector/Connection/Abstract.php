@@ -133,7 +133,7 @@ abstract class Ess_M2ePro_Model_Connector_Connection_Abstract
     {
         return Mage::helper('M2ePro')->__(
             'M2E Pro Server connection failed. Find the solution <a target="_blank" href="%url%">here</a>',
-            Mage::helper('M2ePro/Module_Support')->getKnowledgebaseUrl('664870')
+            Mage::helper('M2ePro/Module_Support')->getSupportUrl('/support/solutions/articles/9000200887')
         );
     }
 

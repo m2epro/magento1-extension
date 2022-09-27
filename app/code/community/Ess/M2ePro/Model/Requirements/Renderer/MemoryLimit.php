@@ -48,7 +48,7 @@ HTML;
         $helper = Mage::helper('M2ePro');
         $testUrl = Mage::helper('adminhtml')->getUrl('*/adminhtml_support/testMemoryLimit');
         $testResultUrl = Mage::helper('adminhtml')->getUrl('*/adminhtml_support/testMemoryLimitResult');
-        $knowledgeBaseUrl = Mage::helper('M2ePro/Module_Support')->getKnowledgeBaseUrl('1535371');
+        $knowledgeBaseUrl = Mage::helper('M2ePro/Module_Support')->getSupportUrl('/support/solutions/articles/9000200884');
 
         return <<<HTML
 <script>

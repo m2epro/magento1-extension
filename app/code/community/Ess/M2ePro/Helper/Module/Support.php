@@ -74,40 +74,10 @@ class Ess_M2ePro_Helper_Module_Support extends Mage_Core_Helper_Abstract
         return implode('/', $urlParts);
     }
 
-    public function getKnowledgeBaseUrl($articleUrl = null)
+    public function getSupportUrl($urlPart)
     {
-        $urlParts[] = $this->getSupportUrl()  . '/knowledgebase';
-
-        if ($articleUrl) {
-            $urlParts[] = trim($articleUrl, '/');
-        }
-
-        return implode('/', $urlParts);
-    }
-
-    public function getHowToGuideUrl($articleUrl)
-    {
-        $urlParts[] = $this->getSupportUrl()  . '/how-to-guide';
-
-        if ($articleUrl) {
-            $urlParts[] = trim($articleUrl, '/');
-        }
-
-        return implode('/', $urlParts);
-    }
-
-    public function getSupportUrl($urlPart = null)
-    {
-        $urlParts[] = trim(
-            Mage::helper('M2ePro/Module')->getConfig()->getGroupValue('/support/', 'support_url'),
-            '/'
-        );
-
-        if ($urlPart) {
-            $urlParts[] = trim($urlPart, '/');
-        }
-
-        return implode('/', $urlParts);
+        $baseSupportUrl = Mage::helper('M2ePro/Module')->getConfig()->getGroupValue('/support/', 'support_url');
+        return rtrim($baseSupportUrl, '/') . '/' . ltrim($urlPart, '/');
     }
 
     public function getMagentoMarketplaceUrl()
