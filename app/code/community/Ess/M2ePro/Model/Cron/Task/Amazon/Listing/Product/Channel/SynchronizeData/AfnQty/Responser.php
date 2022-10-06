@@ -143,7 +143,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
                 'aa.account_id=l.account_id',
                 array()
             )
-            ->where('aa.merchant_id = ?', $merchantId);
+            ->where('aa.merchant_id = ? AND is_afn_channel = 1', $merchantId);
 
         /** @var Ess_M2ePro_Model_Resource_Listing_Other_Collection $unmanagedListingProductCollection */
         $unmanagedListingProductCollection = Mage::helper('M2ePro/Component_Amazon')
@@ -158,7 +158,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
                 'aa.account_id=main_table.account_id',
                 array()
             )
-            ->where('aa.merchant_id = ?', $merchantId);
+            ->where('aa.merchant_id = ? AND is_afn_channel = 1', $merchantId);
 
         /** @var Ess_M2ePro_Model_Listing_Product $item */
         foreach ($m2eproListingProductCollection->getItems() as $item) {
