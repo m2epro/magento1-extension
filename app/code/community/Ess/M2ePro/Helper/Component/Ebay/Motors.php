@@ -12,12 +12,12 @@ class Ess_M2ePro_Helper_Component_Ebay_Motors extends Mage_Core_Helper_Abstract
     const TYPE_KTYPE      = 2;
     const TYPE_EPID_UK    = 3;
     const TYPE_EPID_DE    = 4;
-    const TYPE_EPID_AU    = 5;
+    const TYPE_EPID_IT    = 6;
 
     const EPID_SCOPE_MOTORS = 1;
     const EPID_SCOPE_UK     = 2;
     const EPID_SCOPE_DE     = 3;
-    const EPID_SCOPE_AU     = 4;
+    const EPID_SCOPE_IT     = 5;
 
     const PRODUCT_TYPE_VEHICLE    = 0;
     const PRODUCT_TYPE_MOTORCYCLE = 1;
@@ -42,8 +42,8 @@ class Ess_M2ePro_Helper_Component_Ebay_Motors extends Mage_Core_Helper_Abstract
             case self::TYPE_EPID_DE:
                 return Mage::helper('M2ePro/Component_Ebay_Configuration')->getDeEpidsAttribute();
 
-            case self::TYPE_EPID_AU:
-                return Mage::helper('M2ePro/Component_Ebay_Configuration')->getAuEpidsAttribute();
+            case self::TYPE_EPID_IT:
+                return Mage::helper('M2ePro/Component_Ebay_Configuration')->getItEpidsAttribute();
         }
 
         return '';
@@ -203,11 +203,15 @@ class Ess_M2ePro_Helper_Component_Ebay_Motors extends Mage_Core_Helper_Abstract
 
     public function isTypeBasedOnEpids($type)
     {
-        if (in_array($type, array(self::TYPE_EPID_MOTOR, self::TYPE_EPID_UK, self::TYPE_EPID_DE, self::TYPE_EPID_AU))) {
-            return true;
-        }
-
-        return false;
+        return in_array(
+            $type,
+            array(
+                self::TYPE_EPID_MOTOR,
+                self::TYPE_EPID_UK,
+                self::TYPE_EPID_DE,
+                self::TYPE_EPID_IT
+            )
+        );
     }
 
     public function isTypeBasedOnKtypes($type)
@@ -261,8 +265,8 @@ class Ess_M2ePro_Helper_Component_Ebay_Motors extends Mage_Core_Helper_Abstract
             case self::TYPE_EPID_DE:
                 return self::EPID_SCOPE_DE;
 
-            case self::TYPE_EPID_AU:
-                return self::EPID_SCOPE_AU;
+            case self::TYPE_EPID_IT:
+                return self::EPID_SCOPE_IT;
 
             default:
                 return null;
@@ -281,8 +285,8 @@ class Ess_M2ePro_Helper_Component_Ebay_Motors extends Mage_Core_Helper_Abstract
             case Ess_M2ePro_Helper_Component_Ebay::MARKETPLACE_DE:
                 return self::TYPE_EPID_DE;
 
-            case Ess_M2ePro_Helper_Component_Ebay::MARKETPLACE_AU:
-                return self::TYPE_EPID_AU;
+            case Ess_M2ePro_Helper_Component_Ebay::MARKETPLACE_IT:
+                return self::TYPE_EPID_IT;
 
             default:
                 return null;

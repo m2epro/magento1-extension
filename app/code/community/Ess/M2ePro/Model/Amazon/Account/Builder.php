@@ -321,10 +321,21 @@ class Ess_M2ePro_Model_Amazon_Account_Builder extends Ess_M2ePro_Model_ActiveRec
             }
         }
 
-        $data['magento_orders_settings']['shipping_information']['ship_by_date']
-            = isset($this->_rawData['magento_orders_settings']['shipping_information']['ship_by_date'])
-            ? (int)$this->_rawData['magento_orders_settings']['shipping_information']['ship_by_date']
-            : 1;
+        // shipping information
+        // ---------------------------------------
+        $tempKey = 'shipping_information';
+        $tempSettings = !empty($this->_rawData['magento_orders_settings'][$tempKey])
+            ? $this->_rawData['magento_orders_settings'][$tempKey] : array();
+
+        $keys = array(
+            'ship_by_date',
+            'update_without_track',
+        );
+        foreach ($keys as $key) {
+            if (isset($tempSettings[$key])) {
+                $data['magento_orders_settings'][$tempKey][$key] = $tempSettings[$key];
+            }
+        }
 
         $data['magento_orders_settings'] = Mage::helper('M2ePro')
             ->jsonEncode($data['magento_orders_settings']);
@@ -427,7 +438,8 @@ class Ess_M2ePro_Model_Amazon_Account_Builder extends Ess_M2ePro_Model_ActiveRec
                     'stock_mode' => 0
                 ),
                 'shipping_information' => array(
-                    'ship_by_date' => 1,
+                    'ship_by_date'         => 1,
+                    'update_without_track' => 1,
                 ),
             ),
 

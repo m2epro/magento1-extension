@@ -221,6 +221,18 @@ class Ess_M2ePro_Model_Walmart_Order_Builder extends Mage_Core_Model_Abstract
     //########################################
 
     /**
+     * @param ?Mage_Sales_Model_Order $magentoOrder
+     *
+     * @return bool
+     */
+    protected function isMagentoOrderUpdatable($magentoOrder)
+    {
+        return $magentoOrder !== null
+            && $magentoOrder->getState() !== Mage_Sales_Model_Order::STATE_CLOSED
+            && $magentoOrder->getState() !== Mage_Sales_Model_Order::STATE_CANCELED;
+    }
+
+    /**
      * @return bool
      */
     protected function isNew()
@@ -291,7 +303,11 @@ class Ess_M2ePro_Model_Walmart_Order_Builder extends Mage_Core_Model_Abstract
 
     protected function processMagentoOrderUpdates()
     {
-        if (!$this->hasUpdates() || $this->_order->getMagentoOrder() === null) {
+        $magentoOrder = $this->_order->getMagentoOrder();
+        if (!$this->hasUpdates()
+            || $magentoOrder === null
+            || !$this->isMagentoOrderUpdatable($magentoOrder)
+        ) {
             return;
         }
 
@@ -302,7 +318,7 @@ class Ess_M2ePro_Model_Walmart_Order_Builder extends Mage_Core_Model_Abstract
 
         /** @var $magentoOrderUpdater Ess_M2ePro_Model_Magento_Order_Updater */
         $magentoOrderUpdater = Mage::getModel('M2ePro/Magento_Order_Updater');
-        $magentoOrderUpdater->setMagentoOrder($this->_order->getMagentoOrder());
+        $magentoOrderUpdater->setMagentoOrder($magentoOrder);
 
         if ($this->hasUpdate(self::UPDATE_STATUS)) {
             $this->_order->setStatusUpdateRequired(true);
@@ -343,9 +359,14 @@ class Ess_M2ePro_Model_Walmart_Order_Builder extends Mage_Core_Model_Abstract
 
     private function addCommentsToMagentoOrder(Ess_M2ePro_Model_Order $order, $comments)
     {
+        $magentoOrder = $order->getMagentoOrder();
+        if (!$this->isMagentoOrderUpdatable($magentoOrder)) {
+            return;
+        }
+
         /** @var $magentoOrderUpdater Ess_M2ePro_Model_Magento_Order_Updater */
         $magentoOrderUpdater = Mage::getModel('M2ePro/Magento_Order_Updater');
-        $magentoOrderUpdater->setMagentoOrder($order->getMagentoOrder());
+        $magentoOrderUpdater->setMagentoOrder($magentoOrder);
         $magentoOrderUpdater->updateComments($comments);
         $magentoOrderUpdater->finishUpdate();
     }

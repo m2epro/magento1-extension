@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  * @author     M2E Pro Developers Team
  * @copyright  M2E LTD
  * @license    Commercial use is forbidden
@@ -15,12 +15,29 @@ class Ess_M2ePro_Model_Ebay_Feedback extends Ess_M2ePro_Model_Component_Abstract
     const TYPE_POSITIVE = 'Positive';
     const TYPE_NEGATIVE = 'Negative';
 
-    /**
-     * @var Ess_M2ePro_Model_Account
-     */
+    /** @var Ess_M2ePro_Model_Account */
     protected $_accountModel = null;
+    /** @var Ess_M2ePro_Model_Synchronization_Log */
+    protected $_synchronizationLog;
+    /** @var Ess_M2ePro_Helper_Data */
+    protected $_dataHelper;
+    /** @var Ess_M2ePro_Helper_Module_Exception */
+    protected $_exceptionHelper;
+    /** @var Ess_M2ePro_Helper_Module_Translation */
+    protected $_translationHelper;
 
-    //########################################
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->_synchronizationLog = Mage::getModel('M2ePro/Synchronization_Log');
+        $this->_synchronizationLog->setComponentMode(Ess_M2ePro_Helper_Component_Ebay::NICK);
+        $this->_synchronizationLog->setSynchronizationTask(Ess_M2ePro_Model_Synchronization_Log::TASK_OTHER);
+
+        $this->_dataHelper = Mage::helper('M2ePro');
+        $this->_exceptionHelper = Mage::helper('M2ePro/Module_Exception');
+        $this->_translationHelper = Mage::helper('M2ePro/Module_Translation');
+    }
 
     public function _construct()
     {
@@ -28,16 +45,12 @@ class Ess_M2ePro_Model_Ebay_Feedback extends Ess_M2ePro_Model_Component_Abstract
         $this->_init('M2ePro/Ebay_Feedback');
     }
 
-    //########################################
-
     public function deleteInstance()
     {
         $temp = parent::deleteInstance();
         $temp && $this->_accountModel = null;
         return $temp;
     }
-
-    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Account
@@ -61,17 +74,14 @@ class Ess_M2ePro_Model_Ebay_Feedback extends Ess_M2ePro_Model_Component_Abstract
          $this->_accountModel = $instance;
     }
 
-    //########################################
-
     /**
-     * @return Ess_M2ePro_Model_Ebay_Account
+     * @return Ess_M2ePro_Model_Amazon_Account|Ess_M2ePro_Model_Ebay_Account|Ess_M2ePro_Model_Walmart_Account
+     * @throws Ess_M2ePro_Model_Exception_Logic
      */
     public function getEbayAccount()
     {
         return $this->getAccount()->getChildObject();
     }
-
-    //########################################
 
     public function isNeutral()
     {
@@ -88,65 +98,8 @@ class Ess_M2ePro_Model_Ebay_Feedback extends Ess_M2ePro_Model_Component_Abstract
         return $this->getData('buyer_feedback_type') == self::TYPE_POSITIVE;
     }
 
-    //########################################
-
-    public function sendResponse($text, $type = self::TYPE_POSITIVE)
-    {
-        $paramsConnector = array(
-            'item_id'        => $this->getData('ebay_item_id'),
-            'transaction_id' => $this->getData('ebay_transaction_id'),
-            'text'           => $text,
-            'type'           => $type,
-            'target_user'    => $this->getData('buyer_name')
-        );
-
-        $this->setData('last_response_attempt_date', Mage::helper('M2ePro')->getCurrentGmtDate())->save();
-
-        try {
-
-            /** @var Ess_M2ePro_Model_Connector_Command_RealTime_Virtual $connectorObj */
-            $dispatcherObj = Mage::getModel('M2ePro/Ebay_Connector_Dispatcher');
-            $connectorObj = $dispatcherObj->getVirtualConnector(
-                'feedback', 'add', 'entity',
-                $paramsConnector, null, null,
-                $this->getAccount()
-            );
-
-            $dispatcherObj->process($connectorObj);
-            $response = $connectorObj->getResponseData();
-
-            if ($connectorObj->getResponse()->getMessages()->hasErrorEntities()) {
-                throw new Ess_M2ePro_Model_Exception(
-                    $connectorObj->getResponse()->getMessages()->getCombinedErrorsString()
-                );
-            }
-        } catch (Exception $e) {
-            Mage::helper('M2ePro/Module_Exception')->process($e);
-
-            $synchronizationLog = Mage::getModel('M2ePro/Synchronization_Log');
-            $synchronizationLog->setComponentMode(Ess_M2ePro_Helper_Component_Ebay::NICK);
-            $synchronizationLog->setSynchronizationTask(Ess_M2ePro_Model_Synchronization_Log::TASK_OTHER);
-            $synchronizationLog->addMessageFromException($e);
-
-            return false;
-        }
-
-        if (!isset($response['feedback_id'])) {
-            return false;
-        }
-
-        $this->setData('seller_feedback_id', $response['feedback_id']);
-        $this->setData('seller_feedback_type', $type);
-        $this->setData('seller_feedback_text', $text);
-        $this->setData('seller_feedback_date', $response['feedback_date']);
-
-        $this->save();
-
-        return true;
-    }
-
     /**
-     * @return Ess_M2ePro_Model_Order|null
+     * @return Ess_M2ePro_Model_Component_Parent_Abstract|null
      */
     public function getOrder()
     {
@@ -174,6 +127,4 @@ class Ess_M2ePro_Model_Ebay_Feedback extends Ess_M2ePro_Model_Component_Abstract
 
         return $order->getId() !== null ? $order : null;
     }
-
-    //########################################
 }

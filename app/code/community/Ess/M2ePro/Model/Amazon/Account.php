@@ -405,6 +405,18 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
         );
     }
 
+    /**
+     * @return bool
+     */
+    public function isUpdateWithoutTrackToMagentoOrder()
+    {
+        return (bool)$this->getSetting(
+            'magento_orders_settings',
+            array('shipping_information', 'update_without_track'),
+            true
+        );
+    }
+
     // ---------------------------------------
 
     /**

@@ -359,6 +359,18 @@
                     </td>
                 </tr>
 
+                <tr>
+                    <td class="label">
+                        <label for="magento_orders_shipping_information_update_without_track"><?php echo Mage::helper('M2ePro')->__('Update Order as Shipped without Tracking Info'); ?>: </label>
+                    </td>
+                    <td class="value" style="width: auto;">
+                        <select id="magento_orders_shipping_information_update_without_track" name="magento_orders_settings[shipping_information][update_without_track]" class="M2ePro-required-when-visible">
+                            <option value="1" <?php if ($formData['magento_orders_settings']['shipping_information']['update_without_track'] == 1) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
+                            <option value="0" <?php if ($formData['magento_orders_settings']['shipping_information']['update_without_track'] == 0) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
+                        </select>
+                    </td>
+                </tr>
+
             </table>
 
         </div>

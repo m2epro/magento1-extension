@@ -30,8 +30,8 @@ window.EbayConfiguration = Class.create(Common, {
             $('database-statistic-popup-epids-uk').show();
         } else if (motorsType == M2ePro.php.constant('Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_EPID_DE')) {
             $('database-statistic-popup-epids-de').show();
-        } else if (motorsType == M2ePro.php.constant('Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_EPID_AU')) {
-            $('database-statistic-popup-epids-au').show();
+        } else if (motorsType == M2ePro.php.constant('Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_EPID_IT')) {
+            $('database-statistic-popup-epids-it').show();
         } else {
             $('database-statistic-popup-ktypes').show();
         }
