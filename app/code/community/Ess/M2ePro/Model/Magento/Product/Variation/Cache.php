@@ -55,7 +55,7 @@ class Ess_M2ePro_Model_Magento_Product_Variation_Cache extends Ess_M2ePro_Model_
         }
 
         if ($params !== null) {
-            $data = call_user_func_array(array('parent', $methodName), $params);
+            $data = call_user_func_array(array('parent', $methodName), array_values($params));
         } else {
             $data = call_user_func(array('parent', $methodName));
         }
