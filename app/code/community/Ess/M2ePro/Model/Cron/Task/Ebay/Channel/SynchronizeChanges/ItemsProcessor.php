@@ -189,7 +189,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
             return (array)$response;
         }
 
-        if ($this->_isErrorMessageReceived) {
+        if ($this->_isErrorMessageReceived && !$this->_isResultSetTooLarge) {
             return array();
         }
 
@@ -211,7 +211,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
                 return (array)$response;
             }
 
-            if ($this->_isErrorMessageReceived) {
+            if ($this->_isErrorMessageReceived && !$this->_isResultSetTooLarge) {
                 return array();
             }
         }

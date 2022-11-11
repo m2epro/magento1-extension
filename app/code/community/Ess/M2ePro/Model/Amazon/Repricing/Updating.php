@@ -27,7 +27,7 @@ class Ess_M2ePro_Model_Amazon_Repricing_Updating extends Ess_M2ePro_Model_Amazon
             }
         }
 
-        if (!$this->sendData($changesData)) {
+        if (empty($changeData) || !$this->sendData($changesData)) {
             return false;
         }
 

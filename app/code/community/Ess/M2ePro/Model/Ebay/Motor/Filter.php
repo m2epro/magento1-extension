@@ -75,11 +75,12 @@ class Ess_M2ePro_Model_Ebay_Motor_Filter extends Ess_M2ePro_Model_Component_Abst
     public function isTypeEpid()
     {
         return in_array(
-            $this->getType(), array(
-            Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_EPID_MOTOR,
-            Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_EPID_UK,
-            Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_EPID_DE,
-            Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_EPID_AU
+            $this->getType(),
+            array(
+                Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_EPID_MOTOR,
+                Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_EPID_UK,
+                Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_EPID_DE,
+                Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_EPID_IT,
             )
         );
     }

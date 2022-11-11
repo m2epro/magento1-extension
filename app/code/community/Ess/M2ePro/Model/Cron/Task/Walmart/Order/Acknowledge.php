@@ -12,8 +12,10 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Order_Acknowledge extends Ess_M2ePro_Mo
 
     const MAX_ORDERS_COUNT = 50;
 
-    //####################################
-
+    /**
+     * @return void
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     protected function performActions()
     {
         $ordersForProcess = $this->getOrdersForProcess();
@@ -32,12 +34,12 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Order_Acknowledge extends Ess_M2ePro_Mo
                 $actionHandler->process();
             }
 
-            $order->setData('is_tried_to_acknowledge', 1);
-            $order->save();
+            /** @var Ess_M2ePro_Model_Walmart_Order $walmartOrder */
+            $walmartOrder = $order->getChildObject();
+            $walmartOrder->setData('is_tried_to_acknowledge', 1);
+            $walmartOrder->save();
         }
     }
-
-    //####################################
 
     /**
      * @return Ess_M2ePro_Model_Order[]
@@ -53,6 +55,4 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Order_Acknowledge extends Ess_M2ePro_Mo
 
         return $collection->getItems();
     }
-
-    //####################################
 }

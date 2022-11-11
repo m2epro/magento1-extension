@@ -354,6 +354,7 @@ DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_walmart_order')}`;
 CREATE TABLE `{$this->_installer->getTable('m2epro_walmart_order')}` (
   `order_id` INT(11) UNSIGNED NOT NULL,
   `walmart_order_id` VARCHAR(255) NOT NULL,
+  `customer_order_id` VARCHAR(255) NOT NULL DEFAULT '',
   `status` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `buyer_name` VARCHAR(255) NOT NULL,
   `buyer_email` VARCHAR(255) DEFAULT NULL,
@@ -369,6 +370,7 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_walmart_order')}` (
   `purchase_create_date` DATETIME DEFAULT NULL,
   PRIMARY KEY (`order_id`),
   INDEX `walmart_order_id` (`walmart_order_id`),
+  INDEX `customer_order_id` (`customer_order_id`),
   INDEX `buyer_email` (`buyer_email`),
   INDEX `buyer_name` (`buyer_name`),
   INDEX `shipping_date_to` (`shipping_date_to`),

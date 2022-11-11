@@ -99,10 +99,10 @@ class Ess_M2ePro_Helper_Component_Ebay_Configuration extends Mage_Core_Helper_Ab
         );
     }
 
-    public function getAuEpidsAttribute()
+    public function getItEpidsAttribute()
     {
         return Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
-            self::CONFIG_GROUP, 'au_epids_attribute'
+            self::CONFIG_GROUP, 'it_epids_attribute'
         );
     }
 
@@ -185,8 +185,8 @@ class Ess_M2ePro_Helper_Component_Ebay_Configuration extends Mage_Core_Helper_Ab
             $motorsAttributes[] = $values['de_epids_attribute'];
         }
 
-        if (isset($values['au_epids_attribute'])) {
-            $motorsAttributes[] = $values['au_epids_attribute'];
+        if (isset($values['it_epids_attribute'])) {
+            $motorsAttributes[] = $values['it_epids_attribute'];
         }
 
         if (isset($values['motors_epids_attribute'])) {
@@ -213,9 +213,9 @@ class Ess_M2ePro_Helper_Component_Ebay_Configuration extends Mage_Core_Helper_Ab
             );
         }
 
-        if (isset($values['au_epids_attribute'])) {
+        if (isset($values['it_epids_attribute'])) {
             Mage::helper('M2ePro/Module')->getConfig()->setGroupValue(
-                self::CONFIG_GROUP, 'au_epids_attribute', $values['au_epids_attribute']
+                self::CONFIG_GROUP, 'it_epids_attribute', $values['it_epids_attribute']
             );
         }
 

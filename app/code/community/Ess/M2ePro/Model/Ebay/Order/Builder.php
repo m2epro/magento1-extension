@@ -315,7 +315,11 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
         $finalFee = $this->_order->getChildObject()->getFinalFee();
         $magentoOrder = $this->_order->getMagentoOrder();
 
-        if (!empty($finalFee) && !empty($magentoOrder) && $magentoOrder->getPayment()) {
+        if (!empty($finalFee)
+            && !empty($magentoOrder)
+            && $magentoOrder->getPayment()
+            && $this->isMagentoOrderUpdatable($magentoOrder)
+        ) {
             $paymentAdditionalData = Mage::helper('M2ePro')->unserialize(
                 $magentoOrder->getPayment()->getAdditionalData()
             );
@@ -496,6 +500,18 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
     }
 
     /**
+     * @param ?Mage_Sales_Model_Order $magentoOrder
+     *
+     * @return bool
+     */
+    protected function isMagentoOrderUpdatable($magentoOrder)
+    {
+        return $magentoOrder !== null
+            && $magentoOrder->getState() !== Mage_Sales_Model_Order::STATE_CLOSED
+            && $magentoOrder->getState() !== Mage_Sales_Model_Order::STATE_CANCELED;
+    }
+
+    /**
      * @throws Ess_M2ePro_Model_Exception_Logic
      */
     protected function createOrUpdateOrder()
@@ -521,7 +537,11 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
                 $this->_order->getReserve()->cancel();
             }
 
-            if ($this->_order->getMagentoOrder() !== null && !$this->_order->getMagentoOrder()->isCanceled()) {
+            $magentoOrder = $this->_order->getMagentoOrder();
+            if ($magentoOrder !== null
+                && !$magentoOrder->isCanceled()
+                && $this->isMagentoOrderUpdatable($magentoOrder)
+            ) {
                 $this->_order->cancelMagentoOrder();
             }
         }
@@ -954,7 +974,7 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
         }
 
         $magentoOrder = $this->_order->getMagentoOrder();
-        if ($magentoOrder === null) {
+        if ($magentoOrder === null || !$this->isMagentoOrderUpdatable($magentoOrder)) {
             return;
         }
 

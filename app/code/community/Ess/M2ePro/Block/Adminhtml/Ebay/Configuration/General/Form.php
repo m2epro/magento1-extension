@@ -14,15 +14,15 @@
  * @method bool getEnabledKtype()
  * @method Ess_M2ePro_Model_Marketplace getUkMarketplace()
  * @method Ess_M2ePro_Model_Marketplace getDeMarketplace()
- * @method Ess_M2ePro_Model_Marketplace getAuMarketplace()
  * @method Ess_M2ePro_Model_Marketplace getMotorsMarketplace()
+ * @method Ess_M2ePro_Model_Marketplace getItMarketplace()
  * @method array getAvailabilityAttributes()
  * @method int getUkEpidCount()
  * @method int getUkEpidCustomCount()
  * @method int getDeEpidCount()
  * @method int getDeEpidCustomCount()
- * @method int getAuEpidCount()
- * @method int getAuEpidCustomCount()
+ * @method int getItEpidCount()
+ * @method int getItEpidCustomCount()
  * @method int getMotorsEpidCount()
  * @method int getMotorsEpidCustomCount()
  * @method int getKtypeCount()
@@ -91,6 +91,10 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_General_Form extends Mage_Ad
             $eBayHelper->getCachedObject('Marketplace', Ess_M2ePro_Helper_Component_Ebay::MARKETPLACE_AU)
         );
         $this->setData(
+            'it_marketplace',
+            $eBayHelper->getCachedObject('Marketplace', Ess_M2ePro_Helper_Component_Ebay::MARKETPLACE_IT)
+        );
+        $this->setData(
             'motors_marketplace',
             $eBayHelper->getCachedObject('Marketplace', Ess_M2ePro_Helper_Component_Ebay::MARKETPLACE_MOTORS)
         );
@@ -114,10 +118,10 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_General_Form extends Mage_Ad
         $this->setData('de_epid_count', $count);
 
         list($count, $customCount) = $eBayMotorsHelper->getDictionaryRecordCount(
-            Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_EPID_AU
+            Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_EPID_IT
         );
-        $this->setData('au_epid_custom_count', $customCount);
-        $this->setData('au_epid_count', $count);
+        $this->setData('it_epid_custom_count', $customCount);
+        $this->setData('it_epid_count', $count);
 
         list($count, $customCount) = $eBayMotorsHelper->getDictionaryRecordCount(
             Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_EPID_MOTOR

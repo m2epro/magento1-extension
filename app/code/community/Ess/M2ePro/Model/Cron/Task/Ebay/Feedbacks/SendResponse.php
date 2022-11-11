@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  * @author     M2E Pro Developers Team
  * @copyright  M2E LTD
  * @license    Commercial use is forbidden
@@ -10,20 +10,27 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Feedbacks_SendResponse extends Ess_M2ePro_
 {
     const NICK = 'ebay/feedbacks/send_response';
 
-    /**
-     * @var int (in seconds)
-     */
-    protected $_interval = 10800;
-
     const ATTEMPT_INTERVAL = 86400;
 
-    //########################################
+    /** @var int (in seconds) */
+    protected $_interval = 10800;
+    /** @var Ess_M2ePro_Helper_Data */
+    protected $_dataHelper;
+    /** @var Ess_M2ePro_Model_Ebay_Feedback_Manager */
+    protected $_ebayFeedbackManager;
 
+    public function __construct()
+    {
+        $this->_dataHelper = Mage::helper('M2ePro');
+        $this->_ebayFeedbackManager = Mage::getModel('M2ePro/Ebay_Feedback_Manager');
+    }
+
+    /**
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     protected function performActions()
     {
-        $feedbacks = $this->getLastUnanswered(5);
-        $feedbacks = $this->filterLastAnswered($feedbacks);
-
+        $feedbacks = $this->getFeedbacksForAnswer(5);
         if (empty($feedbacks)) {
             return;
         }
@@ -33,74 +40,91 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Feedbacks_SendResponse extends Ess_M2ePro_
         }
     }
 
-    //########################################
-
-    protected function getLastUnanswered($daysAgo = 30)
-    {
-        $interval = new \DateTime('now', new \DateTimeZone('UTC'));
-        $interval->modify("-{$daysAgo} days");
-
-        $collection = Mage::getModel('M2ePro/Ebay_Feedback')->getCollection();
-        $collection->getSelect()
-            ->join(
-                array('a' => Mage::getResourceModel('M2ePro/Account')->getMainTable()),
-                '`a`.`id` = `main_table`.`account_id`',
-                array()
-            )
-            ->where('`main_table`.`seller_feedback_id` = 0 OR `main_table`.`seller_feedback_id` IS NULL')
-            ->where('`main_table`.`buyer_feedback_date` > ?', $interval->format('Y-m-d H:i:s'))
-            ->order(array('buyer_feedback_date ASC'));
-
-        return $collection->getItems();
-    }
-
-    protected function filterLastAnswered(array $feedbacks)
+    /**
+     * @return array
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
+    protected function getAccountsIds()
     {
         $result = array();
 
-        /** @var Ess_M2ePro_Helper_Data $helper */
-        $helper = Mage::helper('M2ePro');
-
-        foreach ($feedbacks as $feedback) {
-
-            /** @var $feedback Ess_M2ePro_Model_Ebay_Feedback **/
-            $lastResponseAttemptDate = $feedback->getData('last_response_attempt_date');
-            $currentGmtDate = $helper->getCurrentGmtDate(true);
-
-            if ($lastResponseAttemptDate !== null) {
-                $lastResponseAttemptTimestamp = (int)$helper->createGmtDateTime($lastResponseAttemptDate)
-                    ->format('U');
-
-                if ($lastResponseAttemptTimestamp + self::ATTEMPT_INTERVAL > $currentGmtDate) {
-                    continue;
-                }
-            }
-
-            $ebayAccount = $feedback->getEbayAccount();
-
-            if (!$ebayAccount->isFeedbacksReceive()) {
+        /** @var Ess_M2ePro_Model_Resource_Ebay_Account_Collection $ebayAccountCollection */
+        $ebayAccountCollection = Mage::helper('M2ePro/Component_Ebay')
+            ->getCollection('Account');
+        /** @var Ess_M2ePro_Model_Account $account */
+        foreach ($ebayAccountCollection->getItems() as $account) {
+            if (!$account->getChildObject()->isFeedbacksReceive()) {
                 continue;
             }
 
-            if ($ebayAccount->isFeedbacksAutoResponseDisabled()) {
+            if ($account->getChildObject()->isFeedbacksAutoResponseDisabled()) {
                 continue;
             }
 
-            if ($ebayAccount->isFeedbacksAutoResponseOnlyPositive() && !$feedback->isPositive()) {
+            if (!$account->getChildObject()->hasFeedbackTemplate()) {
                 continue;
             }
 
-            if (!$ebayAccount->hasFeedbackTemplate()) {
-                continue;
-            }
-
-            $result[] = $feedback;
+            $result[] = $account->getData('id');
         }
 
         return $result;
     }
 
-    // ---------------------------------------
+    /**
+     * @param int $daysAgo
+     * @return array
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
+    protected function getFeedbacksForAnswer($daysAgo)
+    {
+        $accountsIds = $this->getAccountsIds();
+        if (empty($accountsIds)) {
+            return array();
+        }
+
+        $accountsIdsTemplate = implode(', ', $accountsIds);
+        $feedbackTypePositive = Ess_M2ePro_Model_Ebay_Feedback::TYPE_POSITIVE;
+        $minBuyerFeedbackDate = $this->_dataHelper->createCurrentGmtDateTime()
+            ->modify("-{$daysAgo} days")
+            ->format('Y-m-d H:i:s');
+        $maxResponseAttemptDate = $this->_dataHelper->createCurrentGmtDateTime()
+            ->modify('-' . self::ATTEMPT_INTERVAL . 'seconds')
+            ->format('Y-m-d H:i:s');
+
+        $ebayFeedbackTable = Mage::getResourceModel('M2ePro/Ebay_Feedback')->getMainTable();
+        $sqlCondition = <<<SQL
+(`main_table`.`seller_feedback_id` = 0)
+AND (`main_table`.`is_critical_error_received` = 0)
+AND (`main_table`.`buyer_feedback_date` > '{$minBuyerFeedbackDate}')
+AND (`last_response_attempt_date` IS NULL OR `last_response_attempt_date` < '{$maxResponseAttemptDate}')
+AND (
+    `ea`.`feedbacks_auto_response_only_positive` = 0
+    OR (`ea`.`feedbacks_auto_response_only_positive` = 1
+        AND `main_table`.`buyer_feedback_type` = '{$feedbackTypePositive}'
+    )
+)
+AND `main_table`.`buyer_name` NOT IN (
+    SELECT `buyer_name`
+    FROM `{$ebayFeedbackTable}`
+    WHERE `seller_feedback_id` <> 0
+    GROUP BY `buyer_name`
+)
+SQL;
+
+        /** @var Ess_M2ePro_Model_Resource_Ebay_Feedback_Collection $collection */
+        $collection = Mage::getModel('M2ePro/Ebay_Feedback')->getCollection();
+        $collection->getSelect()
+            ->join(
+                array('ea' => Mage::getResourceModel('M2ePro/Ebay_Account')->getMainTable()),
+                "`ea`.`account_id` = `main_table`.`account_id` AND `ea`.`account_id` IN ($accountsIdsTemplate)",
+                array()
+            )
+            ->where($sqlCondition)
+            ->order(array('buyer_feedback_date ASC'));
+
+        return $collection->getItems();
+    }
 
     protected function processFeedback(Ess_M2ePro_Model_Ebay_Feedback $feedback)
     {
@@ -114,18 +138,26 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Feedbacks_SendResponse extends Ess_M2ePro_
             );
         }
 
-        if (($body = $this->getResponseBody($account)) == '') {
+        if (($body = $this->getResponseBody($account)) === '') {
             return;
         }
 
-        $feedback->sendResponse($body, Ess_M2ePro_Model_Ebay_Feedback::TYPE_POSITIVE);
-
-        $this->getOperationHistory()->appendText('Send Feedback for "'.$feedback->getData('buyer_name').'"');
-        $this->getOperationHistory()->appendText(
-            'His feedback "'.$feedback->getData('buyer_feedback_text').
-            '" ('.$feedback->getData('buyer_feedback_type').')'
-        );
-        $this->getOperationHistory()->appendText('Our Feedback "'.$body.'"');
+        $result = $this->_ebayFeedbackManager
+            ->sendResponse($feedback, $body, Ess_M2ePro_Model_Ebay_Feedback::TYPE_POSITIVE);
+        if ($result) {
+            $this->getOperationHistory()
+                ->appendText('Send Feedback for "'.$feedback->getData('buyer_name').'"');
+            $this->getOperationHistory()
+                ->appendText(
+                    'His feedback "'.$feedback->getData('buyer_feedback_text')
+                    . '" ('.$feedback->getData('buyer_feedback_type').')'
+                );
+            $this->getOperationHistory()
+                ->appendText('Our Feedback "'.$body.'"');
+        } else {
+            $this->getOperationHistory()
+                ->appendText('Send Feedback for "'.$feedback->getData('buyer_name').'" was failed');
+        }
 
         $this->getOperationHistory()->saveBufferString();
     }
@@ -192,6 +224,4 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Feedbacks_SendResponse extends Ess_M2ePro_
 
         return '';
     }
-
-    //########################################
 }

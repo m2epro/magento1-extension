@@ -41,7 +41,11 @@ if (empty($currency)) {
 
         <div class="entry-edit-head">
             <h4 class="icon-head head-edit-form fieldset-legend">
-                <?php echo Mage::helper('M2ePro')->__('Walmart Order');?> # <?php echo $this->order->getData('walmart_order_id'); ?>
+                <?php echo Mage::helper('M2ePro')->__('Walmart Order #');?> <?php echo $this->order->getData('walmart_order_id'); ?>
+                <?php $customerOrderId = $this->order->getChildObject()->getData('customer_order_id') ?>
+                <?php if (!empty($customerOrderId)) { ?>
+                    [ <?php echo Mage::helper('M2ePro')->__('Customer order #') . ' ' . $customerOrderId ?> ]
+                <?php } ?>
             </h4>
         </div>
 

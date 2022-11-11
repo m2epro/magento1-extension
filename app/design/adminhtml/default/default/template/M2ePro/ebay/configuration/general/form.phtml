@@ -435,23 +435,23 @@
         </div>
     <?php endif; ?>
 
-    <?php if ($this->getAuMarketplace()->isStatusEnabled() && $this->getAuMarketplace()->getChildObject()->isEpidEnabled()): ?>
-        <div class="entry-edit" id="magento_block_ebay_configuration_general_motors_epids_au">
+    <?php if ($this->getItMarketplace()->isStatusEnabled() && $this->getItMarketplace()->getChildObject()->isEpidEnabled()): ?>
+        <div class="entry-edit" id="magento_block_ebay_configuration_general_motors_epids_it">
 
             <div class="entry-edit-head">
-                <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Parts Compatibility [ePIDs AU]'); ?></h4>
+                <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Parts Compatibility [ePIDs IT]'); ?></h4>
             </div>
 
             <div class="fieldset">
                 <div class="hor-scroll">
 
-                    <div id="block_notice_ebay_category_motors_epids_au" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Parts Compatibility [ePIDs AU]'); ?>">
+                    <div id="block_notice_ebay_category_motors_epids_it" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Parts Compatibility [ePIDs IT]'); ?>">
                         <?php echo Mage::helper('M2ePro')->__('
-                            In this Section, you can provide a Magento Attribute where ePID values for AU marketplace will be saved.
+                            In this Section, you can provide a Magento Attribute where ePID values for IT marketplace will be saved.
                             <br/>
                             Also you can Add/Update ePID Database manually by clicking <strong>Manage Option</strong> in Database line.
                             <br/>
-                            You have an ability to choose either ePID or kType values should be used on eBay AU.
+                            You have an ability to choose either ePID or kType values should be used on eBay IT.
                             Specify the appropriate <strong>Parts Compatibility Mode</strong> for your Listing in M2E Pro Listings grid.
                         '); ?>
                     </div>
@@ -461,20 +461,20 @@
 
                         <tr>
                             <td class="label">
-                                <label for="au_epids_attribute"><?php echo Mage::helper('M2ePro')->__('Attribute'); ?>:</label>
+                                <label for="it_epids_attribute"><?php echo Mage::helper('M2ePro')->__('Attribute'); ?>:</label>
                             </td>
 
                             <?php if (count($this->getAvailabilityAttributes()) != 0): ?>
 
                                 <td class="value">
-                                    <select id="au_epids_attribute" class="select M2ePro-custom-attribute-can-be-created" allowed_attribute_types="textarea" apply_to_all_attribute_sets="0" name="au_epids_attribute">
+                                    <select id="it_epids_attribute" class="select M2ePro-custom-attribute-can-be-created" allowed_attribute_types="textarea" apply_to_all_attribute_sets="0" name="it_epids_attribute">
                                         <option value="">-- <?php echo Mage::helper('M2ePro')->__('Select Attribute'); ?> --</option>
                                         <?php foreach ($this->getAvailabilityAttributes() as $attribute): ?>
-                                            <option value="<?php echo $attribute['code']; ?>"<?php if ($attribute['code'] == $this->getConfigurationHelper()->getAuEpidsAttribute()): ?> selected="selected"<?php endif; ?>><?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?></option>
+                                            <option value="<?php echo $attribute['code']; ?>"<?php if ($attribute['code'] == $this->getConfigurationHelper()->getItEpidsAttribute()): ?> selected="selected"<?php endif; ?>><?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?></option>
                                         <?php endforeach; ?>
                                     </select>
                                 </td>
-                                <td id="au_epids_attribute_td_note">
+                                <td id="it_epids_attribute_td_note">
                                     <p class="note">
                                         <span>
                                             <?php echo Mage::helper('M2ePro')->__(
@@ -490,7 +490,7 @@
                             <?php else: ?>
 
                                 <td class="value">
-                                    <div id="block_notice_ebay_configuration_au_epids_attribute" class="block_notices_module" title="" subtitle="" collapseable="no" hideblock="no" always_show="yes">
+                                    <div id="block_notice_ebay_configuration_it_epids_attribute" class="block_notices_module" title="" subtitle="" collapseable="no" hideblock="no" always_show="yes">
                                         <?php echo Mage::helper('M2ePro')->__('You do not have Textarea Attributes.'); ?>
                                     </div>
                                 </td>
@@ -505,13 +505,13 @@
 
                             <td class="value">
                                 <span style="padding-right: 2px;"><?php echo Mage::helper('M2ePro')->__('From eBay'); ?>: </span>
-                                <span style="font-weight: bold; display: inline-block; width: 40px;"><?php echo $this->getAuEpidCount(); ?></span>
+                                <span style="font-weight: bold; display: inline-block; width: 40px;"><?php echo $this->getItEpidCount(); ?></span>
 
                                 <span style="padding-right: 2px; padding-left: 10px;"><?php echo Mage::helper('M2ePro')->__('Custom Added'); ?>: </span>
-                                <span style="font-weight: bold; padding-right: 2px;"><?php echo $this->getAuEpidCustomCount(); ?></span>
+                                <span style="font-weight: bold; padding-right: 2px;"><?php echo $this->getItEpidCustomCount(); ?></span>
 
                                 <span style="">
-                                    (<a href="javascript:void(0);" onclick="EbayConfigurationObj.manageMotorsRecords('<?php echo Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_EPID_AU; ?>', '<?php echo Mage::helper('M2ePro')->__('Manage Custom Compatibility [ePIDs AU]'); ?>');"><?php echo Mage::helper('M2ePro')->__('manage'); ?></a>)
+                                    (<a href="javascript:void(0);" onclick="EbayConfigurationObj.manageMotorsRecords('<?php echo Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_EPID_IT; ?>', '<?php echo Mage::helper('M2ePro')->__('Manage Custom Compatibility [ePIDs IT]'); ?>');"><?php echo Mage::helper('M2ePro')->__('manage'); ?></a>)
                                 </span>
                             </td>
                         </tr>
@@ -662,7 +662,7 @@
                             <td class="value">
                                 <span id="database-statistic-popup-epids-uk" class="database-statistic-popup" style="font-weight: bold;"><?php echo $this->getUkEpidCustomCount(); ?></span>
                                 <span id="database-statistic-popup-epids-de" class="database-statistic-popup" style="font-weight: bold;"><?php echo $this->getDeEpidCustomCount(); ?></span>
-                                <span id="database-statistic-popup-epids-au" class="database-statistic-popup" style="font-weight: bold;"><?php echo $this->getAuEpidCustomCount(); ?></span>
+                                <span id="database-statistic-popup-epids-it" class="database-statistic-popup" style="font-weight: bold;"><?php echo $this->getItEpidCustomCount(); ?></span>
                                 <span id="database-statistic-popup-epids-motor" class="database-statistic-popup" style="font-weight: bold;"><?php echo $this->getMotorsEpidCustomCount(); ?></span>
                                 <span id="database-statistic-popup-ktypes" class="database-statistic-popup" style="font-weight: bold;"><?php echo $this->getKtypeCustomCount(); ?></span>
                             </td>

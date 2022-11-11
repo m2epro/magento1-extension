@@ -184,7 +184,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit extends Mage_Adminhtml_Bloc
     Read more <a href="%url%" target="_blank">here</a>.
 HTML
                     ,
-                    Mage::helper('M2ePro/Module_Support')->getHowToGuideUrl('1602134')
+                    Mage::helper('M2ePro/Module_Support')->getSupportUrl('/support/solutions/articles/9000219394')
                 )
             )
         );

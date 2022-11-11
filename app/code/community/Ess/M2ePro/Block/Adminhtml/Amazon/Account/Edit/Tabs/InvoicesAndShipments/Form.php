@@ -202,7 +202,7 @@ HTML
     target="_blank">article</a> for more details.</p>
 HTML
                 ,
-                Mage::helper('M2ePro/Module_Support')->getHowToGuideUrl('1586245')
+                Mage::helper('M2ePro/Module_Support')->getSupportUrl('/support/solutions/articles/9000219394')
             );
         }
 

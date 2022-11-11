@@ -710,10 +710,16 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
      * @param array $trackingDetails
      * @param array $items
      * @return bool
+     * @throws Ess_M2ePro_Model_Exception_Logic
      */
     public function updateShippingStatus(array $trackingDetails = array(), array $items = array())
     {
         if (!$this->canUpdateShippingStatus($trackingDetails)) {
+            return false;
+        }
+
+        if (empty($trackingDetails['carrier_code'])
+            && !$this->getAmazonAccount()->isUpdateWithoutTrackToMagentoOrder()) {
             return false;
         }
 

@@ -71,7 +71,7 @@ class Ess_M2ePro_Helper_Component_Amazon_Repricing extends Mage_Core_Helper_Abst
             throw new Ess_M2ePro_Model_Exception_Connection(
                 Mage::helper('M2ePro')->__(
                     'M2E Pro Server connection failed. Find the solution <a target="_blank" href="%url%">here</a>',
-                    Mage::helper('M2ePro/Module_Support')->getKnowledgebaseUrl('664870')
+                    Mage::helper('M2ePro/Module_Support')->getSupportUrl('/support/solutions/articles/9000200887')
                 ),
                 array(
                     'curl_error_number' => $errorNumber,

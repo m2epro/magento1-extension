@@ -60,7 +60,10 @@ class Ess_M2ePro_Adminhtml_Ebay_FeedbackController extends Ess_M2ePro_Controller
 
         /** @var Ess_M2ePro_Model_Ebay_Feedback $feedback */
         $feedback = Mage::getModel('M2ePro/Ebay_Feedback')->loadInstance($feedbackId);
-        $result = $feedback->sendResponse($feedbackText, Ess_M2ePro_Model_Ebay_Feedback::TYPE_POSITIVE);
+        /** @var Ess_M2ePro_Model_Ebay_Feedback_Manager $feedbackManager */
+        $feedbackManager = Mage::getModel('M2ePro/Ebay_Feedback_Manager');
+        $result = $feedbackManager
+            ->sendResponse($feedback, $feedbackText, Ess_M2ePro_Model_Ebay_Feedback::TYPE_POSITIVE);
 
         $this->getResponse()->setBody(
             Mage::helper('M2ePro')->jsonEncode(

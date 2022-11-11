@@ -108,6 +108,14 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
             return;
         }
 
+        $merchantId = $this->_merchantManager->getMerchantIdByAccountId((int)$this->_params['account_id']);
+        // $this->_params['account_id'] is always available
+        // next lines is for possible situation with deleted account
+        if (!$merchantId) {
+            $this->refreshLastUpdate(true);
+            return;
+        }
+
         $keys = array_map(
             function ($value) {
                 return (string)$value;
@@ -118,12 +126,39 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
         /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $m2eproListingProductCollection */
         $m2eproListingProductCollection = Mage::helper('M2ePro/Component_Amazon')
             ->getCollection('Listing_Product');
-        $m2eproListingProductCollection->addFieldToFilter('sku', array('in' => $keys));
+        $m2eproListingProductCollection
+            ->addFieldToFilter('sku', array('in' => $keys))
+            ->getSelect()
+            ->joinInner(
+                array(
+                    'l' => Mage::getResourceModel('M2ePro/Listing')->getMainTable(),
+                ),
+                'l.id=main_table.listing_id',
+                array()
+            )
+            ->joinInner(
+                array(
+                    'aa' => Mage::getResourceModel('M2ePro/Amazon_Account')->getMainTable(),
+                ),
+                'aa.account_id=l.account_id',
+                array()
+            )
+            ->where('aa.merchant_id = ? AND is_afn_channel = 1', $merchantId);
 
         /** @var Ess_M2ePro_Model_Resource_Listing_Other_Collection $unmanagedListingProductCollection */
         $unmanagedListingProductCollection = Mage::helper('M2ePro/Component_Amazon')
             ->getCollection('Listing_Other');
-        $unmanagedListingProductCollection->addFieldToFilter('sku', array('in' => $keys));
+        $unmanagedListingProductCollection
+            ->addFieldToFilter('sku', array('in' => $keys))
+            ->getSelect()
+            ->joinInner(
+                array(
+                    'aa' => Mage::getResourceModel('M2ePro/Amazon_Account')->getMainTable(),
+                ),
+                'aa.account_id=main_table.account_id',
+                array()
+            )
+            ->where('aa.merchant_id = ? AND is_afn_channel = 1', $merchantId);
 
         /** @var Ess_M2ePro_Model_Listing_Product $item */
         foreach ($m2eproListingProductCollection->getItems() as $item) {

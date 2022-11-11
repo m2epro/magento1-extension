@@ -38,7 +38,7 @@ HTML;
         $color = $this->getCheckObject()->isMeet() ? 'green' : 'red';
 
         if ($this->getCheckObject()->getReal() === null) {
-            $url = Mage::helper('M2ePro/Module_Support')->getKnowledgeBaseUrl('1563888');
+            $url = Mage::helper('M2ePro/Module_Support')->getSupportUrl('/support/solutions/articles/9000200880');
             $html = <<<HTML
 <span style="color: orange;">
     <span>{$helper->__('unknown')}</span>&nbsp;
@@ -68,7 +68,7 @@ HTML;
         $helper = Mage::helper('M2ePro');
         $testUrl = Mage::helper('adminhtml')->getUrl('*/adminhtml_support/testExecutionTime');
         $testResultUrl = Mage::helper('adminhtml')->getUrl('*/adminhtml_support/testExecutionTimeResult');
-        $knowledgeBaseUrl = Mage::helper('M2ePro/Module_Support')->getKnowledgeBaseUrl('1535371');
+        $knowledgeBaseUrl = Mage::helper('M2ePro/Module_Support')->getSupportUrl('/support/solutions/articles/9000200884');
 
         return <<<HTML
 <script>
