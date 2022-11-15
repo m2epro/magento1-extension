@@ -334,7 +334,7 @@ class Ess_M2ePro_Model_Walmart_Listing extends Ess_M2ePro_Model_Component_Child_
     public function addProductFromListing(
         Ess_M2ePro_Model_Listing_Product $listingProduct,
         Ess_M2ePro_Model_Listing $sourceListing
-    ){
+    ) {
         if (!$this->getParentObject()->addProductFromListing($listingProduct, $sourceListing, false)) {
             return false;
         }
@@ -346,6 +346,15 @@ class Ess_M2ePro_Model_Walmart_Listing extends Ess_M2ePro_Model_Component_Child_
                     $item->save();
                 }
             }
+        }
+
+        $walmartListingProduct = $listingProduct->getChildObject();
+        $variationManager = $walmartListingProduct->getVariationManager();
+
+        if ($variationManager->isRelationParentType()) {
+            /** @var Ess_M2ePro_Model_Resource_Walmart_Listing_Product $resourceModel */
+            $resourceModel = Mage::getResourceModel('M2ePro/Walmart_Listing_Product');
+            $resourceModel->moveChildrenToListing($listingProduct);
         }
 
         return true;

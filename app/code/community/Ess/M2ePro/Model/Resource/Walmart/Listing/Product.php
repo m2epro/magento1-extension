@@ -88,5 +88,30 @@ class Ess_M2ePro_Model_Resource_Walmart_Listing_Product
         );
     }
 
+    public function moveChildrenToListing($listingProduct)
+    {
+        /** @var Varien_Db_Adapter_Pdo_Mysql $connection */
+        $connection = Mage::getSingleton('core/resource')->getConnection('core_write');
+        $select = $connection->select();
+        $select->join(
+            array('wlp' => $this->getMainTable()),
+            'lp.id = wlp.listing_product_id',
+            null
+        );
+        $select->join(
+            array('parent_lp' => Mage::getResourceModel('M2ePro/Listing_Product')->getMainTable()),
+            'parent_lp.id = wlp.variation_parent_id',
+            array('listing_id' => 'parent_lp.listing_id')
+        );
+        $select->where('wlp.variation_parent_id = ?', $listingProduct->getId());
+
+        $updateQuery = $connection->updateFromSelect(
+            $select,
+            array('lp' => Mage::getResourceModel('M2ePro/Listing_Product')->getMainTable())
+        );
+
+        $connection->query($updateQuery);
+    }
+
     //########################################
 }

@@ -244,7 +244,7 @@ class Ess_M2ePro_Model_Ebay_Order_Item extends Ess_M2ePro_Model_Component_Child_
         }
 
         foreach ($channelItem->getVariations() as $variation) {
-            if ($variation['channel_options'] !== $this->getVariationChannelOptions()) {
+            if ($this->isOptionsDifferent($variation['channel_options'], $this->getVariationChannelOptions())) {
                 continue;
             }
 
@@ -252,6 +252,29 @@ class Ess_M2ePro_Model_Ebay_Order_Item extends Ess_M2ePro_Model_Component_Child_
         }
 
         return $this->getVariationChannelOptions();
+    }
+
+
+    /**
+     * @param array $first
+     * @param array $second
+     *
+     * @return bool
+     */
+    protected function isOptionsDifferent(array $first, array $second)
+    {
+        $comparator = function ($a, $b) {
+            if ($a === $b) {
+                return 0;
+            }
+
+            return $a > $b ? 1 : -1;
+        };
+
+        $firstDiff = array_udiff_uassoc($first, $second, $comparator, $comparator);
+        $secondDiff = array_udiff_uassoc($second, $first, $comparator, $comparator);
+
+        return count($firstDiff) !== 0 || count($secondDiff) !== 0;
     }
 
     /**
