@@ -30,9 +30,6 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat extends Ess_M2ePro_Model_C
     const LAG_TIME_MODE_RECOMMENDED      = 1;
     const LAG_TIME_MODE_CUSTOM_ATTRIBUTE = 2;
 
-    const PRODUCT_TAX_CODE_MODE_VALUE     = 1;
-    const PRODUCT_TAX_CODE_MODE_ATTRIBUTE = 2;
-
     const WEIGHT_MODE_CUSTOM_VALUE     = 1;
     const WEIGHT_MODE_CUSTOM_ATTRIBUTE = 2;
 
@@ -430,74 +427,6 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat extends Ess_M2ePro_Model_C
 
     // ---------------------------------------
 
-    /**
-     * @return int
-     */
-    public function getMapPriceMode()
-    {
-        return (int)$this->getData('map_price_mode');
-    }
-
-    /**
-     * @return bool
-     */
-    public function isMapPriceModeNone()
-    {
-        return $this->getMapPriceMode() == Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_NONE;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isMapPriceModeProduct()
-    {
-        return $this->getMapPriceMode() == Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_PRODUCT;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isMapPriceModeSpecial()
-    {
-        return $this->getMapPriceMode() == Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_SPECIAL;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isMapPriceModeAttribute()
-    {
-        return $this->getMapPriceMode() == Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_ATTRIBUTE;
-    }
-
-    /**
-     * @return array
-     */
-    public function getMapPriceSource()
-    {
-        return array(
-            'mode'        => $this->getMapPriceMode(),
-            'attribute'   => $this->getData('map_price_custom_attribute')
-        );
-    }
-
-    /**
-     * @return array
-     */
-    public function getMapPriceAttributes()
-    {
-        $attributes = array();
-        $src = $this->getMapPriceSource();
-
-        if ($src['mode'] == Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_ATTRIBUTE) {
-            $attributes[] = $src['attribute'];
-        }
-
-        return $attributes;
-    }
-
-    // ---------------------------------------
-
     public function getPromotionsMode()
     {
         return (int)$this->getData('promotions_mode');
@@ -755,57 +684,6 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat extends Ess_M2ePro_Model_C
         $src = $this->getLagTimeSource();
 
         if ($src['mode'] == self::LAG_TIME_MODE_CUSTOM_ATTRIBUTE) {
-            $attributes[] = $src['attribute'];
-        }
-
-        return $attributes;
-    }
-
-    // ---------------------------------------
-
-    public function getProductTaxCodeMode()
-    {
-        return (int)$this->getData('product_tax_code_mode');
-    }
-
-    public function isProductTaxCodeModeValue()
-    {
-        return $this->getProductTaxCodeMode() == self::PRODUCT_TAX_CODE_MODE_VALUE;
-    }
-
-    public function isProductTaxCodeModeAttribute()
-    {
-        return $this->getProductTaxCodeMode() == self::PRODUCT_TAX_CODE_MODE_ATTRIBUTE;
-    }
-
-    public function getProductTaxCodeCustomValue()
-    {
-        return $this->getData('product_tax_code_custom_value');
-    }
-
-    public function getProductTaxCodeCustomAttribute()
-    {
-        return $this->getData('product_tax_code_custom_attribute');
-    }
-
-    /**
-     * @return array
-     */
-    public function getProductTaxCodeSource()
-    {
-        return array(
-            'mode'      => $this->getProductTaxCodeMode(),
-            'value'     => $this->getData('product_tax_code_custom_value'),
-            'attribute' => $this->getData('product_tax_code_custom_attribute')
-        );
-    }
-
-    public function getProductTaxCodeAttributes()
-    {
-        $attributes = array();
-        $src = $this->getProductTaxCodeSource();
-
-        if ($src['mode'] == self::PRODUCT_TAX_CODE_MODE_ATTRIBUTE) {
             $attributes[] = $src['attribute'];
         }
 
@@ -1096,15 +974,6 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat extends Ess_M2ePro_Model_C
 
         if ($isPriceConvertEnabled && $this->isPriceModeAttribute() &&
             $attributeHelper->isAttributeInputTypePrice($this->getData('price_custom_attribute'))) {
-            return true;
-        }
-
-        if ($this->isMapPriceModeProduct() || $this->isMapPriceModeSpecial()) {
-            return true;
-        }
-
-        if ($isPriceConvertEnabled && $this->isMapPriceModeAttribute() &&
-            $attributeHelper->isAttributeInputTypePrice($this->getData('map_price_custom_attribute'))) {
             return true;
         }
 

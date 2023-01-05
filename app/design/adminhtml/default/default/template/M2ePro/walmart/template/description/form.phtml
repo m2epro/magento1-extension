@@ -136,10 +136,6 @@
             .observe('change', WalmartTemplateDescriptionObj.total_count_mode_change)
             .simulate('change');
 
-        $('keywords_mode')
-            .observe('change', WalmartTemplateDescriptionObj.keywords_mode_change)
-            .simulate('change');
-
         // ---
 
         $('count_per_pack_mode')
@@ -994,57 +990,6 @@
                         <a id="show_other_features_action" href="javascript: void(0);" onclick="WalmartTemplateDescriptionObj.showElement('other_features');"><?php echo Mage::helper('M2ePro')->__('Add New') ?></a>
                         /
                         <a id="hide_other_features_action" href="javascript: void(0);" onclick="WalmartTemplateDescriptionObj.hideElement('other_features');"><?php echo Mage::helper('M2ePro')->__('Remove') ?></a>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td colspan="2" style="padding: 10px 0">
-                        <hr style="border: 1px solid silver; border-bottom: none;">
-                    </td>
-                </tr>
-
-            </table>
-
-            <table class="form-list" cellspacing="0" cellpadding="0">
-
-                <tr>
-                    <td class="label">
-                        <label><?php echo Mage::helper('M2ePro')->__('Keywords'); ?>: </label>
-                    </td>
-                    <td class="value">
-                        <input type="hidden" id="keywords_custom_attribute" name="keywords_custom_attribute" value="<?php echo $formData['keywords_custom_attribute']; ?>" />
-
-                        <select id="keywords_mode" name="keywords_mode" class="select M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,select,textarea">
-                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::KEYWORDS_MODE_NONE; ?>" <?php if ($formData['keywords_mode'] == Ess_M2ePro_Model_Walmart_Template_Description::KEYWORDS_MODE_NONE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('None'); ?></option>
-                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::KEYWORDS_MODE_CUSTOM_VALUE; ?>" <?php if ($formData['keywords_mode'] == Ess_M2ePro_Model_Walmart_Template_Description::KEYWORDS_MODE_CUSTOM_VALUE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Custom Value'); ?></option>
-
-                            <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
-                                <?php echo $this->getForceAddedAttributeOptionHtml($formData['keywords_custom_attribute'], $attributesByInputTypes['text_keywords'], Ess_M2ePro_Model_Walmart_Template_Description::KEYWORDS_MODE_CUSTOM_ATTRIBUTE); ?>
-                                <?php foreach($attributesByInputTypes['text_keywords'] as $attribute) : ?>
-                                    <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::KEYWORDS_MODE_CUSTOM_ATTRIBUTE; ?>" <?php if ($attribute['code'] == $formData['keywords_custom_attribute']): ?>selected="selected"<?php endif; ?>>
-                                        <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </optgroup>
-                        </select>
-                        <p class="note">
-                            <span>
-                                <?php echo Mage::helper('M2ePro')->__(
-                                    'Specify the relevant keywords that buyers would use to find your Item.<br> Either 
-                                    enter the value manually or use the value from a selected Magento Attribute.'); ?>
-                            </span>
-                        </p>
-                    </td>
-                </tr>
-
-                <tr id="keywords_custom_value_tr" style="display: none;">
-                    <td class="label">
-                        <label><?php echo Mage::helper('M2ePro')->__('Keywords Value'); ?>: <span class="required">*</span></label>
-                    </td>
-                    <td class="value">
-                        <textarea name="keywords_custom_value" id="keywords_custom_value" cols="30" rows="5" maxlength="4000" class="input-text M2ePro-required-when-visible" style="height: 5em;"><?php
-                            echo Mage::helper('M2ePro')->escapeHtml($formData['keywords_custom_value']);
-                        ?></textarea>
                     </td>
                 </tr>
 

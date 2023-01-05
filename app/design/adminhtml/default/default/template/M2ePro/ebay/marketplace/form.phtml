@@ -83,28 +83,20 @@
                         <tr>
                             <td class="label">
                                 <label for="status_<?php echo $marketplace['instance']->getId(); ?>">
-                                    <?php if ($marketplace['params']['locked'] || $marketplace['params']['lockedByPickupStore']) { ?>
+                                    <?php if ($marketplace['params']['locked']) { ?>
                                         <span style="color: gray;">
                                     <?php } ?>
                                         <?php echo Mage::helper('M2ePro')->__($marketplace['instance']->getData('title')); ?>:
-                                    <?php if ($marketplace['params']['locked'] || $marketplace['params']['lockedByPickupStore']) { ?>
+                                    <?php if ($marketplace['params']['locked']) { ?>
                                         </span>
                                     <?php } ?>
                                 </label>
                             </td>
                             <td class="value">
 
-                                <?php if ($marketplace['params']['locked'] || $marketplace['params']['lockedByPickupStore']) { ?>
-
-                                    <?php $lockedText = '';
-                                          if ($marketplace['params']['locked']) {
-                                              $lockedText = Mage::helper('M2ePro')->__('Used in Listing(s)');
-                                          } elseif ($marketplace['params']['lockedByPickupStore']) {
-                                              $lockedText = Mage::helper('M2ePro')->__('Used In-Store Pickup.');
-                                          }
-                                    ?>
+                                <?php if ($marketplace['params']['locked']) { ?>
                                     <select disabled="disabled" id="status_<?php echo $marketplace['instance']->getId(); ?>" name="status_<?php echo $marketplace['instance']->getId(); ?>" marketplace_id="<?php echo $marketplace['instance']->getId(); ?>" component_title="<?php echo $componentTitle; ?>" component_name="<?php echo $componentName; ?>" class="locked_selected marketplace_status_select">
-                                        <option value="<?php echo Ess_M2ePro_Model_Marketplace::STATUS_ENABLE; ?>" selected="selected"><?php echo Mage::helper('M2ePro')->__('Enabled'); echo ' - '.$lockedText; ?></option>
+                                        <option value="<?php echo Ess_M2ePro_Model_Marketplace::STATUS_ENABLE; ?>" selected="selected"><?php echo Mage::helper('M2ePro')->__('Enabled'); echo ' - ' . Mage::helper('M2ePro')->__('Used in Listing(s)'); ?></option>
                                     </select>
                                 <?php } else { ?>
 

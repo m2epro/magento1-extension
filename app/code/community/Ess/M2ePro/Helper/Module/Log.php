@@ -150,10 +150,8 @@ class Ess_M2ePro_Helper_Module_Log extends Mage_Core_Helper_Abstract
     {
         switch ($class) {
             case 'Listing_Log':
-            case 'Ebay_Account_PickupStore_Log':
                 $prefix = 'ACTION_';
                 break;
-
             case 'Synchronization_Log':
                 $prefix = 'TASK_';
                 break;

@@ -57,6 +57,23 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Product_Add_SearchAsin
             )
         );
 
+        $url = $this->getUrl(
+            '*/adminhtml_amazon_listing_productAdd/exitToListing',
+            array('id' => $this->getRequest()->getParam('id'))
+        );
+        $confirm =
+            $this->__('Are you sure?') . '\n\n'
+            . $this->__('All unsaved changes will be lost and you will be returned to the Listings grid.');
+        $this->_addButton(
+            'exit_to_listing',
+            array(
+                'id' => 'exit_to_listing',
+                'label' => Mage::helper('M2ePro')->__('Cancel'),
+                'onclick' => "confirmSetLocation('$confirm', '$url');",
+                'class' => 'scalable'
+            )
+        );
+
         $this->_addButton(
             'add_products_search_asin_continue', array(
                 'id' => 'add_products_search_asin_continue',

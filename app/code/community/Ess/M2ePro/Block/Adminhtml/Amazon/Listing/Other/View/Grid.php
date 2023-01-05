@@ -133,19 +133,16 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_View_Grid extends Mage_Adm
         );
 
         $priceColumn = array(
-            'header'                    => Mage::helper('M2ePro')->__('Price'),
-            'align'                     => 'right',
-            'width'                     => '100px',
-            'type'                      => 'number',
-            'index'                     => 'online_price',
-            'filter_index'              => 'online_price',
-            'frame_callback'            => array($this, 'callbackColumnPrice'),
-            'filter_condition_callback' => array($this, 'callbackFilterPrice')
+            'header' => Mage::helper('M2ePro')->__('Price'),
+            'align' => 'right',
+            'width' => '100px',
+            'type' => 'number',
+            'index' => 'online_price',
+            'filter_index' => 'online_price',
+            'frame_callback' => array($this, 'callbackColumnPrice'),
+            'filter_condition_callback' => array($this, 'callbackFilterPrice'),
+            'filter' => 'M2ePro/adminhtml_amazon_grid_column_filter_price',
         );
-
-        if (Mage::helper('M2ePro/Component_Amazon_Repricing')->isEnabled()) {
-            $priceColumn['filter'] = 'M2ePro/adminhtml_amazon_grid_column_filter_price';
-        }
 
         $this->addColumn('online_price', $priceColumn);
 
@@ -327,8 +324,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_View_Grid extends Mage_Adm
 
         $html = '';
 
-        if (Mage::helper('M2ePro/Component_Amazon_Repricing')->isEnabled() &&
-            (int)$row->getData('is_repricing') == 1) {
+        if ((int)$row->getData('is_repricing') == 1) {
             $image = 'money';
             $text = Mage::helper('M2ePro')->__(
                 'This Product is used by Amazon Repricing Tool, so its Price cannot be managed via M2E Pro. <br>
@@ -525,9 +521,7 @@ HTML;
             $where .= 'online_price <= ' . (float)$value['to'];
         }
 
-        if (Mage::helper('M2ePro/Component_Amazon_Repricing')->isEnabled() &&
-            isset($value['is_repricing']) && $value['is_repricing'] !== ''
-        ) {
+        if (isset($value['is_repricing']) && $value['is_repricing'] !== '') {
             if (!empty($where)) {
                 $where = '(' . $where . ') OR ';
             }

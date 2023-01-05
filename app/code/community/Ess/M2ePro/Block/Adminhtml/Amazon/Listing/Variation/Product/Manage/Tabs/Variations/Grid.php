@@ -217,21 +217,18 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Variation_Product_Manage_Tabs_Va
         );
 
         $priceColumn = array(
-            'header'                    => Mage::helper('M2ePro')->__('Price'),
-            'align'                     => 'right',
-            'width'                     => '70px',
-            'type'                      => 'number',
-            'index'                     => 'online_current_price',
-            'filter_index'              => 'online_current_price',
-            'marketplace_id'            => $this->getListingProduct()->getListing()->getMarketplaceId(),
-            'account_id'                => $this->getListingProduct()->getListing()->getAccountId(),
-            'renderer'                  => 'M2ePro/adminhtml_amazon_grid_column_renderer_price',
-            'filter_condition_callback' => array($this, 'callbackFilterPrice')
+            'header' => Mage::helper('M2ePro')->__('Price'),
+            'align' => 'right',
+            'width' => '70px',
+            'type' => 'number',
+            'index' => 'online_current_price',
+            'filter_index' => 'online_current_price',
+            'marketplace_id' => $this->getListingProduct()->getListing()->getMarketplaceId(),
+            'account_id' => $this->getListingProduct()->getListing()->getAccountId(),
+            'renderer' => 'M2ePro/adminhtml_amazon_grid_column_renderer_price',
+            'filter_condition_callback' => array($this, 'callbackFilterPrice'),
+            'filter' => 'M2ePro/adminhtml_amazon_grid_column_filter_price',
         );
-
-        if (Mage::helper('M2ePro/Component_Amazon_Repricing')->isEnabled()) {
-            $priceColumn['filter'] = 'M2ePro/adminhtml_amazon_grid_column_filter_price';
-        }
 
         $this->addColumn('online_regular_price', $priceColumn);
 
@@ -345,7 +342,11 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Variation_Product_Manage_Tabs_Va
 
             $html .= '<div class="m2ePro-variation-attributes product-options-list">';
             if (!$uniqueProductsIds) {
-                $url = $this->getUrl('adminhtml/catalog_product/edit', array('id' => reset($productsIds)));
+                $data['id'] = reset($productsIds);
+                if ($this->getListingProduct()->getListing()->getStoreId() !== null) {
+                    $data['store'] = $this->getListingProduct()->getListing()->getStoreId();
+                }
+                $url = $this->getUrl('adminhtml/catalog_product/edit', $data);
                 $html .= '<a href="' . $url . '" target="_blank">';
             }
 
@@ -365,7 +366,11 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Variation_Product_Manage_Tabs_Va
                     '</span></span>';
 
                 if ($uniqueProductsIds && $option !== '--' && !in_array($attribute, $virtualProductAttributes, true)) {
-                    $url = $this->getUrl('adminhtml/catalog_product/edit', array('id' => $productsIds[$attribute]));
+                    $data['id'] = $productsIds[$attribute];
+                    if ($this->getListingProduct()->getListing()->getStoreId() !== null) {
+                        $data['store'] = $this->getListingProduct()->getListing()->getStoreId();
+                    }
+                    $url = $this->getUrl('adminhtml/catalog_product/edit', $data);
                     $html .= '<a href="' . $url . '" target="_blank">' . $optionHtml . '</a><br/>';
                 } else {
                     $html .= $optionHtml . '<br/>';
@@ -512,7 +517,22 @@ HTML;
             return Mage::helper('M2ePro')->__('N/A');
         }
 
-        return $this->getGeneralIdLink($generalId);
+        if (
+            Mage::helper('M2ePro/Component_Amazon')->isASIN($generalId) ||
+            Mage::helper('M2ePro')->isISBN($generalId)
+        ) {
+            return $this->getGeneralIdLink($generalId);
+        }
+
+        $tooltip = $this->getTooltipHtml($this->__('Amazon returned UPC/EAN as the product ID'));
+        $result = <<<HTML
+<div style="display: flex; align-items: center;">
+    <span>{$generalId}</span>
+    {$tooltip}
+</div>
+HTML;
+
+        return $result;
     }
 
     public function callbackProductOptions($collection, $column)
@@ -660,9 +680,7 @@ HTML;
             $condition .= ' AND (second_table.online_regular_price IS NULL))';
         }
 
-        if (Mage::helper('M2ePro/Component_Amazon_Repricing')->isEnabled() &&
-            (isset($value['is_repricing']) && $value['is_repricing'] !== '')
-        ) {
+        if (isset($value['is_repricing']) && $value['is_repricing'] !== '') {
             if (!empty($condition)) {
                 $condition = '(' . $condition . ') AND ';
             }
@@ -1385,5 +1403,21 @@ HTML;
         return $result;
     }
 
-    //########################################
+    protected function getTooltipHtml($content)
+    {
+        $toolTipIconSrc = $this->getSkinUrl('M2ePro/images/tool-tip-icon.png');
+        $helpIconSrc = $this->getSkinUrl('M2ePro/images/help.png');
+
+        return <<<HTML
+<span>
+    <img class="tool-tip-image" style="vertical-align: middle;" src="{$toolTipIconSrc}" />
+    <span class="tool-tip-message" style="display:none; text-align: left; width: 120px; background: #E3E3E3;">
+        <img src="{$helpIconSrc}" />
+        <span style="color:gray;">
+           {$content}
+        </span>
+    </span>
+</span>
+HTML;
+    }
 }

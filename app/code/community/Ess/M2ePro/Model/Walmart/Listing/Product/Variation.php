@@ -266,18 +266,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation extends Ess_M2ePro_Mode
         return $calculator->getVariationValue($this->getParentObject());
     }
 
-    public function getMapPrice()
-    {
-        $src = $this->getWalmartSellingFormatTemplate()->getMapPriceSource();
-
-        /** @var $calculator Ess_M2ePro_Model_Walmart_Listing_Product_PriceCalculator */
-        $calculator = Mage::getModel('M2ePro/Walmart_Listing_Product_PriceCalculator');
-        $calculator->setSource($src)->setProduct($this->getListingProduct());
-        $calculator->setPriceVariationMode($this->getWalmartSellingFormatTemplate()->getPriceVariationMode());
-
-        return $calculator->getVariationValue($this->getParentObject());
-    }
-
     // ---------------------------------------
 
     /**

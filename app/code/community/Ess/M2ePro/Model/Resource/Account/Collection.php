@@ -18,4 +18,23 @@ class Ess_M2ePro_Model_Resource_Account_Collection
     }
 
     //########################################
+
+    /**
+     * @return Ess_M2ePro_Model_Resource_Amazon_Account[]
+     */
+    public function getAccountsWithValidRepricingAccount()
+    {
+        $amazonRepricingAccountResource =
+            Mage::getResourceModel('M2ePro/Amazon_Account_Repricing');
+
+        $this->getSelect()->joinInner(
+            array('aar' => $amazonRepricingAccountResource->getMainTable()),
+            'aar.account_id = main_table.id',
+            array()
+        );
+
+        $this->getSelect()->where('invalid = 0');
+
+        return $this->getItems();
+    }
 }

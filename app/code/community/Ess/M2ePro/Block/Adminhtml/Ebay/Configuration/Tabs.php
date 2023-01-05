@@ -9,7 +9,6 @@
 class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Tabs extends Ess_M2ePro_Block_Adminhtml_Widget_Tabs
 {
     const TAB_ID_SYNCHRONIZATION        = 'synchronization';
-    const TAB_ID_ACCOUNT_PICKUP_STORE   = 'account_pickup_store';
     const TAB_ID_TEMPLATE               = 'template';
     const TAB_ID_CATEGORY               = 'category';
     const TAB_ID_MARKETPLACE            = 'marketplace';
@@ -31,16 +30,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Tabs extends Ess_M2ePro_Bloc
 
     protected function _prepareLayout()
     {
-        $isUsePickupStoreMode = Mage::helper('M2ePro/Component_Ebay_PickupStore')->isFeatureEnabled();
-
         $this->addTab(self::TAB_ID_GENERAL, $this->prepareTabGeneral());
         $this->addTab(self::TAB_ID_ACCOUNT, $this->prepareTabAccount());
         $this->addTab(self::TAB_ID_MARKETPLACE, $this->prepareTabMarketplace());
         $this->addTab(self::TAB_ID_CATEGORY, $this->prepareTabCategory());
         $this->addTab(self::TAB_ID_TEMPLATE, $this->prepareTabTemplate());
-        $isUsePickupStoreMode && $this->addTab(
-            self::TAB_ID_ACCOUNT_PICKUP_STORE, $this->prepareTabAccountPickupStore()
-        );
         $this->addTab(self::TAB_ID_SYNCHRONIZATION, $this->prepareTabSynchronization());
         $this->addTab(self::TAB_ID_GLOBAL, $this->prepareTabGlobal());
 
@@ -97,24 +91,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Tabs extends Ess_M2ePro_Bloc
             $tab['content'] .= $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_template')->toHtml();
         } else {
             $tab['url'] = $this->getUrl('*/adminhtml_ebay_template/index');
-        }
-
-        return $tab;
-    }
-
-    protected function prepareTabAccountPickupStore()
-    {
-        $tab = array(
-            'label' => Mage::helper('M2ePro')->__('My Stores'),
-            'title' => Mage::helper('M2ePro')->__('My Stores')
-        );
-
-        if ($this->getData('active_tab') == self::TAB_ID_ACCOUNT_PICKUP_STORE) {
-            $tab['content'] = $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_account_pickupStore_help')
-                                   ->toHtml();
-            $tab['content'] .= $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_account_pickupStore')->toHtml();
-        } else {
-            $tab['url'] = $this->getUrl('*/adminhtml_ebay_accountPickupStore');
         }
 
         return $tab;

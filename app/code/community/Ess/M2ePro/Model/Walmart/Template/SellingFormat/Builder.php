@@ -94,9 +94,6 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat_Builder extends Ess_M2ePro
             'price_coefficient' => '',
             'price_custom_attribute' => '',
 
-            'map_price_mode' => Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_NONE,
-            'map_price_custom_attribute' => '',
-
             'price_variation_mode' => WalmartTemplateSellingFormat::PRICE_VARIATION_MODE_PARENT,
 
             'promotions_mode' => WalmartTemplateSellingFormat::PROMOTIONS_MODE_NO,
@@ -120,10 +117,6 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat_Builder extends Ess_M2ePro
             'lag_time_mode' => WalmartTemplateSellingFormat::LAG_TIME_MODE_RECOMMENDED,
             'lag_time_value' => 0,
             'lag_time_custom_attribute' => '',
-
-            'product_tax_code_mode' => WalmartTemplateSellingFormat::PRODUCT_TAX_CODE_MODE_VALUE,
-            'product_tax_code_custom_value' => '',
-            'product_tax_code_custom_attribute' => '',
 
             'must_ship_alone_mode' => WalmartTemplateSellingFormat::MUST_SHIP_ALONE_MODE_NONE,
             'must_ship_alone_value' => '',

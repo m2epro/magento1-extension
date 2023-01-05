@@ -246,7 +246,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Variation_Product_Manage_View_Grid
 
         $html = '<div class="m2ePro-variation-attributes" style="margin-left: 5px;">';
         if (!$uniqueProductsIds) {
-            $url = $this->getUrl('adminhtml/catalog_product/edit', array('id' => reset($productsIds)));
+            $data['id'] = reset($productsIds);
+            if ($this->getListingProduct()->getListing()->getStoreId() !== null) {
+                $data['store'] = $this->getListingProduct()->getListing()->getStoreId();
+            }
+            $url = $this->getUrl('adminhtml/catalog_product/edit', $data);
             $html .= '<a href="' . $url . '" target="_blank">';
         }
 
@@ -255,7 +259,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Variation_Product_Manage_View_Grid
                 '</b>:&nbsp;' . Mage::helper('M2ePro')->escapeHtml($option);
 
             if ($uniqueProductsIds) {
-                $url = $this->getUrl('adminhtml/catalog_product/edit', array('id' => $productsIds[$attribute]));
+                $data['id'] = $productsIds[$attribute];
+                if ($this->getListingProduct()->getListing()->getStoreId() !== null) {
+                    $data['store'] = $this->getListingProduct()->getListing()->getStoreId();
+                }
+                $url = $this->getUrl('adminhtml/catalog_product/edit', $data);
                 $html .= '<a href="' . $url . '" target="_blank">' . $optionHtml . '</a><br/>';
             } else {
                 $html .= $optionHtml . '<br/>';

@@ -40,6 +40,7 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_account_repricing')}` 
   `account_id` INT(11) UNSIGNED NOT NULL,
   `email` VARCHAR(255) DEFAULT NULL,
   `token` VARCHAR(255) DEFAULT NULL,
+  `invalid` SMALLINT UNSIGNED NOT NULL DEFAULT 0,
   `total_products` INT(11) UNSIGNED NOT NULL DEFAULT 0,
   `regular_price_mode` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `regular_price_attribute` VARCHAR(255) NOT NULL,
@@ -859,7 +860,6 @@ INSERT INTO `{$this->_installer->getTable('m2epro_config')}` (`group`,`key`,`val
   ('/amazon/listing/product/action/delete/', 'min_allowed_wait_interval', '600', NOW(), NOW()),
   ('/cron/task/amazon/listing/synchronize_inventory/', 'interval_per_account', '86400', NOW(), NOW()),
   ('/amazon/order/settings/marketplace_25/', 'use_first_street_line_as_company', '1', NOW(), NOW()),
-  ('/amazon/repricing/', 'mode', '1', NOW(), NOW()),
   ('/amazon/repricing/', 'base_url', 'https://repricer.m2epro.com/connector/m2epro/', NOW(), NOW()),
   ('/amazon/configuration/', 'business_mode', '0', NOW(), NOW());
 

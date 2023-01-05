@@ -20,10 +20,14 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Grid_Column_Renderer_Qty
                 return '<span style="color: gray;">' . Mage::helper('M2ePro')->__('Not Listed') . '</span>';
             }
 
-            if ($value === null || $value === '' ||
-                ($row->getData('status') == Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED &&
-                 !$row->getData('is_online_price_invalid'))) {
-                return Mage::helper('M2ePro')->__('N/A');
+            if ($value === null || $value === '') {
+                if ($row->getData('status') == Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED &&
+                    !$row->getData('is_online_price_invalid')) {
+                    return Mage::helper('M2ePro')->__('N/A');
+                }
+                else {
+                    return '<i style="color:gray;">receiving...</i>';
+                }
             }
 
             if ($value <= 0) {

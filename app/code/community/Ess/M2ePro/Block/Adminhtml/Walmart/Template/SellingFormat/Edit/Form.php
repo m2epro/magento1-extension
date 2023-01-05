@@ -143,21 +143,6 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_SellingFormat_Edit_Form extend
         $this->setChild('remove_shipping_override_rule_button', $buttonBlock);
         // ---------------------------------------
 
-        // ---------------------------------------
-
-        $buttonBlock = $this->getLayout()
-            ->createBlock('adminhtml/widget_button')
-            ->setData(
-                array(
-                'label'   => Mage::helper('M2ePro')->__('Show Sales Tax Codes'),
-                'onclick' => 'WalmartTemplateSellingFormatObj.openTaxCodePopup(false)',
-                'class' => 'bt_tax_codes',
-                )
-            );
-        $this->setChild('tax_codes_button', $buttonBlock);
-
-        // ---------------------------------------
-
         return parent::_beforeToHtml();
     }
 
@@ -231,25 +216,6 @@ JS;
             'STANDARD'  => 'Standard',
             'EXPEDITED' => 'Expedited',
         );
-    }
-
-    //########################################
-
-    public function getMarketplacesWithTaxCodesDictionary()
-    {
-        /** @var $connRead Varien_Db_Adapter_Pdo_Mysql */
-        $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
-
-        $queryStmt = $connRead->select()
-            ->from(
-                Mage::helper('M2ePro/Module_Database_Structure')
-                    ->getTableNameWithPrefix('m2epro_walmart_dictionary_marketplace'),
-                array('marketplace_id')
-            )
-            ->where('`tax_codes` IS NOT NULL')
-            ->query();
-
-        return (array)$queryStmt->fetchAll(Zend_Db::FETCH_COLUMN);
     }
 
     //########################################

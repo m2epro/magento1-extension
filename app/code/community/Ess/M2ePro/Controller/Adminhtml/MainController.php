@@ -212,8 +212,7 @@ abstract class Ess_M2ePro_Controller_Adminhtml_MainController
         }
 
         if (Mage::helper('M2ePro/Module')->isReadyToWork() &&
-            Mage::helper('M2ePro/Module_Cron')->isLastRunMoreThan(1, true) &&
-            !Mage::helper('M2ePro/Module')->isDevelopmentEnvironment()
+            Mage::helper('M2ePro/Module_Cron')->isLastRunMoreThan(1, true)
         ) {
 
             $url = Mage::helper('M2ePro/Module_Support')->getSupportUrl('/support/solutions/articles/9000200402');

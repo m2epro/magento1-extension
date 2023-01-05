@@ -267,9 +267,7 @@ HTML;
             }
         }
 
-        if (Mage::helper('M2ePro/Component_Amazon_Repricing')->isEnabled() &&
-            isset($value['is_repricing']) && $value['is_repricing'] !== ''
-        ) {
+        if (isset($value['is_repricing']) && $value['is_repricing'] !== '') {
             if (!empty($condition)) {
                 $condition = '(' . $condition . ') OR ';
             }

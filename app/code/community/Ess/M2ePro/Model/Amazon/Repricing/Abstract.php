@@ -65,19 +65,42 @@ class Ess_M2ePro_Model_Amazon_Repricing_Abstract
         }
 
         foreach ($response['messages'] as $messageData) {
-            $message = Mage::getModel('M2ePro/Response_Message');
-            $message->initFromResponseData($messageData);
+            $message = new Ess_M2ePro_Model_Amazon_Repricing_ResponseMessage(
+                isset($messageData['text']) ? $messageData['text'] : '',
+                isset($messageData['type'])
+                    ? $messageData['type']
+                    : Ess_M2ePro_Model_Amazon_Repricing_ResponseMessage::TYPE_WARNING,
+                isset($messageData['code'])
+                    ? (int)$messageData['code']
+                    : Ess_M2ePro_Model_Amazon_Repricing_ResponseMessage::DEFAULT_CODE
+            );
 
             if (!$message->isError()) {
                 continue;
             }
 
+            $errorText = $message->getText();
+
+            if ($message->getCode() === Ess_M2ePro_Model_Amazon_Repricing_ResponseMessage::NOT_FOUND_ACCOUNT_CODE) {
+                $errorText = 'Repricer account is invalid.';
+
+                if (!$this->getAmazonAccountRepricing()->isInvalid()) {
+                    $this->getAmazonAccountRepricing()
+                        ->markAsInvalid()
+                        ->save();
+
+                    /** @var Ess_M2ePro_Helper_Data_Cache_Permanent $cache */
+                    $cache = Mage::helper('M2ePro/Data_Cache_Permanent');
+                    $cache->removeValue(Ess_M2ePro_Model_Amazon_Repricing_Issue_InvalidToken::CACHE_KEY);
+                }
+            }
+
             $this->getSynchronizationLog()->addMessage(
-                Mage::helper('M2ePro')->__($message->getText()),
+                Mage::helper('M2ePro')->__($errorText),
                 Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR
             );
 
-            $exception = new Exception($message->getText());
+            $exception = new Exception($errorText);
             Mage::helper('M2ePro/Module_Exception')->process($exception);
         }
     }

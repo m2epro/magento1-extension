@@ -158,6 +158,10 @@ class Ess_M2ePro_Adminhtml_Amazon_Account_RepricingController
             $repricingSynchronization->reset();
 
             $account->getChildObject()->getRepricing()->deleteInstance();
+
+            /** @var Ess_M2ePro_Helper_Data_Cache_Permanent $cache */
+            $cache = Mage::helper('M2ePro/Data_Cache_Permanent');
+            $cache->removeValue(Ess_M2ePro_Model_Amazon_Repricing_Issue_InvalidToken::CACHE_KEY);
         }
 
         return $this->_redirectUrl(

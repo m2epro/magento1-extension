@@ -255,21 +255,18 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Sellercentral_Grid
         );
 
         $priceColumn = array(
-            'header'                    => Mage::helper('M2ePro')->__('Price'),
-            'align'                     => 'right',
-            'width'                     => '110px',
-            'type'                      => 'number',
-            'index'                     => 'min_online_price',
-            'filter_index'              => 'min_online_price',
-            'marketplace_id'            => $this->_listing->getMarketplaceId(),
-            'account_id'                => $this->_listing->getAccountId(),
-            'renderer'                  => 'M2ePro/adminhtml_amazon_grid_column_renderer_price',
-            'filter_condition_callback' => array($this, 'callbackFilterPrice')
+            'header' => Mage::helper('M2ePro')->__('Price'),
+            'align' => 'right',
+            'width' => '110px',
+            'type' => 'number',
+            'index' => 'min_online_price',
+            'filter_index' => 'min_online_price',
+            'marketplace_id' => $this->_listing->getMarketplaceId(),
+            'account_id' => $this->_listing->getAccountId(),
+            'renderer' => 'M2ePro/adminhtml_amazon_grid_column_renderer_price',
+            'filter_condition_callback' => array($this, 'callbackFilterPrice'),
+            'filter' => 'M2ePro/adminhtml_amazon_grid_column_filter_price',
         );
-
-        if (Mage::helper('M2ePro/Component_Amazon_Repricing')->isEnabled()) {
-            $priceColumn['filter'] = 'M2ePro/adminhtml_amazon_grid_column_filter_price';
-        }
 
         $this->addColumn('online_price', $priceColumn);
 
@@ -300,13 +297,10 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Sellercentral_Grid
         $this->setMassactionIdFieldOnlyIndexValue(true);
 
         $groups = array(
-            'actions'            => Mage::helper('M2ePro')->__('Actions'),
-            'edit_fulfillment'   => Mage::helper('M2ePro')->__('Fulfillment')
+            'actions' => Mage::helper('M2ePro')->__('Actions'),
+            'edit_fulfillment' => Mage::helper('M2ePro')->__('Fulfillment'),
+            'edit_repricing' => Mage::helper('M2ePro')->__('Repricing Tool'),
         );
-
-        if (Mage::helper('M2ePro/Component_Amazon_Repricing')->isEnabled()) {
-            $groups['edit_repricing'] = Mage::helper('M2ePro')->__('Repricing Tool');
-        }
 
         $this->getMassactionBlock()->setGroups($groups);
 
@@ -369,8 +363,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Sellercentral_Grid
         /** @var Ess_M2ePro_Model_Account $account */
         $account = Mage::helper('M2ePro/Component_Amazon')->getObject('Account', $this->_listing->getAccountId());
 
-        if (Mage::helper('M2ePro/Component_Amazon_Repricing')->isEnabled() &&
-            $account->getChildObject()->isRepricing()) {
+        if ($account->getChildObject()->isRepricing()) {
             $this->getMassactionBlock()->addItem(
                 'showDetails', array(
                 'label' => Mage::helper('M2ePro')->__('Show Details'),
@@ -811,9 +804,7 @@ HTML;
             $condition .= ')';
         }
 
-        if (Mage::helper('M2ePro/Component_Amazon_Repricing')->isEnabled() &&
-            (isset($value['is_repricing']) && $value['is_repricing'] !== '')
-        ) {
+        if (isset($value['is_repricing']) && $value['is_repricing'] !== '') {
             if (!empty($condition)) {
                 $condition = '(' . $condition . ') AND ';
             }

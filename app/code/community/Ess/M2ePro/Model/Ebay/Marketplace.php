@@ -169,14 +169,6 @@ class Ess_M2ePro_Model_Ebay_Marketplace extends Ess_M2ePro_Model_Component_Child
     /**
      * @return bool
      */
-    public function isInStorePickupEnabled()
-    {
-        return (bool)(int)$this->getData('is_in_store_pickup');
-    }
-
-    /**
-     * @return bool
-     */
     public function isReturnDescriptionEnabled()
     {
         return (bool)(int)$this->getData('is_return_description');

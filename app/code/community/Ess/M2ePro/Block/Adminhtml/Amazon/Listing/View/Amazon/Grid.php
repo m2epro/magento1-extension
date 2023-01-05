@@ -275,12 +275,9 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Amazon_Grid
             'index' => $priceSortField,
             'filter_index' => $priceSortField,
             'frame_callback' => array($this, 'callbackColumnPrice'),
-            'filter_condition_callback' => array($this, 'callbackFilterPrice')
+            'filter_condition_callback' => array($this, 'callbackFilterPrice'),
+            'filter' => 'M2ePro/adminhtml_amazon_grid_column_filter_price',
         );
-
-        if (Mage::helper('M2ePro/Component_Amazon_Repricing')->isEnabled()) {
-            $priceColumn['filter'] = 'M2ePro/adminhtml_amazon_grid_column_filter_price';
-        }
 
         $this->addColumn('online_price', $priceColumn);
 
@@ -686,7 +683,7 @@ HTML;
 
         $repricingHtml ='';
 
-        if (Mage::helper('M2ePro/Component_Amazon_Repricing')->isEnabled() && $row->getData('is_repricing')) {
+        if ($row->getData('is_repricing')) {
             if ($row->getData('is_variation_parent')) {
                 $additionalData = (array)Mage::helper('M2ePro')->jsonDecode($row->getData('additional_data'));
 
@@ -1098,9 +1095,7 @@ HTML;
             $condition .= ')';
         }
 
-        if (Mage::helper('M2ePro/Component_Amazon_Repricing')->isEnabled() &&
-            (isset($value['is_repricing']) && $value['is_repricing'] !== '')
-        ) {
+        if (isset($value['is_repricing']) && $value['is_repricing'] !== '') {
             if (!empty($condition)) {
                 $condition = '(' . $condition . ') AND ';
             }
@@ -1296,10 +1291,26 @@ HTML;
                                   '</span>';
         }
 
+        $notASINAndNotISBN =  !Mage::helper('M2ePro/Component_Amazon')->isASIN($generalId)
+            && !Mage::helper('M2ePro')->isISBN($generalId);
         if ((int)$row->getData('status') != Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED) {
-            return <<<HTML
+            if ($notASINAndNotISBN) {
+                return <<<HTML
+<div style="display: flex; flex-direction: row; align-items: center;">
+   <div>
+    <span>{$generalId}</span>
+    {$generalIdOwnerHtml}
+</div>
+    <div style="position:relative; left: 15px; top: -2px;">
+    {$this->getTooltipHtml($this->__('Amazon returned UPC/EAN as the product ID'))}
+    </div>
+</div>
+HTML;
+            } else {
+                return <<<HTML
 <a href="{$url}" target="_blank">{$generalId}</a>{$generalIdOwnerHtml}
 HTML;
+            }
         }
 
         $iconPath = $this->getSkinUrl('M2ePro/images/search_statuses/');
@@ -1322,10 +1333,14 @@ HTML;
 HTML;
         }
 
-        // ---------------------------------------
+        $tooltipHtml = '';
+        if ($notASINAndNotISBN) {
+            $text = $generalId;
+            $tooltipHtml = $this->getTooltipHtml($this->__('Amazon returned UPC/EAN as the product ID'));
+        }
+
         $hasInActionLock = $this->getLockedData($row);
         $hasInActionLock = $hasInActionLock['in_action'];
-        // ---------------------------------------
 
         if ($hasInActionLock) {
             return $text . $generalIdOwnerHtml;
@@ -1353,15 +1368,22 @@ HTML;
         $tip = Mage::helper('M2ePro')->__('Unassign ASIN/ISBN');
         $iconSrc = $iconPath.'unassign.png';
 
-        $text .= <<<HTML
-&nbsp;
-<a href="javascript:;"
-    onclick="ListingGridObj.productSearchHandler.showUnmapFromGeneralIdPrompt({$listingProductId});"
-    title="{$tip}">
-    <img src="{$iconSrc}" width="16" height="16"/></a>{$generalIdOwnerHtml}
+        $result = <<<HTML
+<div style="display: flex; flex-direction: row; align-items: center;">
+    <span>{$text}</span>
+    &nbsp;
+    <a href="javascript:;"
+        class="amazon-listing-view-icon amazon-listing-view-generalId-remove"
+        onclick="ListingGridObj.productSearchHandler.showUnmapFromGeneralIdPrompt({$listingProductId});"
+        title="{$tip}"><img src="{$iconSrc}" width="16" height="16"/></a>
+    <div style="position:relative; left: 15px; top: -2px;">
+    {$tooltipHtml}
+    </div>
+</div>
+{$generalIdOwnerHtml}
 HTML;
 
-        return $text;
+        return $result;
     }
 
     protected function getGeneralIdColumnValueGeneralIdOwner($row)
@@ -1431,5 +1453,21 @@ HTML;
         return in_array($listingProductId, $this->getChildProductsWarningsData());
     }
 
-    //########################################
+    protected function getTooltipHtml($content)
+    {
+        $toolTipIconSrc = $this->getSkinUrl('M2ePro/images/tool-tip-icon.png');
+        $helpIconSrc = $this->getSkinUrl('M2ePro/images/help.png');
+
+        return <<<HTML
+<span>
+    <img class="tool-tip-image" style="vertical-align: middle;" src="{$toolTipIconSrc}" />
+    <span class="tool-tip-message" style="display:none; text-align: left; width: 120px; background: #E3E3E3;">
+        <img src="{$helpIconSrc}" />
+        <span style="color:gray;">
+           {$content}
+        </span>
+    </span>
+</span>
+HTML;
+    }
 }

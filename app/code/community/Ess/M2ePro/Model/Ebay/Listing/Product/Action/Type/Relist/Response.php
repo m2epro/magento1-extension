@@ -64,10 +64,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Relist_Response
         $this->getListingProduct()->addData($data)->save();
 
         $this->updateVariationsValues(false);
-
-        if ($this->getEbayAccount()->isPickupStoreEnabled()) {
-            $this->runAccountPickupStoreStateUpdater();
-        }
     }
 
     public function processAlreadyActive(array $response, array $responseParams = array())

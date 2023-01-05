@@ -134,28 +134,11 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationEbayController
             return $this->_redirect('*/*/installation');
         }
 
-        if ($accountMode == 'sandbox') {
-            $accountMode = EbayAccount::MODE_SANDBOX;
-        } else {
-            $accountMode = EbayAccount::MODE_PRODUCTION;
-        }
-
-        $data = array_merge(
-            $this->getEbayAccountDefaultSettings(),
-            array(
-                'title'              => $responseData['info']['UserID'],
-                'user_id'            => $responseData['info']['UserID'],
-                'mode'               => $accountMode,
-                'info'               => Mage::helper('M2ePro')->jsonEncode($responseData['info']),
-                'server_hash'        => $responseData['hash'],
-                'token_session'      => $tokenSessionId,
-                'token_expired_date' => $responseData['token_expired_date']
-            )
+        $accountModel = $this->createAccount(
+            $responseData,
+            $accountMode === 'sandbox' ? EbayAccount::MODE_SANDBOX : EbayAccount::MODE_PRODUCTION,
+            $tokenSessionId
         );
-
-        /** @var Ess_M2ePro_Model_Account $accountModel */
-        $accountModel = Mage::helper('M2ePro/Component_Ebay')->getModel('Account');
-        Mage::getModel('M2ePro/Ebay_Account_Builder')->build($accountModel, $data);
 
         Mage::getModel('M2ePro/Ebay_Account_Store_Category_Update')->process($accountModel->getChildObject());
 
@@ -287,6 +270,46 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationEbayController
         $data['magento_orders_settings']['qty_reservation']['days'] = 0;
 
         return $data;
+    }
+
+    /**
+     * @param array $responseData
+     * @param int $accountMode
+     * @param string $tokenSessionId
+     * @return Ess_M2ePro_Model_Account
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     * @throws Exception
+     */
+    private function createAccount($responseData, $accountMode, $tokenSessionId)
+    {
+        /** @var Ess_M2ePro_Model_Ebay_Account_Builder $accountBuilder */
+        $accountBuilder = Mage::getModel('M2ePro/Ebay_Account_Builder');
+        /** @var Ess_M2ePro_Helper_Magento_Store $magentoStore */
+        $magentoStore = Mage::helper('M2ePro/Magento_Store');
+        /** @var Ess_M2ePro_Helper_Data $dataHelper */
+        $dataHelper = Mage::helper('M2ePro');
+        /** @var Ess_M2ePro_Helper_Component_Ebay $componentEbay */
+        $componentEbay = Mage::helper('M2ePro/Component_Ebay');
+
+        $data = $accountBuilder->getDefaultData();
+
+        $data['title'] = $responseData['info']['UserID'];
+        $data['user_id'] = $responseData['info']['UserID'];
+        $data['mode'] = $accountMode;
+        $data['server_hash'] = $responseData['hash'];
+        $data['token_session'] = $tokenSessionId;
+        $data['token_expired_date'] = $responseData['token_expired_date'];
+
+        $data['magento_orders_settings']['listing_other']['store_id'] = $magentoStore->getDefaultStoreId();
+
+        $data['marketplaces_data'] = array();
+        $data['info'] = $dataHelper->jsonEncode($responseData['info']);
+
+        /** @var Ess_M2ePro_Model_Account $accountModel */
+        $accountModel = $componentEbay->getModel('Account');
+        $accountBuilder->build($accountModel, $data);
+
+        return $accountModel;
     }
 
     //########################################

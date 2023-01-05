@@ -308,23 +308,6 @@ class Ess_M2ePro_Model_Ebay_Account_Builder extends Ess_M2ePro_Model_ActiveRecor
             }
         }
 
-        // In Store Pickup statuses
-        // ---------------------------------------
-        $tempKey = 'in_store_pickup_statuses';
-        $tempSettings = !empty($this->_rawData['magento_orders_settings'][$tempKey])
-            ? $this->_rawData['magento_orders_settings'][$tempKey] : array();
-
-        $keys = array(
-            'mode',
-            'ready_for_pickup',
-            'picked_up',
-        );
-        foreach ($keys as $key) {
-            if (isset($tempSettings[$key])) {
-                $data['magento_orders_settings'][$tempKey][$key] = $tempSettings[$key];
-            }
-        }
-
         $data['magento_orders_settings']['shipping_information']['ship_by_date']
             = isset($this->_rawData['magento_orders_settings']['shipping_information']['ship_by_date'])
             ? (int)$this->_rawData['magento_orders_settings']['shipping_information']['ship_by_date']
@@ -414,11 +397,6 @@ class Ess_M2ePro_Model_Ebay_Account_Builder extends Ess_M2ePro_Model_ActiveRecor
                 ),
                 'tax'                      => array(
                     'mode' => Account::MAGENTO_ORDERS_TAX_MODE_MIXED
-                ),
-                'in_store_pickup_statuses' => array(
-                    'mode'             => 0,
-                    'ready_for_pickup' => '',
-                    'picked_up'        => '',
                 ),
                 'status_mapping'           => array(
                     'mode'    => Account::MAGENTO_ORDERS_STATUS_MAPPING_MODE_DEFAULT,

@@ -181,7 +181,7 @@ echo $this->getChildHtml('item_edit');
 
         <div class="entry-edit-head">
             <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Buyer Information');?></h4>
-            <?php if (!$this->order->getChildObject()->isUseClickAndCollect() && !$this->order->getChildObject()->isUseInStorePickup()): ?>
+            <?php if (!$this->order->getChildObject()->isUseClickAndCollect()): ?>
             <div style="float: right;">
                 <a href="<?php echo $this->getUrl('*/*/editShippingAddress', array('id' => $this->order->getId())) ?>"><?php echo Mage::helper('M2ePro')->__('Edit') ?></a>
             </div>
@@ -242,7 +242,7 @@ echo $this->getChildHtml('item_edit');
                             </td>
                         </tr>
 
-                        <?php if (!$this->order->getChildObject()->isUseClickAndCollect() && !$this->order->getChildObject()->isUseInStorePickup()): ?>
+                        <?php if (!$this->order->getChildObject()->isUseClickAndCollect()): ?>
                         <tr>
                             <td class="label"><?php echo Mage::helper('M2ePro')->__('Address'); ?>:</td>
                             <td class="value">
@@ -405,16 +405,12 @@ echo $this->getChildHtml('item_edit');
                 <table class="form-list" cellspacing="0">
                     <tbody>
 
-                        <?php if ($this->order->getChildObject()->isUseClickAndCollect() || $this->order->getChildObject()->isUseInStorePickup()): ?>
+                        <?php if ($this->order->getChildObject()->isUseClickAndCollect()): ?>
                             <tr>
                                 <td class="label"><?php echo Mage::helper('M2ePro')->__('Shipping Method');?>:</td>
                                 <td class="value">
                                     <strong>
-                                        <?php if ($this->order->getChildObject()->isUseClickAndCollect()) { ?>
-                                            <?php echo Mage::helper('M2ePro')->__('Click And Collect'); ?>
-                                        <?php } else { ?>
-                                            <?php echo Mage::helper('M2ePro')->__('In Store Pickup'); ?>
-                                        <?php } ?>
+                                        <?php echo Mage::helper('M2ePro')->__('Click And Collect'); ?>
                                     </strong>
                                 </td>
                             </tr>

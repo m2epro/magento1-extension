@@ -15,8 +15,6 @@ class Ess_M2ePro_Helper_Module extends Mage_Core_Helper_Abstract
 
     const ENVIRONMENT_PRODUCTION     = 'production';
     const ENVIRONMENT_DEVELOPMENT    = 'development';
-    const ENVIRONMENT_TESTING_MANUAL = 'testing-manual';
-    const ENVIRONMENT_TESTING_AUTO   = 'testing-auto';
 
     const IDENTIFIER = 'Ess_M2ePro';
 
@@ -146,16 +144,6 @@ class Ess_M2ePro_Helper_Module extends Mage_Core_Helper_Abstract
     public function isDevelopmentEnvironment()
     {
         return $this->getEnvironment() === self::ENVIRONMENT_DEVELOPMENT;
-    }
-
-    public function isTestingManualEnvironment()
-    {
-        return $this->getEnvironment() === self::ENVIRONMENT_TESTING_MANUAL;
-    }
-
-    public function isTestingAutoEnvironment()
-    {
-        return $this->getEnvironment() === self::ENVIRONMENT_TESTING_AUTO;
     }
 
     public function setEnvironment($env)

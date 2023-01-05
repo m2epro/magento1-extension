@@ -79,9 +79,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_Edit_Tabs_Order extends Mage_Admin
         array_unshift($productTaxClasses, $none);
 
         $this->productTaxClasses = $productTaxClasses;
-        // ---------------------------------------
-
-        $this->isStorePickupEnabled = $account->getChildObject()->isPickupStoreEnabled();
 
         return parent::_beforeToHtml();
     }

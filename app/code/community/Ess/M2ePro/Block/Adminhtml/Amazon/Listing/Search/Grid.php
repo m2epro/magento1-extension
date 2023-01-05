@@ -96,19 +96,16 @@ abstract class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Search_Grid extends Mag
         );
 
         $priceColumn = array(
-            'header'         => Mage::helper('M2ePro')->__('Price'),
-            'align'          => 'right',
-            'width'          => '110px',
-            'type'           => 'number',
-            'index'          => 'online_current_price',
-            'filter_index'   => 'online_current_price',
+            'header' => Mage::helper('M2ePro')->__('Price'),
+            'align' => 'right',
+            'width' => '110px',
+            'type' => 'number',
+            'index' => 'online_current_price',
+            'filter_index' => 'online_current_price',
             'frame_callback' => array($this, 'callbackColumnPrice'),
-            'filter_condition_callback' => array($this, 'callbackFilterPrice')
+            'filter_condition_callback' => array($this, 'callbackFilterPrice'),
+            'filter' => 'M2ePro/adminhtml_amazon_grid_column_filter_price',
         );
-
-        if (Mage::helper('M2ePro/Component_Amazon_Repricing')->isEnabled()) {
-            $priceColumn['filter'] = 'M2ePro/adminhtml_amazon_grid_column_filter_price';
-        }
 
         $this->addColumn('online_price', $priceColumn);
 
@@ -257,7 +254,7 @@ HTML;
 
         $repricingHtml = '';
 
-        if (Mage::helper('M2ePro/Component_Amazon_Repricing')->isEnabled() && $row->getData('is_repricing')) {
+        if ($row->getData('is_repricing')) {
             if ($row->getData('is_variation_parent')) {
                 $additionalData = (array)Mage::helper('M2ePro')->jsonDecode($row->getData('additional_data'));
 

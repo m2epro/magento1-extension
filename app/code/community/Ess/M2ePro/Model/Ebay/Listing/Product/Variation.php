@@ -49,12 +49,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation extends Ess_M2ePro_Model_C
             return false;
         }
 
-        if (Mage::helper('M2ePro/Component_Ebay_PickupStore')->isFeatureEnabled()) {
-            Mage::getResourceModel('M2ePro/Ebay_Listing_Product_PickupStore')->processDeletedVariation(
-                $this->getParentObject()
-            );
-        }
-
         $this->delete();
         return true;
     }

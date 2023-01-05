@@ -277,7 +277,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
         $collection->getSelect()->reset(Zend_Db_Select::COLUMNS);
         $collection->getSelect()->columns(
             array(
-            'id' => 'main_table.id'
+                'id' => 'main_table.id'
             )
         );
         $collection->getSelect()->where(
@@ -910,7 +910,22 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
         );
     }
 
-    //########################################
+    protected function exitToListingAction()
+    {
+        $listingId = $this->getRequest()->getParam('id');
+        if ($listingId === null) {
+            return $this->_redirect('*/adminhtml_walmart_listing/index');
+        }
+
+        $additionalData = $this->getListing()->getSettings('additional_data');
+        $this->clearProductsAdding($additionalData);
+        $this->clear();
+
+        return $this->_redirect(
+            '*/adminhtml_walmart_listing/view',
+            array('id' => $listingId)
+        );
+    }
 
     protected function setCategoryTemplate($productsIds, $templateId)
     {
@@ -1010,5 +1025,20 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
         }
     }
 
-    //########################################
+    /**
+     * @param array $additionalData
+     * @return void
+     * @throws Ess_M2ePro_Model_Exception
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
+    protected function clearProductsAdding($additionalData)
+    {
+        Mage::helper('M2ePro/Data_Session')->setValue('added_products_ids', array());
+
+        if (!empty($additionalData['adding_listing_products_ids'])
+            && is_array($additionalData['adding_listing_products_ids'])
+        ) {
+            $this->deleteListingProducts($additionalData['adding_listing_products_ids']);
+        }
+    }
 }

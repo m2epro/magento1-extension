@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Ess_M2ePro>
-            <version>6.31.2</version>
+            <version>6.32.0</version>
         </Ess_M2ePro>
     </modules>
     <default>
@@ -542,17 +542,6 @@
                     </M2ePro_observer_order_create>
                 </observers>
             </sales_order_save_after>
-
-            <sales_order_save_after>
-                <observers>
-                    <M2ePro_observer_order_status_change>
-                        <type>model</type>
-                        <class>Ess_M2ePro_Observer_Dispatcher</class>
-                        <method>salesOrderSaveAfterSendPickupStoreNotifications</method>
-                    </M2ePro_observer_order_status_change>
-                </observers>
-            </sales_order_save_after>
-
             <order_cancel_after>
                 <observers>
                     <M2ePro_observer_order_cancel>
@@ -929,15 +918,6 @@
                     <Ebay_Account>
                         <table>m2epro_ebay_account</table>
                     </Ebay_Account>
-                    <Ebay_Account_PickupStore>
-                        <table>m2epro_ebay_account_pickup_store</table>
-                    </Ebay_Account_PickupStore>
-                    <Ebay_Account_PickupStore_State>
-                        <table>m2epro_ebay_account_pickup_store_state</table>
-                    </Ebay_Account_PickupStore_State>
-                    <Ebay_Account_PickupStore_Log>
-                        <table>m2epro_ebay_account_pickup_store_log</table>
-                    </Ebay_Account_PickupStore_Log>
                     <Ebay_Account_Store_Category>
                         <table>m2epro_ebay_account_store_category</table>
                     </Ebay_Account_Store_Category>
@@ -1070,10 +1050,6 @@
                     <Walmart_Listing_Product>
                         <table>m2epro_walmart_listing_product</table>
                     </Walmart_Listing_Product>
-
-                    <Ebay_Listing_Product_PickupStore>
-                        <table>m2epro_ebay_listing_product_pickup_store</table>
-                    </Ebay_Listing_Product_PickupStore>
 
                     <Listing_Product_Variation>
                         <table>m2epro_listing_product_variation</table>

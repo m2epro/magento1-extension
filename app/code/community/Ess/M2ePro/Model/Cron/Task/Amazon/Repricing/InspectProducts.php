@@ -14,7 +14,8 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Repricing_InspectProducts extends Ess_M2
 
     public function performActions()
     {
-        $permittedAccounts = $this->getPermittedAccounts();
+        $permittedAccounts = Mage::getResourceModel('M2ePro/Account_Collection')
+            ->getAccountsWithValidRepricingAccount();
 
         foreach ($permittedAccounts as $permittedAccount) {
             $operationDate = Mage::helper('M2ePro')->getCurrentGmtDate();
@@ -36,22 +37,6 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Repricing_InspectProducts extends Ess_M2
     }
 
     //####################################
-
-    /**
-     * @return Ess_M2ePro_Model_Account[]
-     */
-    protected function getPermittedAccounts()
-    {
-        /** @var Ess_M2ePro_Model_Resource_Account_Collection $accountCollection */
-        $accountCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Account');
-
-        $accountCollection->getSelect()->joinInner(
-            array('aar' => Mage::getResourceModel('M2ePro/Amazon_Account_Repricing')->getMainTable()),
-            'aar.account_id=main_table.id', array()
-        );
-
-        return $accountCollection->getItems();
-    }
 
     /**
      * @param $account Ess_M2ePro_Model_Account

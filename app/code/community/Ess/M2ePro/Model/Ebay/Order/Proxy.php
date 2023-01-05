@@ -118,8 +118,7 @@ class Ess_M2ePro_Model_Ebay_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
     public function getAddressData()
     {
         if (!$this->_order->isUseGlobalShippingProgram() &&
-            !$this->_order->isUseClickAndCollect() &&
-            !$this->_order->isUseInStorePickup()
+            !$this->_order->isUseClickAndCollect()
         ) {
             return parent::getAddressData();
         }
@@ -167,11 +166,6 @@ class Ess_M2ePro_Model_Ebay_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
 
         if ($this->_order->isUseClickAndCollect()) {
             $details = $this->_order->getClickAndCollectDetails();
-            isset($details['reference_id']) && $referenceId = 'Ref #'.$details['reference_id'];
-        }
-
-        if ($this->_order->isUseInStorePickup()) {
-            $details = $this->_order->getInStorePickupDetails();
             isset($details['reference_id']) && $referenceId = 'Ref #'.$details['reference_id'];
         }
 
@@ -300,14 +294,9 @@ class Ess_M2ePro_Model_Ebay_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
     {
         $additionalData = '';
 
-        if ($this->_order->isUseClickAndCollect() || $this->_order->isUseInStorePickup()) {
-            if ($this->_order->isUseClickAndCollect()) {
-                $additionalData .= 'Click And Collect | ';
-                $details = $this->_order->getClickAndCollectDetails();
-            } else {
-                $additionalData .= 'In Store Pickup | ';
-                $details = $this->_order->getInStorePickupDetails();
-            }
+        if ($this->_order->isUseClickAndCollect()) {
+            $additionalData .= 'Click And Collect | ';
+            $details = $this->_order->getClickAndCollectDetails();
 
             if (!empty($details['location_id'])) {
                 $additionalData .= 'Store ID: ' . $details['location_id'] . ' | ';

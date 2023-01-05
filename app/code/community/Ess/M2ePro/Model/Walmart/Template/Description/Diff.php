@@ -46,8 +46,6 @@ class Ess_M2ePro_Model_Walmart_Template_Description_Diff extends Ess_M2ePro_Mode
             'manufacturer_part_number_custom_attribute',
             'msrp_rrp_mode',
             'msrp_rrp_custom_attribute',
-            'keywords_custom_value',
-            'keywords_custom_attribute',
             'image_main_mode',
             'image_main_attribute',
             'image_variation_difference_mode',

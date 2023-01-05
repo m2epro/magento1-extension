@@ -745,7 +745,28 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_Processor
                             'isbn'    => isset($productData['isbn']) ? $productData['isbn'] : null,
                             )
                         );
-                        $linking->link();
+
+                        $message = Mage::getModel('M2ePro/Connector_Connection_Response_Message');
+
+                        if ($linking->link()) {
+                            $message->initFromPreparedData(
+                                sprintf('Product has been found by SKU %s in your Inventory and linked.', $sku),
+                                Ess_M2ePro_Model_Connector_Connection_Response_Message::TYPE_SUCCESS
+                            );
+                        } else {
+                            $message->initFromPreparedData(
+                                sprintf('Unexpected error during process of linking by SKU %s. The required SKU
+                                         has been found but the data is not sent back. Please try again.', $sku),
+                                Ess_M2ePro_Model_Connector_Connection_Response_Message::TYPE_ERROR
+                            );
+                        }
+
+                        $additionalData = Mage::helper('M2ePro')->jsonDecode($listingProductData['additional_data']);
+                        $logger = $this->createLogger($additionalData['params']['status_changer']);
+                        $logger->logListingProductMessage($listingProduct, $message);
+
+                        $removedListingsProductsIds[] = $listingProductId;
+                        unset($accountData[$listingProductId]);
                     } else if ($walmartListingProduct->getSku()) {
                         $listingProduct->addData(
                             array(

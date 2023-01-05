@@ -101,6 +101,24 @@ class Ess_M2ePro_Model_Amazon_Account_Repricing extends Ess_M2ePro_Model_Compone
     }
 
     /**
+     * @return bool
+     */
+    public function isInvalid()
+    {
+        return (bool)$this->getData('invalid');
+    }
+
+    /**
+     * @return $this
+     */
+    public function markAsInvalid()
+    {
+        $this->setData('invalid', 1);
+
+        return $this;
+    }
+
+    /**
      * @return int
      */
     public function getTotalProducts()

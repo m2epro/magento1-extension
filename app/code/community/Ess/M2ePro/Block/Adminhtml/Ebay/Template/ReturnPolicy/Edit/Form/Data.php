@@ -8,6 +8,7 @@
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Template_ReturnPolicy_Edit_Form_Data extends Mage_Adminhtml_Block_Widget
 {
+    const RETURNS_WITHIN_DEFAULT_VALUE = 'Days_30';
     //########################################
 
     public function __construct()
@@ -162,5 +163,24 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_ReturnPolicy_Edit_Form_Data exten
         return $this->getDictionaryInfo($key, $marketplace);
     }
 
-    //########################################
+    /**
+     * @param array $options
+     *
+     * @return mixed|string
+     */
+    public function getDefaultDaysValueForReturnPolicy(array $options)
+    {
+        $result = '';
+        foreach ($options as $option) {
+            if ($option['ebay_id'] === self::RETURNS_WITHIN_DEFAULT_VALUE) {
+                $result = $option['ebay_id'];
+            }
+        }
+        if (!$result) {
+            $result = array_shift($options);
+            $result = is_array($result) ? $result['ebay_id'] : '';
+        }
+
+        return $result;
+    }
 }

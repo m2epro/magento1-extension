@@ -60,10 +60,6 @@ final class Ess_M2ePro_Model_Cron_Runner_Magento extends Ess_M2ePro_Model_Cron_R
 
     protected function distributeLoadIfNeed()
     {
-        if (!Mage::helper('M2ePro/Module')->isProductionEnvironment()) {
-            return;
-        }
-
         $maxExecutionTime = (int)@ini_get('max_execution_time');
 
         if ($maxExecutionTime <= 0 || $maxExecutionTime < self::MIN_DISTRIBUTION_EXECUTION_TIME) {

@@ -58,24 +58,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View extends Mage_Adminhtml_Block_
             )
         );
 
-        if ($this->_listing->getAccount()->getChildObject()->isPickupStoreEnabled() &&
-            Mage::helper('M2ePro/Component_Ebay_PickupStore')->isFeatureEnabled()) {
-            $pickupStoreUrl = $this->getUrl(
-                '*/adminhtml_ebay_listing_pickupStore/index',
-                array(
-                    'id' => $this->_listing->getId()
-                )
-            );
-            $this->_addButton(
-                'pickup_store_management',
-                array(
-                    'label'   => Mage::helper('M2ePro')->__('In-Store Pickup Management'),
-                    'onclick' => 'window.open(\'' . $pickupStoreUrl . '\',\'_blank\')',
-                    'class'   => 'success'
-                )
-            );
-        }
-
         $this->_addButton(
             'edit_templates',
             array(

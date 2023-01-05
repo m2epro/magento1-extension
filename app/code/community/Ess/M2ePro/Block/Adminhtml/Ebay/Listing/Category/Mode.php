@@ -41,6 +41,23 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Mode extends Ess_M2ePro_B
             );
         }
 
+        $url = $this->getUrl(
+            '*/adminhtml_ebay_listing_categorySettings/exitToListing',
+            array('listing_id' => $this->getRequest()->getParam('listing_id'))
+        );
+        $confirm =
+            $this->__('Are you sure?') . '\n\n'
+            . $this->__('All unsaved changes will be lost and you will be returned to the Listings grid.');
+        $this->_addButton(
+            'exit_to_listing',
+            array(
+                'id' => 'exit_to_listing',
+                'label' => Mage::helper('M2ePro')->__('Cancel'),
+                'onclick' => "confirmSetLocation('$confirm', '$url');",
+                'class' => 'scalable'
+            )
+        );
+
         $this->_addButton(
             'next', array(
                 'id'        => 'next',

@@ -152,14 +152,6 @@ class Ess_M2ePro_Model_Cron_Task_Repository
             'component' => Ess_M2ePro_Helper_Component_Ebay::NICK,
             'group'     => self::GROUP_EBAY,
         ),
-        Ess_M2ePro_Model_Cron_Task_Ebay_PickupStore_ScheduleForUpdate::NICK => array(
-            'component' => Ess_M2ePro_Helper_Component_Ebay::NICK,
-            'group'     => self::GROUP_EBAY,
-        ),
-        Ess_M2ePro_Model_Cron_Task_Ebay_PickupStore_UpdateOnChannel::NICK => array(
-            'component' => Ess_M2ePro_Helper_Component_Ebay::NICK,
-            'group'     => self::GROUP_EBAY,
-        ),
 
         //----------------------------------------
 
@@ -294,6 +286,10 @@ class Ess_M2ePro_Model_Cron_Task_Repository
             'group'     => self::GROUP_WALMART,
         ),
         Ess_M2ePro_Model_Cron_Task_Walmart_Order_Receive::NICK => array(
+            'component' => Ess_M2ePro_Helper_Component_Walmart::NICK,
+            'group'     => self::GROUP_WALMART,
+        ),
+        Ess_M2ePro_Model_Cron_Task_Walmart_Order_ReceiveWithCancellationRequested::NICK => array(
             'component' => Ess_M2ePro_Helper_Component_Walmart::NICK,
             'group'     => self::GROUP_WALMART,
         ),

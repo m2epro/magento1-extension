@@ -50,10 +50,6 @@ class Ess_M2ePro_Model_Walmart_Template_Description extends Ess_M2ePro_Model_Com
     const ATTRIBUTES_MODE_NONE   = 0;
     const ATTRIBUTES_MODE_CUSTOM = 1;
 
-    const KEYWORDS_MODE_NONE             = 0;
-    const KEYWORDS_MODE_CUSTOM_VALUE     = 1;
-    const KEYWORDS_MODE_CUSTOM_ATTRIBUTE = 2;
-
     const MANUFACTURER_MODE_NONE             = 0;
     const MANUFACTURER_MODE_CUSTOM_VALUE     = 1;
     const MANUFACTURER_MODE_CUSTOM_ATTRIBUTE = 2;
@@ -786,67 +782,6 @@ class Ess_M2ePro_Model_Walmart_Template_Description extends Ess_M2ePro_Model_Com
     /**
      * @return int
      */
-    public function getKeywordsMode()
-    {
-        return (int)$this->getData('keywords_mode');
-    }
-
-    /**
-     * @return bool
-     */
-    public function isKeywordsModeNone()
-    {
-        return $this->getKeywordsMode() == self::KEYWORDS_MODE_NONE;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isKeywordsModeCustomValue()
-    {
-        return $this->getKeywordsMode() == self::KEYWORDS_MODE_CUSTOM_VALUE;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isKeywordsModeCustomAttribute()
-    {
-        return $this->getKeywordsMode() == self::KEYWORDS_MODE_CUSTOM_ATTRIBUTE;
-    }
-
-    /**
-     * @return array
-     */
-    public function getKeywordsSource()
-    {
-        return array(
-            'mode'             => $this->getKeywordsMode(),
-            'custom_value'     => $this->getData('keywords_custom_value'),
-            'custom_attribute' => $this->getData('keywords_custom_attribute')
-        );
-    }
-
-    /**
-     * @return array
-     */
-    public function getKeywordsAttributes()
-    {
-        $attributes = array();
-        $src = $this->getKeywordsSource();
-
-        if ($src['mode'] == self::KEYWORDS_MODE_CUSTOM_ATTRIBUTE) {
-            $attributes[] = $src['custom_attribute'];
-        }
-
-        return $attributes;
-    }
-
-    // ---------------------------------------
-
-    /**
-     * @return int
-     */
     public function getManufacturerMode()
     {
         return (int)$this->getData('manufacturer_mode');
@@ -1221,7 +1156,6 @@ class Ess_M2ePro_Model_Walmart_Template_Description extends Ess_M2ePro_Model_Com
                 $this->getOtherFeaturesAttributes(),
                 $this->getAttributesAttributes(),
                 $this->getKeyFeaturesAttributes(),
-                $this->getKeywordsAttributes(),
                 $this->getManufacturerAttributes(),
                 $this->getManufacturerPartNumberAttributes(),
                 $this->getMsrpRrpAttributes()

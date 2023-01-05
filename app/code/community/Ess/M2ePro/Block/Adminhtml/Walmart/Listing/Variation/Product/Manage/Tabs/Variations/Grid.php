@@ -96,6 +96,21 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_V
             )
         );
 
+        $collection->getSelect()->joinInner(
+            array('wl' => Mage::getResourceModel('M2ePro/Walmart_Listing')->getMainTable()),
+            'wl.listing_id = main_table.listing_id',
+            null
+        );
+
+        $collection->getSelect()->joinInner(
+            array('wtsf' => Mage::getResourceModel('M2ePro/Walmart_Template_SellingFormat')->getMainTable()),
+            'wtsf.template_selling_format_id = wl.template_selling_format_id',
+            array(
+                'is_set_online_promotions'
+                    => new \Zend_Db_Expr('wtsf.promotions_mode = 1 AND second_table.online_promotions IS NOT NULL')
+            )
+        );
+
         if ($this->getParam($this->getVarNameFilter()) == 'searched_by_child') {
             $collection->addFieldToFilter(
                 'second_table.listing_product_id',
@@ -367,7 +382,11 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_V
 
             $html .= '<div class="m2ePro-variation-attributes product-options-list">';
             if (!$uniqueProductsIds) {
-                $url = $this->getUrl('adminhtml/catalog_product/edit', array('id' => reset($productsIds)));
+                $data['id'] = reset($productsIds);
+                if ($this->getListingProduct()->getListing()->getStoreId() !== null) {
+                    $data['store'] = $this->getListingProduct()->getListing()->getStoreId();
+                }
+                $url = $this->getUrl('adminhtml/catalog_product/edit', $data);
                 $html .= '<a href="' . $url . '" target="_blank">';
             }
 
@@ -386,7 +405,11 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_V
                     '</span></span>';
 
                 if ($uniqueProductsIds && $option !== '--' && !in_array($attribute, $virtualProductAttributes)) {
-                    $url = $this->getUrl('adminhtml/catalog_product/edit', array('id' => $productsIds[$attribute]));
+                    $data['id'] = $productsIds[$attribute];
+                    if ($this->getListingProduct()->getListing()->getStoreId() !== null) {
+                        $data['store'] = $this->getListingProduct()->getListing()->getStoreId();
+                    }
+                    $url = $this->getUrl('adminhtml/catalog_product/edit', $data);
                     $html .= '<a href="' . $url . '" target="_blank">' . $optionHtml . '</a><br/>';
                 } else {
                     $html .= $optionHtml . '<br/>';
@@ -509,10 +532,15 @@ HTML;
 
         $onlinePrice = $row->getData('online_price');
 
-        if ($onlinePrice === null || $onlinePrice === '' ||
-            ($row->getData('status') == Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED &&
-                !$row->getData('is_online_price_invalid'))) {
-            return Mage::helper('M2ePro')->__('N/A');
+        if ($onlinePrice === null || $onlinePrice === ''){
+            if ($row->getData('status') == Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED
+                || ($row->getData('status') == Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED
+                    && !$row->getData('is_online_price_invalid'))
+            ) {
+                return Mage::helper('M2ePro')->__('N/A');
+            } else {
+                return '<i style="color:gray;">receiving...</i>';
+            }
         }
 
         $marketplaceId = $this->getListingProduct()->getListing()->getMarketplaceId();
@@ -525,6 +553,16 @@ HTML;
             $priceValue = '<span style="color: #f00;">0</span>';
         } else {
             $priceValue = Mage::app()->getLocale()->currency($currency)->toCurrency($onlinePrice);
+        }
+
+        $isSetOnlinePromotions = (bool)$row->getData('is_set_online_promotions');
+        if ($isSetOnlinePromotions) {
+            $promotionTooltipHtml = $this->getTooltipHtml(
+                $this->getSkinUrl('M2ePro/images/promotions.svg'),
+                $this->__('Price without promotions<br>Actual price is available on Walmart.')
+            );
+
+            $priceValue = $promotionTooltipHtml. '&nbsp;' . $priceValue;
         }
 
         return $priceValue;
@@ -1382,6 +1420,18 @@ HTML;
         }
 
         return $result;
+    }
+
+    private function getTooltipHtml($icon, $content)
+    {
+        return <<<TOOLTIP
+<span>
+    <img class="tool-tip-image" style="vertical-align:middle;height:14px" src="$icon">
+    <span class="tool-tip-message tip-left" style="display:none;text-align: left;width: 300px;">
+        <span style="color:gray;">$content</span>
+    </span>
+</span>
+TOOLTIP;
     }
 
     //########################################

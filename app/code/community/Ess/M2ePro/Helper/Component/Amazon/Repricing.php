@@ -24,13 +24,6 @@ class Ess_M2ePro_Helper_Component_Amazon_Repricing extends Mage_Core_Helper_Abst
 
     //########################################
 
-    public function isEnabled()
-    {
-        return (bool)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue('/amazon/repricing/', 'mode');
-    }
-
-    //########################################
-
     public function sendRequest($command, array $postData)
     {
         $curlObject = curl_init();

@@ -29,11 +29,9 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_ProcessInstructions
             Mage::getModel('M2ePro/Amazon_Listing_Product_Instruction_SynchronizationTemplate_Handler')
         );
 
-        if (Mage::helper('M2ePro/Component_Amazon_Repricing')->isEnabled()) {
-            $processor->registerHandler(
-                Mage::getModel('M2ePro/Amazon_Listing_Product_Instruction_Repricing_Handler')
-            );
-        }
+        $processor->registerHandler(
+            Mage::getModel('M2ePro/Amazon_Listing_Product_Instruction_Repricing_Handler')
+        );
 
         $processor->process();
     }

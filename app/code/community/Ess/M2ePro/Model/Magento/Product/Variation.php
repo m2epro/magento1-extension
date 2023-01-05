@@ -696,7 +696,8 @@ class Ess_M2ePro_Model_Magento_Product_Variation
                 throw new \Ess_M2ePro_Model_Exception($message);
             }
 
-            $productAttribute->setStoreId($this->getMagentoProduct()->getStoreId());
+            $storeId = $this->getMagentoProduct()->getStoreId();
+            $productAttribute->setStoreId($storeId);
 
             $configurableOption = array(
                 'option_id' => $attribute->getAttributeId(),
@@ -704,7 +705,8 @@ class Ess_M2ePro_Model_Magento_Product_Variation
                     array(
                     trim($attribute->getData('label')),
                     trim($productAttribute->getFrontendLabel()),
-                    trim($productAttribute->getStoreLabel($this->getMagentoProduct()->getStoreId())),
+                    trim($productAttribute->getStoreLabel($storeId)),
+                    trim($this->getStoreLabel($productAttribute, $storeId)),
                     )
                 ),
                 'values' => $this->getConfigurableAttributeValues($attribute),
@@ -718,6 +720,21 @@ class Ess_M2ePro_Model_Magento_Product_Variation
         }
 
         return $configurableOptions;
+    }
+
+    /**
+     * @param Mage_Catalog_Model_Resource_Eav_Attribute $productAttribute
+     * @param int $storeId
+     * @return string|null
+     */
+    protected function getStoreLabel($productAttribute, $storeId)
+    {
+        $labels = $productAttribute->getStoreLabels();
+        if (!isset($labels[$storeId])) {
+            return null;
+        }
+
+        return $labels[$storeId];
     }
 
     protected function getGroupedVariationsTypeRaw()

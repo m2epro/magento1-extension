@@ -54,10 +54,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Revise_Response
 
         $this->updateVariationsValues(true);
         $this->updateEbayItem();
-
-        if ($this->getEbayAccount()->isPickupStoreEnabled() && $this->getConfigurator()->isVariationsAllowed()) {
-            $this->runAccountPickupStoreStateUpdater();
-        }
     }
 
     public function processAlreadyStopped(array $response, array $responseParams = array())

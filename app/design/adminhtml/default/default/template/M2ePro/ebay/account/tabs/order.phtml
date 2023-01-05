@@ -51,9 +51,7 @@
             EbayAccountObj.renderOrderNumberExample();
 
             $('magento_orders_customer_mode').observe('change', EbayAccountObj.magentoOrdersCustomerModeChange);
-            <?php if ($this->isStorePickupEnabled): ?>
-                $('magento_orders_in_store_pickup_statuses_mode').observe('change', EbayAccountObj.magentoOrdersInStorePickupStatusesModeChange);
-            <?php endif; ?>
+
             $('magento_orders_status_mapping_mode').observe('change', EbayAccountObj.magentoOrdersStatusMappingModeChange);
 
         }, 350);
@@ -588,68 +586,6 @@
 </div>
 
 <?php $statusList = $this->getMagentoOrderStatusList(); ?>
-
-<?php if ($this->isStorePickupEnabled): ?>
-
-    <div class="entry-edit" id="magento_block_ebay_accounts_magento_orders_in_store_pickup_statuses" <?php if (($formData['magento_orders_settings']['listing']['mode'] == 0 && $formData['magento_orders_settings']['listing_other']['mode'] == 0)) echo 'style="display: none;"'; ?>>
-
-        <div class="entry-edit-head">
-            <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('In Store Pickup Notification Status Mapping'); ?></h4>
-        </div>
-
-        <div class="fieldset">
-            <div class="hor-scroll">
-
-                <table class="form-list" cellspacing="0" cellpadding="0">
-
-                    <tr>
-                        <td class="label">
-                            <label for="magento_orders_in_store_pickup_statuses_mode"><?php echo Mage::helper('M2ePro')->__('Notify eBay'); ?>: </label>
-                        </td>
-                        <td class="value" style="width: auto;">
-                            <select id="magento_orders_in_store_pickup_statuses_mode" name="magento_orders_settings[in_store_pickup_statuses][mode]" class="M2ePro-required-when-visible">
-                                <option value="<?php echo Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_STATUS_MAPPING_MODE_DEFAULT; ?>" <?php if ($formData['magento_orders_settings']['in_store_pickup_statuses']['mode'] == 0) echo "selected='selected'"; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
-                                <option value="<?php echo Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_STATUS_MAPPING_MODE_CUSTOM; ?>" <?php if ($formData['magento_orders_settings']['in_store_pickup_statuses']['mode'] == 1) echo "selected='selected'"; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
-                            </select>
-                        </td>
-                    </tr>
-
-                    <tr id="magento_orders_in_store_pickup_statuses_ready_for_pickup_tr" <?php if ($formData['magento_orders_settings']['in_store_pickup_statuses']['mode'] == 0): ?> style="display: none;" <?php endif; ?>>
-                        <td class="label">
-                            <label for="magento_orders_in_store_pickup_statuses_ready_for_pickup"><?php echo Mage::helper('M2ePro')->__('Ready For Pickup'); ?>: <span class="required">*</span></label>
-                        </td>
-                        <td class="value" style="width: auto;">
-                            <select id="magento_orders_in_store_pickup_statuses_ready_for_pickup" name="magento_orders_settings[in_store_pickup_statuses][ready_for_pickup]" class="M2ePro-required-when-visible">
-                                <option value=""></option>
-                                <?php foreach ($statusList as $statusKey => $statusValue) { ?>
-                                    <option value="<?php echo $statusKey; ?>" <?php if ($formData['magento_orders_settings']['in_store_pickup_statuses']['ready_for_pickup'] == $statusKey) echo 'selected="selected"'; ?>><?php echo $statusValue; ?></option>
-                                <?php } ?>
-                            </select>
-                        </td>
-                    </tr>
-
-                    <tr id="magento_orders_in_store_pickup_statuses_picked_up_tr" <?php if ($formData['magento_orders_settings']['in_store_pickup_statuses']['mode'] == 0): ?> style="display: none;" <?php endif; ?>>
-                        <td class="label">
-                            <label for="magento_orders_in_store_pickup_statuses_picked_up"><?php echo Mage::helper('M2ePro')->__('Picked Up'); ?>: <span class="required">*</span></label>
-                        </td>
-                        <td class="value" style="width: auto;">
-                            <select id="magento_orders_in_store_pickup_statuses_picked_up" name="magento_orders_settings[in_store_pickup_statuses][picked_up]" class="M2ePro-required-when-visible">
-                                <option value=""></option>
-                                <?php foreach ($statusList as $statusKey => $statusValue) { ?>
-                                    <option value="<?php echo $statusKey; ?>" <?php if ($formData['magento_orders_settings']['in_store_pickup_statuses']['picked_up'] == $statusKey) echo 'selected="selected"'; ?>><?php echo $statusValue; ?></option>
-                                <?php } ?>
-                            </select>
-                        </td>
-                    </tr>
-
-                </table>
-
-            </div>
-        </div>
-
-    </div>
-
-<?php endif; ?>
 
 <div class="entry-edit" id="magento_block_ebay_accounts_magento_orders_status_mapping" <?php if (($formData['magento_orders_settings']['listing']['mode'] == 0 && $formData['magento_orders_settings']['listing_other']['mode'] == 0)) echo 'style="display: none;"'; ?>>
 

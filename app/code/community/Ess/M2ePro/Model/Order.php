@@ -686,13 +686,24 @@ class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
 
     public function updateMagentoOrderStatus()
     {
-        if ($this->getMagentoOrder() === null) {
+        $magentoOrder = $this->getMagentoOrder();
+        if ($magentoOrder === null) {
+            return;
+        }
+
+        $state = $magentoOrder->getState();
+        if (
+            $state === Mage_Sales_Model_Order::STATE_CLOSED
+            || $state === Mage_Sales_Model_Order::STATE_COMPLETE
+            || $state === Mage_Sales_Model_Order::STATE_CANCELED
+            || $this->getChildObject()->isCanceled()
+        ) {
             return;
         }
 
         /** @var $magentoOrderUpdater Ess_M2ePro_Model_Magento_Order_Updater */
         $magentoOrderUpdater = Mage::getModel('M2ePro/Magento_Order_Updater');
-        $magentoOrderUpdater->setMagentoOrder($this->getMagentoOrder());
+        $magentoOrderUpdater->setMagentoOrder($magentoOrder);
         $magentoOrderUpdater->updateStatus($this->getChildObject()->getStatusForMagentoOrder());
         $magentoOrderUpdater->finishUpdate();
     }

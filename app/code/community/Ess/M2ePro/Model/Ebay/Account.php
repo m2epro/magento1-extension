@@ -123,13 +123,6 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
             $item->deleteInstance();
         }
 
-        $pickupCollection = $this->_activeRecordFactory->getObjectCollection('Ebay_Account_PickupStore');
-        $pickupCollection->addFieldToFilter('account_id', $this->getId());
-        foreach ($pickupCollection->getItems() as $pickupStore) {
-            /** @var Ess_M2ePro_Model_Ebay_Account_PickupStore $pickupStore */
-            $pickupStore->deleteInstance();
-        }
-
         $this->delete();
 
         return true;
@@ -865,39 +858,6 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
         return (int)$setting;
     }
 
-    // ---------------------------------------
-
-    public function isMagentoOrdersInStorePickupEnabled()
-    {
-        $setting = $this->getSetting('magento_orders_settings', array('in_store_pickup_statues', 'mode'), 0);
-
-        return (bool)$setting;
-    }
-
-    // ---------------------------------------
-
-    public function getMagentoOrdersInStorePickupStatusReadyForPickup()
-    {
-        $setting = $this->getSetting(
-            'magento_orders_settings',
-            array('in_store_pickup_statues', 'ready_for_pickup'),
-            null
-        );
-
-        return $setting;
-    }
-
-    public function getMagentoOrdersInStorePickupStatusPickedUp()
-    {
-        $setting = $this->getSetting(
-            'magento_orders_settings',
-            array('in_store_pickup_statues', 'picked_up'),
-            null
-        );
-
-        return $setting;
-    }
-
     /**
      * @return bool
      */
@@ -1103,17 +1063,6 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
         $rateTables = $this->getRateTables();
         return !empty($rateTables);
     }
-
-    //########################################
-
-    public function isPickupStoreEnabled()
-    {
-        $additionalData = Mage::helper('M2ePro')->jsonDecode($this->getParentObject()->getData('additional_data'));
-
-        return !empty($additionalData['bopis']);
-    }
-
-    //########################################
 
     public function getTokenSession()
     {

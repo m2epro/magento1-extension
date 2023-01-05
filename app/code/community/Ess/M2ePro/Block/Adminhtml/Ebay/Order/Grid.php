@@ -300,10 +300,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_Grid extends Mage_Adminhtml_Block_Wi
             'general' => Mage::helper('M2ePro')->__('General'),
         );
 
-        if (Mage::helper('M2ePro/Component_Ebay_PickupStore')->isFeatureEnabled()) {
-            $groups['in_store_pickup'] = Mage::helper('M2ePro')->__('In-Store Pickup');
-        }
-
         $this->getMassactionBlock()->setGroups($groups);
 
         // Set mass-action
@@ -366,41 +362,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_Grid extends Mage_Adminhtml_Block_Wi
                 'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
             ),
             'general'
-        );
-        // ---------------------------------------
-
-        if (!Mage::helper('M2ePro/Component_Ebay_PickupStore')->isFeatureEnabled()) {
-            return parent::_prepareMassaction();
-        }
-
-        $this->getMassactionBlock()->addItem(
-            'mark_as_ready_for_pickup',
-            array(
-                'label'   => Mage::helper('M2ePro')->__('Mark as Ready For Pickup'),
-                'url'     => $this->getUrl('*/adminhtml_ebay_order/markAsReadyForPickup'),
-                'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
-            ),
-            'in_store_pickup'
-        );
-
-        $this->getMassactionBlock()->addItem(
-            'mark_as_picked_up',
-            array(
-                'label'   => Mage::helper('M2ePro')->__('Mark as Picked Up'),
-                'url'     => $this->getUrl('*/adminhtml_ebay_order/markAsPickedUp'),
-                'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
-            ),
-            'in_store_pickup'
-        );
-
-        $this->getMassactionBlock()->addItem(
-            'mark_as_cancelled',
-            array(
-                'label'   => Mage::helper('M2ePro')->__('Mark as Cancelled'),
-                'url'     => $this->getUrl('*/adminhtml_ebay_order/markAsCancelled'),
-                'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
-            ),
-            'in_store_pickup'
         );
 
         return parent::_prepareMassaction();
@@ -469,23 +430,6 @@ HTML;
 </div>
 HTML;
         }
-
-        if (!Mage::helper('M2ePro/Component_Ebay_PickupStore')->isFeatureEnabled()) {
-            return $returnString;
-        }
-
-        if (empty($row['shipping_details'])) {
-            return $returnString;
-        }
-
-        $shippingDetails = Mage::helper('M2ePro')->jsonDecode($row['shipping_details']);
-        if (empty($shippingDetails['in_store_pickup_details'])) {
-            return $returnString;
-        }
-
-        $skinUrl = $this->getSkinUrl('M2ePro');
-
-        $returnString = '<img src="' . $skinUrl . '/images/in_store_pickup.png" />&nbsp;' . $returnString;
 
         return $returnString;
     }
@@ -668,13 +612,6 @@ HTML;
             $collection
                 ->getSelect()
                 ->where('ebay_order_id LIKE ? OR selling_manager_id LIKE ?', '%' . $value['value'] . '%');
-        }
-
-        if (!empty($value['is_in_store_pickup'])) {
-            $collection->getSelect()->where(
-                'shipping_details regexp ?',
-                '"in_store_pickup_details":\{.+\}'
-            );
         }
     }
 

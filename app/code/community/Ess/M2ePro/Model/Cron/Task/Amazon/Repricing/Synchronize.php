@@ -39,16 +39,17 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Repricing_Synchronize
 
     public function performActions()
     {
-        $accounts = $this->getPermittedAccounts();
-        if (empty($accounts)) {
-            return;
-        }
-
+        $accounts = Mage::getResourceModel('M2ePro/Account_Collection')
+            ->getAccountsWithValidRepricingAccount();
         foreach ($accounts as $account) {
             if ($this->isPossibleToSynchronizeGeneral($account)) {
                 $this->synchronizeGeneral($account);
             }
+        }
 
+        $accounts = Mage::getResourceModel('M2ePro/Account_Collection')
+            ->getAccountsWithValidRepricingAccount();
+        foreach ($accounts as $account) {
             if ($this->isPossibleToSynchronizeActualPrice($account)) {
                 $this->synchronizeActualPrice($account);
             }
@@ -323,22 +324,6 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Repricing_Synchronize
     }
 
     //#####################################
-
-    /**
-     * @return Ess_M2ePro_Model_Account[]
-     */
-    protected function getPermittedAccounts()
-    {
-        /** @var Ess_M2ePro_Model_Resource_Account_Collection $accountCollection */
-        $accountCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Account');
-        $accountCollection->getSelect()->joinInner(
-            array('aar' => Mage::getResourceModel('M2ePro/Amazon_Account_Repricing')->getMainTable()),
-            'aar.account_id=main_table.id',
-            array()
-        );
-
-        return $accountCollection->getItems();
-    }
 
     protected function getAccountData($account, $key)
     {

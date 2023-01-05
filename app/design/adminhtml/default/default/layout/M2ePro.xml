@@ -44,12 +44,6 @@
         <remove name="menu"/>
         <remove name="notifications"/>
     </m2epro_adminhtml_ebay_listing_variation_product_manage_viewvariationsgrid>
-    <m2epro_adminhtml_ebay_listing_pickupstore_variation_product_show_variationsgrid>
-        <remove name="footer"/>
-        <remove name="header"/>
-        <remove name="menu"/>
-        <remove name="notifications"/>
-    </m2epro_adminhtml_ebay_listing_pickupstore_variation_product_show_variationsgrid>
     <m2epro_adminhtml_ebay_listing_variation_product_manage_viewdeletedvariationsgrid>
         <remove name="footer"/>
         <remove name="header"/>

@@ -61,14 +61,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Marketplace_Edit_Form extends Mage_Adminht
                     ->addFieldToFilter('marketplace_id', $tempMarketplace->getId())
                     ->getSize();
 
-                $isLockedByPickupStore = false;
-
-                if (Mage::helper('M2ePro/Component_Ebay_PickupStore')->isFeatureEnabled()) {
-                    $isLockedByPickupStore = (bool)Mage::getModel('M2ePro/Ebay_Account_PickupStore')->getCollection()
-                        ->addFieldToFilter('marketplace_id', $tempMarketplace->getId())
-                        ->getSize();
-                }
-
                 $storedStatuses[] = array(
                     'marketplace_id' => $tempMarketplace->getMarketplaceId(),
                     'status'         => $tempMarketplace->getStatus()
@@ -79,7 +71,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Marketplace_Edit_Form extends Mage_Adminht
                     'instance' => $tempMarketplace,
                     'params'   => array(
                         'locked'              => $isLocked,
-                        'lockedByPickupStore' => $isLockedByPickupStore
                     )
                 );
 

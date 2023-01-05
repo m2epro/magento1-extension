@@ -96,8 +96,15 @@ $marketplaceData = $this->getMarketplaceData();
                     <td class="value">
                         <select id="return_within" name="return_policy[within]">
                             <?php if (!empty($marketplaceData['info']['returns_within'])): ?>
+                                <?php $daysDefaultValue = $this->getDefaultDaysValueForReturnPolicy($marketplaceData['info']['returns_within'])?>
                                 <?php foreach ($marketplaceData['info']['returns_within'] as $item): ?>
-                                    <?php $selected = $formData['within'] == $item['ebay_id']; ?>
+                                    <?php
+                                        if (empty($formData['within']) && $item['ebay_id'] == $daysDefaultValue) {
+                                            $selected = true;
+                                        } else {
+                                            $selected = $formData['within'] == $item['ebay_id'];
+                                        }
+                                    ?>
                                     <option value="<?php echo $item['ebay_id'] ?>" <?php if ($selected): ?>selected="selected"<?php endif; ?>><?php echo Mage::helper('M2ePro')->escapeHtml($item['title']) ?></option>
                                 <?php endforeach; ?>
                             <?php endif; ?>
@@ -178,8 +185,15 @@ $marketplaceData = $this->getMarketplaceData();
                     <td class="value">
                         <select id="return_international_within" name="return_policy[international_within]">
                             <?php if (!empty($marketplaceData['info']['international_returns_within'])): ?>
+                                <?php $daysDefaultValue = $this->getDefaultDaysValueForReturnPolicy($marketplaceData['info']['international_returns_within'])?>
                                 <?php foreach ($marketplaceData['info']['international_returns_within'] as $item): ?>
-                                    <?php $selected = $formData['international_within'] == $item['ebay_id']; ?>
+                                    <?php
+                                        if (empty($formData['international_within']) && $item['ebay_id'] == $daysDefaultValue) {
+                                            $selected = true;
+                                        } else {
+                                            $selected = $formData['international_within'] == $item['ebay_id'];
+                                        }
+                                    ?>
                                     <option value="<?php echo $item['ebay_id'] ?>" <?php if ($selected): ?>selected="selected"<?php endif; ?>><?php echo Mage::helper('M2ePro')->escapeHtml($item['title']) ?></option>
                                 <?php endforeach; ?>
                             <?php endif; ?>

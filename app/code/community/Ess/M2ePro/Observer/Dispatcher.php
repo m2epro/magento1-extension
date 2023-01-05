@@ -158,11 +158,6 @@ class Ess_M2ePro_Observer_Dispatcher
         $this->process('Order_Save_After_StoreMagentoOrderId', $eventObserver);
     }
 
-    public function salesOrderSaveAfterSendPickupStoreNotifications(Varien_Event_Observer $eventObserver)
-    {
-        $this->process('Order_Save_After_SendPickupStoreNotifications', $eventObserver);
-    }
-
     public function salesConvertQuoteItemToOrderItem(Varien_Event_Observer $eventObserver)
     {
         $this->process('Order_Quote', $eventObserver);

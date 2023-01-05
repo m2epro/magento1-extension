@@ -69,7 +69,6 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_walmart_dictionary_marketplac
   `client_details_last_update_date` DATETIME DEFAULT NULL,
   `server_details_last_update_date` DATETIME DEFAULT NULL,
   `product_data` LONGTEXT DEFAULT NULL,
-  `tax_codes` LONGTEXT DEFAULT NULL,
   PRIMARY KEY (`id`),
   INDEX `marketplace_id` (`marketplace_id`)
 )
@@ -479,9 +478,6 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_walmart_template_description'
   `key_features` TEXT NOT NULL,
   `other_features_mode` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `other_features` TEXT NOT NULL,
-  `keywords_mode` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
-  `keywords_custom_value` VARCHAR(4000) DEFAULT NULL,
-  `keywords_custom_attribute` VARCHAR(4000) DEFAULT NULL,
   `attributes_mode` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `attributes` TEXT NOT NULL,
   PRIMARY KEY (`template_description_id`)
@@ -503,8 +499,6 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_walmart_template_selling_form
   `qty_max_posted_value` INT(11) UNSIGNED DEFAULT NULL,
   `price_mode` TINYINT(2) UNSIGNED NOT NULL,
   `price_custom_attribute` VARCHAR(255) NOT NULL,
-  `map_price_mode` TINYINT(2) UNSIGNED NOT NULL,
-  `map_price_custom_attribute` VARCHAR(255) NOT NULL,
   `price_coefficient` VARCHAR(255) NOT NULL,
   `price_variation_mode` TINYINT(2) UNSIGNED NOT NULL,
   `price_vat_percent` DECIMAL(10,2) UNSIGNED DEFAULT NULL,
@@ -512,9 +506,6 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_walmart_template_selling_form
   `lag_time_mode` TINYINT(2) UNSIGNED NOT NULL,
   `lag_time_value` INT(11) UNSIGNED NOT NULL,
   `lag_time_custom_attribute` VARCHAR(255) NOT NULL,
-  `product_tax_code_mode` TINYINT(2) UNSIGNED NOT NULL,
-  `product_tax_code_custom_value` VARCHAR(255) NOT NULL,
-  `product_tax_code_custom_attribute` VARCHAR(255) NOT NULL,
   `item_weight_mode` TINYINT(2) UNSIGNED DEFAULT 0,
   `item_weight_custom_value` DECIMAL(10, 2) UNSIGNED DEFAULT NULL,
   `item_weight_custom_attribute` VARCHAR(255) DEFAULT NULL,

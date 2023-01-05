@@ -26,8 +26,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Grid_Column_Renderer_Price
 
         $repricingHtml ='';
 
-        if (Mage::helper('M2ePro/Component_Amazon_Repricing')->isEnabled() &&
-            (bool)(int)$row->getData('is_repricing')) {
+        if ($row->getData('is_repricing')) {
             $image = 'money';
             $text = Mage::helper('M2ePro')->__(
                 'This Product is used by Amazon Repricing Tool, so its Price cannot be managed via M2E Pro. <br>

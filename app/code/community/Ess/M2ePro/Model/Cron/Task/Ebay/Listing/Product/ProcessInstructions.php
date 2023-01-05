@@ -29,12 +29,6 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_ProcessInstructions
             Mage::getModel('M2ePro/Ebay_Listing_Product_Instruction_SynchronizationTemplate_Handler')
         );
 
-        if (Mage::helper('M2ePro/Component_Ebay_PickupStore')->isFeatureEnabled()) {
-            $processor->registerHandler(
-                Mage::getModel('M2ePro/Ebay_Listing_Product_Instruction_PickupStore_Handler')
-            );
-        }
-
         $processor->process();
     }
 

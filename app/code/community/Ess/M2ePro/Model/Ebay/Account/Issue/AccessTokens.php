@@ -86,7 +86,7 @@ TEXT
                     Mage::helper('M2ePro')->escapeHtml($account->getTitle())
                 ),
                 Issue::KEY_TEXT  => $tempMessage,
-                Issue::KEY_URL   => Mage::helper('M2ePro/Module_Support')->getSupportUrl('/support/solutions/articles/9000218991') .'/?'.
+                Issue::KEY_URL   => Mage::helper('M2ePro/Module_Support')->getSupportUrl('/support/solutions/articles/9000219023') .'/?'.
                                     $editHash
             ));
         }
@@ -122,7 +122,7 @@ TEXT
                     Mage::helper('M2ePro')->escapeHtml($account->getTitle())
                 ),
                 Issue::KEY_TEXT  => $tempMessage,
-                Issue::KEY_URL   => Mage::helper('M2ePro/Module_Support')->getSupportUrl('/support/solutions/articles/9000218991') .'/?'.
+                Issue::KEY_URL   => Mage::helper('M2ePro/Module_Support')->getSupportUrl('/support/solutions/articles/9000219023') .'/?'.
                                     $editHash
             ));
         }
@@ -172,7 +172,7 @@ TEXT
                     Mage::helper('M2ePro')->escapeHtml($account->getTitle())
                 ),
                 Issue::KEY_TEXT  => $tempMessage,
-                Issue::KEY_URL   => Mage::helper('M2ePro/Module_Support')->getSupportUrl('/support/solutions/articles/9000218991') .'/?'.
+                Issue::KEY_URL   => Mage::helper('M2ePro/Module_Support')->getSupportUrl('/support/solutions/articles/9000219023') .'/?'.
                                     $editHash
             ));
         }
@@ -208,7 +208,7 @@ TEXT
                     Mage::helper('M2ePro')->escapeHtml($account->getTitle())
                 ),
                 Issue::KEY_TEXT  => $tempMessage,
-                Issue::KEY_URL   => Mage::helper('M2ePro/Module_Support')->getSupportUrl('/support/solutions/articles/9000218991') .'/?'.
+                Issue::KEY_URL   => Mage::helper('M2ePro/Module_Support')->getSupportUrl('/support/solutions/articles/9000219023') .'/?'.
                                     $editHash
             ));
         }

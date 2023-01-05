@@ -248,19 +248,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Grid extends Ess_M2ePro_Block_Ad
                     )
                 )
             ),
-
-            'searchSetting' => array(
-                'caption' => $helper->__('Search'),
-                'group'   => 'edit_actions',
-                'field'   => 'id',
-                'url'     => array(
-                    'base'   => '*/adminhtml_amazon_listing/edit',
-                    'params' => array(
-                        'back' => $backUrl,
-                        'tab' => 'search'
-                    )
-                )
-            )
         );
 
         return $actions;

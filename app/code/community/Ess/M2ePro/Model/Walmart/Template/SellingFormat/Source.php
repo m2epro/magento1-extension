@@ -108,22 +108,6 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat_Source
         return $result;
     }
 
-    public function getProductTaxCode()
-    {
-        $result = '';
-        $src = $this->getWalmartSellingFormatTemplate()->getProductTaxCodeSource();
-
-        if ($src['mode'] == WalmartSellingFormat::PRODUCT_TAX_CODE_MODE_VALUE) {
-            $result = $src['value'];
-        }
-
-        if ($src['mode'] == WalmartSellingFormat::PRODUCT_TAX_CODE_MODE_ATTRIBUTE) {
-            $result = $this->getMagentoProduct()->getAttributeValue($src['attribute']);
-        }
-
-        return $result;
-    }
-
     public function getMustShipAlone()
     {
         $result = null;

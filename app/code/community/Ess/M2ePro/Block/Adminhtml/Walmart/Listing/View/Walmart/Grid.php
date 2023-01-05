@@ -91,10 +91,11 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View_Walmart_Grid
             array('lp' => 'M2ePro/Listing_Product'),
             'product_id=entity_id',
             array(
-                'id'              => 'id',
-                'component_mode'  => 'component_mode',
-                'status'          => 'status',
-                'additional_data' => 'additional_data'
+                'id' => 'id',
+                'component_mode' => 'component_mode',
+                'status' => 'status',
+                'additional_data' => 'additional_data',
+                'listing_id' => 'listing_id',
             ),
             array(
                 'listing_id' => (int)$this->_listing->getId()
@@ -104,23 +105,39 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View_Walmart_Grid
             array('wlp' => 'M2ePro/Walmart_Listing_Product'),
             'listing_product_id=id',
             array(
-                'variation_child_statuses'       => 'variation_child_statuses',
-                'walmart_sku'                    => 'sku',
-                'gtin'                           => 'gtin',
-                'upc'                            => 'upc',
-                'ean'                            => 'ean',
-                'isbn'                           => 'isbn',
-                'wpid'                           => 'wpid',
-                'item_id'                        => 'item_id',
-                'online_qty'                     => 'online_qty',
-                'online_price'                   => 'online_price',
-                'is_variation_parent'            => 'is_variation_parent',
-                'is_online_price_invalid'        => 'is_online_price_invalid',
-                'online_start_date'              => 'online_start_date',
-                'online_end_date'                => 'online_end_date',
-                'status_change_reasons'          => 'status_change_reasons'
+                'variation_child_statuses' => 'variation_child_statuses',
+                'walmart_sku' => 'sku',
+                'gtin' => 'gtin',
+                'upc' => 'upc',
+                'ean' => 'ean',
+                'isbn' => 'isbn',
+                'wpid' => 'wpid',
+                'item_id' => 'item_id',
+                'online_qty' => 'online_qty',
+                'online_price' => 'online_price',
+                'is_variation_parent' => 'is_variation_parent',
+                'is_online_price_invalid' => 'is_online_price_invalid',
+                'online_start_date' => 'online_start_date',
+                'online_end_date' => 'online_end_date',
+                'status_change_reasons' => 'status_change_reasons',
             ),
             '{{table}}.variation_parent_id is NULL'
+        );
+
+        $collection->joinTable(
+            array('wl' => 'M2ePro/Walmart_Listing'),
+            'listing_id=listing_id',
+            array(
+                'template_selling_format_id' => 'template_selling_format_id'
+            )
+        );
+        $collection->joinTable(
+            array('wtsf' => 'M2ePro/Walmart_Template_SellingFormat'),
+            'template_selling_format_id = template_selling_format_id',
+            array(
+                'is_set_online_promotions'
+                => new \Zend_Db_Expr('wtsf.promotions_mode = 1 AND wlp.online_promotions IS NOT NULL')
+            )
         );
 
         if ($this->isFilterOrSortByPriceIsUsed('online_price', 'walmart_online_price')) {
@@ -610,11 +627,16 @@ HTML;
         $onlineMinPrice = (float)$row->getData('min_online_price');
         $onlineMaxPrice = (float)$row->getData('max_online_price');
 
-        if (empty($onlineMinPrice) ||
-            ($row->getData('status') == Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED &&
-             !$row->getData('is_online_price_invalid'))
-        ) {
-            return Mage::helper('M2ePro')->__('N/A');
+        if (empty($onlineMinPrice)){
+            if ($row->getData('status') == Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED ||
+                $row->getData('is_variation_parent') ||
+                ($row->getData('status') == Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED &&
+                    !$row->getData('is_online_price_invalid'))
+            ) {
+                return Mage::helper('M2ePro')->__('N/A');
+            } else {
+                return '<i style="color:gray;">receiving...</i>';
+            }
         }
 
         $currency = Mage::helper('M2ePro/Component_Walmart')
@@ -651,6 +673,16 @@ HTML;
 
         if (empty($resultHtml)) {
             $resultHtml = $priceValue;
+        }
+
+        $isSetOnlinePromotions = (bool)$row->getData('is_set_online_promotions');
+        if ($isSetOnlinePromotions) {
+            $promotionTooltipHtml = $this->getTooltipHtml(
+                $this->getSkinUrl('M2ePro/images/promotions.svg'),
+                $this->__('Price without promotions<br>Actual price is available on Walmart.')
+            );
+
+            $resultHtml = $promotionTooltipHtml. '&nbsp;' . $resultHtml;
         }
 
         return $resultHtml;
@@ -901,6 +933,18 @@ HTML;
     protected function hasChildWithWarning($listingProductId)
     {
         return in_array($listingProductId, $this->getChildProductsWarningsData());
+    }
+
+    private function getTooltipHtml($icon, $content)
+    {
+        return <<<TOOLTIP
+<span>
+    <img class="tool-tip-image" style="vertical-align:middle;height:14px" src="$icon">
+    <span class="tool-tip-message tip-left" style="display:none;text-align: left;width: 300px;">
+        <span style="color:gray;">$content</span>
+    </span>
+</span>
+TOOLTIP;
     }
 
     //########################################

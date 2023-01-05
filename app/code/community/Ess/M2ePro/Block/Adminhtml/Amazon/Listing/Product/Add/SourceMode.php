@@ -37,6 +37,23 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Product_Add_SourceMode
         $this->removeButton('save');
         $this->removeButton('edit');
 
+        $url = $this->getUrl(
+            '*/adminhtml_amazon_listing_productAdd/exitToListing',
+            array('id' => $this->getRequest()->getParam('id'))
+        );
+        $confirm =
+            $this->__('Are you sure?') . '\n\n'
+            . $this->__('All unsaved changes will be lost and you will be returned to the Listings grid.');
+        $this->_addButton(
+            'exit_to_listing',
+            array(
+                'id' => 'exit_to_listing',
+                'label' => Mage::helper('M2ePro')->__('Cancel'),
+                'onclick' => "confirmSetLocation('$confirm', '$url');",
+                'class' => 'scalable'
+            )
+        );
+
         $url = $this->getUrl('*/*/index', array('_current' => true, 'step' => 2));
         $this->_addButton(
             'next', array(

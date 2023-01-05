@@ -37,14 +37,7 @@ class Ess_M2ePro_Model_Ebay_Connector_Order_Update_Payment
 
         if (isset($responseData['is_already_paid']) && $responseData['is_already_paid']) {
             $this->_order->setData('payment_status', Ess_M2ePro_Model_Ebay_Order::PAYMENT_STATUS_COMPLETED)->save();
-
-            $magentoOrder = $this->_order->getMagentoOrder();
-            if ($magentoOrder !== null
-                && $magentoOrder->getState() !== Mage_Sales_Model_Order::STATE_CLOSED
-                && $magentoOrder->getState() !== Mage_Sales_Model_Order::STATE_CANCELED
-            ) {
-                $this->_order->updateMagentoOrderStatus();
-            }
+            $this->_order->updateMagentoOrderStatus();
         }
 
         $orderChange->deleteInstance();

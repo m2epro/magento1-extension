@@ -667,17 +667,6 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Response
         return $data;
     }
 
-    //########################################
-
-    protected function runAccountPickupStoreStateUpdater()
-    {
-        $pickupStoreStateUpdater = Mage::getModel('M2ePro/Ebay_Listing_Product_PickupStore_State_Updater');
-        $pickupStoreStateUpdater->setListingProduct($this->getListingProduct());
-        $pickupStoreStateUpdater->process();
-    }
-
-    //########################################
-
     public function throwRepeatActionInstructions()
     {
         $instructions = array();

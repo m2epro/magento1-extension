@@ -12,8 +12,6 @@ class Ess_M2ePro_Model_Log_Clearing
     const LOG_SYNCHRONIZATIONS  = 'synchronizations';
     const LOG_ORDERS            = 'orders';
 
-    const LOG_EBAY_PICKUP_STORE = 'ebay_pickup_store';
-
     const LOG_ORDER_NOTIFICATION = 'order_notification';
 
     //########################################
@@ -89,8 +87,7 @@ class Ess_M2ePro_Model_Log_Clearing
     {
         return $log == self::LOG_LISTINGS ||
                $log == self::LOG_SYNCHRONIZATIONS ||
-               $log == self::LOG_ORDERS ||
-               $log == self::LOG_EBAY_PICKUP_STORE;
+               $log == self::LOG_ORDERS;
     }
 
     protected function getMinTimeByDays($days)
@@ -124,8 +121,6 @@ class Ess_M2ePro_Model_Log_Clearing
             case self::LOG_ORDERS:
                 $table = Mage::getResourceModel('M2ePro/Order_Log')->getMainTable();
                 break;
-            case self::LOG_EBAY_PICKUP_STORE:
-                $table = Mage::getResourceModel('M2ePro/Ebay_Account_PickupStore_Log')->getMainTable();
         }
 
         if ($table === null) {

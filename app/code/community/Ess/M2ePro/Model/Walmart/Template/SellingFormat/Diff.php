@@ -72,17 +72,12 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat_Diff extends Ess_M2ePro_Mo
     public function isDetailsDifferent()
     {
         $keys = array(
-            'map_price_mode',
-            'map_price_custom_attribute',
             'sale_time_start_date_mode',
             'sale_time_start_date_value',
             'sale_time_start_date_custom_attribute',
             'sale_time_end_date_mode',
             'sale_time_end_date_value',
             'sale_time_end_date_custom_attribute',
-            'product_tax_code_mode',
-            'product_tax_code_custom_value',
-            'product_tax_code_custom_attribute',
             'item_weight_mode',
             'item_weight_custom_value',
             'item_weight_custom_attribute',

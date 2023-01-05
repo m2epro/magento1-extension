@@ -107,7 +107,6 @@ class Ess_M2ePro_Model_Walmart_Marketplace_Synchronization
             'client_details_last_update_date' => isset($details['last_update']) ? $details['last_update'] : null,
             'server_details_last_update_date' => isset($details['last_update']) ? $details['last_update'] : null,
             'product_data'   => isset($details['product_data']) ? $helper->jsonEncode($details['product_data']) : null,
-            'tax_codes'      => isset($details['tax_codes']) ? $helper->jsonEncode($details['tax_codes']) : null
         );
 
         $connWrite->insert($tableMarketplaces, $data);

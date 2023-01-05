@@ -23,7 +23,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_DataBuilder_Details
             'product_ids_data'      => $this->getProductIdsData(),
             'description_data'      => $this->getDescriptionData(),
             'shipping_weight'       => $sellingFormatTemplateSource->getItemWeight(),
-            'tax_code'              => $sellingFormatTemplateSource->getProductTaxCode(),
             'additional_attributes' => $sellingFormatTemplateSource->getAttributes(),
         );
 
@@ -43,11 +42,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_DataBuilder_Details
             $data['end_date'] = $endDate;
         } else {
             $data['end_date'] = '9999-01-01 00:00:00';
-        }
-
-        $mapPrice = $this->getWalmartListingProduct()->getMapPrice();
-        if (!empty($mapPrice)) {
-            $data['map_price'] = $mapPrice;
         }
 
         $mustShipAlone = $this->getWalmartListingProduct()->getSellingFormatTemplateSource()->getMustShipAlone();
@@ -235,10 +229,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_DataBuilder_Details
         $this->searchNotFoundAttributes();
         $data['features'] = $source->getOtherFeatures();
         $this->processNotFoundAttributes('Other Features');
-
-        $this->searchNotFoundAttributes();
-        $data['keywords'] = $source->getKeywords();
-        $this->processNotFoundAttributes('Keywords');
 
         $this->searchNotFoundAttributes();
         $data['msrp'] = $source->getMsrpRrp();

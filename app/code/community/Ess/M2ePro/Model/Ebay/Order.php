@@ -434,27 +434,6 @@ class Ess_M2ePro_Model_Ebay_Order extends Ess_M2ePro_Model_Component_Child_Ebay_
             ? $shippingDetails['click_and_collect_details'] : array();
     }
 
-    // ---------------------------------------
-
-    /**
-     * @return bool
-     */
-    public function isUseInStorePickup()
-    {
-        $inStorePickupDetails = $this->getInStorePickupDetails();
-        return !empty($inStorePickupDetails);
-    }
-
-    public function getInStorePickupDetails()
-    {
-        $shippingDetails = $this->getShippingDetails();
-
-        return isset($shippingDetails['in_store_pickup_details'])
-            ? $shippingDetails['in_store_pickup_details'] : array();
-    }
-
-    // ---------------------------------------
-
     /**
      * @return array
      * @throws Ess_M2ePro_Model_Exception_Logic

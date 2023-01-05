@@ -642,40 +642,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Product extends Ess_M2ePro_Model_Componen
     }
 
     /**
-     * @return float|int
-     * @throws Ess_M2ePro_Model_Exception
-     * @throws Ess_M2ePro_Model_Exception_Logic
-     */
-    public function getMapPrice()
-    {
-        if ($this->getVariationManager()->isPhysicalUnit() &&
-            $this->getVariationManager()->getTypeModel()->isVariationProductMatched()) {
-            $variations = $this->getVariations(true);
-            if (empty($variations)) {
-                throw new Ess_M2ePro_Model_Exception_Logic(
-                    'There are no variations for a variation product.',
-                    array(
-                        'listing_product_id' => $this->getId()
-                    )
-                );
-            }
-
-            /** @var $variation Ess_M2ePro_Model_Listing_Product_Variation */
-            $variation = reset($variations);
-
-            return $variation->getChildObject()->getMapPrice();
-        }
-
-        $src = $this->getWalmartSellingFormatTemplate()->getMapPriceSource();
-
-        /** @var $calculator Ess_M2ePro_Model_Walmart_Listing_Product_PriceCalculator */
-        $calculator = Mage::getModel('M2ePro/Walmart_Listing_Product_PriceCalculator');
-        $calculator->setSource($src)->setProduct($this->getParentObject());
-
-        return $calculator->getProductValue();
-    }
-
-    /**
      * @return array
      * @throws Ess_M2ePro_Model_Exception
      * @throws Ess_M2ePro_Model_Exception_Logic

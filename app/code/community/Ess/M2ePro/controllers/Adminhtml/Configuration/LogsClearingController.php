@@ -34,14 +34,6 @@ class Ess_M2ePro_Adminhtml_Configuration_LogsClearingController
                 90
             );
 
-            if (Mage::helper('M2ePro/Component_Ebay_PickupStore')->isFeatureEnabled()) {
-                Mage::getModel('M2ePro/Log_Clearing')->saveSettings(
-                    Ess_M2ePro_Model_Log_Clearing::LOG_EBAY_PICKUP_STORE,
-                    $post['ebay_pickup_store_log_mode'],
-                    $post['ebay_pickup_store_log_days']
-                );
-            }
-
             /** @var Ess_M2ePro_Helper_Order_Notification $orderNotification */
             $orderNotification = Mage::helper('M2ePro/Order_Notification');
             $orderNotification->setNotificationMode($this->getRequest()->getParam('order_notification_mode'));
@@ -60,9 +52,6 @@ class Ess_M2ePro_Adminhtml_Configuration_LogsClearingController
 
         if ($task !== null) {
             $title = ucwords(str_replace('_', ' ', $log));
-            if ($log == Ess_M2ePro_Model_Log_Clearing::LOG_EBAY_PICKUP_STORE) {
-                $title = 'eBay In-Store Pickup';
-            }
 
             switch ($task) {
                 case 'run_now':

@@ -57,11 +57,13 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_Linking
         $this->validate();
 
         if (!$this->getVariationManager()->isRelationMode()) {
-            return $this->linkSimpleOrIndividualProduct();
+            $this->linkSimpleOrIndividualProduct();
+            return true;
         }
 
         if ($this->getVariationManager()->isRelationChildType()) {
-            return $this->linkChildProduct();
+            $this->linkChildProduct();
+            return true;
         }
 
         return false;
@@ -141,28 +143,31 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_Linking
 
     protected function linkSimpleOrIndividualProduct()
     {
-        $data = array(
-            'sku' => $this->getSku(),
+        $this->getListingProduct()->addData(
+            array('status' => Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED)
         );
 
-        $data = array_merge($data, $this->getProductIdentifiers());
+        $productIdentifiers = $this->getProductIdentifiers();
 
-        $this->getListingProduct()->addData($data);
+        $this->getListingProduct()->addData(
+            array(
+                'wpid'    => $productIdentifiers['wpid'],
+                'item_id' => $productIdentifiers['item_id'],
+                'gtin'    => $productIdentifiers['gtin'],
+                'upc'     => isset($productIdentifiers['upc']) ? $productIdentifiers['upc'] : null,
+                'ean'     => isset($productIdentifiers['ean']) ? $productIdentifiers['ean'] : null,
+                'isbn'    => isset($productIdentifiers['isbn']) ? $productIdentifiers['isbn'] : null,
+                'sku'     => $this->getSku(),
+            )
+        );
         $this->getListingProduct()->save();
 
-        return true;
+        $this->createWalmartItem();
     }
 
     protected function linkChildProduct()
     {
-        $data = array(
-            'sku'    => $this->getSku(),
-        );
-
-        $data = array_merge($data, $this->getProductIdentifiers());
-
-        $this->getListingProduct()->addData($data);
-        $this->getListingProduct()->save();
+        $this->linkSimpleOrIndividualProduct();
 
         /** @var Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager_Type_Relation_Child $typeModel */
         $typeModel = $this->getVariationManager()->getTypeModel();
@@ -174,8 +179,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_Linking
             ->getTypeModel();
 
         $parentTypeModel->getProcessor()->process();
-
-        return true;
     }
 
     //########################################

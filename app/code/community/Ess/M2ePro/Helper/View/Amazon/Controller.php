@@ -16,6 +16,7 @@ class Ess_M2ePro_Helper_View_Amazon_Controller extends Mage_Core_Helper_Abstract
         $notificationChannel = Mage::getModel('M2ePro/Issue_Notification_Channel_Magento_Session');
         $issueLocators = array(
             'M2ePro/Amazon_Marketplace_Issue_NotUpdated',
+            'M2ePro/Amazon_Repricing_Issue_InvalidToken',
         );
 
         foreach ($issueLocators as $locator) {

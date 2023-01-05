@@ -78,9 +78,7 @@ abstract class Ess_M2ePro_Controller_Adminhtml_BaseController
                 );
             }
 
-            if (Mage::helper('M2ePro/Module')->isProductionEnvironment()) {
-                return $this->getResponse()->setRedirect(Mage::getBaseUrl());
-            }
+            return $this->getResponse()->setRedirect(Mage::getBaseUrl());
         }
 
         Mage::helper('M2ePro/Module_Exception')->setFatalErrorHandler();

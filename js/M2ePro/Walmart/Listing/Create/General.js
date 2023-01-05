@@ -26,11 +26,6 @@ window.WalmartListingCreateGeneral = Class.create(Common, {
     initObservers: function() {
         $('store_id').observe('change', WalmartListingCreateGeneralObj.store_id_change);
         $('store_id').simulate('change');
-
-        $('account_id').observe('change', WalmartListingSettingsObj.reloadSellingFormatTemplates);
-        if ($('account_id').value) {
-            $('account_id').simulate('change');
-        }
     },
 
     // ---------------------------------------

@@ -117,8 +117,6 @@ class Ess_M2ePro_Model_Walmart_Magento_Product_ChangeProcessor
             $trackingAttributes,
             $walmartSellingFormatTemplate->getSaleTimeStartDateAttributes(),
             $walmartSellingFormatTemplate->getSaleTimeEndDateAttributes(),
-            $walmartSellingFormatTemplate->getMapPriceAttributes(),
-            $walmartSellingFormatTemplate->getProductTaxCodeAttributes(),
             $walmartSellingFormatTemplate->getItemWeightAttributes(),
             $walmartSellingFormatTemplate->getMustShipAloneAttributes(),
             $walmartSellingFormatTemplate->getShipsInOriginalPackagingModeAttributes(),
@@ -158,7 +156,6 @@ class Ess_M2ePro_Model_Walmart_Magento_Product_ChangeProcessor
             $walmartDescriptionTemplate->getManufacturerAttributes(),
             $walmartDescriptionTemplate->getManufacturerPartNumberAttributes(),
             $walmartDescriptionTemplate->getMsrpRrpAttributes(),
-            $walmartDescriptionTemplate->getKeywordsAttributes(),
             $walmartDescriptionTemplate->getImageMainAttributes(),
             $walmartDescriptionTemplate->getGalleryImagesAttributes(),
             $walmartDescriptionTemplate->getImageVariationDifferenceAttributes()

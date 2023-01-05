@@ -44,15 +44,6 @@ window.WalmartTemplateSellingFormat = Class.create(WalmartTemplateEdit, {
             return value > 0 && value <= 30;
         });
 
-        Validation.add('M2ePro-validation-walmart-tax-code', M2ePro.translator.translate('Must be a 7-digit code assigned to the taxable Items.'), function(value, el)
-        {
-            if (self.isElementHiddenFromPage(el)) {
-                return true;
-            }
-
-            return value.length === 7;
-        });
-
         Validation.add('M2ePro-validate-promotions', M2ePro.translator.translate('You should specify at least one Promotion.'), function(value, el) {
 
             var mode = +$('promotions_mode').value;
@@ -139,10 +130,6 @@ window.WalmartTemplateSellingFormat = Class.create(WalmartTemplateEdit, {
             WalmartTemplateSellingFormatObj.removeRow(el);
         });
 
-        M2ePro.customData.marketplaces_with_tax_codes_dictionary.indexOf($('marketplace_id').value) != -1
-            ? $('tax_codes').show()
-            : $('tax_codes').hide();
-
         $$('[class^="shipping-override-rule-currency-"]').each(function(el){
             el.hide();
         });
@@ -215,16 +202,6 @@ window.WalmartTemplateSellingFormat = Class.create(WalmartTemplateEdit, {
         }
     },
 
-    map_price_mode_change: function()
-    {
-        var self = WalmartTemplateSellingFormatObj;
-
-        $('map_price_custom_attribute').value = '';
-        if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_ATTRIBUTE')) {
-            self.updateHiddenValue(this, $('map_price_custom_attribute'));
-        }
-    },
-
     // ---------------------------------------
 
     sale_time_start_date_mode_change: function()
@@ -285,18 +262,6 @@ window.WalmartTemplateSellingFormat = Class.create(WalmartTemplateEdit, {
 
         if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Walmart_Template_SellingFormat::LAG_TIME_MODE_CUSTOM_ATTRIBUTE')) {
             self.updateHiddenValue(this, $('lag_time_custom_attribute'));
-        }
-    },
-
-    product_tax_code_mode_change: function()
-    {
-        $('product_tax_code_custom_value_tr').hide();
-        $('product_tax_code_custom_attribute').value = '';
-
-        if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Walmart_Template_SellingFormat::PRODUCT_TAX_CODE_MODE_VALUE')) {
-            $('product_tax_code_custom_value_tr').show();
-        } else if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Walmart_Template_SellingFormat::PRODUCT_TAX_CODE_MODE_ATTRIBUTE')) {
-            WalmartTemplateSellingFormatObj.updateHiddenValue(this, $('product_tax_code_custom_attribute'));
         }
     },
 
@@ -773,54 +738,6 @@ window.WalmartTemplateSellingFormat = Class.create(WalmartTemplateEdit, {
         if (WalmartTemplateSellingFormatObj.rulesIndex > 0) {
             --WalmartTemplateSellingFormatObj.rulesIndex;
         }
-    },
-
-    // ---------------------------------------
-
-    openTaxCodePopup: function(noSelection)
-    {
-        var self = this;
-        var marketplaceId = $('marketplace_id').value;
-
-        new Ajax.Request(M2ePro.url.get('adminhtml_walmart_template_sellingFormat/getTaxCodesPopupHtml'), {
-            method: 'get',
-            parameters: {
-                marketplaceId: marketplaceId,
-                noSelection  : +noSelection,
-            },
-            onSuccess: function(transport) {
-
-                self.taxCodePopup = Dialog.info(null, {
-                    draggable: true,
-                    resizable: true,
-                    closable: true,
-                    className: "magento",
-                    windowClassName: "popup-window",
-                    title: M2ePro.translator.translate('Sales Tax Codes'),
-                    width: 950,
-                    height: 620,
-                    zIndex: 100,
-                    border: false,
-                    hideEffect: Element.hide,
-                    showEffect: Element.show
-                });
-
-                self.taxCodePopup.options.destroyOnClose = true;
-
-                $('modal_dialog_message').update(transport.responseText);
-                self.autoHeightFix();
-            }
-        });
-    },
-
-    // ---------------------------------------
-
-    taxCodePopupSelectAndClose: function(taxCode)
-    {
-        var self = this;
-
-        $('product_tax_code_custom_value').value = taxCode;
-        self.taxCodePopup.close();
     },
 
     // ---------------------------------------

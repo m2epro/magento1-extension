@@ -345,7 +345,7 @@ abstract class Ess_M2ePro_Model_Order_Proxy
         }
 
         $currentInfo['firstname'] = isset($parts[0]) ? $parts[0] : 'NA';
-        $currentInfo['lastname'] = isset($parts[1]) ? $parts[1] : 'NA';
+        $currentInfo['lastname'] = isset($parts[1]) ? $parts[1] : $currentInfo['firstname'];
 
         return $currentInfo;
     }

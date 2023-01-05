@@ -18,4 +18,14 @@ class Ess_M2ePro_Model_Resource_Amazon_Account_Repricing_Collection
     }
 
     //########################################
+
+    /**
+     * @return Ess_M2ePro_Model_Amazon_Account_Repricing[]
+     */
+    public function getInvalidAccounts()
+    {
+        $this->getSelect()->where('invalid = 1');
+
+        return $this->getItems();
+    }
 }
