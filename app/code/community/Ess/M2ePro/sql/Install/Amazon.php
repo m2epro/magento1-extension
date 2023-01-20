@@ -860,7 +860,7 @@ INSERT INTO `{$this->_installer->getTable('m2epro_config')}` (`group`,`key`,`val
   ('/amazon/listing/product/action/delete/', 'min_allowed_wait_interval', '600', NOW(), NOW()),
   ('/cron/task/amazon/listing/synchronize_inventory/', 'interval_per_account', '86400', NOW(), NOW()),
   ('/amazon/order/settings/marketplace_25/', 'use_first_street_line_as_company', '1', NOW(), NOW()),
-  ('/amazon/repricing/', 'base_url', 'https://repricer.m2epro.com/connector/m2epro/', NOW(), NOW()),
+  ('/amazon/repricing/', 'base_url', 'https://repricer.m2e.cloud/connector/m2epro/', NOW(), NOW()),
   ('/amazon/configuration/', 'business_mode', '0', NOW(), NOW());
 
 INSERT INTO `{$this->_installer->getTable('m2epro_marketplace')}` VALUES

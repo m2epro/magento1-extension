@@ -13,7 +13,6 @@ class Ess_M2ePro_Observer_Shipment_Item extends Ess_M2ePro_Observer_Shipment_Abs
     public function process()
     {
         if (Mage::helper('M2ePro/Data_Global')->getValue('skip_shipment_observer')) {
-            Mage::helper('M2ePro/Data_Global')->unsetValue('skip_shipment_observer');
             return;
         }
 

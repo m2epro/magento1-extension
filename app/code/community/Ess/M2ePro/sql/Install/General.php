@@ -840,7 +840,6 @@ INSERT INTO `{$this->_installer->getTable('m2epro_config')}` (`group`,`key`,`val
   ('/general/configuration/', 'view_show_block_notices_mode', '1', NOW(), NOW()),
   ('/general/configuration/', 'view_show_products_thumbnails_mode', '1', NOW(), NOW()),
   ('/general/configuration/', 'view_products_grid_use_alternative_mysql_select_mode', '0', NOW(), NOW()),
-  ('/general/configuration/', 'renderer_description_convert_linebreaks_mode', '1', NOW(), NOW()),
   ('/general/configuration/', 'other_pay_pal_url', 'paypal.com/cgi-bin/webscr/', NOW(), NOW()),
   ('/general/configuration/', 'product_index_mode', '1', NOW(), NOW()),
   ('/general/configuration/', 'product_force_qty_mode', '0', NOW(), NOW()),

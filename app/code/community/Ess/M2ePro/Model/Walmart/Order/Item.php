@@ -351,4 +351,15 @@ class Ess_M2ePro_Model_Walmart_Order_Item extends Ess_M2ePro_Model_Component_Chi
         $status = $this->getStatus();
         return $status === self::STATUS_CREATED || $status === self::STATUS_ACKNOWLEDGED;
     }
+
+    /**
+     * @return array
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
+    public function getTrackingDetails()
+    {
+        $trackingDetails = $this->getSettings('tracking_details');
+
+        return is_array($trackingDetails) ? $trackingDetails : array();
+    }
 }

@@ -471,6 +471,76 @@ class Ess_M2ePro_Model_Walmart_Order extends Ess_M2ePro_Model_Component_Child_Wa
         return $shipmentBuilder->getShipment();
     }
 
+    private function canCreateTracks()
+    {
+        $trackingDetails = $this->getShippingTrackingDetails();
+        if (empty($trackingDetails)) {
+            return false;
+        }
+
+        $magentoOrder = $this->getParentObject()->getMagentoOrder();
+        if ($magentoOrder === null) {
+            return false;
+        }
+
+        if (!$magentoOrder->hasShipments()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private function getShippingTrackingDetails()
+    {
+        $items = $this->getParentObject()->getItemsCollection()->getItems();
+
+        $trackingDetails = array();
+        foreach ($items as $item) {
+            /** @var Ess_M2ePro_Model_Walmart_Order_Item $walmartOrderItem */
+            $walmartOrderItem = $item->getChildObject();
+            $trackingDetail = $walmartOrderItem->getTrackingDetails();
+            if ($trackingDetail === array()) {
+                continue;
+            }
+
+            $trackingDetails[$trackingDetail['number']] = $trackingDetail;
+        }
+
+        return array_values($trackingDetails);
+    }
+
+    public function createTracks()
+    {
+        if (!$this->canCreateTracks()) {
+            return null;
+        }
+
+        $tracks = array();
+
+        try {
+            /** @var $trackBuilder Ess_M2ePro_Model_Magento_Order_Shipment_Track */
+            $trackBuilder = Mage::getModel('M2ePro/Magento_Order_Shipment_Track');
+            $trackBuilder->setMagentoOrder($this->getParentObject()->getMagentoOrder());
+            $trackBuilder->setTrackingDetails($this->getShippingTrackingDetails());
+            /** @var Ess_M2ePro_Helper_Component_Walmart $componentWalmart */
+            $componentWalmart = Mage::helper('M2ePro/Component_Walmart');
+            $trackBuilder->setSupportedCarriers($componentWalmart->getCarriers());
+            $trackBuilder->buildTracks();
+            $tracks = $trackBuilder->getTracks();
+        } catch (\Exception $e) {
+            $this->getParentObject()->addErrorLog(
+                'Tracking details were not imported. Reason: %msg%',
+                array('msg' => $e->getMessage())
+            );
+        }
+
+        if (!empty($tracks)) {
+            $this->getParentObject()->addSuccessLog('Tracking details were imported.');
+        }
+
+        return $tracks;
+    }
+
     //########################################
 
     /**

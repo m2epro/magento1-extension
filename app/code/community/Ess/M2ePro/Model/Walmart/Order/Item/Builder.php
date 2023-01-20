@@ -29,6 +29,15 @@ class Ess_M2ePro_Model_Walmart_Order_Item_Builder extends Mage_Core_Model_Abstra
         $this->setData('qty_purchased', (int)$data['qty']);
         // ---------------------------------------
 
+        // ----------------------------------------
+        if (!empty($data['shipping_details']['tracking_details']['number'])) {
+            $this->setData('tracking_details', Mage::helper('M2ePro')->jsonEncode(array(
+                'number' => $data['shipping_details']['tracking_details']['number'],
+                'title' => $data['shipping_details']['tracking_details']['carrier'],
+            )));
+        }
+        // ----------------------------------------
+
         /**
          * Walmart returns the same Order Item more than one time with single QTY. We will merge this data
          */

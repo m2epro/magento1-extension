@@ -102,13 +102,6 @@ class Ess_M2ePro_Helper_Module_Configuration extends Mage_Core_Helper_Abstract
         );
     }
 
-    public function getRendererDescriptionConvertLinebreaksMode()
-    {
-        return (int)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
-            self::CONFIG_GROUP, 'renderer_description_convert_linebreaks_mode'
-        );
-    }
-
     public function getOtherPayPalUrl()
     {
         return Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
