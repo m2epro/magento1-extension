@@ -56,22 +56,24 @@ class Ess_M2ePro_Model_Amazon_Repricing_Updating extends Ess_M2ePro_Model_Amazon
             return false;
         }
 
-        if ($regularPrice > $maxPrice) {
+        if ($maxPrice !== null && $regularPrice !== null && $regularPrice > $maxPrice) {
             $this->logListingProductMessage(
                 $listingProductRepricing->getListingProduct(),
                 Mage::helper('M2ePro')->__(
-                    'Item price was not updated. Regular Price must be equal to or lower than the Max Price value.'
+                    'Item price was not updated. Regular Price (value) must be equal to or lower than the 
+                    Max Price(value) value.'
                 )
             );
 
             return false;
         }
 
-        if ($regularPrice < $minPrice) {
+        if ($minPrice !== null && $regularPrice !== null && $regularPrice < $minPrice) {
             $this->logListingProductMessage(
                 $listingProductRepricing->getListingProduct(),
                 Mage::helper('M2ePro')->__(
-                    'Item price was not updated. Regular Price must be equal to or higher than the Min Price value.'
+                    'Item price was not updated. Regular Price(value) must be equal to or higher than the 
+                    Min Price(value) value.'
                 )
             );
 

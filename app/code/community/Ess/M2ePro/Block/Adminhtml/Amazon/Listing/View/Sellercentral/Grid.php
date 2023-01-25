@@ -299,7 +299,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Sellercentral_Grid
         $groups = array(
             'actions' => Mage::helper('M2ePro')->__('Actions'),
             'edit_fulfillment' => Mage::helper('M2ePro')->__('Fulfillment'),
-            'edit_repricing' => Mage::helper('M2ePro')->__('Repricing Tool'),
         );
 
         $this->getMassactionBlock()->setGroups($groups);
@@ -359,45 +358,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Sellercentral_Grid
             'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
             ), 'edit_fulfillment'
         );
-
-        /** @var Ess_M2ePro_Model_Account $account */
-        $account = Mage::helper('M2ePro/Component_Amazon')->getObject('Account', $this->_listing->getAccountId());
-
-        if ($account->getChildObject()->isRepricing()) {
-            $this->getMassactionBlock()->addItem(
-                'showDetails', array(
-                'label' => Mage::helper('M2ePro')->__('Show Details'),
-                'url' => '',
-                'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
-                ), 'edit_repricing'
-            );
-
-            $this->getMassactionBlock()->addItem(
-                'addToRepricing', array(
-                'label' => Mage::helper('M2ePro')->__('Add Item(s)'),
-                'url' => '',
-                'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
-                ), 'edit_repricing'
-            );
-
-            $this->getMassactionBlock()->addItem(
-                'editRepricing', array(
-                'label' => Mage::helper('M2ePro')->__('Edit Item(s)'),
-                'url' => '',
-                'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
-                ), 'edit_repricing'
-            );
-
-            $this->getMassactionBlock()->addItem(
-                'removeFromRepricing', array(
-                'label' => Mage::helper('M2ePro')->__('Remove Item(s)'),
-                'url' => '',
-                'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
-                ), 'edit_repricing'
-            );
-        }
-
-        // ---------------------------------------
 
         return parent::_prepareMassaction();
     }

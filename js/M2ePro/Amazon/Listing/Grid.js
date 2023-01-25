@@ -35,7 +35,6 @@ window.AmazonListingGrid = Class.create(ListingGrid, {
         this.templateProductTaxCodeHandler = new AmazonListingTemplateProductTaxCode(this);
         this.variationProductManageHandler = new AmazonListingVariationProductManage(this);
         this.fulfillmentHandler = new AmazonFulfillment(this);
-        this.repricingHandler = new AmazonRepricing(this);
 
         this.actions = Object.extend(this.actions, {
 
@@ -79,23 +78,6 @@ window.AmazonListingGrid = Class.create(ListingGrid, {
             switchToMfnAction: (function(id) {
                 id = id || this.getSelectedProductsString();
                 this.fulfillmentHandler.switchToMFN(id);
-            }).bind(this),
-
-            addToRepricingAction: (function(id) {
-                id = id || this.getSelectedProductsString();
-                this.repricingHandler.addToRepricing(id);
-            }).bind(this),
-            showDetailsAction: (function(id) {
-                id = id || this.getSelectedProductsString();
-                this.repricingHandler.showDetails(id);
-            }).bind(this),
-            editRepricingAction: (function(id) {
-                id = id || this.getSelectedProductsString();
-                this.repricingHandler.editRepricing(id);
-            }).bind(this),
-            removeFromRepricingAction: (function(id) {
-                id = id || this.getSelectedProductsString();
-                this.repricingHandler.removeFromRepricing(id);
             }).bind(this),
 
             assignGeneralIdAction: (function() {
