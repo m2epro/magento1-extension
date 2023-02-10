@@ -29,6 +29,10 @@ class Ess_M2ePro_Model_Cron_Task_Repository
             'component' => self::COMPONENT_GENERAL,
             'group'     => self::GROUP_SYSTEM,
         ),
+        Ess_M2ePro_Model_Cron_Task_System_FixItemTables::NICK => array(
+            'component' => self::COMPONENT_GENERAL,
+            'group'     => self::GROUP_SYSTEM,
+        ),
         Ess_M2ePro_Model_Cron_Task_System_ConnectorCommandPending_ProcessPartial::NICK => array(
             'component' => self::COMPONENT_GENERAL,
             'group'     => self::GROUP_SYSTEM,

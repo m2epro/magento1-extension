@@ -177,22 +177,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Order_MerchantFulfillmentController
             $preparedPackageData['dimensions']['unit_of_measure'] = $post['package_dimension_measure'];
         }
 
-        if ($post['package_weight_source'] == MerchantFulfillment::WEIGHT_SOURCE_CUSTOM_VALUE) {
-            $preparedPackageData['weight'] = array(
-                'value'           => $post['package_weight_custom_value'],
-                'unit_of_measure' => $post['package_weight_measure']
-            );
-        } elseif ($post['package_weight_source'] == MerchantFulfillment::WEIGHT_SOURCE_CUSTOM_ATTRIBUTE) {
-            /** @var Ess_M2ePro_Model_Order_Item $item */
-            $item = $order->getItemsCollection()->getFirstItem();
-
-            $preparedPackageData['weight'] = array(
-                'value'           => $item->getMagentoProduct()->getAttributeValue(
-                    $post['package_weight_custom_attribute']
-                ),
-                'unit_of_measure' => $post['package_weight_measure']
-            );
-        }
+        $preparedPackageData['weight'] = $this->getWeightPackageData($post, $order);
 
         $preparedShipmentData = array();
         $preparedShipmentData['info'] = array(
@@ -568,5 +553,39 @@ class Ess_M2ePro_Adminhtml_Amazon_Order_MerchantFulfillmentController
         return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode($responseData));
     }
 
-    //########################################
+
+    /**
+     * @param array $post
+     * @param Ess_M2ePro_Model_Order $order
+     *
+     * @return array
+     * @throws Ess_M2ePro_Model_Exception
+     */
+    private function getWeightPackageData(array $post, Ess_M2ePro_Model_Order $order)
+    {
+        if (
+            empty($post['package_weight_source'])
+            || $post['package_weight_source'] == MerchantFulfillment::WEIGHT_SOURCE_CUSTOM_VALUE
+        ) {
+            return array(
+                'value'           => $post['package_weight_custom_value'],
+                'unit_of_measure' => $post['package_weight_measure']
+            );
+        }
+
+        if ($post['package_weight_source'] == MerchantFulfillment::WEIGHT_SOURCE_CUSTOM_ATTRIBUTE) {
+            /** @var Ess_M2ePro_Model_Order_Item $item */
+            $item = $order->getItemsCollection()->getFirstItem();
+            $value = $item->getMagentoProduct()->getAttributeValue(
+                $post['package_weight_custom_attribute']
+            );
+
+            return array(
+                'value'           => $value,
+                'unit_of_measure' => $post['package_weight_measure']
+            );
+        }
+
+        throw new Ess_M2ePro_Model_Exception('Unresolved weight source');
+    }
 }

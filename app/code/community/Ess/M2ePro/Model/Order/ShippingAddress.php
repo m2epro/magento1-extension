@@ -54,8 +54,8 @@ abstract class Ess_M2ePro_Model_Order_ShippingAddress extends Varien_Object
             $countryRegions->getSelect()->where('code = ? OR default_name = ?', $this->getState());
 
             $this->_region = $countryRegions->getFirstItem();
-
-            if ($this->isRegionValidationRequired() && !$this->_region->getId()) {
+            $isRequired = Mage::helper('directory')->isRegionRequired($this->getCountry()->getId());
+            if ($isRequired && !$this->_region->getId()) {
                 throw new Ess_M2ePro_Model_Exception(
                     sprintf('State/Region "%s" in the shipping address is invalid.', $this->getState())
                 );
@@ -63,14 +63,6 @@ abstract class Ess_M2ePro_Model_Order_ShippingAddress extends Varien_Object
         }
 
         return $this->_region;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isRegionValidationRequired()
-    {
-        return false;
     }
 
     public function getCountryName()

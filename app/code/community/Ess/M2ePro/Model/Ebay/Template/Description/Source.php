@@ -8,7 +8,7 @@
 
 class Ess_M2ePro_Model_Ebay_Template_Description_Source
 {
-    const GALLERY_IMAGES_COUNT_MAX = 11;
+    const GALLERY_IMAGES_COUNT_MAX = 23;
     const VARIATION_IMAGES_COUNT_MAX = 12;
 
     /**

@@ -64,6 +64,8 @@ window.ListingProductGrid = Class.create(Common, {
                 this.reloadParams.rule = "";
             }
 
+            ProductGridObj.clearUrlFromFilter();
+
             this.reload(this.addVarToUrl(this.filterVar, encode_base64(Form.serializeElements(elements))));
         }
     },
@@ -78,6 +80,8 @@ window.ListingProductGrid = Class.create(Common, {
             reloadParam.match('^rule|^hide') && delete this.reloadParams[reloadParam];
         }
         this.reloadParams.rule = "";
+
+        ProductGridObj.clearUrlFromFilter();
 
         this.reload(this.addVarToUrl(this.filterVar, ''));
     },
@@ -124,7 +128,17 @@ window.ListingProductGrid = Class.create(Common, {
             return false;
         }
         return selectedProducts;
-    }
+    },
 
-    // ---------------------------------------
+    clearUrlFromFilter: function () {
+        var url = window.location.href;
+        var urlParts = url.split('/');
+        var index = urlParts.indexOf('filter');
+
+        if (index !== -1) {
+            urlParts.splice(index, 2);
+            url = urlParts.join('/');
+            window.history.pushState("", "", url);
+        }
+    }
 });

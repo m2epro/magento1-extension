@@ -73,7 +73,7 @@ $magentoAttributeHelper = Mage::helper('M2ePro/Magento_Attribute');
 $allAttributes = $magentoAttributeHelper->getAll();
 
 $attributesByInputTypes = array(
-    'text' => $magentoAttributeHelper->filterByInputTypes($allAttributes, array('text')),
+    'text' => $magentoAttributeHelper->filterByInputTypes($allAttributes, array('text', 'weight'))
 );
 
 ?>

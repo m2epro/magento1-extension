@@ -64,21 +64,6 @@ class Ess_M2ePro_Model_Walmart_Order_ShippingAddress extends Ess_M2ePro_Model_Or
         return $phone;
     }
 
-    /**
-     * @return bool
-     */
-    public function isRegionValidationRequired()
-    {
-        if (!$this->getCountry()->getId() || strtoupper($this->getCountry()->getId()) != 'US') {
-            return false;
-        }
-
-        $collection = Mage::getResourceModel('directory/region_collection');
-        $collection->addCountryFilter($this->getCountry()->getId());
-
-        return $collection->getSize() > 0;
-    }
-
     protected function getState()
     {
         $state = $this->getData('state');

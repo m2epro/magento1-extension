@@ -90,7 +90,6 @@ class Ess_M2ePro_Model_Ebay_Template_Description extends Ess_M2ePro_Model_Compon
     const WATERMARK_TRANSPARENT_MODE_YES = 1;
 
     const WATERMARK_CACHE_TIME     = 604800; // 7 days
-    const GALLERY_IMAGES_COUNT_MAX = 11;
 
     const INSTRUCTION_TYPE_MAGENTO_STATIC_BLOCK_IN_DESCRIPTION_CHANGED = 'magento_static_block_in_description_changed';
 
