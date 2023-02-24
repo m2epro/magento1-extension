@@ -53,7 +53,6 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
             ->addJs('M2ePro/Amazon/Listing/ProductSearch.js')
             ->addJs('M2ePro/Amazon/Listing/VariationProductManage.js')
             ->addJs('M2ePro/Amazon/Listing/Fulfillment.js')
-            ->addJs('M2ePro/Amazon/Listing/Repricing.js')
             ->addJs('M2ePro/Amazon/Listing/NewAsinTemplateDescriptionGrid.js')
             ->addJs('M2ePro/Amazon/Listing/AutoAction.js');
 

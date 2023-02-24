@@ -736,7 +736,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Resolver
     protected function addError($messageText)
     {
         $message = Mage::getModel('M2ePro/Response_Message');
-        $message->initFromPreparedData($messageText, $message::TYPE_ERROR);
+        $message->initFromPreparedData($messageText, Ess_M2ePro_Model_Response_Message::TYPE_ERROR);
 
         $this->getMessagesSet()->addEntity($message);
     }
@@ -744,7 +744,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Resolver
     protected function addWarning($messageText)
     {
         $message = Mage::getModel('M2ePro/Response_Message');
-        $message->initFromPreparedData($messageText, $message::TYPE_WARNING);
+        $message->initFromPreparedData($messageText, Ess_M2ePro_Model_Response_Message::TYPE_WARNING);
 
         $this->getMessagesSet()->addEntity($message);
     }
@@ -752,7 +752,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Resolver
     protected function addNotice($messageText)
     {
         $message = Mage::getModel('M2ePro/Response_Message');
-        $message->initFromPreparedData($messageText, $message::TYPE_INFO);
+        $message->initFromPreparedData($messageText, Ess_M2ePro_Model_Response_Message::TYPE_NOTICE);
 
         $this->getMessagesSet()->addEntity($message);
     }

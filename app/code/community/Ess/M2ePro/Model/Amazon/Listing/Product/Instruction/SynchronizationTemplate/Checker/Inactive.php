@@ -145,7 +145,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Instruction_SynchronizationTemplat
 
         $amazonSynchronizationTemplate = $amazonListingProduct->getAmazonSynchronizationTemplate();
 
-        if (!$amazonSynchronizationTemplate->isRelistMode()) {
+        if (!$amazonSynchronizationTemplate->isRelistMode() || $amazonListingProduct->isAfnChannel()) {
             return false;
         }
 

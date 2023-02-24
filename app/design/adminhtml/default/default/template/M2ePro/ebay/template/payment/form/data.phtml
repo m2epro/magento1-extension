@@ -31,21 +31,6 @@ $marketplaceData = $this->getMarketplaceData();
     EbayTemplatePaymentObj = new EbayTemplatePayment();
 
     var init = function() {
-
-        Validation.add('M2ePro-validate-email','', function(value, el) {
-
-            var advice = Validation.getAdvice('M2ePro-validate-email',el);
-            advice && advice.remove();
-
-            if (!Validation.get('M2ePro-required-when-visible').test(value,el)) {
-                this.error = Validation.get('M2ePro-required-when-visible').error;
-                return false;
-            }
-
-            this.error = Validation.get('validate-email').error;
-            return Validation.get('validate-email').test(value,el);
-        });
-
         if ($('managed_payments_mode')) {
             $('managed_payments_mode')
                 .observe('change', EbayTemplatePaymentObj.managedPaymentsModeChange)
@@ -74,7 +59,7 @@ $marketplaceData = $this->getMarketplaceData();
 <input type="hidden" name="payment[is_custom_template]" value="<?php echo $this->isCustom() ? 1 : 0; ?>" />
 
 <?php if ($marketplaceData['managed_payments_allowed']): ?>
-    <div class="entry-edit" id="magento_block_ebay_template_payment_form_data_managed_payments">
+    <div class="entry-edit" id="magento_block_ebay_template_payment_form_data_managed_payments" style="display: none">
 
         <div class="entry-edit-head">
             <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Managed Payments'); ?></h4>
@@ -91,7 +76,7 @@ $marketplaceData = $this->getMarketplaceData();
                         </td>
                         <td class="value">
                             <label>
-                                <input id="managed_payments_mode" name="payment[managed_payments_mode]" value="1" type="checkbox" onclick="" class="M2ePro-validate-payment-methods" <?php if ($formData['managed_payments_mode']): echo ' checked="checked"'; endif; ?>>
+                                <input id="managed_payments_mode" name="payment[managed_payments_mode]" value="1" type="checkbox" onclick="" class="" <?php if ($formData['managed_payments_mode']): echo ' checked="checked"'; endif; ?>>
                             </label>
                         </td>
                     </tr>
@@ -115,12 +100,12 @@ $marketplaceData = $this->getMarketplaceData();
 
             <table class="form-list" cellspacing="0" cellpadding="0">
 
-                <tr>
+                <tr style="display: none">
                     <td class="label">
                         <label><?php echo Mage::helper('M2ePro')->__('PayPal Accepted'); ?>:</label>
                     </td>
                     <td class="value"><label>
-                    <input id="pay_pal_mode" name="payment[pay_pal_mode]" value="1" type="checkbox" onclick="" class="M2ePro-validate-payment-methods" <?php if ($formData['pay_pal_mode']): echo ' checked="checked"'; endif; ?>></label></td>
+                    <input id="pay_pal_mode" name="payment[pay_pal_mode]" value="1" type="checkbox" onclick="" class="" <?php if ($formData['pay_pal_mode']): echo ' checked="checked"'; endif; ?>></label></td>
                 </tr>
 
                 <tr id="pay_pal_email_address_container" style="display: none;">
@@ -133,7 +118,7 @@ $marketplaceData = $this->getMarketplaceData();
                             name="payment[pay_pal_email_address]"
                             value="<?php echo $this->escapeHtml($formData['pay_pal_email_address']); ?>"
                             type="text"
-                            class="input-text M2ePro-validate-email"
+                            class="input-text"
                         />
                         <p class="note">
                             <span><?php echo Mage::helper('M2ePro')->__('Email address for receiving payment.'); ?></span>
@@ -141,7 +126,7 @@ $marketplaceData = $this->getMarketplaceData();
                     </td>
                 </tr>
 
-                <tr id="pay_pal_immediate_payment_container" style="display: none;">
+                <tr id="pay_pal_immediate_payment_container">
                     <td class="label">
                         <label><?php echo Mage::helper('M2ePro')->__('Immediate Payment Required'); ?>:</label>
                     </td>
@@ -168,7 +153,7 @@ $marketplaceData = $this->getMarketplaceData();
 
 <?php if (!empty($marketplaceData['services'])) : ?>
 
-    <div class="entry-edit" id="magento_block_ebay_template_payment_form_data_additional_service">
+    <div class="entry-edit" id="magento_block_ebay_template_payment_form_data_additional_service" style="display: none">
 
         <div class="entry-edit-head">
             <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Additional Payment Methods'); ?></h4>
@@ -193,7 +178,7 @@ $marketplaceData = $this->getMarketplaceData();
                                             type="checkbox"
                                             name="payment[services][]"
                                             value="<?php echo $service['ebay_id'] ?>"
-                                            class="M2ePro-validate-payment-methods"
+                                            class=""
                                             <?php if (in_array($service['ebay_id'], $formData['services'])): ?>checked="checked"<?php endif; ?>
                                         />&nbsp;
                                         <?php if ((int)$marketplaceData['id'] == Ess_M2ePro_Helper_Component_Ebay::MARKETPLACE_AU &&

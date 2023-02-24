@@ -266,7 +266,6 @@ class Ess_M2ePro_Adminhtml_Ebay_ListingController extends Ess_M2ePro_Controller_
             ->addJs('M2ePro/Ebay/Template/Category/Chooser.js')
             ->addJs('M2ePro/Ebay/Template/Category/Chooser/Browse.js')
             ->addJs('M2ePro/Ebay/Template/Category/Specifics.js')
-            ->addJs('M2ePro/Ebay/Template/Payment.js')
             ->addJs('M2ePro/Ebay/Template/Return.js')
             ->addJs('M2ePro/Ebay/Template/Shipping.js')
             ->addJs('M2ePro/Ebay/Template/Shipping/ExcludedLocations.js')

@@ -20,13 +20,13 @@ M2E Pro requires activation for further work. To activate your installation,
 you should obtain a <strong>License Key</strong>. For more details, please read our
 <a href="%1%" target="_blank">Privacy Policy</a>.<br/><br/>
 Fill out the form below with the necessary data. The information will be used to create your
-<strong>Account</strong> on <a href="%2%" target="_blank">M2E Pro Clients Portal</a> and a new
+<strong>Account</strong> on <a href="%2%" target="_blank">M2E Clients Portal</a> and a new
 License Key will be generated automatically.<br/><br/>
-Having access to your Account on clients.m2epro.com will let you manage your Subscription,
+Having access to your Account on <a href="%2%" target="_blank">M2E Clients Portal</a> will let you manage your Subscription,
 monitor Trial and Paid Period terms, control License Key(s) data, etc.
 HTML
                 ,
-                Mage::helper('M2ePro/Module_Support')->getWebsiteUrl() . 'privacy',
+                Mage::helper('M2ePro/Module_Support')->getPrivacyPolicyUrl(),
                 Mage::helper('M2ePro/Module_Support')->getClientsPortalUrl()
             )
         );
@@ -190,6 +190,8 @@ HTML
         );
 
         if (!$this->getData('isLicenseStepFinished')) {
+            $privacyUrl = Mage::helper('M2ePro/Module_Support')->getPrivacyPolicyUrl();
+            $termsAndConditionsUrl = Mage::helper('M2ePro/Module_Support')->getTermsAndConditionsUrl();
             $fieldset->addField(
                 'licence_agreement',
                 'checkbox',
@@ -202,7 +204,7 @@ HTML
                     'required'               => true,
                     'after_element_html'     => Mage::helper('M2ePro')->__(
                         <<<HTML
-&nbsp; I agree to terms and <a href="https://m2epro.com/privacy-policy" target="_blank">privacy policy</a>
+&nbsp; I agree to <a href="$termsAndConditionsUrl" target="_blank">terms</a> and <a href="$privacyUrl" target="_blank">privacy policy</a>
 HTML
                     )
                 )

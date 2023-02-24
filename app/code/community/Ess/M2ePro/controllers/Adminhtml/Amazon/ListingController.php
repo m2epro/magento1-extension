@@ -51,7 +51,6 @@ class Ess_M2ePro_Adminhtml_Amazon_ListingController
             ->addJs('M2ePro/Amazon/Listing/Template/ProductTaxCode.js')
             ->addJs('M2ePro/Amazon/Listing/VariationProductManage.js')
             ->addJs('M2ePro/Amazon/Listing/Fulfillment.js')
-            ->addJs('M2ePro/Amazon/Listing/Repricing.js')
             ->addJs('M2ePro/Amazon/Listing/RepricingPrice.js')
             ->addJs('M2ePro/Amazon/Listing/Other/Grid.js')
 

@@ -20,15 +20,9 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Payment
 
     public function getData()
     {
-        if ($this->getPaymentTemplate()->isManagedPaymentsEnabled()) {
-            return array();
-        }
+        $data = array();
 
-        $data = array(
-            'methods' => $this->getMethodsData()
-        );
-
-        if ($payPalData = $this->getPayPalData($data['methods'])) {
+        if ($payPalData = $this->getPayPalData($data)) {
             $data['paypal'] = $payPalData;
         }
 
@@ -37,35 +31,9 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Payment
 
     //########################################
 
-    /**
-     * @return array
-     */
-    protected function getMethodsData()
-    {
-        $methods = array();
-
-        if ($this->getPaymentTemplate()->isPayPalEnabled()) {
-            $methods[] = self::PAYPAL;
-        }
-
-        $services = $this->getPaymentTemplate()->getServices(true);
-
-        foreach ($services as $service) {
-            /** @var $service Ess_M2ePro_Model_Ebay_Template_Payment_Service */
-            $methods[] = $service->getCodeName();
-        }
-
-        return $methods;
-    }
-
     protected function getPayPalData($methods)
     {
-        if (!in_array(self::PAYPAL, $methods)) {
-            return false;
-        }
-
         return array(
-            'email' => $this->getPaymentTemplate()->getPayPalEmailAddress(),
             'immediate_payment' => $this->getPaymentTemplate()->isPayPalImmediatePaymentEnabled()
         );
     }

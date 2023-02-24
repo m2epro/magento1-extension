@@ -46,7 +46,6 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_ProductAddController
 
             ->addJs('M2ePro/TemplateManager.js')
             ->addJs('M2ePro/Ebay/Listing/Template/Switcher.js')
-            ->addJs('M2ePro/Ebay/Template/Payment.js')
             ->addJs('M2ePro/Ebay/Template/Return.js')
             ->addJs('M2ePro/Ebay/Template/Shipping.js')
             ->addJs('M2ePro/Ebay/Template/Shipping/ExcludedLocations.js')
