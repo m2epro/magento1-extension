@@ -371,6 +371,21 @@
                     </td>
                 </tr>
 
+                <tr id="magento_orders_shipping_information_container">
+                    <td class="label">
+                        <label for="magento_orders_shipping_address_region_override"><?php echo Mage::helper('M2ePro')->__('Override invalid Region/State required value') ?>:</label>
+                    </td>
+                    <td class="value">
+                        <?php $regionOverride = !isset($formData['magento_orders_settings']['shipping_information']['shipping_address_region_override']) ? 1 : $formData['magento_orders_settings']['shipping_information']['shipping_address_region_override']?>
+                        <select name="magento_orders_settings[shipping_information][shipping_address_region_override]" id="magento_orders_shipping_address_region_override">
+                            <option value="0" <?php if (!$regionOverride): ?>selected="selected"<?php endif; ?>><?php echo Mage::helper('M2ePro')->__('No') ?></option>
+                            <option value="1" <?php if ($regionOverride): ?>selected="selected"<?php endif; ?>><?php echo Mage::helper('M2ePro')->__('Yes') ?></option>
+                        </select>
+                        <p class="note">
+                            When enabled, the invalid Region/State value will be replaced with an alternative one to create an order in Magento.
+                        </p>
+                    </td>
+                </tr>
             </table>
 
         </div>

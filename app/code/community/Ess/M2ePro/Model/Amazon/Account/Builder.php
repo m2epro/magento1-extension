@@ -330,6 +330,7 @@ class Ess_M2ePro_Model_Amazon_Account_Builder extends Ess_M2ePro_Model_ActiveRec
         $keys = array(
             'ship_by_date',
             'update_without_track',
+            'shipping_address_region_override',
         );
         foreach ($keys as $key) {
             if (isset($tempSettings[$key])) {
@@ -440,6 +441,7 @@ class Ess_M2ePro_Model_Amazon_Account_Builder extends Ess_M2ePro_Model_ActiveRec
                 'shipping_information' => array(
                     'ship_by_date'         => 1,
                     'update_without_track' => 1,
+                    'shipping_address_region_override' => 1,
                 ),
             ),
 

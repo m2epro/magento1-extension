@@ -1095,5 +1095,12 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
         return parent::delete();
     }
 
-    //########################################
+    public function isRegionOverrideRequired()
+    {
+        return (bool)$this->getSetting(
+            'magento_orders_settings',
+            array('shipping_information', 'shipping_address_region_override'),
+            1
+        );
+    }
 }

@@ -20,9 +20,9 @@ abstract class Ess_M2ePro_Model_Order_ShippingAddress extends Varien_Object
     /** @var Mage_Directory_Model_Region */
     protected $_region;
 
-    //########################################
-
     abstract public function getRawData();
+
+    abstract protected function isRegionOverrideRequired();
 
     public function __construct(Ess_M2ePro_Model_Order $order)
     {
@@ -52,14 +52,22 @@ abstract class Ess_M2ePro_Model_Order_ShippingAddress extends Varien_Object
         if ($this->_region === null) {
             $countryRegions = $this->getCountry()->getRegionCollection();
             $countryRegions->getSelect()->where('code = ? OR default_name = ?', $this->getState());
-
             $this->_region = $countryRegions->getFirstItem();
-            $isRequired = Mage::helper('directory')->isRegionRequired($this->getCountry()->getId());
-            if ($isRequired && !$this->_region->getId()) {
+        }
+
+        $isRequired = Mage::helper('directory')->isRegionRequired($this->getCountry()->getId());
+        if ($isRequired && !$this->_region->getId()) {
+            if (!$this->isRegionOverrideRequired()) {
                 throw new Ess_M2ePro_Model_Exception(
-                    sprintf('State/Region "%s" in the shipping address is invalid.', $this->getState())
+                    sprintf('Invalid Region/State value "%s" in the Shipping Address.', $this->getState())
                 );
             }
+
+            $countryRegions = $this->getCountry()->getRegionCollection();
+            $this->_region = $countryRegions->getFirstItem();
+
+            $msg = 'Invalid Region/State value: "%s" in the Shipping Address is overridden by "%s".';
+            $this->_order->addInfoLog(sprintf($msg, $this->getState(), $this->_region->getDefaultName()), array(), array(), true);
         }
 
         return $this->_region;
@@ -103,7 +111,7 @@ abstract class Ess_M2ePro_Model_Order_ShippingAddress extends Varien_Object
     {
         $rawAddressData = $this->_order->getShippingAddress()->getRawData();
 
-        $buyerNameParts =  array_map('strtolower', explode(' ', $rawAddressData['buyer_name']));
+        $buyerNameParts = array_map('strtolower', explode(' ', $rawAddressData['buyer_name']));
         $recipientNameParts = array_map('strtolower', explode(' ', $rawAddressData['recipient_name']));
 
         $buyerNameParts = array_map('trim', $buyerNameParts);
@@ -120,6 +128,4 @@ abstract class Ess_M2ePro_Model_Order_ShippingAddress extends Varien_Object
     {
         return $this->getData('state');
     }
-
-    //########################################
 }

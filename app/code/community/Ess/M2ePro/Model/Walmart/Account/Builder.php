@@ -284,10 +284,21 @@ class Ess_M2ePro_Model_Walmart_Account_Builder extends Ess_M2ePro_Model_ActiveRe
             }
         }
 
-        $data['magento_orders_settings']['shipping_information']['ship_by_date']
-            = isset($this->_rawData['magento_orders_settings']['shipping_information']['ship_by_date'])
-            ? (int)$this->_rawData['magento_orders_settings']['shipping_information']['ship_by_date']
-            : 1;
+        // Shipping information
+        // ---------------------------------------
+        $tempKey = 'shipping_information';
+        $tempSettings = !empty($this->_rawData['magento_orders_settings'][$tempKey])
+            ? $this->_rawData['magento_orders_settings'][$tempKey] : array();
+
+        $keys = array(
+            'ship_by_date',
+            'shipping_address_region_override',
+        );
+        foreach ($keys as $key) {
+            if (isset($tempSettings[$key])) {
+                $data['magento_orders_settings'][$tempKey][$key] = $tempSettings[$key];
+            }
+        }
 
         $data['magento_orders_settings'] = Mage::helper('M2ePro')
             ->jsonEncode($data['magento_orders_settings']);
@@ -386,6 +397,4 @@ class Ess_M2ePro_Model_Walmart_Account_Builder extends Ess_M2ePro_Model_ActiveRe
             'other_carriers'          => array()
         );
     }
-
-    //########################################
 }

@@ -75,5 +75,11 @@ class Ess_M2ePro_Model_Amazon_Order_ShippingAddress extends Ess_M2ePro_Model_Ord
         return preg_replace('/[^ \w]+/', '', $state);
     }
 
-    //########################################
+    protected function isRegionOverrideRequired()
+    {
+        /** @var Ess_M2ePro_Model_Amazon_Account $account */
+        $account = $this->_order->getAccount()->getChildObject();
+
+        return $account->isRegionOverrideRequired();
+    }
 }

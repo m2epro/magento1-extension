@@ -84,5 +84,11 @@ class Ess_M2ePro_Model_Ebay_Order_ShippingAddress extends Ess_M2ePro_Model_Order
         return array_filter($street);
     }
 
-    //########################################
+    protected function isRegionOverrideRequired()
+    {
+        /** @var Ess_M2ePro_Model_Ebay_Account $account */
+        $account = $this->_order->getAccount()->getChildObject();
+
+        return $account->isRegionOverrideRequired();
+    }
 }

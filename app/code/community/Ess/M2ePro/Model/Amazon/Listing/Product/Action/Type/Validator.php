@@ -321,9 +321,8 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Validator
             $this->getConfigurator()->disallowRegularPrice();
 
             $this->addMessage(
-                'This product is used by Amazon Repricing Tool.
-                 The Price cannot be updated through the M2E Pro.',
-                Ess_M2ePro_Model_Connector_Connection_Response_Message::TYPE_WARNING
+                'Price of this Product is managed by Amazon Repricer, it isn\'t updated by M2E Pro.',
+                Ess_M2ePro_Model_Connector_Connection_Response_Message::TYPE_NOTICE
             );
 
             return true;

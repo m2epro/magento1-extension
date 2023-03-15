@@ -30,6 +30,10 @@ class Ess_M2ePro_Model_Amazon_Magento_Product_ChangeProcessor
 
     public function getInstructionsDataByAttributes(array $attributes)
     {
+        if (empty($attributes)) {
+            return array();
+        }
+
         $data = array();
 
         if (array_intersect($attributes, $this->getQtyTrackingAttributes())) {
