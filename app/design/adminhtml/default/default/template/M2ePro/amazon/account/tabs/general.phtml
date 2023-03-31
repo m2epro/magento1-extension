@@ -46,18 +46,10 @@
 
     $accountTitle = Mage::helper('M2ePro/Data_Session')->getValue('account_title', true);
     $merchantId = Mage::helper('M2ePro/Data_Session')->getValue('merchant_id', true);
-    $mwsToken = Mage::helper('M2ePro/Data_Session')->getValue('mws_token', true);
-    $isAuthMode = !empty($merchantId) && !empty($mwsToken);
 
     $authMarketplace = Mage::helper('M2ePro/Data_Session')->getValue('marketplace', true);
 
-    $isEdit = !!$this->getRequest()->getParam('id');
-
-    $licenseMessage = '';
-
-    if ($isEdit) {
-        $licenseMessage = (string)Mage::helper('M2ePro/Data_Global')->getValue('license_message');
-    }
+    $licenseMessage = (string)Mage::helper('M2ePro/Data_Global')->getValue('license_message');
 ?>
 
 <script type="text/javascript">
@@ -88,9 +80,10 @@
         'Unlink Repricing Tool' => Mage::helper('M2ePro')->__('Unlink From Repricing Tool'),
         'Please enter correct value.' => Mage::helper('M2ePro')->__('Please enter correct value.'),
         'Coefficient is not valid.' => Mage::helper('M2ePro')->__('Coefficient is not valid.'),
-        'on_delete_account_message' => Mage::helper('M2ePro')->__('Attention! By applying this action you delete the Account data only from current M2E Pro instance. It does not affect the Subscription status and Billing process for this Channel Account. <br><br>
-                                                                   To delete Channel Account which you don\'t need to manage under M2E Pro Subscription Plan, go to the <a href="%url%" target="_blank">Clients Portal</a>.',
-                                                                   Mage::helper('M2ePro/Module_Support')->getClientsPortalUrl())
+        'on_delete_account_message' => Mage::helper('M2ePro')->__('
+            If you confirm the deletion of your Account, it will be removed from the M2E Pro instance only, your Subscription and Billing for this Channel Account won`t be affected. <br><br>
+            If you want to delete a Channel Account that you no longer need to manage under your M2E Pro Subscription plan, you should go to <a href="%url%" target="_blank">M2E Accounts</a>.',
+                Mage::helper('M2ePro/Module_Support')->getAccountsUrl())
     )); ?>);
 
     M2ePro.formData.id = '<?php echo $this->getRequest()->getParam('id'); ?>';
@@ -99,16 +92,6 @@
         <?php echo $licenseMessage; ?>
 
         editForm = new varienForm('edit_form', '<?php echo $this->getValidationUrl(); ?>');
-
-        <?php if ($isAuthMode) { ?>
-            AmazonAccountObj.changeMarketplace(<?php echo $authMarketplace['id']; ?>);
-        <?php } elseif ($isEdit) { ?>
-            AmazonAccountObj.showGetAccessData(<?php echo $formData['marketplace_id']; ?>);
-        <?php } else {?>
-            if ($('marketplace_id').value) {
-                $('marketplace_id').simulate('change');
-            }
-        <?php } ?>
 
         var urlHash = location.hash.substr(1);
         if (urlHash != '') {
@@ -134,8 +117,6 @@
     //-----------------------------
     M2ePro.translator.add(<?php echo json_encode(array(
         'The specified Title is already used for other Account. Account Title must be unique.' => Mage::helper('M2ePro')->__('The specified Title is already used for other Account. Account Title must be unique.'),
-        'M2E Pro was not able to get access to the Amazon Account. Please, make sure, that you choose correct Option on MWS Authorization Page and enter correct Merchant ID.' => Mage::helper('M2ePro')->__('M2E Pro was not able to get access to the Amazon Account. Please, make sure, that you choose correct Option on MWS Authorization Page and enter correct Merchant ID / MWS Auth Token'),
-        'M2E Pro was not able to get access to the Amazon Account. Reason: %error_message%' => Mage::helper('M2ePro')->__('M2E Pro was not able to get access to the Amazon Account. Reason: %error_message%')
     )); ?>);
 
     M2ePro.formData.title = '<?php echo Mage::helper('M2ePro')->escapeJs(Mage::helper('M2ePro')->escapeHtml($formData['title'])); ?>';
@@ -185,88 +166,36 @@
             <table class="form-list" cellspacing="0" cellpadding="0">
 
                 <tr>
-                    <td class="label">
-                        <label><?php echo Mage::helper('M2ePro')->__('Marketplace'); ?>: <span class="required">*</span></label>
-                    </td>
+                    <td class="label"><?php echo Mage::helper('M2ePro')->__('Marketplace') ?>:</td>
                     <td class="value">
-
-                        <select id="marketplace_id" name="marketplace_id" <?php if ($isEdit) { ?>disabled="disabled"<?php } ?> onchange="AmazonAccountObj.changeMarketplace(this.value);" class="required-entry">
-
-                            <?php if (!$isEdit) { ?>
-                                <option style="display:none;"></option>
-                            <?php } ?>
-
-                            <?php foreach ($this->marketplaces as $marketplaceRow) { ?>
-                                <option value="<?php echo $marketplaceRow['id']; ?>" <?php if ($formData['marketplace_id'] == $marketplaceRow['id'] || $marketplaceRow['id'] == $authMarketplace['id']) { ?>selected="selected"<?php } ?>>
-                                    <?php echo Mage::helper('M2ePro')->__($marketplaceRow['title']); ?>
-                                </option>
-                            <?php } ?>
-
-                        </select>
-
-                        <?php if ($isEdit) : ?>
-                            <input type="hidden" name="marketplace_id" value="<?php echo $formData['marketplace_id']; ?>" />
-                            <input type="hidden" name="merchant_id" value="<?php echo $formData['merchant_id']; ?>" />
-                        <?php endif; ?>
-
+                        <?php echo $this->marketplace->getTitle(); ?>
                     </td>
                 </tr>
 
-                <tr id="marketplaces_application_name_container" style="display:none;">
-                    <td class="label"><?php echo Mage::helper('M2ePro')->__('Application Name') ?>:</td>
-                    <td class="value"><?php echo Mage::helper('M2ePro/Component_Amazon')->getApplicationName(); ?></td>
+                <input type="hidden" id="marketplace_id" name="marketplace_id" value="<?php echo $formData['marketplace_id']; ?>" />
+                <input type="hidden" id="merchant_id" name="merchant_id" value="<?php echo $formData['merchant_id']; ?>" />
+
+                <tr id="marketplaces_merchant_id_container">
+                    <td class="label"><?php echo Mage::helper('M2ePro')->__('Merchant ID') ?>:</td>
+                    <td class="value">
+                        <?php echo $formData['merchant_id']; ?>
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__('Your Amazon Seller ID.'); ?></span>
+                        </p>
+                    </td>
                 </tr>
 
-                <?php foreach ($this->marketplaces as $marketplaceRow) { ?>
+                <tr>
+                    <td class='label'></td>
+                    <td id="update_access_data" class='value'>
+                        <?php echo $this->getChildHtml('update_access_data'); ?>
+                    </td>
+                </tr>
 
-                    <tr class="marketplaces_view_element" id="marketplaces_developer_key_container_<?php echo $marketplaceRow['id']; ?>" style="display:none;">
-                        <td class="label"><?php echo Mage::helper('M2ePro')->__('Developer Account Number') ?>:</td>
-                        <td class="value"><?php echo $marketplaceRow['developer_key'] ?></td>
-                    </tr>
-
-                    <tr class="marketplaces_view_element" id="marketplaces_register_url_container_<?php echo $marketplaceRow['id']; ?>" style="display:none;">
-                        <td class="label"></td>
-                        <td class="value">
-                            <a id='marketplaces_register_url'
-                               href=''
-                               onclick="return AmazonAccountObj.get_token(<?php echo $marketplaceRow['id']; ?>)"
-                               target='_self'><?php echo Mage::helper('M2ePro')->__('Get Access Data') ?>
-                            </a>
-                        </td>
-                    </tr>
-
-                <?php } ?>
-
-                <?php if ($isEdit): ?>
                 <tr>
                     <td class='label'></td>
                     <td id="check_token_validity" class='value'>
                         <?php echo $this->getChildHtml('check_token_validity'); ?>
-                    </td>
-                </tr>
-                <?php endif; ?>
-
-                <tr id="marketplaces_merchant_id_container" <?php if (!$isEdit && !$isAuthMode) echo ' style="display:none;"'; ?>>
-                    <td class="label">
-                        <label><?php echo Mage::helper('M2ePro')->__('Merchant ID'); ?>: <span class="required">*</span></label>
-                    </td>
-                    <td class="value">
-                        <input id="merchant_id" type="text" class="M2ePro-marketplace-merchant input-text" name="merchant_id" <?php if ($isAuthMode) echo ' value="'.$merchantId.'"'; elseif ($isEdit) echo ' value="'.$formData['merchant_id'].'"'; ?> <?php if ($isEdit) echo ' disabled="disabled"'; ?> class="input-text M2ePro-required-when-visible" />
-                        <p class="note">
-                            <span><?php echo Mage::helper('M2ePro')->__('Paste generated Merchant ID from Amazon. (It must look like: A15UFR7CZVW5YA).'); ?></span>
-                        </p>
-                    </td>
-                </tr>
-
-                <tr id="marketplaces_token_container" <?php if ($isEdit || !$isAuthMode) echo ' style="display:none;"'; ?>>
-                    <td class="label">
-                        <label><?php echo Mage::helper('M2ePro')->__('MWS Auth Token'); ?>: <span class="required">*</span></label>
-                    </td>
-                    <td class="value">
-                        <input id="token" type="text" class="M2ePro-marketplace-merchant input-text" name="token" <?php if ($isAuthMode) echo ' value="'.$mwsToken.'"'; ?> <?php if ($isEdit) echo 'disabled="disabled"'; ?>/>
-                        <p class="note">
-                            <span><?php echo Mage::helper('M2ePro')->__('Paste generated MWS Auth Token from Amazon. (It must look like: amzn.mws.bna3f75c-a683-49c7-6da0-749y33313dft).'); ?></span>
-                        </p>
                     </td>
                 </tr>
 

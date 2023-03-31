@@ -49,7 +49,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_Validator
             return true;
         }
 
-        if (!$this->validateProductIds()) {
+        if (!$this->validateProductId()) {
             return false;
         }
 
@@ -86,91 +86,20 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_Validator
 
     //########################################
 
-    protected function getGtin()
+    protected function getIdentifierFromConfiguration()
     {
-        $gtin = parent::getGtin();
-        if ($gtin !== null) {
-            return $gtin;
-        }
-
         $helper = Mage::helper('M2ePro/Component_Walmart_Configuration');
 
         if ($helper->isProductIdOverrideModeAll()) {
             return Ess_M2ePro_Helper_Component_Walmart_Configuration::PRODUCT_ID_OVERRIDE_CUSTOM_CODE;
         }
 
-        if ($helper->isGtinModeNotSet()) {
+        if ($helper->isProductIdModeNotSet()) {
             return null;
         }
 
         return $this->getWalmartListingProduct()->getActualMagentoProduct()->getAttributeValue(
-            $helper->getGtinCustomAttribute()
-        );
-    }
-
-    protected function getUpc()
-    {
-        $upc = parent::getUpc();
-        if ($upc !== null) {
-            return $upc;
-        }
-
-        $helper = Mage::helper('M2ePro/Component_Walmart_Configuration');
-
-        if ($helper->isProductIdOverrideModeAll()) {
-            return Ess_M2ePro_Helper_Component_Walmart_Configuration::PRODUCT_ID_OVERRIDE_CUSTOM_CODE;
-        }
-
-        if ($helper->isUpcModeNotSet()) {
-            return null;
-        }
-
-        return $this->getWalmartListingProduct()->getActualMagentoProduct()->getAttributeValue(
-            $helper->getUpcCustomAttribute()
-        );
-    }
-
-    protected function getEan()
-    {
-        $ean = parent::getEan();
-        if ($ean !== null) {
-            return $ean;
-        }
-
-        $helper = Mage::helper('M2ePro/Component_Walmart_Configuration');
-
-        if ($helper->isProductIdOverrideModeAll()) {
-            return Ess_M2ePro_Helper_Component_Walmart_Configuration::PRODUCT_ID_OVERRIDE_CUSTOM_CODE;
-        }
-
-        if ($helper->isEanModeNotSet()) {
-            return null;
-        }
-
-        return $this->getWalmartListingProduct()->getActualMagentoProduct()->getAttributeValue(
-            $helper->getEanCustomAttribute()
-        );
-    }
-
-    protected function getIsbn()
-    {
-        $isbn = parent::getIsbn();
-        if ($isbn !== null) {
-            return $isbn;
-        }
-
-        $helper = Mage::helper('M2ePro/Component_Walmart_Configuration');
-
-        if ($helper->isProductIdOverrideModeAll()) {
-            return Ess_M2ePro_Helper_Component_Walmart_Configuration::PRODUCT_ID_OVERRIDE_CUSTOM_CODE;
-        }
-
-        if ($helper->isIsbnModeNotSet()) {
-            return null;
-        }
-
-        return $this->getWalmartListingProduct()->getActualMagentoProduct()->getAttributeValue(
-            $helper->getIsbnCustomAttribute()
+            $helper->getProductIdCustomAttribute()
         );
     }
 

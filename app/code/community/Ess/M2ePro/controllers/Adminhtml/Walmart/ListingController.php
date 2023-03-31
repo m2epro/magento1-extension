@@ -1538,6 +1538,17 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
             );
         }
 
+        if (!Mage::helper('M2ePro')->isValidIdentifier($value, strtoupper($type))) {
+            return $this->getResponse()->setBody(
+                Mage::helper('M2ePro')->jsonEncode(
+                    array(
+                        'result' => false,
+                        'message' => Mage::helper('M2ePro')->__('The product Identifier has incorrect format.')
+                    )
+                )
+            );
+        }
+
         $listingProduct = Mage::getModel('M2ePro/Walmart_Listing_Product')->load($productId);
 
         if (!$listingProduct->getId()) {

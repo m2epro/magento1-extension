@@ -68,7 +68,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Marketplace_Edit_Form extends Mage_Admin
                 'marketplaces' => array()
             );
 
-            $disabledMarketplaces = array();
             foreach ($marketplaces as $marketplace) {
                 if ($marketplace->getGroupTitle() != $groupOrderTitle) {
                     continue;
@@ -88,14 +87,8 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Marketplace_Edit_Form extends Mage_Admin
                     'params'   => array('locked' => $isLocked)
                 );
 
-                if ($marketplace['instance']->getData('developer_key') === null) {
-                    $disabledMarketplaces[] = $marketplace;
-                } else {
-                    $groups[$key]['marketplaces'][] = $marketplace;
-                }
+                $groups[$key]['marketplaces'][] = $marketplace;
             }
-
-            $groups[$key]['marketplaces'] = array_merge($groups[$key]['marketplaces'], $disabledMarketplaces);
         }
 
         $this->groups = $groups;

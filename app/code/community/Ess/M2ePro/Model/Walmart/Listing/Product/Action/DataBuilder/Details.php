@@ -20,7 +20,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_DataBuilder_Details
         $data = array(
             'product_data_nick'     => $this->getWalmartListingProduct()->getCategoryTemplate()->getProductDataNick(),
             'product_data'          => $this->getProductData(),
-            'product_ids_data'      => $this->getProductIdsData(),
+            'product_id_data'      => $this->getProductIdData(),
             'description_data'      => $this->getDescriptionData(),
             'shipping_weight'       => $sellingFormatTemplateSource->getItemWeight(),
             'additional_attributes' => $sellingFormatTemplateSource->getAttributes(),
@@ -112,70 +112,48 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_DataBuilder_Details
 
     // ---------------------------------------
 
-    protected function getProductIdsData()
+    protected function getProductIdData()
     {
-        if (empty($this->_cachedData)) {
-            $walmartListingProduct = $this->getListingProduct()->getChildObject();
-
-            /** @var Ess_M2ePro_Helper_Data $helperData */
-            $helperData = Mage::helper('M2ePro');
-
-            $ids = array(
-                'gtin' => $walmartListingProduct->getGtin(),
-                'upc' => $walmartListingProduct->getUpc(),
-                'ean' => $walmartListingProduct->getEan(),
-                'isbn' => $walmartListingProduct->getIsbn()
-            );
-
-            if (!$ids['gtin'] ||
-                (strtoupper($ids['gtin']) !== ConfigurationHelper::PRODUCT_ID_OVERRIDE_CUSTOM_CODE &&
-                    !$helperData->isGTIN($ids['gtin']))
-            ) {
-                unset($ids['gtin']);
-            }
-
-            if (!$ids['upc'] ||
-                (strtoupper($ids['upc']) !== ConfigurationHelper::PRODUCT_ID_OVERRIDE_CUSTOM_CODE &&
-                    !$helperData->isUPC($ids['upc']))
-            ) {
-                unset($ids['upc']);
-            }
-
-            if (!$ids['ean'] ||
-                (strtoupper($ids['ean']) !== ConfigurationHelper::PRODUCT_ID_OVERRIDE_CUSTOM_CODE &&
-                    !$helperData->isEAN($ids['ean']))
-            ) {
-                unset($ids['ean']);
-            }
-
-            if (!$ids['isbn'] ||
-                (strtoupper($ids['isbn']) !== ConfigurationHelper::PRODUCT_ID_OVERRIDE_CUSTOM_CODE &&
-                    !$helperData->isISBN($ids['isbn']))
-            ) {
-                unset($ids['isbn']);
-            }
-
-            foreach ($ids as $idType => $value) {
-                $this->_cachedData[$idType] = $value;
-            }
+        if (!isset($this->_cachedData['identifier'])) {
+            $this->_cachedData['identifier'] = $this->getIdentifierFromProduct();
         }
 
-        $data = array();
+        return $this->_cachedData['identifier'];
+    }
 
-        $idsTypes = array('gtin', 'upc', 'ean', 'isbn');
+    private function getIdentifierFromProduct()
+    {
+        $walmartListingProduct = $this->getListingProduct()->getChildObject();
 
-        foreach ($idsTypes as $idType) {
-            if (!isset($this->_cachedData[$idType])) {
-                continue;
-            }
-
-            $data[] = array(
-                'type' => strtoupper($idType),
-                'id'   => $this->_cachedData[$idType]
+        if ($identifier = $walmartListingProduct->getGtin()) {
+            return array(
+                'type' => Ess_M2ePro_Helper_Data::GTIN,
+                'id' => $identifier
             );
         }
 
-        return $data;
+        if ($identifier = $walmartListingProduct->getUpc()) {
+            return array(
+                'type' => Ess_M2ePro_Helper_Data::UPC,
+                'id' => $identifier
+            );
+        }
+
+        if ($identifier = $walmartListingProduct->getEan()) {
+            return array(
+                'type' => Ess_M2ePro_Helper_Data::EAN,
+                'id' => $identifier
+            );
+        }
+
+        if ($identifier = $walmartListingProduct->getIsbn()) {
+            return array(
+                'type' => Ess_M2ePro_Helper_Data::ISBN,
+                'id' => $identifier
+            );
+        }
+
+        return array();
     }
 
     // ---------------------------------------

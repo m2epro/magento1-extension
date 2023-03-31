@@ -57,7 +57,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Revise_Validator
             return false;
         }
 
-        if (!$this->validateProductIds()) {
+        if (!$this->validateProductId()) {
             return false;
         }
 

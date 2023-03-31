@@ -122,12 +122,17 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationAmazonController
 
     public function beforeTokenAction()
     {
-        $marketplaceId = $this->getRequest()->getParam('marketplace_id', 0);
+        $marketplaceId = (int)$this->getRequest()->getParam('marketplace_id', 0);
 
         $marketplace = Mage::getModel('M2ePro/Marketplace')->load($marketplaceId);
 
         try {
-            $backUrl = $this->getUrl('*/*/afterToken');
+            $backUrl = $this->getUrl(
+                '*/*/afterToken',
+                array(
+                    'marketplace_id' => $marketplaceId,
+                )
+            );
 
             $dispatcherObject = Mage::getModel('M2ePro/Amazon_Connector_Dispatcher');
             $connectorObj = $dispatcherObject->getVirtualConnector(
@@ -174,7 +179,7 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationAmazonController
                 return $this->indexAction();
             }
 
-            $marketplaceId = Mage::helper('M2ePro/Data_Session')->getValue('marketplace_id');
+            $marketplaceId = (int)$amazonData['marketplace_id'];
         } catch (\LogicException $exception) {
             $this->_getSession()->addError(
                 Mage::helper('M2ePro')->__(
@@ -223,7 +228,7 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationAmazonController
     }
 
     /**
-     * @return array{merchant:string, token:string}|null
+     * @return array{merchant:string, token:string, marketplace_id:int}|null
      */
     private function getAmazonData()
     {
@@ -234,8 +239,9 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationAmazonController
         }
 
         $requiredFields = array(
-            'Merchant',
-            'MWSAuthToken'
+            'selling_partner_id',
+            'spapi_oauth_code',
+            'marketplace_id',
         );
 
         foreach ($requiredFields as $requiredField) {
@@ -245,8 +251,9 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationAmazonController
         }
 
         return array(
-            'merchant' => $params['Merchant'],
-            'token'    => $params['MWSAuthToken']
+            'merchant' => $params['selling_partner_id'],
+            'token' => $params['spapi_oauth_code'],
+            'marketplace_id' => $params['marketplace_id'],
         );
     }
 

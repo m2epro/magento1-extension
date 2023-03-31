@@ -15,17 +15,16 @@
     <?php echo Mage::helper('M2ePro')->__(
         'To use M2E Pro, you need:
         <ul class="list">
-            <li><strong>Clients Portal Account.</strong> It is created automatically based on the email address you entered on the initial M2E Pro set-up. 
-            There can manage your Subscription and Billing information. 
-            Read the <a href="%url%" target="_blank">User Guide</a> for more details.</li>
-            <li><strong>Extension Key.</strong> It is a unique Module identifier and cannot be used for different domains, sub-domains, or IPs. 
+            <li><strong>M2E Accounts registration.</strong> You were automatically registered on <a href="%url1%" target="_blank">M2E Accounts</a> with the email used during the initial setup of M2E Pro. 
+            There you can manage your Subscription and Billing information.
+            <li><strong>License Key.</strong> Obtain a License Key in <a href="%url1%" target="_blank">M2E Accounts</a> to activate your M2E Pro installation.
             Find more details in <a href="%url2%" target="_blank">this article</a></li>
         </ul>
         <br>
         Click <strong>Save Config</strong> if you make any changes.
         <br><br>
         If you need assistance, contact Billing at <a href="mailto:billing@m2epro.com">billing@m2epro.com</a>.',
-        Mage::helper('M2ePro/Module_Support')->getClientsPortalDocumentationUrl(),
+        Mage::helper('M2ePro/Module_Support')->getAccountsUrl(),
         Mage::helper('M2ePro/Module_Support')->getSupportUrl('/support/solutions/articles/9000206895')
     ); ?>
 </div>
@@ -89,7 +88,7 @@
     <div class="entry-edit" id="magento_block_configuration_license_data" collapseable="no">
 
         <div class="entry-edit-head">
-            <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Clients Portal'); ?></h4>
+            <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('M2E Accounts'); ?></h4>
         </div>
 
         <div class="fieldset">
@@ -111,9 +110,9 @@
                                 <span><?php echo $this->licenseData['info']['email']; ?></span>
                                 <p class="note">
                                     <span>
-                                        <?php echo Mage::helper('M2ePro')->__('Your email address entered during the Extension configuration.<br/>
-                                        Use it to log into your Account on the <a href="%url%" target="_blank">Clients Portal</a>. M2E Pro notifications are sent to this email address. ',
-                                        Mage::helper('M2ePro/Module_Support')->getClientsPortalUrl()); ?>
+                                        <?php echo Mage::helper('M2ePro')->__('This email is the one used during M2E Pro`s initial setup, and all notifications related to M2E Pro are sent to it. <br/>
+                                        Use this email to log in to <a href="%url%" target="_blank">M2E Accounts</a>.',
+                                        Mage::helper('M2ePro/Module_Support')->getAccountsUrl()); ?>
                                     </span>
                                 </p>
                             </td>
@@ -124,7 +123,7 @@
                         <tr>
                             <td class="label"></td>
                             <td class="value">
-                                <a href="<?php echo Mage::helper('M2ePro/Module_Support')->getClientsPortalUrl();?>" target="_blank"><?php echo Mage::helper('M2ePro')->__('Log in to Clients Portal'); ?></a>
+                                <a href="<?php echo Mage::helper('M2ePro/Module_Support')->getAccountsUrl();?>" target="_blank"><?php echo Mage::helper('M2ePro')->__('Log in to M2E Accounts'); ?></a>
                             </td>
                         </tr>
                         <?php } ?>
@@ -237,9 +236,8 @@
     <div id="wrapper_change_license_popup">
         <div id="block_notice_change_license" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Extension Key'); ?>" style="margin-top: 10px;">
             <?php echo Mage::helper('M2ePro')->__(
-                'Enter the new Key value obtained on the <a href="%url%" target="_blank">Clients Portal</a> and Refresh the data. Your current IP, Domain will be automatically associated with the new Extension Key. <br><br>
-                <strong>Note:</strong> Extension Key is strictly connected with IP and Domain. New Extension Key is required if the location (IP/Domain) of your Magento Server is changed.',
-                Mage::helper('M2ePro/Module_Support')->getClientsPortalUrl()
+                'Enter the new License Key and click "Refresh". It will automatically associate your current IP address and domain with the new License Key. <br><br>
+                Note that changing the location (IP address/domain) of your Magento server requires a new License Key.'
             ); ?>
         </div>
         <form  id="popup_change_license_form">

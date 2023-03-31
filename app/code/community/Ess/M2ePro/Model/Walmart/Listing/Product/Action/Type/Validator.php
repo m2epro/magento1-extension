@@ -539,132 +539,46 @@ HTML;
 
     //########################################
 
-    protected function validateProductIds()
+    protected function validateProductId()
     {
         if (!$this->getConfigurator()->isDetailsAllowed()) {
             return true;
         }
 
-        $isAtLeastOneSpecified = false;
-
-        if ($gtin = $this->getGtin()) {
-            if (strtoupper($gtin) !== ConfigurationHelper::PRODUCT_ID_OVERRIDE_CUSTOM_CODE &&
-                !Mage::helper('M2ePro')->isGTIN($gtin)
-            ) {
-                $this->addMessage(
-                    Mage::helper('M2ePro/Module_Log')->encodeDescription(
-                        'The action cannot be completed because the product GTIN has incorrect format: "%id%".
-                        Please adjust the related Magento Attribute value and resubmit the action.',
-                        array('!id' => $gtin)
-                    )
-                );
-                return false;
-            }
-
-            $this->_data['gtin']   = $gtin;
-            $isAtLeastOneSpecified = true;
+        if ($this->getWalmartListingProduct()->getWpid()) {
+            return true;
         }
 
-        if ($upc = $this->getUpc()) {
-            if (strtoupper($upc) !== ConfigurationHelper::PRODUCT_ID_OVERRIDE_CUSTOM_CODE &&
-                !Mage::helper('M2ePro')->isUPC($upc)
-            ) {
-                $this->addMessage(
-                    Mage::helper('M2ePro/Module_Log')->encodeDescription(
-                        'The action cannot be completed because the product UPC has incorrect format: "%id%".
-                        Please adjust the related Magento Attribute value and resubmit the action.',
-                        array('!id' => $upc)
-                    )
-                );
-                return false;
-            }
+        $identifier = $this->getIdentifierFromConfiguration();
 
-            $this->_data['upc']    = $upc;
-            $isAtLeastOneSpecified = true;
-        }
-
-        if ($ean = $this->getEan()) {
-            if (strtoupper($ean) !== ConfigurationHelper::PRODUCT_ID_OVERRIDE_CUSTOM_CODE &&
-                !Mage::helper('M2ePro')->isEAN($ean)
-            ) {
-                $this->addMessage(
-                    Mage::helper('M2ePro/Module_Log')->encodeDescription(
-                        'The action cannot be completed because the product EAN has incorrect format: "%id%".
-                        Please adjust the related Magento Attribute value and resubmit the action.',
-                        array('!id' => $ean)
-                    )
-                );
-                return false;
-            }
-
-            $this->_data['ean']    = $ean;
-            $isAtLeastOneSpecified = true;
-        }
-
-        if ($isbn = $this->getIsbn()) {
-            if (strtoupper($isbn) !== ConfigurationHelper::PRODUCT_ID_OVERRIDE_CUSTOM_CODE &&
-                !Mage::helper('M2ePro')->isISBN($isbn)
-            ) {
-                $this->addMessage(
-                    Mage::helper('M2ePro/Module_Log')->encodeDescription(
-                        'The action cannot be completed because the product ISBN has incorrect format: "%id%".
-                        Please adjust the related Magento Attribute value and resubmit the action.',
-                        array('!id' => $isbn)
-                    )
-                );
-                return false;
-            }
-
-            $this->_data['isbn']   = $isbn;
-            $isAtLeastOneSpecified = true;
-        }
-
-        if (!$isAtLeastOneSpecified) {
-            $this->addMessage(
-                'The Item was not listed because it has no defined Product ID. Walmart requires that all Items sold
-                on the website have Product IDs. Please provide a valid GTIN, UPC, EAN or ISBN for the Product.
-                M2E Pro will try to list the Item again.'
-            );
+        if (empty($identifier)) {
             return false;
         }
 
+        if (strtoupper($identifier) === ConfigurationHelper::PRODUCT_ID_OVERRIDE_CUSTOM_CODE) {
+            $identifierType = Ess_M2ePro_Helper_Data::GTIN;
+        } else {
+            $identifierType = Mage::helper('M2ePro')->getIdentifierType($identifier);
+        }
+
+        if ($identifierType === null) {
+            $this->addMessage(
+                Mage::helper('M2ePro/Module_Log')->encodeDescription(
+                    'The action cannot be completed because the product Identifier has incorrect format: "%id%".
+                        Please adjust the related Magento Attribute value and resubmit the action.',
+                    array('!id' => $identifier)
+                )
+            );
+
+            return false;
+        }
+
+        $this->_data['identifier'] = array(
+            'type' => $identifierType,
+            'id' => $identifier,
+        );
+
         return true;
-    }
-
-    protected function getGtin()
-    {
-        if (isset($this->_data['gtin'])) {
-            return $this->_data['gtin'];
-        }
-
-        return $this->getWalmartListingProduct()->getGtin();
-    }
-
-    protected function getUpc()
-    {
-        if (isset($this->_data['upc'])) {
-            return $this->_data['upc'];
-        }
-
-        return $this->getWalmartListingProduct()->getUpc();
-    }
-
-    protected function getEan()
-    {
-        if (isset($this->_data['ean'])) {
-            return $this->_data['ean'];
-        }
-
-        return $this->getWalmartListingProduct()->getEan();
-    }
-
-    protected function getIsbn()
-    {
-        if (isset($this->_data['isbn'])) {
-            return $this->_data['isbn'];
-        }
-
-        return $this->getWalmartListingProduct()->getIsbn();
     }
 
     //########################################

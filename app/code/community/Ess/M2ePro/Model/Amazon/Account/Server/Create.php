@@ -9,13 +9,13 @@
 class Ess_M2ePro_Model_Amazon_Account_Server_Create
 {
     /**
-     * @param string $token
+     * @param string $oAuthCode
      * @param string $merchantId
      * @param int    $marketplaceId
      *
      * @return Ess_M2ePro_Model_Amazon_Account_Server_Create_Result
      */
-    public function process($token, $merchantId, $marketplaceId)
+    public function process($oAuthCode, $merchantId, $marketplaceId)
     {
         /** @var Ess_M2ePro_Model_Marketplace $marketplace */
         $marketplace = Mage::helper('M2ePro/Component_Amazon')->getCachedObject(
@@ -32,8 +32,8 @@ class Ess_M2ePro_Model_Amazon_Account_Server_Create
             'entityRequester',
             array(
                 'marketplace_id' => $marketplace->getNativeId(),
-                'merchant_id'    => $merchantId,
-                'token'          => $token,
+                'merchant_id' => $merchantId,
+                'oauth_code' => $oAuthCode,
             )
         );
 

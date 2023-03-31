@@ -45,10 +45,6 @@ class Ess_M2ePro_Model_Servicing_Task_License extends Ess_M2ePro_Model_Servicing
         if (isset($data['connection']) && is_array($data['connection'])) {
             $this->updateConnectionData($data['connection']);
         }
-
-        if (isset($data['status'])) {
-            $this->updateStatus($data['status']);
-        }
     }
 
     //########################################
@@ -99,12 +95,4 @@ class Ess_M2ePro_Model_Servicing_Task_License extends Ess_M2ePro_Model_Servicing
             $config->setGroupValue('/license/ip/', 'real', $data['ip']);
         }
     }
-
-    protected function updateStatus($status)
-    {
-        $config = Mage::helper('M2ePro/Module')->getConfig();
-        $config->setGroupValue('/license/', 'status', (int)$status);
-    }
-
-    //########################################
 }

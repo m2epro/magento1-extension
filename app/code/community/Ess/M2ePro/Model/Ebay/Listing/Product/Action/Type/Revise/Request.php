@@ -56,6 +56,8 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Revise_Request
 
         $data = $this->removePriceFromVariationsIfNotAllowed($data);
 
+        $data = $this->appendResolverVariation($data);
+
         return parent::prepareFinalData($data);
     }
 
@@ -190,5 +192,21 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Revise_Request
         return $data;
     }
 
-    //########################################
+    private function appendResolverVariation(array $data)
+    {
+        if (!isset($data['variations_that_can_not_be_deleted'])) {
+            return $data;
+        }
+
+        foreach ($data['variations_that_can_not_be_deleted'] as $key => $delVariation) {
+            if (empty($delVariation['from_resolver'])) {
+                continue;
+            }
+
+            $data['variation'][] = $delVariation;
+            unset($data['variations_that_can_not_be_deleted'][$key]);
+        }
+
+        return $data;
+    }
 }

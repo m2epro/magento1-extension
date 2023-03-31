@@ -423,7 +423,6 @@ class Ess_M2ePro_Model_Servicing_Task_Statistic extends Ess_M2ePro_Model_Servici
         }
 
         $amazonMarketplaces = Mage::helper('M2ePro/Component_Amazon')->getCollection('Marketplace');
-        $amazonMarketplaces->addFieldToFilter('developer_key', array('notnull' => true));
         foreach ($amazonMarketplaces->getItems() as $amazonMark) {
             /** @var Ess_M2ePro_Model_Marketplace $amazonMark */
 

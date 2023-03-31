@@ -11,46 +11,6 @@ window.AmazonAccount = Class.create(Common, {
             M2ePro.formData.id,
             M2ePro.php.constant('Ess_M2ePro_Helper_Component_Amazon::NICK'));
 
-        Validation.add('M2ePro-marketplace-merchant', M2ePro.translator.translate('M2E Pro was not able to get access to the Amazon Account. Please, make sure, that you choose correct Option on MWS Authorization Page and enter correct Merchant ID.'), function(value, el) {
-
-            // reset error message to the default
-            this.error = M2ePro.translator.translate('M2E Pro was not able to get access to the Amazon Account. Please, make sure, that you choose correct Option on MWS Authorization Page and enter correct Merchant ID.');
-
-            var merchant_id = $('merchant_id').value;
-            var token = $('token').value;
-            var marketplace_id = $('marketplace_id').value;
-
-            var pattern = /^[A-Z0-9]*$/;
-            if (!pattern.test(merchant_id)) {
-                return false;
-            }
-
-            var checkResult = false;
-            var checkReason = null;
-
-            new Ajax.Request(M2ePro.url.get('adminhtml_amazon_account/checkAuth'), {
-                method: 'post',
-                asynchronous: false,
-                parameters: {
-                    merchant_id: merchant_id,
-                    token: token,
-                    marketplace_id: marketplace_id
-                },
-                onSuccess: function(transport) {
-                    var response = transport.responseText.evalJSON();
-                    checkResult = response['result'];
-                    checkReason = response['reason'];
-                }
-            });
-
-            if (checkReason != null) {
-                this.error = M2ePro.translator.translate('M2E Pro was not able to get access to the Amazon Account. Reason: %error_message%').replace('%error_message%', checkReason);
-            }
-
-            return checkResult;
-
-        });
-
         Validation.add('M2ePro-account-customer-id', M2ePro.translator.translate('No Customer entry is found for specified ID.'), function(value) {
 
             var checkResult = false;
@@ -177,8 +137,6 @@ window.AmazonAccount = Class.create(Common, {
         var title = $('title');
 
         title.removeClassName('required-entry M2ePro-account-title');
-        $('merchant_id').removeClassName('M2ePro-marketplace-merchant');
-        $('token').removeClassName('M2ePro-marketplace-merchant');
         $('other_listings_mapping_mode').removeClassName('M2ePro-require-select-attribute');
 
         this.submitForm(M2ePro.url.get(
@@ -189,34 +147,6 @@ window.AmazonAccount = Class.create(Common, {
                 'marketplace_id': marketplaceId
             }
         ));
-
-        return false;
-    },
-
-    // ---------------------------------------
-
-    changeMarketplace: function(id) {
-        var self = AmazonAccountObj;
-
-        $$('.marketplaces_view_element').each(function(obj) {
-            obj.hide();
-        });
-
-        $('marketplaces_related_store_id_container').show();
-        $('marketplaces_merchant_id_container').show();
-        if ($('marketplaces_token_container')) {
-            $('marketplaces_token_container').show();
-        }
-
-        self.showGetAccessData(id);
-        self.magentoOrdersTaxModeChange();
-    },
-
-    showGetAccessData: function(id) {
-        $('marketplaces_application_name_container').show();
-
-        $('marketplaces_developer_key_container_' + id).show();
-        $('marketplaces_register_url_container_' + id).show();
     },
 
     // ---------------------------------------

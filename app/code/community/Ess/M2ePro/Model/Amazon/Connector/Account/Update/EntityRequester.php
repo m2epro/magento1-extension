@@ -12,9 +12,9 @@ class Ess_M2ePro_Model_Amazon_Connector_Account_Update_EntityRequester
     public function getRequestData()
     {
         return array(
-            'account'        => $this->_params['account_server_hash'],
-            'merchant_id'    => $this->_params['merchant_id'],
-            'token'          => $this->_params['token'],
+            'account' => $this->_params['account_server_hash'],
+            'merchant_id' => $this->_params['merchant_id'],
+            'oauth_code' => $this->_params['oauth_code'],
             'marketplace_id' => $this->_params['marketplace_id'],
         );
     }

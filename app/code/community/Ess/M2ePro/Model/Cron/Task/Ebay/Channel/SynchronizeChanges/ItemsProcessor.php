@@ -414,15 +414,30 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
             return $data;
         }
 
-        $listingType = $this->getActualListingType($listingProduct, $change);
+        $isAuction = $this->getActualListingType($listingProduct, $change)
+            == Ess_M2ePro_Model_Ebay_Template_SellingFormat::LISTING_TYPE_AUCTION;
 
-        if ($listingType == Ess_M2ePro_Model_Ebay_Template_SellingFormat::LISTING_TYPE_AUCTION) {
+        if ($isAuction) {
             $data['online_qty'] = 1;
             $data['online_bids'] = (int)$change['bidCount'] < 0 ? 0 : (int)$change['bidCount'];
         }
 
         if ($ebayListingProduct->getOnlineQty() != $data['online_qty'] ||
             $ebayListingProduct->getOnlineQtySold() != $data['online_qty_sold']) {
+
+            $isNeedSkipQTYChange = $this->isNeedSkipQTYChange(
+                $data['online_qty'],
+                $data['online_qty_sold'],
+                $ebayListingProduct->getOnlineQty(),
+                $ebayListingProduct->getOnlineQtySold()
+            );
+
+            if ($isNeedSkipQTYChange && !$isAuction) {
+                unset($data['online_qty'], $data['online_qty_sold']);
+
+                return $data;
+            }
+
             $this->logReportChange(
                 $listingProduct, Mage::helper('M2ePro')->__(
                     'Item QTY was changed from %from% to %to% .',
@@ -554,8 +569,20 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
 
                 if ($ebayVariation->getOnlineQty() != $updateData['online_qty'] ||
                     $ebayVariation->getOnlineQtySold() != $updateData['online_qty_sold']) {
-                    $hasVariationQtyChanges = true;
-                    $isVariationChanged     = true;
+
+                    $isNeedSkipQTYChange = $this->isNeedSkipQTYChange(
+                        $updateData['online_qty'],
+                        $updateData['online_qty_sold'],
+                        $ebayVariation->getOnlineQty(),
+                        $ebayVariation->getOnlineQtySold()
+                    );
+
+                    if ($isNeedSkipQTYChange) {
+                        unset($updateData['online_qty'], $updateData['online_qty_sold']);
+                    } else {
+                        $hasVariationQtyChanges = true;
+                        $isVariationChanged     = true;
+                    }
                 }
 
                 if ($isVariationChanged) {
@@ -769,6 +796,30 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
             $logMessage,
             Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS
         );
+    }
+
+    //########################################
+
+    /**
+     * Skip channel change to prevent oversell when we have got report before an order
+     *
+     * @param int $updateOnlineQty
+     * @param int $updateSoldQty
+     * @param int $existOnlineQty
+     * @param int $existSoldQty
+     *
+     * @return bool
+     */
+    private function isNeedSkipQTYChange(
+        $updateOnlineQty,
+        $updateSoldQty,
+        $existOnlineQty,
+        $existSoldQty
+    ) {
+        $updateQty = $updateOnlineQty - $updateSoldQty;
+        $existQty = $existOnlineQty - $existSoldQty;
+
+        return $updateQty < 5 && $updateQty < $existQty;
     }
 
     //########################################

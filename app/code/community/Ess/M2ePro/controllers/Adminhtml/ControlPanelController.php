@@ -14,12 +14,12 @@ class Ess_M2ePro_Adminhtml_ControlPanelController
     protected function _initAction()
     {
         $this->loadLayout()
-                ->getLayout()
-                ->getBlock('head')
-                ->addJs('M2ePro/Plugin/DropDown.js')
-                ->addJs('M2ePro/Grid.js')
-                ->addJs('M2ePro/ControlPanel/Inspection.js')
-                ->addCss('M2ePro/css/Plugin/DropDown.css');
+            ->getLayout()
+            ->getBlock('head')
+            ->addJs('M2ePro/Plugin/DropDown.js')
+            ->addJs('M2ePro/Grid.js')
+            ->addJs('M2ePro/ControlPanel/Inspection.js')
+            ->addCss('M2ePro/css/Plugin/DropDown.css');
 
         $this->_initPopUp();
 
@@ -49,8 +49,8 @@ class Ess_M2ePro_Adminhtml_ControlPanelController
     public function indexAction()
     {
         $this->_initAction()
-                ->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_controlPanel'))
-                ->renderLayout();
+            ->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_controlPanel'))
+            ->renderLayout();
     }
 
     //########################################

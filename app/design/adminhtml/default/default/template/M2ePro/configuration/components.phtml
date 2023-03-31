@@ -46,12 +46,11 @@ HTML;
 <div id="block_notice_configuration_module_channel" class="block_notices_module"
      title="<?php echo Mage::helper('M2ePro')->__('Module & Channels'); ?>">
     <p><?php echo Mage::helper('M2ePro')->__('
-                Here you can manage the Module and Automatic Synchronization running.
-
-		If you enable Channels you want to sell on.
-		Total sales will be counted through eBay, Walmart, and Amazon accounts connected to the M2E Pro subscription.
-		If you want to stop the service for a certain account, please delete it from your subscription on <a href="%url_1%" target="_blank">Clients</a>.',
-            Mage::helper('M2ePro/Module_Support')->getClientsPortalUrl()
+        This is where you can manage the extension and automatic synchronization.<br>
+        Enabling the Channels you want to sell on will allow the total sales to be counted through eBay, Amazon & 
+        Walmart accounts connected to the M2E Pro Subscription.<br> If you wish to stop the service for a particular 
+        Channel Account, simply delete it from your Subscription in <a href="%url%" target="_blank">M2E Accounts</a>.',
+            Mage::helper('M2ePro/Module_Support')->getAccountsUrl()
         ); ?>
     </p>
 </div>

@@ -19,6 +19,11 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
 
     const CUSTOM_IDENTIFIER = 'm2epro_extension';
 
+    const ISBN = 'ISBN';
+    const UPC = 'UPC';
+    const EAN = 'EAN';
+    const GTIN = 'GTIN';
+
     //########################################
 
     public function __()
@@ -718,17 +723,17 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
 
     public function isGTIN($gtin)
     {
-        return $this->isWorldWideId($gtin, 'GTIN');
+        return $this->isWorldWideId($gtin, self::GTIN);
     }
 
     public function isUPC($upc)
     {
-        return $this->isWorldWideId($upc, 'UPC');
+        return $this->isWorldWideId($upc, self::UPC);
     }
 
     public function isEAN($ean)
     {
-        return $this->isWorldWideId($ean, 'EAN');
+        return $this->isWorldWideId($ean, self::EAN);
     }
 
     // ---------------------------------------
@@ -763,6 +768,48 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
         }
 
         return $result;
+    }
+
+    public function getIdentifierType($identifier)
+    {
+        if ($this->isISBN($identifier)) {
+            return self::ISBN;
+        }
+
+        if ($this->isUPC($identifier)) {
+            return self::UPC;
+        }
+
+        if ($this->isEAN($identifier)) {
+            return self::EAN;
+        }
+
+        if ($this->isGTIN($identifier)) {
+            return self::GTIN;
+        }
+
+        return null;
+    }
+
+    public function isValidIdentifier($identifier, $type)
+    {
+        if ($type == self::GTIN) {
+            return $this->isGTIN($identifier);
+        }
+
+        if ($type == self::EAN) {
+            return $this->isEAN($identifier);
+        }
+
+        if ($type == self::UPC) {
+            return $this->isUPC($identifier);
+        }
+
+        if ($type == self::ISBN) {
+            return $this->isISBN($identifier);
+        }
+
+        return false;
     }
 
     //########################################

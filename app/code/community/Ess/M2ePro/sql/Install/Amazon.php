@@ -453,7 +453,6 @@ COLLATE utf8_general_ci;
 DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_amazon_marketplace')}`;
 CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_marketplace')}` (
   `marketplace_id` INT(11) UNSIGNED NOT NULL,
-  `developer_key` VARCHAR(255) DEFAULT NULL,
   `default_currency` VARCHAR(255) NOT NULL,
   `is_new_asin_available` tinyint(2) UNSIGNED NOT NULL DEFAULT 1,
   `is_merchant_fulfillment_available` tinyint(2) UNSIGNED NOT NULL DEFAULT 0,
@@ -843,7 +842,6 @@ SQL
             <<<SQL
 
 INSERT INTO `{$this->_installer->getTable('m2epro_config')}` (`group`,`key`,`value`,`update_date`,`create_date`) VALUES
-  ('/amazon/', 'application_name', 'M2ePro - Amazon Magento Integration', NOW(), NOW()),
   ('/component/amazon/', 'mode', '1', NOW(), NOW()),
   ('/cron/task/amazon/listing/product/process_instructions/', 'mode', '1', NOW(), NOW()),
   ('/listing/product/inspector/amazon/', 'max_allowed_instructions_count', '2000', NOW(), NOW()),
@@ -885,25 +883,25 @@ INSERT INTO `{$this->_installer->getTable('m2epro_marketplace')}` VALUES
   (48, 20, 'Belgium', 'BE', 'amazon.com.be', 0, 22, 'Europe', 'amazon', NOW(), NOW());
 
 INSERT INTO `{$this->_installer->getTable('m2epro_amazon_marketplace')}` VALUES
-  (24, '8636-1433-4377', 'CAD',1,0,0,0,0),
-  (25, '7078-7205-1944', 'EUR',1,1,1,1,1),
-  (26, '7078-7205-1944', 'EUR',1,0,1,1,1),
-  (28, '7078-7205-1944', 'GBP',1,1,1,1,1),
-  (29, '8636-1433-4377', 'USD',1,1,1,0,0),
-  (30, '7078-7205-1944', 'EUR',1,0,1,1,1),
-  (31, '7078-7205-1944', 'EUR',1,0,1,1,1),
-  (34, '8636-1433-4377', 'MXN',1,0,0,0,0),
-  (35, '2770-5005-3793', 'AUD',1,0,0,0,0),
-  (39, '7078-7205-1944', 'EUR',1,1,1,1,1),
-  (40, '7078-7205-1944', 'TRY',1,1,0,0,0),
-  (41, '7078-7205-1944', 'SEK',1,1,0,0,0),
-  (42, '2770-5005-3793', 'JPY',0,1,0,0,0),
-  (43, '7078-7205-1944', 'PLN',1,1,0,0,0),
-  (44, '8636-1433-4377', 'BRL',0,1,1,0,0),
-  (45, '2770-5005-3793', 'SGD',0,1,1,0,0),
-  (46, '7078-7205-1944', 'INR',0,1,1,0,0),
-  (47, '7078-7205-1944', 'AED',0,1,1,0,0),
-  (48, '7078-7205-1944', 'EUR',0,1,1,1,0);
+  (24, 'CAD',1,0,0,0,0),
+  (25, 'EUR',1,1,1,1,1),
+  (26, 'EUR',1,0,1,1,1),
+  (28, 'GBP',1,1,1,1,1),
+  (29, 'USD',1,1,1,0,0),
+  (30, 'EUR',1,0,1,1,1),
+  (31, 'EUR',1,0,1,1,1),
+  (34, 'MXN',1,0,0,0,0),
+  (35, 'AUD',1,0,0,0,0),
+  (39, 'EUR',1,1,1,1,1),
+  (40, 'TRY',1,1,0,0,0),
+  (41, 'SEK',1,1,0,0,0),
+  (42, 'JPY',0,1,0,0,0),
+  (43, 'PLN',1,1,0,0,0),
+  (44, 'BRL',0,1,1,0,0),
+  (45, 'SGD',0,1,1,0,0),
+  (46, 'INR',0,1,1,0,0),
+  (47, 'AED',0,1,1,0,0),
+  (48, 'EUR',0,1,1,1,0);
 SQL
         );
     }

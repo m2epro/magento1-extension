@@ -22,17 +22,8 @@ class Ess_M2ePro_Helper_Component_Walmart_Configuration extends Mage_Core_Helper
     const PRODUCT_ID_OVERRIDE_MODE_SPECIFIC_PRODUCTS = 2;
     const PRODUCT_ID_OVERRIDE_CUSTOM_CODE = 'CUSTOM';
 
-    const UPC_MODE_NOT_SET          = 0;
-    const UPC_MODE_CUSTOM_ATTRIBUTE = 1;
-
-    const EAN_MODE_NOT_SET          = 0;
-    const EAN_MODE_CUSTOM_ATTRIBUTE = 1;
-
-    const GTIN_MODE_NOT_SET          = 0;
-    const GTIN_MODE_CUSTOM_ATTRIBUTE = 1;
-
-    const ISBN_MODE_NOT_SET          = 0;
-    const ISBN_MODE_CUSTOM_ATTRIBUTE = 1;
+    const PRODUCT_ID_MODE_NOT_SET          = 0;
+    const PRODUCT_ID_MODE_CUSTOM_ATTRIBUTE = 1;
 
     const OPTION_IMAGES_URL_MODE_ORIGINAL = 0;
     const OPTION_IMAGES_URL_MODE_HTTP     = 1;
@@ -146,100 +137,28 @@ class Ess_M2ePro_Helper_Component_Walmart_Configuration extends Mage_Core_Helper
 
     //########################################
 
-    public function getUpcMode()
+    public function getProductIdMode()
     {
-        return (int)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(self::CONFIG_GROUP, 'upc_mode');
+        return (int)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(self::CONFIG_GROUP, 'product_id_mode');
     }
 
-    public function isUpcModeNotSet()
-    {
-        return $this->getUpcMode() == self::UPC_MODE_NOT_SET;
-    }
-
-    public function isUpcModeCustomAttribute()
-    {
-        return $this->getUpcMode() == self::UPC_MODE_CUSTOM_ATTRIBUTE;
-    }
-
-    //----------------------------------------
-
-    public function getUpcCustomAttribute()
+    public function getProductIdCustomAttribute()
     {
         return Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
-            self::CONFIG_GROUP, 'upc_custom_attribute'
+            self::CONFIG_GROUP, 'product_id_custom_attribute'
         );
     }
 
-    //########################################
-
-    public function getEanMode()
+    public function isProductIdModeNotSet()
     {
-        return (int)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(self::CONFIG_GROUP, 'ean_mode');
-    }
-
-    public function isEanModeNotSet()
-    {
-        return $this->getEanMode() == self::EAN_MODE_NOT_SET;
-    }
-
-    public function isEanModeCustomAttribute()
-    {
-        return $this->getEanMode() == self::EAN_MODE_CUSTOM_ATTRIBUTE;
+        return $this->getProductIdMode() == self::PRODUCT_ID_MODE_NOT_SET;
     }
 
     //----------------------------------------
 
-    public function getEanCustomAttribute()
+    public function isProductIdModeCustomAttribute()
     {
-        return Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(self::CONFIG_GROUP, 'ean_custom_attribute');
-    }
-
-    //########################################
-
-    public function getGtinMode()
-    {
-        return (int)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(self::CONFIG_GROUP, 'gtin_mode');
-    }
-
-    public function isGtinModeNotSet()
-    {
-        return $this->getGtinMode() == self::GTIN_MODE_NOT_SET;
-    }
-
-    public function isGtinModeCustomAttribute()
-    {
-        return $this->getGtinMode() == self::GTIN_MODE_CUSTOM_ATTRIBUTE;
-    }
-
-    //----------------------------------------
-
-    public function getGtinCustomAttribute()
-    {
-        return Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(self::CONFIG_GROUP, 'gtin_custom_attribute');
-    }
-
-    //########################################
-
-    public function getIsbnMode()
-    {
-        return (int)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(self::CONFIG_GROUP, 'isbn_mode');
-    }
-
-    public function isIsbnModeNotSet()
-    {
-        return $this->getIsbnMode() == self::ISBN_MODE_NOT_SET;
-    }
-
-    public function isIsbnModeCustomAttribute()
-    {
-        return $this->getIsbnMode() == self::ISBN_MODE_CUSTOM_ATTRIBUTE;
-    }
-
-    //----------------------------------------
-
-    public function getIsbnCustomAttribute()
-    {
-        return Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(self::CONFIG_GROUP, 'isbn_custom_attribute');
+        return $this->getProductIdMode() == self::PRODUCT_ID_MODE_CUSTOM_ATTRIBUTE;
     }
 
     //########################################
@@ -307,51 +226,15 @@ class Ess_M2ePro_Helper_Component_Walmart_Configuration extends Mage_Core_Helper
             );
         }
 
-        if (isset($values['upc_mode'])) {
+        if (isset($values['product_id_mode'])) {
             Mage::helper('M2ePro/Module')->getConfig()->setGroupValue(
-                self::CONFIG_GROUP, 'upc_mode', $values['upc_mode']
+                self::CONFIG_GROUP, 'product_id_mode', $values['product_id_mode']
             );
         }
 
-        if (isset($values['upc_custom_attribute'])) {
+        if (isset($values['product_id_custom_attribute'])) {
             Mage::helper('M2ePro/Module')->getConfig()->setGroupValue(
-                self::CONFIG_GROUP, 'upc_custom_attribute', $values['upc_custom_attribute']
-            );
-        }
-
-        if (isset($values['ean_mode'])) {
-            Mage::helper('M2ePro/Module')->getConfig()->setGroupValue(
-                self::CONFIG_GROUP, 'ean_mode', $values['ean_mode']
-            );
-        }
-
-        if (isset($values['ean_custom_attribute'])) {
-            Mage::helper('M2ePro/Module')->getConfig()->setGroupValue(
-                self::CONFIG_GROUP, 'ean_custom_attribute', $values['ean_custom_attribute']
-            );
-        }
-
-        if (isset($values['gtin_mode'])) {
-            Mage::helper('M2ePro/Module')->getConfig()->setGroupValue(
-                self::CONFIG_GROUP, 'gtin_mode', $values['gtin_mode']
-            );
-        }
-
-        if (isset($values['gtin_custom_attribute'])) {
-            Mage::helper('M2ePro/Module')->getConfig()->setGroupValue(
-                self::CONFIG_GROUP, 'gtin_custom_attribute', $values['gtin_custom_attribute']
-            );
-        }
-
-        if (isset($values['isbn_mode'])) {
-            Mage::helper('M2ePro/Module')->getConfig()->setGroupValue(
-                self::CONFIG_GROUP, 'isbn_mode', $values['isbn_mode']
-            );
-        }
-
-        if (isset($values['isbn_custom_attribute'])) {
-            Mage::helper('M2ePro/Module')->getConfig()->setGroupValue(
-                self::CONFIG_GROUP, 'isbn_custom_attribute', $values['isbn_custom_attribute']
+                self::CONFIG_GROUP, 'product_id_custom_attribute', $values['product_id_custom_attribute']
             );
         }
 

@@ -108,21 +108,6 @@ class Ess_M2ePro_Helper_Component_Amazon extends Mage_Core_Helper_Abstract
 
     //########################################
 
-    public function getRegisterUrl($marketplaceId = null)
-    {
-        $marketplaceId = (int)$marketplaceId;
-        $marketplaceId <= 0 && $marketplaceId = self::MARKETPLACE_US;
-
-        $domain = $this->getCachedObject('Marketplace', $marketplaceId)->getUrl();
-        $applicationName = Mage::helper('M2ePro/Component_Amazon')->getApplicationName();
-
-        return 'https://sellercentral.'.
-                $domain.
-                '/gp/mws/registration/register.html?ie=UTF8&*Version*=1&*entries*=0&applicationName='.
-                rawurlencode($applicationName).'&appDevMWSAccountId='.
-                $this->getCachedObject('Marketplace', $marketplaceId)->getDeveloperKey();
-    }
-
     public function getItemUrl($productId, $marketplaceId = null)
     {
         $marketplaceId = (int)$marketplaceId;
@@ -158,11 +143,6 @@ class Ess_M2ePro_Helper_Component_Amazon extends Mage_Core_Helper_Abstract
         return true;
     }
 
-    public function getApplicationName()
-    {
-        return Mage::helper('M2ePro/Module')->getConfig()->getGroupValue('/amazon/', 'application_name');
-    }
-
     // ----------------------------------------
 
     public function getCarriers()
@@ -193,7 +173,6 @@ class Ess_M2ePro_Helper_Component_Amazon extends Mage_Core_Helper_Abstract
     {
         return $this->getCollection('Marketplace')
                     ->addFieldToFilter('status', Ess_M2ePro_Model_Marketplace::STATUS_ENABLE)
-                    ->addFieldToFilter('developer_key', array('notnull' => true))
                     ->setOrder('sorder', 'ASC');
     }
 

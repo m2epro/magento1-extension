@@ -25,25 +25,8 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit extends Mage_Adminhtml_Bloc
         /** @var Ess_M2ePro_Model_Account $account */
         $account = Mage::helper('M2ePro/Data_Global')->getValue('model_account');
 
-        // Set header text
-        // ---------------------------------------
-        if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
-            $componentName = Mage::helper('M2ePro/Component_Amazon')->getTitle();
-            $headerTextEdit = Mage::helper('M2ePro')->__("Edit %component_name% Account", $componentName);
-            $headerTextAdd = Mage::helper('M2ePro')->__("Add %component_name% Account", $componentName);
-        } else {
-            $headerTextEdit = Mage::helper('M2ePro')->__("Edit Account");
-            $headerTextAdd = Mage::helper('M2ePro')->__("Add Account");
-        }
-
-        if ($account && $account->getId()) {
-            $this->_headerText = $headerTextEdit;
-            $this->_headerText .= ' "'.$this->escapeHtml($account->getTitle()).'"';
-        } else {
-            $this->_headerText = $headerTextAdd;
-        }
-
-        // ---------------------------------------
+        $this->_headerText = Mage::helper('M2ePro')->__("Edit Amazon Account")
+            . ' "'.$this->escapeHtml($account->getTitle()).'"';
 
         // Set buttons actions
         // ---------------------------------------

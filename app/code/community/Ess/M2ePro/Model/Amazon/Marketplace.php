@@ -28,11 +28,6 @@ class Ess_M2ePro_Model_Amazon_Marketplace extends Ess_M2ePro_Model_Component_Chi
 
     //########################################
 
-    public function getDeveloperKey()
-    {
-        return $this->getData('developer_key');
-    }
-
     public function getDefaultCurrency()
     {
         return $this->getData('default_currency');

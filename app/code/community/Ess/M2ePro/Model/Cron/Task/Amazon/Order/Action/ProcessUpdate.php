@@ -11,21 +11,16 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Action_ProcessUpdate
 {
     const NICK = 'amazon/order/action/process_update';
 
-    /**
-     * @var int (in seconds)
-     */
-    protected $_interval = 3600;
+    /** @var int (in seconds) */
+    protected $_interval = 300;
 
-    //####################################
-
-    public function performActions()
+    protected function performActions()
     {
+        /** @var Ess_M2ePro_Model_Amazon_Order_Action_Processor $actionsProcessor */
         $actionsProcessor = Mage::getModel(
             'M2ePro/Amazon_Order_Action_Processor',
             array('action_type' => Ess_M2ePro_Model_Amazon_Order_Action_Processing::ACTION_TYPE_UPDATE)
         );
         $actionsProcessor->process();
     }
-
-    //####################################
 }

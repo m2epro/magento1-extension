@@ -38,25 +38,12 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Revise_Request
             $changedType  = strtoupper($params['changed_identifier']['type']);
             $changedValue = $params['changed_identifier']['value'];
 
-            $isUpdated = false;
-            foreach ($data['product_ids_data'] as &$productIdData) {
-                if ($productIdData['type'] != $changedType) {
-                    continue;
-                }
+            unset($data['product_id_data']);
 
-                $productIdData['id'] = $changedValue;
-                $isUpdated = true;
-                break;
-            }
-
-            unset($productIdData);
-
-            if (!$isUpdated) {
-                $data['product_ids_data'][] = array(
-                    'type' => $changedType,
-                    'id'   => $changedValue,
-                );
-            }
+            $data['product_id_data'] = array(
+                'type' => $changedType,
+                'id'   => $changedValue,
+            );
 
             $this->addMetaData(self::PRODUCT_ID_UPDATE_METADATA_KEY, $params['changed_identifier']);
             $data['is_need_product_id_update'] = true;

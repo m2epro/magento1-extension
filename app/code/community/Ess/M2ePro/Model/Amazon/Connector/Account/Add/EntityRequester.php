@@ -15,8 +15,8 @@ class Ess_M2ePro_Model_Amazon_Connector_Account_Add_EntityRequester
     public function getRequestData()
     {
         return array(
-            'merchant_id'    => $this->_params['merchant_id'],
-            'token'          => $this->_params['token'],
+            'merchant_id' => $this->_params['merchant_id'],
+            'oauth_code' => $this->_params['oauth_code'],
             'marketplace_id' => $this->_params['marketplace_id'],
         );
     }

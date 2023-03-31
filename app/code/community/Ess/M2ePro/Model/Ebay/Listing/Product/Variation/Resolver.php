@@ -524,12 +524,13 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Resolver
             $variationsThatCanNoBeDeleted[] = array(
                 'qty'       => 0,
                 'price'     => $variation['price'],
-                'sku'       => !empty($variation['sku']) ? 'del-' . sha1(microtime(1).$variation['sku']) : '',
+                'sku'       => !empty($variation['sku']) ? $variation['sku'] : '',
                 'add'       => 0,
                 'delete'    => 1,
                 'specifics' => $variation['specifics'],
                 'details'   => $variation['details'],
-                'has_sales' => true,
+                'has_sales' => false,
+                'from_resolver' => true,
             );
         }
 

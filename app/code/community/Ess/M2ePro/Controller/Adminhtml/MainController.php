@@ -143,10 +143,6 @@ abstract class Ess_M2ePro_Controller_Adminhtml_MainController
         if (!$added && Mage::helper('M2ePro/Module_License')->getKey()) {
             $added = $this->addLicenseValidationFailNotifications();
         }
-
-        if (!$added && Mage::helper('M2ePro/Module_License')->getKey()) {
-            $added = $this->addLicenseStatusNotifications();
-        }
     }
 
     protected function addServerNotifications()
@@ -276,24 +272,6 @@ HTML
 
         $this->_getSession()->addError($message);
         return true;
-    }
-
-    protected function addLicenseStatusNotifications()
-    {
-        if (!Mage::helper('M2ePro/Module_License')->getStatus()) {
-            $url = Mage::helper('M2ePro/View_Configuration')->getLicenseUrl();
-
-            $message = Mage::helper('M2ePro')->__(
-                'Your M2E Pro Instance suspended.
-                The details can be found in <a href="%url%" target ="_blank">Billing Info</a>.',
-                $url
-            );
-
-            $this->_getSession()->addError($message);
-            return true;
-        }
-
-        return false;
     }
 
     //########################################

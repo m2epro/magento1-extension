@@ -132,11 +132,11 @@ abstract class Ess_M2ePro_Block_Adminhtml_Account_Grid extends Mage_Adminhtml_Bl
 
         $confirm = $this->getLayout()->createBlock('M2ePro/adminhtml_widget_dialog_confirm')->toHtml();
 
-        $text = 'Attention! By applying this action you delete the Account data only from current M2E Pro instance. ';
-        $text .= 'It does not affect the Subscription status and Billing process for this Channel Account. <br><br>';
-        $text .= 'To delete Channel Account which you don\'t need to manage under M2E Pro Subscription Plan, ';
-        $text .= 'go to the <a href="%url%" target="_blank">Clients Portal</a>.';
-        $text = Mage::helper('M2ePro')->__($text, Mage::helper('M2ePro/Module_Support')->getClientsPortalUrl());
+        $text = 'If you confirm the deletion of your Account, it will be removed from the M2E Pro instance only, ';
+        $text .= 'your Subscription and Billing for this Channel Account won`t be affected. <br><br>';
+        $text .= 'If you want to delete a Channel Account that you no longer need to manage under your M2E Pro ';
+        $text .= 'Subscription plan, you should go to <a href="%url%" target="_blank">M2E Accounts</a>.';
+        $text = Mage::helper('M2ePro')->__($text, Mage::helper('M2ePro/Module_Support')->getAccountsUrl());
 
         $translations = Mage::helper('M2ePro')->jsonEncode(
             array(

@@ -15,11 +15,6 @@ class Ess_M2ePro_Helper_Module_License extends Mage_Core_Helper_Abstract
         return (string)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue('/license/', 'key');
     }
 
-    public function getStatus()
-    {
-        return (bool)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue('/license/', 'status');
-    }
-
     public function getDomain()
     {
         return (string)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue('/license/domain/', 'valid');
@@ -126,7 +121,6 @@ class Ess_M2ePro_Helper_Module_License extends Mage_Core_Helper_Abstract
     {
         return array(
             'key'        => $this->getKey(),
-            'status'     => $this->getStatus(),
             'domain'     => $this->getDomain(),
             'ip'         => $this->getIp(),
             'info'       => array(

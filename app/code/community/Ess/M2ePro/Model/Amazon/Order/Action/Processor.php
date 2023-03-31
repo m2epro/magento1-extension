@@ -47,6 +47,10 @@ class Ess_M2ePro_Model_Amazon_Order_Action_Processor
 
     protected function processAction($merchantId)
     {
+        if (!$this->isTimeToProcess($merchantId)) {
+            return;
+        }
+
         $processingActions = $this->getNotProcessedActions($merchantId);
         if (empty($processingActions)) {
             return;
@@ -59,6 +63,8 @@ class Ess_M2ePro_Model_Amazon_Order_Action_Processor
         ) < 1) {
             return;
         }
+
+        $this->setLastProcessDate($merchantId);
 
         $requestDataKey = $this->getRequestDataKey();
 
@@ -205,6 +211,49 @@ class Ess_M2ePro_Model_Amazon_Order_Action_Processor
         }
 
         return $messages;
+    }
+
+    private function isTimeToProcess($merchantId)
+    {
+        /** @var Ess_M2ePro_Model_Amazon_Order_Action_TimeManager $timeManager */
+        $timeManager = Mage::getModel('M2ePro/Amazon_Order_Action_TimeManager');
+
+        switch ($this->_actionType) {
+            case Ess_M2ePro_Model_Amazon_Order_Action_Processing::ACTION_TYPE_UPDATE:
+                return $timeManager->isTimeToProcessUpdate($merchantId);
+
+            case Ess_M2ePro_Model_Amazon_Order_Action_Processing::ACTION_TYPE_CANCEL:
+                return $timeManager->isTimeToProcessCancel($merchantId);
+
+            case Ess_M2ePro_Model_Amazon_Order_Action_Processing::ACTION_TYPE_REFUND:
+                return $timeManager->isTimeToProcessRefund($merchantId);
+
+            default:
+                throw new Ess_M2ePro_Model_Exception_Logic('Unknown action type');
+        }
+    }
+
+    private function setLastProcessDate($merchantId)
+    {
+        /** @var Ess_M2ePro_Model_Amazon_Order_Action_TimeManager $timeManager */
+        $timeManager = Mage::getModel('M2ePro/Amazon_Order_Action_TimeManager');
+
+        switch ($this->_actionType) {
+            case Ess_M2ePro_Model_Amazon_Order_Action_Processing::ACTION_TYPE_UPDATE:
+                $timeManager->setLastUpdate($merchantId, Mage::helper('M2ePro')->createCurrentGmtDateTime());
+                break;
+
+            case Ess_M2ePro_Model_Amazon_Order_Action_Processing::ACTION_TYPE_CANCEL:
+                $timeManager->setLastCancel($merchantId, Mage::helper('M2ePro')->createCurrentGmtDateTime());
+                break;
+
+            case Ess_M2ePro_Model_Amazon_Order_Action_Processing::ACTION_TYPE_REFUND:
+                $timeManager->setLastRefund($merchantId, Mage::helper('M2ePro')->createCurrentGmtDateTime());
+                break;
+
+            default:
+                throw new Ess_M2ePro_Model_Exception_Logic('Unknown action type');
+        }
     }
 
     protected function getServerCommand()

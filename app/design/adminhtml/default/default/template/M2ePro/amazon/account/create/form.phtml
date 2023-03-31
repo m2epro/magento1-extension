@@ -1,0 +1,66 @@
+<?php
+
+/**
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
+ */
+
+// @codingStandardsIgnoreFile
+
+/** @var $this Ess_M2ePro_Block_Adminhtml_Amazon_Account_Create_Form */
+
+?>
+
+<div class="entry-edit">
+
+    <div class="entry-edit-head">
+        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('General'); ?></h4>
+    </div>
+
+    <div class="fieldset">
+        <div class="hor-scroll">
+
+            <form id="edit_form">
+                <table class="form-list" cellspacing="0" cellpadding="0">
+
+                    <tr>
+                        <td class="label">
+                            <label for="title"><?php echo Mage::helper('M2ePro')->__('Title'); ?>: <span class="required">*</span></label>
+                        </td>
+                        <td class="value">
+                            <input id="title" name="title" type="text" class="input-text required-entry M2ePro-account-title" />
+                            <p class="note">
+                                <span><?php echo Mage::helper('M2ePro')->__('Title or Identifier of Amazon Account for your internal use.'); ?></span>
+                            </p>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="label">
+                            <label><?php echo Mage::helper('M2ePro')->__('Marketplace'); ?>: <span class="required">*</span></label>
+                        </td>
+                        <td class="value">
+
+                            <select id="marketplace_id" name="marketplace_id" class="required-entry">
+
+                                <option style="display:none;"></option>
+
+                                <?php foreach ($this->marketplaces as $marketplaceRow) { ?>
+                                    <option value="<?php echo $marketplaceRow['id']; ?>">
+                                        <?php echo Mage::helper('M2ePro')->__($marketplaceRow['title']); ?>
+                                    </option>
+                                <?php } ?>
+
+                            </select>
+
+                        </td>
+                    </tr>
+
+                </table>
+            </form>
+
+        </div>
+    </div>
+
+</div>

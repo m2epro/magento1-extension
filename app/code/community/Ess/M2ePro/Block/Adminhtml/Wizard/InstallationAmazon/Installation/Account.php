@@ -22,16 +22,6 @@ class Ess_M2ePro_Block_Adminhtml_Wizard_InstallationAmazon_Installation_Account
                     Mage::helper('M2ePro')->__(
                         'The specified Title is already used for other Account. Account Title must be unique.'
                     ),
-                'M2E Pro was not able to get access to the Amazon Account. Please, make sure, that you choose correct '
-                . 'Option on MWS Authorization Page and enter correct Merchant ID.' => Mage::helper('M2ePro')->__(
-                    'M2E Pro was not able to get access to the Amazon Account.'
-                    . ' Please, make sure, that you choose correct Option on MWS Authorization Page'
-                    . ' and enter correct Merchant ID / MWS Auth Token'
-                ),
-                'M2E Pro was not able to get access to the Amazon Account. Reason: %error_message%' =>
-                    Mage::helper('M2ePro')->__(
-                        'M2E Pro was not able to get access to the Amazon Account. Reason: %error_message%'
-                    ),
                 'Please fill Merchant ID and MWS Auth Token fields.' => Mage::helper('M2ePro')->__(
                     'Please fill Merchant ID and MWS Auth Token fields.'
                 ),
