@@ -460,7 +460,7 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
                 new DateTimeZone('UTC')
             );
 
-            if ($newPurchaseUpdateDate <= $oldPurchaseUpdateDate) {
+            if ($newPurchaseUpdateDate < $oldPurchaseUpdateDate) {
                 return false;
             }
         }
