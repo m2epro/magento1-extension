@@ -25,6 +25,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Delete_Response
         );
 
         $data = $this->appendStatusChangerValue($data);
+        $data = $this->appendIsStoppedManually($data, false);
 
         $this->getListingProduct()->addData($data);
         $this->getListingProduct()->save();

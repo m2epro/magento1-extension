@@ -20,6 +20,8 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_UpdateInventory_
 
         $data = $this->appendQtyValues($data);
         $data = $this->appendLagTimeValues($data);
+        $data = $this->appendIsStoppedManually($data, false);
+
         $this->getListingProduct()->addData($data);
 
         $this->setLastSynchronizationDates();

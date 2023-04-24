@@ -34,6 +34,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_Response
         $data = $this->appendPriceValues($data);
         $data = $this->appendDetailsValues($data);
         $data = $this->appendProductIdsData($data);
+        $data = $this->appendIsStoppedManually($data, false);
 
         $this->getListingProduct()->addData($data);
         $this->getListingProduct()->save();

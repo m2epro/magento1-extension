@@ -33,6 +33,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Relist_Response
         $data = $this->appendLagTimeValues($data);
         $data = $this->appendPriceValues($data);
         $data = $this->appendPromotionsValues($data);
+        $data = $this->appendIsStoppedManually($data, false);
 
         $data = $this->processRecheckInstructions($data);
 

@@ -6,6 +6,8 @@
  * @license    Commercial use is forbidden
  */
 
+use Ess_M2ePro_Model_Resource_Amazon_Listing_Product as Resource;
+
 /**
  * @method Ess_M2ePro_Model_Listing_Product getParentObject()
  */
@@ -1214,6 +1216,16 @@ class Ess_M2ePro_Model_Amazon_Listing_Product extends Ess_M2ePro_Model_Component
     public function mapChannelItemProduct()
     {
         $this->getResource()->mapChannelItemProduct($this);
+    }
+
+    //########################################
+
+    /**
+     * @return bool
+     */
+    public function isStoppedManually()
+    {
+        return (bool)$this->getData(Resource::IS_STOPPED_MANUALLY_FIELD);
     }
 
     //########################################

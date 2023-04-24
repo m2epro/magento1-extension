@@ -38,6 +38,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Revise_Response
         $data = $this->appendEndDate($data);
         $data = $this->appendChangedSku($data);
         $data = $this->appendProductIdsData($data);
+        $data = $this->appendIsStoppedManually($data, false);
 
         $this->getListingProduct()->addData($data);
 

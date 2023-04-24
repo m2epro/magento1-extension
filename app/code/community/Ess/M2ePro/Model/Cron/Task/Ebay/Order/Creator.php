@@ -37,11 +37,16 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Order_Creator
     {
         $orders = array();
         $accountCreateDate = new DateTime($account->getData('create_date'), new DateTimeZone('UTC'));
+        $boundaryCreationDate = (new DateTime('now', new DateTimeZone('UTC')));
+        $boundaryCreationDate = $boundaryCreationDate->modify('-90 days');
 
         foreach ($ordersData as $ebayOrderData) {
             try {
                 $orderCreateDate = new DateTime($ebayOrderData['purchase_create_date'], new DateTimeZone('UTC'));
-                if ($this->_validateAccountCreateDate && $orderCreateDate < $accountCreateDate) {
+                if (
+                    $this->_validateAccountCreateDate
+                    && ($orderCreateDate < $accountCreateDate || $orderCreateDate < $boundaryCreationDate)
+                ) {
                     continue;
                 }
 

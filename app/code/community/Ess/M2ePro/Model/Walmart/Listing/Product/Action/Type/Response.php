@@ -333,6 +333,17 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Response
         return $data;
     }
 
+    /**
+     * @param array $data
+     * @param bool $value
+     * @return array
+     */
+    protected function appendIsStoppedManually($data, $value)
+    {
+        $data[Ess_M2ePro_Model_Resource_Walmart_Listing_Product::IS_STOPPED_MANUALLY_FIELD] = $value;
+        return $data;
+    }
+
     //########################################
 
     protected function setLastSynchronizationDates()

@@ -9,6 +9,8 @@
 class Ess_M2ePro_Model_Resource_Amazon_Listing_Product
     extends Ess_M2ePro_Model_Resource_Component_Child_Abstract
 {
+    const IS_STOPPED_MANUALLY_FIELD = 'is_stopped_manually';
+
     protected $_isPkAutoIncrement = false;
 
     //########################################

@@ -33,6 +33,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Revise_Response
         $data = $this->appendGiftSettingsStatus($data);
         $data = $this->appendDetailsValues($data);
         $data = $this->appendImagesValues($data);
+        $data = $this->appendIsStoppedManually($data, false);
 
         if (isset($data['additional_data'])) {
             $data['additional_data'] = Mage::helper('M2ePro')->jsonEncode($data['additional_data']);

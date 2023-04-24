@@ -321,6 +321,7 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_listing_product')}` (
   `is_afn_channel` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `is_isbn_general_id` TINYINT(2) UNSIGNED DEFAULT NULL,
   `is_general_id_owner` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
+  `is_stopped_manually` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `variation_parent_afn_state` SMALLINT(4) UNSIGNED DEFAULT NULL,
   `variation_parent_repricing_state` SMALLINT(4) UNSIGNED DEFAULT NULL,
   `defected_messages` TEXT DEFAULT NULL,

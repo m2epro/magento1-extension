@@ -47,17 +47,6 @@ class Ess_M2ePro_Model_Walmart_Order_Action_Handler_Acknowledge
             return;
         }
 
-        $itemsStatuses = array();
-
-        foreach ($this->getOrder()->getItemsCollection() as $item) {
-            $item->setData('status', OrderItem::STATUS_ACKNOWLEDGED)->save();
-            $itemsStatuses[$item->getData('walmart_order_item_id')] = OrderItem::STATUS_ACKNOWLEDGED;
-        }
-
-        $orderStatus = Mage::getModel('M2ePro/Walmart_Order_Helper')->getOrderStatus($itemsStatuses);
-        $this->getOrder()->setData('status', $orderStatus);
-        $this->getOrder()->save();
-
         $this->getOrder()->addSuccessLog(
             Mage::helper('M2ePro')->__('Order was acknowledged.')
         );

@@ -8,6 +8,7 @@
 
 use Ess_M2ePro_Model_Listing_Product_PriceCalculator as PriceCalculator;
 use Ess_M2ePro_Model_Walmart_Template_SellingFormat_Promotion as Promotion;
+use Ess_M2ePro_Model_Resource_Walmart_Listing_Product as Resource;
 
 /**
  * @method Ess_M2ePro_Model_Listing_Product getParentObject()
@@ -471,6 +472,16 @@ class Ess_M2ePro_Model_Walmart_Listing_Product extends Ess_M2ePro_Model_Componen
     public function getStatusChangeReasons()
     {
         return $this->getSettings('status_change_reasons');
+    }
+
+    // ---------------------------------------
+
+    /**
+     * @return bool
+     */
+    public function isStoppedManually()
+    {
+        return (bool)$this->getData(Resource::IS_STOPPED_MANUALLY_FIELD);
     }
 
     // ---------------------------------------

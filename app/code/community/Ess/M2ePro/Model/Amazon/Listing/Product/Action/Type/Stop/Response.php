@@ -23,6 +23,10 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Stop_Response
         $data = $this->appendStatusChangerValue($data);
         $data = $this->appendQtyValues($data);
 
+        $isStoppedManually = $this->getListingProduct()->isStopped() && $this->getListingProduct()->getStatusChanger()
+            === Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_USER;
+        $data = $this->appendIsStoppedManually($data, $isStoppedManually);
+
         $this->getListingProduct()->addData($data);
 
         $this->setLastSynchronizationDates();

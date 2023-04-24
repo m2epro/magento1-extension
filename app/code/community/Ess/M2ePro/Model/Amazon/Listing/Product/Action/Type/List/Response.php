@@ -27,6 +27,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Response
         $data = $this->appendIdentifiersData($data, $generalId);
         $data = $this->appendDetailsValues($data);
         $data = $this->appendImagesValues($data);
+        $data = $this->appendIsStoppedManually($data, false);
 
         $variationManager = $this->getAmazonListingProduct()->getVariationManager();
 

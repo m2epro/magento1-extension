@@ -149,8 +149,10 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Instruction_SynchronizationTemplat
             return false;
         }
 
-        if ($amazonSynchronizationTemplate->isRelistFilterUserLock() &&
-            $listingProduct->getStatusChanger() == Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_USER) {
+        if (
+            $amazonSynchronizationTemplate->isRelistFilterUserLock()
+            && $amazonListingProduct->isStoppedManually()
+        ) {
             return false;
         }
 

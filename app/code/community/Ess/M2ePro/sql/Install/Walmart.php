@@ -227,6 +227,7 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_walmart_listing_product')}` (
   `publish_status` VARCHAR(255) DEFAULT NULL,
   `lifecycle_status` VARCHAR(255) DEFAULT NULL,
   `status_change_reasons` TEXT DEFAULT NULL,
+  `is_stopped_manually` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `online_price` DECIMAL(12, 4) UNSIGNED DEFAULT NULL,
   `is_online_price_invalid` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `online_promotions` VARCHAR(40) DEFAULT NULL,
