@@ -67,7 +67,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Other
         );
 
         if ($this->getEbayMarketplace()->isVatEnabled()) {
-            $data['vat_mode']    = $this->getEbayListingProduct()->getEbaySellingFormatTemplate()->getVatMode();
+            $data['vat_mode'] = (int)$this->getEbayListingProduct()->getEbaySellingFormatTemplate()->isVatModeEnabled();
             $data['vat_percent'] = $this->getEbayListingProduct()->getEbaySellingFormatTemplate()->getVatPercent();
         }
 

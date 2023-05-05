@@ -18,12 +18,23 @@ class Ess_M2ePro_Observer_Order_Notification extends Ess_M2ePro_Observer_Abstrac
     {
         $this->_isProcessed = true;
 
-        Mage::getSingleton('adminhtml/session')->addMessage(
-            Mage::getSingleton('core/message')->warning(
-                Mage::helper('M2ePro')->__(Mage::helper('M2ePro/Order_Notification')->buildMessage())
-            )
-                ->setIdentifier(self::NOTIFICATION_MESSAGE_IDENTIFIER)
-        );
+        /** @var Mage_Adminhtml_Model_Session $session */
+        $session = Mage::getSingleton('adminhtml/session');
+        /** @var Mage_Core_Model_Message $messageFactory */
+        $messageFactory = Mage::getSingleton('core/message');
+        /** @var Ess_M2ePro_Helper_Data $dataHelper */
+        $dataHelper = Mage::helper('M2ePro');
+
+        /** @var Ess_M2ePro_Model_Notification_Manager $manager */
+        $manager = Mage::getModel('M2ePro/Notification_Manager');
+
+        foreach ($manager->getMessages() as $messageText) {
+            $message = $messageFactory
+                ->warning($dataHelper->__($messageText))
+                ->setIdentifier(self::NOTIFICATION_MESSAGE_IDENTIFIER);
+
+            $session->addMessage($message);
+        }
     }
 
     //########################################
@@ -57,18 +68,14 @@ class Ess_M2ePro_Observer_Order_Notification extends Ess_M2ePro_Observer_Abstrac
             return false;
         }
 
-        /** @var Ess_M2ePro_Helper_Order_Notification $configHelper */
-        $configHelper = Mage::helper('M2ePro/Order_Notification');
+        /** @var Ess_M2ePro_Helper_Order_Notification $notificationHelper */
+        $notificationHelper = Mage::helper('M2ePro/Order_Notification');
 
-        if ($configHelper->isNotificationExtensionPages() && $request->getModuleName() != 'M2ePro') {
+        if ($notificationHelper->isNotificationDisabled()) {
             return false;
         }
 
-        if (!$configHelper->showNotification()) {
-            return false;
-        }
-
-        if ($configHelper->isNotificationDisabled()) {
+        if ($notificationHelper->isNotificationExtensionPages() && $request->getModuleName() !== 'M2ePro') {
             return false;
         }
 
@@ -77,13 +84,13 @@ class Ess_M2ePro_Observer_Order_Notification extends Ess_M2ePro_Observer_Abstrac
         }
 
         // do not show on own controllers
-        if ($request->getControllerModule() == 'Ess_M2ePro_Adminhtml') {
+        if ($request->getControllerModule() === 'Ess_M2ePro_Adminhtml') {
             return false;
         }
 
         // after redirect message can be added twice
         foreach ($session->getMessages()->getItems() as $message) {
-            if ($message->getIdentifier() == self::NOTIFICATION_MESSAGE_IDENTIFIER) {
+            if ($message->getIdentifier() === self::NOTIFICATION_MESSAGE_IDENTIFIER) {
                 return false;
             }
         }

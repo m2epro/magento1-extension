@@ -15,7 +15,8 @@ class Ess_M2ePro_Model_Amazon_Order_Builder extends Mage_Core_Model_Abstract
     const STATUS_UPDATED      = 2;
 
     const UPDATE_STATUS = 'status';
-    const UPDATE_EMAIL  = 'email';
+    const UPDATE_EMAIL   = 'email';
+    const UPDATE_B2B_VAT = 'b2b_vat';
 
     /** @var $_helper Ess_M2ePro_Model_Amazon_Order_Helper */
     protected $_helper = null;
@@ -431,6 +432,10 @@ class Ess_M2ePro_Model_Amazon_Order_Builder extends Mage_Core_Model_Abstract
         if ($this->hasUpdatedEmail()) {
             $this->_updates[] = self::UPDATE_EMAIL;
         }
+
+        if ($this->hasUpdatedVat()) {
+            $this->_updates[] = self::UPDATE_B2B_VAT;
+        }
     }
 
     protected function hasUpdatedStatus()
@@ -456,6 +461,30 @@ class Ess_M2ePro_Model_Amazon_Order_Builder extends Mage_Core_Model_Abstract
         }
 
         return filter_var($newEmail, FILTER_VALIDATE_EMAIL) !== false;
+    }
+
+    protected function hasUpdatedVat()
+    {
+        if (!$this->isUpdated()) {
+            return false;
+        }
+
+        /** @var Ess_M2ePro_Model_Amazon_Order $amazonOrder */
+        $amazonOrder = $this->_order->getChildObject();
+        if (!$amazonOrder->isBusiness()) {
+            return false;
+        }
+
+        /** @var Ess_M2ePro_Helper_Data $dataHelper */
+        $dataHelper = Mage::helper('M2ePro');
+
+        $oldTaxDetails = $dataHelper->jsonDecode($amazonOrder->getData('tax_details'));
+        $oldTaxSum = (float)array_sum(array_values($oldTaxDetails));
+
+        $newTaxDetails = $dataHelper->jsonDecode($this->getData('tax_details'));
+        $newTaxSum = (float)array_sum(array_values($newTaxDetails));
+
+        return $newTaxSum !== $oldTaxSum;
     }
 
     //########################################
@@ -499,6 +528,22 @@ class Ess_M2ePro_Model_Amazon_Order_Builder extends Mage_Core_Model_Abstract
 
         if ($this->hasUpdate(self::UPDATE_EMAIL)) {
             $magentoOrderUpdater->updateCustomerEmail($this->_order->getChildObject()->getBuyerEmail());
+        }
+
+        if ($this->hasUpdate(self::UPDATE_B2B_VAT)) {
+            /** @var Ess_M2ePro_Helper_Data $dataHelper */
+            $dataHelper = Mage::helper('M2ePro');
+
+            $this->_order->markAsVatChanged();
+            $message = 'Reverse charge (0% VAT) applied on Amazon';
+            $magentoOrderUpdater->updateComments(array($dataHelper->__($message)));
+            $this->_order->addInfoLog(
+                $message,
+                array(),
+                array(),
+                false,
+                array(\Ess_M2ePro_Model_Order::ADDITIONAL_DATA_KEY_VAT_REVERSE_CHARGE => true)
+            );
         }
 
         $magentoOrderUpdater->finishUpdate();

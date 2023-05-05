@@ -13,6 +13,7 @@
 class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
 {
     const ADDITIONAL_DATA_KEY_IN_ORDER = 'm2epro_order';
+    const ADDITIONAL_DATA_KEY_VAT_REVERSE_CHARGE = 'vat_reverse_charge';
 
     const MAGENTO_ORDER_CREATION_FAILED_NO  = 0;
     const MAGENTO_ORDER_CREATION_FAILED_YES = 1;
@@ -315,36 +316,91 @@ class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
 
     //########################################
 
-    public function addLog($description, $type, array $params = array(), array $links = array(), $isUnique = false)
-    {
+    public function addLog(
+        $description,
+        $type,
+        array $params = array(),
+        array $links = array(),
+        $isUnique = false,
+        array $additionalData = array()
+    ) {
         /** @var $log Ess_M2ePro_Model_Order_Log */
         $log = $this->getLog();
 
         if (!empty($params)) {
-            $description = Mage::helper('M2ePro/Module_Log')->encodeDescription($description, $params, $links);
+            $description = Mage::helper('M2ePro/Module_Log')
+                ->encodeDescription($description, $params, $links);
         }
 
-        return $log->addMessage($this, $description, $type, array(), $isUnique);
+        return $log->addMessage($this, $description, $type, $additionalData, $isUnique);
     }
 
-    public function addSuccessLog($description, array $params = array(), array $links = array(), $isUnique = false)
-    {
-        return $this->addLog($description, Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS, $params, $links, $isUnique);
+    public function addSuccessLog(
+        $description,
+        array $params = array(),
+        array $links = array(),
+        $isUnique = false,
+        array $additionalData = array()
+    ) {
+        return $this->addLog(
+            $description,
+            Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS,
+            $params,
+            $links,
+            $isUnique,
+            $additionalData
+        );
     }
 
-    public function addInfoLog($description, array $params = array(), array $links = array(), $isUnique = false)
-    {
-        return $this->addLog($description, Ess_M2ePro_Model_Log_Abstract::TYPE_INFO, $params, $links, $isUnique);
+    public function addInfoLog(
+        $description,
+        array $params = array(),
+        array $links = array(),
+        $isUnique = false,
+        array $additionalData = array()
+    ) {
+        return $this->addLog(
+            $description,
+            Ess_M2ePro_Model_Log_Abstract::TYPE_INFO,
+            $params,
+            $links,
+            $isUnique,
+            $additionalData
+        );
     }
 
-    public function addWarningLog($description, array $params = array(), array $links = array(), $isUnique = false)
-    {
-        return $this->addLog($description, Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING, $params, $links, $isUnique);
+    public function addWarningLog(
+        $description,
+        array $params = array(),
+        array $links = array(),
+        $isUnique = false,
+        array $additionalData = array()
+    ) {
+        return $this->addLog(
+            $description,
+            Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING,
+            $params,
+            $links,
+            $isUnique,
+            $additionalData
+        );
     }
 
-    public function addErrorLog($description, array $params = array(), array $links = array(), $isUnique = false)
-    {
-        return $this->addLog($description, Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR, $params, $links, $isUnique);
+    public function addErrorLog(
+        $description,
+        array $params = array(),
+        array $links = array(),
+        $isUnique = false,
+        array $additionalData = array()
+    ) {
+        return $this->addLog(
+            $description,
+            Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
+            $params,
+            $links,
+            $isUnique,
+            $additionalData
+        );
     }
 
     //########################################
@@ -862,5 +918,12 @@ class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
         return $this->getChildObject()->isSetProcessingLock('update_shipping_status') || $changes->getSize() > 0;
     }
 
-    //########################################
+    public function markAsVatChanged()
+    {
+        $additionalData = $this->getAdditionalData();
+        $nowDateTime = new \DateTime('now', new DateTimeZone('UTC'));
+        $additionalData[self::ADDITIONAL_DATA_KEY_VAT_REVERSE_CHARGE] = $nowDateTime->format('Y-m-d H:i:s');
+        $this->setSettings('additional_data', $additionalData);
+        $this->save();
+    }
 }

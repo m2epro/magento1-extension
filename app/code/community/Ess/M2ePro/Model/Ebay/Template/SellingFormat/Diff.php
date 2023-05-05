@@ -37,7 +37,6 @@ class Ess_M2ePro_Model_Ebay_Template_SellingFormat_Diff extends Ess_M2ePro_Model
     public function isPriceDifferent()
     {
         $keys = array(
-            'price_increase_vat_percent',
             'price_variation_mode',
             'fixed_price_mode',
             'fixed_price_coefficient',

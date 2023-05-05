@@ -103,10 +103,6 @@ class Ess_M2EPro_Model_Ebay_Template_SellingFormat_Builder
             $data['tax_category_attribute'] = $this->_rawData['tax_category_attribute'];
         }
 
-        if (isset($this->_rawData['price_increase_vat_percent'])) {
-            $data['price_increase_vat_percent'] = (int)$this->_rawData['price_increase_vat_percent'];
-        }
-
         if (isset($this->_rawData['price_variation_mode'])) {
             $data['price_variation_mode'] = (int)$this->_rawData['price_variation_mode'];
         }
@@ -321,7 +317,6 @@ class Ess_M2EPro_Model_Ebay_Template_SellingFormat_Builder
             'tax_category_value'     => '',
             'tax_category_attribute' => '',
 
-            'price_increase_vat_percent' => 0,
             'price_variation_mode' => SellingFormat::PRICE_VARIATION_MODE_PARENT,
 
             'fixed_price_mode' => Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_PRODUCT,

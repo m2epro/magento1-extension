@@ -691,12 +691,26 @@ class Ess_M2ePro_Adminhtml_OrderController
 
     public function skipLogNotificationToCurrentDateAction()
     {
-        $lastOrderCreateDate = new DateTime($this->getRequest()->getParam('last_order_create_date'), new DateTimeZone('UTC'));
-        $lastOrderCreateDate->modify('+1 seconds');
+        $date = $this->getRequest()->getParam('order_not_create_last_date');
+        $orderNotCreatedLastDate = new DateTime($date, new DateTimeZone('UTC'));
+        $orderNotCreatedLastDate->modify('+1 seconds');
 
         /** @var Ess_M2ePro_Helper_Order_Notification $configHelper */
         $configHelper = Mage::helper('M2ePro/Order_Notification');
-        $configHelper->setNotificationDate($lastOrderCreateDate->format('Y-m-d H:i:s'));
+        $configHelper->setOrderNotCreatedLastDate($orderNotCreatedLastDate->format('Y-m-d H:i:s'));
+
+        return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('result' => true)));
+    }
+
+    public function skipLogNotificationVatChangedAction()
+    {
+        $lastDate = $this->getRequest()->getParam('last_order_vat_changed_date');
+        $orderChangedVatLastDate = new DateTime($lastDate, new DateTimeZone('UTC'));
+        $orderChangedVatLastDate->modify('+1 seconds');
+
+        /** @var Ess_M2ePro_Helper_Order_Notification $configHelper */
+        $configHelper = Mage::helper('M2ePro/Order_Notification');
+        $configHelper->setOrderChangedVatLastDate($orderChangedVatLastDate->format('Y-m-d H:i:s'));
 
         return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('result' => true)));
     }

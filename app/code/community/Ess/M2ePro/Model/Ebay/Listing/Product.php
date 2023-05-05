@@ -997,7 +997,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product extends Ess_M2ePro_Model_Component_C
         $src = $this->getEbaySellingFormatTemplate()->getFixedPriceSource();
 
         $vatPercent = null;
-        if ($this->getEbaySellingFormatTemplate()->isPriceIncreaseVatPercentEnabled()) {
+        if ($this->getEbaySellingFormatTemplate()->isVatModeOnTopOfPrice()) {
             $vatPercent = $this->getEbaySellingFormatTemplate()->getVatPercent();
         }
 
@@ -1024,7 +1024,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product extends Ess_M2ePro_Model_Component_C
         $src = $this->getEbaySellingFormatTemplate()->getStartPriceSource();
 
         $vatPercent = null;
-        if ($this->getEbaySellingFormatTemplate()->isPriceIncreaseVatPercentEnabled()) {
+        if ($this->getEbaySellingFormatTemplate()->isVatModeOnTopOfPrice()) {
             $vatPercent = $this->getEbaySellingFormatTemplate()->getVatPercent();
         }
 
@@ -1049,7 +1049,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product extends Ess_M2ePro_Model_Component_C
         $src = $this->getEbaySellingFormatTemplate()->getReservePriceSource();
 
         $vatPercent = null;
-        if ($this->getEbaySellingFormatTemplate()->isPriceIncreaseVatPercentEnabled()) {
+        if ($this->getEbaySellingFormatTemplate()->isVatModeOnTopOfPrice()) {
             $vatPercent = $this->getEbaySellingFormatTemplate()->getVatPercent();
         }
 
@@ -1074,7 +1074,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product extends Ess_M2ePro_Model_Component_C
         $src = $this->getEbaySellingFormatTemplate()->getBuyItNowPriceSource();
 
         $vatPercent = null;
-        if ($this->getEbaySellingFormatTemplate()->isPriceIncreaseVatPercentEnabled()) {
+        if ($this->getEbaySellingFormatTemplate()->isVatModeOnTopOfPrice()) {
             $vatPercent = $this->getEbaySellingFormatTemplate()->getVatPercent();
         }
 
@@ -1095,7 +1095,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product extends Ess_M2ePro_Model_Component_C
         $src = $this->getEbaySellingFormatTemplate()->getPriceDiscountStpSource();
 
         $vatPercent = null;
-        if ($this->getEbaySellingFormatTemplate()->isPriceIncreaseVatPercentEnabled()) {
+        if ($this->getEbaySellingFormatTemplate()->isVatModeOnTopOfPrice()) {
             $vatPercent = $this->getEbaySellingFormatTemplate()->getVatPercent();
         }
 
@@ -1110,7 +1110,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product extends Ess_M2ePro_Model_Component_C
         $src = $this->getEbaySellingFormatTemplate()->getPriceDiscountMapSource();
 
         $vatPercent = null;
-        if ($this->getEbaySellingFormatTemplate()->isPriceIncreaseVatPercentEnabled()) {
+        if ($this->getEbaySellingFormatTemplate()->isVatModeOnTopOfPrice()) {
             $vatPercent = $this->getEbaySellingFormatTemplate()->getVatPercent();
         }
 

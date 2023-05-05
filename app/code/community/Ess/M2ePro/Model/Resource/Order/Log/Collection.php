@@ -19,24 +19,6 @@ class Ess_M2ePro_Model_Resource_Order_Log_Collection
 
     //########################################
 
-    public function getLogsByDescription(
-        $text,
-        $initiator = Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION,
-        $lastFromDate = null
-    ) {
-        $this->addFieldToFilter('main_table.initiator', $initiator);
-        $this->addFieldToFilter('main_table.description', array('like' => '%' . $text . '%'));
-        $this->addFieldToFilter('main_table.type', Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR);
-
-        if (!empty($lastFromDate)) {
-            $this->addFieldToFilter('main_table.create_date', array('gteq' => $lastFromDate));
-        }
-
-        return $this;
-    }
-
-    //########################################
-
     /**
      * GroupBy fix
      */

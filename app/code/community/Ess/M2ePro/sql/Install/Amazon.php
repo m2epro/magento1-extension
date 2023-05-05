@@ -233,7 +233,7 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_listing')}` (
   `restock_date_mode` TINYINT(2) UNSIGNED NOT NULL DEFAULT 1,
   `restock_date_value` DATETIME NOT NULL,
   `restock_date_custom_attribute` VARCHAR(255) NOT NULL,
-  `product_add_ids` TEXT DEFAULT NULL,
+  `product_add_ids` LONGTEXT DEFAULT NULL,
   PRIMARY KEY (`listing_id`),
   INDEX `auto_global_adding_description_template_id` (`auto_global_adding_description_template_id`),
   INDEX `auto_website_adding_description_template_id` (`auto_website_adding_description_template_id`),

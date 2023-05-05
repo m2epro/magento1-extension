@@ -14,6 +14,9 @@ class Ess_M2ePro_Model_Amazon_Connector_Orders_Get_Items extends Ess_M2ePro_Mode
     const TIMEOUT_RISE_ON_ERROR        = 30;
     const TIMEOUT_RISE_MAX_VALUE       = 1500;
 
+    /** @see https://developer-docs.amazon.com/sp-api/docs/orders-api-v0-reference#addresstype */
+    const AMAZON_ADDRESS_TYPE_COMMERCIAL = 'Commercial';
+
     //########################################
 
     public function getCommand()
@@ -243,6 +246,7 @@ class Ess_M2ePro_Model_Amazon_Connector_Orders_Get_Items extends Ess_M2ePro_Mode
             'recipient_name' => isset($shippingData['buyer']) ? trim($shippingData['buyer']) : '',
             'phone'          => isset($shippingData['phone']) ? $shippingData['phone'] : '',
             'company'        => '',
+            'address_type'   => isset($shippingData['address_type']) ? $shippingData['address_type'] : '',
             'street'         => array(
                 isset($address['first']) ? $address['first'] : '',
                 isset($address['second']) ? $address['second'] : '',
@@ -256,7 +260,11 @@ class Ess_M2ePro_Model_Amazon_Connector_Orders_Get_Items extends Ess_M2ePro_Mode
             ->getConfig()
             ->getGroupValue($group, 'use_first_street_line_as_company');
 
-        if ($useFirstStreetLineAsCompany && count($parsedAddress['street']) > 1) {
+        if (
+            $useFirstStreetLineAsCompany
+            && $parsedAddress['address_type'] === self::AMAZON_ADDRESS_TYPE_COMMERCIAL
+            && count($parsedAddress['street']) > 1
+        ) {
             $parsedAddress['company'] = array_shift($parsedAddress['street']);
         }
 

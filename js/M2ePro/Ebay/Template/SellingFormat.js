@@ -429,7 +429,7 @@ window.EbayTemplateSellingFormat = Class.create(Common, {
 
         vatPercentTr.hide();
 
-        if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Template_SellingFormat::VAT_MODE_YES')) {
+        if (this.value != M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Template_SellingFormat::VAT_MODE_NO')) {
             vatPercentTr.show();
         }
     },

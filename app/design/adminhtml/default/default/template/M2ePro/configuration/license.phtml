@@ -162,12 +162,6 @@
                                 <td id="license_text_key_container" class="value">
                                     <?php echo $this->key; ?>
                                 </td>
-
-                                <?php if ($this->key && $this->licenseData['domain'] && $this->licenseData['ip'] && !$this->status): ?>
-                                    <td class="value">
-                                        <span style="color: red;">(<?php echo Mage::helper('M2ePro')->__('Suspended') ?>)</span>
-                                    </td>
-                                <?php endif; ?>
                             </tr>
 
                             <?php if ($this->licenseData['domain'] != '') { ?>

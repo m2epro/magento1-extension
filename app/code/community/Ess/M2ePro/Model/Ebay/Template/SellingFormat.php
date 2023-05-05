@@ -26,7 +26,8 @@ class Ess_M2ePro_Model_Ebay_Template_SellingFormat extends Ess_M2ePro_Model_Comp
     const QTY_MODIFICATION_MODE_ON = 1;
 
     const VAT_MODE_NO = 0;
-    const VAT_MODE_YES = 1;
+    const VAT_MODE_INCLUDING_IN_PRICE = 1;
+    const VAT_MODE_ON_TOP_OF_PRICE = 2;
 
     const QTY_MIN_POSTED_DEFAULT_VALUE = 1;
     const QTY_MAX_POSTED_DEFAULT_VALUE = 100;
@@ -478,6 +479,22 @@ class Ess_M2ePro_Model_Ebay_Template_SellingFormat extends Ess_M2ePro_Model_Comp
     }
 
     /**
+     * @return int
+     */
+    public function isVatModeEnabled()
+    {
+        return $this->getVatMode() != self::VAT_MODE_NO;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isVatModeOnTopOfPrice()
+    {
+        return $this->getVatMode() == self::VAT_MODE_ON_TOP_OF_PRICE;
+    }
+
+    /**
      * @return float
      */
     public function getVatPercent()
@@ -526,16 +543,6 @@ class Ess_M2ePro_Model_Ebay_Template_SellingFormat extends Ess_M2ePro_Model_Comp
     public function isRestrictedToBusinessEnabled()
     {
         return (bool)$this->getData('restricted_to_business');
-    }
-
-    // ---------------------------------------
-
-    /**
-     * @return bool
-     */
-    public function isPriceIncreaseVatPercentEnabled()
-    {
-        return (bool)$this->getData('price_increase_vat_percent');
     }
 
     // ---------------------------------------

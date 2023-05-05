@@ -84,6 +84,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Log_Order_AbstractGrid extends Ess_M2e
         $filter = $this->getParam($this->getVarNameFilter(), null);
         if (is_string($filter)) {
             $this->addOrderCreateDateToFilter($collection, $filter);
+            $this->applyVatChangedFilters($collection, $filter);
         }
 
         $this->setCollection($collection);
@@ -287,18 +288,18 @@ abstract class Ess_M2ePro_Block_Adminhtml_Log_Order_AbstractGrid extends Ess_M2e
 
     protected function addOrderCreateDateToFilter($collection, $filter)
     {
-        $data = $this->helper('adminhtml')->prepareFilterString($filter);
-        if (array_key_exists('order_create_date', $data)) {
+        $filterData = $this->helper('adminhtml')->prepareFilterString($filter);
+        if (array_key_exists('order_create_date', $filterData)) {
             $column = $this->getColumn('create_date');
 
-            if (isset($column) && (!empty($data['order_create_date'])) && $column->getFilter()) {
-                $data['order_create_date']['locale'] = Mage::app()->getLocale()->getLocaleCode();
-                $column->getFilter()->setValue($data['order_create_date']);
+            if (isset($column) && (!empty($filterData['order_create_date'])) && $column->getFilter()) {
+                $filterData['order_create_date']['locale'] = Mage::app()->getLocale()->getLocaleCode();
+                $column->getFilter()->setValue($filterData['order_create_date']);
                 $field = ($column->getFilterIndex()) ? $column->getFilterIndex() : $column->getIndex();
                 $cond = $column->getFilter()->getCondition();
                 if ($field && isset($cond)) {
-                    $date = new Zend_Date;
-                    $date->set(Mage::helper('M2ePro/Order_Notification')->getNotificationDate(), Zend_Date::ISO_8601);
+                    $date = new Zend_Date();
+                    $date->set($filterData['order_create_date']['from_origin'], Zend_Date::ISO_8601);
                     $cond['from'] = $date;
                     $collection->addFieldToFilter($field, $cond);
                 }
@@ -325,5 +326,16 @@ abstract class Ess_M2ePro_Block_Adminhtml_Log_Order_AbstractGrid extends Ess_M2e
         return Mage::helper('M2ePro/Component_' . ucfirst($this->getComponentMode()))->getTitle();
     }
 
-    //########################################
+    private function applyVatChangedFilters(Ess_M2ePro_Model_Resource_Order_Log_Collection $collection, $filter)
+    {
+        $filterData = $this->helper('adminhtml')->prepareFilterString($filter);
+        if (empty($filterData['orders_with_modified_vat'])) {
+            return;
+        }
+
+        $collection->addFieldToFilter(
+            'main_table.additional_data',
+            array('like' => '%' . \Ess_M2ePro_Model_Order::ADDITIONAL_DATA_KEY_VAT_REVERSE_CHARGE . '%')
+        );
+    }
 }
