@@ -270,7 +270,11 @@ class Ess_M2ePro_Adminhtml_Amazon_AccountController
             );
         }
 
-        return $this->processExistingAccount((int)$params['account_id'], (string)$params['spapi_oauth_code']);
+        return $this->processExistingAccount(
+            (int)$params['account_id'],
+            (string)$params['spapi_oauth_code'],
+            (string)$params['selling_partner_id']
+        );
     }
 
     /**
@@ -344,9 +348,10 @@ class Ess_M2ePro_Adminhtml_Amazon_AccountController
     /**
      * @param int $accountId
      * @param string $spApiOAuthCode
-     * @return Ess_M2ePro_Adminhtml_Amazon_AccountController|Mage_Adminhtml_Controller_Action
+     * @param string $sellingPartnerId
+     * @return Ess_M2ePro_Adminhtml_Amazon_AccountController|Mage_Adminhtml_Controller_Action|null
      */
-    private function processExistingAccount($accountId, $spApiOAuthCode)
+    private function processExistingAccount($accountId, $spApiOAuthCode, $sellingPartnerId)
     {
         try {
             /** @var Ess_M2ePro_Model_Account $account */
@@ -356,7 +361,8 @@ class Ess_M2ePro_Adminhtml_Amazon_AccountController
             $serverUpdateAccount = Mage::getModel('M2ePro/Amazon_Account_Server_Update');
             $serverUpdateAccount->process(
                 $account->getChildObject(),
-                $spApiOAuthCode
+                $spApiOAuthCode,
+                $sellingPartnerId
             );
         } catch (Exception $exception) {
             Mage::helper('M2ePro/Module_Exception')->process($exception);

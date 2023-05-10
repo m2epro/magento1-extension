@@ -11,10 +11,10 @@ class Ess_M2ePro_Model_Amazon_Account_Server_Update
     /**
      * @param Ess_M2ePro_Model_Amazon_Account $account
      * @param string $oAuthCode
-     *
+     * @param string $merchantId
      * @return void
      */
-    public function process(Ess_M2ePro_Model_Amazon_Account $account, $oAuthCode)
+    public function process(Ess_M2ePro_Model_Amazon_Account $account, $oAuthCode, $merchantId)
     {
         /** @var Ess_M2ePro_Model_Amazon_Connector_Dispatcher $dispatcher */
         $dispatcher = Mage::getModel('M2ePro/Amazon_Connector_Dispatcher');
@@ -28,7 +28,7 @@ class Ess_M2ePro_Model_Amazon_Account_Server_Update
                 'account_server_hash' => $account->getServerHash(),
                 'oauth_code' => $oAuthCode,
                 'marketplace_id' => $account->getMarketplace()->getNativeId(),
-                'merchant_id' => $account->getMerchantId(),
+                'merchant_id' => $merchantId,
             )
         );
 
