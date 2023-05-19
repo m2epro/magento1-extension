@@ -43,8 +43,8 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
     protected $_status = self::STATUS_NOT_MODIFIED;
 
     protected $_updates = array();
-
-    //########################################
+    /** @var array<array{type:string, text:string}> */
+    protected $_messages = array();
 
     public function __construct()
     {
@@ -90,6 +90,22 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
         $this->setData('saved_amount', (float)$data['selling']['saved_amount']);
         $this->setData('currency', $data['selling']['currency']);
         $this->setData('tax_reference', $data['selling']['tax_reference']);
+
+        if (!empty($data['messages']) && is_array($data['messages'])) {
+            foreach ($data['messages'] as $message) {
+                if (
+                    empty($message['text'])
+                    || empty($message['type'])
+                ) {
+                    continue;
+                }
+
+                $this->_messages[] = array(
+                    'text' => $message['text'],
+                    'type' => $message['type'],
+                );
+            }
+        }
 
         if (empty($data['selling']['tax_details']) || !is_array($data['selling']['tax_details'])) {
             $this->setData('tax_details', null);
@@ -511,6 +527,23 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
                 $this->_order->addData($this->getData());
                 $this->_order->save();
                 break;
+            }
+        }
+
+        if (
+            $this->_order->getId()
+            && !empty($this->_messages)
+        ) {
+            $orderLog = $this->_order->getLog();
+
+            foreach ($this->_messages as $message) {
+                $orderLog->addMessage(
+                    $this->_order,
+                    $message['text'],
+                    $orderLog->convertServerMessageTypeToExtensionMessageType($message['type']),
+                    array(),
+                    true
+                );
             }
         }
 
@@ -984,6 +1017,4 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
 
         $magentoOrderUpdater->finishUpdate();
     }
-
-    //########################################
 }

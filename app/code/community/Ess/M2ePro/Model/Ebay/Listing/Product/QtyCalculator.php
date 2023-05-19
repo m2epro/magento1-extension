@@ -58,7 +58,20 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_QtyCalculator
             return 0;
         }
 
-        return parent::getVariationValue($variation);
+        $qty = parent::getVariationValue($variation);
+        $ebaySynchronizationTemplate = $variation->getListingProduct()
+            ->getChildObject()
+            ->getEbaySynchronizationTemplate();
+
+        if ($ebaySynchronizationTemplate->isStopWhenQtyCalculatedHasValue()) {
+            $minQty = (int)$ebaySynchronizationTemplate->getStopWhenQtyCalculatedHasValue();
+
+            if ($qty <= $minQty) {
+                return 0;
+            }
+        }
+
+        return $qty;
     }
 
     //########################################

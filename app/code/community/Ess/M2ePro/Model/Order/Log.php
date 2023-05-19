@@ -91,17 +91,10 @@ class Ess_M2ePro_Model_Order_Log extends Ess_M2ePro_Model_Log_Abstract
             $order = Mage::getModel('M2ePro/Order')->load($order);
         }
 
-        $map = array(
-            Message::TYPE_NOTICE  => self::TYPE_INFO,
-            Message::TYPE_SUCCESS => self::TYPE_SUCCESS,
-            Message::TYPE_WARNING => self::TYPE_WARNING,
-            Message::TYPE_ERROR   => self::TYPE_ERROR
-        );
-
         $this->addMessage(
             $order,
             $message->getText(),
-            isset($map[$message->getType()]) ? $map[$message->getType()] : self::TYPE_ERROR
+            $this->convertServerMessageTypeToExtensionMessageType((string)$message->getType())
         );
     }
 
@@ -127,5 +120,19 @@ class Ess_M2ePro_Model_Order_Log extends Ess_M2ePro_Model_Log_Abstract
         return false;
     }
 
-    //########################################
+    /**
+     * @param string $type
+     * @return int
+     */
+    public function convertServerMessageTypeToExtensionMessageType($type)
+    {
+        $map = array(
+            Message::TYPE_NOTICE => self::TYPE_INFO,
+            Message::TYPE_SUCCESS => self::TYPE_SUCCESS,
+            Message::TYPE_WARNING => self::TYPE_WARNING,
+            Message::TYPE_ERROR => self::TYPE_ERROR,
+        );
+
+        return isset($map[$type]) ? $map[$type] : self::TYPE_ERROR;
+    }
 }
