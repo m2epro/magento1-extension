@@ -79,27 +79,6 @@ class Ess_M2ePro_Model_Walmart_Account extends Ess_M2ePro_Model_Component_Child_
 
     //########################################
 
-    public function deleteInstance()
-    {
-        if ($this->isLocked()) {
-            return false;
-        }
-
-        $itemCollection = $this->_activeRecordFactory->getObjectCollection('Walmart_Item');
-        $itemCollection->addFieldToFilter('account_id', $this->getId());
-        foreach ($itemCollection->getItems() as $item) {
-            $item->deleteInstance();
-        }
-
-        $this->_marketplaceModel = null;
-
-        $this->delete();
-
-        return true;
-    }
-
-    //########################################
-
     /**
      * @return Ess_M2ePro_Model_Marketplace
      */
@@ -887,6 +866,24 @@ class Ess_M2ePro_Model_Walmart_Account extends Ess_M2ePro_Model_Component_Child_
     public function getOtherCarriers()
     {
         return $this->getSettings('other_carriers');
+    }
+
+    public function deleteInventoryWpid()
+    {
+        $inventorySkuCollection = $this->_activeRecordFactory->getObjectCollection('Walmart_Inventory_Wpid');
+        $inventorySkuCollection->addFieldToFilter('account_id', $this->getId());
+        foreach ($inventorySkuCollection->getItems() as $item) {
+            $item->deleteInstance();
+        }
+    }
+
+    public function deleteProcessingList()
+    {
+        $inventorySkuCollection = $this->_activeRecordFactory->getObjectCollection('Walmart_Listing_Product_Action_ProcessingList');
+        $inventorySkuCollection->addFieldToFilter('account_id', $this->getId());
+        foreach ($inventorySkuCollection->getItems() as $item) {
+            $item->deleteInstance();
+        }
     }
 
     //########################################

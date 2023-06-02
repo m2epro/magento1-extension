@@ -50,42 +50,6 @@ class Ess_M2ePro_Model_Account extends Ess_M2ePro_Model_Component_Parent_Abstrac
                             ->getSize();
     }
 
-    public function deleteInstance()
-    {
-        if ($this->isLocked()) {
-            return false;
-        }
-
-        $otherListings = $this->_activeRecordFactory->getObjectCollection('Listing_Other');
-        $otherListings->addFieldToFilter('account_id', $this->getId());
-        foreach ($otherListings->getItems() as $otherListing) {
-            /** @var Ess_M2ePro_Model_Listing_Other $otherListing */
-            $otherListing->deleteInstance();
-        }
-
-        if ($this->isComponentModeEbay() && $this->getChildObject()->isModeSandbox()) {
-            $listings = $this->_activeRecordFactory->getObjectCollection('Listing');
-            $listings->addFieldToFilter('account_id', $this->getId());
-
-            foreach ($listings->getItems() as $listing) {
-                /** @var Ess_M2ePro_Model_Listing $listing */
-                $listing->deleteInstance();
-            }
-        }
-
-        $orders = $this->_activeRecordFactory->getObjectCollection('Order');
-        $orders->addFieldToFilter('account_id', $this->getId());
-        foreach ($orders->getItems() as $order) {
-            /** @var Ess_M2ePro_Model_Order $order */
-            $order->deleteInstance();
-        }
-
-        $this->deleteChildInstance();
-        $this->delete();
-
-        return true;
-    }
-
     //########################################
 
     public function getTitle()

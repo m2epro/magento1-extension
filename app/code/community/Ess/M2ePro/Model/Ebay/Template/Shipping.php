@@ -804,6 +804,30 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
         return $returns;
     }
 
+    /**
+     * @param \Ess_M2ePro_Model_Account $account
+     * @return void
+     * @throws \Ess_M2ePro_Model_Exception_Logic
+     */
+    public function deleteShippingRateTables(Ess_M2ePro_Model_Account $account)
+    {
+        $this->deleteShippingRateTable($account->getId(), 'local_shipping_rate_table');
+        $this->deleteShippingRateTable($account->getId(), 'international_shipping_rate_table');
+    }
+
+    /**
+     * @param int|string $accountId
+     * @param string $settingsField
+     * @return void
+     * @throws \Ess_M2ePro_Model_Exception_Logic
+     */
+    private function deleteShippingRateTable($accountId, $settingsField)
+    {
+        $rateTables = $this->getSettings($settingsField);
+        unset($rateTables[$accountId]);
+        $this->setSettings($settingsField, $rateTables);
+    }
+
     //########################################
 
     public function save()

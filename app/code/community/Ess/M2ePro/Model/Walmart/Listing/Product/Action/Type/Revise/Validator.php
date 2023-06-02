@@ -52,7 +52,9 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Revise_Validator
             return false;
         }
 
-        if (!$this->getListingProduct()->isListed() || !$this->getListingProduct()->isRevisable()) {
+        if (($this->isChangerUser() && !$this->getListingProduct()->isBlocked())
+            && (!$this->getListingProduct()->isListed() || !$this->getListingProduct()->isRevisable())
+        ) {
             $this->addMessage('Item is not Listed or not available');
             return false;
         }

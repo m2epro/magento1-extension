@@ -51,6 +51,16 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Validator
         return $this->_params;
     }
 
+    protected function isChangerUser()
+    {
+        $params = $this->getParams();
+        if (!array_key_exists('status_changer', $params)) {
+            return false;
+        }
+
+        return (int)$params['status_changer'] === Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_USER;
+    }
+
     // ---------------------------------------
 
     /**
@@ -249,6 +259,10 @@ HTML;
 
     protected function validateGeneralBlocked()
     {
+        if ($this->isChangerUser()) {
+            return true;
+        }
+
         if ($this->getListingProduct()->isBlocked() &&
             !$this->getWalmartListingProduct()->isMissedOnChannel() &&
             !$this->getWalmartListingProduct()->isOnlinePriceInvalid()

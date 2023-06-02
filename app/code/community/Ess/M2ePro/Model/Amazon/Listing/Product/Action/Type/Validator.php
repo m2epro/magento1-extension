@@ -49,6 +49,16 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Validator
         return $this->_params;
     }
 
+    protected function isChangerUser()
+    {
+        $params = $this->getParams();
+        if (!array_key_exists('status_changer', $params)) {
+            return false;
+        }
+
+        return (int)$params['status_changer'] === Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_USER;
+    }
+
     // ---------------------------------------
 
     /**
@@ -232,6 +242,10 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Validator
 
     protected function validateBlocked()
     {
+        if ($this->isChangerUser()) {
+            return true;
+        }
+
         if ($this->getListingProduct()->isBlocked()) {
             $this->addMessage(
                 'The Action can not be executed as the Item was Closed, Incomplete or Blocked on Amazon.

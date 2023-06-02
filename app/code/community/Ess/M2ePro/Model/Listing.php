@@ -943,6 +943,21 @@ class Ess_M2ePro_Model_Listing extends Ess_M2ePro_Model_Component_Parent_Abstrac
         // ---------------------------------------
     }
 
+    /**
+     * @return void
+     * @throws \Ess_M2ePro_Model_Exception_Logic
+     */
+    public function deleteListingProductsForce()
+    {
+        $listingProducts = $this->getProducts(true);
+
+        /**@var Ess_M2ePro_Model_Listing_Product $listingProduct */
+        foreach ($listingProducts as $listingProduct) {
+            $listingProduct->canBeForceDeleted(true);
+            $listingProduct->deleteInstance();
+        }
+    }
+
     //########################################
 
     public function save()

@@ -275,35 +275,39 @@ class Ess_M2ePro_Adminhtml_Ebay_AccountController extends Ess_M2ePro_Controller_
         $ids = $this->getRequestIds();
 
         if (empty($ids)) {
-            $this->_getSession()->addError(Mage::helper('M2ePro')->__('Please select Account(s) to remove.'));
+            $this->_getSession()->addError(Mage::helper('M2ePro')->__('Please select account(s) to remove.'));
             $this->_redirect('*/*/index');
             return;
         }
 
-        $deleted = $locked = 0;
-        foreach ($ids as $id) {
+        /** @var Ess_M2ePro_Model_Resource_Account_Collection $accountCollection */
+        $accountCollection = Mage::getModel('M2ePro/Account')->getCollection();
+        $accountCollection->addFieldToFilter('id', array('in' => $ids));
 
-            /** @var $account Ess_M2ePro_Model_Account */
-            $account = Mage::getModel('M2ePro/Account')->loadInstance($id);
+        $accounts = $accountCollection->getItems();
 
-            if ($account->isLocked(true)) {
-                $locked++;
-                continue;
-            }
-
-            $account->deleteProcessings();
-            $account->deleteProcessingLocks();
-            $account->deleteInstance();
-
-            $deleted++;
+        if (empty($accounts)) {
+            $this->_redirect('*/*/index');
+            return;
         }
 
-        $tempString = Mage::helper('M2ePro')->__('%amount% record(s) were deleted.', $deleted);
-        $deleted && $this->_getSession()->addSuccess($tempString);
+        $deleted = 0;
 
-        $tempString  = Mage::helper('M2ePro')->__('%amount% record(s) are used in M2E Pro Listing(s).', $locked) . ' ';
-        $tempString .= Mage::helper('M2ePro')->__('Account must not be in use to be deleted.');
-        $locked && $this->_getSession()->addError($tempString);
+        try {
+            /** @var Ess_M2ePro_Model_Account $account */
+            foreach ($accounts as $account) {
+                /** @var Ess_M2ePro_Model_Ebay_Account_DeleteManager $deleteManager */
+                $deleteManager = Mage::getModel('M2ePro/Ebay_Account_DeleteManager');
+                $deleteManager->process($account);
+                $deleted++;
+            }
+
+            $deleted && $this->_getSession()->addSuccess(
+                Mage::helper('M2ePro')->__('%amount% account(s) were deleted.', $deleted)
+            );
+        } catch (\Exception $exception) {
+            $this->_getSession()->addError(Mage::helper('M2ePro')->__($exception->getMessage()));
+        }
 
         $this->_redirect('*/*/index');
     }

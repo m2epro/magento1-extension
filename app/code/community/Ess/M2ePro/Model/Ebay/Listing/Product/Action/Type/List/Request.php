@@ -130,7 +130,9 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_List_Request
                 $needSave = true;
             }
 
-            $needSave && $variation->save();
+            if ($needSave) {
+                $variation->save();
+            }
         }
     }
 

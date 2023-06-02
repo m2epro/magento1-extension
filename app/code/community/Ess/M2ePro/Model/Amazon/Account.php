@@ -90,32 +90,6 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
 
     //########################################
 
-    public function deleteInstance()
-    {
-        if ($this->isLocked()) {
-            return false;
-        }
-
-        $itemCollection = $this->_activeRecordFactory->getObjectCollection('Amazon_Item');
-        $itemCollection->addFieldToFilter('account_id', $this->getId());
-        foreach ($itemCollection->getItems() as $item) {
-            $item->deleteInstance();
-        }
-
-        if ($this->isRepricing()) {
-            $this->getRepricing()->deleteInstance();
-            $this->_repricingModel = null;
-        }
-
-        $this->_marketplaceModel = null;
-
-        $this->delete();
-
-        return true;
-    }
-
-    //########################################
-
     /**
      * @return Ess_M2ePro_Model_Marketplace
      */
@@ -177,6 +151,25 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
         }
 
         return $this->_repricingModel;
+    }
+
+    public function deleteInventorySku()
+    {
+        $inventorySkuCollection = $this->_activeRecordFactory->getObjectCollection('Amazon_Inventory_Sku');
+        $inventorySkuCollection->addFieldToFilter('account_id', $this->getId());
+        foreach ($inventorySkuCollection->getItems() as $item) {
+            $item->deleteInstance();
+        }
+    }
+
+    public function deleteProcessingListSku()
+    {
+        $processingListSkuCollection = $this->_activeRecordFactory
+            ->getObjectCollection('Amazon_Listing_Product_Action_ProcessingListSku');
+        $processingListSkuCollection->addFieldToFilter('account_id', $this->getId());
+        foreach ($processingListSkuCollection->getItems() as $item) {
+            $item->deleteInstance();
+        }
     }
 
     //########################################

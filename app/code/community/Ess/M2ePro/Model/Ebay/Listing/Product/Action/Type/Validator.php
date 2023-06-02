@@ -335,48 +335,64 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Validator
 
     protected function validateVariationsOptions()
     {
-        $totalVariationsCount = 0;
-        $totalDeletedVariationsCount = 0;
-        $uniqueAttributesValues = array();
+        /** @var Ess_M2ePro_Helper_Component_Ebay $ebayComponentHelper */
+        $ebayComponentHelper = \Mage::helper('M2ePro/Component_Ebay');
+        /** @var Ess_M2ePro_Model_Listing_Product_Variation $listingProduct */
+        $listingProduct = $ebayComponentHelper->getModel('Listing_Product_Variation');
 
-        foreach ($this->getEbayListingProduct()->getVariations(true) as $variation) {
-            /** @var Ess_M2ePro_Model_Listing_Product_Variation $variation */
-            /** @var Ess_M2ePro_Model_Ebay_Listing_Product_Variation $ebayVariation */
+        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Variation_Option $variationOptionResource */
+        $variationOptionResource = \Mage::getResourceModel('M2ePro/Listing_Product_Variation_Option');
 
-            $ebayVariation = $variation->getChildObject();
+        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Variation_Collection $collection */
+        $collection = $listingProduct->getResourceCollection();
+        $collection->getSelect()->reset(\Zend_Db_Select::COLUMNS);
+        $collection->getSelect()->columns(array(
+            'count_deleted' => new \Zend_Db_Expr('SUM(IF(second_table.`delete`, 1, 0))'),
+        ));
+        $collection->getSelect()->joinLeft(
+            array('vo' => $variationOptionResource->getMainTable()),
+            'vo.listing_product_variation_id = main_table.id',
+            array(
+                'attribute_name' => 'vo.attribute',
+                'count_options' => new \Zend_Db_Expr('COUNT(DISTINCT IF(second_table.`delete`, NULL, vo.`option`))')
+            )
+        );
+        $collection->getSelect()->group('vo.attribute');
+        $collection->getSelect()->where(
+            'main_table.listing_product_id = ?',
+            $this->getListingProduct()->getId()
+        );
 
-            foreach ($variation->getOptions(true) as $option) {
-                /** @var Ess_M2ePro_Model_Listing_Product_Variation_Option $option */
+        $data = $collection->getData();
 
-                $uniqueAttributesValues[$option->getAttribute()][$option->getOption()] = true;
-
-                // Max 5 pair attribute-option:
-                // Color: Blue, Size: XL, ...
-                if (count($uniqueAttributesValues) > 5) {
-                    $this->addMessage(
-                        'Variations of this Magento Product are out of the eBay Variational Item limits.
+        // Max 5 pair attribute-option:
+        // Color: Blue, Size: XL, ...
+        if (count($data) > 5) {
+            $this->addMessage(
+                'Variations of this Magento Product are out of the eBay Variational Item limits.
                         Its number of Variational Attributes is more than 5.
                         That is why, this Product cannot be updated on eBay.
                         Please, decrease the number of Attributes to solve this issue.'
-                    );
-                    return false;
-                }
+            );
+            return false;
+        }
 
-                // Maximum 60 options by one attribute:
-                // Color: Red, Blue, Green, ...
-                if (count($uniqueAttributesValues[$option->getAttribute()]) > 60) {
-                    $this->addMessage(
-                        'Variations of this Magento Product are out of the eBay Variational Item limits.
+        $totalVariationsCount = 1;
+        $totalDeletedVariationsCount = 0;
+        foreach ($data as $item) {
+            $totalVariationsCount *= $item['count_options'];
+            $totalDeletedVariationsCount += $item['count_deleted'];
+            // Maximum 60 options by one attribute:
+            // Color: Red, Blue, Green, ...
+            if ($item['count_options'] > 60) {
+                $this->addMessage(
+                    'Variations of this Magento Product are out of the eBay Variational Item limits.
                         Its number of Options for some Variational Attribute(s) is more than 60.
                         That is why, this Product cannot be updated on eBay.
                         Please, decrease the number of Options to solve this issue.'
-                    );
-                    return false;
-                }
+                );
+                return false;
             }
-
-            $totalVariationsCount++;
-            $ebayVariation->isDelete() && $totalDeletedVariationsCount++;
 
             // Not more that 250 possible variations
             if ($totalVariationsCount > 250) {

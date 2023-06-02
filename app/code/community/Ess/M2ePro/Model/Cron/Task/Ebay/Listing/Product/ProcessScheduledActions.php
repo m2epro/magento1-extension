@@ -87,6 +87,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_ProcessScheduledActions
 
             $listingProduct->setActionConfigurator($configurator);
 
+            /** @var Ess_M2ePro_Model_Ebay_Connector_Item_Dispatcher $dispatcher */
             $dispatcher = Mage::getModel('M2ePro/Ebay_Connector_Item_Dispatcher');
             $dispatcher->process($scheduledAction->getActionType(), array($listingProduct), $params);
 

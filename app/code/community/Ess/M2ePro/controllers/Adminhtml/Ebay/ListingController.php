@@ -1217,6 +1217,7 @@ class Ess_M2ePro_Adminhtml_Ebay_ListingController extends Ess_M2ePro_Controller_
         $params['status_changer'] = Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_USER;
         $params['is_realtime'] = true;
 
+        /** @var Ess_M2ePro_Model_Ebay_Connector_Item_Dispatcher $dispatcherObject */
         $dispatcherObject = Mage::getModel('M2ePro/Ebay_Connector_Item_Dispatcher');
         $result = (int)$dispatcherObject->process($action, $listingsProductsIds, $params);
 

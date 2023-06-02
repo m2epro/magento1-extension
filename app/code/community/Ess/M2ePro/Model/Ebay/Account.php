@@ -82,54 +82,6 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
 
     //########################################
 
-    public function deleteInstance()
-    {
-        if ($this->isLocked()) {
-            return false;
-        }
-
-        Mage::getSingleton('core/resource')->getConnection('core_write')
-            ->delete(
-                Mage::helper('M2ePro/Module_Database_Structure')
-                    ->getTableNameWithPrefix('m2epro_ebay_account_store_category'),
-                array('account_id = ?' => $this->getId())
-            );
-
-        $storeCategoryTemplates = $this->_activeRecordFactory->getObjectCollection('Ebay_Template_StoreCategory');
-        $storeCategoryTemplates->addFieldToFilter('account_id', $this->getId());
-        foreach ($storeCategoryTemplates->getItems() as $storeCategoryTemplate) {
-            /** @var Ess_M2ePro_Model_Ebay_Template_StoreCategory $storeCategoryTemplate */
-            $storeCategoryTemplate->deleteInstance();
-        }
-
-        $feedbacks = $this->_activeRecordFactory->getObjectCollection('Ebay_Feedback');
-        $feedbacks->addFieldToFilter('account_id', $this->getId());
-        foreach ($feedbacks->getItems() as $feedback) {
-            /** @var Ess_M2ePro_Model_Ebay_Feedback $feedback */
-            $feedback->deleteInstance();
-        }
-
-        $feedbackTemplates = $this->_activeRecordFactory->getObjectCollection('Ebay_Feedback_Template');
-        $feedbackTemplates->addFieldToFilter('account_id', $this->getId());
-        foreach ($feedbackTemplates->getItems() as $feedbackTemplate) {
-            /** @var Ess_M2ePro_Model_Ebay_Feedback_Template $feedbackTemplate */
-            $feedbackTemplate->deleteInstance();
-        }
-
-        $itemCollection = $this->_activeRecordFactory->getObjectCollection('Ebay_Item');
-        $itemCollection->addFieldToFilter('account_id', $this->getId());
-        foreach ($itemCollection->getItems() as $item) {
-            /** @var Ess_M2ePro_Model_Ebay_Item $item */
-            $item->deleteInstance();
-        }
-
-        $this->delete();
-
-        return true;
-    }
-
-    //########################################
-
     /**
      * @return bool
      */

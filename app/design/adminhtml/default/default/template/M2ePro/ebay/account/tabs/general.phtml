@@ -87,10 +87,18 @@ if ($isEdit) {
         'No Customer entry is found for specified ID.' => Mage::helper('M2ePro')->__('No Customer entry is found for specified ID.'),
         'If Yes is chosen, you must select at least one Attribute for Product Linking.' => Mage::helper('M2ePro')->__('If Yes is chosen, you must select at least one Attribute for Product Linking.'),
         'You should create at least one Response Template.' => Mage::helper('M2ePro')->__('You should create at least one Response Template.'),
-        'on_delete_account_message' => Mage::helper('M2ePro')->__('
-            If you confirm the deletion of your Account, it will be removed from the M2E Pro instance only, your Subscription and Billing for this Channel Account won`t be affected. <br><br>
-            If you want to delete a Channel Account that you no longer need to manage under your M2E Pro Subscription plan, you should go to <a href="%url%" target="_blank">M2E Accounts</a>.',
-            Mage::helper('M2ePro/Module_Support')->getAccountsUrl())
+        'on_delete_account_message' => Mage::helper('M2ePro')->__(
+            <<<HTML
+<p>You are about to delete your eBay/Amazon/Walmart seller account from M2E Pro. This will remove the
+account-related Listings and Products from the extension and disconnect the synchronization.
+Your listings on the channel will <b>not</b> be affected.</p>
+<p>Please confirm if you would like to delete the account.</p>
+<p>Note: once the account is no longer connected to your M2E Pro, please remember to delete it from
+<a href="%url%">M2E Accounts</a></p>
+HTML
+            ,
+            Mage::helper('M2ePro/Module_Support')->getAccountsUrl()
+        )
     )); ?>);
 
     M2ePro.formData.id = '<?php echo $this->getRequest()->getParam('id'); ?>';

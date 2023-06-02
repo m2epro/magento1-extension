@@ -147,7 +147,6 @@ class Ess_M2ePro_Adminhtml_Walmart_AccountController
         if (empty($ids)) {
             $this->_getSession()->addError(Mage::helper('M2ePro')->__('Please select account(s) to remove.'));
             $this->_redirect('*/*/index');
-
             return;
         }
 
@@ -159,33 +158,26 @@ class Ess_M2ePro_Adminhtml_Walmart_AccountController
 
         if (empty($accounts)) {
             $this->_redirect('*/*/index');
-
             return;
         }
 
-        $deleted = $locked = 0;
-        foreach ($accounts as $account) {
+        $deleted = 0;
 
-            /** @var $account Ess_M2ePro_Model_Account */
-
-            if ($account->isLocked(true)) {
-                $locked++;
-                continue;
+        try {
+            /** @var Ess_M2ePro_Model_Account $account */
+            foreach ($accounts as $account) {
+                /** @var Ess_M2ePro_Model_Walmart_Account_DeleteManager $deleteManager */
+                $deleteManager = Mage::getModel('M2ePro/Walmart_Account_DeleteManager');
+                $deleteManager->process($account);
+                $deleted++;
             }
 
-            $account->deleteProcessings();
-            $account->deleteProcessingLocks();
-            $account->deleteInstance();
-
-            $deleted++;
+            $deleted && $this->_getSession()->addSuccess(
+                Mage::helper('M2ePro')->__('%amount% account(s) were deleted.', $deleted)
+            );
+        } catch (\Exception $exception) {
+            $this->_getSession()->addError(Mage::helper('M2ePro')->__($exception->getMessage()));
         }
-
-        $tempString = Mage::helper('M2ePro')->__('%amount% record(s) were deleted.', $deleted);
-        $deleted && $this->_getSession()->addSuccess($tempString);
-
-        $tempString = Mage::helper('M2ePro')->__('%amount% record(s) are used in M2E Pro Listing(s).', $locked) . ' ';
-        $tempString .= Mage::helper('M2ePro')->__('Account must not be in use to be deleted.');
-        $locked && $this->_getSession()->addError($tempString);
 
         $this->_redirect('*/*/index');
     }

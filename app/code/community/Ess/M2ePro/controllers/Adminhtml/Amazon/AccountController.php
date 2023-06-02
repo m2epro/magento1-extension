@@ -596,31 +596,23 @@ class Ess_M2ePro_Adminhtml_Amazon_AccountController
             return;
         }
 
-        $deleted = $locked = 0;
-        foreach ($accounts as $account) {
+        $deleted = 0;
 
+        try {
             /** @var Ess_M2ePro_Model_Account $account */
-
-            if ($account->isLocked(true)) {
-                $locked++;
-                continue;
+            foreach ($accounts as $account) {
+                /** @var Ess_M2ePro_Model_Amazon_Account_DeleteManager $deleteManager */
+                $deleteManager = Mage::getModel('M2ePro/Amazon_Account_DeleteManager');
+                $deleteManager->process($account);
+                $deleted++;
             }
 
-            $account->deleteProcessings();
-            $account->deleteProcessingLocks();
-            $account->deleteInstance();
-
-            $deleted++;
+            $deleted && $this->_getSession()->addSuccess(
+                Mage::helper('M2ePro')->__('%amount% account(s) were deleted.', $deleted)
+            );
+        } catch (\Exception $exception) {
+            $this->_getSession()->addError(Mage::helper('M2ePro')->__($exception->getMessage()));
         }
-
-        $deleted && $this->_getSession()->addSuccess(
-            Mage::helper('M2ePro')->__('%amount% record(s) were deleted.', $deleted)
-        );
-        $locked && $this->_getSession()->addError(
-            Mage::helper('M2ePro')->__(
-                '%amount% record(s) are used in M2E Pro Listing(s). Account must not be in use to be deleted.', $locked
-            )
-        );
 
         $this->_redirect('*/*/index');
     }

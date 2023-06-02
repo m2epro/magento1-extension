@@ -94,6 +94,7 @@ class Ess_M2ePro_Model_Ebay_Connector_Item_Dispatcher
 
     protected function processProducts(array $products, $action, $isRealTime = false, array $params = array())
     {
+        /** @var Ess_M2ePro_Model_Ebay_Connector_Dispatcher $dispatcher */
         $dispatcher = Mage::getModel('M2ePro/Ebay_Connector_Dispatcher');
         $connectorName = 'Ebay_Connector_Item_'.$this->getActionNick($action).'_Requester';
 

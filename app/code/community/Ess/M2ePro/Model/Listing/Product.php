@@ -264,15 +264,22 @@ class Ess_M2ePro_Model_Listing_Product extends Ess_M2ePro_Model_Component_Parent
      */
     public function getVariations($asObjects = false, array $filters = array())
     {
-        $storageKey = "listing_product_{$this->getId()}_variations_" .
-            sha1((string)$asObjects . Mage::helper('M2ePro')->jsonEncode($filters));
+        /** @var Ess_M2ePro_Helper_Data_Cache_Runtime $runtimeCache */
+        $runtimeCache = Mage::helper('M2ePro/Data_Cache_Runtime');
+        /** @var Ess_M2ePro_Helper_Data $dataHelper */
+        $dataHelper = Mage::helper('M2ePro');
+        /** @var Ess_M2ePro_Helper_Component $componentHelper */
+        $componentHelper = Mage::helper('M2ePro/Component');
 
-        if ($cacheData = Mage::helper('M2ePro/Data_Cache_Runtime')->getValue($storageKey)) {
+        $storageKey = "listing_product_{$this->getId()}_variations_" .
+            sha1((string)$asObjects . $dataHelper->jsonEncode($filters));
+
+        if ($cacheData = $runtimeCache->getValue($storageKey)) {
             return $cacheData;
         }
 
         /** @var Ess_M2ePro_Model_Resource_ActiveRecord_CollectionAbstract $collection */
-        $collection = Mage::helper('M2ePro/Component')->getComponentCollection(
+        $collection = $componentHelper->getComponentCollection(
             $this->getComponentMode(),
             'Listing_Product_Variation'
         );
@@ -294,7 +301,7 @@ class Ess_M2ePro_Model_Listing_Product extends Ess_M2ePro_Model_Component_Parent
             $result = $result['items'];
         }
 
-        Mage::helper('M2ePro/Data_Cache_Runtime')->setValue(
+        $runtimeCache->setValue(
             $storageKey,
             $result,
             array(
