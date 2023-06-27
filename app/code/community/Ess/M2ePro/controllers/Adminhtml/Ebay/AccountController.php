@@ -27,7 +27,7 @@ class Ess_M2ePro_Adminhtml_Ebay_AccountController extends Ess_M2ePro_Controller_
 
         $this->_initPopUp();
 
-        $this->setPageHelpLink(null, null, "x/z1oJAg");
+        $this->setPageHelpLink(null, null, "configuration");
 
         return $this;
     }
@@ -79,7 +79,7 @@ class Ess_M2ePro_Adminhtml_Ebay_AccountController extends Ess_M2ePro_Controller_
 
         $this->_initAction();
 
-        $this->setPageHelpLink(null, null, "x/2VoJAg");
+        $this->setPageHelpLink(null, null, "account-set-up");
 
         $this->_addLeft($this->getLayout()->createBlock('M2ePro/adminhtml_ebay_account_edit_tabs'))
             ->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_ebay_account_edit'))

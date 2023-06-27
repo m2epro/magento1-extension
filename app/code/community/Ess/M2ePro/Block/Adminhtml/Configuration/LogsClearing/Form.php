@@ -22,7 +22,7 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_LogsClearing_Form
 
         $this->setId('configurationLogsClearingForm');
         $this->setTemplate('M2ePro/configuration/logsClearing.phtml');
-        $this->setPageHelpLink("x/qVoJAg");
+        $this->setPageHelpLink("global-settings");
     }
 
     //########################################

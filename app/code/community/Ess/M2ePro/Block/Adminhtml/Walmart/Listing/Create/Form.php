@@ -464,7 +464,7 @@ JS
                     Select Account under which you want to manage this Listing. Assign the Policy Templates and
                     Magento Store View.<br/><br/>
                     <p>The detailed information can be found <a href="%url%" target="_blank">here</a></p>',
-                    Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'x/zeVaAg')
+                    Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'walmart-integration')
                 ),
                 'title'   => Mage::helper('M2ePro')->__('General')
             )

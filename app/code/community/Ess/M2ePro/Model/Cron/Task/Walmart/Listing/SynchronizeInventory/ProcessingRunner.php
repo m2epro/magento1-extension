@@ -54,26 +54,4 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_SynchronizeInventory_Processing
         $account->deleteProcessingLocks('synchronization_walmart', $this->getProcessingObject()->getId());
         $account->deleteProcessingLocks(self::LOCK_ITEM_PREFIX, $this->getProcessingObject()->getId());
     }
-
-    protected function afterLastDataPartProcessed()
-    {
-        parent::afterLastDataPartProcessed();
-
-        $responserParams = $this->getResponserParams();
-        $this->getBlockedProductsHandler()->setResponserParams($responserParams)->handle();
-
-        Mage::getSingleton('core/resource')->getConnection('core_write')->truncateTable(
-            Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('m2epro_walmart_inventory_wpid')
-        );
-    }
-
-    /**
-     * @return Ess_M2ePro_Model_Listing_SynchronizeInventory_Walmart_BlockedProductsHandler
-     */
-    protected function getBlockedProductsHandler()
-    {
-        return Mage::getModel('M2ePro/Listing_SynchronizeInventory_Walmart_BlockedProductsHandler');
-    }
-
-    //##################################
 }

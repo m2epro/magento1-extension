@@ -60,7 +60,6 @@ class Ess_M2ePro_Model_Walmart_Account_DeleteManager
         /** @var Ess_M2ePro_Model_Walmart_Account $walmartAccount */
         $walmartAccount = $account->getChildObject();
 
-        $walmartAccount->deleteInventoryWpid();
         $walmartAccount->deleteProcessingList();
 
         $itemCollection = $this->_activeRecordFactory->getObjectCollection('Walmart_Item');

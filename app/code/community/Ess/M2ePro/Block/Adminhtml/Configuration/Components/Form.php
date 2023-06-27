@@ -18,7 +18,7 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_Components_Form
         $this->setId('configurationComponentsForm');
         $this->setTemplate('M2ePro/configuration/components.phtml');
 
-        $this->setPageHelpLink("x/qVoJAg");
+        $this->setPageHelpLink("global-settings");
     }
 
     //########################################

@@ -27,7 +27,7 @@ class Ess_M2ePro_Adminhtml_Amazon_SynchronizationController
 
         $this->_initPopUp();
 
-        $this->setPageHelpLink(null, null, "x/KN0VAg");
+        $this->setPageHelpLink(null, null, "configurations");
 
         return $this;
     }

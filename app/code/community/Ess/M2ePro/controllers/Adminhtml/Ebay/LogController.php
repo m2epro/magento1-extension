@@ -56,7 +56,7 @@ class Ess_M2ePro_Adminhtml_Ebay_LogController extends Ess_M2ePro_Controller_Admi
 
         $this->_initAction();
 
-        $this->setPageHelpLink(null, null, "x/zloJAg");
+        $this->setPageHelpLink(null, null, "logs-and-events");
 
         if (!empty($id)) {
             $logBlock = $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_log_listing_view');
@@ -151,7 +151,7 @@ class Ess_M2ePro_Adminhtml_Ebay_LogController extends Ess_M2ePro_Controller_Admi
     {
         $this->_initAction();
 
-        $this->setPageHelpLink(null, null, "x/zloJAg");
+        $this->setPageHelpLink(null, null, "logs-and-events");
 
         $this->_addContent(
             $this->getLayout()->createBlock(

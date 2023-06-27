@@ -13,7 +13,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_AutoAction_Mode
 
     public function getHelpPageUrl()
     {
-        return Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'x/4VoJAg');
+        return Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'set-auto-add-remove-rules');
     }
 
     //########################################

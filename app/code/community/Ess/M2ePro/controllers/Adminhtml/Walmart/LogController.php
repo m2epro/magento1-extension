@@ -71,7 +71,7 @@ class Ess_M2ePro_Adminhtml_Walmart_LogController
 
         if ($channel !== null && $channel !== 'all') {
             if ($channel == Ess_M2ePro_Helper_Component_Walmart::NICK) {
-                $this->setPageHelpLink(null, null, "x/zeVaAg");
+                $this->setPageHelpLink(null, null, "walmart-integration");
             } else {
                 $this->setComponentPageHelpLink('Logs#Logs-ListingsLog', $channel);
             }
@@ -172,7 +172,7 @@ class Ess_M2ePro_Adminhtml_Walmart_LogController
 
         if ($channel !== null && $channel !== 'all') {
             if ($channel == Ess_M2ePro_Helper_Component_Walmart::NICK) {
-                $this->setPageHelpLink(null, null, "x/zeVaAg");
+                $this->setPageHelpLink(null, null, "walmart-integration");
             } else {
                 $this->setComponentPageHelpLink('Logs#Logs-SynchronizationLog', $channel);
             }
@@ -203,7 +203,7 @@ class Ess_M2ePro_Adminhtml_Walmart_LogController
     {
         $this->_initAction();
 
-        $this->setPageHelpLink(null, null, "x/zeVaAg");
+        $this->setPageHelpLink(null, null, "walmart-integration");
 
         $this->_title(Mage::helper('M2ePro')->__('Orders Logs & Events'))
             ->_addContent(

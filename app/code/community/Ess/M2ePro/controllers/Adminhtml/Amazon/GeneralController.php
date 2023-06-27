@@ -17,7 +17,7 @@ class Ess_M2ePro_Adminhtml_Amazon_GeneralController
             ->_title(Mage::helper('M2ePro')->__('Configuration'))
             ->_title(Mage::helper('M2ePro')->__('General'));
 
-        $this->setPageHelpLink(null, null, "x/KN0VAg");
+        $this->setPageHelpLink(null, null, "configurations");
 
         return $this;
     }

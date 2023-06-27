@@ -54,8 +54,8 @@ used when you list products to Amazon via the Module.</p>
 <p>Click <a href="%url2%" target="_blank" class="external-link">here</a> for more detailed information.</p>
 HTML
                     ,
-                    Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'x/xeMVAg'),
-                    Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'x/s_IVAg')
+                    Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'asin-isbn-management#271e3b536b4045cf847a54ec26564ff3'),
+                    Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'step-3-specify-search-settings')
                 ),
                 'title'   => Mage::helper('M2ePro')->__('Search Settings')
             )

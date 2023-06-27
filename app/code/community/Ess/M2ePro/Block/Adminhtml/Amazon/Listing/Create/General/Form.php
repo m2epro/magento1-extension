@@ -287,7 +287,7 @@ JS
                 values will be used in the Listing settings.</p><br>
                 <p>More detailed information you can find
                 <a href="%url%" target="_blank" class="external-link">here</a>.</p>',
-                    Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'x/YOIVAg')
+                    Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'step-1-specify-general-settings')
                 ),
                 'title'   => Mage::helper('M2ePro')->__('General Settings')
             )

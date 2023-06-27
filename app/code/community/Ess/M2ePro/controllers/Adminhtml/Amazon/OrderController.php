@@ -29,7 +29,7 @@ class Ess_M2ePro_Adminhtml_Amazon_OrderController
 
         $this->_initPopUp();
 
-        $this->setPageHelpLink(null, null, "x/D90VAg");
+        $this->setPageHelpLink(null, null, "sales-orders");
 
         return $this;
     }
@@ -71,7 +71,7 @@ class Ess_M2ePro_Adminhtml_Amazon_OrderController
 
         $this->_initAction();
 
-        $this->setPageHelpLink(null, null, "x/D90VAg");
+        $this->setPageHelpLink(null, null, "sales-orders");
 
         $this->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_amazon_order_merchantFulfillment'))
             ->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_amazon_order_view'))

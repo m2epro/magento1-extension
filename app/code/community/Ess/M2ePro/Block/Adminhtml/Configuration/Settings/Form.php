@@ -21,7 +21,7 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_Settings_Form extends Ess_M2ePro_
 
         $this->setId('configurationSettingsForm');
         $this->setTemplate('M2ePro/configuration/settings.phtml');
-        $this->setPageHelpLink('x/qVoJAg');
+        $this->setPageHelpLink('global-settings');
     }
 
     //########################################

@@ -20,7 +20,7 @@ class Ess_M2ePro_Adminhtml_Ebay_ConfigurationController extends Ess_M2ePro_Contr
 
         $this->_initPopUp();
 
-        $this->setPageHelpLink(null, null, "x/z1oJAg");
+        $this->setPageHelpLink(null, null, "configuration");
 
         return $this;
     }
@@ -49,7 +49,7 @@ class Ess_M2ePro_Adminhtml_Ebay_ConfigurationController extends Ess_M2ePro_Contr
     {
         $this->_initAction();
 
-        $this->setPageHelpLink(null, null, "x/z1oJAg");
+        $this->setPageHelpLink(null, null, "configuration");
 
         $this->_addContent(
             $this->getLayout()->createBlock(

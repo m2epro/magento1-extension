@@ -160,8 +160,20 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_SendInvoice
         }
     }
 
+    /**
+     * @param Ess_M2ePro_Model_Account $account
+     * @param Ess_M2ePro_Model_Order $order
+     * @param Ess_M2ePro_Model_Order_Change $change
+     * @return void
+     */
     protected function processMagentoDocument($account, $order, $change)
     {
+        $magentoOrder = $order->getMagentoOrder();
+
+        if ($magentoOrder === null) {
+            return;
+        }
+
         $changeParams = $change->getParams();
         $documentData = $this->getMagentoDocumentData($order, $changeParams['document_type']);
 
@@ -171,7 +183,9 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_SendInvoice
             'amazon_order_id' => $order->getChildObject()->getAmazonOrderId(),
             'document_number' => $documentData['document_number'],
             'document_type'   => $changeParams['document_type'],
-            'document_pdf'    => $documentData['document_pdf']
+            'document_pdf'    => $documentData['document_pdf'],
+            'document_total_amount' => $magentoOrder->getGrandTotal(),
+            'document_total_vat_amount' => $magentoOrder->getTaxAmount(),
         );
 
         /** @var $dispatcherObject Ess_M2ePro_Model_Amazon_Connector_Dispatcher */

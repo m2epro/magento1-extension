@@ -133,18 +133,6 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_walmart_inventory_wpid')}`;
-CREATE TABLE `{$this->_installer->getTable('m2epro_walmart_inventory_wpid')}` (
-    `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `account_id` INT(11) UNSIGNED NOT NULL,
-    `wpid` VARCHAR(255) NOT NULL,
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `account_id__wpid` (`account_id`, `wpid`)
-)
-ENGINE = INNODB
-CHARACTER SET utf8
-COLLATE utf8_general_ci;
-
 DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_walmart_listing')}`;
 CREATE TABLE `{$this->_installer->getTable('m2epro_walmart_listing')}` (
   `listing_id` INT(11) UNSIGNED NOT NULL,

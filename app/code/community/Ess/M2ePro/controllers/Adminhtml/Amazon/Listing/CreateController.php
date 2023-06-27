@@ -97,7 +97,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_CreateController
 
         $this->_initAction();
 
-        $this->setPageHelpLink(null, null, "x/U_IVAg");
+        $this->setPageHelpLink(null, null, "new-listing-creation");
 
         $this->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_amazon_listing_create_general'));
 
@@ -134,7 +134,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_CreateController
 
         $this->_initAction();
 
-        $this->setPageHelpLink(null, null, "x/U_IVAg");
+        $this->setPageHelpLink(null, null, "new-listing-creation");
 
         $this->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_amazon_listing_create_selling'));
         $this->renderLayout();
@@ -202,7 +202,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_CreateController
 
         $this->_initAction();
 
-        $this->setPageHelpLink(null, null, "x/U_IVAg");
+        $this->setPageHelpLink(null, null, "new-listing-creation");
 
         $this->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_amazon_listing_create_search'));
         $this->renderLayout();

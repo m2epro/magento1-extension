@@ -239,7 +239,7 @@ This Page sets the eBay details and Magento Store View you want to use for this 
 More detailed information about ability to work with this Page you can find <a href="%url%" target="_blank">here</a>.
 HTML
                     ,
-                    Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'x/-loJAg')
+                    Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'step-1-general-settings')
                 ),
                 'title'   => Mage::helper('M2ePro')->__('General Settings')
             )

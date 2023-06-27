@@ -55,7 +55,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
 
         $this->_initPopUp();
 
-        $this->setPageHelpLink(null, null, "x/zeVaAg");
+        $this->setPageHelpLink(null, null, "walmart-integration");
 
         return $this;
     }
@@ -161,7 +161,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
 
         $this->_initAction();
 
-        $this->setPageHelpLink(null, null, "x/zeVaAg");
+        $this->setPageHelpLink(null, null, "walmart-integration");
 
         $this->_addContent(
             $this->getLayout()->createBlock('M2ePro/adminhtml_walmart_listing_product_add_sourceMode_product')
@@ -207,7 +207,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
 
         $this->_initAction();
 
-        $this->setPageHelpLink(null, null, "x/zeVaAg");
+        $this->setPageHelpLink(null, null, "walmart-integration");
 
         $gridContainer = $this->getLayout()->createBlock(
             'M2ePro/adminhtml_walmart_listing_product_add_sourceMode_category'
@@ -258,7 +258,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
 
         $this->_initAction();
 
-        $this->setPageHelpLink(null, null, "x/zeVaAg");
+        $this->setPageHelpLink(null, null, "walmart-integration");
 
         $this->_addContent($block)->renderLayout();
     }
@@ -805,7 +805,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
 
         $this->_initAction();
 
-        $this->setPageHelpLink(null, null, "x/zeVaAg");
+        $this->setPageHelpLink(null, null, "walmart-integration");
 
         $this->_addContent($block)->renderLayout();
     }
@@ -827,7 +827,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
 
         $this->_initAction();
 
-        $this->setPageHelpLink(null, null, "x/zeVaAg");
+        $this->setPageHelpLink(null, null, "walmart-integration");
 
         $block = $this->getLayout()->createBlock(
             'M2ePro/adminhtml_walmart_listing_product_add_categoryTemplate_manual'

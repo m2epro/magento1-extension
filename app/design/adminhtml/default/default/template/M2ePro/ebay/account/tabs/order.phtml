@@ -18,7 +18,7 @@
         Once eBay Order is imported, the <strong>Reserve Quantity</strong> feature will hold the Stock if Magento Order could not be created immediately in accordance with provided settings.<br/><br/>
         Besides, you can configure the <strong>Tax, Order Number</strong> and <strong>Order Status Mapping</strong> Settings for your Magento Orders as well as specify the automatic creation of invoices and shipment notifications.<br/><br/>
         More detailed information you can find <a href="%url%" target="_blank">here</a>.',
-        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'x/1VoJAg'));
+        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'order-import'));
     ?>
 </div>
 
@@ -176,7 +176,7 @@
                             <span id="magento_orders_listings_other_product_mode_note" <?php if ($formData['magento_orders_settings']['listing_other']['product_mode'] == Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_LISTINGS_OTHER_PRODUCT_MODE_IGNORE) echo 'style="display: none;"'; ?>><?php echo Mage::helper('M2ePro')->__(
                                 '<br/><b>Note:</b> M2E Pro will create only Simple Magento Products. For Channel variational items it will create a Simple Product for each variation.
                                 Please note that the Create Product and Order option is not meant for the creation of full-fledged products in your Magento catalog. <a href="%url%" target="_blank">See why</a>',
-                                Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'x/1VoJAg#Product-Is-Listed-By-Any-Other-Software')
+                                Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'order-import#1f3a275a97b5484ca89066d20c5b247c')
                             ) ?></span>
                         </p>
                         <?php $canShowBlock = $formData['magento_orders_settings']['listing_other']['product_mode'] == Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_LISTINGS_OTHER_PRODUCT_MODE_IMPORT; ?>
@@ -544,7 +544,7 @@
                         <p class="note">
                             <?php echo Mage::helper('M2ePro')->__(
                                 'Enable to cancel or refund eBay orders and automatically update their statuses on the Channel. Find more details <a href="%url%" target="_blank">here</a>.',
-                                Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'x/_Vz9Ag')
+                                Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'orders-cancelation-refund')
                             ); ?>
                         </p>
                     </td>
@@ -587,7 +587,7 @@
                                     Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(
                                         null,
                                         null,
-                                        'x/AOoVAg#Tax-Source'
+                                        'settings-for-tax-calculation#f51e5c654b3a47d3ba15b656f23c014f'
                                     )
                                 ); ?></span>
                         </p>

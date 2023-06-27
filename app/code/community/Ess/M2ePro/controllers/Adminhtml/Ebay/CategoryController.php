@@ -31,7 +31,7 @@ class Ess_M2ePro_Adminhtml_Ebay_CategoryController extends Ess_M2ePro_Controller
 
         $this->_initPopUp();
 
-        $this->setPageHelpLink(null, null, "x/z1oJAg");
+        $this->setPageHelpLink(null, null, "configuration");
 
         return $this;
     }
@@ -98,7 +98,7 @@ class Ess_M2ePro_Adminhtml_Ebay_CategoryController extends Ess_M2ePro_Controller
             '[%count%] Category cannot be removed until it’s unassigned from the existing products.
             Read the <a href="%url%" target="_blank">article</a> for more information.',
             $locked,
-            Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'x/q1oJAg')
+            Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'set-categories')
         );
         $locked && $this->_getSession()->addError($tempString);
 

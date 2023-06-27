@@ -40,7 +40,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_OtherController extends Ess_M2ePro_Contr
 
         $this->_initPopUp();
 
-        $this->setPageHelpLink(null, null, "x/u1oJAg");
+        $this->setPageHelpLink(null, null, "unmanaged-listing");
 
         return $this;
     }

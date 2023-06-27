@@ -70,7 +70,7 @@ class Ess_M2ePro_Adminhtml_Amazon_ListingController
 
         $this->_initPopUp();
 
-        $this->setPageHelpLink(null, null, "x/T4kVAQ");
+        $this->setPageHelpLink(null, null, "m2e-pro-listings");
 
         return $this;
     }
@@ -221,7 +221,7 @@ class Ess_M2ePro_Adminhtml_Amazon_ListingController
         // ---------------------------------------
 
         $this->_initAction();
-        $this->setPageHelpLink(null, null, "x/Dd0VAg");
+        $this->setPageHelpLink(null, null, "m2e-pro-listings");
 
         $this->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_amazon_listing_view'))
             ->renderLayout();

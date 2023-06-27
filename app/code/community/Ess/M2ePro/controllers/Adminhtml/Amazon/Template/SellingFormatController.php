@@ -24,7 +24,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Template_SellingFormatController
 
         $this->_initPopUp();
 
-        $this->setPageHelpLink(null, null, "x/mt0VAg");
+        $this->setPageHelpLink(null, null, "selling-policies");
 
         return $this;
     }

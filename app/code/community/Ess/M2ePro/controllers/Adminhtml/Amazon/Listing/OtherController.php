@@ -39,7 +39,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_OtherController
 
         $this->_initPopUp();
 
-        $this->setPageHelpLink(null, null, "x/IOMVAg");
+        $this->setPageHelpLink(null, null, "unmanaged-listings");
 
         return $this;
     }

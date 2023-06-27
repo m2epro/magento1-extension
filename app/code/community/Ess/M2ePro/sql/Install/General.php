@@ -829,7 +829,7 @@ INSERT INTO `{$this->_installer->getTable('m2epro_config')}` (`group`,`key`,`val
   ('/logs/clearing/orders/', 'days', '90', NOW(), NOW()),
   ('/logs/grouped/', 'max_records_count', '100000', NOW(), NOW()),
   ('/logs/listings/', 'last_action_id', '0', NOW(), NOW()),
-  ('/support/', 'documentation_url', 'https://m2e.atlassian.net/wiki', NOW(), NOW()),
+  ('/support/', 'documentation_url', 'https://docs-m1.m2epro.com', NOW(), NOW()),
   ('/support/', 'accounts_url', 'https://accounts.m2e.cloud/', NOW(), NOW()),
   ('/support/', 'website_url', 'https://m2epro.com/', NOW(), NOW()),
   ('/support/', 'support_url', 'https://help.m2epro.com', NOW(), NOW()),

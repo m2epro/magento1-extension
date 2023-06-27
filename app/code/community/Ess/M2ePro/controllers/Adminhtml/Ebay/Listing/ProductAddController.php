@@ -69,7 +69,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_ProductAddController
 
         $this->_initPopUp();
 
-        $this->setPageHelpLink(null, null, "x/5loJAg");
+        $this->setPageHelpLink(null, null, "add-magento-products-manually");
 
         return $this;
     }
@@ -236,7 +236,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_ProductAddController
 
         $this->_initAction();
 
-        $this->setPageHelpLink(null, null, "x/5loJAg");
+        $this->setPageHelpLink(null, null, "add-magento-products-manually");
 
         $this->getLayout()->getBlock('head')
              ->setCanLoadExtJs(true)

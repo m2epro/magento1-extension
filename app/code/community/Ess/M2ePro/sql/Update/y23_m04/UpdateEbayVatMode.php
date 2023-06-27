@@ -7,6 +7,12 @@ class Ess_M2ePro_Sql_Update_y23_m04_UpdateEbayVatMode extends
 {
     public function execute()
     {
+        $modifier = $this->_installer->getTableModifier('ebay_template_selling_format');
+
+        if (!$modifier->isColumnExists('price_increase_vat_percent')) {
+            return;
+        }
+
         $this->_installer->getConnection()->update(
             $this->_installer->getFullTableName('ebay_template_selling_format'),
             array('vat_mode' => '2'),
@@ -16,8 +22,7 @@ class Ess_M2ePro_Sql_Update_y23_m04_UpdateEbayVatMode extends
             )
         );
 
-        $this->_installer->getTableModifier('ebay_template_selling_format')
-            ->dropColumn('price_increase_vat_percent', true, false)
-            ->commit();
+        $modifier->dropColumn('price_increase_vat_percent', true, false);
+        $modifier->commit();
     }
 }

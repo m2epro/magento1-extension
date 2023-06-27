@@ -21,7 +21,7 @@ class Ess_M2ePro_Adminhtml_Amazon_TemplateController
             ->addJs('M2ePro/Plugin/ActionColumn.js')
             ->addCss('M2ePro/css/Plugin/DropDown.css');
 
-        $this->setPageHelpLink(null, null, "x/KN0VAg");
+        $this->setPageHelpLink(null, null, "configurations");
 
         return $this;
     }

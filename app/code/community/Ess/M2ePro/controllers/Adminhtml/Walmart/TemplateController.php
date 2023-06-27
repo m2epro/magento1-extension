@@ -21,7 +21,7 @@ class Ess_M2ePro_Adminhtml_Walmart_TemplateController
             ->addJs('M2ePro/Plugin/ActionColumn.js')
             ->addCss('M2ePro/css/Plugin/DropDown.css');
 
-        $this->setPageHelpLink(null, null, "x/zeVaAg");
+        $this->setPageHelpLink(null, null, "walmart-integration");
 
         return $this;
     }

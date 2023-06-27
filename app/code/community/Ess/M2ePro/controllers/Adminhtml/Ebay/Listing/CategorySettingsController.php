@@ -36,7 +36,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CategorySettingsController
         $this->_initPopUp();
 
         $this->_title(Mage::helper('M2ePro')->__('Set eBay Categories'));
-        $this->setPageHelpLink(null, null, "x/8FoJAg");
+        $this->setPageHelpLink(null, null, "set-categories");
 
         return $this;
     }
@@ -311,7 +311,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CategorySettingsController
         !empty($sessionData['mode_same']['category']) && $categoriesData = $sessionData['mode_same']['category'];
 
         $this->_initAction();
-        $this->setPageHelpLink(null, null, "x/8FoJAg");
+        $this->setPageHelpLink(null, null, "set-categories");
 
         $this->_addContent(
             $this->getLayout()->createBlock(
@@ -358,7 +358,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CategorySettingsController
         }
 
         $this->_initAction();
-        $this->setPageHelpLink(null, null, "x/8FoJAg");
+        $this->setPageHelpLink(null, null, "set-categories");
 
         $this->getLayout()->getBlock('head')
             ->addJs('M2ePro/Ebay/Listing/Category/Grid.js')
@@ -397,10 +397,10 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CategorySettingsController
             ->addCss('M2ePro/css/Plugin/DropDown.css');
 
         if ($getSuggested) {
-            $this->setPageHelpLink(null, null, "x/8FoJAg");
+            $this->setPageHelpLink(null, null, "set-categories");
             $block = $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_listing_category_product');
         } else {
-            $this->setPageHelpLink(null, null, "x/8FoJAg");
+            $this->setPageHelpLink(null, null, "set-categories");
             $block = $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_listing_category_manually');
         }
 
@@ -864,7 +864,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CategorySettingsController
             ->addCss('M2ePro/css/Plugin/AreaWrapper.css')
             ->addCss('M2ePro/css/Plugin/DropDown.css');
 
-        $this->setPageHelpLink(null, null, "x/8FoJAg");
+        $this->setPageHelpLink(null, null, "set-categories");
         $block = $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_listing_category_other_product');
 
         $categoriesData = $this->getSessionValue($this->getSessionDataKey());
@@ -1140,7 +1140,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CategorySettingsController
 
         $this->_initAction();
 
-        $this->setPageHelpLink(null, null, "x/5loJAg");
+        $this->setPageHelpLink(null, null, "add-magento-products-manually");
 
         /** @var Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Product_Review $blockReview */
         $blockReview = $this->getLayout()->createBlock(

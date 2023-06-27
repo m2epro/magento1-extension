@@ -59,7 +59,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_CreateController
         }
 
         $this->_initAction();
-        $this->setPageHelpLink(null, null, "x/zeVaAg");
+        $this->setPageHelpLink(null, null, "walmart-integration");
 
         $this->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_walmart_listing_create'));
 

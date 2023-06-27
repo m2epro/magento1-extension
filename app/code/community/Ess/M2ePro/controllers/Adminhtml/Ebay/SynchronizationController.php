@@ -25,7 +25,7 @@ class Ess_M2ePro_Adminhtml_Ebay_SynchronizationController extends Ess_M2ePro_Con
 
         $this->_initPopUp();
 
-        $this->setPageHelpLink(null, null, "x/z1oJAg");
+        $this->setPageHelpLink(null, null, "configuration");
 
         return $this;
     }

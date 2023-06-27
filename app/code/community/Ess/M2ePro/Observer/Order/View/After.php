@@ -45,7 +45,7 @@ class Ess_M2ePro_Observer_Order_View_After extends Ess_M2ePro_Observer_Abstract
 
             Mage::helper('adminhtml')->setPageHelpUrl(
                 Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(
-                    null, null, "x/1YwVAQ"
+                    null, null, "sales-and-orders#b53bfe179d0c4e8487dca22009ddaadf"
                 )
             );
         } else {
@@ -56,7 +56,7 @@ class Ess_M2ePro_Observer_Order_View_After extends Ess_M2ePro_Observer_Abstract
 
             Mage::helper('adminhtml')->setPageHelpUrl(
                 Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(
-                    null, null, "x/41oJAg"
+                    null, null, "sales-and-orders"
                 )
             );
         }

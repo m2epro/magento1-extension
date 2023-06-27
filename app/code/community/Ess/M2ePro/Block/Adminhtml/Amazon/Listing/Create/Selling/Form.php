@@ -1180,7 +1180,7 @@ and Amazon Item.</p>
 <p>More detailed information you can find <a href="%url%" target="_blank" class="external-link">here</a>.</p>
 HTML
                     ,
-                    Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'x/c_IVAg')
+                    Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'step-2-specify-selling-settings')
                 ),
                 'title'   => Mage::helper('M2ePro')->__('Selling Settings')
             )

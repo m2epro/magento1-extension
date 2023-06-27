@@ -23,7 +23,7 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_License_Form extends Ess_M2ePro_B
 
         // ---------------------------------------
 
-        $this->setPageHelpLink("x/qVoJAg");
+        $this->setPageHelpLink("global-settings");
     }
 
     //########################################

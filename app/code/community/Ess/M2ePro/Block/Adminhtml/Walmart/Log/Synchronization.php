@@ -30,7 +30,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Log_Synchronization extends
                     <strong>Note:</strong> Only errors and warnings are logged.<br><br>
             
                     The detailed information can be found <a href="%url%" target="_blank">here</a>.',
-                    Mage::helper("M2ePro/Module_Support")->getDocumentationUrl(null, null, "x/zeVaAg")
+                    Mage::helper("M2ePro/Module_Support")->getDocumentationUrl(null, null, "walmart-integration")
                 ),
                 'title' => Mage::helper('M2ePro')->__('Synchronization')
             )

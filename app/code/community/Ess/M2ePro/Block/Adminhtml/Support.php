@@ -43,7 +43,7 @@ class Ess_M2ePro_Block_Adminhtml_Support extends Mage_Adminhtml_Block_Widget_For
         );
 
         if ($this->_referrer === null) {
-            $url = Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'x/rNqMAg');
+            $url = Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, '');
         } else if ($this->_referrer == Ess_M2ePro_Helper_View_Ebay::NICK) {
             $url = Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(Ess_M2ePro_Helper_View_Ebay::NICK);
         } else if ($this->_referrer == Ess_M2ePro_Helper_View_Amazon::NICK) {

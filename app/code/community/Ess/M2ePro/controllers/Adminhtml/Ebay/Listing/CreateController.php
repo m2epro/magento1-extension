@@ -36,7 +36,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CreateController
 
         $this->_initPopUp();
 
-        $this->setPageHelpLink(null, null, "x/A1sJAg");
+        $this->setPageHelpLink(null, null, "create-new-listing");
 
         if (Mage::helper('M2ePro/Magento')->isTinyMceAvailable()) {
             $this->getLayout()->getBlock('head')->setCanLoadTinyMce(true);
@@ -111,7 +111,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CreateController
         }
 
         $this->_initAction();
-        $this->setPageHelpLink(null, null, "x/A1sJAg");
+        $this->setPageHelpLink(null, null, "create-new-listing");
 
         $this->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_ebay_listing_create_general'));
         $this->renderLayout();
@@ -183,7 +183,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CreateController
         $this->setWizardStep('listingTemplates');
 
         $this->_initAction();
-        $this->setPageHelpLink(null, null, "x/A1sJAg");
+        $this->setPageHelpLink(null, null, "create-new-listing");
 
         $this->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_ebay_listing_create_templates'));
         $this->renderLayout();

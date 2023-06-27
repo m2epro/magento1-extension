@@ -58,7 +58,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
 
         $this->_initPopUp();
 
-        $this->setPageHelpLink(null, null, "x/MogVAQ");
+        $this->setPageHelpLink(null, null, "adding-magento-products-manually");
 
         return $this;
     }
@@ -171,7 +171,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
 
         $this->_initAction();
 
-        $this->setPageHelpLink(null, null, "x/N4gVAQ");
+        $this->setPageHelpLink(null, null, "adding-magento-products-manually#fb9309f0bc0041429e9396a8f4606096");
 
         $this->_addContent(
             $this->getLayout()->createBlock('M2ePro/adminhtml_amazon_listing_product_add_sourceMode_product')
@@ -219,7 +219,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
 
         $this->_initAction();
 
-        $this->setPageHelpLink(null, null, "x/P4gVAQ");
+        $this->setPageHelpLink(null, null, "adding-magento-products-manually#2fafbea8ec1e44bab19287832783551a");
 
         $gridContainer = $this->getLayout()->createBlock(
             'M2ePro/adminhtml_amazon_listing_product_add_sourceMode_category'
@@ -278,7 +278,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
 
         $this->_initAction();
 
-        $this->setPageHelpLink(null, null, "x/xeMVAg");
+        $this->setPageHelpLink(null, null, "asin-isbn-management#271e3b536b4045cf847a54ec26564ff3");
 
         $this->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_amazon_listing_product_add_searchAsin'))
             ->renderLayout();
@@ -298,7 +298,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
 
         $this->_initAction();
 
-        $this->setPageHelpLink(null, null, "x/a_MVAg");
+        $this->setPageHelpLink(null, null, "asin-isbn-management#48fdfeea23a34d2bb56830135a4c1b43");
 
         $this->_addContent($block)->renderLayout();
     }
@@ -874,7 +874,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
 
         $this->_initAction();
 
-        $this->setPageHelpLink(null, null, "x/a_MVAg");
+        $this->setPageHelpLink(null, null, "asin-isbn-management#48fdfeea23a34d2bb56830135a4c1b43");
 
         $this->_addContent($block)->renderLayout();
     }
@@ -897,7 +897,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
 
         $this->_initAction();
 
-        $this->setPageHelpLink(null, null, "x/a_MVAg");
+        $this->setPageHelpLink(null, null, "asin-isbn-management#48fdfeea23a34d2bb56830135a4c1b43");
 
         $this->_addContent(
             $this->getLayout()->createBlock(

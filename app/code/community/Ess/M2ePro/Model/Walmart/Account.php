@@ -868,15 +868,6 @@ class Ess_M2ePro_Model_Walmart_Account extends Ess_M2ePro_Model_Component_Child_
         return $this->getSettings('other_carriers');
     }
 
-    public function deleteInventoryWpid()
-    {
-        $inventorySkuCollection = $this->_activeRecordFactory->getObjectCollection('Walmart_Inventory_Wpid');
-        $inventorySkuCollection->addFieldToFilter('account_id', $this->getId());
-        foreach ($inventorySkuCollection->getItems() as $item) {
-            $item->deleteInstance();
-        }
-    }
-
     public function deleteProcessingList()
     {
         $inventorySkuCollection = $this->_activeRecordFactory->getObjectCollection('Walmart_Listing_Product_Action_ProcessingList');

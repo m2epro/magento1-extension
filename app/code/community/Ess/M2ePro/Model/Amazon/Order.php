@@ -734,11 +734,12 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
             );
         }
 
-        if (!empty($trackingDetails['carrier_title'])) {
-            if ($trackingDetails['carrier_title'] == Ess_M2ePro_Model_Order_Shipment_Handler::CUSTOM_CARRIER_CODE &&
-                !empty($trackingDetails['shipping_method'])) {
-                $trackingDetails['carrier_title'] = $trackingDetails['shipping_method'];
-            }
+        if (
+            !empty($trackingDetails['carrier_title'])
+            && $trackingDetails['carrier_title'] == Ess_M2ePro_Model_Order_Shipment_Handler::CUSTOM_CARRIER_CODE
+            && !empty($trackingDetails['shipping_method'])
+        ) {
+            $trackingDetails['carrier_title'] = $trackingDetails['shipping_method'];
         }
 
         $params = array_merge(

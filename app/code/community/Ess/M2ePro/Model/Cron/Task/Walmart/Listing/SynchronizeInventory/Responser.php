@@ -90,8 +90,6 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_SynchronizeInventory_Responser
     protected function processResponseData()
     {
         try {
-            $this->storeReceivedWpids();
-
             $filteredData = $this->getListingProductHandler()
                                  ->setResponserParams($this->_params)
                                  ->handle($this->getPreparedResponseData());
@@ -103,26 +101,6 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_SynchronizeInventory_Responser
             Mage::helper('M2ePro/Module_Exception')->process($e);
             $this->getSynchronizationLog()->addMessageFromException($e);
         }
-    }
-
-    //########################################
-
-    /**
-     * @throws Zend_Db_Exception
-     */
-    protected function storeReceivedWpids()
-    {
-        $insertData = array();
-        $accountId = $this->getAccount()->getId();
-
-        foreach (array_keys($this->_preparedResponseData) as $wpid) {
-            $insertData[] = array('account_id' => $accountId, 'wpid' => $wpid);
-        }
-
-        Mage::getSingleton('core/resource')->getConnection('core_write')->insertOnDuplicate(
-            Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('m2epro_walmart_inventory_wpid'),
-            $insertData
-        );
     }
 
     //########################################

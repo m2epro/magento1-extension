@@ -13,7 +13,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_AutoAction_Mode
 
     public function getHelpPageUrl()
     {
-        return Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, "x/__IVAg");
+        return Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, "auto-add-remove-rules");
     }
 
     //########################################

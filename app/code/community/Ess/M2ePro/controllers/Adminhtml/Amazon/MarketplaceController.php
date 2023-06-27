@@ -25,7 +25,7 @@ class Ess_M2ePro_Adminhtml_Amazon_MarketplaceController
              ->addJs('M2ePro/SynchProgress.js')
              ->addJs('M2ePro/Marketplace.js');
 
-        $this->setPageHelpLink(null, null, "x/KN0VAg");
+        $this->setPageHelpLink(null, null, "configurations");
 
         return $this;
     }

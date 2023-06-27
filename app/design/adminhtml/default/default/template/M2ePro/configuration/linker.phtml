@@ -40,14 +40,14 @@
 
         <?php echo Mage::helper('M2ePro')->__('
             <br/><br/>More detailed information about ability to work with this Page you can find <a href="%url%" target="_blank">here</a>.',
-            Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'x/qVoJAg')
+            Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'global-settings')
         ); ?>
 
     <?php elseif (Mage::helper('M2ePro/View')->isCurrentViewAmazon()) : ?>
 
         <?php echo Mage::helper('M2ePro')->__('
             <br/><br/>More detailed information about ability to work with this page you can find on <a target="_blank" href="%url%">%amazon%</a>.',
-            Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'x/qVoJAg'),
+            Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'global-settings'),
             Mage::helper('M2ePro/Component_Amazon')->getTitle()
         ); ?>
 
@@ -55,7 +55,7 @@
 
         <?php echo Mage::helper('M2ePro')->__('
             <br/><br/>The detailed information can be found <a target="_blank" href="%url%">here</a>.',
-            Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'x/zeVaAg')
+            Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'walmart-integration')
         ); ?>
 
     <?php endif; ?>

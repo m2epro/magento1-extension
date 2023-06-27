@@ -32,7 +32,7 @@ class Ess_M2ePro_Block_Adminhtml_Wizard_InstallationWalmart_Installation_Account
 </div>
 HTML
                 ,
-                Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'x/KOhaAg')
+                Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'account-configuration')
             )
         );
 

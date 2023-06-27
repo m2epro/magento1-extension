@@ -71,7 +71,7 @@ class Ess_M2ePro_Adminhtml_Amazon_LogController
 
         if ($channel !== null && $channel !== 'all') {
             if ($channel == Ess_M2ePro_Helper_Component_Amazon::NICK) {
-                $this->setPageHelpLink(null, null, "x/HN0VAg");
+                $this->setPageHelpLink(null, null, "logs-events");
             } else {
                 $this->setComponentPageHelpLink('Logs#Logs-ListingsLog', $channel);
             }
@@ -171,7 +171,7 @@ class Ess_M2ePro_Adminhtml_Amazon_LogController
 
         if ($channel !== null && $channel !== 'all') {
             if ($channel == Ess_M2ePro_Helper_Component_Amazon::NICK) {
-                $this->setPageHelpLink(null, null, "x/HN0VAg");
+                $this->setPageHelpLink(null, null, "logs-events");
             } else {
                 $this->setComponentPageHelpLink('Logs#Logs-SynchronizationLog', $channel);
             }
@@ -202,7 +202,7 @@ class Ess_M2ePro_Adminhtml_Amazon_LogController
     {
         $this->_initAction();
 
-        $this->setPageHelpLink(null, null, "x/HN0VAg");
+        $this->setPageHelpLink(null, null, "logs-events");
 
         $this->_title(Mage::helper('M2ePro')->__('Orders Logs & Events'))
             ->_addContent(

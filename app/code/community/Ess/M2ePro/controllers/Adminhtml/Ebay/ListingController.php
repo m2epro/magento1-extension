@@ -66,7 +66,7 @@ class Ess_M2ePro_Adminhtml_Ebay_ListingController extends Ess_M2ePro_Controller_
 
         $this->_initPopUp();
 
-        $this->setPageHelpLink(null, null, "x/CFsJAg");
+        $this->setPageHelpLink(null, null, "m2e-pro-listing");
 
         return $this;
     }
@@ -256,7 +256,7 @@ class Ess_M2ePro_Adminhtml_Ebay_ListingController extends Ess_M2ePro_Controller_
 
         $this->_initAction();
 
-        $this->setPageHelpLink(null, null, "x/CFsJAg");
+        $this->setPageHelpLink(null, null, "m2e-pro-listing");
 
         $this->getLayout()->getBlock('head')
             ->setCanLoadExtJs(true)
