@@ -136,6 +136,14 @@ class Ess_M2ePro_Helper_Component_Ebay_Configuration extends Mage_Core_Helper_Ab
         );
     }
 
+    public function getIgnoreVariationMpnInResolver()
+    {
+        return (bool)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
+            self::CONFIG_GROUP,
+            'ignore_variation_mpn_in_resolver'
+        );
+    }
+
     //########################################
 
     /**

@@ -1051,6 +1051,7 @@ INSERT INTO `{$this->_installer->getTable('m2epro_config')}` (`group`,`key`,`val
   ('/ebay/order/settings/marketplace_8/', 'use_first_street_line_as_company', '1', NOW(), NOW()),
   ('/ebay/configuration/', 'prevent_item_duplicates_mode', '1', NOW(), NOW()),
   ('/ebay/configuration/', 'variation_mpn_can_be_changed', '0', NOW(), NOW()),
+  ('/ebay/configuration/', 'ignore_variation_mpn_in_resolver', '0', NOW(), NOW()),
   ('/ebay/configuration/', 'motors_epids_attribute', NULL, NOW(), NOW()),
   ('/ebay/configuration/', 'uk_epids_attribute', NULL, NOW(), NOW()),
   ('/ebay/configuration/', 'de_epids_attribute', NULL, NOW(), NOW()),

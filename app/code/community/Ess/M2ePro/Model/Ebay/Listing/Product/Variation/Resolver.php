@@ -650,7 +650,9 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Resolver
         $channelMpn = isset($channelVariation['details']['mpn']) ? $channelVariation['details']['mpn'] : null;
         $moduleMpn  = isset($moduleVariation['details']['mpn'])  ? $moduleVariation['details']['mpn']  : null;
 
-        if ($channelMpn != $moduleMpn) {
+        if ($channelMpn != $moduleMpn
+            && $this->componentEbayConfiguration->getIgnoreVariationMpnInResolver() === false
+        ) {
             return false;
         }
 
