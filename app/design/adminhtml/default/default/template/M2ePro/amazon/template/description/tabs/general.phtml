@@ -142,19 +142,6 @@
         <?php } ?>
 
         editForm = new varienForm('edit_form', '<?php echo $this->getValidationUrl(); ?>');
-
-        // chrome hack
-        refreshNewAsinAccepted = function() {
-            setTimeout(function() {
-                var tabContent = $('amazonTemplateDescriptionEditTabs_general_content');
-                if (!tabContent.visible()) {
-                    refreshWorldwideIdMode();
-                } else {
-                    $('new_asin_accepted').simulate('change');
-                }
-            }, 50);
-        };
-        refreshNewAsinAccepted();
     });
 
     //-----------------------------

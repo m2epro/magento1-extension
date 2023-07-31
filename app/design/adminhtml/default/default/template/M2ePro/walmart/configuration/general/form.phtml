@@ -140,7 +140,9 @@
                 <table class="form-list" cellspacing="0" cellpadding="0">
                     <tr>
                         <td class="label">
-                            <label for="product_id_mode"><?php echo Mage::helper('M2ePro')->__('Product ID') ?>:</label>
+                            <label for="product_id_mode">
+                                <?php echo Mage::helper('M2ePro')->__('Product ID') ?>: <span class="required">*</span>
+                            </label>
                         </td>
                         <td class="value">
                             <input type="hidden" id="product_id_custom_attribute" name="product_id_custom_attribute" value="<?php echo $this->getConfigurationHelper()->getProductIdCustomAttribute();?>"/>

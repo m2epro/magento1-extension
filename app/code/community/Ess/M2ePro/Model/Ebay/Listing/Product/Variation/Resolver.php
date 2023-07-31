@@ -650,8 +650,10 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Resolver
         $channelMpn = isset($channelVariation['details']['mpn']) ? $channelVariation['details']['mpn'] : null;
         $moduleMpn  = isset($moduleVariation['details']['mpn'])  ? $moduleVariation['details']['mpn']  : null;
 
+        /** @var Ess_M2ePro_Helper_Component_Ebay_Configuration $ebayConfiguration */
+        $ebayConfiguration = Mage::helper('M2ePro/Component_Ebay_Configuration');
         if ($channelMpn != $moduleMpn
-            && $this->componentEbayConfiguration->getIgnoreVariationMpnInResolver() === false
+            && $ebayConfiguration->getIgnoreVariationMpnInResolver() === false
         ) {
             return false;
         }
