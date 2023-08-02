@@ -945,6 +945,23 @@ class Ess_M2ePro_Model_Magento_Product
         );
     }
 
+    public function getBundleDefaultQty($productId)
+    {
+        $product = $this->getProduct();
+        $productInstance = $this->getTypeInstance();
+        $optionCollection = $productInstance->getOptionsCollection($product);
+        $selectionsCollection = $productInstance->getSelectionsCollection($optionCollection->getAllIds(), $product);
+        $items = $selectionsCollection->getItems();
+
+        foreach ($items as $item) {
+            if ((int)$item->getId() === (int)$productId) {
+                return $item->getSelectionQty();
+            }
+        }
+
+        return 1;
+    }
+
     public function setQty($value)
     {
         $this->getStockItem()->setQty($value)->save();

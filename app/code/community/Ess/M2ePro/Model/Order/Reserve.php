@@ -231,6 +231,13 @@ class Ess_M2ePro_Model_Order_Reserve
 
                 $productsExistCount++;
 
+                if ($item->getMagentoProduct()->isBundleType()) {
+                    $bundleDefaultQty = $item
+                        ->getMagentoProduct()
+                        ->getBundleDefaultQty($magentoProduct->getProductId());
+                    $qty *= $bundleDefaultQty;
+                }
+
                 if (!isset($stockItems[$productId])) {
                     $stockItems[$productId] = $magentoProduct->getStockItem();
                 }

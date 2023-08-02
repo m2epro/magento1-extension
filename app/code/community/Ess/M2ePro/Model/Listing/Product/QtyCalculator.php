@@ -191,7 +191,14 @@ abstract class Ess_M2ePro_Model_Listing_Product_QtyCalculator
                     continue;
                 }
 
-                $optionsQtyArray[$option->getProductId()][] = $this->getOptionBaseValue($option);
+                $qty = $this->getOptionBaseValue($option);
+                $bundleDefaultQty = $this
+                    ->getMagentoProduct()
+                    ->getBundleDefaultQty($option->getProductId());
+
+                $qty /= $bundleDefaultQty;
+
+                $optionsQtyArray[$option->getProductId()][] = $qty;
             }
 
             foreach ($optionsQtyArray as $optionQty) {
