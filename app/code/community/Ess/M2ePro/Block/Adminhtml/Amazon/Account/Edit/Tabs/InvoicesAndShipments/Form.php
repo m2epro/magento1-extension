@@ -57,6 +57,22 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit_Tabs_InvoicesAndShipments_F
                 )
             );
 
+            $tooltipMessage = Mage::helper('M2ePro')->__(
+                'Learn how to set up automatic invoice uploading in this <a href="%url%" target="_blank">article</a>.',
+                Mage::helper('M2ePro/Module_Support')->getSupportUrl('/support/solutions/articles/9000219394')
+            );
+            $tooltipHtml = <<<TOOLTIP_HTML
+<span>
+    <img class="tool-tip-image"
+     style="vertical-align: middle;" src="{$this->getSkinUrl('M2ePro/images/tool-tip-icon.png')}" />
+    <span class="tool-tip-message" style="display:none; text-align: left; width: 120px;">
+        <img src="{$this->getSkinUrl('M2ePro/images/help.png')}" />
+        <span>$tooltipMessage</span>
+    </span>
+</span>
+TOOLTIP_HTML;
+
+
             $fieldset->addField(
                 'invoice_generation',
                 'select',
@@ -71,16 +87,10 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit_Tabs_InvoicesAndShipments_F
                         AmazonAccount::INVOICE_GENERATION_BY_AMAZON    =>
                             Mage::helper('M2ePro')->__('I want Amazon to generate VAT Invoices'),
                         AmazonAccount::INVOICE_GENERATION_BY_EXTENSION =>
-                            Mage::helper('M2ePro')->__('I will upload my own Invoices'),
+                            Mage::helper('M2ePro')->__('M2E Pro will generate and upload invoices'),
                     ),
                     'value'              => '',
-                    'after_element_html' => <<<HTML
-<tr>
-    <td colspan="6" style="padding: 10px 0">
-        <hr style="border: 1px solid silver; border-bottom: none;">
-    </td>
-</tr>
-HTML
+                    'after_element_html' => $tooltipHtml
 
                 )
             );
