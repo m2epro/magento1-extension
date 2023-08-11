@@ -61,11 +61,13 @@ class Ess_M2ePro_Model_Walmart_Order_Creditmemo_Handler extends Ess_M2ePro_Model
                 if ($item === null) {
                     continue;
                 }
+                $qtyPurchased = $item->getChildObject()->getQtyPurchased();
 
                 /**
                  * Walmart returns the same Order Item more than one time with single QTY. That data was merged
                  */
                 $mergedOrderItems = $item->getChildObject()->getMergedWalmartOrderItemIds();
+                $walmartOrderItemsCount = 1 + count($mergedOrderItems);
                 while ($mergedOrderItemId = array_shift($mergedOrderItems)) {
                     if (!isset($data['refunded_qty'][$mergedOrderItemId])) {
                         $orderItemId = $mergedOrderItemId;
@@ -78,7 +80,7 @@ class Ess_M2ePro_Model_Walmart_Order_Creditmemo_Handler extends Ess_M2ePro_Model
                  * - Walmart Order Item QTY is always equals 1
                  */
                 $itemQtyRef = isset($data['refunded_qty'][$orderItemId]) ? $data['refunded_qty'][$orderItemId] : 0;
-                $itemQty = 1;
+                $itemQty = $qtyPurchased / $walmartOrderItemsCount;
 
                 if ($itemQtyRef >= $itemQty) {
                     continue;

@@ -293,6 +293,10 @@ class Ess_M2ePro_Model_Cron_Task_Repository
             'component' => Ess_M2ePro_Helper_Component_Walmart::NICK,
             'group'     => self::GROUP_WALMART,
         ),
+        Ess_M2ePro_Model_Cron_Task_Walmart_Order_ReceiveWithCancellationRequested::NICK => array(
+            'component' => Ess_M2ePro_Helper_Component_Walmart::NICK,
+            'group'     => self::GROUP_WALMART,
+        ),
         Ess_M2ePro_Model_Cron_Task_Walmart_Order_CreateFailed::NICK => array(
             'component' => Ess_M2ePro_Helper_Component_Walmart::NICK,
             'group'     => self::GROUP_WALMART,

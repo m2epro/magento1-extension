@@ -10,12 +10,17 @@ class Ess_M2ePro_Model_Walmart_Order_Item_Builder extends Mage_Core_Model_Abstra
 {
     /** @var bool */
     protected $_previousBuyerCancellationRequested;
+    /** @var int */
+    private $walmartOrderItemId;
+    /** @var array */
+    private $mergedWalmartOrderItemIds = array();
 
     public function initialize(array $data)
     {
         // Init general data
         // ---------------------------------------
-        $this->setData('walmart_order_item_id', $data['walmart_order_item_id']);
+        $this->walmartOrderItemId = (int)$data['walmart_order_item_id'];
+        $this->setData('walmart_order_item_id', $this->walmartOrderItemId);
         $this->setData('status', $data['status']);
         $this->setData('order_id', $data['order_id']);
         $this->setData('sku', trim($data['sku']));
@@ -43,6 +48,7 @@ class Ess_M2ePro_Model_Walmart_Order_Item_Builder extends Mage_Core_Model_Abstra
          */
         // ---------------------------------------
         if (!empty($data['merged_walmart_order_item_ids'])) {
+            $this->mergedWalmartOrderItemIds = $data['merged_walmart_order_item_ids'];
             $this->setData(
                 'merged_walmart_order_item_ids',
                 Mage::helper('M2ePro')->jsonEncode($data['merged_walmart_order_item_ids'])
@@ -61,14 +67,24 @@ class Ess_M2ePro_Model_Walmart_Order_Item_Builder extends Mage_Core_Model_Abstra
     {
         /** @var Ess_M2ePro_Model_Order_Item $existItem */
         $existItem = Mage::helper('M2ePro/Component_Walmart')->getCollection('Order_Item')
-            ->addFieldToFilter('walmart_order_item_id', $this->getData('walmart_order_item_id'))
-            ->addFieldToFilter('order_id', $this->getData('order_id'))
             ->addFieldToFilter('sku', $this->getData('sku'))
+            ->addFieldToFilter('order_id', $this->getData('order_id'))
+            ->addFieldToFilter('walmart_order_item_id', $this->getAllWalmartOrderItemIds())
             ->getFirstItem();
 
         $this->_previousBuyerCancellationRequested = false;
         if ($existItem->getId()) {
             $this->_previousBuyerCancellationRequested = $existItem->getChildObject()->isBuyerCancellationRequested();
+        }
+
+        if ($existItem->getId() !== null
+            && $existItem->getChildObject()->getWalmartOrderItemId() !== $this->walmartOrderItemId
+        ) {
+            $this->setData('walmart_order_item_id', $existItem->getChildObject()->getWalmartOrderItemId());
+            $this->setData(
+                'merged_walmart_order_item_ids',
+                $existItem->getChildObject()->getData('merged_walmart_order_item_ids')
+            );
         }
 
         foreach ($this->getData() as $key => $value) {
@@ -88,5 +104,17 @@ class Ess_M2ePro_Model_Walmart_Order_Item_Builder extends Mage_Core_Model_Abstra
     public function getPreviousBuyerCancellationRequested()
     {
         return $this->_previousBuyerCancellationRequested;
+    }
+
+    private function getAllWalmartOrderItemIds()
+    {
+        if ($this->mergedWalmartOrderItemIds === array()) {
+            return array($this->walmartOrderItemId);
+        }
+
+        $allIds = $this->mergedWalmartOrderItemIds;
+        $allIds[] = $this->walmartOrderItemId;
+
+        return array_map('intval', $allIds);
     }
 }

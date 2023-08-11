@@ -45,11 +45,11 @@ class Ess_M2ePro_Model_Walmart_Order_Shipment_ItemToShipLoader_Default
         }
 
         $orderItem = $this->getOrderItem($additionalData);
-        $itemQty = $orderItem->getChildObject()->getQtyPurchased();
+        $itemQtyPurchased = $orderItem->getChildObject()->getQtyPurchased();
         $qtyAvailable = (int)$this->shipmentItem->getQty();
 
-        if ($itemQty > $qtyAvailable) {
-            $itemQty = $qtyAvailable;
+        if ($itemQtyPurchased > $qtyAvailable) {
+            $itemQtyPurchased = $qtyAvailable;
         }
 
         $orderItemAdditionalData = $orderItem->getAdditionalData();
@@ -65,18 +65,21 @@ class Ess_M2ePro_Model_Walmart_Order_Shipment_ItemToShipLoader_Default
          * - Walmart returns the same Order Item more than one time with single QTY. That data was merged.
          * - Walmart Order Item QTY is always equals 1.
          */
+
+        $itemQty = $itemQtyPurchased / count($orderItemIds);
+
         $items = array();
         foreach ($orderItemIds as $orderItemId) {
-            if ($itemQty <= 0) {
+            if ($itemQtyPurchased <= 0) {
                 continue;
             }
 
             $items[$orderItemId] = array(
                 'walmart_order_item_id' => $orderItemId,
-                'qty'                   => 1
+                'qty'                   => $itemQty
             );
 
-            $itemQty--;
+            $itemQtyPurchased--;
         }
 
         $orderItemIdsInShipped += array_keys($items);
