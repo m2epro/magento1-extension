@@ -550,11 +550,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Shipping_Edit_Form_Data extends M
         return $this->getMarketplace()->getChildObject()->isInternationalShippingRateTableEnabled();
     }
 
-    public function canDisplayCashOnDeliveryCost()
-    {
-        return $this->getMarketplace()->getChildObject()->isCashOnDeliveryEnabled();
-    }
-
     public function canDisplayNorthAmericaCrossBorderTradeOption()
     {
         $marketplace = $this->getMarketplace();

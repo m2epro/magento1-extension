@@ -280,6 +280,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_ProductAddController
         $treeBlock = $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_listing_product_sourceCategories_tree');
         $treeBlock->setSelectedIds($selectedProductsIds);
 
+        $this->getResponse()->setHeader('Content-Type', 'application/json');
         $this->getResponse()->setBody(
             $treeBlock->getCategoryChildrenJson($this->getRequest()->getParam('category'))
         );

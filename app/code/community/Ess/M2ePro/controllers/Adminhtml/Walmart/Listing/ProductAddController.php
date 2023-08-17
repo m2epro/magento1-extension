@@ -527,6 +527,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
         );
         $treeBlock->setSelectedIds($selectedProductsIds);
 
+        $this->getResponse()->setHeader('Content-Type', 'application/json');
         $this->getResponse()->setBody(
             $treeBlock->getCategoryChildrenJson($this->getRequest()->getParam('category'))
         );

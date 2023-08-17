@@ -120,9 +120,6 @@ class Ess_M2EPro_Model_Ebay_Template_Shipping_Builder
             $data['excluded_locations'] = $this->_rawData['excluded_locations'];
         }
 
-        $key = 'cash_on_delivery_cost';
-        $data[$key] = (isset($this->_rawData[$key]) && $this->_rawData[$key] != '') ? $this->_rawData[$key] : null;
-
         $modes = array(
             'local_shipping_mode',
             'local_shipping_discount_promotional_mode',
@@ -340,7 +337,6 @@ class Ess_M2EPro_Model_Ebay_Template_Shipping_Builder
             'dispatch_time_mode'      => Shipping::DISPATCH_TIME_MODE_VALUE,
             'dispatch_time_value'     => 1,
             'dispatch_time_attribute' => '',
-            'cash_on_delivery_cost'   => null,
             'global_shipping_program' => 0,
             'cross_border_trade'      => Shipping::CROSS_BORDER_TRADE_NONE,
             'excluded_locations'      => Mage::helper('M2ePro')->jsonEncode(array()),

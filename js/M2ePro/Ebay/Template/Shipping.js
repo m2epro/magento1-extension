@@ -196,7 +196,6 @@ window.EbayTemplateShipping = Class.create(Common, {
 
         // ---------------------------------------
         EbayTemplateShippingObj.updateMeasurementVisibility();
-        EbayTemplateShippingObj.updateCashOnDeliveryCostVisibility();
         EbayTemplateShippingObj.updateCrossBorderTradeVisibility();
         EbayTemplateShippingObj.updateRateTableVisibility('local');
         EbayTemplateShippingObj.updateLocalHandlingCostVisibility();
@@ -732,23 +731,6 @@ window.EbayTemplateShipping = Class.create(Common, {
         });
 
         return html;
-    },
-
-    // ---------------------------------------
-
-    updateCashOnDeliveryCostVisibility: function() {
-        if (!$('cash_on_delivery_cost_cv_tr')) {
-            return;
-        }
-
-        if (EbayTemplateShippingObj.isLocalShippingModeFlat()
-            || EbayTemplateShippingObj.isLocalShippingModeCalculated()
-        ) {
-            $('cash_on_delivery_cost_cv_tr').show();
-        } else {
-            $('cash_on_delivery_cost_cv_tr').hide();
-            $('cash_on_delivery_cost').value = '';
-        }
     },
 
     // ---------------------------------------

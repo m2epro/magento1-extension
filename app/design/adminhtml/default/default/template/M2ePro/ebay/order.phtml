@@ -357,17 +357,6 @@ echo $this->getChildHtml('item_edit');
                             </td>
                         </tr>
 
-                        <?php if ($this->order->getChildObject()->getCashOnDeliveryCost() > 0): ?>
-                            <tr>
-                                <td class="label"><?php echo Mage::helper('M2ePro')->__('Cash On Delivery Cost');?>:</td>
-                                <td class="value">
-                                    <strong>
-                                        <?php echo Mage::getSingleton('M2ePro/Currency')->formatPrice($this->order->getChildObject()->getCurrency(), round($this->order->getChildObject()->getCashOnDeliveryCost(), 2)); ?>
-                                    </strong>
-                                </td>
-                            </tr>
-                        <?php endif; ?>
-
                     </tbody>
                 </table>
 

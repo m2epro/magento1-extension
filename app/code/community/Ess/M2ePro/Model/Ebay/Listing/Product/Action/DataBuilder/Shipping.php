@@ -43,9 +43,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Shipping
             $data['dispatch_time'] = $this->getShippingSource()->getDispatchTime();
 
             // there are permissions by marketplace (interface management)
-            $data['cash_on_delivery_cost'] = $this->getShippingTemplate()->getCashOnDeliveryCost();
-
-            // there are permissions by marketplace (interface management)
             if ($this->getShippingTemplate()->isCrossBorderTradeNorthAmerica()) {
                 $data['cross_border_trade'] = self::CROSS_BORDER_TRADE_NORTH_AMERICA;
             } else {

@@ -327,16 +327,6 @@ class Ess_M2ePro_Model_Ebay_Order extends Ess_M2ePro_Model_Component_Child_Ebay_
     }
 
     /**
-     * @return float
-     */
-    public function getCashOnDeliveryCost()
-    {
-        $shippingDetails = $this->getShippingDetails();
-        return isset($shippingDetails['cash_on_delivery_cost'])
-            ? (float)$shippingDetails['cash_on_delivery_cost'] : 0.0;
-    }
-
-    /**
      * @return Ess_M2ePro_Model_Ebay_Order_ShippingAddress
      */
     public function getShippingAddress()

@@ -31,7 +31,7 @@ class Ess_M2ePro_Model_Magento_Payment extends Mage_Payment_Model_Method_Abstrac
             'payment_method'        => $data['payment_method'],
             'channel_order_id'      => $data['channel_order_id'],
             'channel_final_fee'     => $data['channel_final_fee'],
-            'cash_on_delivery_cost' => $data['cash_on_delivery_cost'],
+            'cash_on_delivery_cost' => isset($data['cash_on_delivery_cost']) ? $data['cash_on_delivery_cost'] : null,
             'transactions'          => $data['transactions'],
             'tax_id'                => isset($data['tax_id']) ? $data['tax_id'] : null,
         );

@@ -955,7 +955,12 @@ class Ess_M2ePro_Model_Magento_Product
 
         foreach ($items as $item) {
             if ((int)$item->getId() === (int)$productId) {
-                return $item->getSelectionQty();
+                $qty = (int)$item->getSelectionQty();
+                if ($qty > 0) {
+                    return $qty;
+                }
+
+                return 1;
             }
         }
 

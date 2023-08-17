@@ -714,20 +714,6 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
         return is_array($excludedLocations) ? $excludedLocations : array();
     }
 
-    /**
-     * @return float|null
-     */
-    public function getCashOnDeliveryCost()
-    {
-        $tempData = $this->getData('cash_on_delivery_cost');
-
-        if (!empty($tempData)) {
-            return (float)$tempData;
-        }
-
-        return null;
-    }
-
     // ---------------------------------------
 
     /**
