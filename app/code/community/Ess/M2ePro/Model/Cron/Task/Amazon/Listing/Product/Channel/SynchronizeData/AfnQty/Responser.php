@@ -160,23 +160,26 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
             )
             ->where('aa.merchant_id = ? AND is_afn_channel = 1', $merchantId);
 
-        /** @var Ess_M2ePro_Model_Listing_Product $item */
-        foreach ($m2eproListingProductCollection->getItems() as $item) {
-            $this->updateItem(
-                $item,
-                $receivedItems[$item->getChildObject()->getSku()]
-            );
-        }
+        $normalizedReceivedItems = array_change_key_case($receivedItems, CASE_LOWER);
 
-        /** @var Ess_M2ePro_Model_Listing_Other $item */
-        foreach ($unmanagedListingProductCollection->getItems() as $item) {
-            $this->updateItem(
-                $item,
-                $receivedItems[$item->getChildObject()->getSku()]
-            );
-        }
+        $this->updateItemsFromCollection($m2eproListingProductCollection, $normalizedReceivedItems);
+        $this->updateItemsFromCollection($unmanagedListingProductCollection, $normalizedReceivedItems);
 
         $this->refreshLastUpdate(true);
+    }
+
+    private function updateItemsFromCollection($collection, array $normalizedReceivedItems)
+    {
+        foreach ($collection->getItems() as $item) {
+            $sku = strtolower($item->getChildObject()->getSku());
+
+            if (isset($normalizedReceivedItems[$sku])) {
+                $this->updateItem(
+                    $item,
+                    $normalizedReceivedItems[$sku]
+                );
+            }
+        }
     }
 
     /**
