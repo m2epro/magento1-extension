@@ -12,13 +12,14 @@ class Ess_M2ePro_Model_Magento_Product_Variation_Cache extends Ess_M2ePro_Model_
 
     public function getVariationsTypeStandard()
     {
-        $params = array(
+        $cacheKeyParams = array(
             'virtual_attributes' => $this->getMagentoProduct()->getVariationVirtualAttributes(),
             'filter_attributes'  => $this->getMagentoProduct()->getVariationFilterAttributes(),
             'is_ignore_virtual_attributes' => $this->getMagentoProduct()->isIgnoreVariationVirtualAttributes(),
             'is_ignore_filter_attributes'  => $this->getMagentoProduct()->isIgnoreVariationFilterAttributes(),
         );
-        return $this->getMethodData(__FUNCTION__, $params);
+
+        return $this->getMethodData(__FUNCTION__, $cacheKeyParams);
     }
 
     public function getVariationsTypeRaw()
@@ -33,7 +34,7 @@ class Ess_M2ePro_Model_Magento_Product_Variation_Cache extends Ess_M2ePro_Model_
 
     //########################################
 
-    protected function getMethodData($methodName, $params = null)
+    protected function getMethodData($methodName, $cacheKeyParams = array())
     {
         if ($this->getMagentoProduct() === null) {
             throw new Ess_M2ePro_Model_Exception('Magento Product was not set.');
@@ -44,8 +45,8 @@ class Ess_M2ePro_Model_Magento_Product_Variation_Cache extends Ess_M2ePro_Model_
             $methodName,
         );
 
-        if ($params !== null) {
-            $cacheKey[] = $params;
+        if ($cacheKeyParams !== array()) {
+            $cacheKey[] = $cacheKeyParams;
         }
 
         $cacheResult = $this->getMagentoProduct()->getCacheValue($cacheKey);
@@ -54,11 +55,7 @@ class Ess_M2ePro_Model_Magento_Product_Variation_Cache extends Ess_M2ePro_Model_
             return $cacheResult;
         }
 
-        if ($params !== null) {
-            $data = call_user_func_array(array('parent', $methodName), $params);
-        } else {
-            $data = call_user_func(array('parent', $methodName));
-        }
+        $data = call_user_func(array('parent', $methodName));
 
         if (!$this->getMagentoProduct()->isCacheEnabled()) {
             return $data;

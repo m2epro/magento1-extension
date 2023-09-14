@@ -71,7 +71,7 @@ class Ess_M2ePro_Model_Cron_Task_Repository
             'component' => self::COMPONENT_GENERAL,
             'group'     => self::GROUP_SYSTEM,
         ),
-        Ess_M2ePro_Model_Cron_Task_Magento_Product_DetectSpecialPriceEndDate::NICK => array(
+        Ess_M2ePro_Model_Cron_Task_Magento_Product_DetectSpecialPriceStartEndDate::NICK => array(
             'component' => self::COMPONENT_GENERAL,
             'group'     => self::GROUP_SYSTEM,
         ),

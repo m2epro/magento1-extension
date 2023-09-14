@@ -7,11 +7,13 @@
  */
 
 use Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_AfnQty_MerchantManager as MerchantManager;
+use Ess_M2ePro_Model_Magento_Product_ChangeProcessor_Abstract as ChangeProcessorAbstract;
 
 class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_AfnQty_Responser
     extends Ess_M2ePro_Model_Amazon_Connector_Inventory_Get_AfnQty_ItemsResponser
 {
     const ERROR_CODE_UNACCEPTABLE_REPORT_STATUS = 504;
+    const INSTRUCTION_INITIATOR = 'amazon_afn_qty_synchronization';
 
     /** @var Ess_M2ePro_Model_Synchronization_Log */
     protected $_synchronizationLog;
@@ -19,6 +21,9 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
     protected $_merchantManager;
     /** @var Ess_M2ePro_Helper_Module_Logger */
     protected $_logger;
+    /** @var array */
+    private $instructionForCheckingProductData = array();
+
 
     /**
      * @throws Ess_M2ePro_Model_Exception_Logic
@@ -69,6 +74,11 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
         if ($isMessageReceived) {
             $this->refreshLastUpdate(false);
         }
+
+        /** @var  $instructionResource */
+        $instructionResource = Mage::getResourceModel('M2ePro/Listing_Product_Instruction');
+
+        $instructionResource->add($this->instructionForCheckingProductData);
     }
 
     protected function isNeedProcessResponse()
@@ -190,13 +200,25 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
      */
     private function updateItem($item, $afnQty)
     {
+        $oldStatus = $item->getData('status');
+        $newStatus = $afnQty ? Ess_M2ePro_Model_Listing_Product::STATUS_LISTED
+            : Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED;
+
         $item->setData('online_afn_qty', $afnQty);
-        $item->setData(
-            'status',
-            $afnQty ?
-                Ess_M2ePro_Model_Listing_Product::STATUS_LISTED : Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED
-        );
+        $item->setData('status', $newStatus);
         $item->save();
+
+        if ($item instanceof Ess_M2ePro_Model_Listing_Product
+            && $this->isStatusChangedFromInactiveToActive($oldStatus, $newStatus)
+        ) {
+            $this->addInstructionForCheckingProductData($item);
+        }
+    }
+
+    private function isStatusChangedFromInactiveToActive($oldStatus, $newStatus)
+    {
+        return (int)$oldStatus === Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED
+            && (int)$newStatus === Ess_M2ePro_Model_Listing_Product::STATUS_LISTED;
     }
 
     /**
@@ -232,5 +254,16 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
         $this->_synchronizationLog->setSynchronizationTask(Ess_M2ePro_Model_Synchronization_Log::TASK_LISTINGS);
 
         return $this->_synchronizationLog;
+    }
+
+    private function addInstructionForCheckingProductData(Ess_M2ePro_Model_Listing_Product $listingProduct)
+    {
+        $this->instructionForCheckingProductData[] = array(
+            'listing_product_id' => $listingProduct->getId(),
+            'component' => Ess_M2ePro_Helper_Component_Ebay::NICK,
+            'type' => ChangeProcessorAbstract::INSTRUCTION_TYPE_PRODUCT_STATUS_DATA_POTENTIALLY_CHANGED,
+            'initiator' => self::INSTRUCTION_INITIATOR,
+            'priority' => 100,
+        );
     }
 }

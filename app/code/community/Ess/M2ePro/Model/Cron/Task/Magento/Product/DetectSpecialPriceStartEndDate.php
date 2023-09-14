@@ -6,9 +6,9 @@
  * @license    Commercial use is forbidden
  */
 
-class Ess_M2ePro_Model_Cron_Task_Magento_Product_DetectSpecialPriceEndDate extends Ess_M2ePro_Model_Cron_Task_Abstract
+class Ess_M2ePro_Model_Cron_Task_Magento_Product_DetectSpecialPriceStartEndDate extends Ess_M2ePro_Model_Cron_Task_Abstract
 {
-    const NICK = 'magento/product/detect_special_price_end_date';
+    const NICK = 'magento/product/detect_special_price_start_end_date';
 
     /** @var int (in seconds) */
     protected $_interval = 7200;
@@ -53,11 +53,65 @@ class Ess_M2ePro_Model_Cron_Task_Magento_Product_DetectSpecialPriceEndDate exten
         $this->setLastProcessedProductId((int)$lastMagentoProduct);
     }
 
-    //########################################
-
-    protected function getArrayKeyLast($array)
+    private function getAllChangedProductsPrice()
     {
-        if (!is_array($array) || empty($array)) {
+        $currentDate = Mage::helper('M2ePro')->createCurrentGmtDateTime();
+        $toDate = clone $currentDate;
+        $toDate->modify('-1 day');
+
+        $specialFromDateResults = $this->getChangedProductPricesByDate('special_from_date', $currentDate);
+        $specialToDateResults = $this->getChangedProductPricesByDate('special_to_date', $toDate);
+
+        $allChangedProductsPrice = $specialToDateResults + $specialFromDateResults;
+
+        ksort($allChangedProductsPrice);
+
+        return array_slice($allChangedProductsPrice, 0, 1000, true);
+    }
+
+    private function getChangedProductPricesByDate($attributeCode, \DateTime $date)
+    {
+        $changedProductsPrice = array();
+
+        foreach ($this->getAllStoreIds() as $storeId) {
+            $productCollection = $this->getProductCollection($attributeCode, $storeId, $date);
+
+            /** @var Mage_Catalog_Model_Product $magentoProduct */
+            foreach ($productCollection->getItems() as $magentoProduct) {
+                $magentoProductId = $magentoProduct->getId();
+                $price = ($attributeCode === 'special_from_date')
+                    ? $magentoProduct->getSpecialPrice()
+                    : $magentoProduct->getPrice();
+
+                $changedProductsPrice[$magentoProductId] = array(
+                    'price' => $price,
+                );
+            }
+        }
+
+        return $changedProductsPrice;
+    }
+
+    private function getProductCollection($attributeCode, $storeId, \DateTime $date
+    ) {
+        /** @var Mage_Catalog_Model_Resource_Product_Collection $collection */
+        $collection = Mage::getModel('catalog/product')->getCollection();
+
+        $collection->setStoreId($storeId);
+        $collection->addAttributeToSelect('price');
+        $collection->addAttributeToFilter('special_price', array('notnull' => true));
+        $collection->addFieldToFilter($attributeCode, array('notnull' => true));
+        $collection->addFieldToFilter($attributeCode, array('lt' => $date->format('Y-m-d H:i:s')));
+        $collection->addFieldToFilter('entity_id', array('gt' => (int)$this->getLastProcessedProductId()));
+        $collection->setOrder('entity_id', 'asc');
+        $collection->getSelect()->limit(1000);
+
+        return $collection;
+    }
+
+    private function getArrayKeyLast($array)
+    {
+        if (empty($array)) {
             return NULL;
         }
 
@@ -65,7 +119,7 @@ class Ess_M2ePro_Model_Cron_Task_Magento_Product_DetectSpecialPriceEndDate exten
         return $arrayKeys[count($array)-1];
     }
 
-    protected function getCurrentPrice(Ess_M2ePro_Model_Listing_Product $listingProduct)
+    private function getCurrentPrice(Ess_M2ePro_Model_Listing_Product $listingProduct)
     {
         if ($listingProduct->isComponentModeAmazon()) {
             return $listingProduct->getChildObject()->getOnlineRegularPrice();
@@ -78,7 +132,7 @@ class Ess_M2ePro_Model_Cron_Task_Magento_Product_DetectSpecialPriceEndDate exten
         }
     }
 
-    protected function getAllStoreIds()
+    private function getAllStoreIds()
     {
         $storeIds = array();
 
@@ -95,59 +149,18 @@ class Ess_M2ePro_Model_Cron_Task_Magento_Product_DetectSpecialPriceEndDate exten
         return $storeIds;
     }
 
-    protected function getChangedProductsPrice($storeId)
-    {
-        $date = new DateTime('now', new DateTimeZone('UTC'));
-        $date->modify('-1 day');
-
-        /** @var Mage_Catalog_Model_Resource_Product_Collection $collection */
-        $collection = Mage::getModel('catalog/product')->getCollection();
-        $collection->setStoreId($storeId);
-        $collection->addAttributeToSelect('price');
-        $collection->addAttributeToFilter('special_price', array('notnull' => true));
-        $collection->addFieldToFilter('special_to_date', array('notnull' => true));
-        $collection->addFieldToFilter('special_to_date', array('lt' => $date->format('Y-m-d H:i:s')));
-        $collection->addFieldToFilter('entity_id', array('gt' => (int)$this->getLastProcessedProductId()));
-        $collection->setOrder('entity_id', 'asc');
-        $collection->getSelect()->limit(1000);
-
-        return $collection->getItems();
-    }
-
-    protected function getAllChangedProductsPrice()
-    {
-        $changedProductsPrice = array();
-
-        /** @var Mage_Catalog_Model_Product $magentoProduct */
-        foreach ($this->getAllStoreIds() as $storeId) {
-            foreach ($this->getChangedProductsPrice($storeId) as $magentoProduct) {
-                $changedProductsPrice[$magentoProduct->getId()] = array(
-                    'price' => $magentoProduct->getPrice()
-                );
-            }
-        }
-
-        ksort($changedProductsPrice);
-
-        return array_slice($changedProductsPrice, 0, 1000, true);
-    }
-
-    // ---------------------------------------
-
-    protected function getLastProcessedProductId()
+    private function getLastProcessedProductId()
     {
         return Mage::helper('M2ePro/Module')->getRegistry()->getValue(
-            '/magento/product/detect_special_price_end_date/last_magento_product_id/'
+            '/magento/product/detect_special_price_start_end_date/last_magento_product_id/'
         );
     }
 
-    protected function setLastProcessedProductId($magentoProductId)
+    private function setLastProcessedProductId($magentoProductId)
     {
         Mage::helper('M2ePro/Module')->getRegistry()->setValue(
-            '/magento/product/detect_special_price_end_date/last_magento_product_id/',
+            '/magento/product/detect_special_price_start_end_date/last_magento_product_id/',
             (int)$magentoProductId
         );
     }
-
-    //########################################
 }
