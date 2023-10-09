@@ -884,14 +884,14 @@ INSERT INTO `{$this->_installer->getTable('m2epro_marketplace')}` VALUES
   (48, 20, 'Belgium', 'BE', 'amazon.com.be', 0, 22, 'Europe', 'amazon', NOW(), NOW());
 
 INSERT INTO `{$this->_installer->getTable('m2epro_amazon_marketplace')}` VALUES
-  (24, 'CAD',1,0,0,0,0),
+  (24, 'CAD',1,1,0,0,0),
   (25, 'EUR',1,1,1,1,1),
-  (26, 'EUR',1,0,1,1,1),
+  (26, 'EUR',1,1,1,1,1),
   (28, 'GBP',1,1,1,1,1),
   (29, 'USD',1,1,1,0,0),
-  (30, 'EUR',1,0,1,1,1),
-  (31, 'EUR',1,0,1,1,1),
-  (34, 'MXN',1,0,0,0,0),
+  (30, 'EUR',1,1,1,1,1),
+  (31, 'EUR',1,1,1,1,1),
+  (34, 'MXN',1,1,0,0,0),
   (35, 'AUD',1,0,0,0,0),
   (39, 'EUR',1,1,1,1,1),
   (40, 'TRY',1,1,0,0,0),
