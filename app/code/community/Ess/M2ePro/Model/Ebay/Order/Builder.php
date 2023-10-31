@@ -481,6 +481,15 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
             }
         }
 
+        /**
+         * Don't create combined order without payment
+         */
+        if ($this->isCombined()
+            && $this->getData('payment_status') === Ess_M2ePro_Model_Ebay_Order::PAYMENT_STATUS_NOT_SELECTED
+        ) {
+            return false;
+        }
+
         if ($this->getData('order_status') == OrderHelper::EBAY_ORDER_STATUS_CANCELLED &&
             $this->_order->getId() &&
             !$this->_order->getChildObject()->isCanceled()) {
