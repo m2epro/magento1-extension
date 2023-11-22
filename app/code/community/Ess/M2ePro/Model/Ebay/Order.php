@@ -1106,19 +1106,20 @@ class Ess_M2ePro_Model_Ebay_Order extends Ess_M2ePro_Model_Component_Child_Ebay_
             return false;
         }
 
-        $supportedMarketplaces = array(
-            EbayHelper::MARKETPLACE_US,
-            EbayHelper::MARKETPLACE_CA,
-            EbayHelper::MARKETPLACE_UK,
-            EbayHelper::MARKETPLACE_AU,
-            EbayHelper::MARKETPLACE_DE
-        );
-
-        if (!in_array($this->getParentObject()->getMarketplaceId(), $supportedMarketplaces)) {
+        if ($this->isMarketplaceNotSupportedForRefund()) {
             return false;
         }
 
         return true;
+    }
+
+    private function isMarketplaceNotSupportedForRefund()
+    {
+        $notSupportedMarketplacesForRefund = array(
+            EbayHelper::MARKETPLACE_IN
+        );
+
+        return in_array($this->getParentObject()->getMarketplaceId(), $notSupportedMarketplacesForRefund);
     }
 
     /**

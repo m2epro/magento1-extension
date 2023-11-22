@@ -23,6 +23,7 @@ class Ess_M2ePro_Helper_Component_Ebay extends Mage_Core_Helper_Abstract
     const MARKETPLACE_IT     = 10;
     const MARKETPLACE_BE_NL  = 11;
     const MARKETPLACE_ES     = 13;
+    const MARKETPLACE_IN     = 16;
 
     const LISTING_DURATION_GTC = 100;
 
