@@ -71,6 +71,10 @@ class Ess_M2ePro_Model_Walmart_Order_Shipment_ItemToShipLoader_PretendedToBeSimp
         );
 
         $qtyPurchased = $orderItem->getChildObject()->getQtyPurchased();
+        if ($qtyPurchased === 0 || count($orderItemIds) === 0) {
+            return array();
+        }
+
         $itemQty = $qtyPurchased / count($orderItemIds);
 
         foreach ($orderItemIds as $orderItemId) {

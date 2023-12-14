@@ -32,6 +32,7 @@ class Ess_M2ePro_Helper_Component_Amazon extends Mage_Core_Helper_Abstract
     const MARKETPLACE_IN = 46;
     const MARKETPLACE_AE = 47;
     const MARKETPLACE_BE = 48;
+    const MARKETPLACE_ZA = 49;
 
     const MAX_ALLOWED_FEED_REQUESTS_PER_HOUR = 30;
     const SKU_MAX_LENGTH = 40;
@@ -286,6 +287,7 @@ class Ess_M2ePro_Helper_Component_Amazon extends Mage_Core_Helper_Abstract
             self::MARKETPLACE_IN,
             self::MARKETPLACE_AE,
             self::MARKETPLACE_BE,
+            self::MARKETPLACE_ZA,
         );
     }
 

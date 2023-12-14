@@ -66,6 +66,10 @@ class Ess_M2ePro_Model_Walmart_Order_Shipment_ItemToShipLoader_Default
          * - Walmart Order Item QTY is always equals 1.
          */
 
+        if ($itemQtyPurchased === 0 || count($orderItemIds) === 0) {
+            return array();
+        }
+
         $itemQty = $itemQtyPurchased / count($orderItemIds);
 
         $items = array();
