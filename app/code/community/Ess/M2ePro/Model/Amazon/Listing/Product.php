@@ -40,6 +40,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product extends Ess_M2ePro_Model_Component
     const SEARCH_SETTINGS_STATUS_IN_PROGRESS     = 1;
     const SEARCH_SETTINGS_STATUS_NOT_FOUND       = 2;
     const SEARCH_SETTINGS_STATUS_ACTION_REQUIRED = 3;
+    const SEARCH_SETTINGS_IDENTIFIER_INVALID = 4;
 
     const GENERAL_ID_STATE_SET = 0;
     const GENERAL_ID_STATE_NOT_SET = 1;

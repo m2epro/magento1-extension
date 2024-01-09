@@ -187,35 +187,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Create_Search_Form extends Mage_
             )
         );
 
-        // Additional Settings
-        $fieldset = $form->addFieldset(
-            'additional_settings_fieldset',
-            array(
-                'legend'      => Mage::helper('M2ePro')->__('Additional Settings'),
-                'collapsable' => false
-            )
-        );
-
-        $fieldset->addField(
-            'search_by_magento_title_mode',
-            'select',
-            array(
-                'name'    => 'search_by_magento_title_mode',
-                'label'   => Mage::helper('M2ePro')->__('Search by Product Name'),
-                'values'  => array(
-                    AmazonListing::SEARCH_BY_MAGENTO_TITLE_MODE_NONE => Mage::helper('M2ePro')->__('Disable'),
-                    AmazonListing::SEARCH_BY_MAGENTO_TITLE_MODE_YES  => Mage::helper('M2ePro')->__('Enable')
-                ),
-                'value'   => $formData['search_by_magento_title_mode'],
-                'tooltip' => Mage::helper('M2ePro')->__(
-                    '<p>Enable this additional Setting if you want M2E Pro to perform the search for Amazon
-                    Products based on Magento Product Name.</p><br>
-                    <p><strong>Please note</strong> that this setting is not applied to search for the available
-                    Amazon Products during the List action.</p>'
-                )
-            )
-        );
-
         $form->setUseContainer($this->_useFormContainer);
         $this->setForm($form);
 
@@ -271,8 +242,6 @@ found Amazon Product.</p>
 <ul class="list">
     <li>the Product is searched by ASIN/ISBN parameter. (if specified);</li>
     <li>if no result by ASIN/ISBN parameter, then UPC/EAN search is performed. (if specified);</li>
-    <li>if no result by UPC/EAN parameter, then additional search by Magento Product Name is performed. (if enabled).
-    </li>
 </ul>
 </p>
 <p>More detailed information you can find <a href="%url%" target="_blank" class="external-link">here</a>.</p>
@@ -299,8 +268,6 @@ HTML
 
             'worldwide_id_mode'             => AmazonListing::WORLDWIDE_ID_MODE_NOT_SET,
             'worldwide_id_custom_attribute' => '',
-
-            'search_by_magento_title_mode' => AmazonListing::SEARCH_BY_MAGENTO_TITLE_MODE_NONE
         );
     }
 

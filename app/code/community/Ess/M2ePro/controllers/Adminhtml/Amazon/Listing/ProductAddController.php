@@ -654,7 +654,6 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
         $listing->setData('general_id_custom_attribute', $post['general_id_custom_attribute']);
         $listing->setData('worldwide_id_mode', $post['worldwide_id_mode']);
         $listing->setData('worldwide_id_custom_attribute', $post['worldwide_id_custom_attribute']);
-        $listing->setData('search_by_magento_title_mode', $post['search_by_magento_title_mode']);
 
         $listing->save();
 

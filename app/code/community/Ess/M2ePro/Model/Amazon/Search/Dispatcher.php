@@ -1,15 +1,7 @@
 <?php
 
-/*
- * @author     M2E Pro Developers Team
- * @copyright  M2E LTD
- * @license    Commercial use is forbidden
- */
-
 class Ess_M2ePro_Model_Amazon_Search_Dispatcher
 {
-    //########################################
-
     /**
      * @param Ess_M2ePro_Model_Listing_Product $listingProduct
      * @param $query
@@ -23,8 +15,7 @@ class Ess_M2ePro_Model_Amazon_Search_Dispatcher
 
         try {
 
-            /** @var Ess_M2ePro_Model_Amazon_Search_Custom $customSearch */
-            $customSearch = Mage::getModel('M2ePro/Amazon_Search_Custom');
+            $customSearch = $this->createCustomSearchHandler();
             $customSearch->setListingProduct($listingProduct);
             $customSearch->setQuery($query);
 
@@ -35,6 +26,15 @@ class Ess_M2ePro_Model_Amazon_Search_Dispatcher
         }
 
         return $searchResult;
+    }
+
+    /**
+     * @return Ess_M2ePro_Model_Amazon_Search_Custom
+     */
+    public function createCustomSearchHandler()
+    {
+        /** @var Ess_M2ePro_Model_Amazon_Search_Custom */
+        return Mage::getModel('M2ePro/Amazon_Search_Custom');
     }
 
     /**
@@ -52,7 +52,6 @@ class Ess_M2ePro_Model_Amazon_Search_Dispatcher
 
             if (!$this->checkSearchConditions($listingProduct)) {
                 unset($listingsProducts[$key]);
-                continue;
             }
         }
 
@@ -69,6 +68,10 @@ class Ess_M2ePro_Model_Amazon_Search_Dispatcher
             foreach ($listingsProducts as $listingProduct) {
                 $settingsSearch->setListingProduct($listingProduct);
                 $settingsSearch->resetStep();
+                if (!$settingsSearch->isIdentifierValid()) {
+                    $settingsSearch->setIdentifierInvalidStatus();
+                    continue;
+                }
                 $settingsSearch->process();
             }
         } catch (Exception $exception) {
@@ -79,8 +82,6 @@ class Ess_M2ePro_Model_Amazon_Search_Dispatcher
         return true;
     }
 
-    //########################################
-
     protected function checkSearchConditions(Ess_M2ePro_Model_Listing_Product $listingProduct)
     {
         /** @var Ess_M2ePro_Model_Amazon_Listing_Product $amazonListingProduct */
@@ -90,6 +91,4 @@ class Ess_M2ePro_Model_Amazon_Search_Dispatcher
                !$amazonListingProduct->isGeneralIdOwner() &&
                !$amazonListingProduct->getGeneralId();
     }
-
-    //########################################
 }

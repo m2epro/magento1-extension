@@ -212,7 +212,6 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_listing')}` (
   `general_id_custom_attribute` VARCHAR(255) NOT NULL,
   `worldwide_id_mode` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `worldwide_id_custom_attribute` VARCHAR(255) NOT NULL,
-  `search_by_magento_title_mode` TINYINT(2) UNSIGNED NOT NULL DEFAULT 1,
   `condition_mode` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `condition_value` VARCHAR(255) NOT NULL,
   `condition_custom_attribute` VARCHAR(255) NOT NULL,

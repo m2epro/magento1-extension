@@ -162,8 +162,6 @@ HTML
         $sessionData['worldwide_id_mode'] = $amazonListing->getWorldwideIdMode();
         $sessionData['worldwide_id_custom_attribute'] = $amazonListing->getData('worldwide_id_custom_attribute');
 
-        $sessionData['search_by_magento_title_mode'] = $amazonListing->getSearchByMagentoTitleMode();
-
         Mage::helper('M2ePro/Data_Session')->setValue(
             Ess_M2ePro_Model_Amazon_Listing::CREATE_LISTING_SESSION_DATA,
             $sessionData

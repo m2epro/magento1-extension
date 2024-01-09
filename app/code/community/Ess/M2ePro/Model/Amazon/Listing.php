@@ -30,9 +30,6 @@ class Ess_M2ePro_Model_Amazon_Listing extends Ess_M2ePro_Model_Component_Child_A
     const WORLDWIDE_ID_MODE_NOT_SET          = 0;
     const WORLDWIDE_ID_MODE_CUSTOM_ATTRIBUTE = 1;
 
-    const SEARCH_BY_MAGENTO_TITLE_MODE_NONE = 0;
-    const SEARCH_BY_MAGENTO_TITLE_MODE_YES  = 1;
-
     const CONDITION_MODE_DEFAULT          = 1;
     const CONDITION_MODE_CUSTOM_ATTRIBUTE = 2;
 
@@ -519,24 +516,6 @@ class Ess_M2ePro_Model_Amazon_Listing extends Ess_M2ePro_Model_Component_Child_A
             'mode'      => $this->getWorldwideIdMode(),
             'attribute' => $this->getData('worldwide_id_custom_attribute')
         );
-    }
-
-    // ---------------------------------------
-
-    /**
-     * @return int
-     */
-    public function getSearchByMagentoTitleMode()
-    {
-        return (int)$this->getData('search_by_magento_title_mode');
-    }
-
-    /**
-     * @return bool
-     */
-    public function isSearchByMagentoTitleModeEnabled()
-    {
-        return $this->getSearchByMagentoTitleMode() == self::SEARCH_BY_MAGENTO_TITLE_MODE_YES;
     }
 
     // ---------------------------------------

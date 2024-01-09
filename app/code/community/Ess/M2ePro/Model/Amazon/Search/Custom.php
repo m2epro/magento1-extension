@@ -96,16 +96,42 @@ class Ess_M2ePro_Model_Amazon_Search_Custom
         return 'byQuery';
     }
 
+    /**
+     * @return string|false
+     */
     protected function getIdentifierType()
     {
         $query = $this->getStrippedQuery();
+        $identifierType = $this->resolveIdentifierType($query);
 
+        return $identifierType !== null ? $identifierType : false;
+    }
+
+    /**
+     * @param string $identifier
+     * @return string|null
+     */
+    public function resolveIdentifierType($identifier)
+    {
+        if (Mage::helper('M2ePro/Component_Amazon')->isASIN($identifier)) {
+            return 'ASIN';
+        }
+
+        /** @var Ess_M2ePro_Helper_Data $validationHelper */
         $validationHelper = Mage::helper('M2ePro');
+        if ($validationHelper->isISBN($identifier)) {
+            return 'ISBN';
+        }
 
-        return (Mage::helper('M2ePro/Component_Amazon')->isASIN($query) ? 'ASIN' :
-               ($validationHelper->isISBN($query)                       ? 'ISBN' :
-               ($validationHelper->isUPC($query)                        ? 'UPC'  :
-               ($validationHelper->isEAN($query)                        ? 'EAN'  : false))));
+        if ($validationHelper->isUPC($identifier)) {
+            return 'UPC';
+        }
+
+        if ($validationHelper->isEAN($identifier)) {
+            return 'EAN';
+        }
+
+        return null;
     }
 
     protected function prepareResult($searchData)

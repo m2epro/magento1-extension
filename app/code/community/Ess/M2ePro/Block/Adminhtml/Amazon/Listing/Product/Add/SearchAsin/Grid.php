@@ -157,6 +157,8 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Product_Add_SearchAsin_Grid
                 self::SEARCH_SETTINGS_STATUS_NONE => Mage::helper('M2ePro')->__('None'),
                 Ess_M2ePro_Model_Amazon_Listing_Product::SEARCH_SETTINGS_STATUS_IN_PROGRESS =>
                     Mage::helper('M2ePro')->__('In Progress'),
+                Ess_M2ePro_Model_Amazon_Listing_Product::SEARCH_SETTINGS_IDENTIFIER_INVALID =>
+                    $this->__('Product ID not found'),
                 Ess_M2ePro_Model_Amazon_Listing_Product::SEARCH_SETTINGS_STATUS_NOT_FOUND =>
                     Mage::helper('M2ePro')->__('Not Found'),
                 Ess_M2ePro_Model_Amazon_Listing_Product::SEARCH_SETTINGS_STATUS_ACTION_REQUIRED =>
@@ -307,6 +309,18 @@ HTML;
                     'The Search is being performed now by %type% "%value%"',
                     $this->prepareSearchType($searchData['type']), $searchData['value']
                 );
+
+                return <<<HTML
+<span style="color: orange; {$style}">{$msg}</span>&nbsp;
+<img class="tool-tip-image" style="{$style}" src="{$skinUrl}/images/tool-tip-icon.png">
+<span class="tool-tip-message tip-left" style="left: 528px; top: 249px; display: none; min-width: 230px;">
+    <img src="{$skinUrl}/images/help.png">
+    <span>{$tip}</span>
+</span><br/>
+HTML;
+            case Ess_M2ePro_Model_Amazon_Listing_Product::SEARCH_SETTINGS_IDENTIFIER_INVALID:
+                $msg = Mage::helper('M2ePro')->__('Invalid Product ID');
+                $tip = Mage::helper('M2ePro')->__('Product ID is missing or has invalid format');
 
                 return <<<HTML
 <span style="color: orange; {$style}">{$msg}</span>&nbsp;
@@ -602,7 +616,6 @@ HTML;
 
         if (!$listing->getChildObject()->isGeneralIdAttributeMode() &&
             !$listing->getChildObject()->isWorldwideIdAttributeMode()) {
-            if (!$listing->getChildObject()->isSearchByMagentoTitleModeEnabled()) {
                 $gridId = $this->getId();
 
                 $disableMassactionSearch = <<<JS
@@ -615,7 +628,6 @@ if (mmassActionEl &&  mmassActionEl.select('option[value="assignGeneralId"]').le
     mmassActionEl.insert({bottom: assignGeneralIdOption.remove()});
 }
 JS;
-            }
         } else {
             $autoSearchSetting = $listing->getSetting('additional_data', 'auto_search_was_performed');
 

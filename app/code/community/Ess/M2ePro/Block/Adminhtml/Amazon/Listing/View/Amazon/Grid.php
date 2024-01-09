@@ -1248,6 +1248,20 @@ HTML;
 HTML;
         }
 
+        if ($searchSettingsStatus == Ess_M2ePro_Model_Amazon_Listing_Product::SEARCH_SETTINGS_IDENTIFIER_INVALID) {
+            $tip = Mage::helper('M2ePro')->__('Product ID not found.');
+            $tip = Mage::helper('M2ePro')->escapeJs($tip);
+
+            $iconSrc = $iconPath.'error.png';
+
+            return <<<HTML
+{$na} &nbsp;
+<a href="javascript: void(0);" title="{$tip}"
+    onclick="ListingGridObj.productSearchHandler.openPopUp(0,'{$productTitle}',{$lpId},'{$tip}');">
+    <img src="{$iconSrc}" alt="" width="16" height="16"></a>
+HTML;
+        }
+
         if ($searchSettingsStatus == Ess_M2ePro_Model_Amazon_Listing_Product::SEARCH_SETTINGS_STATUS_NOT_FOUND) {
             $tip = Mage::helper('M2ePro')->__(
                 'There were no Products found on Amazon according to the Listing Search Settings.'

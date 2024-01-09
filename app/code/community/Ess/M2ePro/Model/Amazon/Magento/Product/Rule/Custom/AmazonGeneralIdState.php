@@ -45,9 +45,13 @@ class Ess_M2ePro_Model_Amazon_Magento_Product_Rule_Custom_AmazonGeneralIdState
 
         $searchStatusActionRequired = Ess_M2ePro_Model_Amazon_Listing_Product::SEARCH_SETTINGS_STATUS_ACTION_REQUIRED;
         $searchStatusNotFound = Ess_M2ePro_Model_Amazon_Listing_Product::SEARCH_SETTINGS_STATUS_NOT_FOUND;
+        $searchStatusIdentifierInvalid = Ess_M2ePro_Model_Amazon_Listing_Product::SEARCH_SETTINGS_IDENTIFIER_INVALID;
 
-        if ($product->getData('search_settings_status') == $searchStatusActionRequired ||
-            $product->getData('search_settings_status') == $searchStatusNotFound) {
+        if (
+            $product->getData('search_settings_status') == $searchStatusActionRequired
+            || $product->getData('search_settings_status') == $searchStatusNotFound
+            || $product->getData('search_settings_status') == $searchStatusIdentifierInvalid
+        ) {
             return Ess_M2ePro_Model_Amazon_Listing_Product::GENERAL_ID_STATE_ACTION_REQUIRED;
         }
 
