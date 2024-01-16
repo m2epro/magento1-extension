@@ -157,7 +157,6 @@ HTML;
 
         if (Mage::helper('M2ePro/Client_Cache')->isZendOpcacheAvailable()) {
             $messages[] = 'Zend Optcache';
-            // @codingStandardsIgnoreLine
             opcache_reset();
         }
 

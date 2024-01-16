@@ -17,7 +17,7 @@ class Ess_M2ePro_Sql_Update_y18_m09_NewDevelopmentUpgrades extends Ess_M2ePro_Mo
             }
         }
 
-        file_put_contents($installedFeaturesFile, json_encode($installedFeatures, JSON_PRETTY_PRINT));
+        file_put_contents($installedFeaturesFile, json_encode($installedFeatures));
     }
 
     //########################################

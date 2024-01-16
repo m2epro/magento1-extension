@@ -1,7 +1,5 @@
 <?php
 
-// @codingStandardsIgnoreFile
-
 class Ess_M2ePro_Sql_Update_y23_m10_EnableAmazonShippingServiceForSomeMarketplaces extends
     Ess_M2ePro_Model_Upgrade_Feature_AbstractFeature
 {
@@ -19,10 +17,15 @@ class Ess_M2ePro_Sql_Update_y23_m10_EnableAmazonShippingServiceForSomeMarketplac
             array('name' => 'India', 'id' => 46),
         );
 
+        $ids = array();
+        foreach ($marketplaces as $row) {
+            $ids[] = $row['id'];
+        }
+
         $this->_installer->getConnection()->update(
             $this->_installer->getTablesObject()->getFullName('m2epro_amazon_marketplace'),
             array('is_merchant_fulfillment_available' => 1),
-            array('marketplace_id IN (?)' => array_column($marketplaces, 'id'))
+            array('marketplace_id IN (?)' => $ids)
         );
     }
 }

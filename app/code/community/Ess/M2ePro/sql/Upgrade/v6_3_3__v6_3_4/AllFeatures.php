@@ -736,7 +736,7 @@ SQl
         $newLogsData = array();
         while ($row = $logRows->fetch()) {
 
-            if ($row['description']{0} != '{') {
+            if ($row['description'][0] != '{') {
                 continue;
             }
 

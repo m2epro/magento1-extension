@@ -66,17 +66,6 @@ class Ess_M2ePro_Block_Adminhtml_ControlPanel_Tabs_Database_Table extends Mage_A
         // ---------------------------------------
 
         // ---------------------------------------
-        $url = $this->getUrl('*/*/truncateTables', array('tables' => $tableName));
-        $this->_addButton(
-            'delete_all', array(
-            'label'     => Mage::helper('M2ePro')->__('Truncate Table'),
-            'onclick'   => 'deleteConfirm(\'Are you sure?\', \''.$url.'\')',
-            'class'     => 'delete_all delete'
-            )
-        );
-        // ---------------------------------------
-
-        // ---------------------------------------
         $this->_addButton(
             'add_row', array(
             'label'     => Mage::helper('M2ePro')->__('Append Row'),
