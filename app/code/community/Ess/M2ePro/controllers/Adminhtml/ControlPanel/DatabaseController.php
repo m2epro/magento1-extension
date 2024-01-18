@@ -39,52 +39,6 @@ class Ess_M2ePro_Adminhtml_ControlPanel_DatabaseController
              ->renderLayout();
     }
 
-    public function deleteTablesRowsAction()
-    {
-        $tables = $this->getRequest()->getParam('tables', array());
-        !is_array($tables) && $tables = array($tables);
-
-        $writeConnection = Mage::getSingleton('core/resource')->getConnection('core_write');
-
-        foreach ($tables as $table) {
-            $tableName = Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix($table);
-            $writeConnection->delete($tableName);
-
-            $this->afterTableAction($table);
-        }
-
-        $this->_getSession()->addSuccess('Deleting Tables Rows was completed.');
-
-        if (count($tables) == 1) {
-            $this->redirectToTablePage($tables[0]);
-        }
-
-        $this->_redirectUrl(Mage::helper('M2ePro/View_ControlPanel')->getPageDatabaseTabUrl());
-    }
-
-    public function truncateTablesAction()
-    {
-        $tables = $this->getRequest()->getParam('tables', array());
-        !is_array($tables) && $tables = array($tables);
-
-        $writeConnection = Mage::getSingleton('core/resource')->getConnection('core_write');
-
-        foreach ($tables as $table) {
-            $tableName = Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix($table);
-            $writeConnection->truncateTable($tableName);
-
-            $this->afterTableAction($table);
-        }
-
-        $this->_getSession()->addSuccess('Truncate Tables was completed.');
-
-        if (count($tables) == 1) {
-            $this->redirectToTablePage($tables[0]);
-        }
-
-        $this->_redirectUrl(Mage::helper('M2ePro/View_ControlPanel')->getPageDatabaseTabUrl());
-    }
-
     // ---------------------------------------
 
     public function addTableRowAction()

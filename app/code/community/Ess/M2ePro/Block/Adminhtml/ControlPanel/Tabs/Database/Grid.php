@@ -143,47 +143,6 @@ class Ess_M2ePro_Block_Adminhtml_ControlPanel_Tabs_Database_Grid extends Mage_Ad
 
     //########################################
 
-    public function getMassactionBlockName()
-    {
-        return 'M2ePro/adminhtml_grid_massaction';
-    }
-
-    protected function _prepareMassaction()
-    {
-        // Set massaction identifiers
-        // ---------------------------------------
-        $this->setMassactionIdField('table_name');
-        $this->getMassactionBlock()->setFormFieldName('tables');
-        $this->getMassactionBlock()->setUseSelectAll(false);
-        // ---------------------------------------
-
-        // Set delete action
-        // ---------------------------------------
-        $this->getMassactionBlock()->addItem(
-            'delete', array(
-            'label'    => Mage::helper('M2ePro')->__('Delete Table(s) Rows'),
-            'url'      => $this->getUrl('*/adminhtml_controlPanel_database/deleteTablesRows'),
-            'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
-            )
-        );
-        // ---------------------------------------
-
-        // Set truncate action
-        // ---------------------------------------
-        $this->getMassactionBlock()->addItem(
-            'truncate', array(
-            'label'    => Mage::helper('M2ePro')->__('Truncate Table(s)'),
-            'url'      => $this->getUrl('*/adminhtml_controlPanel_database/truncateTables'),
-            'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
-            )
-        );
-        // ---------------------------------------
-
-        return parent::_prepareMassaction();
-    }
-
-    //########################################
-
     public function getGridUrl()
     {
         return $this->getUrl('*/adminhtml_controlPanel_database/databaseGrid', array('_current'=>true));
