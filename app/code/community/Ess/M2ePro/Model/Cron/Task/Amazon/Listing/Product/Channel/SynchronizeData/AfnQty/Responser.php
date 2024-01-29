@@ -23,15 +23,24 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
     protected $_logger;
     /** @var array */
     private $instructionForCheckingProductData = array();
-
+    /** @var Ess_M2ePro_Model_Resource_Listing_Log */
+    private $listingLoggerResource;
+    /** @var Ess_M2ePro_Model_Listing_Log */
+    private $listingLogger;
 
     /**
      * @throws Ess_M2ePro_Model_Exception_Logic
      */
-    public function __construct(array $params = array(), Ess_M2ePro_Model_Connector_Connection_Response $response)
-    {
+    public function __construct(
+        Ess_M2ePro_Model_Connector_Connection_Response $response,
+        Ess_M2ePro_Model_Resource_Listing_Log $listingLoggerResource,
+        Ess_M2ePro_Model_Listing_Log $listingLogger,
+        array $params = array()
+    ){
         parent::__construct($params, $response);
 
+        $this->listingLogger = $listingLogger;
+        $this->listingLoggerResource = $listingLoggerResource;
         $this->_merchantManager = Mage::getModel(
             'M2ePro/Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_AfnQty_MerchantManager'
         );
@@ -203,6 +212,28 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
         $oldStatus = $item->getData('status');
         $newStatus = $afnQty ? Ess_M2ePro_Model_Listing_Product::STATUS_LISTED
             : Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED;
+
+        $listingProduct = $item->getChildObject();
+        $oldAfnQty = (int)$listingProduct->getData('online_afn_qty');
+
+        if ($afnQty != $oldAfnQty) {
+            $logMessage = Mage::helper('M2ePro')->__(
+                'AFN Product QTY was changed from %from% to %to% .',
+                $oldAfnQty,
+                $afnQty
+            );
+            $this->listingLogger->setComponentMode(Ess_M2ePro_Helper_Component_Amazon::NICK);
+            $this->listingLogger->addProductMessage(
+                $item->getListingId(),
+                $item->getProductId(),
+                $item->getId(),
+                Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION,
+                $this->listingLoggerResource->getNextActionId(),
+                Ess_M2ePro_Model_Listing_Log::ACTION_CHANNEL_CHANGE,
+                $logMessage,
+                Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS
+            );
+        }
 
         $item->setData('online_afn_qty', $afnQty);
         $item->setData('status', $newStatus);

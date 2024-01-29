@@ -599,5 +599,16 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation extends Ess_M2ePro_Model_C
         return $findOrderItem;
     }
 
-    //########################################
+    /*** @return int|null */
+    public function getVariationProductId()
+    {
+        foreach ($this->getOptions(true) as $option) {
+            if (!$option->getProductId()) {
+                continue;
+            }
+            return $option->getProductId();
+        }
+
+        return null;
+    }
 }

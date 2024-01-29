@@ -279,10 +279,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Validator_ListTyp
         }
 
         $changingListTypeMessage = Mage::helper('M2ePro/Module_Log')->encodeDescription(
-            'M2E Pro did not use New ASIN/ISBN Creation feature assigned because settings
-            for UPC/EAN Search were specified in Listing Search Settings and a value
-            %worldwide_id% were set in Magento Attribute for that Product.',
-            array('!worldwide_id' => $worldwideId)
+            'New ASIN/ISBN was not created because UPC/EAN of the Product is already present in Amazon catalog'
         );
 
         if (!Mage::helper('M2ePro')->isUPC($worldwideId) && !Mage::helper('M2ePro')->isEAN($worldwideId)) {

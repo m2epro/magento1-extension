@@ -66,7 +66,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_QtyCalculator
         if ($ebaySynchronizationTemplate->isStopWhenQtyCalculatedHasValue()) {
             $minQty = (int)$ebaySynchronizationTemplate->getStopWhenQtyCalculatedHasValue();
 
-            if ($qty <= $minQty) {
+            if ($qty <= $minQty || $this->isVariationHasStopAdvancedRules($variation)) {
                 return 0;
             }
         }
@@ -109,5 +109,41 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_QtyCalculator
         return parent::applySellingFormatTemplateModifications($value);
     }
 
-    //########################################
+    private function isVariationHasStopAdvancedRules(Ess_M2ePro_Model_Listing_Product_Variation $variation)
+    {
+        $ebaySynchronizationTemplate = $variation->getListingProduct()
+            ->getChildObject()
+            ->getEbaySynchronizationTemplate();
+
+        if (!$ebaySynchronizationTemplate->isStopAdvancedRulesEnabled()) {
+            return false;
+        }
+
+        /** @var \Ess_M2ePro_Model_Magento_Product_Rule $ruleModel */
+        $ruleModel = Mage::getModel('M2ePro/Magento_Product_Rule')->setData(
+            array(
+                'store_id' => $variation->getListingProduct()->getListing()->getStoreId(),
+                'prefix'   => Ess_M2ePro_Model_Ebay_Template_Synchronization::STOP_ADVANCED_RULES_PREFIX
+            )
+        );
+        $ruleModel->loadFromSerialized($ebaySynchronizationTemplate->getStopAdvancedRulesFilters());
+
+        $conditions = $ruleModel->getConditions()->getConditions();
+
+        if (empty($conditions)) {
+            return false;
+        }
+
+        $productIdVariation = $variation->getChildObject()->getVariationProductId();
+
+        /** @var $magentoProduct Ess_M2ePro_Model_Magento_Product */
+        $magentoProduct = Mage::getModel('M2ePro/Magento_Product');
+        $magentoProduct->setProductId($productIdVariation);
+
+        if ($ruleModel->validate($magentoProduct->getProduct())) {
+            return true;
+        }
+
+        return false;
+    }
 }
