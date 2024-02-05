@@ -2,7 +2,7 @@
   "name": "m2epro/magento1-extension",
   "description": "M2E Pro is a Magento trusted (TM), award-winning extension, which allows merchants of all sizes to fully integrate Magento based system(s) into eBay/Amazon/Walmart platforms.",
   "type": "magento-module",
-  "version": "6.57.0",
+  "version": "6.58.0",
   "license": "proprietary",
   "keywords": ["ebay", "amazon", "walmart", "magento"],
   "homepage": "https://www.m2epro.com/",

@@ -145,6 +145,24 @@ class Ess_M2ePro_Model_Amazon_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
         return $this->_addressData;
     }
 
+    public function getCustomerFirstName()
+    {
+        $addressData = $this->getAddressData();
+
+        return !empty($addressData['customer_firstname'])
+            ? $addressData['customer_firstname']
+            : $addressData['firstname'];
+    }
+
+    public function getCustomerLastName()
+    {
+        $addressData = $this->getAddressData();
+
+        return !empty($addressData['customer_lastname'])
+            ? $addressData['customer_lastname']
+            : $addressData['lastname'];
+    }
+
     //########################################
 
     /**
