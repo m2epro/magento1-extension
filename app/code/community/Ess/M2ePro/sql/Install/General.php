@@ -799,7 +799,6 @@ SQL
 INSERT INTO `{$this->_installer->getTable('m2epro_config')}` (`group`,`key`,`value`,`update_date`,`create_date`) VALUES
   ('/', 'is_disabled', '0', NOW(), NOW()),
   ('/', 'environment', 'production', NOW(), NOW()),
-  ('/', 'installation_key', '{$this->_installer->generateRandomHash()}', NOW(), NOW()),
   ('/license/', 'key', NULL, NOW(), NOW()),
   ('/license/domain/', 'real', NULL, NOW(), NOW()),
   ('/license/domain/', 'valid', NULL, NOW(), NOW()),

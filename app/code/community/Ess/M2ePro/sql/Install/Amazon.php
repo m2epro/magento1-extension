@@ -762,6 +762,8 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_template_selling_forma
   `regular_sale_price_custom_attribute` VARCHAR(255) NOT NULL,
   `regular_sale_price_coefficient` VARCHAR(255) NOT NULL,
   `regular_price_variation_mode` TINYINT(2) UNSIGNED NOT NULL,
+  `regular_list_price_mode` SMALLINT UNSIGNED NOT NULL DEFAULT 0,
+  `regular_list_price_custom_attribute` VARCHAR(255) DEFAULT NULL,
   `regular_sale_price_start_date_mode` TINYINT(2) UNSIGNED NOT NULL,
   `regular_sale_price_start_date_value` DATETIME NOT NULL,
   `regular_sale_price_start_date_custom_attribute` VARCHAR(255) NOT NULL,

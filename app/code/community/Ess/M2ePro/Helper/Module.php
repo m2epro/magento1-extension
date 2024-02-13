@@ -82,13 +82,6 @@ class Ess_M2ePro_Helper_Module extends Mage_Core_Helper_Abstract
 
     //########################################
 
-    public function getInstallationKey()
-    {
-        return $this->getConfig()->getGroupValue('/', 'installation_key');
-    }
-
-    //########################################
-
     public function getServerMessages()
     {
         $messages = $this->getRegistry()->getValueFromJson('/server/messages/');

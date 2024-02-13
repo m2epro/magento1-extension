@@ -28,6 +28,9 @@ class Ess_M2ePro_Model_Amazon_Template_SellingFormat extends Ess_M2ePro_Model_Co
     const DATE_VALUE      = 0;
     const DATE_ATTRIBUTE  = 1;
 
+    const LIST_PRICE_MODE_NONE = 0;
+    const LIST_PRICE_MODE_ATTRIBUTE = 3;
+
     /** @var Ess_M2ePro_Model_ActiveRecord_Factory */
     protected $_activeRecordFactory;
 
@@ -599,6 +602,32 @@ class Ess_M2ePro_Model_Amazon_Template_SellingFormat extends Ess_M2ePro_Model_Co
     public function isRegularPriceVariationModeChildren()
     {
         return $this->getRegularPriceVariationMode() == self::PRICE_VARIATION_MODE_CHILDREN;
+    }
+
+    // ---------------------------------------
+
+    /**
+     * @return int
+     */
+    public function getListPriceMode()
+    {
+        return (int)$this->getData('regular_list_price_mode');
+    }
+
+    /**
+     * @return bool
+     */
+    public function isListPriceModeNone()
+    {
+        return $this->getListPriceMode() === self::LIST_PRICE_MODE_NONE;
+    }
+
+    /**
+     * @return string
+     */
+    public function getListPriceAttribute()
+    {
+        return (string)$this->getData('regular_list_price_custom_attribute');
     }
 
     // ---------------------------------------

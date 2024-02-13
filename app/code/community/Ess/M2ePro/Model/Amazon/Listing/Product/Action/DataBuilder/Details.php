@@ -64,10 +64,9 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Details
         } while (false);
 
         if (!$isUseDescriptionTemplate) {
-            if (isset($data['gift_wrap']) || isset($data['gift_message']) || isset($data['shipping_data'])) {
-                $data['description_data']['title'] = $this->getAmazonListingProduct()
-                                                          ->getMagentoProduct()
-                                                          ->getName();
+            $descriptionData = $this->getDescriptionDataWithoutDescriptionTemplate($data);
+            if (!empty($descriptionData)) {
+                $data['description_data'] = $descriptionData;
             }
 
             return $data;
@@ -146,6 +145,37 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Details
     // ---------------------------------------
 
     /**
+     * @param array $data
+     * @return array[]
+     * @throws \Ess_M2ePro_Model_Exception_Logic
+     */
+    private function getDescriptionDataWithoutDescriptionTemplate(array $data)
+    {
+        $descriptionData = array();
+
+        $listPrice = $this->findListPrice(
+            $this->getListing()->getStoreId(),
+            $this->getAmazonListingProduct()
+        );
+        if ($listPrice !== null) {
+            $descriptionData['msrp_rrp'] = $listPrice;
+        }
+
+        // If description_data is not empty, then title must be filled to pass validation on the server worker
+        if (!empty($descriptionData)
+            || isset($data['gift_wrap'])
+            || isset($data['gift_message'])
+            || isset($data['shipping_data'])
+        ) {
+            $descriptionData['title'] = $this->getAmazonListingProduct()
+                ->getMagentoProduct()
+                ->getName();
+        }
+
+        return $descriptionData;
+    }
+
+    /**
      * @return array
      */
     protected function getDescriptionData()
@@ -163,9 +193,10 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Details
         $data['title'] = $this->getDefinitionSource()->getTitle();
         $this->processNotFoundAttributes('Title');
 
-        $this->searchNotFoundAttributes();
-        $data['msrp_rrp'] = $this->getDefinitionSource()->getMsrpRrp($this->getListing()->getStoreId());
-        $this->processNotFoundAttributes('MSRP / RRP');
+        $data['msrp_rrp'] = $this->findSuggestedRetailPrice(
+            $this->getListing()->getStoreId(),
+            $this->getAmazonListingProduct()
+        );
 
         $this->searchNotFoundAttributes();
         $data['description'] = $this->getDefinitionSource()->getDescription();
@@ -403,5 +434,74 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Details
         return $this->_definitionSource;
     }
 
-    //########################################
+    // ---------------------------------------
+
+    /**
+     * @param int $storeId
+     * @param \Ess_M2ePro_Model_Amazon_Listing_Product $amazonListingProduct
+     * @return float|null
+     * @throws \Ess_M2ePro_Model_Exception_Logic
+     */
+    private function findSuggestedRetailPrice($storeId, Ess_M2ePro_Model_Amazon_Listing_Product $amazonListingProduct)
+    {
+        $listPrice = $this->findListPrice($storeId, $amazonListingProduct);
+        if ($listPrice !== null) {
+            return $listPrice;
+        }
+
+        $this->searchNotFoundAttributes();
+        $msrpRrp = $this->getDefinitionSource()->getMsrpRrp($storeId);
+        $this->processNotFoundAttributes('MSRP / RRP');
+
+        return $msrpRrp;
+    }
+
+    /**
+     * @param int $storeId
+     * @param Ess_M2ePro_Model_Amazon_Listing_Product $amazonListingProduct
+     * @return float|null
+     * @throws \Ess_M2ePro_Model_Exception_Logic
+     */
+    private function findListPrice($storeId, Ess_M2ePro_Model_Amazon_Listing_Product $amazonListingProduct)
+    {
+        $sellingTemplate = $amazonListingProduct->getAmazonSellingFormatTemplate();
+
+        if ($sellingTemplate->isListPriceModeNone()) {
+            return null;
+        }
+
+        $attribute = $sellingTemplate->getListPriceAttribute();
+        if (empty($attribute)) {
+            return null;
+        }
+
+        $defaultCurrency = $amazonListingProduct
+            ->getMarketplace()
+            ->getChildObject()
+            ->getDefaultCurrency();
+
+        /** @var Ess_M2ePro_Helper_Magento_Attribute $magentoAttributeHelper */
+        $magentoAttributeHelper = Mage::helper('M2ePro/Magento_Attribute');
+
+        $this->searchNotFoundAttributes();
+        $attributeValue = $magentoAttributeHelper->convertAttributeTypePriceFromStoreToMarketplace(
+            $amazonListingProduct->getMagentoProduct(),
+            $attribute,
+            $defaultCurrency,
+            $storeId
+        );
+        $this->processNotFoundAttributes('List Price Attribute');
+
+        if (empty($attributeValue)) {
+            return 0.00;
+        }
+
+        if (is_string($attributeValue)) {
+            $attributeValue = str_replace(',', '.', $attributeValue);
+        }
+
+        return round((float)$attributeValue, 2);
+    }
+
+    // ---------------------------------------
 }

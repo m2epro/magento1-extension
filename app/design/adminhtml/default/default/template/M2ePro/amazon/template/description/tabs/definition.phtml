@@ -483,51 +483,59 @@ $attributesByInputTypes = array(
 
 </div>
 
-<div class="entry-edit" id="magento_block_amazon_template_description_price">
+<?php if ($formData['definition']['msrp_rrp_mode'] != Ess_M2ePro_Model_Amazon_Template_Description_Definition::MSRP_RRP_MODE_NONE): ?>
+    <div class="entry-edit" id="magento_block_amazon_template_description_price">
 
-    <div class="entry-edit-head">
-        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Price'); ?></h4>
-    </div>
+        <div class="entry-edit-head">
+            <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Price'); ?></h4>
+        </div>
 
-    <div class="fieldset">
-        <div class="hor-scroll">
+        <div class="fieldset">
+            <div class="hor-scroll">
 
-            <table class="form-list" cellspacing="0" cellpadding="0">
-                <tr>
-                    <td class="label">
-                        <label for="image_main_mode"><?php echo Mage::helper('M2ePro')->__('MSRP / RRP'); ?>:</label>
-                    </td>
-                    <td class="value" style="width: auto;">
-                        <input type="hidden" id="msrp_rrp_custom_attribute" name="definition[msrp_rrp_custom_attribute]" value="<?php echo $formData['definition']['msrp_rrp_custom_attribute']; ?>" />
+                <table class="form-list" cellspacing="0" cellpadding="0">
+                    <tr>
+                        <td class="label">
+                            <label for="image_main_mode"><?php echo Mage::helper('M2ePro')->__('MSRP / RRP'); ?>
+                                :</label>
+                        </td>
+                        <td class="value" style="width: auto;">
+                            <input type="hidden" id="msrp_rrp_custom_attribute"
+                                   name="definition[msrp_rrp_custom_attribute]"
+                                   value="<?php echo $formData['definition']['msrp_rrp_custom_attribute']; ?>"/>
 
-                        <select id="msrp_rrp_mode" name="definition[msrp_rrp_mode]" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,price">
-                            <option value="<?php echo Ess_M2ePro_Model_Amazon_Template_Description_Definition::MSRP_RRP_MODE_NONE; ?>" <?php if ($formData['definition']['msrp_rrp_mode'] == Ess_M2ePro_Model_Amazon_Template_Description_Definition::MSRP_RRP_MODE_NONE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('None'); ?></option>
+                            <select id="msrp_rrp_mode" name="definition[msrp_rrp_mode]"
+                                    class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,price">
+                                <option value="<?php echo Ess_M2ePro_Model_Amazon_Template_Description_Definition::MSRP_RRP_MODE_NONE; ?>"><?php echo Mage::helper('M2ePro')->__('None'); ?></option>
 
-                            <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
-                                <?php echo $this->getForceAddedAttributeOptionHtml($formData['definition']['msrp_rrp_custom_attribute'], $attributesByInputTypes['text_price'], Ess_M2ePro_Model_Amazon_Template_Description_Definition::MSRP_RRP_MODE_ATTRIBUTE); ?>
-                                <?php foreach($attributesByInputTypes['text_price'] as $attribute) : ?>
-                                    <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Amazon_Template_Description_Definition::MSRP_RRP_MODE_ATTRIBUTE; ?>" <?php if ($attribute['code'] == $formData['definition']['msrp_rrp_custom_attribute']): ?>selected="selected"<?php endif; ?>>
-                                        <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </optgroup>
-                        </select>
-                        <p class="note">
+                                <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
+                                    <?php echo $this->getForceAddedAttributeOptionHtml($formData['definition']['msrp_rrp_custom_attribute'], $attributesByInputTypes['text_price'], Ess_M2ePro_Model_Amazon_Template_Description_Definition::MSRP_RRP_MODE_ATTRIBUTE); ?>
+                                    <?php foreach ($attributesByInputTypes['text_price'] as $attribute) : ?>
+                                        <option attribute_code="<?php echo $attribute['code']; ?>"
+                                                value="<?php echo Ess_M2ePro_Model_Amazon_Template_Description_Definition::MSRP_RRP_MODE_ATTRIBUTE; ?>"
+                                                <?php if ($attribute['code'] == $formData['definition']['msrp_rrp_custom_attribute']): ?>selected="selected"<?php endif; ?>>
+                                            <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </optgroup>
+                            </select>
+                            <p class="note">
                             <span>
                                 <?php echo Mage::helper('M2ePro')->__(
                                     'Manufacturer\'s suggested retail price (MSRP), or the recommended retail price (RRP) is the price at which manufacturer recommends the retailers to sell the Product.<br>
                                     <strong>Note:</strong> It is not the price that buyers will pay for your Item. Your retail price should be set in Selling Policy.'
                                 ); ?>
                             </span>
-                        </p>
-                    </td>
-                </tr>
-            </table>
+                            </p>
+                        </td>
+                    </tr>
+                </table>
 
+            </div>
         </div>
-    </div>
 
-</div>
+    </div>
+<?php endif; ?>
 
 <div class="entry-edit" id="magento_block_amazon_template_description_image">
 

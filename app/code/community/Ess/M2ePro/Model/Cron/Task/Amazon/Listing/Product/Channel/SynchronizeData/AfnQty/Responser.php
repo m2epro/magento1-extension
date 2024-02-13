@@ -31,16 +31,12 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
     /**
      * @throws Ess_M2ePro_Model_Exception_Logic
      */
-    public function __construct(
-        Ess_M2ePro_Model_Connector_Connection_Response $response,
-        Ess_M2ePro_Model_Resource_Listing_Log $listingLoggerResource,
-        Ess_M2ePro_Model_Listing_Log $listingLogger,
-        array $params = array()
-    ){
+    public function __construct(array $params = array(), Ess_M2ePro_Model_Connector_Connection_Response $response)
+    {
         parent::__construct($params, $response);
 
-        $this->listingLogger = $listingLogger;
-        $this->listingLoggerResource = $listingLoggerResource;
+        $this->listingLogger = Mage::getModel('M2ePro/Ess_M2ePro_Model_Listing_Log');
+        $this->listingLoggerResource = Mage::getModel('M2ePro/Ess_M2ePro_Model_Resource_Listing_Log');
         $this->_merchantManager = Mage::getModel(
             'M2ePro/Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_AfnQty_MerchantManager'
         );

@@ -195,6 +195,20 @@ window.AmazonTemplateSellingFormat = Class.create(AmazonTemplateEdit, {
 
     // ---------------------------------------
 
+    regular_list_price_mode_change: function()
+    {
+        var modeAttribute = M2ePro.php.constant(
+            'Ess_M2ePro_Model_Amazon_Template_SellingFormat::LIST_PRICE_MODE_ATTRIBUTE'
+        );
+
+        $('regular_list_price_custom_attribute').value = '';
+        if (this.value == modeAttribute) {
+            AmazonTemplateSellingFormatObj.updateHiddenValue(this, $('regular_list_price_custom_attribute'));
+        }
+    },
+
+    // ---------------------------------------
+
     regular_sale_price_mode_change: function()
     {
         var self = AmazonTemplateSellingFormatObj;

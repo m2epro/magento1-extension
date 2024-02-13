@@ -59,6 +59,19 @@ class Ess_M2ePro_Model_Amazon_Template_SellingFormat_Diff extends Ess_M2ePro_Mod
         return $this->isSettingsDifferent($keys);
     }
 
+    /**
+     * @return bool
+     */
+    public function isListPriceDiffered()
+    {
+        $keys = array(
+            'regular_list_price_mode',
+            'regular_list_price_custom_attribute',
+        );
+
+        return $this->isSettingsDifferent($keys);
+    }
+
     public function isBusinessPriceDifferent()
     {
         $keys = array(

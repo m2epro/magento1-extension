@@ -79,11 +79,11 @@ class Ess_M2ePro_Model_Connector_Connection_Request
                 'location' => array(
                     'domain' => Mage::helper('M2ePro/Client')->getDomain(),
                     'ip' => Mage::helper('M2ePro/Client')->getIp(),
-                    'directory' => Mage::helper('M2ePro/Client')->getBaseDirectory()
                 ),
-                'locale' => Mage::helper('M2ePro/Magento')->getLocale()
             ),
-            'auth' => array(),
+            'auth' => array(
+                'application_key' => Mage::helper('M2ePro/Server')->getApplicationKey(),
+            ),
             'component' => array(
                 'name' => $this->_component,
                 'version' => $this->_componentVersion
@@ -95,22 +95,12 @@ class Ess_M2ePro_Model_Connector_Connection_Request
             )
         );
 
-        $applicationKey = Mage::helper('M2ePro/Server')->getApplicationKey();
-        $applicationKey !== null && $applicationKey != '' && $data['auth']['application_key'] = $applicationKey;
-
         $licenseKey = Mage::helper('M2ePro/Module_License')->getKey();
-        $licenseKey !== null && $licenseKey != '' && $data['auth']['license_key'] = $licenseKey;
+        if (!empty($licenseKey)) {
+            $data['auth']['license_key'] = $licenseKey;
+        }
 
-        $installationKey = Mage::helper('M2ePro/Module')->getInstallationKey();
-        $installationKey !== null && $installationKey != '' && $data['auth']['installation_key'] = $installationKey;
-
-        return array_merge_recursive($data, $this->_infoRewrites);
-    }
-
-    public function setInfoRewrites(array $value = array())
-    {
-        $this->_infoRewrites = $value;
-        return $this;
+        return $data;
     }
 
     // ---------------------------------------

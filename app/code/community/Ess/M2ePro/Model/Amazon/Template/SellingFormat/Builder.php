@@ -83,6 +83,9 @@ class Ess_M2ePro_Model_Amazon_Template_SellingFormat_Builder extends Ess_M2ePro_
             'regular_map_price_mode' => Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_NONE,
             'regular_map_price_custom_attribute' => '',
 
+            'regular_list_price_mode' => AmazonTemplateSellingFormat::LIST_PRICE_MODE_NONE,
+            'regular_list_price_custom_attribute' => '',
+
             'regular_sale_price_mode' => Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_NONE,
             'regular_sale_price_coefficient' => '',
             'regular_sale_price_custom_attribute' => '',

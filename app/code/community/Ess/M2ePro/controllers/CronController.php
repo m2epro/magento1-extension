@@ -36,12 +36,7 @@ class Ess_M2ePro_CronController extends Mage_Core_Controller_Varien_Action
 
     public function testAction()
     {
-        $installationKey = Mage::helper('M2ePro/Module')->getInstallationKey();
-        if (empty($installationKey)) {
-            return $this->getResponse()->setBody('ok');
-        }
-
-        return $this->getResponse()->setBody($installationKey);
+        return $this->getResponse()->setBody('ok');
     }
 
     // ---------------------------------------
