@@ -714,7 +714,7 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_template_category_specif
   `attribute_title` VARCHAR(255) NOT NULL,
   `value_mode` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `value_ebay_recommended` LONGTEXT DEFAULT NULL,
-  `value_custom_value` VARCHAR(255) DEFAULT NULL,
+  `value_custom_value` TEXT DEFAULT NULL,
   `value_custom_attribute` VARCHAR(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   INDEX `template_category_id` (`template_category_id`)

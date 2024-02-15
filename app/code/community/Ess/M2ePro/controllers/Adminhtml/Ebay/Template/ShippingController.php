@@ -83,6 +83,19 @@ class Ess_M2ePro_Adminhtml_Ebay_Template_ShippingController extends Ess_M2ePro_C
 
         $rateTables = $ebayAccount->getRateTables();
 
+        if (empty($rateTables)) {
+            return $this->getResponse()->setBody(
+                Mage::helper('M2ePro')->jsonEncode(
+                    array(
+                        'error' => Mage::helper('M2ePro')->__(
+                            'No available rate tables found for this seller account.
+                             Ensure at least one rate table is created for this account on eBay.'
+                        )
+                    )
+                )
+            );
+        }
+
         $marketplace = Mage::helper('M2ePro/Component_Ebay')->getModel('Marketplace')->load($marketplaceId);
         $countryCode = $marketplace->getChildObject()->getOriginCountry();
         $type = $type == 'local' ? 'domestic' : 'international';
