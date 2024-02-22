@@ -35,8 +35,8 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
     {
         parent::__construct($params, $response);
 
-        $this->listingLogger = Mage::getModel('M2ePro/Ess_M2ePro_Model_Listing_Log');
-        $this->listingLoggerResource = Mage::getModel('M2ePro/Ess_M2ePro_Model_Resource_Listing_Log');
+        $this->listingLogger = Mage::getModel('M2ePro/Listing_Log');
+        $this->listingLoggerResource = Mage::getResourceModel('M2ePro/Listing_Log');
         $this->_merchantManager = Mage::getModel(
             'M2ePro/Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_AfnQty_MerchantManager'
         );
@@ -209,6 +209,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
         $newStatus = $afnQty ? Ess_M2ePro_Model_Listing_Product::STATUS_LISTED
             : Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED;
 
+        /** @var Ess_M2ePro_Model_Amazon_Listing_Product|Ess_M2ePro_Model_Amazon_Listing_Other $listingProduct */
         $listingProduct = $item->getChildObject();
         $oldAfnQty = (int)$listingProduct->getData('online_afn_qty');
 
