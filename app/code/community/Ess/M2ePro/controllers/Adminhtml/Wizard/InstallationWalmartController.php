@@ -185,9 +185,6 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationWalmartController
     {
         $data = Mage::getModel('M2ePro/Walmart_Account_Builder')->getDefaultData();
 
-        $data['other_listings_synchronization'] = 0;
-        $data['other_listings_mapping_mode'] = 0;
-
         $data['magento_orders_settings']['listing_other']['store_id'] = Mage::helper('M2ePro/Magento_Store')
             ->getDefaultStoreId();
 

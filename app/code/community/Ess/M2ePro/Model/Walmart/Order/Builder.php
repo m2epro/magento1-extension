@@ -325,7 +325,7 @@ class Ess_M2ePro_Model_Walmart_Order_Builder extends Mage_Core_Model_Abstract
     protected function cancelMagentoOrder()
     {
         $magentoOrderComments = array();
-        $magentoOrderComments[] = '<b>Attention!</b> Order was canceled on Amazon.';
+        $magentoOrderComments[] = '<b>Attention!</b> Order was canceled on Walmart.';
         $result = $this->_order->canCancelMagentoOrder();
         if ($result === true) {
             try {

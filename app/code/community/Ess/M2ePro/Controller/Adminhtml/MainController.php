@@ -202,7 +202,7 @@ abstract class Ess_M2ePro_Controller_Adminhtml_MainController
     {
         if (!Mage::helper('M2ePro/Module_Cron')->isModeEnabled()) {
             return $this->_getSession()->addWarning(
-                'Automatic Synchronization is disabled. You can enable it under 
+                'Automatic Synchronization is disabled. You can enable it under
                     <i>System > Configuration > M2E Pro > Module & Channels > Automatic Synchronization</i>.'
             );
         }
@@ -293,9 +293,13 @@ HTML
             return;
         }
 
-        $notificationBlock =  $wizardHelper->createBlock('notification', $activeWizardNick);
-        if ($notificationBlock) {
-            $this->getLayout()->getBlock('content')->append($notificationBlock);
+        try {
+            $notificationBlock = $wizardHelper->createBlock('notification', $activeWizardNick);
+            if ($notificationBlock) {
+                $this->getLayout()->getBlock('content')->append($notificationBlock);
+            }
+        } catch (Exception $e) {
+            // notification block not exist
         }
     }
 

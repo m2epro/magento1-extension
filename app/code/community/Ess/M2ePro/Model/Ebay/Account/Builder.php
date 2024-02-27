@@ -369,8 +369,15 @@ class Ess_M2ePro_Model_Ebay_Account_Builder extends Ess_M2ePro_Model_ActiveRecor
             'sell_api_token_expired_date' => '',
 
             'other_listings_synchronization'  => 1,
-            'other_listings_mapping_mode'     => 0,
-            'other_listings_mapping_settings' => array(),
+            'other_listings_mapping_mode'     => 1,
+            'other_listings_mapping_settings' => array(
+                'sku' => array(
+                    'mode' => Account::OTHER_LISTINGS_MAPPING_SKU_MODE_DEFAULT,
+                    'priority' => 1
+                ),
+            ),
+            'mapping_sku_mode' => Account::OTHER_LISTINGS_MAPPING_SKU_MODE_DEFAULT,
+            'mapping_sku_priority' => 1,
 
             'magento_orders_settings' => array(
                 'listing'                  => array(

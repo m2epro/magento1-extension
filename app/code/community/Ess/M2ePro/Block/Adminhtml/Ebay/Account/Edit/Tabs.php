@@ -39,18 +39,18 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_Edit_Tabs extends Ess_M2ePro_Block
             )
         );
 
+        $this->addTab(
+            self::TAB_ID_LISTING_OTHER,
+            array(
+                'label'   => Mage::helper('M2ePro')->__('Unmanaged Listings'),
+                'title'   => Mage::helper('M2ePro')->__('Unmanaged Listings'),
+                'content' => $this->getLayout()
+                    ->createBlock('M2ePro/adminhtml_ebay_account_edit_tabs_listingOther')->toHtml()
+            )
+        );
+
         if (Mage::helper('M2ePro/Data_Global')->getValue('temp_data') &&
             Mage::helper('M2ePro/Data_Global')->getValue('temp_data')->getId()) {
-
-            $this->addTab(
-                self::TAB_ID_LISTING_OTHER,
-                array(
-                    'label'   => Mage::helper('M2ePro')->__('Unmanaged Listings'),
-                    'title'   => Mage::helper('M2ePro')->__('Unmanaged Listings'),
-                    'content' => $this->getLayout()
-                        ->createBlock('M2ePro/adminhtml_ebay_account_edit_tabs_listingOther')->toHtml()
-                )
-            );
 
             $this->addTab(
                 self::TAB_ID_STORE,
