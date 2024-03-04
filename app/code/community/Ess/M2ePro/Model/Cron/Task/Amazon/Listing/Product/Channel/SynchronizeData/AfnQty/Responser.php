@@ -213,7 +213,10 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
         $listingProduct = $item->getChildObject();
         $oldAfnQty = (int)$listingProduct->getData('online_afn_qty');
 
-        if ($afnQty != $oldAfnQty) {
+        if (
+            $listingProduct instanceof Ess_M2ePro_Model_Amazon_Listing_Product
+            && $afnQty != $oldAfnQty
+        ) {
             $logMessage = Mage::helper('M2ePro')->__(
                 'AFN Product QTY was changed from %from% to %to% .',
                 $oldAfnQty,
