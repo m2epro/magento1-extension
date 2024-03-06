@@ -182,7 +182,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Request
                 }
 
                 if (!$ebayVariation->getOnlineQtySold() &&
-                    ($ebayVariation->isStopped() || $ebayVariation->isHidden())
+                    ($ebayVariation->isInactive() || $ebayVariation->isHidden())
                 ) {
                     continue;
                 }

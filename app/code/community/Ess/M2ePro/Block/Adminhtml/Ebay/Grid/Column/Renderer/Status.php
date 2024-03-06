@@ -113,16 +113,8 @@ HTML;
                 $html .= '<span style="color: red;">' . Mage::helper('M2ePro')->__('Listed (Hidden)') . '</span>';
                 break;
 
-            case Ess_M2ePro_Model_Listing_Product::STATUS_SOLD:
-                $html .= '<span style="color: brown;">' . Mage::helper('M2ePro')->__('Inactive (Sold)') . '</span>';
-
-                break;
-            case Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED:
-                $html .= '<span style="color: red;">' . Mage::helper('M2ePro')->__('Inactive (Stopped)') . '</span>';
-                break;
-
-            case Ess_M2ePro_Model_Listing_Product::STATUS_FINISHED:
-                $html .= '<span style="color: blue;">' . Mage::helper('M2ePro')->__('Inactive (Finished)') . '</span>';
+            case Ess_M2ePro_Model_Listing_Product::STATUS_INACTIVE:
+                $html .= '<span style="color: red;">' . Mage::helper('M2ePro')->__('Inactive') . '</span>';
                 break;
 
             case Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED:

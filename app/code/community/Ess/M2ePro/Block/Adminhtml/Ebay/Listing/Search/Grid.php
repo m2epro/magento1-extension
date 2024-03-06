@@ -121,9 +121,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Search_Grid extends Mage_
                 Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED => $helper->__('Not Listed'),
                 Ess_M2ePro_Model_Listing_Product::STATUS_LISTED     => $helper->__('Listed'),
                 Ess_M2ePro_Model_Listing_Product::STATUS_HIDDEN     => $helper->__('Listed (Hidden)'),
-                Ess_M2ePro_Model_Listing_Product::STATUS_SOLD       => $helper->__('Sold'),
-                Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED    => $helper->__('Stopped'),
-                Ess_M2ePro_Model_Listing_Product::STATUS_FINISHED   => $helper->__('Finished'),
+                Ess_M2ePro_Model_Listing_Product::STATUS_INACTIVE   => $helper->__('Inactive'),
                 Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED    => $helper->__('Pending')
             ),
             'renderer'     => 'M2ePro/adminhtml_ebay_grid_column_renderer_status',

@@ -285,33 +285,14 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation extends Ess_M2ePro_Model_C
                 $status = $this->calculateStatusByQty();
                 break;
 
+            case Ess_M2ePro_Model_Listing_Product::STATUS_INACTIVE:
             case Ess_M2ePro_Model_Listing_Product::STATUS_HIDDEN:
                 $status = $this->calculateStatusByQty();
                 if ($status == Ess_M2ePro_Model_Listing_Product::STATUS_LISTED) {
-                    $status = Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED;
+                    $status = Ess_M2ePro_Model_Listing_Product::STATUS_INACTIVE;
                 }
                 break;
 
-            case Ess_M2ePro_Model_Listing_Product::STATUS_SOLD:
-                $status = $this->calculateStatusByQty();
-                if ($status == Ess_M2ePro_Model_Listing_Product::STATUS_LISTED) {
-                    $status = Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED;
-                }
-                break;
-
-            case Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED:
-                $status = $this->calculateStatusByQty();
-                if ($status == Ess_M2ePro_Model_Listing_Product::STATUS_LISTED) {
-                    $status = Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED;
-                }
-                break;
-
-            case Ess_M2ePro_Model_Listing_Product::STATUS_FINISHED:
-                $status = $this->calculateStatusByQty();
-                if ($status == Ess_M2ePro_Model_Listing_Product::STATUS_LISTED) {
-                    $status = Ess_M2ePro_Model_Listing_Product::STATUS_FINISHED;
-                }
-                break;
         }
 
         $this->getParentObject()->setData('status', $status)->save();
@@ -331,7 +312,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation extends Ess_M2ePro_Model_C
         if ($this->getOnlineQty() == 0) {
             return Ess_M2ePro_Model_Listing_Product::STATUS_HIDDEN;
         } else if ($this->getOnlineQty() <= $this->getOnlineQtySold()) {
-            return Ess_M2ePro_Model_Listing_Product::STATUS_SOLD;
+            return Ess_M2ePro_Model_Listing_Product::STATUS_INACTIVE;
         }
 
         return Ess_M2ePro_Model_Listing_Product::STATUS_LISTED;
@@ -345,14 +326,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation extends Ess_M2ePro_Model_C
     public function isNotListed()
     {
         return $this->getStatus() == Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isUnknown()
-    {
-        return $this->getStatus() == Ess_M2ePro_Model_Listing_Product::STATUS_UNKNOWN;
     }
 
     /**
@@ -384,25 +357,9 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation extends Ess_M2ePro_Model_C
     /**
      * @return bool
      */
-    public function isSold()
+    public function isInactive()
     {
-        return $this->getStatus() == Ess_M2ePro_Model_Listing_Product::STATUS_SOLD;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isStopped()
-    {
-        return $this->getStatus() == Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isFinished()
-    {
-        return $this->getStatus() == Ess_M2ePro_Model_Listing_Product::STATUS_FINISHED;
+        return $this->getStatus() == Ess_M2ePro_Model_Listing_Product::STATUS_INACTIVE;
     }
 
     //########################################

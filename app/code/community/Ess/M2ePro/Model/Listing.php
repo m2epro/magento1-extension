@@ -756,7 +756,12 @@ class Ess_M2ePro_Model_Listing extends Ess_M2ePro_Model_Component_Parent_Abstrac
                     $listingProduct->setStatus(Ess_M2ePro_Model_Listing_Product::STATUS_HIDDEN)->save();
                 } else {
                     $listingProduct->isStoppable() && Mage::getModel('M2ePro/StopQueue')->add($listingProduct);
-                    $listingProduct->setStatus(Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED)->save();
+
+                    if ($listingProduct->isComponentModeEbay()) {
+                        $listingProduct->setStatus(Ess_M2ePro_Model_Listing_Product::STATUS_INACTIVE)->save();
+                    } else {
+                        $listingProduct->setStatus(Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED)->save();
+                    }
                 }
 
                 if ($listingProduct->isComponentModeAmazon() || $listingProduct->isComponentModeWalmart()) {
@@ -878,7 +883,12 @@ class Ess_M2ePro_Model_Listing extends Ess_M2ePro_Model_Component_Parent_Abstrac
 
                 if ($listingProduct->isStoppable()) {
                     Mage::getModel('M2ePro/StopQueue')->add($listingProduct);
-                    $listingProduct->setStatus(Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED)->save();
+
+                    if ($listingProduct->isComponentModeEbay()) {
+                        $listingProduct->setStatus(Ess_M2ePro_Model_Listing_Product::STATUS_INACTIVE)->save();
+                    } else {
+                        $listingProduct->setStatus(Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED)->save();
+                    }
                 }
 
                 $listingsProductsForRemove[$listingProduct->getId()] = $listingProduct;

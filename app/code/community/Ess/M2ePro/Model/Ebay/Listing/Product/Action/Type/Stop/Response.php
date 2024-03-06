@@ -16,7 +16,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Stop_Response
     public function processSuccess(array $response, array $responseParams = array())
     {
         $data = array(
-            'status' => Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED
+            'status' => Ess_M2ePro_Model_Listing_Product::STATUS_INACTIVE
         );
 
         $data = $this->appendStatusChangerValue($data, $responseParams);
@@ -67,7 +67,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Stop_Response
             );
 
             if ($variation->getChildObject()->isListed() || $variation->getChildObject()->isHidden()) {
-                $data['status'] = Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED;
+                $data['status'] = Ess_M2ePro_Model_Listing_Product::STATUS_INACTIVE;
             }
 
             $variation->addData($data)->save();

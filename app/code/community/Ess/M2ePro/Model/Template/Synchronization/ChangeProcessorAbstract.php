@@ -82,7 +82,9 @@ abstract class Ess_M2ePro_Model_Template_Synchronization_ChangeProcessorAbstract
 
             if ($status == Ess_M2ePro_Model_Listing_Product::STATUS_SOLD ||
                 $status == Ess_M2ePro_Model_Listing_Product::ACTION_STOP ||
-                $status ==  Ess_M2ePro_Model_Listing_Product::STATUS_FINISHED) {
+                $status ==  Ess_M2ePro_Model_Listing_Product::STATUS_FINISHED ||
+                $status ==  Ess_M2ePro_Model_Listing_Product::STATUS_INACTIVE
+            ) {
                 $priority = 50;
             }
 
@@ -104,7 +106,9 @@ abstract class Ess_M2ePro_Model_Template_Synchronization_ChangeProcessorAbstract
 
             if ($status == Ess_M2ePro_Model_Listing_Product::STATUS_SOLD ||
                 $status == Ess_M2ePro_Model_Listing_Product::ACTION_STOP ||
-                $status == Ess_M2ePro_Model_Listing_Product::STATUS_FINISHED) {
+                $status == Ess_M2ePro_Model_Listing_Product::STATUS_FINISHED ||
+                $status == Ess_M2ePro_Model_Listing_Product::STATUS_INACTIVE
+            ) {
                 $priority = 40;
             }
 

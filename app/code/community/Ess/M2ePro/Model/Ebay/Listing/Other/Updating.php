@@ -136,17 +136,13 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Updating
                 $newData['online_qty'] = 1;
             }
 
-            if (($receivedItem['listingStatus'] == self::EBAY_STATUS_COMPLETED ||
-                 $receivedItem['listingStatus'] == self::EBAY_STATUS_ENDED) &&
-                 $newData['online_qty'] == $newData['online_qty_sold']
+            if (
+                $receivedItem['listingStatus'] == self::EBAY_STATUS_COMPLETED
+                || $receivedItem['listingStatus'] == self::EBAY_STATUS_ENDED
             ) {
-                $newData['status'] = Ess_M2ePro_Model_Listing_Product::STATUS_SOLD;
-            } else if ($receivedItem['listingStatus'] == self::EBAY_STATUS_COMPLETED) {
-                $newData['status'] = Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED;
-            } else if ($receivedItem['listingStatus'] == self::EBAY_STATUS_ENDED) {
-                $newData['status'] = Ess_M2ePro_Model_Listing_Product::STATUS_FINISHED;
+                $newData['status'] = Ess_M2ePro_Model_Listing_Product::STATUS_INACTIVE;
             } else if ($receivedItem['listingStatus'] == self::EBAY_STATUS_ACTIVE &&
-                       $receivedItem['quantity'] - $receivedItem['quantitySold'] <= 0) {
+                $receivedItem['quantity'] - $receivedItem['quantitySold'] <= 0) {
                 $newData['status'] = Ess_M2ePro_Model_Listing_Product::STATUS_HIDDEN;
             } else if ($receivedItem['listingStatus'] == self::EBAY_STATUS_ACTIVE) {
                 $newData['status'] = Ess_M2ePro_Model_Listing_Product::STATUS_LISTED;

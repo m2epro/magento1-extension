@@ -37,7 +37,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor_
 
         $isBehaviorOfGtc = $ebayStatus == self::EBAY_STATUS_ACTIVE &&
             $this->_channelQty - $this->_channelQtySold > 0 &&
-            $this->_listingProduct->isStopped();
+            $this->_listingProduct->isInactive();
 
         // Listing product isn't listed and it child must have another item_id
         $isAllowedProductStatus = $this->_listingProduct->isListed() || $this->_listingProduct->isHidden();
@@ -86,14 +86,14 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor_
 
     protected function handleCompletedStatus()
     {
-        if ($this->setProductStatusSold()) {
+        if ($this->setProductStatusInactive()) {
             return;
         }
 
         if ($this->_channelQty - $this->_channelQtySold > 0) {
             if ($this->statusCompletedIsAlreadySkipped()) {
                 $this->unsetSkipFlag();
-                $this->_productStatus = Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED;
+                $this->_productStatus = Ess_M2ePro_Model_Listing_Product::STATUS_INACTIVE;
             } else {
                 $this->setSkipFlag();
                 $this->_productStatus = $this->_listingProduct->getStatus();
@@ -102,22 +102,22 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor_
             return;
         }
 
-        $this->_productStatus = Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED;
+        $this->_productStatus = Ess_M2ePro_Model_Listing_Product::STATUS_INACTIVE;
     }
 
     protected function handleEndedStatus()
     {
-        if (!$this->setProductStatusSold()) {
-            $this->_productStatus = Ess_M2ePro_Model_Listing_Product::STATUS_FINISHED;
+        if (!$this->setProductStatusInactive()) {
+            $this->_productStatus = Ess_M2ePro_Model_Listing_Product::STATUS_INACTIVE;
         }
     }
 
     // ---------------------------------------
 
-    protected function setProductStatusSold()
+    protected function setProductStatusInactive()
     {
         if (!$this->_listingProduct->isHidden() && $this->_channelQty == $this->_channelQtySold) {
-            $this->_productStatus = Ess_M2ePro_Model_Listing_Product::STATUS_SOLD;
+            $this->_productStatus = Ess_M2ePro_Model_Listing_Product::STATUS_INACTIVE;
             return true;
         }
 

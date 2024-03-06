@@ -519,9 +519,7 @@ class Ess_M2ePro_Adminhtml_Ebay_ListingController extends Ess_M2ePro_Controller_
             'status', array(
                 'in' => array(
                     Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED,
-                    Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED,
-                    Ess_M2ePro_Model_Listing_Product::STATUS_FINISHED,
-                    Ess_M2ePro_Model_Listing_Product::STATUS_SOLD,
+                    Ess_M2ePro_Model_Listing_Product::STATUS_INACTIVE,
                     Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED,
                 )
             )

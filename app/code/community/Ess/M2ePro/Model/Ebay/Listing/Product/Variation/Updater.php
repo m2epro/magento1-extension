@@ -234,7 +234,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Updater
     {
         foreach ($deletedVariations as $dVariation) {
             if ($dVariation['variation']['status'] == Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED ||
-                $dVariation['variation']['status'] == Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED) {
+                $dVariation['variation']['status'] == Ess_M2ePro_Model_Listing_Product::STATUS_INACTIVE) {
                 Mage::helper('M2ePro/Component')->getComponentObject(
                     Ess_M2ePro_Helper_Component_Ebay::NICK,
                     'Listing_Product_Variation',

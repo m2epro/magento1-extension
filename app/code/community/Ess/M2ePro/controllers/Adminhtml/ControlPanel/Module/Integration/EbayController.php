@@ -58,7 +58,7 @@ class Ess_M2ePro_Adminhtml_ControlPanel_Module_Integration_EbayController
                         ((isset($iResp['already_stop']) && $iResp['already_stop']) ||
                           isset($iResp['ebay_end_date_raw'])))
                     {
-                        $item->setData('status', Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED)->save();
+                        $item->setData('status', Ess_M2ePro_Model_Listing_Product::STATUS_INACTIVE)->save();
                     }
                 }
             }

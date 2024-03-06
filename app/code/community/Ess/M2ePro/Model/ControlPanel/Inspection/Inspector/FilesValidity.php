@@ -34,26 +34,37 @@ class Ess_M2ePro_Model_ControlPanel_Inspection_Inspector_FilesValidity
         }
 
         $problems = array();
+        $serverFiles = array();
 
-        $baseDir = Mage::getBaseDir() . '/';
         foreach ($responseData['files_info'] as $info) {
-            if (!is_file($baseDir . $info['path'])) {
+            $serverFiles[$info['path']] = $info['hash'];
+        }
+
+        $clientFiles = $this->getClientFiles();
+
+        foreach ($clientFiles as $path => $hash) {
+            if (!isset($serverFiles[$path])) {
                 $problems[] = array(
-                    'path' => $info['path'],
-                    'reason' => 'File is missing'
+                    'path' => $path,
+                    'reason' => 'New file detected',
+                );
+            }
+        }
+
+        foreach ($serverFiles as $path => $hash) {
+            if (!isset($clientFiles[$path])) {
+                $problems[] = array(
+                    'path' => $path,
+                    'reason' => 'File is missing',
                 );
                 continue;
             }
 
-            $fileContent = trim(file_get_contents($baseDir . $info['path']));
-            $fileContent = str_replace(array("\r\n", "\n\r", PHP_EOL), chr(10), $fileContent);
-
-            if (Zend_Crypt::hash('md5', $fileContent) !== $info['hash']) {
+            if ($clientFiles[$path] != $hash) {
                 $problems[] = array(
-                    'path' => $info['path'],
-                    'reason' => 'Hash mismatch'
+                    'path' => $path,
+                    'reason' => 'Hash mismatch',
                 );
-                continue;
             }
         }
 
@@ -78,6 +89,68 @@ class Ess_M2ePro_Model_ControlPanel_Inspection_Inspector_FilesValidity
         return $connectorObj->getResponseData();
     }
 
+    private function getClientFiles()
+    {
+        $includedFilesAndDirs = array(
+            'app/code/community/Ess/M2ePro',
+            'app/design/adminhtml/default/default/layout/M2ePro.xml',
+            'app/design/adminhtml/default/default/template/M2ePro',
+            'app/etc/modules/Ess_M2ePro.xml',
+            'app/locale/de_AT/Ess_M2ePro.csv',
+            'app/locale/de_CH/Ess_M2ePro.csv',
+            'app/locale/de_DE/Ess_M2ePro.csv',
+            'app/locale/es_ES/Ess_M2ePro.csv',
+            'app/locale/fr_CA/Ess_M2ePro.csv',
+            'app/locale/fr_FR/Ess_M2ePro.csv',
+            'app/locale/it_CH/Ess_M2ePro.csv',
+            'app/locale/it_IT/Ess_M2ePro.csv',
+            'js/M2ePro',
+            'skin/adminhtml/default/default/M2ePro',
+            'skin/adminhtml/default/enterprise/M2ePro',
+        );
+
+        $excludedFilesAndDirs = array(
+            'app/code/community/Ess/M2ePro/sql/Update/Config.php',
+            'app/code/community/Ess/M2ePro/sql/Update/dev'
+        );
+
+        $clientFiles = array();
+
+        foreach ($includedFilesAndDirs as $dir) {
+            if (!in_array($dir, $excludedFilesAndDirs) && is_dir($dir)) {
+                $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir));
+                foreach ($iterator as $file) {
+                    $filePath = $file->getPathname();
+                    if (
+                        $file->isFile()
+                        && !in_array($filePath, $excludedFilesAndDirs)
+                        && !$this->isExcludedDirectory($filePath, $excludedFilesAndDirs)
+                    ) {
+                        $fileContent = trim(file_get_contents($filePath));
+                        $fileContent = str_replace(array("\r\n", "\n\r", PHP_EOL), chr(10), $fileContent);
+                        $clientFiles[$filePath] = Zend_Crypt::hash('md5', $fileContent);
+                    }
+                }
+            } elseif (!in_array($dir, $excludedFilesAndDirs) && is_file($dir)) {
+                $fileContent = trim(file_get_contents($dir));
+                $fileContent = str_replace(array("\r\n", "\n\r", PHP_EOL), chr(10), $fileContent);
+                $clientFiles[$dir] = Zend_Crypt::hash('md5', $fileContent);
+            }
+        }
+
+        return $clientFiles;
+    }
+
+    private function isExcludedDirectory($filePath, $excludedFilesAndDirs)
+    {
+        foreach ($excludedFilesAndDirs as $excludedItem) {
+            if (strpos($filePath, $excludedItem) !== false) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     //########################################
 
     protected function renderMetadata($data)
@@ -96,6 +169,8 @@ HTML;
                 array('filePath' => base64_encode($item['path']))
             );
 
+            $link = ($item['reason'] === 'New file detected') ? '' : "<a href='$url' target='_blank'>Diff</a>";
+
             $html .= <<<HTML
 <tr>
     <td>
@@ -105,7 +180,7 @@ HTML;
         {$item['reason']}
     </td>
     <td style="text-align: center;">
-        <a href="{$url}" target="_blank">Diff</a>
+        {$link}
     </td>
 </tr>
 

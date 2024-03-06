@@ -67,16 +67,8 @@ class Ess_M2ePro_Model_Ebay_Magento_Product_Rule_Custom_EbayStatus
                 'label' => Mage::helper('M2ePro')->__('Listed (Hidden)'),
             ),
             array(
-                'value' => Ess_M2ePro_Model_Listing_Product::STATUS_SOLD,
-                'label' => Mage::helper('M2ePro')->__('Sold'),
-            ),
-            array(
-                'value' => Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED,
-                'label' => Mage::helper('M2ePro')->__('Stopped'),
-            ),
-            array(
-                'value' => Ess_M2ePro_Model_Listing_Product::STATUS_FINISHED,
-                'label' => Mage::helper('M2ePro')->__('Finished'),
+                'value' => Ess_M2ePro_Model_Listing_Product::STATUS_INACTIVE,
+                'label' => Mage::helper('M2ePro')->__('Inactive'),
             ),
             array(
                 'value' => Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED,

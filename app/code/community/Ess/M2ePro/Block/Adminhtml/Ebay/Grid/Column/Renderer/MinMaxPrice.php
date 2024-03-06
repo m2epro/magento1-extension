@@ -109,7 +109,7 @@ HTML;
             $bidsTitle = Mage::helper('M2ePro')->__('Show bids list');
             $bidsText = Mage::helper('M2ePro')->__('Bid(s)');
 
-            if ($listingProduct->getStatus() == Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED) {
+            if ($listingProduct->getStatus() == Ess_M2ePro_Model_Listing_Product::STATUS_INACTIVE) {
                 $resultHtml .= '<br/><br/><span style="font-size: 10px; color: gray;">' .
                     $onlineBids. ' ' . $bidsText . '</span>';
             } else {

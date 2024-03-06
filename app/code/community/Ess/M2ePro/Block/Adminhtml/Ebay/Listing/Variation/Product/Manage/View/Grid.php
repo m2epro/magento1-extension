@@ -223,10 +223,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Variation_Product_Manage_View_Grid
             'options'  => array(
                 Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED => Mage::helper('M2ePro')->__('Not Listed'),
                 Ess_M2ePro_Model_Listing_Product::STATUS_LISTED     => Mage::helper('M2ePro')->__('Active'),
-                Ess_M2ePro_Model_Listing_Product::STATUS_HIDDEN     => Mage::helper('M2ePro')->__('Inactive'),
-                Ess_M2ePro_Model_Listing_Product::STATUS_SOLD       => Mage::helper('M2ePro')->__('Sold'),
-                Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED    => Mage::helper('M2ePro')->__('Stopped'),
-                Ess_M2ePro_Model_Listing_Product::STATUS_FINISHED   => Mage::helper('M2ePro')->__('Finished'),
+                Ess_M2ePro_Model_Listing_Product::STATUS_HIDDEN     => Mage::helper('M2ePro')->__('Hidden'),
+                Ess_M2ePro_Model_Listing_Product::STATUS_INACTIVE   => Mage::helper('M2ePro')->__('Inactive'),
                 Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED    => Mage::helper('M2ePro')->__('Pending')
             ),
             'frame_callback' => array($this, 'callbackColumnStatus')
@@ -419,20 +417,9 @@ HTML;
                 $html = '<span style="color: green;">'.$value.'</span>';
                 break;
 
+            case Ess_M2ePro_Model_Listing_Product::STATUS_INACTIVE:
             case Ess_M2ePro_Model_Listing_Product::STATUS_HIDDEN:
                 $html = '<span style="color: red;">'.$value.'</span>';
-                break;
-
-            case Ess_M2ePro_Model_Listing_Product::STATUS_SOLD:
-                $html = '<span style="color: brown;">'.$value.'</span>';
-                break;
-
-            case Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED:
-                $html = '<span style="color: red;">'.$value.'</span>';
-                break;
-
-            case Ess_M2ePro_Model_Listing_Product::STATUS_FINISHED:
-                $html = '<span style="color: blue;">'.$value.'</span>';
                 break;
 
             case Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED:

@@ -474,7 +474,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Resolver
                             'online_qty'      => $channelVariation['quantity'],
                             'online_qty_sold' => $channelVariation['quantity_sold'],
                             'status'          => $availableQty > 0 ? Ess_M2ePro_Model_Listing_Product::STATUS_LISTED
-                                : Ess_M2ePro_Model_Listing_Product::STATUS_SOLD,
+                                : Ess_M2ePro_Model_Listing_Product::STATUS_INACTIVE,
                             'add'             => 0,
                             'detele'          => 0,
 

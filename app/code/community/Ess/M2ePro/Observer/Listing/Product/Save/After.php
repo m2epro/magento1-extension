@@ -68,6 +68,7 @@ class Ess_M2ePro_Observer_Listing_Product_Save_After extends Ess_M2ePro_Observer
             Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED,
             Ess_M2ePro_Model_Listing_Product::STATUS_FINISHED,
             Ess_M2ePro_Model_Listing_Product::STATUS_SOLD,
+            Ess_M2ePro_Model_Listing_Product::STATUS_INACTIVE,
         );
 
         if (!$listingProduct->isObjectCreatingState() &&
