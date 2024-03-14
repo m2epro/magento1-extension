@@ -77,7 +77,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit_Tabs extends Ess_M2ePro_Blo
             );
         }
 
-        if ($this->isRepricingSupported($account)) {
+        if ($account->getId()) {
             $this->addTab(
                 self::TAB_ID_REPRICING,
                 array(
@@ -94,27 +94,4 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit_Tabs extends Ess_M2ePro_Blo
 
         return parent::_prepareLayout();
     }
-
-    //########################################
-
-    protected function isRepricingSupported($account)
-    {
-        $supportedMarketplaces = array(
-            Ess_M2ePro_Helper_Component_Amazon::MARKETPLACE_US,
-            Ess_M2ePro_Helper_Component_Amazon::MARKETPLACE_CA,
-            Ess_M2ePro_Helper_Component_Amazon::MARKETPLACE_MX,
-            Ess_M2ePro_Helper_Component_Amazon::MARKETPLACE_UK,
-            Ess_M2ePro_Helper_Component_Amazon::MARKETPLACE_DE,
-            Ess_M2ePro_Helper_Component_Amazon::MARKETPLACE_IT,
-            Ess_M2ePro_Helper_Component_Amazon::MARKETPLACE_FR,
-            Ess_M2ePro_Helper_Component_Amazon::MARKETPLACE_ES,
-            Ess_M2ePro_Helper_Component_Amazon::MARKETPLACE_AU,
-        );
-
-        return $account !== null
-            && $account->getId()
-            && in_array($account->getChildObject()->getMarketplaceId(), $supportedMarketplaces);
-    }
-
-    //########################################
 }

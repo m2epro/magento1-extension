@@ -46,7 +46,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other extends Mage_Adminhtml_Block
             );
 
             if ($lockItemManager->isExist()) {
-                $label = 'Products import is in progress';
+                $label = 'Products Import Is in Progress';
                 $disabled = true;
                 break;
             }
