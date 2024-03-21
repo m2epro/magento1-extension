@@ -58,7 +58,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Template_ShippingController extends Ess_M2ePro_C
         /** @var Ess_M2ePro_Model_Ebay_Account $ebayAccount */
         $ebayAccount = $account->getChildObject();
 
-        if (!$ebayAccount->getSellApiTokenSession()) {
+        if (!$ebayAccount->isTokenExist()) {
             return $this->getResponse()->setBody(
                 Mage::helper('M2ePro')->jsonEncode(
                     array(

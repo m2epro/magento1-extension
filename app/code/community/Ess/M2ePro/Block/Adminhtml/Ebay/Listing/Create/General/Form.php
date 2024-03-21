@@ -129,6 +129,18 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Create_General_Form extends Mage_A
 
         $isAddAccountButtonHidden = $this->getRequest()->getParam('wizard', false) || $accountSelectionDisabled;
 
+        $addAnotherButton = Mage::getSingleton('core/layout')->createBlock('adminhtml/widget_button')
+            ->setData(
+                array(
+                    'id'      => 'add_account_button',
+                    'label'   => $helper->__('Add Another'),
+                    'style'   => 'margin-left: 10px;' .
+                        ($isAddAccountButtonHidden ? 'display: none;' : ''),
+                    'onclick' => '',
+                    'class'   => 'add add-account-drop-down',
+                )
+            )->toHtml();
+
         $fieldset->addField(
             'account_container',
             Ess_M2ePro_Block_Adminhtml_Magento_Form_Element_Form::CUSTOM_CONTAINER,
@@ -140,17 +152,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Create_General_Form extends Mage_A
     {$accountSelect->toHtml()}
 HTML
                 ,
-                'after_element_html' => Mage::getSingleton('core/layout')->createBlock('adminhtml/widget_button')
-                    ->setData(
-                        array(
-                            'id'      => 'add_account_button',
-                            'label'   => $helper->__('Add Another'),
-                            'style'   => 'margin-left: 10px;' .
-                                ($isAddAccountButtonHidden ? 'display: none;' : ''),
-                            'onclick' => '',
-                            'class'   => 'primary'
-                        )
-                    )->toHtml()
+                'after_element_html' => $addAnotherButton
             )
         );
 
@@ -245,7 +247,8 @@ HTML
             )
         );
 
-        return $breadcrumb->toHtml() .
+        return $this->getAddAccountButtonHtml() .
+            $breadcrumb->toHtml() .
             $helpBlock->toHtml() .
             parent::_toHtml();
     }
@@ -275,5 +278,54 @@ HTML
         return $this->_marketplaces;
     }
 
-    //########################################
+    public function getAddAccountButtonHtml()
+    {
+        $data = array(
+            'target_css_class' => 'add-account-drop-down',
+            'items'            => $this->getAddAccountButtonDropDownItems()
+        );
+
+        $addAccountDropDownBlock = $this->getLayout()->createBlock('M2ePro/adminhtml_widget_button_dropDown');
+        $addAccountDropDownBlock->setData($data);
+
+        return  $addAccountDropDownBlock->toHtml();
+    }
+    private function getAddAccountButtonDropDownItems()
+    {
+        $items = array();
+
+        $url = $this->getUrl(
+            '*/adminhtml_ebay_account/beforeGetSellApiToken',
+            array(
+                'mode' => Ess_M2ePro_Model_Ebay_Account::MODE_PRODUCTION,
+                'close_on_save' => true,
+                'wizard'        => $this->getRequest()->getParam('wizard')
+            )
+        );
+
+        $items[] = array(
+            'onclick' => 'EbayListingCreateGeneralObj.addAccount(this, event);',
+            'url'    => $url,
+            'target' => '_blank',
+            'label'  => Mage::helper('M2ePro')->__('Live Account')
+        );
+
+        $url = $this->getUrl(
+            '*/adminhtml_ebay_account/beforeGetSellApiToken',
+            array(
+                'mode' => Ess_M2ePro_Model_Ebay_Account::MODE_SANDBOX,
+                'close_on_save' => true,
+                'wizard'        => $this->getRequest()->getParam('wizard')
+            )
+        );
+
+        $items[] = array(
+            'onclick' => 'EbayListingCreateGeneralObj.addAccount(this, event);',
+            'url'    => $url,
+            'target' => '_blank',
+            'label'  => Mage::helper('M2ePro')->__('Sandbox Account')
+        );
+
+        return $items;
+    }
 }

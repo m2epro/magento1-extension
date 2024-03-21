@@ -32,18 +32,12 @@ class Ess_M2ePro_Model_Connector_Connection_Multiple extends Ess_M2ePro_Model_Co
 
         return Mage::helper('M2ePro/Server_Request')->multiple(
             $packages,
-            $this->getServerBaseUrl(),
-            $this->getServerHostName(),
-            $this->isTryToResendOnError(),
-            $this->isTryToSwitchEndpointOnError(),
-            $this->isAsynchronous(),
             $this->isCanIgnoreMaintenance()
         );
     }
 
     protected function processRequestResult(array $result)
     {
-        $responseError = false;
         $successResponses = array();
 
         foreach ($result as $key => $response) {
@@ -66,18 +60,12 @@ class Ess_M2ePro_Model_Connector_Connection_Multiple extends Ess_M2ePro_Model_Co
                 $this->_responses[$key] = $responseObj;
                 $successResponses[]     = $responseObj;
             } catch (Ess_M2ePro_Model_Exception_Connection_InvalidResponse $exception) {
-                $responseError = true;
                 $this->_responses[$key] = $this->createFailedResponse($this->getConnectionErrorMessage());
                 Mage::helper('M2ePro/Module_Logger')->process($response, 'Invalid Response Format');
             } catch (Exception $exception) {
-                $responseError = true;
                 $this->_responses[$key] = $this->createFailedResponse($this->getConnectionErrorMessage());
                 Mage::helper('M2ePro/Module_Exception')->process($exception);
             }
-        }
-
-        if ($responseError) {
-            $this->isTryToSwitchEndpointOnError() && Mage::helper('M2ePro/Server')->switchEndpoint();
         }
 
         foreach ($successResponses as $response) {

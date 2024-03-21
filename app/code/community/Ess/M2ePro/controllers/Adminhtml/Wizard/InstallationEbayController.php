@@ -32,7 +32,7 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationEbayController
 
     //########################################
 
-    public function beforeTokenAction()
+    public function beforeGetSellApiTokenAction()
     {
         $accountMode = $this->getRequest()->getParam('mode');
 
@@ -45,13 +45,13 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationEbayController
         }
 
         try {
-            $backUrl = $this->getUrl('*/*/afterToken', array('mode' => $accountMode));
+            $backUrl = $this->getUrl('*/*/afterGetSellApiToken', array('mode' => $accountMode));
 
             $dispatcherObject = Mage::getModel('M2ePro/Ebay_Connector_Dispatcher');
             $connectorObj = $dispatcherObject->getVirtualConnector(
                 'account',
                 'get',
-                'grandAccessUrl',
+                'grantAccessUrl',
                 array('back_url' => $backUrl, 'mode' => $accountMode),
                 null,
                 null,
@@ -84,34 +84,17 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationEbayController
             return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('message' => $error)));
         }
 
-        if (!$response || !isset($response['url'], $response['session_id'])) {
-            $error = Mage::helper('M2ePro')->__(
-                'The eBay token obtaining is currently unavailable. Please try again later.'
-            );
-
-            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('message' => $error)));
-        }
-
-        Mage::helper('M2ePro/Data_Session')->setValue('token_session_id', $response['session_id']);
-
         return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('url' => $response['url'])));
     }
 
-    public function afterTokenAction()
+    public function afterGetSellApiTokenAction()
     {
-        $tokenSessionId = Mage::helper('M2ePro/Data_Session')->getValue('token_session_id', true);
-
-        if (!$tokenSessionId) {
-            $this->_getSession()->addError(Mage::helper('M2ePro')->__('Token is not defined'));
-
-            return $this->_redirect('*/*/installation');
-        }
-
         $accountMode = $this->getRequest()->getParam('mode');
+        $authCode = base64_decode($this->getRequest()->getParam('code'));
 
         $params = array(
             'mode'          => $accountMode,
-            'token_session' => $tokenSessionId
+            'auth_code' => $authCode
         );
 
         $dispatcherObject = Mage::getModel('M2ePro/Ebay_Connector_Dispatcher');
@@ -133,14 +116,18 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationEbayController
 
             return $this->_redirect('*/*/installation');
         }
+        try {
+            $account = Mage::getModel('Ess_M2ePro_Model_Ebay_Account_Create')->create(
+                $authCode,
+                $accountMode === 'sandbox' ? EbayAccount::MODE_SANDBOX : EbayAccount::MODE_PRODUCTION
+            );
+        } catch (Exception $exception) {
+            $this->_getSession()->addError($exception->getMessage());
+            return $this->_redirect('*/*/installation');
+        }
 
-        $accountModel = $this->createAccount(
-            $responseData,
-            $accountMode === 'sandbox' ? EbayAccount::MODE_SANDBOX : EbayAccount::MODE_PRODUCTION,
-            $tokenSessionId
-        );
 
-        Mage::getModel('M2ePro/Ebay_Account_Store_Category_Update')->process($accountModel->getChildObject());
+        Mage::getModel('M2ePro/Ebay_Account_Store_Category_Update')->process($account->getChildObject());
 
         $this->setStep($this->getNextStep());
 
@@ -271,46 +258,4 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationEbayController
 
         return $data;
     }
-
-    /**
-     * @param array $responseData
-     * @param int $accountMode
-     * @param string $tokenSessionId
-     * @return Ess_M2ePro_Model_Account
-     * @throws Ess_M2ePro_Model_Exception_Logic
-     * @throws Exception
-     */
-    private function createAccount($responseData, $accountMode, $tokenSessionId)
-    {
-        /** @var Ess_M2ePro_Model_Ebay_Account_Builder $accountBuilder */
-        $accountBuilder = Mage::getModel('M2ePro/Ebay_Account_Builder');
-        /** @var Ess_M2ePro_Helper_Magento_Store $magentoStore */
-        $magentoStore = Mage::helper('M2ePro/Magento_Store');
-        /** @var Ess_M2ePro_Helper_Data $dataHelper */
-        $dataHelper = Mage::helper('M2ePro');
-        /** @var Ess_M2ePro_Helper_Component_Ebay $componentEbay */
-        $componentEbay = Mage::helper('M2ePro/Component_Ebay');
-
-        $data = $accountBuilder->getDefaultData();
-
-        $data['title'] = $responseData['info']['UserID'];
-        $data['user_id'] = $responseData['info']['UserID'];
-        $data['mode'] = $accountMode;
-        $data['server_hash'] = $responseData['hash'];
-        $data['token_session'] = $tokenSessionId;
-        $data['token_expired_date'] = $responseData['token_expired_date'];
-
-        $data['magento_orders_settings']['listing_other']['store_id'] = $magentoStore->getDefaultStoreId();
-
-        $data['marketplaces_data'] = array();
-        $data['info'] = $dataHelper->jsonEncode($responseData['info']);
-
-        /** @var Ess_M2ePro_Model_Account $accountModel */
-        $accountModel = $componentEbay->getModel('Account');
-        $accountBuilder->build($accountModel, $data);
-
-        return $accountModel;
-    }
-
-    //########################################
 }

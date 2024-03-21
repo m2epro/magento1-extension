@@ -107,28 +107,6 @@ window.EbayAccount = Class.create(Common, {
 
     // ---------------------------------------
 
-    get_token: function() {
-        if ($('token_session').value == '') {
-            $('token_session').value = '0';
-        }
-        if ($('token_expired_date').value == '') {
-            $('token_expired_date').value = '0';
-        }
-        this.submitForm(M2ePro.url.get('adminhtml_ebay_account/beforeGetToken', {'id': M2ePro.formData.id}));
-    },
-
-    get_sell_api_token: function() {
-        if ($('sell_api_token_session').value == '') {
-            $('sell_api_token_session').value = '0';
-        }
-        if ($('sell_api_token_expired_date').value == '') {
-            $('sell_api_token_expired_date').value = '0';
-        }
-        this.submitForm(M2ePro.url.get('adminhtml_ebay_account/beforeGetSellApiToken', {'id': M2ePro.formData.id}));
-    },
-
-    // ---------------------------------------
-
     feedbacksReceiveChange: function() {
         var self = EbayAccountObj;
 

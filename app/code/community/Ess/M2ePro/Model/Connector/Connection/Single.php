@@ -28,10 +28,6 @@ class Ess_M2ePro_Model_Connector_Connection_Single extends Ess_M2ePro_Model_Conn
 
         return Mage::helper('M2ePro/Server_Request')->single(
             $package,
-            $this->getServerBaseUrl(),
-            $this->getServerHostName(),
-            $this->isTryToResendOnError(),
-            $this->isTryToSwitchEndpointOnError(),
             $this->isCanIgnoreMaintenance()
         );
     }
@@ -43,8 +39,6 @@ class Ess_M2ePro_Model_Connector_Connection_Single extends Ess_M2ePro_Model_Conn
             $this->_response->initFromRawResponse($result['body']);
             $this->_response->setRequestTime($this->_requestTime);
         } catch (Ess_M2ePro_Model_Exception_Connection_InvalidResponse $exception) {
-            $this->isTryToSwitchEndpointOnError() && Mage::helper('M2ePro/Server')->switchEndpoint();
-
             Mage::helper('M2ePro/Module_Logger')->process($result, 'Invalid Response Format');
             throw new Ess_M2ePro_Model_Exception_Connection($this->getConnectionErrorMessage(), $result);
         }

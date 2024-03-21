@@ -24,51 +24,29 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_Edit_Tabs_General extends Mage_Adm
 
     protected function _beforeToHtml()
     {
-        // ---------------------------------------
+        /** @var Ess_M2ePro_Model_Account $account */
+        $account = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
+
+        $url = $this->getUrl(
+            '*/adminhtml_ebay_account/beforeGetSellApiToken',
+            array(
+                'id' => $account->getId(),
+                'mode' => $account->getChildObject()->getMode()
+            )
+        );
+
         $data = array(
             'label'   => Mage::helper('M2ePro')->__('Get Token'),
-            'onclick' => 'EbayAccountObj.get_token();',
-            'class'   => 'get_token_button',
-            'id'      => 'grant_access'
+            'onclick' => 'setLocation(\'' . $url . '\');',
+            'class'   => 'get_sell_token_button'
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
-        $this->setChild('get_token_button', $buttonBlock);
-        // ---------------------------------------
+        $this->setChild('get_sell_api_token_button', $buttonBlock);
 
-        // ---------------------------------------
-        if ($this->isSellApiMode()) {
-            $data = array(
-                'label'   => Mage::helper('M2ePro')->__('Get Token'),
-                'onclick' => 'EbayAccountObj.get_sell_api_token();',
-                'class'   => 'get_sell_token_button'
-            );
-            $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
-            $this->setChild('get_sell_api_token_button', $buttonBlock);
-        }
-
-        // ---------------------------------------
 
         $confirm = $this->getLayout()->createBlock('M2ePro/adminhtml_widget_dialog_confirm');
         $this->setChild('confirm_popup', $confirm);
 
         return parent::_beforeToHtml();
     }
-
-    //########################################
-
-    public function isSellApiMode()
-    {
-        /** @var Ess_M2ePro_Model_Account $account */
-        $account = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
-
-        if (empty($account) || !$account->getId()) {
-            return $this->getRequest()->getParam('sell_api', false);
-        }
-
-        $sellApiTokenSession = $account->getChildObject()->getSellApiTokenSession();
-
-        return $this->getRequest()->getParam('sell_api', false) || !empty($sellApiTokenSession);
-    }
-
-    //########################################
 }

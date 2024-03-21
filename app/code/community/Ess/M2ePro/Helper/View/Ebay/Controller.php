@@ -18,6 +18,7 @@ class Ess_M2ePro_Helper_View_Ebay_Controller extends Mage_Core_Helper_Abstract
             'M2ePro/Ebay_Marketplace_Issue_NotUpdated',
             'M2ePro/Ebay_Feedback_Issue_NegativeReceived',
             'M2ePro/Ebay_Account_Issue_AccessTokens',
+            'M2ePro/Ebay_Account_Issue_ExistTokens',
         );
 
         foreach ($issueLocators as $locator) {

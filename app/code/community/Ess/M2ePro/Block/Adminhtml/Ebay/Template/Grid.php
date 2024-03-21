@@ -37,6 +37,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Grid extends Mage_Adminhtml_Block
         /** @var $connRead Varien_Db_Adapter_Pdo_Mysql */
         $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
 
+        $marketPlaceMainTable = Mage::getModel('M2ePro/Marketplace')->getResource()->getMainTable();
+
         // Prepare selling format collection
         // ---------------------------------------
         $collectionSellingFormat = Mage::getModel('M2ePro/Template_SellingFormat')->getCollection();
@@ -47,9 +49,15 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Grid extends Mage_Adminhtml_Block
         );
         $collectionSellingFormat->getSelect()->reset(Varien_Db_Select::COLUMNS);
         $collectionSellingFormat->getSelect()->columns(
-            array('id as template_id', 'title', new Zend_Db_Expr('\'0\' as `marketplace`'),
-                  new Zend_Db_Expr('\''.TemplateManager::TEMPLATE_SELLING_FORMAT.'\' as `nick`'),
-                  'create_date', 'update_date')
+            array(
+                'id as template_id',
+                'title',
+                new Zend_Db_Expr('NULL as `marketplace_title`'),
+                new Zend_Db_Expr('\'0\' as `marketplace_id`'),
+                new Zend_Db_Expr('\''.TemplateManager::TEMPLATE_SELLING_FORMAT.'\' as `nick`'),
+                'create_date',
+                'update_date'
+            )
         );
         $collectionSellingFormat->addFieldToFilter('component_mode', Ess_M2ePro_Helper_Component_Ebay::NICK);
         $collectionSellingFormat->addFieldToFilter('is_custom_template', 0);
@@ -65,9 +73,15 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Grid extends Mage_Adminhtml_Block
         );
         $collectionSynchronization->getSelect()->reset(Varien_Db_Select::COLUMNS);
         $collectionSynchronization->getSelect()->columns(
-            array('id as template_id', 'title', new Zend_Db_Expr('\'0\' as `marketplace`'),
+            array(
+                'id as template_id',
+                'title',
+                new Zend_Db_Expr('NULL as `marketplace_title`'),
+                new Zend_Db_Expr('\'0\' as `marketplace_id`'),
                 new Zend_Db_Expr('\''.TemplateManager::TEMPLATE_SYNCHRONIZATION.'\' as `nick`'),
-                'create_date', 'update_date')
+                'create_date',
+                'update_date'
+            )
         );
         $collectionSynchronization->addFieldToFilter('component_mode', Ess_M2ePro_Helper_Component_Ebay::NICK);
         $collectionSynchronization->addFieldToFilter('is_custom_template', 0);
@@ -83,9 +97,15 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Grid extends Mage_Adminhtml_Block
         );
         $collectionDescription->getSelect()->reset(Varien_Db_Select::COLUMNS);
         $collectionDescription->getSelect()->columns(
-            array('id as template_id', 'title', new Zend_Db_Expr('\'0\' as `marketplace`'),
+            array(
+                'id as template_id',
+                'title',
+                new Zend_Db_Expr('NULL as `marketplace_title`'),
+                new Zend_Db_Expr('\'0\' as `marketplace_id`'),
                 new Zend_Db_Expr('\''.TemplateManager::TEMPLATE_DESCRIPTION.'\' as `nick`'),
-                'create_date', 'update_date')
+                'create_date',
+                'update_date'
+            )
         );
         $collectionDescription->addFieldToFilter('component_mode', Ess_M2ePro_Helper_Component_Ebay::NICK);
         $collectionDescription->addFieldToFilter('is_custom_template', 0);
@@ -95,10 +115,21 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Grid extends Mage_Adminhtml_Block
         // ---------------------------------------
         $collectionPayment = Mage::getModel('M2ePro/Ebay_Template_Payment')->getCollection();
         $collectionPayment->getSelect()->reset(Varien_Db_Select::COLUMNS);
+        $collectionPayment->getSelect()->join(
+            array('mm' => $marketPlaceMainTable),
+            'main_table.marketplace_id=mm.id',
+            array()
+        );
         $collectionPayment->getSelect()->columns(
-            array('id as template_id', 'title', 'marketplace_id as marketplace',
+            array(
+                'id as template_id',
+                'title',
+                new Zend_Db_Expr('mm.title as `marketplace_title`'),
+                new Zend_Db_Expr('mm.id as `marketplace_id`'),
                 new Zend_Db_Expr('\''.TemplateManager::TEMPLATE_PAYMENT.'\' as `nick`'),
-                'create_date', 'update_date')
+                'create_date',
+                'update_date'
+            )
         );
         $collectionPayment->addFieldToFilter('is_custom_template', 0);
         $collectionPayment->addFieldToFilter('marketplace_id', array('in' => $this->getEnabledMarketplacesIds()));
@@ -108,10 +139,21 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Grid extends Mage_Adminhtml_Block
         // ---------------------------------------
         $collectionShipping = Mage::getModel('M2ePro/Ebay_Template_Shipping')->getCollection();
         $collectionShipping->getSelect()->reset(Varien_Db_Select::COLUMNS);
+        $collectionShipping->getSelect()->join(
+            array('mm' => $marketPlaceMainTable),
+            'main_table.marketplace_id=mm.id',
+            array()
+        );
         $collectionShipping->getSelect()->columns(
-            array('id as template_id', 'title', 'marketplace_id as marketplace',
+            array(
+                'id as template_id',
+                'title',
+                new Zend_Db_Expr('mm.title as `marketplace_title`'),
+                new Zend_Db_Expr('mm.id as `marketplace_id`'),
                 new Zend_Db_Expr('\''.TemplateManager::TEMPLATE_SHIPPING.'\' as `nick`'),
-                'create_date', 'update_date')
+                'create_date',
+                'update_date'
+            )
         );
         $collectionShipping->addFieldToFilter('is_custom_template', 0);
         $collectionShipping->addFieldToFilter('marketplace_id', array('in' => $this->getEnabledMarketplacesIds()));
@@ -121,10 +163,21 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Grid extends Mage_Adminhtml_Block
         // ---------------------------------------
         $collectionReturn = Mage::getModel('M2ePro/Ebay_Template_ReturnPolicy')->getCollection();
         $collectionReturn->getSelect()->reset(Varien_Db_Select::COLUMNS);
+        $collectionReturn->getSelect()->join(
+            array('mm' => $marketPlaceMainTable),
+            'main_table.marketplace_id=mm.id',
+            array()
+        );
         $collectionReturn->getSelect()->columns(
-            array('id as template_id', 'title', 'marketplace_id as marketplace',
+            array(
+                'id as template_id',
+                'title',
+                new Zend_Db_Expr('mm.title as `marketplace_title`'),
+                new Zend_Db_Expr('mm.id as `marketplace_id`'),
                 new Zend_Db_Expr('\''.TemplateManager::TEMPLATE_RETURN_POLICY . '\' as `nick`'),
-                'create_date', 'update_date')
+                'create_date',
+                'update_date'
+            )
         );
         $collectionReturn->addFieldToFilter('is_custom_template', 0);
         $collectionReturn->addFieldToFilter('marketplace_id', array('in' => $this->getEnabledMarketplacesIds()));
@@ -150,7 +203,15 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Grid extends Mage_Adminhtml_Block
         $resultCollection = new Varien_Data_Collection_Db($connRead);
         $resultCollection->getSelect()->reset()->from(
             array('main_table' => $unionSelect),
-            array('template_id', 'title', 'nick', 'marketplace', 'create_date', 'update_date')
+            array(
+                'template_id',
+                'title',
+                'nick',
+                'marketplace_id',
+                'marketplace_title',
+                'create_date',
+                'update_date'
+            )
         );
         // ---------------------------------------
 
@@ -201,8 +262,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Grid extends Mage_Adminhtml_Block
             'align'         => 'left',
             'type'          => 'options',
             'width'         => '100px',
-            'index'         => 'marketplace',
-            'filter_index'  => 'main_table.marketplace',
+            'index'         => 'marketplace_title',
+            'filter_index'  => 'main_table.marketplace_title',
             'filter_condition_callback' => array($this, 'callbackFilterMarketplace'),
             'frame_callback'=> array($this, 'callbackColumnMarketplace'),
             'options'       => $this->getEnabledMarketplaceTitles()
@@ -292,7 +353,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Grid extends Mage_Adminhtml_Block
             return;
         }
 
-        $collection->getSelect()->where('main_table.marketplace = 0 OR main_table.marketplace = ?', (int)$value);
+        $collection->getSelect()->where('marketplace_id = 0 OR marketplace_id = ?', (int)$value);
     }
 
     //########################################

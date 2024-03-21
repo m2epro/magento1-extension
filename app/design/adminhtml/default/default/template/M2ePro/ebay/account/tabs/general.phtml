@@ -9,12 +9,7 @@
 
 /** @var $this Ess_M2ePro_Block_Adminhtml_Ebay_Account_Edit_Tabs_General */
 
-$formData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data') ? Mage::helper('M2ePro/Data_Global')->getValue('temp_data')->toArray() : array();
-
-$ebayUserId = null;
-if (empty($formData['user_id']) && isset($formData['info']) && $ebayInfo = json_decode($formData['info'], true)) {
-    !empty($ebayInfo['UserID']) && $formData['user_id'] = (string)$ebayInfo['UserID'];
-}
+$formData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data')->toArray();
 
 $helper = Mage::helper('M2ePro');
 
@@ -24,45 +19,22 @@ $temp !== null && $formData['title'] = $temp;
 $temp = Mage::helper('M2ePro/Data_Session')->getValue('get_token_account_mode', true);
 $temp !== null && $formData['mode'] = $temp;
 
-$temp = Mage::helper('M2ePro/Data_Session')->getValue('get_token_account_token_session', true);
-$temp !== null && $formData['token_session'] = $temp;
-
-$temp = Mage::helper('M2ePro/Data_Session')->getValue('get_sell_api_token_account_token_session', true);
-$temp !== null && $formData['sell_api_token_session'] = $temp;
-
 $defaults = Mage::getModel('M2ePro/Ebay_Account_Builder')->getDefaultData();
 $formData = array_merge($defaults, $formData);
 
 $isEdit = !!$this->getRequest()->getParam('id');
 
-$licenseMessage = '';
-
-if ($isEdit) {
-    $licenseMessage = (string)Mage::helper('M2ePro/Data_Global')->getValue('license_message');
-}
+$licenseMessage = (string)Mage::helper('M2ePro/Data_Global')->getValue('license_message');
 
 ?>
 
 <div id="block_notice_ebay_accounts_general" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('General'); ?>">
-<?php if (!$isEdit) { ?>
-
-    <?php echo Mage::helper('M2ePro')->__(
-        'To connect M2E Pro with your eBay Account, select the Environment of the eBay Account:
-        either <i>Production (Live)</i> or <i>Sandbox (Test)</i>.<br>
-        Then proceed to grant M2E Pro access to your eBay account data following this <a href="%url%" target="_blank">instruction</a>.',
-        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'ebay-account-activation')
-    ); ?>
-
-<?php } else { ?>
-
     <?php echo Mage::helper('M2ePro')->__(
         'This Page shows the Environment for your eBay Account and details of the authorization for M2E Pro to connect to your eBay Account.<br/><br/>
         If your token has expired or is not activated, click <b>Get Token</b>.<br/><br/>
         More detailed information about ability to work with this Page you can find <a href="%url%" target="_blank">here</a>.',
         Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'ebay-account-activation')
     ); ?>
-
-<?php } ?>
 </div>
 
 <script type="text/javascript">
@@ -74,7 +46,6 @@ if ($isEdit) {
 
     M2ePro.url.add(<?php echo json_encode(Mage::helper('M2ePro')->getControllerActions('adminhtml_ebay_account')) ?>);
 
-    M2ePro.url.set('adminhtml_ebay_account/beforeGetToken','<?php echo $this->getUrl('*/adminhtml_ebay_account/beforeGetToken',array('_current' => true)); ?>');
     M2ePro.url.set('adminhtml_ebay_account/beforeGetSellApiToken','<?php echo $this->getUrl('*/adminhtml_ebay_account/beforeGetSellApiToken',array('_current' => true)); ?>');
 
     M2ePro.url.add(<?php echo json_encode(array(
@@ -123,10 +94,6 @@ HTML
     )); ?>);
 
     M2ePro.formData.mode = '<?php echo Mage::helper('M2ePro')->escapeJs($formData['mode']); ?>';
-    M2ePro.formData.token_session = '<?php echo Mage::helper('M2ePro')->escapeJs($formData['token_session']); ?>';
-    M2ePro.formData.token_expired_date = '<?php echo Mage::helper('M2ePro')->escapeJs($formData['token_expired_date']); ?>';
-
-    M2ePro.formData.sell_api_token_session = '<?php echo Mage::helper('M2ePro')->escapeJs($formData['sell_api_token_session']); ?>';
     M2ePro.formData.sell_api_token_expired_date = '<?php echo Mage::helper('M2ePro')->escapeJs($formData['sell_api_token_expired_date']); ?>';
     //-----------------------------
 
@@ -169,8 +136,6 @@ HTML
 
 </div>
 
-<?php if ($this->isSellApiMode()): ?>
-
     <div class="entry-edit" id="magento_block_ebay_accounts_general_token">
 
         <div class="entry-edit-head">
@@ -182,17 +147,13 @@ HTML
 
                 <table class="form-list" cellspacing="0" cellpadding="0">
 
-                    <tr <?php if (!$isEdit) echo 'style="display: none"'; ?>>
+                    <tr>
                         <td class="label">
                             <label for="title"><?php echo Mage::helper('M2ePro')->__('eBay User ID'); ?>: </label>
                         </td>
                         <td class="value" style="width: auto;">
                         <span id="account_title">
-                            <?php if (!empty($formData['user_id'])): ?>
-                                <a target="_blank" href="<?php echo Mage::helper('M2ePro/Component_Ebay')->getMemberUrl($formData['user_id'], $formData['mode']); ?>"><?php echo $this->escapeHtml($formData['user_id']); ?></a>
-                            <?php else: ?>
-                                <?php echo $this->escapeHtml($formData['title']); ?>
-                            <?php endif; ?>
+                            <a target="_blank" href="<?php echo Mage::helper('M2ePro/Component_Ebay')->getMemberUrl($formData['user_id'], $formData['mode']); ?>"><?php echo $this->escapeHtml($formData['user_id']); ?></a>
                         </span>
                         </td>
                     </tr>
@@ -202,80 +163,11 @@ HTML
                             <label for="mode"><?php echo Mage::helper('M2ePro')->__('Environment'); ?>: <span class="required">*</span></label>
                         </td>
                         <td class="value" style="width: auto;">
-                            <select <?php if($formData['token_session'] != ''): ?>disabled="disabled"<?php else: ?>id="mode" name="mode"<?php endif; ?> class="required-entry">
-                                <option value="<?php echo Ess_M2ePro_Model_Ebay_Account::MODE_PRODUCTION; ?>" <?php if ($formData['mode'] == Ess_M2ePro_Model_Ebay_Account::MODE_PRODUCTION): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Production (Live)'); ?></option>
-                                <option value="<?php echo Ess_M2ePro_Model_Ebay_Account::MODE_SANDBOX; ?>" <?php if ($formData['mode'] == Ess_M2ePro_Model_Ebay_Account::MODE_SANDBOX ): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Sandbox (Test)'); ?></option>
-                            </select>
-                            <?php if($formData['token_session'] != ''): ?>
-                                <input id="mode" name="mode" value="<?php echo $formData['mode']; ?>" type="hidden" class="required-entry" />
-                            <?php endif; ?>
-                            <p class="note"><span>
-                            <?php if (!$isEdit) {
-                                echo $helper->__('Choose \'Production (Live)\' to use an eBay Account to list for real on Marketplaces.<br/>
-                                                  Choose \'Sandbox (Test)\' to use an eBay Sandbox Account for testing purposes.');
-                            } else {
-                                echo $helper->__('<b>Production (Live):</b> an eBay Account Listing for real on Marketplaces.<br/>
-                                                  <b>Sandbox (Test):</b> an eBay Sandbox Account for testing purposes.');
-                            } ?>
-                        </span></p>
-                        </td>
-                    </tr>
-
-                </table>
-
-            </div>
-        </div>
-
-    </div>
-
-    <div class="entry-edit" id="magento_block_ebay_accounts_general_trading">
-
-        <div class="entry-edit-head">
-            <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Trading API Details'); ?></h4>
-        </div>
-
-        <div class="fieldset">
-            <div class="hor-scroll">
-
-                <table class="form-list" cellspacing="0" cellpadding="0">
-
-                    <tr>
-                        <td class="label">
-                            <label><?php echo Mage::helper('M2ePro')->__('Grant Access'); ?>:</label>
-                        </td>
-                        <td class="value" style="width: auto;">
-                            <?php echo $this->getChildHtml('get_token_button'); ?>
-                            <p class="note note-no-tool-tip">
-                            <span>
-                                <?php echo Mage::helper('M2ePro')->__(
-                                    'You need to finish the token process within 5 minutes.<br/> If not, just click <b>Get Token</b> and try again.'
-                                ); ?>
-                            </span>
-                            </p>
-                        </td>
-                    </tr>
-
-                </table>
-
-                <table class="form-list" cellspacing="0" cellpadding="0">
-
-                    <tr>
-                        <td class="label">
-                            <label for="token_session"><?php echo Mage::helper('M2ePro')->__('Activated'); ?>: <span class="required">*</span></label>
-                        </td>
-                        <td class="value" style="width: auto;">
-                            <div><?php if($formData['token_session'] != '') echo Mage::helper('M2ePro')->__('Yes'); else echo Mage::helper('M2ePro')->__('No'); ?></div>
-                            <input id="token_session" name="token_session" value="<?php echo $formData['token_session']; ?>" type="hidden" class="M2ePro-account-token-session" />
-                        </td>
-                    </tr>
-
-                    <tr <?php if($formData['token_session'] == '' || $formData['token_expired_date'] == ''): ?>style="display: none;"<?php endif; ?>>
-                        <td class="label">
-                            <label for="token_expired_date"><?php echo Mage::helper('M2ePro')->__('Expiration Date'); ?>: <span class="required">*</span></label>
-                        </td>
-                        <td class="value" style="width: auto;">
-                            <div><?php echo $formData['token_expired_date']; ?></div>
-                            <input id="token_expired_date" name="token_expired_date" value="<?php echo $formData['token_expired_date']; ?>" type="hidden" />
+                            <?php
+                            $modeValue = (int)$formData['mode'];
+                            $displayText = ($modeValue === Ess_M2ePro_Model_Ebay_Account::MODE_PRODUCTION) ? Mage::helper('M2ePro')->__('Production (Live)') : Mage::helper('M2ePro')->__('Sandbox (Test)');
+                            ?>
+                            <input type="text" id="mode" name="mode" value="<?php echo $displayText; ?>" class="required-entry disabled" readonly="readonly">
                         </td>
                     </tr>
 
@@ -289,7 +181,7 @@ HTML
     <div class="entry-edit" id="magento_block_ebay_accounts_general_sell_api_token">
 
         <div class="entry-edit-head">
-            <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Sell API Details'); ?></h4>
+            <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Access Details'); ?></h4>
         </div>
 
         <div class="fieldset">
@@ -317,17 +209,7 @@ HTML
 
                 <table class="form-list" cellspacing="0" cellpadding="0">
 
-                    <tr>
-                        <td class="label">
-                            <label for="sell_api_token_session"><?php echo Mage::helper('M2ePro')->__('Activated'); ?>: </label>
-                        </td>
-                        <td class="value" style="width: auto;">
-                            <div><?php if($formData['sell_api_token_session'] != '') echo Mage::helper('M2ePro')->__('Yes'); else echo Mage::helper('M2ePro')->__('No'); ?></div>
-                            <input id="sell_api_token_session" name="sell_api_token_session" value="<?php echo $formData['sell_api_token_session']; ?>" type="hidden"/>
-                        </td>
-                    </tr>
-
-                    <tr <?php if(empty($formData['sell_api_token_session']) || empty($formData['sell_api_token_expired_date']) || strtotime($formData['sell_api_token_expired_date']) < 0): ?>style="display: none;"<?php endif; ?>>
+                    <tr <?php if(empty($formData['sell_api_token_expired_date']) || strtotime($formData['sell_api_token_expired_date']) < 0): ?>style="display: none;"<?php endif; ?>>
                         <td class="label">
                             <label for="sell_api_token_expired_date"><?php echo Mage::helper('M2ePro')->__('Expiration Date'); ?>: <span class="required">*</span></label>
                         </td>
@@ -343,104 +225,3 @@ HTML
         </div>
 
     </div>
-
-<?php else: ?>
-
-    <div class="entry-edit" id="magento_block_ebay_accounts_general_token">
-
-        <div class="entry-edit-head">
-            <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Access Details'); ?></h4>
-        </div>
-
-        <div class="fieldset">
-            <div class="hor-scroll">
-
-                <table class="form-list" cellspacing="0" cellpadding="0">
-
-                    <tr <?php if (!$isEdit) echo 'style="display: none"'; ?>>
-                        <td class="label">
-                            <label for="title"><?php echo Mage::helper('M2ePro')->__('eBay User ID'); ?>: </label>
-                        </td>
-                        <td class="value" style="width: auto;">
-                            <span id="account_title">
-                                <?php if (!empty($formData['user_id'])): ?>
-                                    <a target="_blank" href="<?php echo Mage::helper('M2ePro/Component_Ebay')->getMemberUrl($formData['user_id'], $formData['mode']); ?>"><?php echo $this->escapeHtml($formData['user_id']); ?></a>
-                                <?php else: ?>
-                                    <?php echo $this->escapeHtml($formData['title']); ?>
-                                <?php endif; ?>
-                            </span>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td class="label">
-                            <label for="mode"><?php echo Mage::helper('M2ePro')->__('Environment'); ?>: <span class="required">*</span></label>
-                        </td>
-                        <td class="value" style="width: auto;">
-                            <select <?php if($formData['token_session'] != ''): ?>disabled="disabled"<?php else: ?>id="mode" name="mode"<?php endif; ?> class="required-entry">
-                                <option value="<?php echo Ess_M2ePro_Model_Ebay_Account::MODE_PRODUCTION; ?>" <?php if ($formData['mode'] == Ess_M2ePro_Model_Ebay_Account::MODE_PRODUCTION): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Production (Live)'); ?></option>
-                                <option value="<?php echo Ess_M2ePro_Model_Ebay_Account::MODE_SANDBOX; ?>" <?php if ($formData['mode'] == Ess_M2ePro_Model_Ebay_Account::MODE_SANDBOX ): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Sandbox (Test)'); ?></option>
-                            </select>
-                            <?php if($formData['token_session'] != ''): ?>
-                                <input id="mode" name="mode" value="<?php echo $formData['mode']; ?>" type="hidden" class="required-entry" />
-                            <?php endif; ?>
-                            <p class="note"><span>
-                                <?php if (!$isEdit) {
-                                    echo $helper->__('Choose \'Production (Live)\' to use an eBay Account to list for real on Marketplaces.<br/>
-                                                      Choose \'Sandbox (Test)\' to use an eBay Sandbox Account for testing purposes.');
-                                } else {
-                                    echo $helper->__('<b>Production (Live):</b> an eBay Account Listing for real on Marketplaces.<br/>
-                                                      <b>Sandbox (Test):</b> an eBay Sandbox Account for testing purposes.');
-                                } ?>
-                            </span></p>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td class="label">
-                            <label><?php echo Mage::helper('M2ePro')->__('Grant Access'); ?>:</label>
-                        </td>
-                        <td class="value" style="width: auto;">
-                            <?php echo $this->getChildHtml('get_token_button'); ?>
-                            <p class="note note-no-tool-tip">
-                                <span>
-                                    <?php echo Mage::helper('M2ePro')->__(
-                                        'You need to finish the token process within 5 minutes.<br/> If not, just click <b>Get Token</b> and try again.'
-                                    ); ?>
-                                </span>
-                            </p>
-                        </td>
-                    </tr>
-
-                </table>
-
-                <table class="form-list" cellspacing="0" cellpadding="0">
-
-                    <tr>
-                        <td class="label">
-                            <label for="token_session"><?php echo Mage::helper('M2ePro')->__('Activated'); ?>: <span class="required">*</span></label>
-                        </td>
-                        <td class="value" style="width: auto;">
-                            <div><?php if($formData['token_session'] != '') echo Mage::helper('M2ePro')->__('Yes'); else echo Mage::helper('M2ePro')->__('No'); ?></div>
-                            <input id="token_session" name="token_session" value="<?php echo $formData['token_session']; ?>" type="hidden" class="M2ePro-account-token-session" />
-                        </td>
-                    </tr>
-
-                    <tr <?php if($formData['token_session'] == '' || $formData['token_expired_date'] == ''): ?>style="display: none;"<?php endif; ?>>
-                        <td class="label">
-                            <label for="token_expired_date"><?php echo Mage::helper('M2ePro')->__('Expiration Date'); ?>: <span class="required">*</span></label>
-                        </td>
-                        <td class="value" style="width: auto;">
-                            <div><?php echo $formData['token_expired_date']; ?></div>
-                            <input id="token_expired_date" name="token_expired_date" value="<?php echo $formData['token_expired_date']; ?>" type="hidden" />
-                        </td>
-                    </tr>
-
-                </table>
-
-            </div>
-        </div>
-
-    </div>
-
-<?php endif; ?>

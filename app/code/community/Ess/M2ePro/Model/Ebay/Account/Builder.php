@@ -22,11 +22,9 @@ class Ess_M2ePro_Model_Ebay_Account_Builder extends Ess_M2ePro_Model_ActiveRecor
             'title',
             'mode',
             'user_id',
+            'is_token_exist',
             'info',
             'server_hash',
-            'token_session',
-            'token_expired_date',
-            'sell_api_token_session',
             'sell_api_token_expired_date'
         );
         foreach ($keys as $key) {
@@ -363,9 +361,6 @@ class Ess_M2ePro_Model_Ebay_Account_Builder extends Ess_M2ePro_Model_ActiveRecor
             'user_id'                     => '',
             'mode'                        => Account::MODE_PRODUCTION,
             'server_hash'                 => '',
-            'token_session'               => '',
-            'token_expired_date'          => '',
-            'sell_api_token_session'      => '',
             'sell_api_token_expired_date' => '',
 
             'other_listings_synchronization'  => 1,

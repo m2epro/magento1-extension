@@ -60,8 +60,7 @@ class Ess_M2ePro_Model_Servicing_Task_Analytics_EntityManager_Serializer
 
             case Ess_M2ePro_Helper_Component_Ebay::NICK . '::Account':
                 unset(
-                    $data['server_hash'], $data['token_session'],
-                    $data['sell_api_token_session'], $data['info'], $data['user_preferences'], $data['job_token']
+                    $data['server_hash'], $data['info'], $data['user_preferences'], $data['job_token']
                 );
                 break;
 

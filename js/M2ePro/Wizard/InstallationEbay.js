@@ -21,7 +21,7 @@ window.WizardInstallationEbay = Class.create(Common, {
             return false;
         }
 
-        new Ajax.Request(M2ePro.url.get('adminhtml_wizard_installationEbay/beforeToken'), {
+        new Ajax.Request(M2ePro.url.get('adminhtml_wizard_installationEbay/beforeGetSellApiToken'), {
             method       : 'post',
             asynchronous : true,
             parameters   : $('edit_form').serialize(),

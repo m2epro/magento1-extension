@@ -406,6 +406,10 @@ class Ess_M2ePro_Model_Amazon_Search_Settings
      */
     private function saveStatus($status, array $searchSettingsData = null)
     {
+        if ($searchSettingsData !== null) {
+            $searchSettingsData = Mage::helper('M2ePro')->jsonEncode($searchSettingsData);
+        }
+
         $this->getListingProduct()->setData('search_settings_status', $status);
         $this->getListingProduct()->setData('search_settings_data', $searchSettingsData);
         $this->getListingProduct()->save();

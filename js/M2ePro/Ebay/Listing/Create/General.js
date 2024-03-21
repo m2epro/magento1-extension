@@ -27,27 +27,30 @@ window.EbayListingCreateGeneral = Class.create(Common, {
     initAccount: function() {
         var self = this;
 
-        $('add_account_button').observe('click', function() {
-            var win = window.open(M2ePro.url.get('adminhtml_ebay_account/new'));
-
-            var intervalId = setInterval(function() {
-
-                if (!win.closed) {
-                    return;
-                }
-
-                clearInterval(intervalId);
-
-                self.renderAccounts();
-
-            }, 1000);
-        });
-
         $('account_id').observe('change', function() {
             self.selectedAccountId = this.value;
         });
 
         self.renderAccounts();
+    },
+
+    addAccount: function (el, e) {
+        var self = this;
+
+        e.preventDefault();
+        var win = window.open(el.getAttribute('href'));
+
+        var intervalId = setInterval(function() {
+
+            if (!win.closed) {
+                return;
+            }
+
+            clearInterval(intervalId);
+
+            self.renderAccounts();
+
+        }, 1000);
     },
 
     renderAccounts: function(callback) {

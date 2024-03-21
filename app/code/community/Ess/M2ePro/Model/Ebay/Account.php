@@ -983,9 +983,9 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
 
     public function updateRateTables()
     {
-        $sellApiTokenSession = $this->getSellApiTokenSession();
+        $isTokenExist = $this->isTokenExist();
 
-        if (empty($sellApiTokenSession)) {
+        if (empty($isTokenExist)) {
             return;
         }
 
@@ -1016,26 +1016,22 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
         return !empty($rateTables);
     }
 
-    public function getTokenSession()
-    {
-        return $this->getData('token_session');
-    }
-
-    public function getTokenExpiredDate()
-    {
-        return $this->getData('token_expired_date');
-    }
-
     // ---------------------------------------
-
-    public function getSellApiTokenSession()
-    {
-        return $this->getData('sell_api_token_session');
-    }
 
     public function getSellApiTokenExpiredDate()
     {
         return $this->getData('sell_api_token_expired_date');
+    }
+
+    //The is_token_exist flag is needed for migration from Trading Api token to Sell Api token
+    public function isTokenExist()
+    {
+        return (bool)$this->getData('is_token_exist');
+    }
+
+    public function setIsTokenExist($isTokenExist)
+    {
+        $this->setData('is_token_exist', $isTokenExist);
     }
 
     // ---------------------------------------

@@ -40,16 +40,24 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Grid extends Mage_Adminhtml_Bl
         /** @var $connRead Varien_Db_Adapter_Pdo_Mysql */
         $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
 
+        $marketplaceMainTable = Mage::getModel('M2ePro/Marketplace')->getResource()->getMainTable();
+
         // Prepare category collection
         // ---------------------------------------
         $collectionCategory = Mage::getModel('M2ePro/Walmart_Template_Category')->getCollection();
         $collectionCategory->getSelect()->reset(Varien_Db_Select::COLUMNS);
+        $collectionCategory->getSelect()->join(
+            array('mm' => $marketplaceMainTable),
+            'main_table.marketplace_id=mm.id',
+            array()
+        );
         $collectionCategory->getSelect()->columns(
             array(
                 'id as template_id',
                 'title',
                 new Zend_Db_Expr('\''.self::TEMPLATE_CATEGORY.'\' as `type`'),
-                'marketplace_id',
+                new Zend_Db_Expr('mm.title as `marketplace_title`'),
+                new Zend_Db_Expr('mm.id as `marketplace_id`'),
                 'create_date',
                 'update_date',
                 'category_path',
@@ -62,19 +70,25 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Grid extends Mage_Adminhtml_Bl
         // ---------------------------------------
         $collectionSellingFormat = Mage::helper('M2ePro/Component_Walmart')->getCollection('Template_SellingFormat');
         $collectionSellingFormat->getSelect()->reset(Varien_Db_Select::COLUMNS);
+        $collectionSellingFormat->getSelect()->join(
+            array('mm2' => $marketplaceMainTable),
+            'second_table.marketplace_id=mm2.id',
+            array()
+        );
         $collectionSellingFormat->getSelect()->columns(
             array(
                 'id as template_id',
                 'title',
                 new Zend_Db_Expr('\''.self::TEMPLATE_SELLING_FORMAT.'\' as `type`'),
-                'second_table.marketplace_id',
+                new Zend_Db_Expr('mm2.title as `marketplace_title`'),
+                new Zend_Db_Expr('mm2.id as `marketplace_id`'),
                 'create_date',
                 'update_date',
                 new Zend_Db_Expr('NULL as `category_path`'),
                 new Zend_Db_Expr('NULL as `browsenode_id`')
             )
         );
-        $collectionSellingFormat->getSelect()->where('component_mode = (?)', Ess_M2ePro_Helper_Component_Walmart::NICK);
+        $collectionSellingFormat->getSelect()->where('main_table.component_mode = (?)', Ess_M2ePro_Helper_Component_Walmart::NICK);
         // ---------------------------------------
 
         // Prepare synchronization collection
@@ -86,6 +100,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Grid extends Mage_Adminhtml_Bl
                 'id as template_id',
                 'title',
                 new Zend_Db_Expr('\''.self::TEMPLATE_SYNCHRONIZATION.'\' as `type`'),
+                new Zend_Db_Expr('NULL as `marketplace_title`'),
                 new Zend_Db_Expr('\'0\' as `marketplace_id`'),
                 'create_date',
                 'update_date',
@@ -108,6 +123,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Grid extends Mage_Adminhtml_Bl
                 'id as template_id',
                 'title',
                 new Zend_Db_Expr('\''.self::TEMPLATE_DESCRIPTION.'\' as `type`'),
+                new Zend_Db_Expr('NULL as `marketplace_title`'),
                 new Zend_Db_Expr('\'0\' as `marketplace_id`'),
                 'create_date',
                 'update_date',
@@ -139,6 +155,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Grid extends Mage_Adminhtml_Bl
                 'template_id',
                 'title',
                 'type',
+                'marketplace_title',
                 'marketplace_id',
                 'create_date',
                 'update_date',
@@ -195,8 +212,8 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Grid extends Mage_Adminhtml_Bl
             'align'         => 'left',
             'type'          => 'options',
             'width'         => '100px',
-            'index'         => 'marketplace_id',
-            'filter_index'  => 'marketplace_id',
+            'index'         => 'marketplace_title',
+            'filter_index'  => 'marketplace_title',
             'filter_condition_callback' => array($this, 'callbackFilterMarketplace'),
             'frame_callback'=> array($this, 'callbackColumnMarketplace'),
             'options'       => $this->getEnabledMarketplaceTitles()
