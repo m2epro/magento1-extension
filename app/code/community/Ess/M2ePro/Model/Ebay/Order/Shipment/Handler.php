@@ -36,15 +36,11 @@ class Ess_M2ePro_Model_Ebay_Order_Shipment_Handler extends Ess_M2ePro_Model_Orde
             /** @var Mage_Sales_Model_Order_Shipment_Item $shipmentItem */
             $orderItem = $shipmentItem->getOrderItem();
 
-            $parentOrderItemId = $orderItem->getParentItemId();
-            if ($parentOrderItemId !== null && !in_array($parentOrderItemId, $allowedItems)) {
-                $allowedItems[] = $parentOrderItemId;
+            if ($orderItem->getParentItemId() !== null ) {
                 continue;
             }
 
-            if (!Mage::helper('M2ePro/Magento_Product')->isBundleType($orderItem->getProductType())) {
-                $allowedItems[] = $orderItem->getId();
-            }
+            $allowedItems[] = $orderItem->getId();
 
             $item = $this->getItemToShipLoader($order, $shipmentItem)->loadItem();
             if (empty($item)) {
