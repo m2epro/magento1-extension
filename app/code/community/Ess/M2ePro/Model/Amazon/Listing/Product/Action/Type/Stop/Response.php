@@ -24,7 +24,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Stop_Response
         $data = $this->appendQtyValues($data);
 
         $this->getListingProduct()->addData($data);
-        $isStoppedManually = $this->getListingProduct()->isStopped() && $this->getListingProduct()->getStatusChanger()
+        $isStoppedManually = $this->getListingProduct()->isInactive() && $this->getListingProduct()->getStatusChanger()
             === Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_USER;
         $this->getListingProduct()->setData('is_stopped_manually', $isStoppedManually);
 

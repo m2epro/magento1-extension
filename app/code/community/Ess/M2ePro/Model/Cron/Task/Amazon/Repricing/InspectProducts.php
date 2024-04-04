@@ -56,7 +56,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Repricing_InspectProducts extends Ess_M2
         $listingProductCollection->addFieldToFilter(
             'main_table.status', array('in' => array(
             Ess_M2ePro_Model_Listing_Product::STATUS_LISTED,
-            Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED,
+            Ess_M2ePro_Model_Listing_Product::STATUS_INACTIVE,
             Ess_M2ePro_Model_Listing_Product::STATUS_UNKNOWN))
         );
         $listingProductCollection->addFieldToFilter(

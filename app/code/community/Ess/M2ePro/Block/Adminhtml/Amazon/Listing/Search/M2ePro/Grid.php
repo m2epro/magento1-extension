@@ -297,7 +297,7 @@ HTML;
         $sUnknown   = Ess_M2ePro_Model_Listing_Product::STATUS_UNKNOWN;
         $sNotListed = Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED;
         $sListed    = Ess_M2ePro_Model_Listing_Product::STATUS_LISTED;
-        $sStopped   = Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED;
+        $sInactive  = Ess_M2ePro_Model_Listing_Product::STATUS_INACTIVE;
         $sBlocked   = Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED;
 
         $generalId = $listingProduct->getGeneralId();
@@ -313,7 +313,7 @@ HTML;
         isset($variationsStatuses[$sUnknown])   && $sortedStatuses[$sUnknown]   = $variationsStatuses[$sUnknown];
         isset($variationsStatuses[$sNotListed]) && $sortedStatuses[$sNotListed] = $variationsStatuses[$sNotListed];
         isset($variationsStatuses[$sListed])    && $sortedStatuses[$sListed]    = $variationsStatuses[$sListed];
-        isset($variationsStatuses[$sStopped])   && $sortedStatuses[$sStopped]   = $variationsStatuses[$sStopped];
+        isset($variationsStatuses[$sInactive])  && $sortedStatuses[$sInactive]  = $variationsStatuses[$sInactive];
         isset($variationsStatuses[$sBlocked])   && $sortedStatuses[$sBlocked]   = $variationsStatuses[$sBlocked];
 
         foreach ($sortedStatuses as $status => $productsCount) {

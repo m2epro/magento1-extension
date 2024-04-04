@@ -144,7 +144,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_Linking
     protected function linkSimpleOrIndividualProduct()
     {
         $this->getListingProduct()->addData(
-            array('status' => Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED)
+            array('status' => Ess_M2ePro_Model_Listing_Product::STATUS_INACTIVE)
         );
 
         $productIdentifiers = $this->getProductIdentifiers();

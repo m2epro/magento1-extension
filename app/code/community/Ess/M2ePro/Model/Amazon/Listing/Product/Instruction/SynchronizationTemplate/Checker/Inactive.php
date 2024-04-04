@@ -51,7 +51,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Instruction_SynchronizationTemplat
 
         $listingProduct = $this->_input->getListingProduct();
 
-        if (!$listingProduct->isRelistable() || !$listingProduct->isStopped()) {
+        if (!$listingProduct->isRelistable() || !$listingProduct->isInactive()) {
             return false;
         }
 

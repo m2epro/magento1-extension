@@ -158,9 +158,8 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_View_Grid extends Mage_Adm
                 'options'        => array(
                     Ess_M2ePro_Model_Listing_Product::STATUS_UNKNOWN => Mage::helper('M2ePro')->__('Unknown'),
                     Ess_M2ePro_Model_Listing_Product::STATUS_LISTED  => Mage::helper('M2ePro')->__('Active'),
-                    Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED => Mage::helper('M2ePro')->__('Inactive'),
-                    Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED => Mage::helper('M2ePro')
-                        ->__('Incomplete')
+                    Ess_M2ePro_Model_Listing_Product::STATUS_INACTIVE => Mage::helper('M2ePro')->__('Inactive'),
+                    Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED => Mage::helper('M2ePro')->__('Incomplete')
                 ),
                 'frame_callback' => array($this, 'callbackColumnStatus')
             )
@@ -401,7 +400,7 @@ HTML;
                 $value = '<span style="color: green;">' . $value . '</span>';
                 break;
 
-            case Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED:
+            case Ess_M2ePro_Model_Listing_Product::STATUS_INACTIVE:
                 $value = '<span style="color: red;">' . $value . '</span>';
                 break;
 

@@ -45,7 +45,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Relist_Validator
             return false;
         }
 
-        if (!$this->getListingProduct()->isStopped() || !$this->getListingProduct()->isRelistable()) {
+        if (!$this->getListingProduct()->isInactive() || !$this->getListingProduct()->isRelistable()) {
             $this->addMessage(
                 'The Item either is Listed, or not Listed yet or not available'
             );

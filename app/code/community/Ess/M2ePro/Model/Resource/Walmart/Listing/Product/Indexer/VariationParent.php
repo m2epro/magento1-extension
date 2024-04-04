@@ -93,7 +93,7 @@ class Ess_M2ePro_Model_Resource_Walmart_Listing_Product_Indexer_VariationParent
             ->where(
                 'mlp.status IN (?)', array(
                 Ess_M2ePro_Model_Listing_Product::STATUS_LISTED,
-                Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED,
+                Ess_M2ePro_Model_Listing_Product::STATUS_INACTIVE,
                 )
             )
             ->where('mlp.listing_id = ?', (int)$listing->getId())

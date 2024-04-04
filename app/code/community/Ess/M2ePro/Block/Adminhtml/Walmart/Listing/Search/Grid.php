@@ -118,7 +118,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Search_Grid extends Ma
             'options' => array(
                 Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED => Mage::helper('M2ePro')->__('Not Listed'),
                 Ess_M2ePro_Model_Listing_Product::STATUS_LISTED     => Mage::helper('M2ePro')->__('Active'),
-                Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED    => Mage::helper('M2ePro')->__('Inactive'),
+                Ess_M2ePro_Model_Listing_Product::STATUS_INACTIVE   => Mage::helper('M2ePro')->__('Inactive'),
                 Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED    => Mage::helper('M2ePro')->__('Incomplete')
             ),
             'frame_callback'            => array($this, 'callbackColumnStatus'),
@@ -168,7 +168,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Search_Grid extends Ma
             case Ess_M2ePro_Model_Listing_Product::STATUS_LISTED:
                 return '<span style="color: green;">' . Mage::helper('M2ePro')->__('Active') . '</span>';
 
-            case Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED:
+            case Ess_M2ePro_Model_Listing_Product::STATUS_INACTIVE:
                 return'<span style="color: red;">' . Mage::helper('M2ePro')->__('Inactive') . '</span>';
 
             case Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED:

@@ -32,10 +32,7 @@ class Ess_M2ePro_Model_Listing_Product extends Ess_M2ePro_Model_Component_Parent
     const ACTION_DELETE = 5;
 
     const STATUS_NOT_LISTED = 0;
-    const STATUS_SOLD       = 1;
     const STATUS_LISTED     = 2;
-    const STATUS_STOPPED    = 3;
-    const STATUS_FINISHED   = 4;
     const STATUS_UNKNOWN    = 5;
     const STATUS_BLOCKED    = 6;
     const STATUS_HIDDEN     = 7;
@@ -432,30 +429,6 @@ class Ess_M2ePro_Model_Listing_Product extends Ess_M2ePro_Model_Component_Parent
         return $this->getStatus() == self::STATUS_HIDDEN;
     }
 
-    /**
-     * @return bool
-     */
-    public function isSold()
-    {
-        return $this->getStatus() == self::STATUS_SOLD;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isStopped()
-    {
-        return $this->getStatus() == self::STATUS_STOPPED;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isFinished()
-    {
-        return $this->getStatus() == self::STATUS_FINISHED;
-    }
-
     public function isInactive()
     {
         return $this->getStatus() == self::STATUS_INACTIVE;
@@ -471,9 +444,6 @@ class Ess_M2ePro_Model_Listing_Product extends Ess_M2ePro_Model_Component_Parent
         return !$this->isBlocked()
             && (
                 $this->isNotListed()
-                || $this->isSold()
-                || $this->isStopped()
-                || $this->isFinished()
                 || $this->isHidden()
                 || $this->isUnknown()
                 || $this->isInactive()
@@ -487,10 +457,7 @@ class Ess_M2ePro_Model_Listing_Product extends Ess_M2ePro_Model_Component_Parent
     {
         return !$this->isBlocked()
             && (
-                $this->isSold()
-                || $this->isStopped()
-                || $this->isFinished()
-                || $this->isUnknown()
+                $this->isUnknown()
                 || $this->isInactive()
             );
     }

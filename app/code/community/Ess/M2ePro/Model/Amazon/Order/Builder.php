@@ -610,7 +610,7 @@ class Ess_M2ePro_Model_Amazon_Order_Builder extends Mage_Core_Model_Abstract
             }
 
             foreach ($listingsProducts as $listingProduct) {
-                if (!$listingProduct->isListed() && !$listingProduct->isStopped()) {
+                if (!$listingProduct->isListed() && !$listingProduct->isInactive()) {
                     continue;
                 }
 
@@ -624,7 +624,7 @@ class Ess_M2ePro_Model_Amazon_Order_Builder extends Mage_Core_Model_Abstract
                 $currentOnlineQty = $listingProduct->getData('online_qty');
 
                 // if product was linked by sku during list action
-                if ($listingProduct->isStopped() && $currentOnlineQty === null) {
+                if ($listingProduct->isInactive() && $currentOnlineQty === null) {
                     continue;
                 }
 
@@ -683,11 +683,11 @@ class Ess_M2ePro_Model_Amazon_Order_Builder extends Mage_Core_Model_Abstract
                     )
                 );
 
-                if (!$listingProduct->isStopped()) {
+                if (!$listingProduct->isInactive()) {
                     $statusChangedFrom = Mage::helper('M2ePro/Component_Amazon')
                         ->getHumanTitleByListingProductStatus($listingProduct->getStatus());
                     $statusChangedTo = Mage::helper('M2ePro/Component_Amazon')
-                        ->getHumanTitleByListingProductStatus(Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED);
+                        ->getHumanTitleByListingProductStatus(Ess_M2ePro_Model_Listing_Product::STATUS_INACTIVE);
 
                     if (!empty($statusChangedFrom) && !empty($statusChangedTo)) {
                         $tempLogMessages[] = Mage::helper('M2ePro')->__(
@@ -701,7 +701,7 @@ class Ess_M2ePro_Model_Amazon_Order_Builder extends Mage_Core_Model_Abstract
                         'status_changer',
                         Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_COMPONENT
                     );
-                    $listingProduct->setData('status', Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED);
+                    $listingProduct->setData('status', Ess_M2ePro_Model_Listing_Product::STATUS_INACTIVE);
                 }
 
                 foreach ($tempLogMessages as $tempLogMessage) {
@@ -745,7 +745,7 @@ class Ess_M2ePro_Model_Amazon_Order_Builder extends Mage_Core_Model_Abstract
             }
 
             foreach ($otherListings as $otherListing) {
-                if (!$otherListing->isListed() && !$otherListing->isStopped()) {
+                if (!$otherListing->isListed() && !$otherListing->isInactive()) {
                     continue;
                 }
 
@@ -767,12 +767,12 @@ class Ess_M2ePro_Model_Amazon_Order_Builder extends Mage_Core_Model_Abstract
 
                 $otherListing->setData('online_qty', 0);
 
-                if (!$otherListing->isStopped()) {
+                if (!$otherListing->isInactive()) {
                     $otherListing->setData(
                         'status_changer',
                         Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_COMPONENT
                     );
-                    $otherListing->setData('status', Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED);
+                    $otherListing->setData('status', Ess_M2ePro_Model_Listing_Product::STATUS_INACTIVE);
                 }
 
                 $otherListing->save();

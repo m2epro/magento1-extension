@@ -222,7 +222,7 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Response
             if ((int)$data['online_qty'] > 0) {
                 $data['status'] = Ess_M2ePro_Model_Listing_Product::STATUS_LISTED;
             } else {
-                $data['status'] = Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED;
+                $data['status'] = Ess_M2ePro_Model_Listing_Product::STATUS_INACTIVE;
             }
         }
 

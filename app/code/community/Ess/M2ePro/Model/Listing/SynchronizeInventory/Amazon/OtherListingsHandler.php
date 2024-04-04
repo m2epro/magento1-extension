@@ -74,7 +74,7 @@ class Ess_M2ePro_Model_Listing_SynchronizeInventory_Amazon_OtherListingsHandler
                     if ($newData['online_qty'] > 0) {
                         $newData['status'] = Ess_M2ePro_Model_Listing_Product::STATUS_LISTED;
                     } else {
-                        $newData['status'] = Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED;
+                        $newData['status'] = Ess_M2ePro_Model_Listing_Product::STATUS_INACTIVE;
                     }
                 }
 
@@ -145,7 +145,7 @@ class Ess_M2ePro_Model_Listing_SynchronizeInventory_Amazon_OtherListingsHandler
                 if ((int)$newData['online_qty'] > 0) {
                     $newData['status'] = Ess_M2ePro_Model_Listing_Product::STATUS_LISTED;
                 } else {
-                    $newData['status'] = Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED;
+                    $newData['status'] = Ess_M2ePro_Model_Listing_Product::STATUS_INACTIVE;
                 }
             }
 

@@ -173,7 +173,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Linking
             'is_isbn_general_id'  => Mage::helper('M2ePro')->isISBN($this->getGeneralId()),
             'is_general_id_owner' => Ess_M2ePro_Model_Amazon_Listing_Product::IS_GENERAL_ID_OWNER_NO,
             'sku'                 => $this->getSku(),
-            'status'              => Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED,
+            'status'              => Ess_M2ePro_Model_Listing_Product::STATUS_INACTIVE,
             )
         );
         $this->getListingProduct()->save();
@@ -190,7 +190,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Linking
             'general_id'         => $this->getGeneralId(),
             'is_isbn_general_id' => Mage::helper('M2ePro')->isISBN($this->getGeneralId()),
             'sku'                => $this->getSku(),
-            'status'             => Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED
+            'status'             => Ess_M2ePro_Model_Listing_Product::STATUS_INACTIVE
             )
         );
 

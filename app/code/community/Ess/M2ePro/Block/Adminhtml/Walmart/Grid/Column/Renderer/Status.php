@@ -77,7 +77,7 @@ HTML;
         } else {
             $statusNotListed = Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED;
             $statusListed    = Ess_M2ePro_Model_Listing_Product::STATUS_LISTED;
-            $statusStopped   = Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED;
+            $statusInactive  = Ess_M2ePro_Model_Listing_Product::STATUS_INACTIVE;
             $statusBlocked   = Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED;
 
             $variationChildStatuses = $row->getData('variation_child_statuses');
@@ -100,8 +100,8 @@ HTML;
                 $sortedStatuses[$statusListed] = $variationChildStatuses[$statusListed];
             }
 
-            if (isset($variationChildStatuses[$statusStopped])) {
-                $sortedStatuses[$statusStopped] = $variationChildStatuses[$statusStopped];
+            if (isset($variationChildStatuses[$statusInactive])) {
+                $sortedStatuses[$statusInactive] = $variationChildStatuses[$statusInactive];
             }
 
             if (isset($variationChildStatuses[$statusBlocked])) {
@@ -152,7 +152,7 @@ HTML;
             case Ess_M2ePro_Model_Listing_Product::STATUS_LISTED:
                 $html = '<span style="color: green;">' . Mage::helper('M2ePro')->__('Active') . '</span>';
                 break;
-            case Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED:
+            case Ess_M2ePro_Model_Listing_Product::STATUS_INACTIVE:
                 $html ='<span style="color: red;">' . Mage::helper('M2ePro')->__('Inactive') . '</span>';
                 break;
             case Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED:

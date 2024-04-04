@@ -235,22 +235,6 @@ class Ess_M2ePro_Model_Listing_Other extends Ess_M2ePro_Model_Component_Parent_A
         return $this->getStatus() == Ess_M2ePro_Model_Listing_Product::STATUS_HIDDEN;
     }
 
-    /**
-     * @return bool
-     */
-    public function isStopped()
-    {
-        return $this->getStatus() == Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isFinished()
-    {
-        return $this->getStatus() == Ess_M2ePro_Model_Listing_Product::STATUS_FINISHED;
-    }
-
     public function isInactive()
     {
         return $this->getStatus() == Ess_M2ePro_Model_Listing_Product::STATUS_INACTIVE;

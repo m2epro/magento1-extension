@@ -1,6 +1,6 @@
 <?php
 
-class Ess_M2ePro_Sql_Update_y24_m02_CombineInactiveEbayProductStatuses
+class Ess_M2ePro_Sql_Update_y24_m02_CombineInactiveProductStatuses
     extends Ess_M2ePro_Model_Upgrade_Feature_AbstractFeature
 {
     /**
@@ -9,21 +9,13 @@ class Ess_M2ePro_Sql_Update_y24_m02_CombineInactiveEbayProductStatuses
     public function execute()
     {
         $oldStatuses = array(1, 3, 4);
-        $tables = array('listing_product', 'listing_other', 'ebay_listing_product_variation');
+        $tables = array('listing_product', 'listing_other');
 
         foreach ($tables as $table) {
-            $conditions = array(
-                'status IN (?)' => $oldStatuses,
-            );
-
-            if ($table === 'listing_product' || $table === 'listing_other') {
-                $conditions['component_mode = ?'] = 'ebay';
-            }
-
             $this->_installer->getConnection()->update(
                 $this->_installer->getFullTableName($table),
                 array('status' => Ess_M2ePro_Model_Listing_Product::STATUS_INACTIVE),
-                $conditions
+                array('status IN (?)' => $oldStatuses)
             );
         }
     }

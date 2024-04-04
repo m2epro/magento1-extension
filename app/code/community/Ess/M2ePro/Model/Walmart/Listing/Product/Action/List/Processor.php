@@ -590,7 +590,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_Processor
         $listingProduct   = $processingAction->getListingProduct();
         $processingParams = $processing->getParams();
 
-        $listingProduct->setData('status', Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED);
+        $listingProduct->setData('status', Ess_M2ePro_Model_Listing_Product::STATUS_INACTIVE);
         $listingProduct->save();
 
         $logger = $this->createLogger(

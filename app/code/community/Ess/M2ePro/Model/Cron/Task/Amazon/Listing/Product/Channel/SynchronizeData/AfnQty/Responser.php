@@ -207,7 +207,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
     {
         $oldStatus = $item->getData('status');
         $newStatus = $afnQty ? Ess_M2ePro_Model_Listing_Product::STATUS_LISTED
-            : Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED;
+            : Ess_M2ePro_Model_Listing_Product::STATUS_INACTIVE;
 
         /** @var Ess_M2ePro_Model_Amazon_Listing_Product|Ess_M2ePro_Model_Amazon_Listing_Other $listingProduct */
         $listingProduct = $item->getChildObject();
@@ -248,7 +248,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
 
     private function isStatusChangedFromInactiveToActive($oldStatus, $newStatus)
     {
-        return (int)$oldStatus === Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED
+        return (int)$oldStatus === Ess_M2ePro_Model_Listing_Product::STATUS_INACTIVE
             && (int)$newStatus === Ess_M2ePro_Model_Listing_Product::STATUS_LISTED;
     }
 

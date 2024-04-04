@@ -39,7 +39,7 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_Relist_Requester
         $resultListingProducts = array();
 
         foreach ($listingProducts as $childListingProduct) {
-            if (!$childListingProduct->isStopped() || !$childListingProduct->isRelistable()) {
+            if (!$childListingProduct->isInactive() || !$childListingProduct->isRelistable()) {
                 continue;
             }
 

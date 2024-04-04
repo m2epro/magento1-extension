@@ -78,7 +78,7 @@ class Ess_M2ePro_Model_Walmart_Magento_Product_Rule_Custom_WalmartStatus
                 'label' => Mage::helper('M2ePro')->__('Active'),
             ),
             array(
-                'value' => Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED,
+                'value' => Ess_M2ePro_Model_Listing_Product::STATUS_INACTIVE,
                 'label' => Mage::helper('M2ePro')->__('Inactive'),
             ),
             array(

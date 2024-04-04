@@ -80,10 +80,8 @@ abstract class Ess_M2ePro_Model_Template_Synchronization_ChangeProcessorAbstract
         if ($diff->isRelistModeEnabled()) {
             $priority = 5;
 
-            if ($status == Ess_M2ePro_Model_Listing_Product::STATUS_SOLD ||
-                $status == Ess_M2ePro_Model_Listing_Product::ACTION_STOP ||
-                $status ==  Ess_M2ePro_Model_Listing_Product::STATUS_FINISHED ||
-                $status ==  Ess_M2ePro_Model_Listing_Product::STATUS_INACTIVE
+            if ($status == Ess_M2ePro_Model_Listing_Product::ACTION_STOP ||
+                $status == Ess_M2ePro_Model_Listing_Product::STATUS_INACTIVE
             ) {
                 $priority = 50;
             }
@@ -104,9 +102,7 @@ abstract class Ess_M2ePro_Model_Template_Synchronization_ChangeProcessorAbstract
         if ($diff->isRelistSettingsChanged()) {
             $priority = 5;
 
-            if ($status == Ess_M2ePro_Model_Listing_Product::STATUS_SOLD ||
-                $status == Ess_M2ePro_Model_Listing_Product::ACTION_STOP ||
-                $status == Ess_M2ePro_Model_Listing_Product::STATUS_FINISHED ||
+            if ($status == Ess_M2ePro_Model_Listing_Product::ACTION_STOP ||
                 $status == Ess_M2ePro_Model_Listing_Product::STATUS_INACTIVE
             ) {
                 $priority = 40;

@@ -128,7 +128,7 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_Stop_Requester
 
             foreach ($childListingsProducts as $childListingProduct) {
                 if ($childListingProduct->isNotListed() ||
-                    $childListingProduct->isStopped() ||
+                    $childListingProduct->isInactive() ||
                     $childListingProduct->isBlocked()
                 ) {
                     $childListingProduct->deleteInstance();
