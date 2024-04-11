@@ -47,7 +47,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Qty
             $this->_cachedData['restock_date'] = $restockDate;
         }
 
-        if (!empty($this->_cachedData['handling_time'])) {
+        if (isset($this->_cachedData['handling_time'])) {
             $data['handling_time'] = $this->_cachedData['handling_time'];
         }
 
