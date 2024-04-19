@@ -167,7 +167,8 @@ HTML
                             $modeValue = (int)$formData['mode'];
                             $displayText = ($modeValue === Ess_M2ePro_Model_Ebay_Account::MODE_PRODUCTION) ? Mage::helper('M2ePro')->__('Production (Live)') : Mage::helper('M2ePro')->__('Sandbox (Test)');
                             ?>
-                            <input type="text" id="mode" name="mode" value="<?php echo $displayText; ?>" class="required-entry disabled" readonly="readonly">
+                            <?php echo $displayText; ?>
+                            <input type="hidden" id="mode" name="mode" value="<?php echo $modeValue; ?>">
                         </td>
                     </tr>
 
