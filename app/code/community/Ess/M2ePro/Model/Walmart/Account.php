@@ -653,6 +653,16 @@ class Ess_M2ePro_Model_Walmart_Account extends Ess_M2ePro_Model_Component_Child_
 
     // ---------------------------------------
 
+    public function getQtyReservationDays()
+    {
+        $setting = $this->getSetting('magento_orders_settings', array('qty_reservation', 'days'), 1);
+
+        return (int)$setting;
+    }
+
+    // ----------------------------------------
+
+
     /**
      * @return bool
      */

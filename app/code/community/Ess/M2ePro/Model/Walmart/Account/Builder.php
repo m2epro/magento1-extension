@@ -269,6 +269,13 @@ class Ess_M2ePro_Model_Walmart_Account_Builder extends Ess_M2ePro_Model_ActiveRe
             }
         }
 
+        // qty reservation
+        // ---------------------------------------
+        if (isset($this->_rawData['magento_orders_settings']['qty_reservation']['days'])) {
+            $data['magento_orders_settings']['qty_reservation']['days']
+                = $this->_rawData['magento_orders_settings']['qty_reservation']['days'];
+        }
+
         // refund & cancellation
         // ---------------------------------------
         $tempKey = 'refund_and_cancellation';
@@ -398,6 +405,9 @@ class Ess_M2ePro_Model_Walmart_Account_Builder extends Ess_M2ePro_Model_ActiveRe
                 'shipping_information' => array(
                     'ship_by_date' => 1,
                 ),
+                'qty_reservation' => array(
+                    'days' => 1
+                )
             ),
             'create_magento_invoice'  => 1,
             'create_magento_shipment' => 1,

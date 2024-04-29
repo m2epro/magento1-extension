@@ -317,6 +317,44 @@
 
 </div>
 
+<div class="entry-edit" id="magento_block_walmart_accounts_magento_orders_reservation_rules" <?php if (($formData['magento_orders_settings']['listing']['mode'] == 0 && $formData['magento_orders_settings']['listing_other']['mode'] == 0)) echo 'style="display: none;"'; ?>>
+
+    <div class="entry-edit-head">
+        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Quantity Reservation'); ?></h4>
+    </div>
+
+    <div class="fieldset">
+        <div class="hor-scroll">
+            <div id="block_notice_walmart_accounts_magento_orders_reservation" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Quantity Reservation'); ?>">
+                <?php echo Mage::helper('M2ePro')->__('
+                Use <i>Reserve Quantity Option</i> to keep Items from being sold before an Order is created in Magento.<br>
+                The <i>Reserve Quantity Option</i> ensures that Items are deducted from Magento stock immediately upon an Order being imported from the channel.
+                Reserved quantity will be used to create an Order in Magento or will be released once the QTY reservation period expires.
+                '); ?>
+            </div>
+
+            <table class="form-list" cellspacing="0" cellpadding="0">
+
+                <tr id="magento_orders_qty_reservation_days">
+                    <td class="label">
+                        <label for="magento_orders_refund"><?php echo Mage::helper('M2ePro')->__('Reserve Quantity') ?>:</label>
+                    </td>
+                    <td class="value">
+                        <select name="magento_orders_settings[qty_reservation][days]" id="magento_orders_qty_reservation_days">
+                            <?php for ($day = 1; $day <= 14; $day++) { ?>
+                                <option value="<?php echo $day ?>" <?php if ($formData['magento_orders_settings']['qty_reservation']['days'] == $day): ?>selected="selected"<?php endif; ?>><?php echo $day == 1 ? Mage::helper('M2ePro')->__('For %number% day', $day) : Mage::helper('M2ePro')->__('For %number% days', $day) ?></option>
+                            <?php } ?>
+                        </select>
+                    </td>
+                </tr>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
 <div class="entry-edit" id="magento_block_walmart_accounts_magento_orders_refund_and_cancellation" <?php if (($formData['magento_orders_settings']['listing']['mode'] == 0 && $formData['magento_orders_settings']['listing_other']['mode'] == 0)) echo 'style="display: none;"'; ?>>
 
     <div class="entry-edit-head">

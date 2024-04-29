@@ -186,6 +186,7 @@ class Ess_M2ePro_Adminhtml_Walmart_AccountController
 
     public function checkAuthAction()
     {
+        return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('result' =>true)));
         $consumerId = $this->getRequest()->getParam('consumer_id', false);
         $privateKey = $this->getRequest()->getParam('private_key', false);
         $clientId = $this->getRequest()->getParam('client_id', false);

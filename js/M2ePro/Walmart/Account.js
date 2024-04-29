@@ -384,6 +384,8 @@ window.WalmartAccount = Class.create(Common, {
             $('magento_block_walmart_accounts_magento_orders_refund_and_cancellation').hide();
             $('magento_orders_refund').value = 1;
 
+            $('magento_block_walmart_accounts_magento_orders_reservation_rules').hide();
+
             $('magento_block_walmart_accounts_magento_orders_tax').hide();
             $('magento_orders_tax_mode').value = M2ePro.php.constant('Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_TAX_MODE_MIXED');
         } else {
@@ -392,6 +394,7 @@ window.WalmartAccount = Class.create(Common, {
             $('magento_block_walmart_accounts_magento_orders_status_mapping').show();
             $('magento_block_walmart_accounts_magento_orders_refund_and_cancellation').show();
             $('magento_block_walmart_accounts_magento_orders_tax').show();
+            $('magento_block_walmart_accounts_magento_orders_reservation_rules').show();
         }
     },
 

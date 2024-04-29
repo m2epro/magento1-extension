@@ -336,6 +336,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Validator
     protected function validateVariationsOptions()
     {
         $totalVariationsCount = 0;
+        $totalVariationsCountWithoutDeleted = 0;
         $totalDeletedVariationsCount = 0;
         $uniqueAttributesValues = array();
 
@@ -376,10 +377,14 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Validator
             }
 
             $totalVariationsCount++;
-            $ebayVariation->isDelete() && $totalDeletedVariationsCount++;
+            if ($ebayVariation->isDelete()) {
+                $totalDeletedVariationsCount++;
+            } else {
+                $totalVariationsCountWithoutDeleted++;
+            }
 
             // Not more that 250 possible variations
-            if ($totalVariationsCount > 250) {
+            if ($totalVariationsCountWithoutDeleted > 250) {
                 $this->addMessage(
                     'Variations of this Magento Product are out of the eBay Variational Item limits.
                     The Number of Variations is more than 250. That is why, this Product cannot be updated on eBay.
