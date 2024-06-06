@@ -197,6 +197,10 @@ class Ess_M2ePro_Model_Amazon_Order_Builder extends Mage_Core_Model_Abstract
 
     protected function isNeedSkipTax($data)
     {
+        if ($this->isReplacement($data)) {
+            return true;
+        }
+
         if ($this->isSkipTaxForUS($data)) {
             return true;
         }
@@ -245,11 +249,14 @@ class Ess_M2ePro_Model_Amazon_Order_Builder extends Mage_Core_Model_Abstract
             return true;
         }
 
-        if ($this->_account->getChildObject()->isAmazonCollectsTaxForUKShipmentWithCertainPrice()
-            && $this->isSumOfItemPriceLessThan135GBP(
-                $data['items']
-            )) {
-            return true;
+        try {
+            if ($this->_account->getChildObject()->isAmazonCollectsTaxForUKShipmentWithCertainPrice()
+                && $this->isSumOfItemPriceLessThan135GBP(
+                    $data['items']
+                )) {
+                return true;
+            }
+        } catch (\Exception $e) {
         }
 
         return false;
@@ -780,5 +787,8 @@ class Ess_M2ePro_Model_Amazon_Order_Builder extends Mage_Core_Model_Abstract
         }
     }
 
-    //########################################
+    private function isReplacement($data)
+    {
+        return (bool)$data['is_replacement'];
+    }
 }

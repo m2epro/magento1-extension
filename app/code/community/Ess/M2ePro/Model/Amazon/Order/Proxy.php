@@ -464,5 +464,12 @@ class Ess_M2ePro_Model_Amazon_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
         return $this->_order->getShippingPriceTaxRate();
     }
 
-    //########################################
+    public function getGeneralComments()
+    {
+        if ($this->_order->isReplacement()) {
+            return array();
+        }
+
+        return parent::getGeneralComments();
+    }
 }
