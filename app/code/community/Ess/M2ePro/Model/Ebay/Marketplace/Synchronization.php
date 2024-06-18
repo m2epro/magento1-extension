@@ -125,7 +125,6 @@ class Ess_M2ePro_Model_Ebay_Marketplace_Synchronization
             'shipping_locations'              => $helper->jsonEncode($details['shipping_locations']),
             'shipping_locations_exclude'      => $helper->jsonEncode($details['shipping_locations_exclude']),
             'tax_categories'                  => $helper->jsonEncode($details['tax_categories']),
-            'charities'                       => $helper->jsonEncode($details['charities']),
         );
 
         if (isset($details['additional_data'])) {

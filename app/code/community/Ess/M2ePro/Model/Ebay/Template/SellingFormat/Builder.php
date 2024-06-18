@@ -233,29 +233,6 @@ class Ess_M2EPro_Model_Ebay_Template_SellingFormat_Builder
             $data['best_offer_reject_attribute'] = $this->_rawData['best_offer_reject_attribute'];
         }
 
-        $data['charity'] = null;
-
-        if (!empty($this->_rawData['charity']) && !empty($this->_rawData['charity']['marketplace_id'])) {
-            $charities = array();
-            foreach ($this->_rawData['charity']['marketplace_id'] as $key => $marketplaceId) {
-                if (empty($this->_rawData['charity']['organization_id'][$key])) {
-                    continue;
-                }
-
-                $charities[$marketplaceId] = array(
-                    'marketplace_id' => (int)$marketplaceId,
-                    'organization_id' => (int)$this->_rawData['charity']['organization_id'][$key],
-                    'organization_name' => $this->_rawData['charity']['organization_name'][$key],
-                    'organization_custom' => (int)$this->_rawData['charity']['organization_custom'][$key],
-                    'percentage' => (int)$this->_rawData['charity']['percentage'][$key]
-                );
-            }
-
-            if (!empty($charities)) {
-                $data['charity'] = Mage::helper('M2ePro')->jsonEncode($charities);
-            }
-        }
-
         if (isset($this->_rawData['ignore_variations'])) {
             $data['ignore_variations'] = (int)$this->_rawData['ignore_variations'];
         }
@@ -353,7 +330,6 @@ class Ess_M2EPro_Model_Ebay_Template_SellingFormat_Builder
             'best_offer_reject_value' => '',
             'best_offer_reject_attribute' => '',
 
-            'charity' => '',
             'ignore_variations' => 0,
 
             'lot_size_mode' => 0,

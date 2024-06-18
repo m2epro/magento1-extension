@@ -17,7 +17,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Other
             $this->getConditionData(),
             $this->getConditionNoteData(),
             $this->getVatTaxData(),
-            $this->getCharityData(),
             $this->getLotSizeData()
         );
 
@@ -78,23 +77,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Other
         }
 
         return $data;
-    }
-
-    /**
-     * @return array
-     */
-    protected function getCharityData()
-    {
-        $charity = $this->getEbayListingProduct()->getEbaySellingFormatTemplate()->getCharity();
-
-        if (empty($charity[$this->getMarketplace()->getId()])) {
-            return array();
-        }
-
-        return array(
-            'charity_id' => $charity[$this->getMarketplace()->getId()]['organization_id'],
-            'charity_percent' => $charity[$this->getMarketplace()->getId()]['percentage']
-        );
     }
 
     /**

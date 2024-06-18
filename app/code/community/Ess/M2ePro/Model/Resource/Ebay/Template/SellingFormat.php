@@ -20,25 +20,4 @@ class Ess_M2ePro_Model_Resource_Ebay_Template_SellingFormat
     }
 
     //########################################
-
-    public function getCharityDictionary()
-    {
-        /** @var $connRead Varien_Db_Adapter_Pdo_Mysql */
-        $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
-        $tableDictMarketplace = Mage::helper('M2ePro/Module_Database_Structure')
-            ->getTableNameWithPrefix('m2epro_ebay_dictionary_marketplace');
-
-        $dbSelect = $connRead->select()
-            ->from($tableDictMarketplace, array('marketplace_id', 'charities'));
-
-        $data = $connRead->fetchAssoc($dbSelect);
-
-        foreach ($data as $key => $item) {
-            $data[$key]['charities'] = Mage::helper('M2ePro')->jsonDecode($item['charities']);
-        }
-
-        return $data;
-    }
-
-    //########################################
 }

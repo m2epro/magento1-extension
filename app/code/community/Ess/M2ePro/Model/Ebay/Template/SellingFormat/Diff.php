@@ -71,7 +71,6 @@ class Ess_M2ePro_Model_Ebay_Template_SellingFormat_Diff extends Ess_M2ePro_Model
             'best_offer_reject_mode',
             'best_offer_reject_value',
             'best_offer_reject_attribute',
-            'charity',
             'vat_mode',
             'vat_percent',
             'tax_table_mode',

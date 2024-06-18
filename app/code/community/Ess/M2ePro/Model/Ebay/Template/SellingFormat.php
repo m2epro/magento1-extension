@@ -1349,18 +1349,6 @@ class Ess_M2ePro_Model_Ebay_Template_SellingFormat extends Ess_M2ePro_Model_Comp
 
     // ---------------------------------------
 
-    public function getCharity()
-    {
-        $charity = $this->getData('charity');
-        if (empty($charity)) {
-            return null;
-        }
-
-        return Mage::helper('M2ePro')->jsonDecode($this->getData('charity'));
-    }
-
-    // ---------------------------------------
-
     /**
      * @return bool
      */

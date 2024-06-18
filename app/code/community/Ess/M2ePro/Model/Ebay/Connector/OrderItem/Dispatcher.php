@@ -8,7 +8,6 @@
 
 class Ess_M2ePro_Model_Ebay_Connector_OrderItem_Dispatcher extends Mage_Core_Model_Abstract
 {
-    const ACTION_ADD_DISPUTE   = 1;
     const ACTION_UPDATE_STATUS = 2;
     const ACTION_UPDATE_TRACK  = 3;
 
@@ -20,9 +19,6 @@ class Ess_M2ePro_Model_Ebay_Connector_OrderItem_Dispatcher extends Mage_Core_Mod
         $connector = null;
 
         switch ($action) {
-            case self::ACTION_ADD_DISPUTE:
-                $connector = 'Ebay_Connector_OrderItem_Add_Dispute';
-                break;
             case self::ACTION_UPDATE_STATUS:
             case self::ACTION_UPDATE_TRACK:
                 $connector = 'Ebay_Connector_OrderItem_Update_Status';

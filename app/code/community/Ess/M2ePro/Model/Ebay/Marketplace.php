@@ -153,14 +153,6 @@ class Ess_M2ePro_Model_Ebay_Marketplace extends Ess_M2ePro_Model_Component_Child
     /**
      * @return bool
      */
-    public function isCharityEnabled()
-    {
-        return (bool)(int)$this->getData('is_charity');
-    }
-
-    /**
-     * @return bool
-     */
     public function isReturnDescriptionEnabled()
     {
         return (bool)(int)$this->getData('is_return_description');
@@ -309,7 +301,6 @@ class Ess_M2ePro_Model_Ebay_Marketplace extends Ess_M2ePro_Model_Component_Child
             'return_policy'              => Mage::helper('M2ePro')->jsonDecode($data['return_policy']),
             'listing_features'           => Mage::helper('M2ePro')->jsonDecode($data['listing_features']),
             'payments'                   => Mage::helper('M2ePro')->jsonDecode($data['payments']),
-            'charities'                  => Mage::helper('M2ePro')->jsonDecode($data['charities']),
             'shipping'                   => $categoryShippingMethods,
             'shipping_locations'         => Mage::helper('M2ePro')->jsonDecode($data['shipping_locations']),
             'shipping_locations_exclude' => Mage::helper('M2ePro')->jsonDecode($data['shipping_locations_exclude']),
@@ -407,16 +398,6 @@ class Ess_M2ePro_Model_Ebay_Marketplace extends Ess_M2ePro_Model_Component_Child
         $info = $this->getInfo();
 
         return isset($info['tax_categories']) ? $info['tax_categories'] : array();
-    }
-
-    /**
-     * @return array
-     */
-    public function getCharitiesInfo()
-    {
-        $info = $this->getInfo();
-
-        return isset($info['charities']) ? $info['charities'] : array();
     }
 
     //########################################

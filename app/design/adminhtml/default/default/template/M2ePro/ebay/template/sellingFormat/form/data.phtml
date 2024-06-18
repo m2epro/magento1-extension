@@ -21,7 +21,6 @@ $attributesByInputTypes = array(
 $formData = $this->getFormData();
 $default = $this->getDefault();
 $formData = array_merge($default, $formData);
-$charityDictionary = $this->getCharityDictionary();
 
 $taxCategories = $this->getTaxCategoriesInfo();
 
@@ -33,21 +32,6 @@ $taxCategories = $this->getTaxCategoriesInfo();
     M2ePro.php.setConstants(<?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Model_Ebay_Template_SellingFormat'); ?>,'Ess_M2ePro_Model_Ebay_Template_SellingFormat');
     M2ePro.php.setConstants(<?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Model_Ebay_Template_Manager'); ?>,'Ess_M2ePro_Model_Ebay_Template_Manager');
     M2ePro.php.setConstants(<?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Helper_Component_Ebay'); ?>,'Ess_M2ePro_Helper_Component_Ebay');
-
-    M2ePro.url.add(<?php echo json_encode(array(
-        'adminhtml_ebay_template_sellingFormat/getSearchCharityPopUpHtml' =>
-                Mage::helper('adminhtml')->getUrl('M2ePro/adminhtml_ebay_template_sellingFormat/getSearchCharityPopUpHtml')
-    )) ?>);
-
-    M2ePro.url.add(<?php echo json_encode(array(
-        'adminhtml_ebay_template_sellingFormat/searchCharity' =>
-                Mage::helper('adminhtml')->getUrl('M2ePro/adminhtml_ebay_template_sellingFormat/searchCharity')
-    )); ?>);
-
-    M2ePro.translator.add(<?php echo json_encode(array(
-        'Search For Charities' => Mage::helper('M2ePro')->__('Search For Charities'),
-        'Search for Charity Organization' => Mage::helper('M2ePro')->__('Search for Charity Organization')
-    )) ?>);
 
     M2ePro.translator.add(<?php echo json_encode(array(
         'Please select a percentage of donation' => Mage::helper('M2ePro')->__('Please select a percentage of donation')
@@ -183,11 +167,6 @@ $taxCategories = $this->getTaxCategoriesInfo();
         $('best_offer_accept_mode', 'best_offer_reject_mode').invoke('observe', 'change', function () {
             EbayTemplateSellingFormatObj.checkBestOfferMessages();
         });
-
-        EbayTemplateSellingFormatObj.charityDictionary = <?php echo json_encode($charityDictionary); ?>;
-        <?php if (!empty($formData['charity'])) : ?>
-        EbayTemplateSellingFormatObj.renderCharities(<?php echo json_encode($formData['charity']); ?>);
-        <?php endif; ?>
     };
 
     <?php if ($this->getRequest()->isXmlHttpRequest()): ?>
@@ -227,8 +206,7 @@ $taxCategories = $this->getTaxCategoriesInfo();
     }
 
     #price_table td.value,
-    #best_offer_respond_table td.value,
-    #charity_table_container td.value {
+    #best_offer_respond_table td.value {
         border-width: 0 1px 1px 0 !important;
         border-color: #dadfe0 !important;
         border-style: solid !important;
@@ -237,26 +215,6 @@ $taxCategories = $this->getTaxCategoriesInfo();
     #price_table td.bottom_border_disabled {
         border-width: 0 1px 0 0!important;
     }
-
-    #charity_not_set_table {
-        background-color: #EFEFEF;
-        padding: 1em;
-        margin: 0 auto;
-    }
-
-    #charity_not_set_table > table {
-        margin-left: calc(50% - 115px);
-    }
-
-    #charity_set_td {
-        padding: 0 !important;
-        border: none;
-    }
-
-    #charity_table select {
-        width: 100%;
-    }
-
 </style>
 
 <input type="hidden" name="selling_format[id]" value="<?php echo (!$this->isCustom() && isset($formData['id'])) ? (int)$formData['id'] : ''; ?>" />
@@ -1371,90 +1329,6 @@ Otherwise, the Item will be Listed with Quantity according to the Settings in th
     </div>
 
 </div>
-
-<?php if ($this->isCharity()) : ?>
-    <div class="entry-edit" id="magento_block_ebay_template_selling_format_edit_form_charity">
-
-        <div class="entry-edit-head">
-            <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Donations')?></h4>
-        </div>
-
-        <div class="fieldset">
-            <div class="hor-scroll">
-
-                <div id="charity_not_set_table">
-
-                    <table style="border: none" cellpadding="0" cellspacing="0">
-                        <tfoot>
-                        <tr>
-                            <td valign="middle" align="center" style="vertical-align: middle; height: 40px">
-                                <?php echo $this->getChildHtml('add_charity_button') ?>
-                            </td>
-                        </tr>
-                        </tfoot>
-                    </table>
-
-                </div>
-
-                <table id="charity_table_container" class="form-list" cellspacing="0" cellpadding="0" style="margin-top: 5px;">
-
-                    <tr style="margin-top: 10px;">
-                        <td class="grid" colspan="2">
-
-                            <table id="charity_table" class="border" cellpadding="0" cellspacing="0" style="width: 870px; display: none">
-                                <thead>
-                                <tr class="headings">
-                                    <th style="width: 200px"><?php echo Mage::helper('M2ePro')->__('Marketplace') ?><span class="required"> *</span></th>
-                                    <th style="width: 300px"><?php echo Mage::helper('M2ePro')->__('Organization') ?><span class="required"> *</span></th>
-                                    <th style="width: 300px"><?php echo Mage::helper('M2ePro')->__('Percentage') ?><span class="required"> *</span></th>
-                                    <th class="type-butt last" style="width: 70px;">&nbsp;</th>
-                                </tr>
-                                </thead>
-                                <tbody id="charity_table_tbody">
-                                <!-- #charity_row_template inserts here -->
-                                </tbody>
-                                <tfoot>
-                                <tr>
-                                    <td id="charity_set_td" colspan="7" style="text-align: center;"><?php echo $this->getChildHtml('add_charity_button') ?></td>
-                                </tr>
-                                </tfoot>
-                            </table>
-
-                            <table id="charity_row_template" style="display: none;" class="border">
-                                <tbody>
-                                <tr id="charity_row_%i%_tr" class="charity-row">
-                                    <td class="value">
-                                        <select name="selling_format[charity][marketplace_id][%i%]" class="admin__control-select required-entry charity-marketplace_id" onchange="EbayTemplateSellingFormatObj.charityMarketplaceChange(this)">
-                                            <option class="empty"></option>
-                                            <?php foreach ($this->getEnabledMarketplaces() as $marketplace) : ?>
-                                                <option value="<?php echo $marketplace->getId() ?>"><?php echo Mage::helper('M2ePro')->escapeHtml($marketplace->getTitle()) ?></option>
-                                            <?php endforeach; ?>
-                                        </select>
-                                    </td>
-                                    <td class="value">
-                                        <select name="selling_format[charity][organization_id][%i%]" class="admin__control-select required-entry charity-organization" disabled="disabled" style="display: none" onchange="EbayTemplateSellingFormatObj.charityOrganizationChange(this)"></select>
-                                        <input type="hidden" class="organization_name" name="selling_format[charity][organization_name][%i%]">
-                                        <input type="hidden" class="organization_custom" name="selling_format[charity][organization_custom][%i%]" value="0">
-                                    </td>
-                                    <td class="value">
-                                        <select name="selling_format[charity][percentage][%i%]" class="admin__control-select required-entry charity-percentage" disabled="disabled" style="display: none" ></select>
-                                    </td>
-                                    <td class="value" style="text-align: center">
-                                        <?php echo $this->getChildHtml('remove_charity_button'); ?>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
-
-                        </td>
-                    </tr>
-                </table>
-
-            </div>
-        </div>
-
-    </div>
-<?php endif; ?>
 
 <div class="entry-edit" id="magento_block_ebay_template_selling_format_edit_form_best_offer">
 

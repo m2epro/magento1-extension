@@ -11,12 +11,6 @@
  */
 class Ess_M2ePro_Model_Ebay_Order_Item extends Ess_M2ePro_Model_Component_Child_Ebay_Abstract
 {
-    const UNPAID_ITEM_PROCESS_NOT_OPENED = 0;
-    const UNPAID_ITEM_PROCESS_OPENED     = 1;
-
-    const DISPUTE_EXPLANATION_BUYER_HAS_NOT_PAID = 'BuyerNotPaid';
-    const DISPUTE_REASON_BUYER_HAS_NOT_PAID      = 'BuyerHasNotPaid';
-
     /** @var $_channelItem Ess_M2ePro_Model_Ebay_Item */
     protected $_channelItem = null;
 

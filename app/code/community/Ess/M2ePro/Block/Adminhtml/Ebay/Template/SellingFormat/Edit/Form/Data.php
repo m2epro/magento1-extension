@@ -24,29 +24,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_SellingFormat_Edit_Form_Data exte
         $this->attributes = Mage::helper('M2ePro/Data_Global')->getValue('ebay_attributes');
     }
 
-    protected function _beforeToHtml()
-    {
-        parent::_beforeToHtml();
-
-        if ($this->isCharity()) {
-            $data = array(
-                'label'   => Mage::helper('M2ePro')->__('Add Charity'),
-                'onclick' => 'EbayTemplateSellingFormatObj.addCharityRow();',
-                'class'   => 'action primary add_charity_button'
-            );
-            $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
-            $this->setChild('add_charity_button', $buttonBlock);
-
-            $data = array(
-                'label'   => Mage::helper('M2ePro')->__('Remove'),
-                'onclick' => 'EbayTemplateSellingFormatObj.removeCharityRow(this);',
-                'class'   => 'delete icon-btn remove_charity_button'
-            );
-            $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
-            $this->setChild('remove_charity_button', $buttonBlock);
-        }
-    }
-
     //########################################
 
     public function isCustom()
@@ -83,20 +60,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_SellingFormat_Edit_Form_Data exte
             return array();
         }
 
-        $data = $template->getData();
-
-        $charity = Mage::helper('M2ePro')->jsonDecode($data['charity']);
-        $availableCharity = array();
-
-        foreach ($this->getEnabledMarketplaces() as $marketplace) {
-            if (isset($charity[$marketplace->getId()])) {
-                $availableCharity[$marketplace->getId()] = $charity[$marketplace->getId()];
-            }
-        }
-
-        $data['charity'] = $availableCharity;
-
-        return $data;
+        return $template->getData();
     }
 
     public function getDefault()
@@ -166,11 +130,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_SellingFormat_Edit_Form_Data exte
         return $marketplace->getId();
     }
 
-    public function getCharityDictionary()
-    {
-        return Mage::getModel('M2ePro/Ebay_Template_SellingFormat')->getResource()->getCharityDictionary();
-    }
-
     public function getEnabledMarketplaces()
     {
         if ($this->enabledMarketplaces === null) {
@@ -190,21 +149,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_SellingFormat_Edit_Form_Data exte
     }
 
     //########################################
-
-    public function isCharity()
-    {
-        $marketplace = $this->getMarketplace();
-
-        if ($marketplace === null) {
-            return true;
-        }
-
-        if ($marketplace->getChildObject()->isCharityEnabled()) {
-           return true;
-        }
-
-        return false;
-    }
 
     public function isStpAvailable()
     {
