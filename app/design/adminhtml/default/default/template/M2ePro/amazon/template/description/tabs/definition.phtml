@@ -107,9 +107,12 @@ $attributesByInputTypes = array(
 
         // ---
 
-        $('msrp_rrp_mode')
-            .observe('change', AmazonTemplateDescriptionDefinitionObj.onChangeMsrpRrpMode)
-            .simulate('change');
+        var msrpRrpMode = $('msrp_rrp_mode');
+        if (msrpRrpMode) {
+            msrpRrpMode
+                .observe('change', AmazonTemplateDescriptionDefinitionObj.onChangeMsrpRrpMode)
+                .simulate('change');
+        }
 
         // ---
 

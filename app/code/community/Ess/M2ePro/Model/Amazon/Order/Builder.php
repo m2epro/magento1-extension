@@ -682,13 +682,14 @@ class Ess_M2ePro_Model_Amazon_Order_Builder extends Mage_Core_Model_Abstract
 
                 $listingProduct->setData('online_qty', 0);
 
-                $tempLogMessages = array(
-                    Mage::helper('M2ePro')->__(
-                        'Item QTY was changed from %from% to %to% .',
-                        $currentOnlineQty,
-                        0
-                    )
-                );
+                $tempLogMessages = array();
+
+                if(!empty($currentOnlineQty)) {
+                    $tempLogMessages[] = Mage::helper('M2ePro')->__(
+                        'Item QTY was changed from %from% to 0.',
+                        $currentOnlineQty
+                    );
+                }
 
                 if (!$listingProduct->isInactive()) {
                     $statusChangedFrom = Mage::helper('M2ePro/Component_Amazon')
