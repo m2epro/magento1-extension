@@ -105,7 +105,11 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_SendInvoice_Responser
         $this->_orderChange->deleteInstance();
 
         if ($this->_params['order']['document_type'] == AmazonOrderInvoice::DOCUMENT_TYPE_INVOICE) {
-            $this->_order->getChildObject()->setData('is_invoice_sent', 1)->save();
+            /** @var Ess_M2ePro_Model_Amazon_Order $amazonOrder */
+            $amazonOrder = $this->_order->getChildObject();
+            $amazonOrder
+                ->markThatInvoiceSentToChannel()
+                ->save();
             $this->_order->addSuccessLog(
                 'Invoice #%document_number% was sent.',
                 array(

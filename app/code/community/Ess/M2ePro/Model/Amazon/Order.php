@@ -1,11 +1,5 @@
 <?php
 
-/*
- * @author     M2E Pro Developers Team
- * @copyright  M2E LTD
- * @license    Commercial use is forbidden
- */
-
 /**
  * @method Ess_M2ePro_Model_Order getParentObject()
  * @method Ess_M2ePro_Model_Resource_Amazon_Order getResource()
@@ -24,6 +18,8 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
 
     const INVOICE_SOURCE_MAGENTO = 'magento';
     const INVOICE_SOURCE_EXTENSION = 'extension';
+
+    const DATE_INTERVAL_IN_HOURS_FOR_INVOICE_SENDING_FROM_REPORT  = 24;
 
     protected $_subTotalPrice = null;
 
@@ -401,7 +397,54 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
         return $this->getStatus() == self::STATUS_CANCELLATION_REQUESTED;
     }
 
-    //########################################
+    //----------------------------------
+
+    /**
+     * @return bool
+     */
+    public function isInvoiceSent()
+    {
+        return (bool)$this->getData(Ess_M2ePro_Model_Resource_Amazon_Order::COLUMN_IS_INVOICE_SENT);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isExistsDateOfInvoiceSent()
+    {
+        return $this->getData(Ess_M2ePro_Model_Resource_Amazon_Order::COLUMN_DATE_OF_INVOICE_SENDING) !== null;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateOfInvoiceSent()
+    {
+        if (!$this->isExistsDateOfInvoiceSent()) {
+            throw new \LogicException('Date Of Invoice Sent is not set');
+        }
+
+        return Mage::helper('M2ePro')->createGmtDateTime(
+            $this->getData(Ess_M2ePro_Model_Resource_Amazon_Order::COLUMN_DATE_OF_INVOICE_SENDING)
+        );
+    }
+
+    /**
+     * @return $this
+     */
+    public function markThatInvoiceSentToChannel()
+    {
+        $this->setData(Ess_M2ePro_Model_Resource_Amazon_Order::COLUMN_IS_INVOICE_SENT, 1);
+        $this->setData(
+            Ess_M2ePro_Model_Resource_Amazon_Order::COLUMN_DATE_OF_INVOICE_SENDING,
+            Mage::helper('M2ePro')->createCurrentGmtDateTime()->format('Y-m-d H:i:s')
+        );
+
+        return $this;
+    }
+
+
+    //----------------------------------
 
     /**
      * @return bool
@@ -1023,6 +1066,35 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
 
         $reportData = $this->getSettings('invoice_data_report');
         if (empty($reportData)) {
+            return false;
+        }
+
+        if (!$this->canSendInvoiceFromReportAgain()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @return bool
+     */
+    private function canSendInvoiceFromReportAgain()
+    {
+        if (!$this->isInvoiceSent()) {
+            return true;
+        }
+
+        $limitDateOfInvoiceSent = Mage::helper('M2ePro')
+            ->createCurrentGmtDateTime()
+            ->modify(
+                sprintf('-%d hours', self::DATE_INTERVAL_IN_HOURS_FOR_INVOICE_SENDING_FROM_REPORT)
+            );
+
+        if (
+            $this->isExistsDateOfInvoiceSent()
+            && $this->getDateOfInvoiceSent() > $limitDateOfInvoiceSent
+        ) {
             return false;
         }
 

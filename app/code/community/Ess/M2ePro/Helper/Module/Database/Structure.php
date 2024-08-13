@@ -257,7 +257,6 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
         );
 
         $result = array();
-        $afterPosition = '';
 
         while ($row = $stmtQuery->fetch()) {
             $result[strtolower($row['Field'])] = array(
@@ -267,10 +266,7 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
                 'key'      => strtolower($row['Key']),
                 'default'  => strtolower($row['Default']),
                 'extra'    => strtolower($row['Extra']),
-                'after'    => $afterPosition
             );
-
-            $afterPosition = strtolower($row['Field']);
         }
 
         Mage::helper('M2ePro/Data_Cache_Runtime')->setValue($cacheKey, $result);

@@ -1,25 +1,19 @@
 <?php
 
-/*
- * @author     M2E Pro Developers Team
- * @copyright  M2E LTD
- * @license    Commercial use is forbidden
- */
-
 class Ess_M2ePro_Model_Resource_Amazon_Order
     extends Ess_M2ePro_Model_Resource_Component_Child_Abstract
 {
-    protected $_isPkAutoIncrement = false;
+    const COLUMN_ORDER_ID = 'order_id';
+    const COLUMN_IS_INVOICE_SENT = 'is_invoice_sent';
+    const COLUMN_DATE_OF_INVOICE_SENDING = 'date_of_invoice_sending';
 
-    //########################################
+    protected $_isPkAutoIncrement = false;
 
     public function _construct()
     {
-        $this->_init('M2ePro/Amazon_Order', 'order_id');
+        $this->_init('M2ePro/Amazon_Order', self::COLUMN_ORDER_ID);
         $this->_isPkAutoIncrement = false;
     }
-
-    //########################################
 
     public function hasGifts($orderId)
     {
@@ -31,8 +25,6 @@ class Ess_M2ePro_Model_Resource_Amazon_Order
 
         return $collection->getSize();
     }
-
-    //########################################
 
     public function getItemsTotal($orderId)
     {
@@ -49,6 +41,4 @@ class Ess_M2ePro_Model_Resource_Amazon_Order
 
         return round($collection->getFirstItem()->getData('items_total'), 2);
     }
-
-    //########################################
 }

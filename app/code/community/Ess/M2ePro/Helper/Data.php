@@ -112,11 +112,17 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
 
     //########################################
 
+    /**
+     * @return \DateTime
+     */
     public function createGmtDateTime($timeString)
     {
         return new \DateTime($timeString, new \DateTimeZone('UTC'));
     }
 
+    /**
+     * @return \DateTime
+     */
     public function createCurrentGmtDateTime()
     {
         return $this->createGmtDateTime('now');

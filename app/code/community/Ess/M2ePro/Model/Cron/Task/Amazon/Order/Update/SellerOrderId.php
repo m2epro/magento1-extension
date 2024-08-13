@@ -51,13 +51,9 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Update_SellerOrderId
             return;
         }
 
-        // Processing orders from last day
-        $backToDate = new \DateTime('now', new \DateTimeZone('UTC'));
-        $backToDate->modify('-1 day');
-
-        // Processing orders from last 7 days for orders of replacement
-        $backToReplacementDate = new \DateTime('now', new \DateTimeZone('UTC'));
-        $backToReplacementDate->modify('-7 day');
+        // Processing orders from last 30 days
+        $backToDate = Mage::helper('M2ePro/Data')->createCurrentGmtDateTime();
+        $backToDate->modify('-30 day');
 
         $connWrite = Mage::getSingleton('core/resource')->getConnection('core_write');
 
@@ -71,8 +67,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Update_SellerOrderId
             $collection = $this->getOrderCollection(
                 $enabledAccountIds,
                 $enabledMerchantId,
-                $backToDate->format('Y-m-d H:i:s'),
-                $backToReplacementDate->format('Y-m-d H:i:s')
+                $backToDate->format('Y-m-d H:i:s')
             );
 
             foreach ($collection->getItems() as $orderData) {
@@ -140,7 +135,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Update_SellerOrderId
      *
      * @return Ess_M2ePro_Model_Resource_Order_Collection
      */
-    private function getOrderCollection($enabledAccountIds, $enabledMerchantId, $date, $replacementDate)
+    private function getOrderCollection($enabledAccountIds, $enabledMerchantId, $date)
     {
         /** @var Ess_M2ePro_Model_Resource_Order_Collection $collection*/
         $collection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Order');
@@ -168,8 +163,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Update_SellerOrderId
         );
         $collection->addFieldToFilter('second_table.seller_order_id', array('null' => true));
         $collection->addFieldToFilter('maa.merchant_id', array('eq' => $enabledMerchantId));
-        $where = "(`main_table`.`create_date` > '{$date}' AND `second_table`.`is_replacement` = 0)";
-        $where .= " OR (`main_table`.`create_date` > '{$replacementDate}' AND `second_table`.`is_replacement` = 1)";
+        $where = "`main_table`.`create_date` > '{$date}'";
         $collection->getSelect()->where($where);
         $collection->getSelect()->limit(self::ORDERS_PER_MERCHANT);
 

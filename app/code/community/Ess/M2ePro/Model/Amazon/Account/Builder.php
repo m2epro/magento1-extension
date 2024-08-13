@@ -166,7 +166,7 @@ class Ess_M2ePro_Model_Amazon_Account_Builder extends Ess_M2ePro_Model_ActiveRec
             $data['magento_orders_settings'][$tempKey]['source'] = $tempSettings['source'];
         }
 
-        if (!empty($tempSettings['apply_to_amazon'])) {
+        if (isset($tempSettings['apply_to_amazon'])) {
             $data['magento_orders_settings'][$tempKey]['apply_to_amazon'] = $tempSettings['apply_to_amazon'];
         }
 

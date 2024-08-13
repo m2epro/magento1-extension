@@ -481,6 +481,7 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_order')}` (
   `is_replacement` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `status` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `is_invoice_sent` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
+  `date_of_invoice_sending` DATETIME DEFAULT NULL,
   `is_credit_memo_sent` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `invoice_data_report` LONGTEXT DEFAULT NULL,
   `buyer_name` VARCHAR(255) NOT NULL,
