@@ -256,7 +256,8 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Item_Responser
             21916585,
             21916582,
             21916672,
-            21919061
+            21919061,
+            21916591,
         );
 
         foreach ($messages as $message) {

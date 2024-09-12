@@ -222,9 +222,7 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Response
             }
         }
 
-        if ($this->getRequestData()->hasHandlingTime()) {
-            $data['online_handling_time'] = $this->getRequestData()->getHandlingTime();
-        }
+        $data['online_handling_time'] = $this->getRequestData()->getHandlingTime();
 
         if ($this->getRequestData()->hasRestockDate()) {
             $data['online_restock_date'] = $this->getRequestData()->getRestockDate();

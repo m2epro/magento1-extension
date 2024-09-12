@@ -36,9 +36,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Qty
         $this->checkQtyWarnings();
 
         if (!isset($this->validatorsData['handling_time'])) {
-            $handlingTime = $this->getAmazonListingProduct()
-                ->getListingSource()
-                ->getHandlingTime();
+            $handlingTime = $this->getAmazonListingProduct()->getListingSource()->getHandlingTime();
             $this->_cachedData['handling_time'] = $handlingTime;
         }
 
@@ -47,7 +45,10 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Qty
             $this->_cachedData['restock_date'] = $restockDate;
         }
 
-        if (isset($this->_cachedData['handling_time'])) {
+        if (
+            array_key_exists('handling_time', $this->_cachedData)
+            && $this->_cachedData['handling_time'] !== null
+        ) {
             $data['handling_time'] = $this->_cachedData['handling_time'];
         }
 

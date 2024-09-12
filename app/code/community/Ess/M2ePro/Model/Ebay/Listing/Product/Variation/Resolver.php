@@ -35,6 +35,8 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Resolver
             $this->getMessagesSet()->clearEntities();
             $this->validate();
 
+            $this->clearVariationsThatCanNotBeDeleted();
+
             $this->prepareModuleVariations();
             $this->validateModuleVariations();
 
@@ -77,6 +79,13 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Resolver
         }
 
         return true;
+    }
+
+    private function clearVariationsThatCanNotBeDeleted()
+    {
+        $this->_listingProduct
+            ->setSetting('additional_data', 'variations_that_can_not_be_deleted', array())
+            ->save();
     }
 
     /**

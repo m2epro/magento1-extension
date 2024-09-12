@@ -332,7 +332,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Instruction_SynchronizationTemplat
         $currentHandlingTime = $amazonListingProduct->getListingSource()->getHandlingTime();
         $onlineHandlingTime  = $amazonListingProduct->getOnlineHandlingTime();
 
-        if ($currentHandlingTime != $onlineHandlingTime) {
+        if ($currentHandlingTime !== $onlineHandlingTime) {
             return true;
         }
 

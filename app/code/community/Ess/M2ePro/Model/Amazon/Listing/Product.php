@@ -636,11 +636,16 @@ class Ess_M2ePro_Model_Amazon_Listing_Product extends Ess_M2ePro_Model_Component
     }
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getOnlineHandlingTime()
     {
-        return (int)$this->getData('online_handling_time');
+        $handlingTime = $this->getData('online_handling_time');
+        if ($handlingTime === null) {
+            return null;
+        }
+
+        return (int)$handlingTime;
     }
 
     public function getOnlineRestockDate()

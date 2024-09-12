@@ -167,12 +167,17 @@ class Ess_M2ePro_Model_Amazon_Listing_Source
     //########################################
 
     /**
-     * @return int|string
+     * @return int|null
      */
     public function getHandlingTime()
     {
-        $result = 0;
         $src = $this->getAmazonListing()->getHandlingTimeSource();
+
+        if ($src['mode'] == Ess_M2ePro_Model_Amazon_Listing::HANDLING_TIME_MODE_NONE) {
+            return null;
+        }
+
+        $result = 0;
 
         if ($src['mode'] == Ess_M2ePro_Model_Amazon_Listing::HANDLING_TIME_MODE_RECOMMENDED) {
             $result = $src['value'];
@@ -180,11 +185,22 @@ class Ess_M2ePro_Model_Amazon_Listing_Source
 
         if ($src['mode'] == Ess_M2ePro_Model_Amazon_Listing::HANDLING_TIME_MODE_CUSTOM_ATTRIBUTE) {
             $result = $this->getMagentoProduct()->getAttributeValue($src['attribute']);
+            $result = filter_var($result, FILTER_VALIDATE_INT);
+
+            if ($result === false) {
+                return null;
+            }
         }
 
         $result = (int)$result;
-        $result < 0  && $result = 0;
-        $result > 30 && $result = 30;
+
+        if ($result < 0) {
+            return 0;
+        }
+
+        if ($result > 30) {
+            return 30;
+        }
 
         return $result;
     }
