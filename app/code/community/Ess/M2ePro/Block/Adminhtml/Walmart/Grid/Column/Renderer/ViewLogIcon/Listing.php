@@ -20,7 +20,6 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Grid_Column_Renderer_ViewLogIcon_Listin
                 Log::ACTION_DELETE_PRODUCT_FROM_COMPONENT => $this->__('Remove Item from Channel'),
                 Log::ACTION_DELETE_AND_REMOVE_PRODUCT     => $this->__('Remove from Channel & Listing'),
                 Log::ACTION_DELETE_PRODUCT_FROM_LISTING   => $this->__('Delete Item from Listing'),
-                Log::ACTION_RESET_BLOCKED_PRODUCT         => $this->__('Reset Incomplete Item'),
             );
     }
 

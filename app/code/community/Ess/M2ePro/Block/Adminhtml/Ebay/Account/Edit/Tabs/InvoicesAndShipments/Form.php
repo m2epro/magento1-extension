@@ -78,28 +78,6 @@ HTML
             )
         );
 
-        $fieldset->addField(
-            'skip_evtin',
-            'select',
-            array(
-                'label'   => Mage::helper('M2ePro')->__('Skip eVTN'),
-                'title'   => Mage::helper('M2ePro')->__('Skip eVTN'),
-                'name'    => 'skip_evtin',
-                'options' => array(
-                    0 => Mage::helper('M2ePro')->__('No'),
-                    1 => Mage::helper('M2ePro')->__('Yes'),
-                ),
-                'tooltip' => Mage::helper('M2ePro')->__(
-                    <<<TEXT
-Set <b>Yes</b> if you want to exclude 
-<a href="%url%" target="_blank">eVTN</a> from your Magento orders.
-TEXT
-                    ,
-                    Mage::helper('M2ePro/Module_Support')->getSupportUrl('/support/solutions/articles/9000199785')
-                )
-            )
-        );
-
         $form->setValues($formData);
 
         $form->setUseContainer(false);

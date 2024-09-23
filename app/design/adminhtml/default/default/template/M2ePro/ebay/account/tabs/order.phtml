@@ -326,6 +326,25 @@
                     </td>
                 </tr>
 
+                <tr id="magento_orders_shipping_information_skip_evtin_container">
+                    <td class="label">
+                        <label for="magento_orders_shipping_information_skip_evtin"><?php echo Mage::helper('M2ePro')->__('Skip eVTN') ?>:</label>
+                    </td>
+                    <td class="value">
+                        <?php $isSkipEvtinOn = $formData['skip_evtin'] == 1 ?>
+                        <select name="skip_evtin" id="magento_orders_shipping_information_skip_evtin">
+                            <option value="0" <?php if (!$isSkipEvtinOn): ?>selected="selected"<?php endif; ?>><?php echo Mage::helper('M2ePro')->__('No') ?></option>
+                            <option value="1" <?php if ($isSkipEvtinOn): ?>selected="selected"<?php endif; ?>><?php echo Mage::helper('M2ePro')->__('Yes') ?></option>
+                        </select>
+                        <p class="note">
+                            <?php echo Mage::helper('M2ePro')->__(
+                                    'Set <b>Yes</b> if you want to exclude <a href="%url%" target="_blank">eVTN</a> from your Magento orders.',
+                                    Mage::helper('M2ePro/Module_Support')->getSupportUrl('/support/solutions/articles/9000199785')
+                            ); ?>
+                        </p>
+                    </td>
+                </tr>
+
             </table>
 
         </div>

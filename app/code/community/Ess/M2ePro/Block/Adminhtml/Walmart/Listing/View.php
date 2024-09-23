@@ -173,10 +173,6 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View extends Mage_Adminhtml_Blo
             '*/adminhtml_walmart_listing/editIdentifier'
         );
 
-        $urls['adminhtml_walmart_listing/runResetProducts'] = $this->getUrl(
-            '*/adminhtml_walmart_listing/runResetProducts'
-        );
-
         $urls['moveToListingPopupHtml'] = $this->getUrl('*/adminhtml_listing_moving/moveToListingPopupHtml');
         $urls['prepareMoveToListing'] = $this->getUrl('*/adminhtml_listing_moving/prepareMoveToListing');
         $urls['moveToListing'] = $this->getUrl('*/adminhtml_listing_moving/moveToListing');
@@ -221,7 +217,6 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View extends Mage_Adminhtml_Blo
         $runStopProducts = $this->getUrl('*/adminhtml_walmart_listing/runStopProducts');
         $runStopAndRemoveProducts = $this->getUrl('*/adminhtml_walmart_listing/runStopAndRemoveProducts');
         $runDeleteAndRemoveProducts = $this->getUrl('*/adminhtml_walmart_listing/runDeleteAndRemoveProducts');
-        $runResetProducts = $this->getUrl('*/adminhtml_walmart_listing/runResetProducts');
 
         $marketplaceSynchUrl = $this->getUrl(
             '*/adminhtml_walmart_marketplace/index'
@@ -282,9 +277,6 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View extends Mage_Adminhtml_Blo
         );
         $deletingAndRemovingSelectedItemsMessage = Mage::helper('M2ePro')->escapeJs(
             Mage::helper('M2ePro')->__('Retiring From Walmart And Removing from Listing Selected Items')
-        );
-        $resetBlockedProductsMessage = Mage::helper('M2ePro')->escapeJs(
-            Mage::helper('M2ePro')->__('Reset Incomplete Items')
         );
 
         $removingSelectedItemsMessage = $helper->escapeJs($helper->__('Removing From Listing Selected Items'));
@@ -428,7 +420,6 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View extends Mage_Adminhtml_Blo
     M2ePro.url.runStopProducts = '{$runStopProducts}';
     M2ePro.url.runStopAndRemoveProducts = '{$runStopAndRemoveProducts}';
     M2ePro.url.runDeleteAndRemoveProducts = '{$runDeleteAndRemoveProducts}';
-    M2ePro.url.runResetProducts = '{$runResetProducts}';
 
     M2ePro.url.variationProductManage = '{$variationProductManage}';
     M2ePro.url.variationProductSetChannelAttributes = '{$variationProductSetChannelAttributes}';
@@ -482,7 +473,6 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View extends Mage_Adminhtml_Blo
     M2ePro.text.stopping_and_removing_selected_items_message = '{$stoppingAndRemovingSelectedItemsMessage}';
     M2ePro.text.deleting_and_removing_selected_items_message = '{$deletingAndRemovingSelectedItemsMessage}';
     M2ePro.text.removing_selected_items_message = '{$removingSelectedItemsMessage}';
-    M2ePro.text.reset_blocked_products_message = '{$resetBlockedProductsMessage}';
 
     M2ePro.text.templateDescriptionPopupTitle = '{$templateDescriptionPopupTitle}';
 

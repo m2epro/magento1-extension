@@ -36,7 +36,6 @@ window.WalmartListingVariationProductManageVariationsGrid = Class.create(Listing
             duplicateAction: this.duplicateProducts.bind(this),
 
             deleteAndRemoveAction: this.actionHandler.deleteAndRemoveAction.bind(this.actionHandler),
-            resetProductsAction: this.actionHandler.resetProductsAction.bind(this.actionHandler),
         });
     },
 

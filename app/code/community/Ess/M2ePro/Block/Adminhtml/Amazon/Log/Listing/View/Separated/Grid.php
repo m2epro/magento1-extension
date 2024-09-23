@@ -21,9 +21,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Log_Listing_View_Separated_Grid
 
     protected function getExcludedActionTitles()
     {
-        return array(
-            Ess_M2ePro_Model_Listing_Log::ACTION_RESET_BLOCKED_PRODUCT => '',
-        );
+        return array();
     }
 
     //########################################

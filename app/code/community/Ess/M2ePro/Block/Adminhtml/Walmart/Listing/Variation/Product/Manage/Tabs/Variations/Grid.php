@@ -330,18 +330,6 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_V
 
         // ---------------------------------------
 
-        $this->getMassactionBlock()->addItem(
-            'resetProducts',
-            array(
-                'label'   => Mage::helper('M2ePro')->__('Reset Incomplete Item(s)'),
-                'url'     => '',
-                'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
-            ),
-            'other'
-        );
-
-        // ---------------------------------------
-
         return parent::_prepareMassaction();
     }
 
@@ -868,10 +856,6 @@ HTML;
             '*/adminhtml_walmart_listing/editIdentifier'
         );
 
-        $urls['adminhtml_walmart_listing/runResetProducts'] = $this->getUrl(
-            '*/adminhtml_walmart_listing/runResetProducts'
-        );
-
         $urls['adminhtml_walmart_listing_variation_product_manage/createNewChild'] = $this->getUrl(
             '*/adminhtml_walmart_listing_variation_product_manage/createNewChild'
         );
@@ -900,7 +884,6 @@ HTML;
         $runStopProducts = $this->getUrl('*/adminhtml_walmart_listing/runStopProducts');
         $runStopAndRemoveProducts = $this->getUrl('*/adminhtml_walmart_listing/runStopAndRemoveProducts');
         $runDeleteAndRemoveProducts = $this->getUrl('*/adminhtml_walmart_listing/runDeleteAndRemoveProducts');
-        $runResetProducts = $this->getUrl('*/adminhtml_walmart_listing/runResetProducts');
 
         $setChildListingProductOptions = $this->getUrl(
             '*/adminhtml_walmart_listing_variation_product_manage/setChildListingProductOptions'
@@ -948,11 +931,6 @@ HTML;
             ->escapeJs(
                 Mage::helper('M2ePro')
                     ->__('Retiring From Walmart And Removing from Listing Selected Items')
-            );
-        $resetBlockedProductsMessage = Mage::helper('M2ePro')
-            ->escapeJs(
-                Mage::helper('M2ePro')
-                    ->__('Reset Incomplete Items')
             );
 
         $errorChangingProductOptions = $helper->escapeJs($helper->__('Please Select Product Options.'));
@@ -1016,7 +994,6 @@ HTML;
     M2ePro.url.runStopProducts = '{$runStopProducts}';
     M2ePro.url.runStopAndRemoveProducts = '{$runStopAndRemoveProducts}';
     M2ePro.url.runDeleteAndRemoveProducts = '{$runDeleteAndRemoveProducts}';
-    M2ePro.url.runResetProducts = '{$runResetProducts}';
     M2ePro.url.setChildListingProductOptions = '{$setChildListingProductOptions}';
 
     M2ePro.url.mapToTemplateDescription = '{$mapToTemplateDescription}';
@@ -1038,7 +1015,6 @@ HTML;
     M2ePro.text.stopping_selected_items_message = '{$stoppingSelectedItemsMessage}';
     M2ePro.text.stopping_and_removing_selected_items_message = '{$stoppingAndRemovingSelectedItemsMessage}';
     M2ePro.text.deleting_and_removing_selected_items_message = '{$deletingAndRemovingSelectedItemsMessage}';
-    M2ePro.text.reset_blocked_products_message = '{$resetBlockedProductsMessage}';
 
     M2ePro.text.error_changing_product_options = '{$errorChangingProductOptions}';
 

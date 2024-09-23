@@ -361,14 +361,6 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View_Walmart_Grid
 
         // ---------------------------------------
 
-        $this->getMassactionBlock()->addItem(
-            'resetProducts', array(
-                'label'    => Mage::helper('M2ePro')->__('Reset Incomplete Item(s)'),
-                'url'      => '',
-                'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
-            ), 'other'
-        );
-
         return parent::_prepareMassaction();
     }
 

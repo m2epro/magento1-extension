@@ -61,8 +61,6 @@ class Ess_M2ePro_Model_Listing_Log extends Ess_M2ePro_Model_Log_Abstract
     const _ACTION_SWITCH_TO_AFN_ON_COMPONENT    = 'Switching Fulfillment to AFN';
     const ACTION_SWITCH_TO_MFN_ON_COMPONENT     = 30;
     const _ACTION_SWITCH_TO_MFN_ON_COMPONENT    = 'Switching Fulfillment to MFN';
-    const ACTION_RESET_BLOCKED_PRODUCT          = 32;
-    const _ACTION_RESET_BLOCKED_PRODUCT         = 'Reset Incomplete Item';
 
     const ACTION_CHANGE_PRODUCT_SPECIAL_PRICE_FROM_DATE  = 19;
     const _ACTION_CHANGE_PRODUCT_SPECIAL_PRICE_FROM_DATE = 'Change of Product Special Price from date in Magento Store';

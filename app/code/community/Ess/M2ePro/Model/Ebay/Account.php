@@ -65,9 +65,6 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
     const MAGENTO_ORDERS_STATUS_MAPPING_PAID    = 'processing';
     const MAGENTO_ORDERS_STATUS_MAPPING_SHIPPED = 'complete';
 
-    const MAGENTO_ORDERS_SKIP_EVTIN_MODE_ON  = 1;
-    const MAGENTO_ORDERS_SKIP_EVTIN_MODE_OFF = 0;
-
     /** @var Ess_M2ePro_Model_ActiveRecord_Factory */
     protected $_activeRecordFactory;
 
@@ -128,9 +125,6 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
         return $this->getMode() == self::MODE_SANDBOX;
     }
 
-    /**
-     * @return bool
-     */
     public function isImportShipByDateToMagentoOrder()
     {
         return (bool)$this->getSetting(
@@ -138,6 +132,20 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
             array('shipping_information', 'ship_by_date'),
             true
         );
+    }
+
+    public function isRegionOverrideRequired()
+    {
+        return (bool)$this->getSetting(
+            'magento_orders_settings',
+            array('shipping_information', 'shipping_address_region_override'),
+            1
+        );
+    }
+
+    public function isSkipEvtinModeOn()
+    {
+        return (bool)$this->getData('skip_evtin');
     }
 
     // ---------------------------------------
@@ -911,14 +919,6 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
         return (bool)$this->getData('create_magento_shipment');
     }
 
-    /**
-     * @return bool
-     */
-    public function isSkipEvtinModeOn()
-    {
-        return (bool)$this->getData('skip_evtin');
-    }
-
     //########################################
 
     /**
@@ -1178,14 +1178,5 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
         Mage::helper('M2ePro/Data_Cache_Permanent')->removeTagValues('account');
 
         return parent::delete();
-    }
-
-    public function isRegionOverrideRequired()
-    {
-        return (bool)$this->getSetting(
-            'magento_orders_settings',
-            array('shipping_information', 'shipping_address_region_override'),
-            1
-        );
     }
 }

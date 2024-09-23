@@ -24,7 +24,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Log_Listing_View_Grouped_Grid extends
             Ess_M2ePro_Model_Listing_Log::ACTION_SWITCH_TO_AFN_ON_COMPONENT    => '',
             Ess_M2ePro_Model_Listing_Log::ACTION_SWITCH_TO_MFN_ON_COMPONENT    => '',
             Ess_M2ePro_Model_Listing_Log::ACTION_CHANGE_PRODUCT_TIER_PRICE     => '',
-            Ess_M2ePro_Model_Listing_Log::ACTION_RESET_BLOCKED_PRODUCT         => ''
         );
     }
 
