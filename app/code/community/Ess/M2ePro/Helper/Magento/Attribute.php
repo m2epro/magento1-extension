@@ -342,6 +342,20 @@ class Ess_M2ePro_Helper_Magento_Attribute extends Ess_M2ePro_Helper_Magento_Abst
         return $resultAttributes;
     }
 
+    /**
+     * @return array
+     */
+    public function filterAllAttrByInputTypes(
+        array $frontendInputTypes = array(),
+        array $backendInputTypes = array()
+    ) {
+        return $this->filterByInputTypes(
+            $this->getAll(),
+            $frontendInputTypes,
+            $backendInputTypes
+        );
+    }
+
     //########################################
 
     public function getSetsFromProductsWhichLacksAttributes(array $attributes, array $productIds)

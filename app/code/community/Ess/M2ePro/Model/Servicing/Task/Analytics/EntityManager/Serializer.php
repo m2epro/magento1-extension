@@ -110,11 +110,6 @@ class Ess_M2ePro_Model_Servicing_Task_Analytics_EntityManager_Serializer
             case Ess_M2ePro_Helper_Component_Walmart::NICK . '::Template_Description':
                 unset($data['description_template']);
                 break;
-
-            case Ess_M2ePro_Helper_Component_Walmart::NICK . '::Template_Category':
-                /**@var $item Ess_M2ePro_Model_Walmart_Template_Category */
-                $data['specifics'] = $this->unsetDataInRelatedItems($item->getSpecifics(), 'template_category_id');
-                break;
         }
 
         return Mage::helper('M2ePro')->jsonEncode($data);

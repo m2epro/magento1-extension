@@ -35,7 +35,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_Variation_Product_ManageController
             ->addJs('M2ePro/Listing/Action.js')
             ->addJs('M2ePro/Listing/Moving.js')
             ->addJs('M2ePro/Walmart/Listing/Action.js')
-            ->addJs('M2ePro/Walmart/Listing/Template/Category.js')
+            ->addJs('M2ePro/Walmart/Listing/ProductType.js')
             ->addJs('M2ePro/Walmart/Listing/VariationProductManage.js')
             ->addJs('M2ePro/Walmart/Listing/Product/EditChannelData.js')
             ->addJs('M2ePro/Walmart/Listing/VariationProductManageVariationsGrid.js')
@@ -90,6 +90,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_Variation_Product_ManageController
         $listingProduct = Mage::helper('M2ePro/Component_Walmart')->getObject('Listing_Product', $productId);
         $listingProduct->getChildObject()->getVariationManager()->getTypeModel()->getProcessor()->process();
 
+        /** @var Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs $tabs */
         $tabs = $this->loadLayout()->getLayout()
             ->createBlock('M2ePro/adminhtml_walmart_listing_variation_product_manage_tabs');
         $tabs->setListingProductId($productId);
@@ -201,6 +202,10 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_Variation_Product_ManageController
         $optionsForAddingToVocabulary = array();
 
         foreach ($matchedAttributes as $productAttribute => $channelAttribute) {
+            if (empty($channelOptions[$channelAttribute])) {
+                continue;
+            }
+
             $productOption = $magentoOptions[$productAttribute];
             $channelOption = $channelOptions[$channelAttribute];
 

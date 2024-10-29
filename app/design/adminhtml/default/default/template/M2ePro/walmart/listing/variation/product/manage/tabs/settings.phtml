@@ -87,7 +87,7 @@ $magentoProductVariations = $this->getListingProduct()->getMagentoProduct()->get
                 </tbody>
 
                 <tfoot>
-                    <?php if (!$this->getListingProductTypeModel()->hasChannelGroupId() && !$this->getListingProduct()->isSetProcessingLock('child_products_in_action')) { ?>
+                    <?php if (!$this->getListingProduct()->isSetProcessingLock('child_products_in_action')) { ?>
                         <tr id="change_channel_attributes_btn">
                             <td class="label" colspan="2" style="text-align: right;">
                                 <button onclick="ListingGridObj.variationProductManageHandler.changeChannelAttributes(this)">

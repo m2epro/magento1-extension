@@ -127,7 +127,6 @@ class Ess_M2ePro_Adminhtml_Walmart_TemplateController
     protected function getPreparedTemplateType($type)
     {
         $templateTypes = array(
-            Ess_M2ePro_Block_Adminhtml_Walmart_Template_Grid::TEMPLATE_CATEGORY        => 'category',
             Ess_M2ePro_Block_Adminhtml_Walmart_Template_Grid::TEMPLATE_DESCRIPTION     => 'description',
             Ess_M2ePro_Block_Adminhtml_Walmart_Template_Grid::TEMPLATE_SELLING_FORMAT  => 'sellingFormat',
             Ess_M2ePro_Block_Adminhtml_Walmart_Template_Grid::TEMPLATE_SYNCHRONIZATION => 'synchronization'

@@ -372,9 +372,7 @@ class Ess_M2ePro_Observer_Product_AddUpdate_After extends Ess_M2ePro_Observer_Pr
             $changeProcessor->setListingProduct($listingProduct);
             $changeProcessor->setDefaultInstructionTypes(
                 array(
-                ChangeProcessorAbstract::INSTRUCTION_TYPE_PRODUCT_STATUS_DATA_POTENTIALLY_CHANGED,
-                ChangeProcessorAbstract::INSTRUCTION_TYPE_PRODUCT_QTY_DATA_POTENTIALLY_CHANGED,
-                ChangeProcessorAbstract::INSTRUCTION_TYPE_PRODUCT_PRICE_DATA_POTENTIALLY_CHANGED,
+                    ChangeProcessorAbstract::INSTRUCTION_TYPE_PRODUCT_DATA_POTENTIALLY_CHANGED
                 )
             );
 

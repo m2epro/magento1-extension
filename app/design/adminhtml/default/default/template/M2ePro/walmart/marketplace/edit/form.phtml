@@ -7,7 +7,7 @@
 
 // @codingStandardsIgnoreFile
 
-/** @var $this Ess_M2ePro_Block_Adminhtml_Walmart_Marketplace_Edit_Form */
+/** @var Ess_M2ePro_Block_Adminhtml_Walmart_Marketplace_Edit_Form $this */
 
 ?>
 
@@ -19,10 +19,32 @@
 
         'runSynchNow' => $this->getUrl('M2ePro/adminhtml_walmart_marketplace/runSynchNow'),
         'adminhtml_walmart_marketplace/synchGetExecutingInfo' => $this->getUrl('M2ePro/adminhtml_walmart_marketplace/synchGetExecutingInfo'),
+
+        'walmart_marketplace_withProductType/runSynchNow' => $this->getUrl(
+            '*/adminhtml_walmart_marketplace_withProductType/runSynchNow'
+        ),
+        'walmart_marketplace_withProductType/synchGetExecutingInfo' => $this->getUrl(
+            '*/adminhtml_walmart_marketplace_withProductType/synchGetExecutingInfo'
+        ),
     )); ?>);
 
     M2ePro.translator.add(<?php echo json_encode(array(
-        'You must select at least one Marketplace you will work with.' => Mage::helper('M2ePro')->__('You must select at least one Marketplace you will work with.'),
+        'You must select at least one Marketplace you will work with.' => Mage::helper('M2ePro')->__(
+            'You must select at least one Marketplace you will work with.'
+        ),
+        'marketplace_sync_success_message' => Mage::helper('M2ePro')->__(
+            'Walmart Data Update was completed.'
+        ),
+        'marketplace_sync_error_message' => Mage::helper('M2ePro')->__(
+            'Walmart Data Update was completed with errors.'
+            . ' <a target="_blank" href="%url%">View Log</a> for the details.',
+            $syncLogUrl = $this->getUrl('*/adminhtml_walmart_synchronization_log/index')
+        ),
+        'marketplace_sync_warning_message' => Mage::helper('M2ePro')->__(
+            'Warning Data Update was completed with warnings.'
+            . ' <a target="_blank" href="%url%">View Log</a> for the details.',
+            $syncLogUrl
+        ),
     )); ?>);
 
     Event.observe(window, 'load', function() {
@@ -32,7 +54,16 @@
             new ProgressBar('marketplaces_progress_bar'),
             new AreaWrapper('marketplaces_content_container')
         );
-        MarketplaceObj = new Marketplace(MarketplaceProgressObj, storedStatuses);
+        MarketplaceObj = new WalmartMarketplace(MarketplaceProgressObj, storedStatuses);
+
+        MarketplaceWithProductTypeProgressObj = new WalmartMarketplaceWithProductTypeSyncProgress(
+            new ProgressBar('marketplaces_progress_bar'),
+            new AreaWrapper('marketplaces_content_container')
+        );
+        WalmartMarketplaceWithProductTypeSyncObj = new WalmartMarketplaceWithProductTypeSync(
+            MarketplaceWithProductTypeProgressObj,
+            storedStatuses
+        );
     });
 
 </script>
@@ -104,7 +135,11 @@
                                     </p>
                                 </td>
                                 <td id="run_single_button_<?php echo $marketplace['instance']->getId(); ?>" class="value" <?php if($marketplace['instance']->getStatus() == Ess_M2ePro_Model_Marketplace::STATUS_DISABLE): ?>style="display: none;"<?php endif; ?>>
-                                    <?php echo $this->getChildHtml('run_single_button'); ?>
+                                    <?php if ($marketplace['params']['is_supported_pt']) { ?>
+                                        <?php echo $this->getChildHtml('run_with_pt_single_button'); ?>
+                                    <?php } else { ?>
+                                        <?php echo $this->getChildHtml('run_single_button'); ?>
+                                    <?php } ?>
                                 </td>
                                 <td id="changed_<?php echo $marketplace['instance']->getId(); ?>" class="changed">
                                     <span></span>

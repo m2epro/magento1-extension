@@ -41,6 +41,7 @@ class Ess_M2ePro_Model_Listing_Product_Instruction_Processor
 
     public function process()
     {
+        $this->removeInstructionOlderThenWeek();
         $this->deleteInstructionsWithoutListingProducts();
 
         $listingsProducts = $this->getNeededListingsProducts();
@@ -154,6 +155,26 @@ class Ess_M2ePro_Model_Listing_Product_Instruction_Processor
         Mage::getResourceModel('M2ePro/Listing_Product_Instruction')->remove(
             $collection->getColumnValues('id')
         );
+    }
+
+    public function removeInstructionOlderThenWeek()
+    {
+        $greaterThenDate = Mage::helper('M2ePro/Data')
+            ->createCurrentGmtDateTime()
+            ->modify("-7 day")
+            ->format('Y-m-d');
+
+        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Instruction $productInstructionResource */
+        $productInstructionResource = Mage::getResourceModel('M2ePro/Listing_Product_Instruction');
+
+        /** @var $resource Mage_Core_Model_Resource */
+        $resource = Mage::getSingleton('core/resource');
+        $connWrite = $resource->getConnection('core_write');
+
+        $connWrite->delete(
+                $productInstructionResource->getMainTable(),
+                array('? > create_date' => $greaterThenDate)
+            );
     }
 
     //########################################

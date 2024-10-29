@@ -3,6 +3,7 @@ window.WalmartListingCreateGeneral = Class.create(Common, {
     marketplaceSynchProgressObj: null,
     accounts: null,
     selectedAccountId: null,
+    marketplacesSyncSettings: [],
 
     // ---------------------------------------
 
@@ -73,6 +74,17 @@ window.WalmartListingCreateGeneral = Class.create(Common, {
                 self.renderAccounts();
 
             }, 1000);
+        });
+    },
+
+    setMarketplacesSyncSettings: function (marketplaces) {
+        this.marketplacesSyncSettings = marketplaces;
+    },
+
+    isMarketplaceSyncWithProductType: function (marketplaceId) {
+        return this.marketplacesSyncSettings.some((item) => {
+            return item.marketplace_id === marketplaceId
+                && item.is_sync_with_product_type;
         });
     },
 
@@ -211,6 +223,20 @@ window.WalmartListingCreateGeneral = Class.create(Common, {
                     onSuccess: function() {
 
                         var title = 'Walmart ' + $('marketplace_title').innerHTML;
+
+                        if (self.isMarketplaceSyncWithProductType(parseInt(marketplaceId))) {
+                            self.marketplaceSynchProgressObj.runTask(
+                                title,
+                                M2ePro.url.get(
+                                    'walmart_marketplace_withProductType/runSynchNow',
+                                    {marketplace_id: marketplaceId}
+                                ),
+                                M2ePro.url.get('walmart_marketplace_withProductType/synchGetExecutingInfo'),
+                                'WalmartListingCreateGeneralObj.marketplaceSynchProgressObj.end()'
+                            );
+
+                            return;
+                        }
 
                         self.marketplaceSynchProgressObj.runTask(
                             title,

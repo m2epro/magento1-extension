@@ -17,7 +17,7 @@ class Ess_M2ePro_Model_Ebay_Connector_Protocol extends Ess_M2ePro_Model_Connecto
 
     public function getComponentVersion()
     {
-        return 24;
+        return 27;
     }
 
     //########################################

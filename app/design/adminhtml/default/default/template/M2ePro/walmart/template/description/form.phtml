@@ -36,7 +36,6 @@
 
     !empty($formData['key_features']) && $formData['key_features'] = json_decode($formData['key_features'], true);
     !empty($formData['other_features'])   && $formData['other_features'] = json_decode($formData['other_features'], true);
-    !empty($formData['attributes'])    && $formData['attributes'] = json_decode($formData['attributes'], true);
 
     if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
         $duplicateHeaderText = Mage::helper('M2ePro')->escapeJs(
@@ -163,12 +162,6 @@
         $('other_features_mode')
             .observe('change', function () {
                 WalmartTemplateDescriptionObj.multi_element_mode_change.call(this,'other_features',5);
-            })
-            .simulate('change');
-
-        $('attributes_mode')
-            .observe('change', function () {
-                WalmartTemplateDescriptionObj.multi_element_mode_change.call(this,'attributes',5);
             })
             .simulate('change');
 
@@ -990,81 +983,6 @@
                         <a id="show_other_features_action" href="javascript: void(0);" onclick="WalmartTemplateDescriptionObj.showElement('other_features');"><?php echo Mage::helper('M2ePro')->__('Add New') ?></a>
                         /
                         <a id="hide_other_features_action" href="javascript: void(0);" onclick="WalmartTemplateDescriptionObj.hideElement('other_features');"><?php echo Mage::helper('M2ePro')->__('Remove') ?></a>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td colspan="2" style="padding: 10px 0">
-                        <hr style="border: 1px solid silver; border-bottom: none;">
-                    </td>
-                </tr>
-
-            </table>
-
-            <table class="form-list" cellspacing="0" cellpadding="0">
-
-                <tr>
-                    <td class="label">
-                        <label><?php echo Mage::helper('M2ePro')->__('Attributes') ?>:</label>
-                    </td>
-                    <td class="value">
-                        <select id="attributes_mode" name="attributes_mode" class="select">
-                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::ATTRIBUTES_MODE_NONE; ?>" <?php if ($formData['attributes_mode'] == Ess_M2ePro_Model_Walmart_Template_Description::ATTRIBUTES_MODE_NONE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('None'); ?></option>
-                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::ATTRIBUTES_MODE_CUSTOM; ?>" <?php if ($formData['attributes_mode'] == Ess_M2ePro_Model_Walmart_Template_Description::ATTRIBUTES_MODE_CUSTOM): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Custom Value'); ?></option>
-                        </select>
-                        <p class="note">
-                            <span>
-                                <?php echo Mage::helper('M2ePro')->__(
-                                    'Specify up to 5 additional features that describe your Item.<br>
-                                        To add Attributes, you can either:<br>
-                                        - Enter both the name and the value manually<br>
-                                        - Enter the name manually, then select a Magento Attribute with the relevant 
-                                        value and click <strong>Insert</strong>.'); ?>
-                            </span>
-                        </p>
-                    </td>
-                </tr>
-
-                <?php for ($i = 0; $i < 5; $i++): ?>
-                    <tr class="attributes_tr" style="display: none;">
-                        <td class="label">
-                            <label><?php echo Mage::helper('M2ePro')->__('Attributes (name / value) #%s', $i + 1); ?>: <span class="required">*</span></label>
-                        </td>
-                        <td class="value">
-                            <input id="attributes_name_<?php echo $i; ?>" onkeyup="WalmartTemplateDescriptionObj.multi_element_keyup('attributes',this)"
-                                   name="attributes_name[]" type="text" class="input-text M2ePro-required-when-visible"
-                                   value="<?php echo !empty($formData['attributes'][$i]['name']) ? Mage::helper('M2ePro')->escapeHtml($formData['attributes'][$i]['name']) : ''; ?>">
-                        </td>
-                        <td class="value">&nbsp;/</td>
-                        <td class="value">
-                            <input id="attributes_value_<?php echo $i; ?>" onkeyup="WalmartTemplateDescriptionObj.multi_element_keyup('attributes',this)"
-                                   name="attributes_value[]" type="text" class="input-text M2ePro-required-when-visible"
-                                   value="<?php echo !empty($formData['attributes'][$i]['value']) ? Mage::helper('M2ePro')->escapeHtml($formData['attributes'][$i]['value']) : ''; ?>">
-                            <p class="note">
-                                <span><?php echo Mage::helper('M2ePro')->__('Max. 100 characters.'); ?></span>
-                            </p>
-                        </td>
-                        <td class="value">
-                            <span id="select_attributes_for_attributes_<?php echo $i; ?>_span" class="select-wrapper">
-                                 <select id="select_attributes_for_attributes_<?php echo $i; ?>" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,select" apply_to_all_attribute_sets="0" style="width: 150px;">
-                                     <?php foreach($attributesByInputTypes['text_select'] as $attribute) : ?>
-                                         <option value="<?php echo $attribute['code']; ?>">
-                                             <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
-                                         </option>
-                                     <?php endforeach; ?>
-                                 </select>
-                            </span>
-                            <?php echo $this->getChildHtml("select_attributes_for_attributes_{$i}_button"); ?>
-                        </td>
-                    </tr>
-                <?php endfor; ?>
-
-                <tr id="attributes_actions_tr" style="display: none;">
-                    <td></td>
-                    <td class="value" style="padding-top: 0 !important;">
-                        <a id="show_attributes_action" href="javascript: void(0);" onclick="WalmartTemplateDescriptionObj.showElement('attributes');"><?php echo Mage::helper('M2ePro')->__('Add New') ?></a>
-                        /
-                        <a id="hide_attributes_action" href="javascript: void(0);" onclick="WalmartTemplateDescriptionObj.hideElement('attributes');"><?php echo Mage::helper('M2ePro')->__('Remove') ?></a>
                     </td>
                 </tr>
 

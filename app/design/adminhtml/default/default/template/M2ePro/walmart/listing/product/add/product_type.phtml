@@ -1,0 +1,219 @@
+<?php
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
+ */
+
+// @codingStandardsIgnoreFile
+
+/** @var $this Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Product_Add_ProductType */
+
+?>
+
+<script type="text/javascript">
+    M2ePro.php.setConstants(<?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Product_Add_ProductType'); ?>, 'Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Product_Add_ProductType');
+</script>
+
+<div class="content-header">
+    <table cellspacing="0">
+        <tr>
+            <td style="<?php echo $this->getHeaderWidth() ?>"><?php echo $this->getHeaderHtml() ?></td>
+            <td class="form-buttons"><?php echo $this->getButtonsHtml() ?></td>
+        </tr>
+    </table>
+</div>
+
+<?php echo $this->getChildHtml('view_header'); ?>
+
+<div class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Set Product Type.'); ?>" subtitle="" collapseable="no" hideblock="no" always_show="yes">
+
+    <div style="padding: 2px"></div>
+
+    <span>
+        <?php echo Mage::helper('M2ePro')->__(
+            'On this page, you can assign the relevant Product Type to the Products you are currently adding to M2E Pro Listing.<br/>
+            Select the most convenient way to set the Product Type below:'
+        );?>
+    </span>
+
+    <form id="product_type_mode_form" method="post" action="<?php echo $this->getUrl('*/*/ProductTypeAssignType', array('_current' => true)); ?>">
+
+        <input name="form_key" value="<?php echo $this->getFormKey(); ?>" type="hidden" />
+
+        <div style="margin:15px 0 0 10px">
+
+            <input id="same" name="mode" type="radio" value="<?php echo Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Product_Add_ProductType::MODE_SAME; ?>">&nbsp;&nbsp;
+            <label style="font-weight: bold" for="same"><?php echo Mage::helper('M2ePro')->__('All Products same Product Type'); ?></label>
+
+            <div style="margin-left: 22px">
+                <div style="margin: 7px 0">
+                    <?php echo Mage::helper('M2ePro')->__('All Products will have the same Product Type.'); ?>
+                </div>
+                <div style="margin: 7px 28px">
+                    <b><?php echo Mage::helper('M2ePro')->__('Product Type') ?></b>:
+                    <span id="product_type_title" style="font-style: italic; color: #808080"><?php echo Mage::helper('M2ePro')->__('Not selected'); ?></span>
+                    &nbsp;<a href="javascript:void(0);" id="edit_product_type"><?php echo Mage::helper('M2ePro')->__('Edit'); ?></a>
+                    <input id="product_type_id" name="product_type_id" value="" type="hidden" />
+                    <input id="products_ids" name="products_ids" type="hidden" value="">
+                </div>
+                <div style="margin: 7px 28px; display: none;" class="validation-advice" id="same_product_type_error" >
+                    <?php echo Mage::helper('M2ePro')->__('Please select Product Type.'); ?>
+                </div>
+            </div>
+
+            <input id="category" name="mode" type="radio" value="<?php echo Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Product_Add_ProductType::MODE_CATEGORY; ?>">&nbsp;&nbsp;
+            <label style="font-weight: bold" for="category"><?php echo Mage::helper('M2ePro')->__('Based on Magento Categories'); ?></label>
+
+            <div style="margin: 10px 22px">
+                <?php echo Mage::helper('M2ePro')->__('Product Type will be set for Products based on their Magento Categories.'); ?>
+            </div>
+
+            <input id="manually" name="mode" type="radio" value="<?php echo Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Product_Add_ProductType::MODE_MANUALLY; ?>">&nbsp;&nbsp;
+            <label style="font-weight: bold" for="manually"><?php echo Mage::helper('M2ePro')->__('Set Manually for each Product'); ?></label>
+
+            <div style="margin: 10px 22px">
+                <?php echo Mage::helper('M2ePro')->__('Allows you to set Product Type for each Product or a group of Products manually.'); ?>
+            </div>
+
+        </div>
+    </form>
+
+    <div style="padding: 2px"></div>
+
+    <span>
+        <?php echo Mage::helper('M2ePro')->__(
+            '<strong>Note:</strong> Product Type is required when you create a new offer on Walmart.<br/><br/>
+
+            The detailed information can be found <a href="%url%" target="_blank">here</a>.',
+
+            Mage::helper("M2ePro/Module_Support")->getDocumentationUrl(null, null, "walmart-integration")
+        );?>
+    </span>
+
+</div>
+
+<script type="text/javascript">
+
+    var init = function() {
+
+        $('same').observe('change', function (e) {
+            $('edit_product_type').show();
+        });
+
+        $('product_type_mode_form').observe('change', function(e) {
+            if (e.target.tagName != 'INPUT') {
+                return;
+            }
+
+            if (e.target.value != M2ePro.php.constant('Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Product_Add_ProductType::MODE_SAME')) {
+                $('edit_product_type').hide();
+            } else {
+                $('edit_product_type').show();
+            }
+        });
+
+        newProductTypeUrl = '<?php echo $this->getUrl('*/adminhtml_walmart_product_type/new', array(
+            'marketplace_id'        => $this->getListing()->getMarketplaceId()
+        )); ?>';
+
+        createProductTypeInNewTab = function(stepWindowUrl) {
+            var win = window.open(stepWindowUrl);
+
+            var intervalId = setInterval(function(){
+                if (!win.closed) {
+                    return;
+                }
+
+                clearInterval(intervalId);
+
+                loadProductTypeGrid();
+            }, 1000);
+        };
+
+        loadProductTypeGrid = function() {
+
+            new Ajax.Request('<?php echo $this->getUrl('*/*/viewProductTypesGrid'); ?>', {
+                method: 'post',
+                parameters: {
+                    products_ids : '<?php echo implode(',', $this->getProductsIds()); ?>',
+                    create_new_template_js_function: 'createProductTypeInNewTab'
+                },
+                onSuccess: function (transport) {
+                    $('product_type_grid').update(transport.responseText);
+                    $('product_type_grid').show();
+                }
+            })
+        };
+
+        productTypeModeFormSubmit = function()
+        {
+            if ($('same').checked && $('product_type_id').value == '') {
+                $('same_product_type_error').show();
+                return;
+            }
+            $('product_type_mode_form').submit();
+        };
+
+        selectProductType = function(el, templateId)
+        {
+            $('product_type_id').value = templateId;
+            $('products_ids').value = '<?php echo implode(',', $this->getProductsIds()); ?>';
+            $('product_type_title').innerHTML = el.up('tr').down('td').down('a').innerHTML;
+            $('same_product_type_error').hide();
+            ProductTypePopup.close();
+        };
+
+        var modeElement = $$('input[value="<?php echo $this->getProductTypeMode(); ?>"]').shift();
+
+        modeElement.checked = true;
+        if (modeElement.value != M2ePro.php.constant('Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Product_Add_ProductType::MODE_SAME')) {
+            $('edit_product_type').hide();
+        } else {
+            $('edit_product_type').show();
+        }
+
+        $('edit_product_type').observe('click', function(event) {
+
+            var popupContent = '';
+            new Ajax.Request('<?php echo $this->getUrl('*/*/viewProductTypePopup'); ?>', {
+                method: 'post',
+                asynchronous: false,
+                parameters: {
+                    products_ids : '<?php echo implode(',', $this->getProductsIds()); ?>'
+                },
+                onSuccess: function (transport) {
+                    popupContent = transport.responseText;
+                }
+            });
+
+            ProductTypePopup = Dialog.info(null, {
+                draggable: true,
+                resizable: true,
+                closable: true,
+                className: "magento",
+                windowClassName: "popup-window",
+                title: '<?php echo Mage::helper('M2ePro')->__('Assign Product Type'); ?>',
+                top: 70,
+                width: 800,
+                height: 550,
+                zIndex: 100,
+                recenterAuto: false,
+                hideEffect: Element.hide,
+                showEffect: Element.show
+            });
+            ProductTypePopup.options.destroyOnClose = true;
+
+            $('modal_dialog_message').insert(popupContent);
+
+            loadProductTypeGrid();
+
+            setTimeout(function() {
+                Windows.getFocusedWindow().content.style.height = '';
+                Windows.getFocusedWindow().content.style.maxHeight = '600px';
+            }, 50);
+        });
+    };
+
+    Event.observe(window,'load',init);
+</script>

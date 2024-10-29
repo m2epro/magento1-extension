@@ -72,9 +72,12 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Marketplace_Edit_Form extends Mage_Admi
                     continue;
                 }
 
+                $isSupportedProductType = $marketplace->getChildObject()
+                                                      ->isSupportedProductType();
                 $storedStatuses[] = array(
                     'marketplace_id' => $marketplace->getId(),
-                    'status' => $marketplace->getStatus()
+                    'status' => $marketplace->getStatus(),
+                    'is_need_sync_after_save' => !$isSupportedProductType,
                 );
 
                 $isLocked = (bool)Mage::helper('M2ePro/Component_Walmart')->getCollection('Account')
@@ -83,7 +86,10 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Marketplace_Edit_Form extends Mage_Admi
 
                 $marketplace = array(
                     'instance' => $marketplace,
-                    'params'   => array('locked' => $isLocked)
+                    'params'   => array(
+                        'locked' => $isLocked,
+                        'is_supported_pt' => $isSupportedProductType,
+                    )
                 );
 
                 if ($marketplace['instance']->getData('developer_key') === null) {
@@ -108,6 +114,15 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Marketplace_Edit_Form extends Mage_Admi
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('run_single_button', $buttonBlock);
+
+
+        $data = array(
+            'label'   => Mage::helper('M2ePro')->__('Update Now'),
+            'onclick' => 'WalmartMarketplaceWithProductTypeSyncObj.runSingleSynchronization(this)',
+            'class'   => 'run_single_button'
+        );
+        $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
+        $this->setChild('run_with_pt_single_button', $buttonBlock);
         // ---------------------------------------
 
         return parent::_beforeToHtml();

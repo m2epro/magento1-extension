@@ -333,12 +333,12 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View extends Mage_Adminhtml_Blo
             )
         );
 
-        $mapToTemplateCategory = $this->getUrl('*/adminhtml_walmart_listing/mapToTemplateCategory');
+        $mapToProductType = $this->getUrl('*/adminhtml_walmart_listing/mapToProductType');
         $unmapFromTemplateDescription = $this->getUrl('*/adminhtml_walmart_listing/unmapFromTemplateDescription');
-        $validateProductsForTemplateCategoryAssign = $this->getUrl(
-            '*/adminhtml_walmart_listing/validateProductsForTemplateCategoryAssign'
+        $validateProductsForProductTypeAssign = $this->getUrl(
+            '*/adminhtml_walmart_listing/validateProductsForProductTypeAssign'
         );
-        $viewTemplateCategoriesGrid = $this->getUrl('*/adminhtml_walmart_listing/viewTemplateCategoriesGrid');
+        $viewProductTypesGrid = $this->getUrl('*/adminhtml_walmart_listing/viewProductTypesGrid');
 
         $templateDescriptionPopupTitle = $helper->escapeJs($helper->__('Assign Description Policy'));
 
@@ -439,10 +439,10 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View extends Mage_Adminhtml_Blo
 
     M2ePro.url.categoryTemplate = '{$categoryTemplateUrl}';
 
-    M2ePro.url.mapToTemplateCategory = '{$mapToTemplateCategory}';
+    M2ePro.url.mapToProductType = '{$mapToProductType}';
     M2ePro.url.unmapFromTemplateDescription = '{$unmapFromTemplateDescription}';
-    M2ePro.url.validateProductsForTemplateCategoryAssign = '{$validateProductsForTemplateCategoryAssign}';
-    M2ePro.url.viewTemplateCategoriesGrid = '{$viewTemplateCategoriesGrid}';
+    M2ePro.url.validateProductsForProductTypeAssign = '{$validateProductsForProductTypeAssign}';
+    M2ePro.url.viewProductTypesGrid = '{$viewProductTypesGrid}';
 
     M2ePro.url.marketplace_synch = '{$marketplaceSynchUrl}';
 

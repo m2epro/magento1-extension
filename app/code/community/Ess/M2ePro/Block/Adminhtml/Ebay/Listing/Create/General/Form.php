@@ -47,8 +47,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Create_General_Form extends Mage_A
         $marketplaceSelectionDisabled = true;
         if (!$marketplaceId && $account->getId()) {
             $accountId = $account->getId();
-            $info = Mage::helper('M2ePro')->jsonDecode($account->getChildObject()->getInfo());
-            $marketplaceId = Mage::getModel('M2ePro/Marketplace')->getIdByCode($info['Site']);
+            $ebaySite = $account->getChildObject()->getEbaySite();
+            $marketplaceId = Mage::getModel('M2ePro/Marketplace')->getIdByCode($ebaySite);
             $marketplaceSelectionDisabled = false;
         }
 

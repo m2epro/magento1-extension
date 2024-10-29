@@ -39,6 +39,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_Synchronization
     protected function getReviseQtyInstructionTypes()
     {
         return array(
+            ChangeProcessorAbstract::INSTRUCTION_TYPE_PRODUCT_DATA_POTENTIALLY_CHANGED,
             ChangeProcessorAbstract::INSTRUCTION_TYPE_PRODUCT_QTY_DATA_POTENTIALLY_CHANGED,
             Ess_M2ePro_Model_Ebay_Template_ChangeProcessor_Abstract::INSTRUCTION_TYPE_QTY_DATA_CHANGED,
             Ess_M2ePro_Model_Ebay_Template_Synchronization_ChangeProcessor::INSTRUCTION_TYPE_REVISE_QTY_ENABLED,

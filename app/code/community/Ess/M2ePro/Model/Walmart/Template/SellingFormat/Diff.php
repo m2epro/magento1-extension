@@ -89,8 +89,6 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat_Diff extends Ess_M2ePro_Mo
             'ships_in_original_packaging_custom_attribute',
             'shipping_override_rule_mode',
             'shipping_overrides',
-            'attributes_mode',
-            'attributes',
         );
 
         return $this->isSettingsDifferent($keys);

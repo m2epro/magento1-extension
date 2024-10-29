@@ -1,21 +1,13 @@
 <?php
-/*
- * @author     M2E Pro Developers Team
- * @copyright  M2E LTD
- * @license    Commercial use is forbidden
- */
 
-// @codingStandardsIgnoreFile
-
-/** @var $this Ess_M2ePro_Block_Adminhtml_Walmart_Listing_AutoAction_Mode_Category_Form */
+/** @var Ess_M2ePro_Block_Adminhtml_Walmart_Listing_AutoAction_Mode_Category_Form $this */
 
 $formData = array_merge($this->getDefault(), $this->getFormData());
 
-/** @var Ess_M2ePro_Model_Resource_Walmart_Template_Category_Collection $collection */
-$collection = Mage::getModel('M2ePro/Walmart_Template_Category')->getCollection();
-$collection->addFieldToFilter('marketplace_id', $this->getListing()->getMarketplaceId());
+/** @var Ess_M2ePro_Model_Walmart_ProductType_Repository $productTypeRepository */
+$productTypeRepository = Mage::getModel('M2ePro/Walmart_ProductType_Repository');
+$productTypes = $productTypeRepository->retrieveByMarketplaceId($this->getListing()->getMarketplaceId());
 
-$categoryTemplates = $collection->getData();
 ?>
 
 <script type="text/javascript">
@@ -25,10 +17,11 @@ $categoryTemplates = $collection->getData();
 
 <script type="text/javascript">
 
-    M2ePro.url.addNewCategoryTemplate = '<?php echo $this->getUrl('*/adminhtml_walmart_template_category/new', array(
-        'marketplace_id'        => $this->getListing()->getMarketplaceId()
+    M2ePro.url.addNewProductType = '<?php echo $this->getUrl('*/adminhtml_walmart_productType/edit', array(
+        'marketplace_id' => $this->getListing()->getMarketplaceId(),
+        'close_on_save' => 1,
     )); ?>';
-    M2ePro.url.getCategoryTemplates = '<?php echo $this->getUrl('*/adminhtml_walmart_listing/getCategoryTemplatesList', array(
+    M2ePro.url.getProductTypes = '<?php echo $this->getUrl('*/adminhtml_walmart_listing/getProductTypesList', array(
         'marketplace_id'            => $this->getListing()->getMarketplaceId()
     )); ?>';
 
@@ -43,7 +36,7 @@ $categoryTemplates = $collection->getData();
             ListingAutoActionObj.reset(false);
         });
 
-    $('adding_category_template_id').observe('change', function(el) {
+    $('adding_product_type_id').observe('change', function(el) {
         var options = $(el.target).select('.empty');
         options.length > 0 && options[0].hide();
     });
@@ -138,15 +131,15 @@ $categoryTemplates = $collection->getData();
                     </td>
                 </tr>
 
-                <tr id="auto_action_walmart_add_and_assign_category_template">
+                <tr id="auto_action_walmart_add_and_assign_product_type">
                     <td class="label" style="width: 200px;">
-                        <label for="adding_category_template_id"><?php echo Mage::helper('M2ePro')->__('Category Policy') ?>: <span class="required">*</span></label>
+                        <label for="adding_product_type_id"><?php echo Mage::helper('M2ePro')->__('Product Type') ?>: <span class="required">*</span></label>
                     </td>
                     <td class="value">
-                        <select name="adding_category_template_id" id="adding_category_template_id" style="width: 275px;" class="M2ePro-required-when-visible">
+                        <select name="adding_product_type_id" id="adding_product_type_id" style="width: 275px;" class="M2ePro-required-when-visible">
                             <option class="empty"></option>
-                            <?php foreach($categoryTemplates as $template) { ?>
-                                <option value="<?php echo $template['id']; ?>" <?php echo $template['id'] == $formData['adding_category_template_id'] ? 'selected="selected"' : '' ?> ><?php echo $this->escapeHtml($template['title']); ?></option>
+                            <?php foreach($productTypes as $productType) { ?>
+                                <option value="<?php echo $productType->getId(); ?>" <?php echo $productType->getId() == $formData['adding_product_type_id'] ? 'selected="selected"' : '' ?> ><?php echo $this->escapeHtml($productType->getTitle()); ?></option>
                             <?php } ?>
                         </select>
                     </td>
@@ -155,11 +148,11 @@ $categoryTemplates = $collection->getData();
                         <span class="tool-tip-message tip-left" style="left: 650px; display: none;">
                             <img src="<?php echo $this->getSkinUrl('M2ePro/images/help.png'); ?>">
                             <span><?php echo Mage::helper('M2ePro')->__(
-                                'Select Category Policy you want to assign to Product(s).<br><br>
-                                <strong>Note:</strong> Submitting of Category data is required when you create a new offer on Walmart. Category Policy must be assigned to Products before they are added to M2E Pro Listing.'
+                                'Select Product Type you want to assign to Product(s).<br><br>
+                                <strong>Note:</strong> Submitting of Product Type data is required when you create a new offer on Walmart. Product Type must be assigned to Products before they are added to M2E Pro Listing.'
                             ); ?></span>
                             </span>
-                        <a href="javascript: void(0);" style="vertical-align: inherit;" onclick="ListingAutoActionObj.addNewTemplate(M2ePro.url.addNewCategoryTemplate, ListingAutoActionObj.reloadCategoriesTemplates);"><?php echo Mage::helper('M2ePro')->__('Add New') ?></a>
+                        <a href="javascript: void(0);" style="vertical-align: inherit;" onclick="ListingAutoActionObj.addNewProductType(M2ePro.url.addNewProductType, ListingAutoActionObj.reloadProductTypes);"><?php echo Mage::helper('M2ePro')->__('Add New') ?></a>
                     </td>
                 </tr>
 

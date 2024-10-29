@@ -43,18 +43,14 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_walmart_dictionary_category')
   `marketplace_id` INT(11) UNSIGNED NOT NULL,
   `category_id` INT(11) UNSIGNED NOT NULL,
   `parent_category_id` INT(11) UNSIGNED DEFAULT NULL,
-  `browsenode_id` DECIMAL(20, 0) UNSIGNED NOT NULL,
-  `product_data_nicks` TEXT DEFAULT NULL,
   `title` VARCHAR(255) NOT NULL,
-  `path` TEXT DEFAULT NULL,
-  `keywords` TEXT DEFAULT NULL,
+  `product_type_nick` VARCHAR(255) DEFAULT NULL,
+  `product_type_title` VARCHAR(255) DEFAULT NULL,
   `is_leaf` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
-  INDEX `browsenode_id` (`browsenode_id`),
   INDEX `category_id` (`category_id`),
   INDEX `is_leaf` (`is_leaf`),
   INDEX `marketplace_id` (`marketplace_id`),
-  INDEX `path` (`path`(255)),
   INDEX `parent_category_id` (`parent_category_id`),
   INDEX `title` (`title`)
 )
@@ -68,7 +64,7 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_walmart_dictionary_marketplac
   `marketplace_id` INT(11) UNSIGNED NOT NULL,
   `client_details_last_update_date` DATETIME DEFAULT NULL,
   `server_details_last_update_date` DATETIME DEFAULT NULL,
-  `product_data` LONGTEXT DEFAULT NULL,
+  `product_types` LONGTEXT DEFAULT NULL,
   PRIMARY KEY (`id`),
   INDEX `marketplace_id` (`marketplace_id`)
 )
@@ -76,34 +72,18 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
-DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_walmart_dictionary_specific')}`;
-CREATE TABLE `{$this->_installer->getTable('m2epro_walmart_dictionary_specific')}` (
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_walmart_dictionary_product_type')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_walmart_dictionary_product_type')}` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `marketplace_id` INT(11) UNSIGNED NOT NULL,
-  `specific_id` INT(11) UNSIGNED NOT NULL,
-  `parent_specific_id` INT(11) UNSIGNED DEFAULT NULL,
-  `product_data_nick` VARCHAR(255) NOT NULL,
+  `nick` VARCHAR(255) NOT NULL,
   `title` VARCHAR(255) NOT NULL,
-  `xml_tag` VARCHAR(255) NOT NULL,
-  `xpath` VARCHAR(255) NOT NULL,
-  `type` TINYINT(2) UNSIGNED NOT NULL DEFAULT 1,
-  `values` TEXT DEFAULT NULL,
-  `recommended_values` TEXT DEFAULT NULL,
-  `params` TEXT DEFAULT NULL,
-  `data_definition` TEXT DEFAULT NULL,
-  `min_occurs` TINYINT(4) UNSIGNED NOT NULL DEFAULT 1,
-  `max_occurs` TINYINT(4) UNSIGNED NOT NULL DEFAULT 1,
+  `attributes` LONGTEXT NOT NULL,
+  `variation_attributes` LONGTEXT NOT NULL,
+  `invalid` SMALLINT(5) UNSIGNED NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
-  INDEX `marketplace_id` (`marketplace_id`),
-  INDEX `max_occurs` (`max_occurs`),
-  INDEX `min_occurs` (`min_occurs`),
-  INDEX `parent_specific_id` (`parent_specific_id`),
-  INDEX `title` (`title`),
-  INDEX `type` (`type`),
-  INDEX `specific_id` (`specific_id`),
-  INDEX `xml_tag` (`xml_tag`),
-  INDEX `xpath` (`xpath`),
-  INDEX `product_data_nick` (`product_data_nick`)
+  UNIQUE KEY `marketplace_id__nick` (`marketplace_id`, `nick`),
+  INDEX `marketplace_id` (`marketplace_id`)
 )
 ENGINE = INNODB
 CHARACTER SET utf8
@@ -136,14 +116,14 @@ COLLATE utf8_general_ci;
 DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_walmart_listing')}`;
 CREATE TABLE `{$this->_installer->getTable('m2epro_walmart_listing')}` (
   `listing_id` INT(11) UNSIGNED NOT NULL,
-  `auto_global_adding_category_template_id` int(11) UNSIGNED DEFAULT NULL,
-  `auto_website_adding_category_template_id` int(11) UNSIGNED DEFAULT NULL,
+  `auto_global_adding_product_type_id` int(11) UNSIGNED DEFAULT NULL,
+  `auto_website_adding_product_type_id` int(11) UNSIGNED DEFAULT NULL,
   `template_description_id` INT(11) UNSIGNED NOT NULL,
   `template_selling_format_id` INT(11) UNSIGNED NOT NULL,
   `template_synchronization_id` INT(11) UNSIGNED NOT NULL,
   PRIMARY KEY (`listing_id`),
-  INDEX `auto_global_adding_category_template_id` (`auto_global_adding_category_template_id`),
-  INDEX `auto_website_adding_category_template_id` (`auto_website_adding_category_template_id`),
+  INDEX `auto_global_adding_product_type_id` (`auto_global_adding_product_type_id`),
+  INDEX `auto_website_adding_product_type_id` (`auto_website_adding_product_type_id`),
   INDEX `template_selling_format_id` (`template_selling_format_id`),
   INDEX `template_description_id` (`template_description_id`),
   INDEX `template_synchronization_id` (`template_synchronization_id`)
@@ -155,9 +135,9 @@ COLLATE utf8_general_ci;
 DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_walmart_listing_auto_category_group')}`;
 CREATE TABLE `{$this->_installer->getTable('m2epro_walmart_listing_auto_category_group')}` (
     `listing_auto_category_group_id` int(11) UNSIGNED NOT NULL,
-    `adding_category_template_id` int(11) UNSIGNED DEFAULT NULL,
+    `adding_product_type_id` int(11) UNSIGNED DEFAULT NULL,
     PRIMARY KEY (`listing_auto_category_group_id`),
-    INDEX `adding_category_template_id` (`adding_category_template_id`)
+    INDEX `adding_product_type_id` (`adding_product_type_id`)
 )
 ENGINE = INNODB
 CHARACTER SET utf8
@@ -198,6 +178,7 @@ DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_walmart_listing_produ
 CREATE TABLE `{$this->_installer->getTable('m2epro_walmart_listing_product')}` (
   `listing_product_id` INT(11) UNSIGNED NOT NULL,
   `template_category_id` INT(11) UNSIGNED DEFAULT NULL,
+  `product_type_id` INT(11) UNSIGNED DEFAULT NULL,
   `is_variation_product` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `is_variation_product_matched` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `is_variation_channel_matched` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
@@ -468,8 +449,6 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_walmart_template_description'
   `key_features` TEXT NOT NULL,
   `other_features_mode` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `other_features` TEXT NOT NULL,
-  `attributes_mode` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
-  `attributes` TEXT NOT NULL,
   PRIMARY KEY (`template_description_id`)
 )
 ENGINE = INNODB
@@ -512,8 +491,6 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_walmart_template_selling_form
   `sale_time_end_date_mode` TINYINT(2) UNSIGNED NOT NULL,
   `sale_time_end_date_value` DATETIME NOT NULL,
   `sale_time_end_date_custom_attribute` VARCHAR(255) NOT NULL,
-  `attributes_mode` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
-  `attributes` TEXT NOT NULL,
   PRIMARY KEY (`template_selling_format_id`),
   INDEX `marketplace_id` (`marketplace_id`)
 )
@@ -594,6 +571,22 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_walmart_template_synchronizat
   `stop_advanced_rules_mode` TINYINT(2) UNSIGNED NOT NULL,
   `stop_advanced_rules_filters` TEXT DEFAULT NULL,
   PRIMARY KEY (`template_synchronization_id`)
+)
+ENGINE = INNODB
+CHARACTER SET utf8
+COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS `{$this->_installer->getTable('m2epro_walmart_product_type')}`;
+CREATE TABLE `{$this->_installer->getTable('m2epro_walmart_product_type')}` (
+    `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `title` VARCHAR(255) DEFAULT NULL,
+    `dictionary_product_type_id` INT(11) UNSIGNED NOT NULL,
+    `attributes_settings` LONGTEXT NOT NULL,
+    `update_date` DATETIME DEFAULT NULL,
+    `create_date` DATETIME DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `dictionary_product_type_id` (`dictionary_product_type_id`),
+    INDEX `title` (`title`)
 )
 ENGINE = INNODB
 CHARACTER SET utf8

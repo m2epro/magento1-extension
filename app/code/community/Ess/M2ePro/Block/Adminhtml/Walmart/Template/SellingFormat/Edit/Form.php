@@ -83,13 +83,6 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_SellingFormat_Edit_Form extend
                 )
             );
         $this->setChild('remove_discount_rule_button', $buttonBlock);
-        // ---------------------------------------
-
-        // ---------------------------------------
-        for ($i = 0; $i < 10; $i++) {
-            $button = $this->getMultiElementButton('attributes', $i);
-            $this->setChild("select_attributes_for_attributes_{$i}_button", $button);
-        }
 
         // ---------------------------------------
 
@@ -144,20 +137,6 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_SellingFormat_Edit_Form extend
         // ---------------------------------------
 
         return parent::_beforeToHtml();
-    }
-
-    protected function getMultiElementButton($type, $index)
-    {
-        $onClick = <<<JS
-        AttributeObj.appendToText('select_attributes_for_{$type}_{$index}', '{$type}_value_{$index}');
-        WalmartTemplateSellingFormatObj.multi_element_keyup('{$type}', $('{$type}_value_{$index}'));
-JS;
-        $data = array(
-            'label'   => Mage::helper('M2ePro')->__('Insert'),
-            'onclick' => $onClick,
-            'class'   => "select_attributes_for_{$type}_{$index}_button"
-        );
-        return $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
     }
 
     //########################################

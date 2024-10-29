@@ -162,8 +162,7 @@ class Ess_M2ePro_Observer_Order_Quote extends Ess_M2ePro_Observer_Abstract
             $changeProcessor->setListingProduct($listingProduct);
             $changeProcessor->setDefaultInstructionTypes(
                 array(
-                ChangeProcessorAbstract::INSTRUCTION_TYPE_PRODUCT_STATUS_DATA_POTENTIALLY_CHANGED,
-                ChangeProcessorAbstract::INSTRUCTION_TYPE_PRODUCT_QTY_DATA_POTENTIALLY_CHANGED,
+                    ChangeProcessorAbstract::INSTRUCTION_TYPE_PRODUCT_DATA_POTENTIALLY_CHANGED,
                 )
             );
             $changeProcessor->process();

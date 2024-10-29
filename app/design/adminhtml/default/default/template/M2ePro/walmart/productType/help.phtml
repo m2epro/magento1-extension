@@ -1,0 +1,18 @@
+<?php
+
+/** @var Ess_M2ePro_Block_Adminhtml_Walmart_ProductType_Help $this */
+
+?>
+
+<div id="block_notice_walmart_product_types" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Product Types'); ?>">
+    <?= Mage::helper('M2ePro')->__('
+       
+        The page displays Walmart Product Types that are currently used in your M2E Pro Listings.<br/><br/>
+        
+        Here you can add a new Product Type, edit or delete existing ones. Learn how to manage Walmart Product Types in <a target="_blank" href="%url1%">this article</a>.<br/><br/>
+        
+        To ensure that you have the most up-to-date Product Type information in your M2E Pro, simply click the <strong>Refresh Walmart Data</strong> button. This will synchronize any changes made to Product Types on Walmart. Whether certain specifics have been added or removed, you will see the updated information after the data is refreshed.   
+    ', Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'walmart-product-type')
+    );
+ ?>
+</div>

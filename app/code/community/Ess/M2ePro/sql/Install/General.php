@@ -855,10 +855,11 @@ INSERT INTO `{$this->_installer->getTable('m2epro_config')}` (`group`,`key`,`val
   ('/logs/notification/order/', 'order_changed_vat_last_date',  DATE_FORMAT(NOW(),'%Y-%m-%d'), NOW(), NOW());
 
 INSERT INTO `{$this->_installer->getTable('m2epro_wizard')}` VALUES
-  (1,  'installationEbay',      'ebay',    0, NULL, 1, 1),
-  (2,  'installationAmazon',    'amazon',  0, NULL, 1, 2),
-  (10, 'installationWalmart',   'walmart', 0, NULL, 1, 10),
-  (11, 'migrationToInnodb',     '*',       3, NULL, 1, 11);
+  (1,  'installationEbay',               'ebay',    0, NULL, 1, 1),
+  (2,  'installationAmazon',             'amazon',  0, NULL, 1, 2),
+  (10, 'installationWalmart',            'walmart', 0, NULL, 1, 10),
+  (11, 'migrationToInnodb',              '*',       3, NULL, 1, 11),
+  (12, 'walmartMigrationToProductTypes', 'walmart', 3, NULL, 1, 12);
 
 SQL
         );

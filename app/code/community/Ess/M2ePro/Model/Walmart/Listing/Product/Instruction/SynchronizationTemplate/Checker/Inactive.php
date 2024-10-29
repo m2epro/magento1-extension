@@ -7,7 +7,7 @@
  */
 
 use Ess_M2ePro_Model_Walmart_Template_Synchronization_ChangeProcessor as SynchronizationChangeProcessor;
-use Ess_M2ePro_Model_Magento_Product_ChangeProcessor_Abstract as ProductChangeProcessor;
+use Ess_M2ePro_Model_Magento_Product_ChangeProcessor_Abstract as ChangeProcessorAbstract;
 
 class Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_SynchronizationTemplate_Checker_Inactive
     extends Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_SynchronizationTemplate_Checker_Abstract
@@ -17,12 +17,13 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_SynchronizationTempla
     protected function getRelistInstructionTypes()
     {
         return array(
+            ChangeProcessorAbstract::INSTRUCTION_TYPE_PRODUCT_DATA_POTENTIALLY_CHANGED,
             SynchronizationChangeProcessor::INSTRUCTION_TYPE_RELIST_MODE_ENABLED,
             SynchronizationChangeProcessor::INSTRUCTION_TYPE_RELIST_MODE_DISABLED,
             SynchronizationChangeProcessor::INSTRUCTION_TYPE_RELIST_SETTINGS_CHANGED,
 
-            ProductChangeProcessor::INSTRUCTION_TYPE_PRODUCT_QTY_DATA_POTENTIALLY_CHANGED,
-            ProductChangeProcessor::INSTRUCTION_TYPE_PRODUCT_STATUS_DATA_POTENTIALLY_CHANGED,
+            ChangeProcessorAbstract::INSTRUCTION_TYPE_PRODUCT_QTY_DATA_POTENTIALLY_CHANGED,
+            ChangeProcessorAbstract::INSTRUCTION_TYPE_PRODUCT_STATUS_DATA_POTENTIALLY_CHANGED,
 
             Ess_M2ePro_Model_Walmart_Magento_Product_ChangeProcessor::INSTRUCTION_TYPE_PROMOTIONS_DATA_CHANGED,
 
@@ -184,7 +185,12 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_SynchronizationTempla
             return false;
         }
 
-        if (!$walmartListingProduct->isExistCategoryTemplate()) {
+        if (
+            $walmartListingProduct
+                ->getWalmartMarketplace()
+                ->isSupportedProductType()
+            && !$walmartListingProduct->isExistsProductType()
+        ) {
             return false;
         }
 

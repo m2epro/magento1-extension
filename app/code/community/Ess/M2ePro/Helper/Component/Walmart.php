@@ -11,6 +11,8 @@ class Ess_M2ePro_Helper_Component_Walmart extends Mage_Core_Helper_Abstract
     const NICK  = 'walmart';
 
     const MARKETPLACE_SYNCHRONIZATION_LOCK_ITEM_NICK = 'walmart_marketplace_synchronization';
+    const MARKETPLACE_WITH_PRODUCT_TYPE_SYNCHRONIZATION_LOCK_ITEM_NICK
+        = 'walmart_marketplace_with_product_type_synchronization';
 
     const MARKETPLACE_US = 37;
     const MARKETPLACE_CA = 38;

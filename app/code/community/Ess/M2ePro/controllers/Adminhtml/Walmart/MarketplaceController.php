@@ -1,16 +1,8 @@
 <?php
 
-/*
- * @author     M2E Pro Developers Team
- * @copyright  M2E LTD
- * @license    Commercial use is forbidden
- */
-
 class Ess_M2ePro_Adminhtml_Walmart_MarketplaceController
     extends Ess_M2ePro_Controller_Adminhtml_Walmart_MainController
 {
-    //########################################
-
     protected function _initAction()
     {
         $this->loadLayout()
@@ -23,7 +15,10 @@ class Ess_M2ePro_Adminhtml_Walmart_MarketplaceController
              ->addJs('M2ePro/Plugin/AreaWrapper.js')
              ->addCss('M2ePro/css/Plugin/AreaWrapper.css')
              ->addJs('M2ePro/SynchProgress.js')
-             ->addJs('M2ePro/Marketplace.js');
+             ->addJs('M2ePro/Marketplace.js')
+             ->addJs('M2ePro/Walmart/Marketplace.js')
+             ->addJs('M2ePro/Walmart/Marketplace/WithProductType/SyncProgress.js')
+             ->addJs('M2ePro/Walmart/Marketplace/WithProductType/Sync.js');
 
         $this->setPageHelpLink(null, null, "walmart-integration");
 
@@ -36,8 +31,6 @@ class Ess_M2ePro_Adminhtml_Walmart_MarketplaceController
             Ess_M2ePro_Helper_View_Walmart::MENU_ROOT_NODE_NICK . '/configuration'
         );
     }
-
-    //########################################
 
     public function indexAction()
     {
@@ -69,8 +62,6 @@ class Ess_M2ePro_Adminhtml_Walmart_MarketplaceController
         }
     }
 
-    //########################################
-
     public function runSynchNowAction()
     {
         // @codingStandardsIgnoreLine
@@ -82,6 +73,7 @@ class Ess_M2ePro_Adminhtml_Walmart_MarketplaceController
             (int)$this->getRequest()->getParam('marketplace_id')
         );
 
+        /** @var Ess_M2ePro_Model_Walmart_Marketplace_Synchronization $synchronization */
         $synchronization = Mage::getModel('M2ePro/Walmart_Marketplace_Synchronization');
         $synchronization->setMarketplace($marketplace);
 
@@ -116,6 +108,7 @@ class Ess_M2ePro_Adminhtml_Walmart_MarketplaceController
 
     public function synchGetExecutingInfoAction()
     {
+        /** @var Ess_M2ePro_Model_Walmart_Marketplace_Synchronization $synchronization */
         $synchronization = Mage::getModel('M2ePro/Walmart_Marketplace_Synchronization');
         if (!$synchronization->isLocked()) {
             return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('mode' => 'inactive')));
@@ -133,6 +126,4 @@ class Ess_M2ePro_Adminhtml_Walmart_MarketplaceController
 
         return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode($response));
     }
-
-    //########################################
 }

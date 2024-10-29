@@ -104,12 +104,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Auto_Actions_Listing extends Ess_M2ePro_M
 
         /** @var Ess_M2ePro_Model_Walmart_Listing_Auto_Category_Group $walmartCategoryGroup */
         $walmartCategoryGroup = $categoryGroup->getChildObject();
-
-        $params = array(
-            'template_category_id' => $walmartCategoryGroup->getAddingCategoryTemplateId(),
-        );
-
-        $this->processAddedListingProduct($listingProduct, $params);
+        $this->processAddedListingProduct($listingProduct, $walmartCategoryGroup->getAddingProductTypeId());
     }
 
     /**
@@ -136,11 +131,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Auto_Actions_Listing extends Ess_M2ePro_M
         /** @var Ess_M2ePro_Model_Walmart_Listing $walmartListing */
         $walmartListing = $listing->getChildObject();
 
-        $params = array(
-            'template_category_id' => $walmartListing->getAutoGlobalAddingCategoryTemplateId(),
-        );
-
-        $this->processAddedListingProduct($listingProduct, $params);
+        $this->processAddedListingProduct($listingProduct,  $walmartListing->getAutoGlobalAddingProductTypeId());
     }
 
     /**
@@ -165,31 +156,27 @@ class Ess_M2ePro_Model_Walmart_Listing_Auto_Actions_Listing extends Ess_M2ePro_M
         /** @var Ess_M2ePro_Model_Walmart_Listing $walmartListing */
         $walmartListing = $listing->getChildObject();
 
-        $params = array(
-            'template_category_id' => $walmartListing->getAutoWebsiteAddingCategoryTemplateId(),
-        );
-
-        $this->processAddedListingProduct($listingProduct, $params);
+        $this->processAddedListingProduct($listingProduct, $walmartListing->getAutoWebsiteAddingProductTypeId());
     }
 
-    //########################################
-
-    protected function processAddedListingProduct(Ess_M2ePro_Model_Listing_Product $listingProduct, array $params)
+    private function processAddedListingProduct(Ess_M2ePro_Model_Listing_Product $listingProduct, $productTypeId)
     {
-        if (empty($params['template_category_id'])) {
+        /** @var Ess_M2ePro_Model_Walmart_ProductType_Repository $productTypeRepository */
+        $productTypeRepository = Mage::getModel('M2ePro/Walmart_ProductType_Repository');
+        if (!$productTypeRepository->isExists($productTypeId)) {
             return;
         }
 
-        /** @var Ess_M2ePro_Model_Walmart_Listing_Product $walmartListingProduct */
-        $walmartListingProduct = $listingProduct->getChildObject();
-
-        $listingProduct->setData('template_category_id', $params['template_category_id']);
+        $listingProduct->setData(
+            Ess_M2ePro_Model_Resource_Walmart_Listing_Product::COLUMN_PRODUCT_TYPE_ID,
+            $productTypeId
+        );
         $listingProduct->save();
 
+        /** @var Ess_M2ePro_Model_Walmart_Listing_Product $walmartListingProduct */
+        $walmartListingProduct = $listingProduct->getChildObject();
         if ($walmartListingProduct->getVariationManager()->isRelationParentType()) {
             $walmartListingProduct->addVariationAttributes();
         }
     }
-
-    //########################################
 }

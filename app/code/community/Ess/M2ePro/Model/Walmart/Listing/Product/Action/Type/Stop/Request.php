@@ -33,7 +33,11 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Stop_Request
      */
     public function getLagTimeData()
     {
-        if ($this->getMarketplace()->getCode() !== 'CA') {
+        if (
+            $this->getMarketplace()
+                 ->getChildObject()
+                 ->isCanada()
+        ) {
             return array();
         }
 

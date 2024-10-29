@@ -1,0 +1,25 @@
+<?php
+
+/** @var Ess_M2ePro_Block_Adminhtml_Walmart_Listing_ProductType_Main $this */
+
+?>
+
+<div id="productType_pop_up_content">
+    <div style="padding: 5px 0;">
+
+        <div id="block_notice_walmart_new_product_type_popup_help" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Assign Product Type'); ?>">
+            <?php echo Mage::helper('M2ePro')->__(
+                'From the list below, select the relevant Product Type for your Products.<br>
+                Press Add New Product Type, to create a new Product Type.<br><br>
+
+                The detailed information can be found <a href="%url%" target="_blank">here</a>.',
+
+                Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'walmart-integration')
+            ); ?>
+        </div>
+
+        <div id="product_type_grid" style="margin: 10px auto; height: 375px !important; overflow-y: auto; overflow-x: hidden;">
+        </div>
+
+    </div>
+</div>

@@ -25,7 +25,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Stop_Validator
             return false;
         }
 
-        if (!$this->validateCategory()) {
+        if (!$this->validateWalmartProductType()) {
             return false;
         }
 

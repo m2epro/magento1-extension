@@ -569,7 +569,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager_Type_Relation_P
             'is_variation_product' => 1,
             'is_variation_parent'  => 0,
             'variation_parent_id'  => $this->getListingProduct()->getId(),
-            'template_category_id' => $this->getWalmartListingProduct()->getTemplateCategoryId(),
+            'product_type_id' => $this->getWalmartListingProduct()->getProductTypeId(),
         );
 
         /** @var Ess_M2ePro_Model_Listing_Product $childListingProduct */

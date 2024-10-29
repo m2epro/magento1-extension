@@ -198,35 +198,6 @@ class Ess_M2ePro_Helper_Component_Walmart_Variation extends Mage_Core_Helper_Abs
         return $productsIds;
     }
 
-    public function filterParentProductsByVariationTheme($productsIds)
-    {
-        $detailsModel = Mage::getModel('M2ePro/Walmart_Marketplace_Details');
-
-        foreach ($productsIds as $key => $productId) {
-            /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
-            $listingProduct = Mage::helper('M2ePro/Component_Walmart')->getObject('Listing_Product', $productId);
-
-            /** @var Ess_M2ePro_Model_Walmart_Listing_Product $walmartListingProduct */
-            $walmartListingProduct = $listingProduct->getChildObject();
-
-            if (!$walmartListingProduct->getVariationManager()->isRelationParentType()) {
-                continue;
-            }
-
-            $detailsModel->setMarketplaceId($listingProduct->getListing()->getMarketplaceId());
-
-            $themes = $detailsModel->getVariationAttributes(
-                $walmartListingProduct->getWalmartDescriptionTemplate()->getProductDataNick()
-            );
-
-            if (empty($themes)) {
-                unset($productsIds[$key]);
-            }
-        }
-
-        return $productsIds;
-    }
-
     //########################################
 
     public function increaseThemeUsageCount($theme, $marketplaceId)

@@ -1179,4 +1179,31 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
 
         return parent::delete();
     }
+
+    // ----------------------------------------
+
+    public function getEbaySite()
+    {
+        $site = (string)$this->getData('ebay_site');
+        if (!empty($site)) {
+            return $site;
+        }
+
+        $info = $this->getInfo();
+        if (empty($info)) {
+            return '';
+        }
+
+        $infoData = json_decode($info, true);
+        if (!is_array($infoData) || !isset($infoData['Site'])) {
+            return '';
+        }
+
+        return $infoData['Site'];
+    }
+
+    public function getInfo()
+    {
+        return $this->getData('info');
+    }
 }

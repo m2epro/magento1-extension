@@ -6,7 +6,7 @@
  * @license    Commercial use is forbidden
  */
 
-use Ess_M2ePro_Model_Magento_Product_ChangeProcessor_Abstract as ProductChangeProcessor;
+use Ess_M2ePro_Model_Magento_Product_ChangeProcessor_Abstract as ChangeProcessorAbstract;
 
 class Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_SynchronizationTemplate_Checker_Active
     extends Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_SynchronizationTemplate_Checker_Abstract
@@ -16,11 +16,12 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_SynchronizationTempla
     protected function getStopInstructionTypes()
     {
         return array(
+            ChangeProcessorAbstract::INSTRUCTION_TYPE_PRODUCT_DATA_POTENTIALLY_CHANGED,
             Ess_M2ePro_Model_Walmart_Template_Synchronization_ChangeProcessor::INSTRUCTION_TYPE_STOP_MODE_ENABLED,
             Ess_M2ePro_Model_Walmart_Template_Synchronization_ChangeProcessor::INSTRUCTION_TYPE_STOP_MODE_DISABLED,
             Ess_M2ePro_Model_Walmart_Template_Synchronization_ChangeProcessor::INSTRUCTION_TYPE_STOP_SETTINGS_CHANGED,
-            ProductChangeProcessor::INSTRUCTION_TYPE_PRODUCT_QTY_DATA_POTENTIALLY_CHANGED,
-            ProductChangeProcessor::INSTRUCTION_TYPE_PRODUCT_STATUS_DATA_POTENTIALLY_CHANGED,
+            ChangeProcessorAbstract::INSTRUCTION_TYPE_PRODUCT_QTY_DATA_POTENTIALLY_CHANGED,
+            ChangeProcessorAbstract::INSTRUCTION_TYPE_PRODUCT_STATUS_DATA_POTENTIALLY_CHANGED,
             Ess_M2ePro_Model_Listing::INSTRUCTION_TYPE_PRODUCT_MOVED_FROM_OTHER,
             Ess_M2ePro_Model_Listing::INSTRUCTION_TYPE_PRODUCT_MOVED_FROM_LISTING,
             Ess_M2ePro_Model_Listing::INSTRUCTION_TYPE_PRODUCT_REMAP_FROM_LISTING,
@@ -30,7 +31,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_SynchronizationTempla
             Ess_M2ePro_PublicServices_Product_SqlChange::INSTRUCTION_TYPE_PRODUCT_CHANGED,
             Ess_M2ePro_PublicServices_Product_SqlChange::INSTRUCTION_TYPE_STATUS_CHANGED,
             Ess_M2ePro_PublicServices_Product_SqlChange::INSTRUCTION_TYPE_QTY_CHANGED,
-            ProductChangeProcessor::INSTRUCTION_TYPE_MAGMI_PLUGIN_PRODUCT_CHANGED,
+            ChangeProcessorAbstract::INSTRUCTION_TYPE_MAGMI_PLUGIN_PRODUCT_CHANGED,
             Ess_M2ePro_Model_Cron_Task_Listing_Product_InspectDirectChanges::INSTRUCTION_TYPE,
         );
     }
@@ -57,7 +58,12 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_SynchronizationTempla
 
         /** @var Ess_M2ePro_Model_Walmart_Listing_Product $walmartListingProduct */
         $walmartListingProduct = $listingProduct->getChildObject();
-        if (!$walmartListingProduct->isExistCategoryTemplate()) {
+        if (
+            $walmartListingProduct
+                ->getWalmartMarketplace()
+                ->isSupportedProductType()
+            && !$walmartListingProduct->isExistsProductType()
+        ) {
             return false;
         }
 
@@ -258,7 +264,12 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_SynchronizationTempla
             return false;
         }
 
-        if (!$walmartListingProduct->isExistCategoryTemplate()) {
+        if (
+            $walmartListingProduct
+                ->getWalmartMarketplace()
+                ->isSupportedProductType()
+            && !$walmartListingProduct->isExistsProductType()
+        ) {
             return false;
         }
 

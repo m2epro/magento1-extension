@@ -9,9 +9,13 @@
 abstract class Ess_M2ePro_Model_Magento_Product_ChangeProcessor_Abstract
 {
     const INSTRUCTION_INITIATOR = 'magento_product_change_processor';
+    const INSTRUCTION_TYPE_PRODUCT_DATA_POTENTIALLY_CHANGED = 'magento_product_data_potentially_changed';
 
-    const INSTRUCTION_TYPE_PRODUCT_QTY_DATA_POTENTIALLY_CHANGED    = 'magento_product_qty_data_potentially_changed';
-    const INSTRUCTION_TYPE_PRODUCT_PRICE_DATA_POTENTIALLY_CHANGED  = 'magento_product_price_data_potentially_changed';
+    /** @deprecated */
+    const INSTRUCTION_TYPE_PRODUCT_QTY_DATA_POTENTIALLY_CHANGED = 'magento_product_qty_data_potentially_changed';
+    /** @deprecated */
+    const INSTRUCTION_TYPE_PRODUCT_PRICE_DATA_POTENTIALLY_CHANGED = 'magento_product_price_data_potentially_changed';
+    /** @deprecated */
     const INSTRUCTION_TYPE_PRODUCT_STATUS_DATA_POTENTIALLY_CHANGED = 'magento_product_status_data_potentially_changed';
 
     const INSTRUCTION_TYPE_MAGMI_PLUGIN_PRODUCT_CHANGED = 'magmi_plugin_product_changed';

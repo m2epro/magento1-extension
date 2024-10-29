@@ -16,6 +16,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Instruction_Repricing_Handler
     protected function getAffectedInstructionTypes()
     {
         return array(
+            ChangeProcessorAbstract::INSTRUCTION_TYPE_PRODUCT_DATA_POTENTIALLY_CHANGED,
             ChangeProcessorAbstract::INSTRUCTION_TYPE_PRODUCT_PRICE_DATA_POTENTIALLY_CHANGED,
             ChangeProcessorAbstract::INSTRUCTION_TYPE_PRODUCT_STATUS_DATA_POTENTIALLY_CHANGED,
             Ess_M2ePro_Model_Amazon_Magento_Product_ChangeProcessor::INSTRUCTION_TYPE_REPRICING_DATA_CHANGED,

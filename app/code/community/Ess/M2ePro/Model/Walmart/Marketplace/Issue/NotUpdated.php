@@ -65,7 +65,7 @@ class Ess_M2ePro_Model_Walmart_Marketplace_Issue_NotUpdated extends Ess_M2ePro_M
         $textToTranslate = <<<TEXT
 %marketplace_title% data was changed on Walmart. You need to resynchronize the marketplace(s) to correctly
 associate your products with Walmart catalog.<br>
-Please go to %menu_path% > <a href="%url%" target="_blank">Marketplaces</a> and press <b>Update All Now</b>.
+Please go to %menu_path% > <a href="%url%" target="_blank">Marketplaces</a> and press <b>Update Now</b>.
 TEXT;
 
         $tempMessage = Mage::helper('M2ePro')->__(

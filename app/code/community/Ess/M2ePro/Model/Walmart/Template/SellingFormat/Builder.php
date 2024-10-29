@@ -47,33 +47,7 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat_Builder extends Ess_M2ePro
                 ->format('Y-m-d 00:00:00');
         }
 
-        $data['attributes'] = Mage::helper('M2ePro')->jsonEncode(
-            $this->getComparedData($data, 'attributes_name', 'attributes_value')
-        );
-
         return $data;
-    }
-
-    protected function getComparedData($data, $keyName, $valueName)
-    {
-        $result = array();
-
-        if (!isset($data[$keyName]) || !isset($data[$valueName])) {
-            return $result;
-        }
-
-        $keyData = array_filter($data[$keyName]);
-        $valueData = array_filter($data[$valueName]);
-
-        if (count($keyData) !== count($valueData)) {
-            return $result;
-        }
-
-        foreach ($keyData as $index => $value) {
-            $result[] = array('name' => $value, 'value' => $valueData[$index]);
-        }
-
-        return $result;
     }
 
     public function getDefaultData()
@@ -125,11 +99,6 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat_Builder extends Ess_M2ePro
             'ships_in_original_packaging_mode' => WalmartTemplateSellingFormat::SHIPS_IN_ORIGINAL_PACKAGING_MODE_NONE,
             'ships_in_original_packaging_value' => '',
             'ships_in_original_packaging_custom_attribute' => '',
-
-            'attributes_mode' => WalmartTemplateSellingFormat::ATTRIBUTES_MODE_NONE,
-            'attributes' => '',
-            'attributes_name' => json_encode(array()),
-            'attributes_value' => json_encode(array()),
 
             'shipping_override_rule_mode' => WalmartTemplateSellingFormat::SHIPPING_OVERRIDE_RULE_MODE_NO,
             'shipping_override_rule' => array()

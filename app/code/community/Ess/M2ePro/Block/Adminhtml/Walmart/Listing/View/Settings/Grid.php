@@ -1,24 +1,21 @@
 <?php
 
-/*
- * @author     M2E Pro Developers Team
- * @copyright  M2E LTD
- * @license    Commercial use is forbidden
- */
-
 class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View_Settings_Grid
     extends Ess_M2ePro_Block_Adminhtml_Magento_Product_Grid_Abstract
 {
     /** @var Ess_M2ePro_Model_Listing */
     protected $_listing;
-
-    //########################################
+    /** @var bool */
+    private $isMarketplaceSupportedProductType;
 
     public function __construct()
     {
         parent::__construct();
 
         $this->_listing = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
+        $this->isMarketplaceSupportedProductType = $this->_listing->getMarketplace()
+                                                                  ->getChildObject()
+                                                                  ->isSupportedProductType();
 
         $this->setId('walmartListingViewGrid' . $this->_listing->getId());
 
@@ -74,7 +71,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View_Settings_Grid
             array('wlp' => 'M2ePro/Walmart_Listing_Product'),
             'listing_product_id=id',
             array(
-                'template_category_id'     => 'template_category_id',
+                'product_type_id'          => 'product_type_id',
                 'variation_child_statuses' => 'variation_child_statuses',
                 'walmart_sku'              => 'sku',
                 'gtin'                     => 'gtin',
@@ -94,10 +91,10 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View_Settings_Grid
         );
 
         $collection->joinTable(
-            array('wtc' => 'M2ePro/Walmart_Template_Category'),
-            'id=template_category_id',
+            array('wpt' => 'M2ePro/Walmart_ProductType'),
+            'id=product_type_id',
             array(
-                'template_category_title' => 'title',
+                'product_type_title' => 'title',
             ),
             null,
             'left'
@@ -171,36 +168,38 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View_Settings_Grid
             )
         );
 
-        $this->addColumn(
-            'category_template',
-            array(
-                'header'         => Mage::helper('M2ePro')->__('Category Policy'),
-                'align'          => 'left',
-                'width'          => '250px',
-                'type'           => 'text',
-                'index'          => 'template_category_title',
-                'filter_index'   => 'template_category_title',
-                'frame_callback' => array($this, 'callbackColumnTemplateCategory')
-            )
-        );
+        if ($this->isMarketplaceSupportedProductType) {
+            $this->addColumn(
+                'product_type',
+                array(
+                    'header'         => Mage::helper('M2ePro')->__('Product Type'),
+                    'align'          => 'left',
+                    'width'          => '250px',
+                    'type'           => 'text',
+                    'index'          => 'product_type_title',
+                    'filter_index'   => 'product_type_title',
+                    'frame_callback' => array($this, 'callbackColumnProductType')
+                )
+            );
 
-        $this->addColumn(
-            'actions',
-            array(
-                'header'   => Mage::helper('M2ePro')->__('Actions'),
-                'align'    => 'left',
-                'width'    => '100px',
-                'type'     => 'action',
-                'index'    => 'actions',
-                'filter'   => false,
-                'sortable' => false,
-                'renderer' => 'M2ePro/adminhtml_grid_column_renderer_action',
-                'field'    => 'id',
-                'no_link'  => true,
-                'group_order' => $this->getGroupOrder(),
-                'actions'  => $this->getColumnActionsItems()
-            )
-        );
+            $this->addColumn(
+                'actions',
+                array(
+                    'header'   => Mage::helper('M2ePro')->__('Actions'),
+                    'align'    => 'left',
+                    'width'    => '100px',
+                    'type'     => 'action',
+                    'index'    => 'actions',
+                    'filter'   => false,
+                    'sortable' => false,
+                    'renderer' => 'M2ePro/adminhtml_grid_column_renderer_action',
+                    'field'    => 'id',
+                    'no_link'  => true,
+                    'group_order' => $this->getGroupOrder(),
+                    'actions'  => $this->getColumnActionsItems()
+                )
+            );
+        }
 
         return parent::_prepareColumns();
     }
@@ -210,7 +209,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View_Settings_Grid
     protected function getGroupOrder()
     {
         return array(
-            'edit_template_category' => Mage::helper('M2ePro')->__('Category Policy'),
+            'edit_product_type' => Mage::helper('M2ePro')->__('Product Type'),
             'other' => Mage::helper('M2ePro')->__('Other')
         );
     }
@@ -220,11 +219,11 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View_Settings_Grid
         $helper = Mage::helper('M2ePro');
 
         $actions = array(
-            'assignTemplateDescription' => array(
-                'caption'        => $helper->__('Use Another Category Policy'),
-                'group'          => 'edit_template_category',
+            'assignProductType' => array(
+                'caption'        => $helper->__('Assign Product Type'),
+                'group'          => 'edit_product_type',
                 'field'          => 'id',
-                'onclick_action' => 'ListingGridObj.actions[\'changeTemplateCategoryIdAction\']'
+                'onclick_action' => 'ListingGridObj.actions[\'changeProductTypeIdAction\']'
             )
         );
 
@@ -247,21 +246,23 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View_Settings_Grid
         $this->setMassactionIdFieldOnlyIndexValue(true);
 
         $groups = array(
-            'category_policy' => Mage::helper('M2ePro')->__('Category Policy'),
-            'other'           => Mage::helper('M2ePro')->__('Other'),
+            'product_type' => Mage::helper('M2ePro')->__('Product Type'),
+            'other' => Mage::helper('M2ePro')->__('Other'),
         );
 
         $this->getMassactionBlock()->setGroups($groups);
 
-        $this->getMassactionBlock()->addItem(
-            'changeTemplateCategoryId',
-            array(
-                'label'   => Mage::helper('M2ePro')->__('Use Another'),
-                'url'     => '',
-                'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
-            ),
-            'category_policy'
-        );
+        if ($this->isMarketplaceSupportedProductType) {
+            $this->getMassactionBlock()->addItem(
+                'changeProductTypeId',
+                array(
+                    'label'   => Mage::helper('M2ePro')->__('Assign Product Type'),
+                    'url'     => '',
+                    'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
+                ),
+                'product_type'
+            );
+        }
 
         $this->getMassactionBlock()->addItem(
             'moving',
@@ -369,22 +370,22 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View_Settings_Grid
 
     // ---------------------------------------
 
-    public function callbackColumnTemplateCategory($value, $row, $column, $isExport)
+    public function callbackColumnProductType($value, $row, $column, $isExport)
     {
         $html = Mage::helper('M2ePro')->__('N/A');
 
-        if ($row->getData('template_category_id')) {
+        if ($row->getData('product_type_id')) {
             $url = $this->getUrl(
-                '*/adminhtml_walmart_template_category/edit',
+                '*/adminhtml_walmart_productType/edit',
                 array(
-                    'id' => $row->getData('template_category_id')
+                    'id' => $row->getData('product_type_id')
                 )
             );
 
-            $templateTitle = Mage::helper('M2ePro')->escapeHtml($row->getData('template_category_title'));
+            $productTypeTitle = Mage::helper('M2ePro')->escapeHtml($row->getData('product_type_title'));
 
             return <<<HTML
-<a target="_blank" href="{$url}">{$templateTitle}</a>
+<a target="_blank" href="{$url}">{$productTypeTitle}</a>
 HTML;
         }
 

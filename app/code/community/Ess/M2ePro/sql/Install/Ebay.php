@@ -29,6 +29,7 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_ebay_account')}` (
   `feedbacks_auto_response` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `feedbacks_auto_response_only_positive` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `feedbacks_last_used_id` INT(11) UNSIGNED NOT NULL DEFAULT 0,
+  `ebay_site` VARCHAR(20) NOT NULL,
   `ebay_store_title` VARCHAR(255) NOT NULL,
   `ebay_store_url` TEXT NOT NULL,
   `ebay_store_subscription_level` VARCHAR(255) NOT NULL,

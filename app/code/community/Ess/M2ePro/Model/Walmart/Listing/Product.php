@@ -361,34 +361,37 @@ class Ess_M2ePro_Model_Walmart_Listing_Product extends Ess_M2ePro_Model_Componen
     //########################################
 
     /**
-     * @return int
-     */
-    public function getTemplateCategoryId()
-    {
-        return (int)($this->getData('template_category_id'));
-    }
-
-    /**
      * @return bool
      */
-    public function isExistCategoryTemplate()
+    public function isExistsProductType()
     {
-        return $this->getTemplateCategoryId() > 0;
+        return $this->getData(Ess_M2ePro_Model_Resource_Walmart_Listing_Product::COLUMN_PRODUCT_TYPE_ID) !== null;
     }
 
     /**
-     * @return Ess_M2ePro_Model_Walmart_Template_Category | null
+     * @return int
      */
-    public function getCategoryTemplate()
+    public function getProductTypeId()
     {
-        if (!$this->isExistCategoryTemplate()) {
-            return null;
-        }
+        return (int)$this->getData(Ess_M2ePro_Model_Resource_Walmart_Listing_Product::COLUMN_PRODUCT_TYPE_ID);
+    }
 
-        return Mage::helper('M2ePro')->getCachedObject(
-            'Walmart_Template_Category', $this->getTemplateCategoryId(), null, array('template')
+    /**
+     * @return Ess_M2ePro_Model_Walmart_ProductType
+     */
+    public function getProductType()
+    {
+        if (!$this->isExistsProductType()) {
+            throw new \LogicException('Product type not found');
+        }
+        /** @var Ess_M2ePro_Model_Walmart_ProductType_Repository $productTypeRepository */
+        $productTypeRepository = Mage::getModel('M2ePro/Walmart_ProductType_Repository');
+
+        return $productTypeRepository->get(
+            $this->getProductTypeId()
         );
     }
+
 
     // ---------------------------------------
 

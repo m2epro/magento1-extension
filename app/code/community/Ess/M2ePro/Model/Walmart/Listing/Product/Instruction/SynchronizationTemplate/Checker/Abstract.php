@@ -6,7 +6,7 @@
  * @license    Commercial use is forbidden
  */
 
-use Ess_M2ePro_Model_Magento_Product_ChangeProcessor_Abstract as ProductChangeProcessor;
+use Ess_M2ePro_Model_Magento_Product_ChangeProcessor_Abstract as ChangeProcessorAbstract;
 use Ess_M2ePro_Model_Walmart_Template_Synchronization_ChangeProcessor as SynchronizationChangeProcessor;
 use Ess_M2ePro_Model_Walmart_Listing_Product_Action_Configurator as ActionConfigurator;
 
@@ -33,7 +33,8 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_Synchronizat
     protected function getReviseQtyInstructionTypes()
     {
         return array(
-            ProductChangeProcessor::INSTRUCTION_TYPE_PRODUCT_QTY_DATA_POTENTIALLY_CHANGED,
+            ChangeProcessorAbstract::INSTRUCTION_TYPE_PRODUCT_DATA_POTENTIALLY_CHANGED,
+            ChangeProcessorAbstract::INSTRUCTION_TYPE_PRODUCT_QTY_DATA_POTENTIALLY_CHANGED,
             Ess_M2ePro_Model_Walmart_Template_ChangeProcessor_Abstract::INSTRUCTION_TYPE_QTY_DATA_CHANGED,
 
             SynchronizationChangeProcessor::INSTRUCTION_TYPE_REVISE_QTY_ENABLED,
@@ -51,7 +52,7 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_Synchronizat
             Ess_M2ePro_PublicServices_Product_SqlChange::INSTRUCTION_TYPE_PRODUCT_CHANGED,
             Ess_M2ePro_PublicServices_Product_SqlChange::INSTRUCTION_TYPE_STATUS_CHANGED,
             Ess_M2ePro_PublicServices_Product_SqlChange::INSTRUCTION_TYPE_QTY_CHANGED,
-            ProductChangeProcessor::INSTRUCTION_TYPE_MAGMI_PLUGIN_PRODUCT_CHANGED,
+            ChangeProcessorAbstract::INSTRUCTION_TYPE_MAGMI_PLUGIN_PRODUCT_CHANGED,
             Ess_M2ePro_Model_Cron_Task_Listing_Product_InspectDirectChanges::INSTRUCTION_TYPE,
         );
     }
@@ -70,7 +71,7 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_Synchronizat
             Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_Response::INSTRUCTION_TYPE_CHECK_LAG_TIME,
 
             Ess_M2ePro_PublicServices_Product_SqlChange::INSTRUCTION_TYPE_PRODUCT_CHANGED,
-            ProductChangeProcessor::INSTRUCTION_TYPE_MAGMI_PLUGIN_PRODUCT_CHANGED,
+            ChangeProcessorAbstract::INSTRUCTION_TYPE_MAGMI_PLUGIN_PRODUCT_CHANGED,
             Ess_M2ePro_Model_Cron_Task_Listing_Product_InspectDirectChanges::INSTRUCTION_TYPE,
         );
     }
@@ -78,7 +79,7 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_Synchronizat
     protected function getRevisePriceInstructionTypes()
     {
         return array(
-            ProductChangeProcessor::INSTRUCTION_TYPE_PRODUCT_PRICE_DATA_POTENTIALLY_CHANGED,
+            ChangeProcessorAbstract::INSTRUCTION_TYPE_PRODUCT_PRICE_DATA_POTENTIALLY_CHANGED,
             Ess_M2ePro_Model_Walmart_Template_ChangeProcessor_Abstract::INSTRUCTION_TYPE_PRICE_DATA_CHANGED,
 
             SynchronizationChangeProcessor::INSTRUCTION_TYPE_REVISE_PRICE_ENABLED,
@@ -94,7 +95,7 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_Synchronizat
 
             Ess_M2ePro_PublicServices_Product_SqlChange::INSTRUCTION_TYPE_PRODUCT_CHANGED,
             Ess_M2ePro_PublicServices_Product_SqlChange::INSTRUCTION_TYPE_PRICE_CHANGED,
-            ProductChangeProcessor::INSTRUCTION_TYPE_MAGMI_PLUGIN_PRODUCT_CHANGED,
+            ChangeProcessorAbstract::INSTRUCTION_TYPE_MAGMI_PLUGIN_PRODUCT_CHANGED,
             Ess_M2ePro_Model_Cron_Task_Listing_Product_InspectDirectChanges::INSTRUCTION_TYPE,
         );
     }
@@ -116,7 +117,7 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_Synchronizat
             Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_Response::INSTRUCTION_TYPE_CHECK_PROMOTIONS,
 
             Ess_M2ePro_PublicServices_Product_SqlChange::INSTRUCTION_TYPE_PRODUCT_CHANGED,
-            ProductChangeProcessor::INSTRUCTION_TYPE_MAGMI_PLUGIN_PRODUCT_CHANGED,
+            ChangeProcessorAbstract::INSTRUCTION_TYPE_MAGMI_PLUGIN_PRODUCT_CHANGED,
             Ess_M2ePro_Model_Cron_Task_Listing_Product_InspectDirectChanges::INSTRUCTION_TYPE,
         );
     }
@@ -133,7 +134,7 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_Synchronizat
             Ess_M2ePro_Model_Listing::INSTRUCTION_TYPE_PRODUCT_REMAP_FROM_LISTING,
             Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Relist_Response::INSTRUCTION_TYPE_CHECK_DETAILS,
             Ess_M2ePro_PublicServices_Product_SqlChange::INSTRUCTION_TYPE_PRODUCT_CHANGED,
-            ProductChangeProcessor::INSTRUCTION_TYPE_MAGMI_PLUGIN_PRODUCT_CHANGED,
+            ChangeProcessorAbstract::INSTRUCTION_TYPE_MAGMI_PLUGIN_PRODUCT_CHANGED,
             Ess_M2ePro_Model_Cron_Task_Listing_Product_InspectDirectChanges::INSTRUCTION_TYPE,
         );
     }

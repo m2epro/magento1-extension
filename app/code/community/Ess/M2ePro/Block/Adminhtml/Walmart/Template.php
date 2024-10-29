@@ -43,16 +43,6 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template extends Mage_Adminhtml_Block_W
             'target_css_class' => 'add-button-drop-down',
             'items'            => array(
                 array(
-                    'id'    => 'add_policy_category',
-                    'url'   => $this->getUrl(
-                        '*/adminhtml_walmart_template/new',
-                        array(
-                            'type' => Ess_M2ePro_Block_Adminhtml_Walmart_Template_Grid::TEMPLATE_CATEGORY
-                        )
-                    ),
-                    'label' => Mage::helper('M2ePro')->__('Category')
-                ),
-                array(
                     'id'    => 'add_policy_description',
                     'url'   => $this->getUrl(
                         '*/adminhtml_walmart_template/new',

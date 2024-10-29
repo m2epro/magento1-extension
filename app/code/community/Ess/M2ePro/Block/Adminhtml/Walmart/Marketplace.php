@@ -31,15 +31,6 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Marketplace extends Mage_Adminhtml_Bloc
         $this->removeButton('reset');
         $this->removeButton('back');
 
-        $this->addButton(
-            'run_update_all', array(
-            'label'     => Mage::helper('M2ePro')->__('Update All Now'),
-            'onclick'   => 'MarketplaceObj.updateAction()',
-            'class'     => 'save update_all_marketplace'
-            )
-        );
-        // ---------------------------------------
-
         // ---------------------------------------
         $this->_addButton(
             'run_synch_now', array(

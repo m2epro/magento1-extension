@@ -36,13 +36,17 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager_Type_Relation_P
             return;
         }
 
-        $possibleChannelAttributes = $this->getProcessor()->getPossibleChannelAttributes();
-
         if ($this->getProcessor()->getTypeModel()->getVirtualChannelAttributes()) {
             $matchedAttributes = $this->getProcessor()->getTypeModel()->getRealMatchedAttributes();
         }
 
         $channelMatchedAttributes = array_values($matchedAttributes);
+        $walmartListingProduct = $this->getProcessor()->getWalmartListingProduct();
+        $possibleChannelAttributes = $walmartListingProduct->isExistsProductType()
+            ? $walmartListingProduct
+                ->getProductType()
+                ->getVariationAttributes()
+            : array();
 
         if (array_diff($channelMatchedAttributes, $possibleChannelAttributes)) {
             $this->getProcessor()->getTypeModel()->setMatchedAttributes(array(), false);

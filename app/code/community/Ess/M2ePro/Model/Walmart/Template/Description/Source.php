@@ -323,31 +323,6 @@ class Ess_M2ePro_Model_Walmart_Template_Description_Source
         return $result;
     }
 
-    /**
-     * @return array
-     */
-    public function getAttributes()
-    {
-        if ($this->getWalmartDescriptionTemplate()->isAttributesModeNone()) {
-            return array();
-        }
-
-        $result = array();
-        $src = $this->getWalmartDescriptionTemplate()->getAttributesSource();
-
-        foreach ($src['template'] as $value) {
-            if (empty($value)) {
-                continue;
-            }
-
-            $result[$value['name']] = Mage::helper('M2ePro/Module_Renderer_Description')->parseTemplate(
-                $value['value'], $this->getMagentoProduct()
-            );
-        }
-
-        return $result;
-    }
-
     // ---------------------------------------
 
     /**

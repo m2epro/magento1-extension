@@ -1,11 +1,5 @@
 <?php
 
-/*
- * @author     M2E Pro Developers Team
- * @copyright  M2E LTD
- * @license    Commercial use is forbidden
- */
-
 class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_Settings
     extends Ess_M2ePro_Block_Adminhtml_Widget_Container
 {
@@ -50,6 +44,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_S
 
         return $this;
     }
+
     /**
      * @return mixed
      */
@@ -70,6 +65,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_S
             'msg' => $message
         );
     }
+
     /**
      * @param array $messages
      */
@@ -77,6 +73,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_S
     {
         $this->_messages = $messages;
     }
+
     /**
      * @return array
      */
@@ -89,7 +86,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_S
     {
         $type = self::MESSAGE_TYPE_WARNING;
         foreach ($this->_messages as $message) {
-            if ($message['type'] === self::MESSAGE_TYPE_ERROR)     {
+            if ($message['type'] === self::MESSAGE_TYPE_ERROR) {
                 $type = $message['type'];
                 break;
             }
@@ -235,7 +232,7 @@ HTML;
     {
         $url = $this->getUrl(
             '*/adminhtml_walmart_template_description/edit', array(
-            'id' => $this->getListingProduct()->getChildObject()->getTemplateDescriptionId()
+                'id' => $this->getListingProduct()->getChildObject()->getTemplateDescriptionId()
             )
         );
 
@@ -250,11 +247,19 @@ HTML;
 
     public function getPossibleAttributes()
     {
-        $possibleAttributes = Mage::getModel('M2ePro/Walmart_Marketplace_Details')
-            ->setMarketplaceId($this->getListingProduct()->getMarketplace()->getId())
-            ->getVariationAttributes(
-                $this->getListingProduct()->getChildObject()->getCategoryTemplate()->getProductDataNick()
-            );
+        $walmartListingProduct = $this->getListingProduct()->getChildObject();
+        if (!$walmartListingProduct->isExistsProductType()) {
+            return array();
+        }
+
+        $variationAttributes = $walmartListingProduct
+                                    ->getProductType()
+                                    ->getVariationAttributes();
+
+        $possibleAttributes = array();
+        foreach ($variationAttributes as $attribute) {
+            $possibleAttributes[$attribute] = $attribute;
+        }
 
         return $possibleAttributes;
     }
@@ -331,7 +336,7 @@ HTML;
 
     public function isChangeMatchedAttributesAllowed()
     {
-        if ($this->isInAction() ) {
+        if ($this->isInAction()) {
             return false;
         }
 

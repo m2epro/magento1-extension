@@ -1,30 +1,27 @@
 <?php
 
-/*
- * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
- * @license    Commercial use is forbidden
- */
-
-use Ess_M2ePro_Helper_Component_Walmart_Configuration as ConfigurationHelper;
-
 class Ess_M2ePro_Model_Walmart_Listing_Product_Action_DataBuilder_Details
     extends Ess_M2ePro_Model_Walmart_Listing_Product_Action_DataBuilder_Abstract
 {
-    //########################################
-
     public function getData()
     {
         $sellingFormatTemplateSource = $this->getWalmartListingProduct()->getSellingFormatTemplateSource();
+        $walmartListingProduct = $this->getWalmartListingProduct();
 
         $data = array(
-            'product_data_nick'     => $this->getWalmartListingProduct()->getCategoryTemplate()->getProductDataNick(),
-            'product_data'          => $this->getProductData(),
             'product_id_data'      => $this->getProductIdData(),
             'description_data'      => $this->getDescriptionData(),
             'shipping_weight'       => $sellingFormatTemplateSource->getItemWeight(),
-            'additional_attributes' => $sellingFormatTemplateSource->getAttributes(),
         );
+
+        if ($walmartListingProduct->isExistsProductType()) {
+            $data['product_type_nick'] = $walmartListingProduct->getProductType()
+                                                               ->getNick();
+            $data['attributes'] = $this->getAttributes(
+                $walmartListingProduct->getProductType(),
+                $walmartListingProduct->getActualMagentoProduct()
+            );
+        }
 
         if ($this->getWalmartListingProduct()->getWpid()) {
             $data['wpid'] = $this->getWalmartListingProduct()->getWpid();
@@ -85,29 +82,27 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_DataBuilder_Details
         return $data;
     }
 
-    //########################################
+    /**
+     * @return list<string, string[]|string>
+     */
+    private function getAttributes(
+        Ess_M2ePro_Model_Walmart_ProductType $productType,
+        Ess_M2ePro_Model_Magento_Product $product
+    ) {
+        /** @var Ess_M2ePro_Model_Walmart_ProductType_AttributeSetting_Provider $attributeSettingProvider */
+        $attributeSettingProvider = Mage::getModel('M2ePro/Walmart_ProductType_AttributeSetting_Provider');
+        $attributes = $attributeSettingProvider->getAttributes($productType, $product);
 
-    protected function getProductData()
-    {
-        $data = array();
-
-        $this->searchNotFoundAttributes();
-
-        foreach ($this->getWalmartListingProduct()->getCategoryTemplate()->getSpecifics(true) as $specific) {
-            $source = $specific->getSource($this->getWalmartListingProduct()->getActualMagentoProduct());
-
-            if (!$specific->isRequired() && !$specific->isModeNone() && !$source->getValue()) {
-                continue;
+        $resultData = array();
+        foreach ($attributes as $attribute) {
+            $value = $attribute->getValues();
+            if (count($value) === 1) {
+                $value = reset($value);
             }
-
-            $data = Mage::helper('M2ePro')->arrayReplaceRecursive(
-                $data, Mage::helper('M2ePro')->jsonDecode($source->getPath())
-            );
+            $resultData[$attribute->getName()] = $value;
         }
 
-        $this->processNotFoundAttributes('Product Specifics');
-
-        return $data;
+        return $resultData;
     }
 
     // ---------------------------------------
@@ -223,10 +218,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_DataBuilder_Details
         if ($this->getVariationManager()->isRelationChildType()) {
             $data['swatch_images'] = $this->getSwatchImages();
         }
-
-        $this->searchNotFoundAttributes();
-        $data['additional_attributes'] = $source->getAttributes();
-        $this->processNotFoundAttributes('Attributes');
 
         return $data;
     }

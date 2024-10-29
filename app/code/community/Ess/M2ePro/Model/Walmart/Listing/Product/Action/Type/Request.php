@@ -96,7 +96,10 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Request
      */
     public function getQtyData()
     {
-        if ($this->getMarketplace()->getCode() === 'CA' && $this->getConfigurator()->isLagTimeAllowed()) {
+        if (
+            $this->getMarketplace()->getChildObject()->isCanada()
+            && $this->getConfigurator()->isLagTimeAllowed()
+        ) {
             $this->getConfigurator()->allowQty();
         }
 
@@ -114,7 +117,10 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Request
      */
     public function getLagTimeData()
     {
-        if ($this->getMarketplace()->getCode() === 'CA' && $this->getConfigurator()->isQtyAllowed()) {
+        if (
+            $this->getMarketplace()->getChildObject()->isCanada()
+            && $this->getConfigurator()->isQtyAllowed()
+        ) {
             $this->getConfigurator()->allowLagTime();
         }
 

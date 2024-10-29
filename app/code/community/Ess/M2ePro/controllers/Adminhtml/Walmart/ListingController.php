@@ -45,7 +45,7 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
             ->addJs('M2ePro/Walmart/Listing.js')
             ->addJs('M2ePro/Walmart/Listing/Grid.js')
             ->addJs('M2ePro/Walmart/Listing/Action.js')
-            ->addJs('M2ePro/Walmart/Listing/Template/Category.js')
+            ->addJs('M2ePro/Walmart/Listing/ProductType.js')
             ->addJs('M2ePro/Walmart/Listing/VariationProductManage.js')
             ->addJs('M2ePro/Walmart/Listing/Other/Grid.js')
             ->addJs('M2ePro/Walmart/Listing/Product/EditChannelData.js')
@@ -173,9 +173,8 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
         }
 
         $id = $this->getRequest()->getParam('id');
-        /** @var $model Ess_M2ePro_Model_Listing */
-
         try {
+            /** @var Ess_M2ePro_Model_Listing $model */
             $model = Mage::helper('M2ePro/Component_Walmart')->getCachedObject('Listing', $id);
         } catch (LogicException $e) {
             $this->_getSession()->addError(Mage::helper('M2ePro')->__('Listing does not exist.'));
@@ -1072,7 +1071,7 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
             $listingProduct->getProductId(), Ess_M2ePro_Helper_Data::INITIATOR_USER, false, false
         );
         $duplicatedListingProduct->setData(
-            'template_category_id', $listingProduct->getChildObject()->getTemplateCategoryId()
+            'product_type_id', $listingProduct->getChildObject()->getProductTypeId()
         );
         $duplicatedListingProduct->save();
 
@@ -1092,12 +1091,12 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
 
     //########################################
 
-    public function mapToTemplateCategoryAction()
+    public function mapToProductTypeAction()
     {
         $productsIds = $this->getRequest()->getParam('products_ids');
-        $templateId = $this->getRequest()->getParam('template_id');
+        $productTypeId = $this->getRequest()->getParam('template_id');
 
-        if (empty($productsIds) || empty($templateId)) {
+        if (empty($productsIds) || empty($productTypeId)) {
             return $this->getResponse()->setBody('You should provide correct parameters.');
         }
 
@@ -1108,10 +1107,10 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
         $msgType = 'success';
         $messages = array();
 
-        $this->setCategoryTemplateFroProductsByChunks($productsIds, $templateId);
+        $this->setProductTypeProductsByChunks($productsIds, $productTypeId);
 
         $messages[] = Mage::helper('M2ePro')->__(
-            'Category Policy was assigned to %count% Products',
+            'Product Type was assigned to %count% Products',
             count($productsIds)
         );
 
@@ -1126,66 +1125,9 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
         );
     }
 
-    public function unmapFromTemplateCategoryAction()
-    {
-        $productsIds = $this->getRequest()->getParam('products_ids');
-
-        if (empty($productsIds)) {
-            return $this->getResponse()->setBody('You should provide correct parameters.');
-        }
-
-        if (!is_array($productsIds)) {
-            $productsIds = explode(',', $productsIds);
-        }
-
-        $productsIdsTemp = $this->filterProductsForMapOrUnmapCategoryTemplateByChunks($productsIds);
-
-        $messages = array();
-
-        if (empty($productsIdsTemp)) {
-            $messages[] = array(
-                'type' => 'warning',
-                'text' => '<p>' . Mage::helper('M2ePro')->__(
-                    'Category Policy cannot be unassigned from some Products because they are
-                     participating in the new Product Type(s) creation.'
-                ) . '</p>'
-            );
-        } else {
-            $productsIdsLocked = $this->filterLockedProducts($productsIdsTemp);
-
-            if (count($productsIdsLocked) < count($productsIds)) {
-                $messages[] = array(
-                    'type' => 'warning',
-                    'text' => '<p>' . Mage::helper('M2ePro')->__(
-                        'Category Policy cannot be unassigned because the Products are in Action or
-                         in the process of new Product Type(s) Creation.'
-                    ). '</p>'
-                );
-            }
-        }
-
-        if (!empty($productsIdsLocked)) {
-            $messages[] = array(
-                'type' => 'success',
-                'text' => Mage::helper('M2ePro')->__('Category Policy was unassigned.')
-            );
-
-            $this->setCategoryTemplateFroProductsByChunks($productsIdsLocked, null);
-            $this->runProcessorForParents($productsIdsLocked);
-        }
-
-        return $this->getResponse()->setBody(
-            Mage::helper('M2ePro')->jsonEncode(
-                array(
-                'messages' => $messages
-                )
-            )
-        );
-    }
-
     // ---------------------------------------
 
-    public function viewTemplateCategoriesGridAction()
+    public function viewProductTypesGridAction()
     {
         $productsIds = $this->getRequest()->getParam('products_ids');
 
@@ -1198,7 +1140,7 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
         }
 
         $grid = $this->loadLayout()->getLayout()
-            ->createBlock('M2ePro/adminhtml_walmart_listing_template_category_grid');
+            ->createBlock('M2ePro/adminhtml_walmart_listing_productType_grid');
         $grid->setProductsIds($productsIds);
 
         return $this->getResponse()->setBody($grid->toHtml());
@@ -1206,7 +1148,7 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
 
     // ---------------------------------------
 
-    public function validateProductsForTemplateCategoryAssignAction()
+    public function validateProductsForProductTypeAssignAction()
     {
         $productsIds = $this->getRequest()->getParam('products_ids');
 
@@ -1226,7 +1168,7 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
             $messages[] = array(
                 'type' => 'warning',
                 'text' => Mage::helper('M2ePro')->__(
-                    'Category Policy cannot be assigned because the Products are in Action.'
+                    'Product Type cannot be assigned because the Products are in Action.'
                 )
             );
         }
@@ -1242,7 +1184,7 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
         }
 
         $mainBlock = $this->loadLayout()->getLayout()
-            ->createBlock('M2ePro/adminhtml_walmart_listing_template_category_main');
+            ->createBlock('M2ePro/adminhtml_walmart_listing_productType_main');
         if (!empty($messages)) {
             $mainBlock->setMessages($messages);
         }
@@ -1260,18 +1202,25 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
 
     // ---------------------------------------
 
-    public function getCategoryTemplatesListAction()
+    public function getProductTypesListAction()
     {
         $marketplaceId = $this->getRequest()->getParam('marketplace_id', '');
+        if (empty($marketplaceId)) {
+           throw new LogicException('Invalid input');
+        }
 
-        /** @var Ess_M2ePro_Model_Resource_Walmart_Template_Category_Collection $collection */
-        $collection = Mage::getModel('M2ePro/Walmart_Template_Category')->getCollection();
+        /** @var Ess_M2ePro_Model_Walmart_ProductType_Repository $productTypeRepository */
+        $productTypeRepository = Mage::getModel('M2ePro/Walmart_ProductType_Repository');
 
-        $marketplaceId != '' && $collection->addFieldToFilter('marketplace_id', $marketplaceId);
+        $result = array();
+        foreach ($productTypeRepository->retrieveByMarketplaceId((int)$marketplaceId) as $productType) {
+            $result[] = array(
+                'id' => $productType->getId(),
+                'title' => $productType->getTitle(),
+            );
+        }
 
-        $categoryTemplates = $collection->getData();
-
-        return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode($categoryTemplates));
+        return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode($result));
     }
 
     //########################################
@@ -1630,32 +1579,6 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
 
         return $productsIds;
     }
-
-    protected function filterProductsForMapOrUnmapCategoryTemplate($productsIds)
-    {
-        $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
-        $tableWalmartListingProduct = Mage::helper('M2ePro/Module_Database_Structure')
-            ->getTableNameWithPrefix('m2epro_walmart_listing_product');
-
-        $select = $connRead->select();
-
-        // selecting all except parents general_id owners or simple general_id owners without general_id
-        $select->from($tableWalmartListingProduct, 'listing_product_id')
-            ->where(
-                'is_general_id_owner = 0
-                OR (is_general_id_owner = 1
-                    AND is_variation_parent = 0 AND general_id IS NOT NULL)'
-            );
-
-        $select->where('listing_product_id IN (?)', $productsIds);
-
-        $result = Mage::getResourceModel('core/config')
-            ->getReadConnection()
-            ->fetchCol($select);
-
-        return $result;
-    }
-
     public function filterLockedProducts($productsIdsParam)
     {
         $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
@@ -1685,19 +1608,23 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
         return $productsIds;
     }
 
-    protected function setCategoryTemplateFroProductsByChunks($productsIds, $templateId)
+    private function setProductTypeProductsByChunks($productsIds, $productTypeId)
     {
         if (count($productsIds) > 1000) {
             $productsIds = array_chunk($productsIds, 1000);
             foreach ($productsIds as $productsIdsChunk) {
-                $this->setCategoryTemplateForProducts($productsIdsChunk, $templateId);
+                $this->setProductTypeForProducts($productsIdsChunk, $productTypeId);
+                $this->runProcessorForParents($productsIdsChunk);
             }
-        } else {
-            $this->setCategoryTemplateForProducts($productsIds, $templateId);
+
+            return;
         }
+
+        $this->setProductTypeForProducts($productsIds, $productTypeId);
+        $this->runProcessorForParents($productsIds);
     }
 
-    protected function setCategoryTemplateForProducts($productsIds, $templateId)
+    private function setProductTypeForProducts($productsIds, $productTypeId)
     {
         if (empty($productsIds)) {
             return;
@@ -1712,47 +1639,52 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
         }
 
         $transaction = Mage::getModel('core/resource_transaction');
-        $oldTemplateIds = array();
+        $oldProductTypeIds = array();
 
         try {
+            /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
             foreach ($collection->getItems() as $listingProduct) {
-                /**@var Ess_M2ePro_Model_Listing_Product $listingProduct */
-
-                $oldTemplateIds[$listingProduct->getId()] = $listingProduct->getData('template_category_id');
-
-                $listingProduct->setData('template_category_id', $templateId);
+                $oldProductTypeIds[$listingProduct->getId()] = $listingProduct->getData(
+                    Ess_M2ePro_Model_Resource_Walmart_Listing_Product::COLUMN_PRODUCT_TYPE_ID
+                );
+                $listingProduct->setData(
+                    Ess_M2ePro_Model_Resource_Walmart_Listing_Product::COLUMN_PRODUCT_TYPE_ID,
+                    $productTypeId
+                );
                 $transaction->addObject($listingProduct);
             }
 
             $transaction->save();
         } catch (Exception $e) {
-            $oldTemplateIds = false;
+            $oldProductTypeIds = false;
             $transaction->rollback();
         }
 
-        if (!$oldTemplateIds) {
+        if (!$oldProductTypeIds) {
             return;
         }
 
-        $newTemplate = Mage::getModel('M2ePro/Walmart_Template_Category')->load($templateId);
-
-        if ($newTemplate->getId()) {
-            $snapshotBuilder = Mage::getModel('M2ePro/Walmart_Template_Category_SnapshotBuilder');
-            $snapshotBuilder->setModel($newTemplate);
+        /** @var Ess_M2ePro_Model_Walmart_ProductType_Repository $productTypeRepository */
+        $productTypeRepository = Mage::getModel('M2ePro/Walmart_ProductType_Repository');
+        $productType = $productTypeRepository->find($productTypeId);
+        if ($productType !== null) {
+            /** @var Ess_M2ePro_Model_Walmart_ProductType_Builder_SnapshotBuilder $snapshotBuilder */
+            $snapshotBuilder = Mage::getModel('M2ePro/Walmart_ProductType_Builder_SnapshotBuilder');
+            $snapshotBuilder->setModel($productType);
             $newSnapshot = $snapshotBuilder->getSnapshot();
         } else {
             $newSnapshot = array();
         }
 
+        /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
         foreach ($collection->getItems() as $listingProduct) {
-            /**@var Ess_M2ePro_Model_Listing_Product $listingProduct */
-
-            $oldTemplate = Mage::getModel('M2ePro/Walmart_Template_Category')->load(
-                $oldTemplateIds[$listingProduct->getId()]
+            $oldTemplate = $productTypeRepository->find(
+                $oldProductTypeIds[$listingProduct->getId()]
             );
 
-            if ($oldTemplate->getId()) {
-                $snapshotBuilder = Mage::getModel('M2ePro/Walmart_Template_Category_SnapshotBuilder');
+            if ($oldTemplate !== null) {
+                /** @var Ess_M2ePro_Model_Walmart_ProductType_Builder_SnapshotBuilder $snapshotBuilder */
+                $snapshotBuilder = Mage::getModel('M2ePro/Walmart_ProductType_Builder_SnapshotBuilder');
                 $snapshotBuilder->setModel($oldTemplate);
                 $oldSnapshot = $snapshotBuilder->getSnapshot();
             } else {
@@ -1763,11 +1695,13 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
                 continue;
             }
 
-            $diff = Mage::getModel('M2ePro/Walmart_Template_Category_Diff');
+            /** @var Ess_M2ePro_Model_Walmart_ProductType_Builder_Diff $diff */
+            $diff = Mage::getModel('M2ePro/Walmart_ProductType_Builder_Diff');
             $diff->setOldSnapshot($oldSnapshot);
             $diff->setNewSnapshot($newSnapshot);
 
-            $changeProcessor = Mage::getModel('M2ePro/Walmart_Template_Category_ChangeProcessor');
+            /** @var Ess_M2ePro_Model_Walmart_ProductType_Builder_ChangeProcessor $changeProcessor */
+            $changeProcessor = Mage::getModel('M2ePro/Walmart_ProductType_Builder_ChangeProcessor');
             $changeProcessor->process(
                 $diff, array(array('id' => $listingProduct->getId(), 'status' => $listingProduct->getStatus()))
             );
@@ -1874,7 +1808,7 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
 
     //########################################
 
-    protected function runProcessorForParents($productsIds)
+    private function runProcessorForParents($productsIds)
     {
         $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
         $tableWalmartListingProduct = Mage::helper('M2ePro/Module_Database_Structure')

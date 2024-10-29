@@ -24,6 +24,7 @@ class Ess_M2ePro_Model_Ebay_Account_Builder extends Ess_M2ePro_Model_ActiveRecor
             'user_id',
             'is_token_exist',
             'info',
+            'ebay_site',
             'server_hash',
             'sell_api_token_expired_date'
         );
@@ -433,10 +434,13 @@ class Ess_M2ePro_Model_Ebay_Account_Builder extends Ess_M2ePro_Model_ActiveRecor
             'create_magento_shipment' => 1,
             'skip_evtin'              => 0,
 
+            'ebay_site'                     => '',
             'ebay_store_title'              => '',
             'ebay_store_url'                => '',
             'ebay_store_subscription_level' => '',
             'ebay_store_description'        => '',
+
+            'info' => json_encode(array()),
 
             'feedbacks_receive'                     => 0,
             'feedbacks_auto_response'               => Account::FEEDBACKS_AUTO_RESPONSE_NONE,

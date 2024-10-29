@@ -117,6 +117,16 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Validator
         return $this->getListing()->getChildObject();
     }
 
+    /**
+     * @return Ess_M2ePro_Model_Walmart_Marketplace
+     */
+    protected function getWalmartMarketplace()
+    {
+        return $this->getListing()
+                    ->getMarketplace()
+                    ->getChildObject();
+    }
+
     // ---------------------------------------
 
     /**
@@ -214,10 +224,17 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Validator
 
     // ---------------------------------------
 
-    protected function validateCategory()
+    /**
+     * @return bool
+     */
+    protected function validateWalmartProductType()
     {
-        if (!$this->getWalmartListingProduct()->isExistCategoryTemplate()) {
-            $this->addMessage('Categories Settings are not set.');
+        if (
+            $this->getWalmartMarketplace()->isSupportedProductType()
+            && !$this->getWalmartListingProduct()->isExistsProductType()
+        ) {
+            $this->addMessage('Product Type are not set.');
+
             return false;
         }
 

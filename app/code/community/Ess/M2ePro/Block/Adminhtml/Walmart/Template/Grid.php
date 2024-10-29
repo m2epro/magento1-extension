@@ -9,7 +9,6 @@
 class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
     const TEMPLATE_SELLING_FORMAT    = 'selling_format';
-    const TEMPLATE_CATEGORY          = 'category';
     const TEMPLATE_SYNCHRONIZATION   = 'synchronization';
     const TEMPLATE_DESCRIPTION       = 'description';
 
@@ -41,30 +40,6 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Grid extends Mage_Adminhtml_Bl
         $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
 
         $marketplaceMainTable = Mage::getModel('M2ePro/Marketplace')->getResource()->getMainTable();
-
-        // Prepare category collection
-        // ---------------------------------------
-        $collectionCategory = Mage::getModel('M2ePro/Walmart_Template_Category')->getCollection();
-        $collectionCategory->getSelect()->reset(Varien_Db_Select::COLUMNS);
-        $collectionCategory->getSelect()->join(
-            array('mm' => $marketplaceMainTable),
-            'main_table.marketplace_id=mm.id',
-            array()
-        );
-        $collectionCategory->getSelect()->columns(
-            array(
-                'id as template_id',
-                'title',
-                new Zend_Db_Expr('\''.self::TEMPLATE_CATEGORY.'\' as `type`'),
-                new Zend_Db_Expr('mm.title as `marketplace_title`'),
-                new Zend_Db_Expr('mm.id as `marketplace_id`'),
-                'create_date',
-                'update_date',
-                'category_path',
-                'browsenode_id'
-            )
-        );
-        // ---------------------------------------
 
         // Prepare selling format collection
         // ---------------------------------------
@@ -136,7 +111,6 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Grid extends Mage_Adminhtml_Bl
         // Prepare union select
         // ---------------------------------------
         $collectionsArray = array(
-            $collectionCategory->getSelect(),
             $collectionSellingFormat->getSelect(),
             $collectionSynchronization->getSelect(),
             $collectionDescription->getSelect()
@@ -182,13 +156,11 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Grid extends Mage_Adminhtml_Bl
             'index'         => 'title',
             'escape'        => true,
             'filter_index'  => 'main_table.title',
-            'frame_callback' => array($this, 'callbackColumnTitle'),
             'filter_condition_callback' => array($this, 'callbackFilterTitle')
             )
         );
 
         $options = array(
-            self::TEMPLATE_CATEGORY          => Mage::helper('M2ePro')->__('Category'),
             self::TEMPLATE_SELLING_FORMAT    => Mage::helper('M2ePro')->__('Selling'),
             self::TEMPLATE_DESCRIPTION       => Mage::helper('M2ePro')->__('Description'),
             self::TEMPLATE_SYNCHRONIZATION   => Mage::helper('M2ePro')->__('Synchronization')
@@ -292,26 +264,6 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Grid extends Mage_Adminhtml_Bl
     }
 
     //########################################
-
-    public function callbackColumnTitle($value, $row, $column, $isExport)
-    {
-        if ($row->getData('type') != self::TEMPLATE_CATEGORY) {
-            return $value;
-        }
-
-        $title = Mage::helper('M2ePro')->escapeHtml($value);
-
-        $categoryWord = Mage::helper('M2ePro')->__('Category');
-        $categoryPath = !empty($row['category_path']) ? "{$row['category_path']} ({$row['browsenode_id']})"
-            : Mage::helper('M2ePro')->__('Not Set');
-
-        return <<<HTML
-{$title}
-<div>
-    <span style="font-weight: bold">{$categoryWord}</span>: <span style="color: #505050">{$categoryPath}</span><br/>
-</div>
-HTML;
-    }
 
     public function callbackColumnMarketplace($value, $row, $column, $isExport)
     {

@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Ess_M2ePro>
-            <version>6.68.0</version>
+            <version>6.69.0</version>
         </Ess_M2ePro>
     </modules>
     <default>
@@ -1245,12 +1245,9 @@
                         <table>m2epro_walmart_item</table>
                     </Walmart_Item>
 
-                    <Walmart_Template_Category>
-                        <table>m2epro_walmart_template_category</table>
-                    </Walmart_Template_Category>
-                    <Walmart_Template_Category_Specific>
-                        <table>m2epro_walmart_template_category_specific</table>
-                    </Walmart_Template_Category_Specific>
+                    <Walmart_ProductType>
+                        <table>m2epro_walmart_product_type</table>
+                    </Walmart_ProductType>
 
                     <!-- INDEXERS -->
 
@@ -1299,9 +1296,9 @@
                     <Walmart_Dictionary_Marketplace>
                         <table>m2epro_walmart_dictionary_marketplace</table>
                     </Walmart_Dictionary_Marketplace>
-                    <Walmart_Dictionary_Specific>
-                        <table>m2epro_walmart_dictionary_specific</table>
-                    </Walmart_Dictionary_Specific>
+                    <Walmart_Dictionary_ProductType>
+                        <table>m2epro_walmart_dictionary_product_type</table>
+                    </Walmart_Dictionary_ProductType>
 
                 </entities>
             </M2ePro_resource>

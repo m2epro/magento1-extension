@@ -25,7 +25,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_AutoAction_Mode_Category_Form
         return array_merge(
             parent::getDefault(),
             array(
-                'adding_category_template_id' => null
+                'adding_product_type_id' => null
             )
         );
     }

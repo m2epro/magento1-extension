@@ -218,17 +218,21 @@ class Ess_M2ePro_Model_Walmart_Listing extends Ess_M2ePro_Model_Component_Child_
     /**
      * @return int
      */
-    public function getAutoGlobalAddingCategoryTemplateId()
+    public function getAutoGlobalAddingProductTypeId()
     {
-        return (int)$this->getData('auto_global_adding_category_template_id');
+        return (int)$this->getData(
+            Ess_M2ePro_Model_Resource_Walmart_Listing::COLUMN_AUTO_GLOBAL_ADDING_PRODUCT_TYPE_ID
+        );
     }
 
     /**
      * @return int
      */
-    public function getAutoWebsiteAddingCategoryTemplateId()
+    public function getAutoWebsiteAddingProductTypeId()
     {
-        return (int)$this->getData('auto_website_adding_category_template_id');
+        return (int)$this->getData(
+            Ess_M2ePro_Model_Resource_Walmart_Listing::COLUMN_AUTO_WEBSITE_ADDING_PRODUCT_TYPE_ID
+        );
     }
 
     //########################################

@@ -18,7 +18,7 @@ class Ess_M2ePro_Model_Ebay_Account_Create
 
         $data['mode'] = $mode;
         $data['is_token_exist'] = 1;
-        $data['info'] = Mage::helper('M2ePro')->jsonEncode($responseData['info']);
+        $data['ebay_site'] = $responseData['site'];
         $data['sell_api_token_expired_date'] = $responseData['token_expired_date'];
         $data['server_hash'] = $responseData['hash'];
         $data['user_id'] = $responseData['user_id'];

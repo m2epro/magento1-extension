@@ -9,7 +9,7 @@ class Ess_M2ePro_Model_Ebay_Account_Update
         $responseData = $this->updateOnServer($account, $authCode, $mode);
 
         $dataForUpdate = array(
-            'info' => Mage::helper('M2ePro')->jsonEncode($responseData['info']),
+            'ebay_site' => $responseData['site'],
             'sell_api_token_expired_date' => $responseData['token_expired_date'],
             'user_id' => $responseData['user_id'],
             'is_token_exist' => 1

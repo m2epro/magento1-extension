@@ -16,6 +16,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
     protected function getRelistInstructionTypes()
     {
         return array(
+            ChangeProcessorAbstract::INSTRUCTION_TYPE_PRODUCT_DATA_POTENTIALLY_CHANGED,
             Ess_M2ePro_Model_Ebay_Template_Synchronization_ChangeProcessor::INSTRUCTION_TYPE_RELIST_MODE_ENABLED,
             Ess_M2ePro_Model_Ebay_Template_Synchronization_ChangeProcessor::INSTRUCTION_TYPE_RELIST_MODE_DISABLED,
             Ess_M2ePro_Model_Ebay_Template_Synchronization_ChangeProcessor::INSTRUCTION_TYPE_RELIST_SETTINGS_CHANGED,

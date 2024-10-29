@@ -36,8 +36,6 @@ class Ess_M2ePro_Model_Walmart_Template_Description_Diff extends Ess_M2ePro_Mode
             'key_features',
             'other_features_mode',
             'other_features',
-            'attributes_mode',
-            'attributes',
             'manufacturer_mode',
             'manufacturer_custom_value',
             'manufacturer_custom_attribute',

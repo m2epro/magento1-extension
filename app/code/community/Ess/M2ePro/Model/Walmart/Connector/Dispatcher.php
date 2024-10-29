@@ -33,6 +33,25 @@ class Ess_M2ePro_Model_Walmart_Connector_Dispatcher
         return $connectorObject;
     }
 
+    /**
+     * @param string $className
+     * @param array $params
+     * @param Ess_M2ePro_Model_Walmart_Account|string|int|null $account
+     * @return Ess_M2ePro_Model_Connector_Command_Abstract
+     */
+    public function getConnectorByClass($className, array $params = array(), $account = null)
+    {
+        if (is_int($account) || is_string($account)) {
+            $account = Mage::helper('M2ePro/Component_Walmart')->getCachedObject('Account', (int)$account);
+        }
+
+        /** @var Ess_M2ePro_Model_Connector_Command_Abstract $connectorObject */
+        $connectorObject = new $className($params, $account);
+        $connectorObject->setProtocol($this->getProtocol());
+
+        return $connectorObject;
+    }
+
     public function getCustomConnector($modelName, array $params = array(), $account = null)
     {
         if (is_int($account) || is_string($account)) {
@@ -108,6 +127,9 @@ class Ess_M2ePro_Model_Walmart_Connector_Dispatcher
 
     //####################################
 
+    /**
+     * @return Ess_M2ePro_Model_Walmart_Connector_Protocol
+     */
     protected function getProtocol()
     {
         return Mage::getModel('M2ePro/Walmart_Connector_Protocol');

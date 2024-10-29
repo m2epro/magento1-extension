@@ -432,15 +432,23 @@ HTML
                     'sort_dir'           => 'ASC',
                     'component_mode'     => Ess_M2ePro_Helper_Component_Walmart::NICK
                 )
-            )
+            ),
+            'walmart_marketplace_withProductType/runSynchNow' => $this->getUrl(
+                '*/adminhtml_walmart_marketplace_withProductType/runSynchNow'
+            ),
+            'walmart_marketplace_withProductType/synchGetExecutingInfo' => $this->getUrl(
+                '*/adminhtml_walmart_marketplace_withProductType/synchGetExecutingInfo'
+            ),
         ));
 
+        $marketplacesSyncSettings = \json_encode($this->getMarketplacesSyncSettings());
         Mage::helper('M2ePro/View')->getJsRenderer()->addOnReadyJs(<<<JS
     M2ePro.formData.wizard = {$this->getRequest()->getParam('wizard', 0)};
 
     TemplateManagerObj = new TemplateManager();
 
     WalmartListingCreateGeneralObj = new WalmartListingCreateGeneral();
+    WalmartListingCreateGeneralObj.setMarketplacesSyncSettings($marketplacesSyncSettings);
     WalmartListingSettingsObj = new WalmartListingSettings();
     
     WalmartListingCreateGeneralObj.initObservers();
@@ -450,6 +458,26 @@ JS
         );
 
         return parent::_prepareLayout();
+    }
+
+    /**
+     * @return array
+     */
+    private function getMarketplacesSyncSettings()
+    {
+        /** @var Ess_M2ePro_Model_Walmart_Marketplace_Repository $marketplaceRepository */
+        $marketplaceRepository = Mage::getModel('M2ePro/Walmart_Marketplace_Repository');
+
+        $result = array();
+        foreach ($marketplaceRepository->findActive() as $marketplace) {
+            $result[] = array(
+                'marketplace_id' => (int)$marketplace->getId(),
+                'is_sync_with_product_type' => $marketplace->getChildObject()
+                                                           ->isSupportedProductType(),
+            );
+        }
+
+        return $result;
     }
 
     //########################################

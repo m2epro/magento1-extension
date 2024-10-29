@@ -105,9 +105,13 @@ class Ess_M2ePro_Adminhtml_Wizard_MigrationToInnodbController extends Ess_M2ePro
             (int)$this->getRequest()->getParam('marketplace_id')
         );
 
-        $component= ucfirst(strtolower($component));
-        $synchronization = Mage::getModel('M2ePro/' . $component . '_Marketplace_Synchronization');
-        $synchronization->setMarketplace($marketplace);
+        $component = ucfirst(strtolower($component));
+        if ($component === 'Walmart') {
+            $synchronization = $this->getWalmartSyncService($marketplace);
+        } else {
+            $synchronization = Mage::getModel('M2ePro/' . $component . '_Marketplace_Synchronization');
+            $synchronization->setMarketplace($marketplace);
+        }
 
         if ($synchronization->isLocked()) {
             $synchronization->getlog()->addMessage(
@@ -138,5 +142,23 @@ class Ess_M2ePro_Adminhtml_Wizard_MigrationToInnodbController extends Ess_M2ePro
         return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('result' => 'success')));
     }
 
-    //########################################
+    /**
+     * @return Ess_M2ePro_Model_Walmart_Marketplace_Synchronization|Ess_M2ePro_Model_Walmart_Marketplace_WithProductType_Synchronization
+     */
+    private function getWalmartSyncService(Ess_M2ePro_Model_Marketplace $marketplace)
+    {
+        /** @var Ess_M2ePro_Model_Walmart_Marketplace_Synchronization $sync */
+        $sync = Mage::getModel('M2ePro/Walmart_Marketplace_Synchronization');
+        if ($sync->isMarketplaceAllowed($marketplace)) {
+            $sync->setMarketplace($marketplace);
+
+            return $sync;
+        }
+
+        /** @var Ess_M2ePro_Model_Walmart_Marketplace_WithProductType_Synchronization $syncWithPt */
+        $syncWithPt = Mage::getModel('M2ePro/Walmart_Marketplace_WithProductType_Synchronization');
+        $syncWithPt->setMarketplace($marketplace);
+
+        return $syncWithPt;
+    }
 }

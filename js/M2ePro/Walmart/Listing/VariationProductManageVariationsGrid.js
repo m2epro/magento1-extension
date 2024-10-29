@@ -29,7 +29,7 @@ window.WalmartListingVariationProductManageVariationsGrid = Class.create(Listing
     {
         $super();
         this.actionHandler = new WalmartListingAction(this);
-        this.templateCategory = new WalmartListingTemplateCategory(this);
+        this.productType = new WalmartListingProductType(this);
         this.editChannelDataHandler = new WalmartListingProductEditChannelData(this);
 
         this.actions = Object.extend(this.actions, {

@@ -1,15 +1,7 @@
 <?php
 
-/*
- * @author     M2E Pro Developers Team
- * @copyright  M2E LTD
- * @license    Commercial use is forbidden
- */
-
 class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager_Type_Relation_Parent_Processor
 {
-    //########################################
-
     /** @var Ess_M2ePro_Model_Listing_Product $_listingProduct */
     protected $_listingProduct = null;
 
@@ -20,13 +12,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager_Type_Relation_P
 
     /** @var Ess_M2ePro_Model_Template_Description $_descriptionTemplate */
     protected $_descriptionTemplate = null;
-
-    /** @var Ess_M2ePro_Model_Walmart_Template_Category $descriptionTemplate */
-    protected $_walmartCategoryTemplate = null;
-
-    protected $_possibleChannelAttributes = null;
-
-    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Listing_Product
@@ -180,38 +165,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager_Type_Relation_P
     }
 
     //########################################
-
-    /**
-     * @return Ess_M2ePro_Model_Walmart_Template_Category
-     */
-    public function getWalmartCategoryTemplate()
-    {
-        if ($this->_walmartCategoryTemplate !== null) {
-            return $this->_walmartCategoryTemplate;
-        }
-
-        return $this->_walmartCategoryTemplate = $this->getWalmartListingProduct()->getCategoryTemplate();
-    }
-
-    //########################################
-
-    /**
-     * @return array|null
-     */
-    public function getPossibleChannelAttributes()
-    {
-        if ($this->_possibleChannelAttributes !== null) {
-            return $this->_possibleChannelAttributes;
-        }
-
-        $possibleChannelAttributes = Mage::getModel('M2ePro/Walmart_Marketplace_Details')
-            ->setMarketplaceId($this->getMarketplaceId())
-            ->getVariationAttributes(
-                $this->getWalmartCategoryTemplate()->getProductDataNick()
-            );
-
-        return $this->_possibleChannelAttributes = $possibleChannelAttributes;
-    }
 
     /**
      * @return int|null
