@@ -126,6 +126,19 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Order_Grid extends Mage_Adminhtml_Block_
         );
 
         $this->addColumn(
+            'delivery_date',
+            array(
+                'header' => Mage::helper('M2ePro')->__('Deliver By Date'),
+                'align'  => 'left',
+                'type'   => 'datetime',
+                'format' => Mage::app()->getLocale()->getDateTimeFormat(Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM),
+                'index'  => 'delivery_date_from',
+                'width'  => '170px',
+                'frame_callback' => array($this, 'callbackDeliveryDate'),
+            )
+        );
+
+        $this->addColumn(
             'magento_order_num',
             array(
                 'header'         => Mage::helper('M2ePro')->__('Magento Order #'),
@@ -403,6 +416,20 @@ HTML;
         }
 
         return $returnString;
+    }
+
+    public function callbackDeliveryDate($value, $row, $column, $isExport)
+    {
+        $deliveryDate = $row->getChildObject()->getData('delivery_date_from');
+        if (empty($deliveryDate)) {
+            return Mage::helper('M2ePro')->__('N/A');
+        }
+
+        return $this->formatDate(
+            $deliveryDate,
+            \Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM,
+            true
+        );
     }
 
     public function callbackColumnMagentoOrder($value, $row, $column, $isExport)

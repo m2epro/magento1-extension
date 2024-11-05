@@ -490,6 +490,7 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_order')}` (
   `shipping_address` TEXT NOT NULL,
   `shipping_price` DECIMAL(12, 4) UNSIGNED NOT NULL,
   `shipping_date_to` DATETIME DEFAULT NULL,
+  `delivery_date_from` DATETIME DEFAULT NULL,
   `delivery_date_to` DATETIME DEFAULT NULL,
   `paid_amount` DECIMAL(12, 4) UNSIGNED NOT NULL,
   `tax_details` TEXT DEFAULT NULL,

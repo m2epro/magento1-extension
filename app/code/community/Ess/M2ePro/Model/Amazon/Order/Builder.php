@@ -100,6 +100,7 @@ class Ess_M2ePro_Model_Amazon_Order_Builder extends Mage_Core_Model_Abstract
         $this->setData('shipping_address', $data['shipping_address']);
         $this->setData('shipping_price', (float)$data['shipping_price']);
         $this->setData('shipping_date_to', $data['shipping_date_to']);
+        $this->setData('delivery_date_from', $data['delivery_date_from']);
         $this->setData('delivery_date_to', $data['delivery_date_to']);
         // ---------------------------------------
 
