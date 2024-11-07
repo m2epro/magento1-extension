@@ -218,24 +218,27 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View_Settings_Grid
     {
         $helper = Mage::helper('M2ePro');
 
-        $actions = array(
+        return array(
             'assignProductType' => array(
-                'caption'        => $helper->__('Assign Product Type'),
+                'caption'        => $helper->__('Assign'),
                 'group'          => 'edit_product_type',
                 'field'          => 'id',
                 'onclick_action' => 'ListingGridObj.actions[\'changeProductTypeIdAction\']'
+            ),
+            'unassignProductType' => array(
+                'caption'        => $helper->__('Unassign'),
+                'group'          => 'edit_product_type',
+                'field'          => 'id',
+                'onclick_action' => 'ListingGridObj.actions[\'unassignProductTypeIdAction\']'
+            ),
+            'remapProduct' => array(
+                'caption'            => $helper->__('Link to another Magento Product'),
+                'group'              => 'other',
+                'field'              => 'id',
+                'only_remap_product' => true,
+                'onclick_action'     => 'ListingGridObj.actions[\'remapProductAction\']'
             )
         );
-
-        $actions['remapProduct'] = array(
-            'caption'            => $helper->__('Link to another Magento Product'),
-            'group'              => 'other',
-            'field'              => 'id',
-            'only_remap_product' => true,
-            'onclick_action'     => 'ListingGridObj.actions[\'remapProductAction\']'
-        );
-
-        return $actions;
     }
 
     //########################################
@@ -256,7 +259,17 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View_Settings_Grid
             $this->getMassactionBlock()->addItem(
                 'changeProductTypeId',
                 array(
-                    'label'   => Mage::helper('M2ePro')->__('Assign Product Type'),
+                    'label'   => Mage::helper('M2ePro')->__('Assign'),
+                    'url'     => '',
+                    'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
+                ),
+                'product_type'
+            );
+
+            $this->getMassactionBlock()->addItem(
+                'unassignProductTypeId',
+                array(
+                    'label'   => Mage::helper('M2ePro')->__('Unassign'),
                     'url'     => '',
                     'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
                 ),

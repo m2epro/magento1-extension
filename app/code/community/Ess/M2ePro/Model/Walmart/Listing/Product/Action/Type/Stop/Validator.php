@@ -25,10 +25,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Stop_Validator
             return false;
         }
 
-        if (!$this->validateWalmartProductType()) {
-            return false;
-        }
-
         $params = $this->getParams();
         if (empty($params['remove']) && !$this->validateMissedOnChannelBlocked()) {
             return false;

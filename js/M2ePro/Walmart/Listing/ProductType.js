@@ -80,6 +80,35 @@ window.WalmartListingProductType = Class.create(Action, {
         });
     },
 
+    unassign: function (productsIds) {
+        var self = this;
+
+        new Ajax.Request(M2ePro.url.unassignProductType, {
+            method: 'post',
+            parameters: {
+                products_ids: productsIds
+            },
+            onSuccess: function (transport) {
+
+                if (!transport.responseText.isJSON()) {
+                    self.alert(transport.responseText);
+                    return;
+                }
+
+                self.gridHandler.unselectAllAndReload();
+
+                var response = transport.responseText.evalJSON();
+
+                if (response.messages.length > 0) {
+                    MessageObj.clear();
+                    response.messages.each(function (msg) {
+                        MessageObj['add' + msg.type[0].toUpperCase() + msg.type.slice(1)](msg.text);
+                    });
+                }
+            }
+        });
+    },
+
     // ---------------------------------------
 
     openPopUp: function(mode, title, productsIds, magentoCategoriesIds, contentData)

@@ -1,17 +1,9 @@
 <?php
 
-/*
- * @author     M2E Pro Developers Team
- * @copyright  M2E LTD
- * @license    Commercial use is forbidden
- */
-
 class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Revise_Request
     extends Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Request
 {
     const PRODUCT_ID_UPDATE_METADATA_KEY = 'product_id_update_details';
-
-    //########################################
 
     protected function getActionData()
     {
@@ -24,7 +16,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Revise_Request
             $this->getLagTimeData(),
             $this->getPriceData(),
             $this->getPromotionsData(),
-            $this->getDetailsData()
+            $this->getRequestDetailsData()
         );
 
         $params = $this->getParams();
@@ -57,5 +49,23 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Revise_Request
         return $data;
     }
 
-    //########################################
+
+    /**
+     * @return array
+     */
+    public function getRequestDetailsData()
+    {
+        if (!$this->getWalmartMarketplace()->isSupportedProductType()) {
+            return $this->getDetailsData();
+        }
+
+        if (
+            $this->getWalmartMarketplace()->isSupportedProductType()
+            && $this->getWalmartListingProduct()->isExistsProductType()
+        ) {
+            return $this->getDetailsData();
+        }
+
+        return array();
+    }
 }

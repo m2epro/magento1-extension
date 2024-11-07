@@ -338,6 +338,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View extends Mage_Adminhtml_Blo
         $validateProductsForProductTypeAssign = $this->getUrl(
             '*/adminhtml_walmart_listing/validateProductsForProductTypeAssign'
         );
+        $unassignProductType = $this->getUrl('*/adminhtml_walmart_listing/unassignProductType');
         $viewProductTypesGrid = $this->getUrl('*/adminhtml_walmart_listing/viewProductTypesGrid');
 
         $templateDescriptionPopupTitle = $helper->escapeJs($helper->__('Assign Description Policy'));
@@ -442,6 +443,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View extends Mage_Adminhtml_Blo
     M2ePro.url.mapToProductType = '{$mapToProductType}';
     M2ePro.url.unmapFromTemplateDescription = '{$unmapFromTemplateDescription}';
     M2ePro.url.validateProductsForProductTypeAssign = '{$validateProductsForProductTypeAssign}';
+    M2ePro.url.unassignProductType = '{$unassignProductType}';
     M2ePro.url.viewProductTypesGrid = '{$viewProductTypesGrid}';
 
     M2ePro.url.marketplace_synch = '{$marketplaceSynchUrl}';

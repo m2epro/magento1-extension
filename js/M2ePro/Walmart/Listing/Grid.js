@@ -45,6 +45,13 @@ window.WalmartListingGrid = Class.create(ListingGrid, {
                 this.productType.validateProductsForProductTypeAssign(id, null)
             }).bind(this),
 
+            unassignProductTypeIdAction: (function(id) {
+                id = id || this.getSelectedProductsString();
+                if (this.confirm()) {
+                    this.productType.unassign(id)
+                }
+            }).bind(this),
+
             remapProductAction: function(id) {
                 this.mappingHandler.openPopUp(id, null, this.listingId);
             }.bind(this),
