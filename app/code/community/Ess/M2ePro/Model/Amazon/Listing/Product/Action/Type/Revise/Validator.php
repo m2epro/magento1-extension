@@ -99,8 +99,9 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Revise_Validator
 
     protected function validateParentListingProduct()
     {
-        if ((!$this->getConfigurator()->isDetailsAllowed() && !$this->getConfigurator()->isImagesAllowed()) ||
-            !$this->getAmazonListingProduct()->isExistDescriptionTemplate()
+        if (
+            !$this->getConfigurator()->isDetailsAllowed()
+            || !$this->getAmazonListingProduct()->isExistProductTypeTemplate()
         ) {
             $this->addMessage('There was no need for this action. It was skipped.');
             return false;

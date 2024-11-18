@@ -92,7 +92,6 @@ class Ess_M2ePro_Adminhtml_Amazon_AccountController
         if (
             !$marketplace->getId()
             || $marketplace->getComponentMode() !== Ess_M2ePro_Helper_Component_Amazon::NICK
-            || $marketplace->getStatus() !== Ess_M2ePro_Model_Marketplace::STATUS_ENABLE
         ) {
             return $this->getResponse()->setBody(
                 Mage::helper('M2ePro')->jsonEncode(

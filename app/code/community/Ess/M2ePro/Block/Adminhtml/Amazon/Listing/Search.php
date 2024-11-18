@@ -117,17 +117,6 @@ HTML;
         );
         // ---------------------------------------
 
-        // ---------------------------------------
-        $url = $this->getUrl(
-            '*/adminhtml_amazon_template_description/index'
-        );
-        $items[] = array(
-            'url' => $url,
-            'label' => Mage::helper('M2ePro')->__('Description Policies'),
-            'target' => '_blank'
-        );
-        // ---------------------------------------
-
         return $items;
     }
 

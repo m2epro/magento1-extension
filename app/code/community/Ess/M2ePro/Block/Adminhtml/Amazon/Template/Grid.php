@@ -11,7 +11,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Template_Grid extends Mage_Adminhtml_Blo
     const TEMPLATE_SELLING_FORMAT    = 'selling_format';
     const TEMPLATE_SYNCHRONIZATION   = 'synchronization';
     const TEMPLATE_SHIPPING          = 'shipping';
-    const TEMPLATE_DESCRIPTION       = 'description';
     const TEMPLATE_PRODUCT_TAX_CODE  = 'product_tax_code';
 
     protected $_enabledMarketplacesCollection;
@@ -88,69 +87,21 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Template_Grid extends Mage_Adminhtml_Blo
         // Prepare Shipping Template collection
         // ---------------------------------------
         $collectionShipping = Mage::getModel('M2ePro/Amazon_Template_Shipping')->getCollection();
+
+        $collectionShipping->getSelect()->join(
+            array('mm' => Mage::getResourceModel('M2ePro/Marketplace')->getMainTable()),
+            'main_table.marketplace_id=mm.id',
+            array()
+        );
+        $collectionShipping->addFieldToFilter('mm.status', Ess_M2ePro_Model_Marketplace::STATUS_ENABLE);
         $collectionShipping->getSelect()->reset(Varien_Db_Select::COLUMNS);
         $collectionShipping->getSelect()->columns(
             array(
                 'id as template_id',
                 'title',
                 new Zend_Db_Expr('\''.self::TEMPLATE_SHIPPING.'\' as `type`'),
-                new Zend_Db_Expr('NULL as `marketplace_title`'),
-                new Zend_Db_Expr('\'0\' as `marketplace_id`'),
-                'create_date',
-                'update_date',
-                new Zend_Db_Expr('NULL as `category_path`'),
-                new Zend_Db_Expr('NULL as `browsenode_id`'),
-                new Zend_Db_Expr('NULL as `is_new_asin_accepted`')
-            )
-        );
-        // ---------------------------------------
-
-        // Prepare description collection
-        // ---------------------------------------
-        $collectionDescription = Mage::helper('M2ePro/Component_Amazon')->getCollection('Template_Description');
-
-        $collectionDescription->getSelect()->join(
-            array('mm' => Mage::getModel('M2ePro/Marketplace')->getResource()->getMainTable()),
-            'mm.id=second_table.marketplace_id',
-            array()
-        );
-
-        $collectionDescription->addFieldToFilter('mm.status', Ess_M2ePro_Model_Marketplace::STATUS_ENABLE);
-
-        $collectionDescription->getSelect()->reset(Varien_Db_Select::COLUMNS);
-        $collectionDescription->getSelect()->join(
-            array('mm2' => Mage::getModel('M2ePro/Marketplace')->getResource()->getMainTable()),
-            'second_table.marketplace_id=mm2.id',
-            array()
-        );
-        $collectionDescription->getSelect()->columns(
-            array(
-                'id as template_id',
-                'title',
-                new Zend_Db_Expr('\''.self::TEMPLATE_DESCRIPTION.'\' as `type`'),
-                new Zend_Db_Expr('mm2.title as `marketplace_title`'),
-                new Zend_Db_Expr('mm2.id as `marketplace_id`'),
-                'create_date',
-                'update_date',
-                'second_table.category_path',
-                'second_table.browsenode_id',
-                'second_table.is_new_asin_accepted'
-            )
-        );
-        // ---------------------------------------
-
-        // Prepare description collection
-        // ---------------------------------------
-        $collectionProductTaxCode = Mage::getModel('M2ePro/Amazon_Template_ProductTaxCode')->getCollection();
-
-        $collectionProductTaxCode->getSelect()->reset(Varien_Db_Select::COLUMNS);
-        $collectionProductTaxCode->getSelect()->columns(
-            array(
-                'id as template_id',
-                'title',
-                new Zend_Db_Expr('\'' . self::TEMPLATE_PRODUCT_TAX_CODE . '\' as `type`'),
-                new Zend_Db_Expr('NULL as `marketplace_title`'),
-                new Zend_Db_Expr('\'0\' as `marketplace_id`'),
+                new Zend_Db_Expr('mm.title as `marketplace_title`'),
+                new Zend_Db_Expr('mm.id as `marketplace_id`'),
                 'create_date',
                 'update_date',
                 new Zend_Db_Expr('NULL as `category_path`'),
@@ -165,9 +116,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Template_Grid extends Mage_Adminhtml_Blo
         $collectionsArray = array(
             $collectionSellingFormat->getSelect(),
             $collectionSynchronization->getSelect(),
-            $collectionDescription->getSelect(),
             $collectionShipping->getSelect(),
-            $collectionProductTaxCode->getSelect()
         );
 
         $unionSelect = $connRead->select();
@@ -186,10 +135,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Template_Grid extends Mage_Adminhtml_Blo
                 'marketplace_title',
                 'marketplace_id',
                 'create_date',
-                'update_date',
-                'category_path',
-                'browsenode_id',
-                'is_new_asin_accepted'
+                'update_date'
             )
         );
         // ---------------------------------------
@@ -211,8 +157,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Template_Grid extends Mage_Adminhtml_Blo
                 'index'                     => 'title',
                 'escape'                    => true,
                 'filter_index'              => 'main_table.title',
-                'frame_callback'            => array($this, 'callbackColumnTitle'),
-                'filter_condition_callback' => array($this, 'callbackFilterTitle')
             )
         );
 
@@ -227,7 +171,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Template_Grid extends Mage_Adminhtml_Blo
                 'filter_index' => 'main_table.type',
                 'options'      => array(
                     self::TEMPLATE_SELLING_FORMAT   => Mage::helper('M2ePro')->__('Selling'),
-                    self::TEMPLATE_DESCRIPTION      => Mage::helper('M2ePro')->__('Description'),
                     self::TEMPLATE_SYNCHRONIZATION  => Mage::helper('M2ePro')->__('Synchronization'),
                     self::TEMPLATE_SHIPPING         => Mage::helper('M2ePro')->__('Shipping'),
                     self::TEMPLATE_PRODUCT_TAX_CODE => Mage::helper('M2ePro')->__('Product Tax Code'),
@@ -323,31 +266,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Template_Grid extends Mage_Adminhtml_Blo
     }
 
     //########################################
-
-    public function callbackColumnTitle($value, $row, $column, $isExport)
-    {
-        if ($row->getData('type') != self::TEMPLATE_DESCRIPTION) {
-            return $value;
-        }
-
-        $categoryWord = Mage::helper('M2ePro')->__('Category');
-        $categoryPath = !empty($row['category_path']) ? "{$row['category_path']} ({$row['browsenode_id']})"
-            : Mage::helper('M2ePro')->__('Not Set');
-
-        $newAsin = Mage::helper('M2ePro')->__('New ASIN/ISBN');
-        $newAsinAccepted = Mage::helper('M2ePro')->__('No');
-        if ($row->getData('is_new_asin_accepted') == 1) {
-            $newAsinAccepted = Mage::helper('M2ePro')->__('Yes');
-        }
-
-        return <<<HTML
-{$value}
-<div>
-    <span style="font-weight: bold">{$newAsin}</span>: <span style="color: #505050">{$newAsinAccepted}</span><br/>
-    <span style="font-weight: bold">{$categoryWord}</span>: <span style="color: #505050">{$categoryPath}</span><br/>
-</div>
-HTML;
-    }
 
     public function callbackColumnMarketplace($value, $row, $column, $isExport)
     {

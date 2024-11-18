@@ -317,7 +317,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Amazon_Grid
         $groups = array(
             'actions'            => Mage::helper('M2ePro')->__('Actions'),
             'asin_isbn'          => Mage::helper('M2ePro')->__('ASIN / ISBN'),
-            'description_policy' => Mage::helper('M2ePro')->__('Description Policy'),
             'other'              => Mage::helper('M2ePro')->__('Other'),
         );
 
@@ -1264,7 +1263,7 @@ HTML;
 
         if ($searchSettingsStatus == Ess_M2ePro_Model_Amazon_Listing_Product::SEARCH_SETTINGS_STATUS_NOT_FOUND) {
             $tip = Mage::helper('M2ePro')->__(
-                'There were no Products found on Amazon according to the Listing Search Settings.'
+                'There were no Products found on Amazon according to the Listing Product Identifiers.'
             );
             $tip = Mage::helper('M2ePro')->escapeJs($tip);
 

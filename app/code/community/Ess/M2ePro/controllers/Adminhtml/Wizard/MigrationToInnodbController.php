@@ -95,15 +95,33 @@ class Ess_M2ePro_Adminhtml_Wizard_MigrationToInnodbController extends Ess_M2ePro
 
     public function runSynchNowAction()
     {
-        // @codingStandardsIgnoreLine
-        session_write_close();
-
         $component = $this->getRequest()->getParam('component');
         /** @var Ess_M2ePro_Model_Marketplace $marketplace */
         $marketplace = Mage::helper('M2ePro/Component')->getUnknownObject(
             'Marketplace',
             (int)$this->getRequest()->getParam('marketplace_id')
         );
+
+        if (strtolower($component) === 'amazon') {
+            /** @var Ess_M2ePro_Model_Amazon_Dictionary_MarketplaceService $amazonDictionaryMarketplaceService */
+            $amazonDictionaryMarketplaceService = Mage::getModel('M2ePro/Amazon_Dictionary_MarketplaceService');
+
+            $result = 'success';
+            try {
+                $amazonDictionaryMarketplaceService->update($marketplace);
+            } catch (\Exception $e) {
+               $result = 'error';
+            }
+
+            return $this->getResponse()->setBody(
+                Mage::helper('M2ePro')->jsonEncode(
+                    array('result' => $result)
+                )
+            );
+        }
+
+        // @codingStandardsIgnoreLine
+        session_write_close();
 
         $component = ucfirst(strtolower($component));
         if ($component === 'Walmart') {

@@ -28,8 +28,13 @@ class Ess_M2ePro_Block_Adminhtml_Wizard_InstallationAmazon_Breadcrumb
                     'description' => Mage::helper('M2ePro')->__('Account Onboarding'),
                 ),
                 array(
-                    'id'          => 'listingTutorial',
+                    'id'          => 'settings',
                     'title'       => Mage::helper('M2ePro')->__('Step 3'),
+                    'description' => Mage::helper('M2ePro')->__('General Settings'),
+                ),
+                array(
+                    'id'          => 'listingTutorial',
+                    'title'       => Mage::helper('M2ePro')->__('Step 4'),
                     'description' => Mage::helper('M2ePro')->__('First Listing Creation'),
                 ),
             )

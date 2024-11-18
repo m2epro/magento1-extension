@@ -332,7 +332,12 @@ HTML
             )
         );
 
-        $shippingTemplates = $this->getShippingTemplates();
+        $shippingTemplates = $this->getListing() !== null
+            ? $this->getShippingTemplatesByMarketplace(
+                $this->getListing()->getMarketplace()
+            )
+            : $this->getAllShippingTemplates();
+
         $style = count($shippingTemplates) === 0 ? 'display: none' : '';
 
         $templateShipping = new Varien_Data_Form_Element_Select(
@@ -532,153 +537,6 @@ HTML
                 'after_element_html' => $attributesSelect->toHtml() . $attributesButton->toHtml(),
                 'value'              => $formData['condition_note_value']
             )
-        );
-
-        // Listing Photos
-        $fieldset = $form->addFieldset(
-            'magento_block_amazon_listing_add_images',
-            array(
-                'legend'      => $helper->__('Listing Photos'),
-                'collapsable' => true
-            )
-        );
-
-        $fieldset->addField(
-            'image_main_attribute',
-            'hidden',
-            array(
-                'name'  => 'image_main_attribute',
-                'value' => $formData['image_main_attribute']
-            )
-        );
-
-        $preparedAttributes = array();
-        foreach ($attributesByTypes['text_images'] as $attribute) {
-            $attrs = array('attribute_code' => $attribute['code']);
-            if ($formData['image_main_mode'] == AmazonListing::IMAGE_MAIN_MODE_ATTRIBUTE
-                && $attribute['code'] == $formData['image_main_attribute']) {
-                $attrs['selected'] = 'selected';
-            }
-
-            $preparedAttributes[] = array(
-                'attrs' => $attrs,
-                'value' => AmazonListing::IMAGE_MAIN_MODE_ATTRIBUTE,
-                'label' => $attribute['label'],
-            );
-        }
-
-        $fieldset->addField(
-            'image_main_mode',
-            Ess_M2ePro_Block_Adminhtml_Magento_Form_Element_Form::SELECT,
-            array(
-                'name'                     => 'image_main_mode',
-                'label'                    => $helper->__('Main Image'),
-                'required'                 => true,
-                'values'                   => array(
-                    AmazonListing::IMAGE_MAIN_MODE_NONE    => $helper->__('None'),
-                    AmazonListing::IMAGE_MAIN_MODE_PRODUCT => $helper->__('Product Base Image'),
-                    array(
-                        'label' => $helper->__('Magento Attributes'),
-                        'value' => $preparedAttributes,
-                        'attrs' => array('is_magento_attribute' => true)
-                    )
-                ),
-                'value'                    => $formData['image_main_mode'] != AmazonListing::IMAGE_MAIN_MODE_ATTRIBUTE
-                    ? $formData['image_main_mode'] : '',
-                'create_magento_attribute' => true,
-                'tooltip'                  => $helper->__(
-                    'You have an ability to add Photos for your Items to be displayed on the More Buying Choices Page.
-                    <br/>It is available only for Items with Used or Collectible Condition.'
-                ),
-                'allowed_attribute_types'  => 'text,textarea,select,multiselect'
-            )
-        );
-
-        $fieldset->addField(
-            'gallery_images_limit',
-            'hidden',
-            array(
-                'name'  => 'gallery_images_limit',
-                'value' => $formData['gallery_images_limit']
-            )
-        );
-
-        $fieldset->addField(
-            'gallery_images_attribute',
-            'hidden',
-            array(
-                'name'  => 'gallery_images_attribute',
-                'value' => $formData['gallery_images_attribute']
-            )
-        );
-
-        $preparedLimitOptions[] = array(
-            'attrs' => array('attribute_code' => 1),
-            'value' => 1,
-            'label' => 1,
-        );
-        if ($formData['gallery_images_limit'] == 1 &&
-            $formData['gallery_images_mode'] != AmazonListing::GALLERY_IMAGES_MODE_NONE) {
-            $preparedLimitOptions[0]['attrs']['selected'] = 'selected';
-        }
-
-        for ($i = 2; $i <= AmazonListing::GALLERY_IMAGES_COUNT_MAX; $i++) {
-            $option = array(
-                'attrs' => array('attribute_code' => $i),
-                'value' => AmazonListing::GALLERY_IMAGES_MODE_PRODUCT,
-                'label' => $helper->__('Up to') . ' ' . $i,
-            );
-
-            if ($formData['gallery_images_limit'] == $i) {
-                $option['attrs']['selected'] = 'selected';
-            }
-
-            $preparedLimitOptions[] = $option;
-        }
-
-        $preparedAttributes = array();
-        foreach ($attributesByTypes['text_images'] as $attribute) {
-            $attrs = array('attribute_code' => $attribute['code']);
-            if ($formData['gallery_images_mode'] == AmazonListing::GALLERY_IMAGES_MODE_ATTRIBUTE
-                && $attribute['code'] == $formData['gallery_images_attribute']) {
-                $attrs['selected'] = 'selected';
-            }
-
-            $preparedAttributes[] = array(
-                'attrs' => $attrs,
-                'value' => AmazonListing::GALLERY_IMAGES_MODE_ATTRIBUTE,
-                'label' => $attribute['label'],
-            );
-        }
-
-        $fieldConfig = array(
-            'container_id'             => 'gallery_images_mode_tr',
-            'name'                     => 'gallery_images_mode',
-            'label'                    => $helper->__('Additional Images'),
-            'values'                   => array(
-                AmazonListing::GALLERY_IMAGES_MODE_NONE => $helper->__('None'),
-                array(
-                    'label' => $helper->__('Product Images Quantity'),
-                    'value' => $preparedLimitOptions
-                ),
-                array(
-                    'label' => $helper->__('Magento Attribute'),
-                    'value' => $preparedAttributes,
-                    'attrs' => array('is_magento_attribute' => true)
-                )
-            ),
-            'create_magento_attribute' => true,
-            'allowed_attribute_types'  => 'text,textarea,select,multiselect',
-        );
-
-        if ($formData['gallery_images_mode'] == AmazonListing::GALLERY_IMAGES_MODE_NONE) {
-            $fieldConfig['value'] = $formData['gallery_images_mode'];
-        }
-
-        $fieldset->addField(
-            'gallery_images_mode',
-            Ess_M2ePro_Block_Adminhtml_Magento_Form_Element_Form::SELECT,
-            $fieldConfig
         );
 
         // Gift Wrap
@@ -963,90 +821,7 @@ HTML
         );
         Mage::helper('M2ePro/View')->getJsPhpRenderer()->addClassConstants('Ess_M2ePro_Model_Amazon_Listing');
 
-        Mage::helper('M2ePro/View')->getJsUrlsRenderer()->addUrls(
-            array(
-                'templateCheckMessages'         => $this->getUrl(
-                    '*/adminhtml_template/checkMessages',
-                    array(
-                        'component_mode' => Ess_M2ePro_Helper_Component_Amazon::NICK
-                    )
-                ),
-                'addNewSellingFormatTemplate'   => $this->getUrl(
-                    '*/adminhtml_amazon_template_sellingFormat/new',
-                    array(
-                        'wizard'        => $this->getRequest()->getParam('wizard'),
-                        'close_on_save' => 1
-                    )
-                ),
-                'editSellingFormatTemplate'     => $this->getUrl(
-                    '*/adminhtml_amazon_template_sellingFormat/edit',
-                    array(
-                        'wizard'        => $this->getRequest()->getParam('wizard'),
-                        'close_on_save' => 1
-                    )
-                ),
-                'getSellingFormatTemplates'     => $this->getUrl(
-                    '*/adminhtml_general/modelGetAll',
-                    array(
-                        'model'          => 'Template_SellingFormat',
-                        'id_field'       => 'id',
-                        'data_field'     => 'title',
-                        'sort_field'     => 'title',
-                        'sort_dir'       => 'ASC',
-                        'component_mode' => Ess_M2ePro_Helper_Component_Amazon::NICK
-                    )
-                ),
-                'addNewSynchronizationTemplate' => $this->getUrl(
-                    '*/adminhtml_amazon_template_synchronization/new',
-                    array(
-                        'wizard'        => $this->getRequest()->getParam('wizard'),
-                        'close_on_save' => 1
-                    )
-                ),
-                'editSynchronizationTemplate'   => $this->getUrl(
-                    '*/adminhtml_amazon_template_synchronization/edit',
-                    array(
-                        'wizard'        => $this->getRequest()->getParam('wizard'),
-                        'close_on_save' => 1
-                    )
-                ),
-                'getSynchronizationTemplates'   => $this->getUrl(
-                    '*/adminhtml_general/modelGetAll',
-                    array(
-                        'model'          => 'Template_Synchronization',
-                        'id_field'       => 'id',
-                        'data_field'     => 'title',
-                        'sort_field'     => 'title',
-                        'sort_dir'       => 'ASC',
-                        'component_mode' => Ess_M2ePro_Helper_Component_Amazon::NICK
-                    )
-                ),
-                'addNewShippingTemplate'        => $this->getUrl(
-                    '*/adminhtml_amazon_template_shipping/new',
-                    array(
-                        'wizard'        => $this->getRequest()->getParam('wizard'),
-                        'close_on_save' => 1
-                    )
-                ),
-                'editShippingTemplate'          => $this->getUrl(
-                    '*/adminhtml_amazon_template_shipping/edit',
-                    array(
-                        'wizard'        => $this->getRequest()->getParam('wizard'),
-                        'close_on_save' => 1
-                    )
-                ),
-                'getShippingTemplates'          => $this->getUrl(
-                    '*/adminhtml_general/modelGetAll',
-                    array(
-                        'model'      => 'Amazon_Template_Shipping',
-                        'id_field'   => 'id',
-                        'data_field' => 'title',
-                        'sort_field' => 'title',
-                        'sort_dir'   => 'ASC'
-                    )
-                )
-            )
-        );
+        Mage::helper('M2ePro/View')->getJsUrlsRenderer()->addUrls($this->getUrls());
 
         Mage::helper('M2ePro/View')->getJsTranslatorRenderer()->addTranslations(
             array(
@@ -1079,6 +854,114 @@ JS
         return parent::_prepareLayout();
     }
 
+    /**
+     * @return array
+     */
+    private function getUrls()
+    {
+        $urls = array(
+            'templateCheckMessages' => $this->getUrl(
+                '*/adminhtml_template/checkMessages',
+                array(
+                    'component_mode' => Ess_M2ePro_Helper_Component_Amazon::NICK
+                )
+            ),
+            'addNewSellingFormatTemplate' => $this->getUrl(
+                '*/adminhtml_amazon_template_sellingFormat/new',
+                array(
+                    'wizard' => $this->getRequest()->getParam('wizard'),
+                    'close_on_save' => 1
+                )
+            ),
+            'editSellingFormatTemplate' => $this->getUrl(
+                '*/adminhtml_amazon_template_sellingFormat/edit',
+                array(
+                    'wizard' => $this->getRequest()->getParam('wizard'),
+                    'close_on_save' => 1
+                )
+            ),
+            'getSellingFormatTemplates' => $this->getUrl(
+                '*/adminhtml_general/modelGetAll',
+                array(
+                    'model' => 'Template_SellingFormat',
+                    'id_field' => 'id',
+                    'data_field' => 'title',
+                    'sort_field' => 'title',
+                    'sort_dir' => 'ASC',
+                    'component_mode' => Ess_M2ePro_Helper_Component_Amazon::NICK
+                )
+            ),
+            'addNewSynchronizationTemplate' => $this->getUrl(
+                '*/adminhtml_amazon_template_synchronization/new',
+                array(
+                    'wizard' => $this->getRequest()->getParam('wizard'),
+                    'close_on_save' => 1
+                )
+            ),
+            'editSynchronizationTemplate' => $this->getUrl(
+                '*/adminhtml_amazon_template_synchronization/edit',
+                array(
+                    'wizard' => $this->getRequest()->getParam('wizard'),
+                    'close_on_save' => 1
+                )
+            ),
+            'getSynchronizationTemplates' => $this->getUrl(
+                '*/adminhtml_general/modelGetAll',
+                array(
+                    'model' => 'Template_Synchronization',
+                    'id_field' => 'id',
+                    'data_field' => 'title',
+                    'sort_field' => 'title',
+                    'sort_dir' => 'ASC',
+                    'component_mode' => Ess_M2ePro_Helper_Component_Amazon::NICK
+                )
+            ),
+            'editShippingTemplate' => $this->getUrl(
+                '*/adminhtml_amazon_template_shipping/edit',
+                array(
+                    'wizard' => $this->getRequest()->getParam('wizard'),
+                    'close_on_save' => 1
+                )
+            ),
+        );
+
+        //----------------------------------
+
+        $getShippingTemplatesUrlParams = array();
+        if ($this->getListing() !== null) {
+            $getShippingTemplatesUrlParams['marketplace_id'] = $this->getListing()
+                                                                  ->getMarketplace()
+                                                                  ->getId();
+        }
+
+        $urls['getShippingTemplates'] = $this->getUrl(
+            '*/adminhtml_amazon_template_shipping/getOptionsOfShippingTemplates',
+            $getShippingTemplatesUrlParams
+        );
+
+        //----------------------------------
+
+        $addNewShippingTemplateUrlParams = array(
+            'wizard' => $this->getRequest()->getParam('wizard'),
+            'close_on_save' => 1,
+        );
+
+        if ($this->getListing() !== null) {
+            $addNewShippingTemplateUrlParams['account_id'] = $this->getListing()
+                                                                  ->getAccount()
+                                                                  ->getId();
+        }
+
+        $urls['addNewShippingTemplate'] = $this->getUrl(
+            '*/adminhtml_amazon_template_shipping/new',
+            $addNewShippingTemplateUrlParams
+        );
+
+        //----------------------------------
+
+        return $urls;
+    }
+
     //########################################
 
     protected function getRecommendedConditionValues()
@@ -1090,6 +973,16 @@ JS
                 'attrs' => array('attribute_code' => AmazonListing::CONDITION_NEW),
                 'value' => AmazonListing::CONDITION_MODE_DEFAULT,
                 'label' => Mage::helper('M2ePro')->__('New'),
+            ),
+            array(
+                'attrs' => array('attribute_code' => AmazonListing::CONDITION_NEW_OEM),
+                'value' => AmazonListing::CONDITION_MODE_DEFAULT,
+                'label' => Mage::helper('M2ePro')->__('New - OEM'),
+            ),
+            array(
+                'attrs' => array('attribute_code' => AmazonListing::CONDITION_NEW_OPEN_BOX),
+                'value' => AmazonListing::CONDITION_MODE_DEFAULT,
+                'label' => Mage::helper('M2ePro')->__('New - Open Box'),
             ),
             array(
                 'attrs' => array('attribute_code' => AmazonListing::CONDITION_USED_LIKE_NEW),
@@ -1212,12 +1105,6 @@ HTML
             'condition_note_mode'        => AmazonListing::CONDITION_NOTE_MODE_NONE,
             'condition_note_value'       => '',
 
-            'image_main_mode'          => AmazonListing::IMAGE_MAIN_MODE_NONE,
-            'image_main_attribute'     => '',
-            'gallery_images_mode'      => AmazonListing::GALLERY_IMAGES_MODE_NONE,
-            'gallery_images_limit'     => '',
-            'gallery_images_attribute' => '',
-
             'gift_wrap_mode'      => AmazonListing::GIFT_WRAP_MODE_NO,
             'gift_wrap_attribute' => '',
 
@@ -1310,7 +1197,27 @@ HTML
         return $result['items'];
     }
 
-    protected function getShippingTemplates()
+    private function getShippingTemplatesByMarketplace(Ess_M2ePro_Model_Marketplace $marketplace)
+    {
+        /** @var $collection Ess_M2ePro_Model_Resource_Collection_Abstract */
+        $collection = Mage::getModel('M2ePro/Amazon_Template_Shipping')->getCollection();
+        $collection->addFieldToFilter('marketplace_id', $marketplace->getId());
+        $collection->setOrder('title', Varien_Data_Collection::SORT_ORDER_ASC);
+
+        $collection->resetByType(
+            Zend_Db_Select::COLUMNS,
+            array(
+                'value' => 'id',
+                'label' => 'title'
+            )
+        );
+
+        $result = $collection->toArray();
+
+        return $result['items'];
+    }
+
+    private function getAllShippingTemplates()
     {
         /** @var $collection Ess_M2ePro_Model_Resource_Collection_Abstract */
         $collection = Mage::getModel('M2ePro/Amazon_Template_Shipping')->getCollection();

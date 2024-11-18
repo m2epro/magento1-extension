@@ -57,7 +57,7 @@ HTML
                     Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'asin-isbn-management#271e3b536b4045cf847a54ec26564ff3'),
                     Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'step-3-specify-search-settings')
                 ),
-                'title'   => Mage::helper('M2ePro')->__('Search Settings')
+                'title'   => Mage::helper('M2ePro')->__('Product Identifiers')
             )
         );
         $this->setChild('help_block', $helpBlock);

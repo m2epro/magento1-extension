@@ -29,7 +29,6 @@ window.AmazonListingVariationProductManageVariationsGrid = Class.create(ListingG
     {
         $super();
         this.actionHandler = new AmazonListingAction(this);
-        this.templateDescription = new AmazonListingTemplateDescription(this);
 
         this.actions = Object.extend(this.actions, {
             duplicateAction: this.duplicateProducts.bind(this),

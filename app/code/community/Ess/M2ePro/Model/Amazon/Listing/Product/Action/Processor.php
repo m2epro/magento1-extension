@@ -13,7 +13,6 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Processor
     const FEED_TYPE_UPDATE_QTY     = 'update_qty';
     const FEED_TYPE_UPDATE_PRICE   = 'update_price';
     const FEED_TYPE_UPDATE_DETAILS = 'update_details';
-    const FEED_TYPE_UPDATE_IMAGES  = 'update_images';
 
     const LIST_PRIORITY           = 25;
     const RELIST_PRIORITY         = 125;
@@ -22,7 +21,6 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Processor
     const REVISE_QTY_PRIORITY     = 500;
     const REVISE_PRICE_PRIORITY   = 250;
     const REVISE_DETAILS_PRIORITY = 50;
-    const REVISE_IMAGES_PRIORITY  = 50;
 
     const PENDING_REQUEST_MAX_LIFE_TIME = 86400;
 
@@ -64,7 +62,6 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Processor
                 self::FEED_TYPE_UPDATE_QTY     => array(),
                 self::FEED_TYPE_UPDATE_PRICE   => array(),
                 self::FEED_TYPE_UPDATE_DETAILS => array(),
-                self::FEED_TYPE_UPDATE_IMAGES  => array(),
             );
 
             $this->fillFeedsPacks(
@@ -261,12 +258,6 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Processor
                             case 'details':
                                 if ($listingProductConfigurator->isDetailsAllowed()) {
                                     $configurator->allowDetails();
-                                }
-                                break;
-
-                            case 'images':
-                                if ($listingProductConfigurator->isImagesAllowed()) {
-                                    $configurator->allowImages();
                                 }
                                 break;
                         }
@@ -540,11 +531,6 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Processor
                         $existedConfigurator->disallowDetails();
                         unset($tags['details']);
                         break;
-
-                    case 'images':
-                        $existedConfigurator->disallowImages();
-                        unset($tags['images']);
-                        break;
                 }
             }
 
@@ -682,7 +668,6 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Processor
                 $this->getReviseQtyScheduledActionsPreparedCollection($merchantId)->getSelect(),
                 $this->getRevisePriceScheduledActionsPreparedCollection($merchantId)->getSelect(),
                 $this->getReviseDetailsScheduledActionsPreparedCollection($merchantId)->getSelect(),
-                $this->getReviseImagesScheduledActionsPreparedCollection($merchantId)->getSelect(),
                 $this->getStopScheduledActionsPreparedCollection($merchantId)->getSelect(),
                 $this->getDeleteScheduledActionsPreparedCollection($merchantId)->getSelect(),
             )
@@ -877,35 +862,6 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Processor
      * @return Ess_M2ePro_Model_Resource_Listing_Product_ScheduledAction_Collection
      * @throws Ess_M2ePro_Model_Exception_Logic
      */
-    protected function getReviseImagesScheduledActionsPreparedCollection($merchantId)
-    {
-        /** @var Ess_M2ePro_Model_Resource_Listing_Product_ScheduledAction_Collection $collection */
-        $collection = Mage::getResourceModel('M2ePro/Listing_Product_ScheduledAction_Collection');
-        $collection->setComponentMode(Ess_M2ePro_Helper_Component_Amazon::NICK)
-            ->getScheduledActionsPreparedCollection(
-                self::REVISE_IMAGES_PRIORITY,
-                Ess_M2ePro_Model_Listing_Product::ACTION_REVISE
-            )
-            ->addTagFilter('images', true)
-            ->joinAccountTable()
-            ->addFilteredTagColumnToSelect(new Zend_Db_Expr("'images'"))
-            ->addFieldToFilter('account.merchant_id', $merchantId);
-
-        if (Mage::helper('M2ePro/Module')->isProductionEnvironment()) {
-            $minAllowedWaitInterval = (int)$this->getConfigValue(
-                '/amazon/listing/product/action/revise_images/', 'min_allowed_wait_interval'
-            );
-            $collection->addCreatedBeforeFilter($minAllowedWaitInterval);
-        }
-
-        return $collection;
-    }
-
-    /**
-     * @param $merchantId
-     * @return Ess_M2ePro_Model_Resource_Listing_Product_ScheduledAction_Collection
-     * @throws Ess_M2ePro_Model_Exception_Logic
-     */
     protected function getStopScheduledActionsPreparedCollection($merchantId)
     {
         /** @var Ess_M2ePro_Model_Resource_Listing_Product_ScheduledAction_Collection $collection */
@@ -1051,9 +1007,6 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Processor
                     $feedTypes[] = self::FEED_TYPE_UPDATE_DETAILS;
                 }
 
-                if ($tag == 'images') {
-                    $feedTypes[] = self::FEED_TYPE_UPDATE_IMAGES;
-                }
                 return $feedTypes;
 
             case Ess_M2ePro_Model_Listing_Product::ACTION_STOP:

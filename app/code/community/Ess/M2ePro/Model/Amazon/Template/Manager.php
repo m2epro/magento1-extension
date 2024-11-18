@@ -10,7 +10,6 @@ class Ess_M2ePro_Model_Amazon_Template_Manager
 {
     const COLUMN_PREFIX = 'template';
 
-    const TEMPLATE_DESCRIPTION      = 'description';
     const TEMPLATE_PRODUCT_TAX_CODE = 'product_tax_code';
     const TEMPLATE_SELLING_FORMAT   = 'selling_format';
     const TEMPLATE_SHIPPING         = 'shipping';
@@ -26,7 +25,6 @@ class Ess_M2ePro_Model_Amazon_Template_Manager
     public function getAllTemplates()
     {
         return array(
-            self::TEMPLATE_DESCRIPTION,
             self::TEMPLATE_PRODUCT_TAX_CODE,
             self::TEMPLATE_SELLING_FORMAT,
             self::TEMPLATE_SHIPPING,
@@ -42,7 +40,6 @@ class Ess_M2ePro_Model_Amazon_Template_Manager
     public function getMarketplaceDependentTemplates()
     {
         return array(
-            self::TEMPLATE_DESCRIPTION,
             self::TEMPLATE_SHIPPING,
             self::TEMPLATE_PRODUCT_TAX_CODE
         );

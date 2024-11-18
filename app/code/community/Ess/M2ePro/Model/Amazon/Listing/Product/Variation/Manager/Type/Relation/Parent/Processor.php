@@ -16,8 +16,8 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Pa
     /** @var Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Parent $_typeModel */
     protected $_typeModel = null;
 
-    /** @var Ess_M2ePro_Model_Template_Description $_descriptionTemplate */
-    protected $_descriptionTemplate = null;
+    /** @var Ess_M2ePro_Model_Amazon_Template_ProductType $_productTypeTemplate */
+    protected $_productTypeTemplate = null;
 
     protected $_possibleThemes = null;
 
@@ -178,23 +178,15 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Pa
     //########################################
 
     /**
-     * @return Ess_M2ePro_Model_Template_Description
+     * @return Ess_M2ePro_Model_Amazon_Template_ProductType|null
      */
-    public function getDescriptionTemplate()
+    public function getProductTypeTemplate()
     {
-        if ($this->_descriptionTemplate !== null) {
-            return $this->_descriptionTemplate;
+        if ($this->_productTypeTemplate !== null) {
+            return $this->_productTypeTemplate;
         }
 
-        return $this->_descriptionTemplate = $this->getAmazonListingProduct()->getDescriptionTemplate();
-    }
-
-    /**
-     * @return Ess_M2ePro_Model_Amazon_Template_Description
-     */
-    public function getAmazonDescriptionTemplate()
-    {
-        return $this->getDescriptionTemplate()->getChildObject();
+        return $this->_productTypeTemplate = $this->getAmazonListingProduct()->getProductTypeTemplate();
     }
 
     //########################################
@@ -210,11 +202,12 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Pa
 
         $marketPlaceId = $this->getMarketplaceId();
 
-        $possibleThemes = Mage::getModel('M2ePro/Amazon_Marketplace_Details')
-            ->setMarketplaceId($marketPlaceId)
-            ->getVariationThemes(
-                $this->getAmazonDescriptionTemplate()->getProductDataNick()
-            );
+        $productType = $this->getProductTypeTemplate();
+        if ($productType === null) {
+            return $this->_possibleThemes = array();
+        }
+
+        $possibleThemes = $productType->getDictionary()->getVariationThemes();
 
         $variationHelper = Mage::helper('M2ePro/Component_Amazon_Variation');
         $themesUsageData = $variationHelper->getThemesUsageData();

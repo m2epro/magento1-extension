@@ -99,6 +99,20 @@ class Ess_M2ePro_Model_Amazon_Connector_Dispatcher
         return $virtualConnector;
     }
 
+    public function getConnectorByClass($className, array $params = array(), $account = null)
+    {
+        if (is_int($account) || is_string($account)) {
+            $account = Mage::helper('M2ePro/Component_Amazon')->getCachedObject('Account', (int)$account);
+        }
+
+        /** @var Ess_M2ePro_Model_Connector_Command_Abstract $connectorObject */
+        $connectorObject = new $className($params, $account);
+        $connectorObject->setProtocol($this->getProtocol());
+
+        return $connectorObject;
+    }
+
+
     //####################################
 
     public function process(Ess_M2ePro_Model_Connector_Command_Abstract $connector)
@@ -108,8 +122,12 @@ class Ess_M2ePro_Model_Amazon_Connector_Dispatcher
 
     //####################################
 
+    /**
+     * @return Ess_M2ePro_Model_Amazon_Connector_Protocol
+     */
     protected function getProtocol()
     {
+        /** @var Ess_M2ePro_Model_Amazon_Connector_Protocol */
         return Mage::getModel('M2ePro/Amazon_Connector_Protocol');
     }
 

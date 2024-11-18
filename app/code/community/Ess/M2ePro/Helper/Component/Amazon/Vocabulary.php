@@ -97,25 +97,20 @@ class Ess_M2ePro_Helper_Component_Amazon_Vocabulary extends Ess_M2ePro_Helper_Mo
             }
 
             /** @var Ess_M2ePro_Model_Amazon_Listing_Product $amazonListingProduct */
-            $amazonListingProduct      = $newListingProduct->getChildObject();
-            $amazonDescriptionTemplate = $amazonListingProduct->getAmazonDescriptionTemplate();
+            $amazonListingProduct = $newListingProduct->getChildObject();
+            $productTypeTemplate = $amazonListingProduct->getProductTypeTemplate();
 
             $productAttributes = $amazonListingProduct->getVariationManager()->getTypeModel()->getProductAttributes();
             if (empty($productAttributes)) {
                 continue;
             }
 
-            if (isset($productRequirementsCache[$amazonDescriptionTemplate->getId()][count($productAttributes)])) {
+            if (isset($productRequirementsCache[$productTypeTemplate->getId()][count($productAttributes)])) {
                 $affectedListingsProducts[$newListingProduct->getId()] = $newListingProduct;
                 continue;
             }
 
-            $marketplaceDetails = Mage::getModel('M2ePro/Amazon_Marketplace_Details');
-            $marketplaceDetails->setMarketplaceId($newListingProduct->getListing()->getMarketplaceId());
-
-            $productDataNick = $amazonDescriptionTemplate->getProductDataNick();
-
-            foreach ($marketplaceDetails->getVariationThemes($productDataNick) as $themeNick => $themeData) {
+            foreach ($productTypeTemplate->getDictionary()->getVariationThemes() as $themeNick => $themeData) {
                 $themeAttributes = $themeData['attributes'];
 
                 if (count($themeAttributes) != count($productAttributes)) {
@@ -127,7 +122,7 @@ class Ess_M2ePro_Helper_Component_Amazon_Vocabulary extends Ess_M2ePro_Helper_Mo
                 }
 
                 $affectedListingsProducts[$newListingProduct->getId()] = $newListingProduct;
-                $productRequirementsCache[$amazonDescriptionTemplate->getId()][count($productAttributes)] = true;
+                $productRequirementsCache[$productTypeTemplate->getId()][count($productAttributes)] = true;
 
                 break;
             }

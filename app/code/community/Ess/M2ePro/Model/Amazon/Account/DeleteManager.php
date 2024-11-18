@@ -1,21 +1,16 @@
 <?php
 
-/*
- * @author     M2E Pro Developers Team
- * @copyright  M2E LTD
- * @license    Commercial use is forbidden
- */
-
 class Ess_M2ePro_Model_Amazon_Account_DeleteManager
 {
     /** @var Ess_M2ePro_Model_ActiveRecord_Factory */
-    protected $_activeRecordFactory;
-
-    //########################################
+    private $activeRecordFactory;
+    /** @var Ess_M2ePro_Model_Amazon_Template_Shipping_Delete */
+    private $templateShippingDeleteService;
 
     public function __construct()
     {
-        $this->_activeRecordFactory = Mage::getSingleton('M2ePro/ActiveRecord_Factory');
+        $this->activeRecordFactory = Mage::getSingleton('M2ePro/ActiveRecord_Factory');
+        $this->templateShippingDeleteService = Mage::getModel('M2ePro/Amazon_Template_Shipping_Delete');
     }
 
     /**
@@ -25,7 +20,7 @@ class Ess_M2ePro_Model_Amazon_Account_DeleteManager
      */
     public function process(Ess_M2ePro_Model_Account $account)
     {
-        $otherListings = $this->_activeRecordFactory->getObjectCollection('Listing_Other');
+        $otherListings = $this->activeRecordFactory->getObjectCollection('Listing_Other');
         $otherListings->addFieldToFilter('account_id', $account->getId());
         /** @var Ess_M2ePro_Model_Listing_Other $otherListing */
         foreach ($otherListings->getItems() as $otherListing) {
@@ -35,7 +30,7 @@ class Ess_M2ePro_Model_Amazon_Account_DeleteManager
             $this->assertSuccess($otherListing->deleteInstance(), 'Listing Other');
         }
 
-        $listings = $this->_activeRecordFactory->getObjectCollection('Listing');
+        $listings = $this->activeRecordFactory->getObjectCollection('Listing');
         $listings->addFieldToFilter('account_id', $account->getId());
         /** @var Ess_M2ePro_Model_Listing $listing */
         foreach ($listings->getItems() as $listing) {
@@ -47,7 +42,7 @@ class Ess_M2ePro_Model_Amazon_Account_DeleteManager
             $this->assertSuccess($listing->deleteInstance(), 'Listing');
         }
 
-        $orders = $this->_activeRecordFactory->getObjectCollection('Order');
+        $orders = $this->activeRecordFactory->getObjectCollection('Order');
         $orders->addFieldToFilter('account_id', $account->getId());
         /** @var Ess_M2ePro_Model_Order $order */
         foreach ($orders->getItems() as $order) {
@@ -63,7 +58,7 @@ class Ess_M2ePro_Model_Amazon_Account_DeleteManager
         $amazonAccount->deleteInventorySku();
         $amazonAccount->deleteProcessingListSku();
 
-        $itemCollection = $this->_activeRecordFactory->getObjectCollection('Amazon_Item');
+        $itemCollection = $this->activeRecordFactory->getObjectCollection('Amazon_Item');
         $itemCollection->addFieldToFilter('account_id', $amazonAccount->getId());
         /** @var Ess_M2ePro_Model_Amazon_Item $item */
         foreach ($itemCollection->getItems() as $item) {
@@ -81,6 +76,8 @@ class Ess_M2ePro_Model_Amazon_Account_DeleteManager
 
             $this->assertSuccess($amazonAccountRepricing->$amazonAccountRepricing(), 'Account Repricing');
         }
+
+        $this->templateShippingDeleteService->deleteByAccount($account);
 
         Mage::helper('M2ePro/Data_Cache_Permanent')->removeTagValues('account');
 

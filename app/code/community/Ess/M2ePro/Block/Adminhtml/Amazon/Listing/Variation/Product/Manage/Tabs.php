@@ -75,6 +75,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Variation_Product_Manage_Tabs
             )
         );
 
+        /** @var Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Variation_Product_Manage_Tabs_Settings $settingsBlock */
         $settingsBlock = $this->getLayout()
             ->createBlock('M2ePro/adminhtml_amazon_listing_variation_product_manage_tabs_settings')
             ->setListingProductId($this->getListingProductId());

@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Ess_M2ePro>
-            <version>6.70.2</version>
+            <version>6.71.0</version>
         </Ess_M2ePro>
     </modules>
     <default>
@@ -982,9 +982,6 @@
                     <Ebay_Template_Description>
                         <table>m2epro_ebay_template_description</table>
                     </Ebay_Template_Description>
-                    <Amazon_Template_Description>
-                        <table>m2epro_amazon_template_description</table>
-                    </Amazon_Template_Description>
                     <Walmart_Template_Description>
                         <table>m2epro_walmart_template_description</table>
                     </Walmart_Template_Description>
@@ -1224,6 +1221,7 @@
                     <Amazon_Template_SellingFormat_BusinessDiscount>
                         <table>m2epro_amazon_template_selling_format_business_discount</table>
                     </Amazon_Template_SellingFormat_BusinessDiscount>
+
                     <Amazon_Template_Shipping>
                         <table>m2epro_amazon_template_shipping</table>
                     </Amazon_Template_Shipping>
@@ -1232,12 +1230,17 @@
                         <table>m2epro_amazon_template_product_tax_code</table>
                     </Amazon_Template_ProductTaxCode>
 
-                    <Amazon_Template_Description_Definition>
-                        <table>m2epro_amazon_template_description_definition</table>
-                    </Amazon_Template_Description_Definition>
-                    <Amazon_Template_Description_Specific>
-                        <table>m2epro_amazon_template_description_specific</table>
-                    </Amazon_Template_Description_Specific>
+                    <Amazon_ProductType_AttributeMapping>
+                        <table>m2epro_amazon_product_type_attribute_mapping</table>
+                    </Amazon_ProductType_AttributeMapping>
+
+                    <Amazon_ProductType_Validation>
+                        <table>m2epro_amazon_product_type_validation</table>
+                    </Amazon_ProductType_Validation>
+
+                    <Amazon_Template_ProductType>
+                        <table>m2epro_amazon_template_product_type</table>
+                    </Amazon_Template_ProductType>
 
                     <!-- WALMART -->
 
@@ -1263,18 +1266,15 @@
 
                     <!-- DICTIONARIES -->
 
-                    <Amazon_Dictionary_Category>
-                        <table>m2epro_amazon_dictionary_category</table>
-                    </Amazon_Dictionary_Category>
-                    <Amazon_Dictionary_Category_Product_Data>
-                        <table>m2epro_amazon_dictionary_category_product_data</table>
-                    </Amazon_Dictionary_Category_Product_Data>
                     <Amazon_Dictionary_Marketplace>
                         <table>m2epro_amazon_dictionary_marketplace</table>
                     </Amazon_Dictionary_Marketplace>
-                    <Amazon_Dictionary_Specific>
-                        <table>m2epro_amazon_dictionary_specific</table>
-                    </Amazon_Dictionary_Specific>
+                    <Amazon_Dictionary_ProductType>
+                        <table>m2epro_amazon_dictionary_product_type</table>
+                    </Amazon_Dictionary_ProductType>
+                    <Amazon_Dictionary_TemplateShipping>
+                        <table>m2epro_amazon_dictionary_template_shipping</table>
+                    </Amazon_Dictionary_TemplateShipping>
                     <Ebay_Dictionary_Category>
                         <table>m2epro_ebay_dictionary_category</table>
                     </Ebay_Dictionary_Category>

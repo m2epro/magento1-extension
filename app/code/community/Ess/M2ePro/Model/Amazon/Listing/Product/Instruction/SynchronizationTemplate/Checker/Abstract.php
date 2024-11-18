@@ -21,8 +21,7 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Instruction_Synchronizati
                 $this->getReviseQtyInstructionTypes(),
                 $this->getRevisePriceRegularInstructionTypes(),
                 $this->getRevisePriceBusinessInstructionTypes(),
-                $this->getReviseDetailsInstructionTypes(),
-                $this->getReviseImagesInstructionTypes()
+                $this->getReviseDetailsInstructionTypes()
             )
         );
     }
@@ -107,23 +106,6 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Instruction_Synchronizati
         );
     }
 
-    protected function getReviseImagesInstructionTypes()
-    {
-        return array(
-            SynchronizationChangeProcessor::INSTRUCTION_TYPE_REVISE_IMAGES_ENABLED,
-            SynchronizationChangeProcessor::INSTRUCTION_TYPE_REVISE_IMAGES_DISABLED,
-            Ess_M2ePro_Model_Amazon_Magento_Product_ChangeProcessor::INSTRUCTION_TYPE_IMAGES_DATA_CHANGED,
-            Ess_M2ePro_Model_Amazon_Template_ChangeProcessor_Abstract::INSTRUCTION_TYPE_IMAGES_DATA_CHANGED,
-            Ess_M2ePro_Model_Listing::INSTRUCTION_TYPE_PRODUCT_MOVED_FROM_OTHER,
-            Ess_M2ePro_Model_Listing::INSTRUCTION_TYPE_PRODUCT_MOVED_FROM_LISTING,
-            Ess_M2ePro_Model_Listing::INSTRUCTION_TYPE_PRODUCT_REMAP_FROM_LISTING,
-            Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Relist_Response::INSTRUCTION_TYPE_CHECK_IMAGES,
-            Ess_M2ePro_PublicServices_Product_SqlChange::INSTRUCTION_TYPE_PRODUCT_CHANGED,
-            Ess_M2ePro_Model_Magento_Product_ChangeProcessor_Abstract::INSTRUCTION_TYPE_MAGMI_PLUGIN_PRODUCT_CHANGED,
-            Ess_M2ePro_Model_Cron_Task_Listing_Product_InspectDirectChanges::INSTRUCTION_TYPE,
-        );
-    }
-
     //########################################
 
     protected function getPropertiesDataFromInputInstructions()
@@ -148,10 +130,6 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Instruction_Synchronizati
 
         if ($this->_input->hasInstructionWithTypes($this->getReviseDetailsInstructionTypes())) {
             $propertiesData[] = 'details';
-        }
-
-        if ($this->_input->hasInstructionWithTypes($this->getReviseImagesInstructionTypes())) {
-            $propertiesData[] = 'images';
         }
 
         return $propertiesData;
@@ -187,10 +165,6 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Instruction_Synchronizati
 
         if ($configurator->isDetailsAllowed()) {
             $propertiesData[] = 'details';
-        }
-
-        if ($configurator->isImagesAllowed()) {
-            $propertiesData[] = 'images';
         }
 
         return $propertiesData;

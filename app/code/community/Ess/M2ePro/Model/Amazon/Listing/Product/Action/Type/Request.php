@@ -21,8 +21,7 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Request
         'qty',
         'price_regular',
         'price_business',
-        'details',
-        'images',
+        'details'
     );
 
     /**
@@ -155,23 +154,6 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Request
         $data = $dataBuilder->getData();
 
         $this->addMetaData('details_data', $data);
-
-        return $data;
-    }
-
-    /**
-     * @return array
-     */
-    public function getImagesData()
-    {
-        if (!$this->getConfigurator()->isImagesAllowed()) {
-            return array();
-        }
-
-        $dataBuilder = $this->getDataBuilder('images');
-        $data = $dataBuilder->getData();
-
-        $this->addMetaData('images_data', $data);
 
         return $data;
     }

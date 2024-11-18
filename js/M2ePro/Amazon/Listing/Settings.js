@@ -71,14 +71,6 @@ window.AmazonListingSettings = Class.create(Common, {
 
         $('condition_note_mode').observe('change', AmazonListingCreateSellingObj.condition_note_mode_change);
 
-        $('image_main_mode')
-            .observe('change', AmazonListingCreateSellingObj.image_main_mode_change)
-            .simulate('change');
-
-        $('gallery_images_mode')
-            .observe('change', AmazonListingCreateSellingObj.gallery_images_mode_change)
-            .simulate('change');
-
         $('gift_wrap_mode')
             .observe('change', AmazonListingCreateSellingObj.gift_wrap_mode_change)
             .simulate('change');

@@ -142,7 +142,6 @@ class Ess_M2ePro_Adminhtml_Amazon_TemplateController
             Ess_M2ePro_Block_Adminhtml_Amazon_Template_Grid::TEMPLATE_SELLING_FORMAT,
             Ess_M2ePro_Block_Adminhtml_Amazon_Template_Grid::TEMPLATE_SYNCHRONIZATION,
 
-            Ess_M2ePro_Block_Adminhtml_Amazon_Template_Grid::TEMPLATE_DESCRIPTION,
             Ess_M2ePro_Block_Adminhtml_Amazon_Template_Grid::TEMPLATE_SHIPPING,
             Ess_M2ePro_Block_Adminhtml_Amazon_Template_Grid::TEMPLATE_PRODUCT_TAX_CODE
         );

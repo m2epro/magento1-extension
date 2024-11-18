@@ -46,7 +46,9 @@ class Ess_M2ePro_Adminhtml_Amazon_ConfigurationController
 
     public function saveAction()
     {
-        Mage::helper('M2ePro/Component_Amazon_Configuration')->setConfigValues($this->getRequest()->getPost());
+        /** @var Ess_M2ePro_Helper_Component_Amazon_Configuration $amazonConfig */
+        $amazonConfig = Mage::helper('M2ePro/Component_Amazon_Configuration');
+        $amazonConfig->setConfigValues($this->getRequest()->getPost());
 
         $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Settings was saved.'));
         $this->_redirectUrl($this->_getRefererUrl());

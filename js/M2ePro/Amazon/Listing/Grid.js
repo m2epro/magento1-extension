@@ -30,7 +30,7 @@ window.AmazonListingGrid = Class.create(ListingGrid, {
         this.mappingHandler = new ListingMapping(this, 'amazon');
         this.actionHandler = new AmazonListingAction(this);
         this.productSearchHandler = new AmazonListingProductSearch(this);
-        this.templateDescription = new AmazonListingTemplateDescription(this);
+        this.templateProductType = new AmazonListingTemplateProductType(this);
         this.templateShippingHandler = new AmazonListingTemplateShipping(this);
         this.templateProductTaxCodeHandler = new AmazonListingTemplateProductTaxCode(this);
         this.variationProductManageHandler = new AmazonListingVariationProductManage(this);
@@ -44,13 +44,13 @@ window.AmazonListingGrid = Class.create(ListingGrid, {
             movingAction: this.movingHandler.run.bind(this.movingHandler),
             deleteAndRemoveAction: this.actionHandler.deleteAndRemoveAction.bind(this.actionHandler),
 
-            assignTemplateDescriptionIdAction: (function(id) {
+            assignTemplateProductTypeIdAction: (function(id) {
                 id = id || this.getSelectedProductsString();
-                this.templateDescription.validateProductsForTemplateDescriptionAssign(id)
+                this.templateProductType.validateProductsForTemplateProductTypeAssign(id)
             }).bind(this),
-            unassignTemplateDescriptionIdAction: (function(id) {
+            unassignTemplateProductTypeIdAction: (function(id) {
                 id = id || this.getSelectedProductsString();
-                this.templateDescription.unassignFromTemplateDescription(id)
+                this.templateProductType.unassignFromTemplateProductType(id)
             }).bind(this),
 
             assignTemplateShippingIdAction: (function(id) {
@@ -150,13 +150,13 @@ window.AmazonListingGrid = Class.create(ListingGrid, {
 
     // ---------------------------------------
 
-    unassignTemplateDescriptionIdActionConfrim: function (id)
+    unassignTemplateProductTypeIdActionConfrim: function (id)
     {
         if (!this.confirm()) {
             return;
         }
 
-        this.templateDescription.unassignFromTemplateDescription(id)
+        this.templateProductType.unassignFromTemplateProductType(id)
     },
 
     // ---------------------------------------

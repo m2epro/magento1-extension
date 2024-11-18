@@ -38,8 +38,8 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Edit_Tabs extends Ess_M2ePro_Blo
 
         $this->addTab(
             'search', array(
-                'label'   => Mage::helper('M2ePro')->__('Search Settings'),
-                'title'   => Mage::helper('M2ePro')->__('Search Settings'),
+                'label'   => Mage::helper('M2ePro')->__('Product Identifiers'),
+                'title'   => Mage::helper('M2ePro')->__('Product Identifiers'),
                 'content' => $this->getLayout()
                     ->createBlock('M2ePro/adminhtml_amazon_listing_create_search_form')
                     ->setUseFormContainer(false)

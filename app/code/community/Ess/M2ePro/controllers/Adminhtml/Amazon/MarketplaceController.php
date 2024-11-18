@@ -1,142 +1,113 @@
 <?php
 
-/*
- * @author     M2E Pro Developers Team
- * @copyright  M2E LTD
- * @license    Commercial use is forbidden
- */
-
 class Ess_M2ePro_Adminhtml_Amazon_MarketplaceController
     extends Ess_M2ePro_Controller_Adminhtml_Amazon_MainController
 {
-    //########################################
-
-    protected function _initAction()
-    {
-        $this->loadLayout()
-             ->_title(Mage::helper('M2ePro')->__('Configuration'))
-             ->_title(Mage::helper('M2ePro')->__('Marketplaces'));
-
-        $this->getLayout()->getBlock('head')
-             ->addJs('M2ePro/Plugin/ProgressBar.js')
-             ->addCss('M2ePro/css/Plugin/ProgressBar.css')
-             ->addJs('M2ePro/Plugin/AreaWrapper.js')
-             ->addCss('M2ePro/css/Plugin/AreaWrapper.css')
-             ->addJs('M2ePro/SynchProgress.js')
-             ->addJs('M2ePro/Marketplace.js');
-
-        $this->setPageHelpLink(null, null, "configurations");
-
-        return $this;
-    }
-
-    protected function _isAllowed()
-    {
-        return Mage::getSingleton('admin/session')->isAllowed(
-            Ess_M2ePro_Helper_View_Amazon::MENU_ROOT_NODE_NICK . '/configuration'
-        );
-    }
-
-    //########################################
-
-    public function indexAction()
-    {
-        $this->_initAction()
-            ->_addContent(
-                $this->getLayout()->createBlock(
-                    'M2ePro/adminhtml_amazon_configuration', '',
-                    array('active_tab' => Ess_M2ePro_Block_Adminhtml_Amazon_Configuration_Tabs::TAB_ID_MARKETPLACE)
-                )
-            )->renderLayout();
-    }
-
     public function saveAction()
     {
-        $marketplaces = Mage::getModel('M2ePro/Marketplace')->getCollection();
+        /** @var Ess_M2ePro_Model_Resource_Marketplace_Collection $marketplaceCollection */
+        $marketplaceCollection = Mage::getModel('M2ePro/Marketplace')->getCollection();
+        /** @var Ess_M2ePro_Model_Marketplace[] $marketplaces */
+        $marketplaces = $marketplaceCollection->getItems();
 
         foreach ($marketplaces as $marketplace) {
-            $newStatus = $this->getRequest()->getParam('status_'.$marketplace->getId());
+            /** @var Ess_M2ePro_Model_Amazon_Dictionary_MarketplaceService $amazonDictionaryMarketPlaceService */
+            $amazonDictionaryMarketPlaceService = Mage::getModel('M2ePro/Amazon_Dictionary_MarketplaceService');
+            $newStatus = $this->getRequest()->getParam('status_' . $marketplace->getId());
 
-            if ($newStatus === null) {
-                 continue;
-            }
-
-            if ($marketplace->getStatus() == $newStatus) {
+            if (
+                $newStatus === null
+                || $marketplace->getStatus() == $newStatus
+            ) {
                 continue;
             }
 
-            $marketplace->setData('status', $newStatus)->save();
+            $marketplace->setStatus($newStatus)
+                        ->save();
+
+            if (!$amazonDictionaryMarketPlaceService->isExistForMarketplace($marketplace)) {
+                $amazonDictionaryMarketPlaceService->update($marketplace);
+            }
         }
     }
 
-    //########################################
-
-    public function runSynchNowAction()
+    public function getMarketplaceListAction()
     {
-        // @codingStandardsIgnoreLine
-        session_write_close();
+        /** @var Ess_M2ePro_Model_Amazon_Marketplace_Repository $amazonMarketplaceRepository */
+        $amazonMarketplaceRepository = Mage::getModel('M2ePro/Amazon_Marketplace_Repository');
 
-        /** @var Ess_M2ePro_Model_Marketplace $marketplace */
-        $marketplace = Mage::helper('M2ePro/Component')->getUnknownObject(
-            'Marketplace',
-            (int)$this->getRequest()->getParam('marketplace_id')
+        $result = array();
+        foreach ($amazonMarketplaceRepository->findWithAccounts() as $marketplace) {
+            $result[] = array(
+                'id' => (int)$marketplace->getId(),
+                'title' => $marketplace->getTitle(),
+            );
+        }
+
+        $this->getResponse()->setBody(
+            Mage::helper('M2ePro')->jsonEncode(
+                array('list' => $result)
+            )
         );
-
-        if (Mage::helper('M2ePro/Component_Amazon')->isMarketplacesWithoutData($marketplace->getId())) {
-            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('result' => 'success')));
-        }
-
-        $synchronization = Mage::getModel('M2ePro/Amazon_Marketplace_Synchronization');
-        $synchronization->setMarketplace($marketplace);
-
-        if ($synchronization->isLocked()) {
-            $synchronization->getlog()->addMessage(
-                Mage::helper('M2ePro')->__(
-                    'Marketplaces cannot be updated now. '
-                    . 'Please wait until another marketplace synchronization is completed, then try again.'
-                ),
-                Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR
-            );
-
-            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('result' => 'error')));
-        }
-
-        try {
-            $synchronization->process();
-        } catch (Exception $e) {
-            $synchronization->getlog()->addMessageFromException($e);
-
-            $synchronization->getLockItemManager()->remove();
-
-            Mage::getModel('M2ePro/Servicing_Dispatcher')->processTask(
-                \Ess_M2ePro_Model_Servicing_Task_License::NAME
-            );
-
-            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('result' => 'error')));
-        }
-
-        return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('result' => 'success')));
     }
 
-    public function synchGetExecutingInfoAction()
+    public function getProductTypeListAction()
     {
-        $synchronization = Mage::getModel('M2ePro/Amazon_Marketplace_Synchronization');
-        if (!$synchronization->isLocked()) {
-            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('mode' => 'inactive')));
+        /** @var Ess_M2ePro_Model_Amazon_Marketplace_Sync_MarketplaceLoader $amazonMarketplaceLoader */
+        $amazonMarketplaceLoader = Mage::getModel('M2ePro/Amazon_Marketplace_Sync_MarketplaceLoader');
+        /** @var Ess_M2ePro_Model_Amazon_Dictionary_ProductType_Repository $dictionaryProductTypeRepository */
+        $dictionaryProductTypeRepository = Mage::getModel('M2ePro/Amazon_Dictionary_ProductType_Repository');
+
+        $marketplace = $amazonMarketplaceLoader->load($this->getRequest()->getParam('marketplace_id'));
+        $productTypes = $dictionaryProductTypeRepository->findValidByMarketplace($marketplace);
+
+        $result = array();
+        foreach ($productTypes as $productType) {
+            $result[] = array(
+                'id' => (int)$productType->getId(),
+                'title' => $productType->getTitle(),
+            );
         }
 
-        $contentData = $synchronization->getLockItemManager()->getContentData();
-        $progressData = $contentData[Ess_M2ePro_Model_Lock_Item_Progress::CONTENT_DATA_KEY];
-
-        $response = array('mode' => 'executing');
-        if (!empty($progressData)) {
-            $response['title'] = 'Marketplace Synchronization';
-            $response['percents'] = $progressData[key($progressData)]['percentage'];
-            $response['status'] = key($progressData);
-        }
-
-        return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode($response));
+        $this->getResponse()->setBody(
+            Mage::helper('M2ePro')->jsonEncode(
+                array('list' => $result)
+            )
+        );
     }
 
-    //########################################
+    public function updateDetailsAction()
+    {
+        /** @var Ess_M2ePro_Model_Amazon_Marketplace_Sync_MarketplaceLoader $amazonMarketplaceLoader */
+        $amazonMarketplaceLoader = Mage::getModel('M2ePro/Amazon_Marketplace_Sync_MarketplaceLoader');
+        /** @var Ess_M2ePro_Model_Amazon_Dictionary_MarketplaceService $dictionaryMarketplaceService */
+        $dictionaryMarketplaceService = Mage::getModel('M2ePro/Amazon_Dictionary_MarketplaceService');
+
+        $marketplace = $amazonMarketplaceLoader->load($this->getRequest()->getParam('marketplace_id'));
+        $dictionaryMarketplaceService->update($marketplace);
+
+        $this->getResponse()->setBody(
+            Mage::helper('M2ePro')->jsonEncode(array())
+        );
+    }
+
+    public function updateProductTypeAction()
+    {
+        $productTypeId = $this->getRequest()->getParam('id');
+        if ($productTypeId === null) {
+            throw new \RuntimeException('Missing Product Type ID');
+        }
+
+        /** @var Ess_M2ePro_Model_Amazon_Dictionary_ProductType_Repository $dictionaryProductTypeRepository */
+        $dictionaryProductTypeRepository = Mage::getModel('M2ePro/Amazon_Dictionary_ProductType_Repository');
+        /** @var Ess_M2ePro_Model_Amazon_Dictionary_ProductTypeService $dictionaryProductTypeService */
+        $dictionaryProductTypeService = Mage::getModel('M2ePro/Amazon_Dictionary_ProductTypeService');
+
+        $productType = $dictionaryProductTypeRepository->get((int)$productTypeId);
+        $dictionaryProductTypeService->update($productType);
+
+        $this->getResponse()->setBody(
+            Mage::helper('M2ePro')->jsonEncode(array())
+        );
+    }
 }

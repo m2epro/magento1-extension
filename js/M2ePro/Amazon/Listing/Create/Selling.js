@@ -83,8 +83,6 @@ window.AmazonListingCreateSelling = Class.create(Common, {
             conditionValue = $('condition_value'),
             conditionCustomAttribute = $('condition_custom_attribute');
 
-        $('magento_block_amazon_listing_add_images').hide();
-        $('magento_block_amazon_listing_add_images').previous('.entry-edit-head').hide();
         $('condition_note_mode').up('span').show();
         $('condition_note_value').up('span').show();
 
@@ -100,58 +98,10 @@ window.AmazonListingCreateSelling = Class.create(Common, {
             } else {
                 self.condition_note_mode_change();
             }
-
-            if (self.getAvailableConstantsForImages().indexOf(attributeCode) == -1) {
-                $('image_main_attribute').value = '';
-                $('image_main_mode').selectedIndex = M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Listing::IMAGE_MAIN_MODE_NONE');
-                $('image_main_mode').simulate('change');
-            } else {
-                $('magento_block_amazon_listing_add_images').show();
-                $('magento_block_amazon_listing_add_images').previous('.entry-edit-head').show();
-            }
         } else {
             self.updateHiddenValue(this, conditionCustomAttribute);
             $('condition_note_mode').up('span').show();
             self.condition_note_mode_change();
-
-            $('magento_block_amazon_listing_add_images').show();
-            $('magento_block_amazon_listing_add_images').previous('.entry-edit-head').show();
-        }
-    },
-
-    // ---------------------------------------
-
-    image_main_mode_change: function () {
-        var self = AmazonListingCreateSellingObj;
-
-        $('gallery_images_mode').up('span').show();
-
-        $('image_main_attribute').value = '';
-
-        if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Listing::IMAGE_MAIN_MODE_NONE')) {
-            $('gallery_images_mode').up('span').hide();
-            $('gallery_images_limit').value = '';
-            $('gallery_images_attribute').value = '';
-            $('gallery_images_mode').selectedIndex = M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Listing::GALLERY_IMAGES_MODE_NONE');
-        }
-
-        if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Listing::IMAGE_MAIN_MODE_ATTRIBUTE')) {
-            self.updateHiddenValue(this, $('image_main_attribute'));
-        }
-    },
-
-    gallery_images_mode_change: function () {
-        var self = AmazonListingCreateSellingObj;
-
-        $('gallery_images_limit').value = '';
-        $('gallery_images_attribute').value = '';
-
-        if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Listing::GALLERY_IMAGES_MODE_PRODUCT')) {
-            self.updateHiddenValue(this, $('gallery_images_limit'));
-        }
-
-        if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Listing::GALLERY_IMAGES_MODE_ATTRIBUTE')) {
-            self.updateHiddenValue(this, $('gallery_images_attribute'));
         }
     },
 

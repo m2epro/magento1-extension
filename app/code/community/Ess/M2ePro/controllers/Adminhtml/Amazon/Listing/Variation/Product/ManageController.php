@@ -33,7 +33,6 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_Variation_Product_ManageController
             ->addJs('M2ePro/Listing/Moving.js')
             ->addJs('M2ePro/Amazon/Listing/Action.js')
             ->addJs('M2ePro/Amazon/Listing/ProductSearch.js')
-            ->addJs('M2ePro/Amazon/Listing/Template/Description.js')
             ->addJs('M2ePro/Amazon/Listing/VariationProductManage.js')
             ->addJs('M2ePro/Amazon/Listing/VariationProductManageVariationsGrid.js')
             ->addJs('M2ePro/Amazon/Listing/Fulfillment.js')
@@ -288,7 +287,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_Variation_Product_ManageController
 
         if (!$data['success']) {
             $mainBlock = $this->loadLayout()->getLayout()
-                ->createBlock('M2ePro/adminhtml_amazon_listing_template_description_main');
+                ->createBlock('M2ePro/adminhtml_amazon_listing_template_productType_main');
             $mainBlock->setMessages(
                 array(
                 array(
@@ -360,7 +359,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_Variation_Product_ManageController
         return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('success' => true)));
     }
 
-    public function viewTemplateDescriptionsGridAction()
+    public function viewTemplateProdGridAction()
     {
         $productId = $this->getRequest()->getParam('product_id');
 
@@ -369,7 +368,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_Variation_Product_ManageController
         }
 
         $grid = $this->loadLayout()->getLayout()
-            ->createBlock('M2ePro/adminhtml_amazon_listing_template_description_grid');
+            ->createBlock('M2ePro/adminhtml_amazon_listing_template_productType_grid');
         $grid->setCheckNewAsinAccepted(true);
         $grid->setProductsIds(array($productId));
         $grid->setMapToTemplateJsFn('ListingGridObj.variationProductManageHandler.mapToTemplateDescription');
@@ -411,6 +410,29 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_Variation_Product_ManageController
 
         $parentTypeModel = $amazonListingProduct->getVariationManager()->getTypeModel();
 
+        $variationThemesAttributes = $amazonListingProduct->getProductTypeTemplate()
+            ->getDictionary()
+            ->getVariationThemesAttributes($variationTheme);
+
+        $additionalData = $listingProduct->getAdditionalData();
+        if (
+            empty($additionalData['migrated_to_product_types'])
+            && $amazonListingProduct->isGeneralIdOwner()
+        ) {
+            if (!empty($variationThemesAttributes)) {
+                $sets = array();
+                foreach ($variationThemesAttributes as $attribute) {
+                    $sets[$attribute] = array();
+                }
+
+                $listingProduct->setSetting(
+                    'additional_data',
+                    'variation_channel_attributes_sets',
+                    $sets
+                );
+            }
+        }
+
         $result = array('success' => true);
 
         if ($parentTypeModel->getChannelTheme() == $variationTheme) {
@@ -422,12 +444,14 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_Variation_Product_ManageController
         $variationHelper = Mage::helper('M2ePro/Component_Amazon_Variation');
         $variationHelper->increaseThemeUsageCount($variationTheme, $listingProduct->getMarketplace()->getId());
 
-        $productDataNick = $amazonListingProduct->getAmazonDescriptionTemplate()->getProductDataNick();
+        $productTypeTemplate = $amazonListingProduct->getProductTypeTemplate();
+        $productTypeDictionary = $productTypeTemplate->getDictionary();
 
-        $marketplaceDetails = Mage::getModel('M2ePro/Amazon_Marketplace_Details');
-        $marketplaceDetails->setMarketplaceId($amazonListingProduct->getMarketplace()->getId());
+        $productDataNick = $productTypeDictionary->getNick();
 
-        $themeAttributes   = $marketplaceDetails->getVariationThemeAttributes($productDataNick, $variationTheme);
+
+
+        $themeAttributes   = $productTypeDictionary->getVariationThemesAttributes($variationTheme);
         $productAttributes = $parentTypeModel->getProductAttributes();
 
         if (count($themeAttributes) != 1 || count($productAttributes) != 1) {
@@ -508,6 +532,33 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_Variation_Product_ManageController
         }
 
         $typeModel->setMatchedAttributes($matchedAttributes);
+
+        $additionalData = $listingProduct->getAdditionalData();
+        if (
+            empty($additionalData['migrated_to_product_types'])
+            && $amazonListingProduct->isGeneralIdOwner()
+        ) {
+            if ($replacements = $this->getAttributeReplacements($additionalData)) {
+                unset($additionalData['backup_variation_matched_attributes']);
+                if (!empty($additionalData['backup_variation_channel_attributes_sets'])) {
+                    $additionalData['variation_channel_attributes_sets'] =
+                        $additionalData['backup_variation_channel_attributes_sets'];
+                    unset($additionalData['backup_variation_channel_attributes_sets']);
+                }
+
+                $additionalData = $this->replaceChannelAttributes(
+                    $listingProduct,
+                    $additionalData,
+                    $replacements
+                );
+            }
+
+            $additionalData['migrated_to_product_types'] = true;
+            unset($additionalData['running_migration_to_product_types']);
+
+            $listingProduct->setSettings('additional_data', $additionalData);
+        }
+
         $typeModel->getProcessor()->process();
 
         $result = array(
@@ -936,36 +987,22 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_Variation_Product_ManageController
         $amazonListingProduct = $listingProduct->getChildObject();
 
         if ($generalIdOwner == Ess_M2ePro_Model_Amazon_Listing_Product::IS_GENERAL_ID_OWNER_YES) {
-            if (!$amazonListingProduct->isExistDescriptionTemplate()) {
+            if (!$amazonListingProduct->isExistProductTypeTemplate()) {
                 $data['success'] = false;
                 $data['msg'] = Mage::helper('M2ePro')->__(
-                    'Description Policy with enabled ability to create new ASIN(s)/ISBN(s)
-                     should be added in order for operation to be finished.'
+                    'Product Type should be added in order for operation to be finished.'
                 );
 
                 return $data;
             }
 
-            if (!$amazonListingProduct->getAmazonDescriptionTemplate()->isNewAsinAccepted()) {
-                $data['success'] = false;
-                $data['msg'] = Mage::helper('M2ePro')->__(
-                    'Description Policy with enabled ability to create new ASIN(s)/ISBN(s)
-                     should be added in order for operation to be finished.'
-                );
-
-                return $data;
-            }
-
-            $detailsModel = Mage::getModel('M2ePro/Amazon_Marketplace_Details');
-            $detailsModel->setMarketplaceId($listingProduct->getListing()->getMarketplaceId());
-            $themes = $detailsModel->getVariationThemes(
-                $amazonListingProduct->getAmazonDescriptionTemplate()->getProductDataNick()
-            );
+            $productTypeDictionary = $amazonListingProduct->getProductTypeTemplate()->getDictionary();
+            $themes = $productTypeDictionary->getVariationThemes();
 
             if (empty($themes)) {
                 $data['success'] = false;
                 $data['msg'] = Mage::helper('M2ePro')->__(
-                    'The Category chosen in the Description Policy does not support variations.'
+                    'The chosen Product Type does not support variations.'
                 );
 
                 return $data;
@@ -1015,6 +1052,145 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_Variation_Product_ManageController
             );
 
         return (bool)Mage::getResourceModel('core/config')->getReadConnection()->fetchCol($select);
+    }
+
+    private function replaceChannelAttributes(
+        $listingProduct,
+        $additionalData,
+        $replacements
+    ) {
+        if (!empty($additionalData['variation_channel_variations'])) {
+            foreach ($additionalData['variation_channel_variations'] as $asin => &$variation) {
+                foreach ($replacements as $from => $to) {
+                    if (isset($variation[$from])) {
+                        $variation[$to] = $variation[$from];
+                        unset($variation[$from]);
+                    }
+                }
+            }
+        }
+
+        if (!empty($additionalData['variation_channel_attributes_sets'])) {
+            $temp = array();
+            foreach ($additionalData['variation_channel_attributes_sets'] as $attribute => $value) {
+                if (isset($replacements[$attribute])) {
+                    $newAttributeName = $replacements[$attribute];
+                    $temp[$newAttributeName] = $value;
+                } else {
+                    $temp[$attribute] = $value;
+                }
+            }
+
+            $additionalData['variation_channel_attributes_sets'] = $temp;
+        }
+
+        if (!empty($additionalData['variation_matched_attributes'])) {
+            foreach ($additionalData['variation_matched_attributes'] as $magentoAttr => &$channelAttr) {
+                if (isset($replacements[$channelAttr])) {
+                    $channelAttr = $replacements[$channelAttr];
+                }
+            }
+        }
+
+        if (!empty($additionalData['variation_virtual_product_attributes'])) {
+            $temp = array();
+            foreach ($additionalData['variation_virtual_product_attributes'] as $attribute => $value) {
+                if (isset($replacements[$attribute])) {
+                    $newAttributeName = $replacements[$attribute];
+                    $temp[$newAttributeName] = $value;
+                } else {
+                    $temp[$attribute] = $value;
+                }
+            }
+
+            $additionalData['variation_virtual_product_attributes'] = $temp;
+        }
+
+        // 'variation_virtual_channel_attributes' does not require replacement
+
+        $listingProductResource = Mage::getResourceModel('M2ePro/Listing_Product');
+        $listingProductResource->setChildMode(Ess_M2ePro_Helper_Component_Amazon::NICK);
+
+        $collection = Mage::getResourceModel('M2ePro/Listing_Product_Collection', $listingProductResource);
+        $collection->addFieldToFilter(
+            'variation_parent_id',
+            $listingProduct->getId()
+        );
+
+        /** @var Ess_M2ePro_Model_Listing_Product $item */
+        foreach ($collection->getItems() as $item) {
+            $childData = $item->getAdditionalData();
+            $isWritingRequired = false;
+
+            if (!empty($childData['variation_correct_matched_attributes'])) {
+                foreach ($childData['variation_correct_matched_attributes'] as $magentoAttr => &$channelAttr) {
+                    if (isset($replacements[$channelAttr])) {
+                        $channelAttr = $replacements[$channelAttr];
+                        $isWritingRequired = true;
+                    }
+                }
+            }
+
+            if (!empty($childData['variation_channel_options'])) {
+                $temp = array();
+                foreach ($childData['variation_channel_options'] as $key => $value) {
+                    if (isset($replacements[$key])) {
+                        $newAttributeName = $replacements[$key];
+                        $temp[$newAttributeName] = $value;
+                        $isWritingRequired = true;
+                    } else {
+                        $temp[$key] = $value;
+                    }
+                }
+
+                $childData['variation_channel_options'] = $temp;
+            }
+
+            if ($isWritingRequired) {
+                $item->setSettings('additional_data', $childData)
+                    ->save();
+            }
+        }
+
+        return $additionalData;
+    }
+
+    private function getAttributeReplacements(array $additionalData)
+    {
+        if (empty($additionalData['variation_matched_attributes'])) {
+            return array();
+        }
+
+        $replacements = array();
+        $matchedAttributes = $additionalData['variation_matched_attributes'];
+
+        if (!empty($additionalData['backup_variation_matched_attributes'])) {
+            $previousInfo = $additionalData['backup_variation_matched_attributes'];
+            foreach ($matchedAttributes as $magentoAttr => $channelAttr) {
+                if (isset($previousInfo[$magentoAttr])) {
+                    $replacements[$previousInfo[$magentoAttr]] = $channelAttr;
+                }
+            }
+
+            return $replacements;
+        }
+
+        if (!empty($additionalData['variation_channel_variations'])) {
+            $item = reset($additionalData['variation_channel_variations']);
+            $variationAttributesFound = array_keys($item);
+
+            if (
+                count($variationAttributesFound) === 1
+                && count($matchedAttributes) === 1
+            ) {
+                $previousName = reset($variationAttributesFound);
+                $currentName = reset($matchedAttributes);
+
+                return array($previousName => $currentName);
+            }
+        }
+
+        return array();
     }
 
     //########################################

@@ -194,8 +194,7 @@ HTML;
         if (!empty($categoriesData)) {
             $errorMessage = Mage::helper('M2ePro')
                                 ->__(
-                                    "To proceed, the category data must be specified.
-                                Please select a relevant Product Type for at least one Magento Category."
+                                    "Please select a relevant Product Type for at least one Magento Category."
                                 );
             $isNotExistProductsWithProductType = (int)$this->isNotExistProductsWithProductType(
                 $this->getData('product_types_data')

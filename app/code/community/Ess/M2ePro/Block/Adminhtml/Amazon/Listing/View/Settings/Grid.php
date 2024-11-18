@@ -83,7 +83,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Settings_Grid
             'listing_product_id=id',
             array(
                 'template_shipping_id'                 => 'template_shipping_id',
-                'template_description_id'              => 'template_description_id',
+                'template_product_type_id'              => 'template_product_type_id',
                 'template_product_tax_code_id'         => 'template_product_tax_code_id',
                 'general_id'                           => 'general_id',
                 'general_id_search_info'               => 'general_id_search_info',
@@ -122,10 +122,10 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Settings_Grid
         );
 
         $collection->joinTable(
-            array('td' => 'M2ePro/Template_Description'),
-            'id=template_description_id',
+            array('td' => 'M2ePro/Amazon_Template_ProductType'),
+            'id=template_product_type_id',
             array(
-                'template_description_title' => 'title'
+                'template_product_type_title' => 'title'
             ),
             null,
             'left'
@@ -227,17 +227,17 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Settings_Grid
         );
 
         $this->addColumn(
-            'description_template',
+            'product_type_template',
             array(
-                'header'         => Mage::helper('M2ePro')->__('Description Policy'),
+                'header'         => Mage::helper('M2ePro')->__('Product Type'),
                 'align'          => 'left',
                 'width'          => '170px',
                 'type'           => 'text',
-                'index'          => 'template_description_title',
-                'filter' => 'M2ePro/adminhtml_amazon_grid_column_filter_policySettings',
-                'filter_index' => 'template_description_title',
-                'filter_condition_callback' => array($this, 'callbackFilterDescriptionSettings'),
-                'frame_callback' => array($this, 'callbackColumnTemplateDescription')
+                'index'          => 'template_product_type_title',
+                'filter' => 'M2ePro/adminhtml_amazon_grid_column_filter_productType',
+                'filter_index' => 'template_product_type_title',
+                'filter_condition_callback' => array($this, 'callbackFilterProductTypeSettings'),
+                'frame_callback' => array($this, 'callbackColumnTemplateProductType')
             )
         );
 
@@ -300,7 +300,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Settings_Grid
         $marketplace = $this->_account->getChildObject()->getMarketplace();
 
         $groups = array(
-            'edit_template_description' => Mage::helper('M2ePro')->__('Description Policy'),
+            'edit_template_product_type' => Mage::helper('M2ePro')->__('Product Type'),
             'edit_template_shipping'    => Mage::helper('M2ePro')->__('Shipping Policy'),
             'other'                     => Mage::helper('M2ePro')->__('Other')
         );
@@ -321,18 +321,18 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Settings_Grid
         $helper = Mage::helper('M2ePro');
 
         $actions = array(
-            'assignTemplateDescription' => array(
+            'assignTemplateProductType' => array(
                 'caption'        => $helper->__('Assign'),
-                'group'          => 'edit_template_description',
+                'group'          => 'edit_template_product_type',
                 'field'          => 'id',
-                'onclick_action' => 'ListingGridObj.actions[\'assignTemplateDescriptionIdAction\']'
+                'onclick_action' => 'ListingGridObj.actions[\'assignTemplateProductTypeIdAction\']'
             ),
 
-            'unassignTemplateDescription' => array(
+            'unassignTemplateProductType' => array(
                 'caption'        => $helper->__('Unassign'),
-                'group'          => 'edit_template_description',
+                'group'          => 'edit_template_product_type',
                 'field'          => 'id',
-                'onclick_action' => 'ListingGridObj.unassignTemplateDescriptionIdActionConfrim'
+                'onclick_action' => 'ListingGridObj.unassignTemplateProductTypeIdActionConfrim'
             )
         );
 
@@ -390,7 +390,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Settings_Grid
         $this->setMassactionIdFieldOnlyIndexValue(true);
 
         $groups = array(
-            'description_policy'             => Mage::helper('M2ePro')->__('Description Policy'),
+            'product_type'             => Mage::helper('M2ePro')->__('Product Type'),
             'shipping_policy'                => Mage::helper('M2ePro')->__('Shipping Policy'),
             'edit_template_product_tax_code' => Mage::helper('M2ePro')->__('Product Tax Code Policy'),
             'other'                          => Mage::helper('M2ePro')->__('Other'),
@@ -399,23 +399,23 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Settings_Grid
         $this->getMassactionBlock()->setGroups($groups);
 
         $this->getMassactionBlock()->addItem(
-            'assignTemplateDescriptionId',
+            'assignTemplateProductTypeId',
             array(
                 'label'   => Mage::helper('M2ePro')->__('Assign'),
                 'url'     => '',
                 'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
             ),
-            'description_policy'
+            'product_type'
         );
 
         $this->getMassactionBlock()->addItem(
-            'unassignTemplateDescriptionId',
+            'unassignTemplateProductTypeId',
             array(
                 'label'   => Mage::helper('M2ePro')->__('Unassign'),
                 'url'     => '',
                 'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
             ),
-            'description_policy'
+            'product_type'
         );
 
         $this->getMassactionBlock()->addItem(
@@ -659,19 +659,19 @@ HTML;
 
     // ---------------------------------------
 
-    public function callbackColumnTemplateDescription($value, $row, $column, $isExport)
+    public function callbackColumnTemplateProductType($value, $row, $column, $isExport)
     {
         $html = Mage::helper('M2ePro')->__('N/A');
 
-        if ($row->getData('template_description_id')) {
+        if ($row->getData('template_product_type_id')) {
             $url = $this->getUrl(
-                '*/adminhtml_amazon_template_description/edit',
+                '*/adminhtml_amazon_productTypes/edit',
                 array(
-                    'id' => $row->getData('template_description_id')
+                    'id' => $row->getData('template_product_type_id')
                 )
             );
 
-            $templateTitle = Mage::helper('M2ePro')->escapeHtml($row->getData('template_description_title'));
+            $templateTitle = Mage::helper('M2ePro')->escapeHtml($row->getData('template_product_type_title'));
 
             return <<<HTML
 <a target="_blank" href="{$url}">{$templateTitle}</a>
@@ -792,7 +792,7 @@ HTML;
         }
     }
 
-    protected function callbackFilterDescriptionSettings($collection, $column)
+    protected function callbackFilterProductTypeSettings($collection, $column)
     {
         $value = $column->getFilter()->getValue();
         $inputValue = null;
@@ -805,16 +805,16 @@ HTML;
 
         if ($inputValue !== null) {
             /** @var $collection Ess_M2ePro_Model_Resource_Magento_Product_Collection */
-            $collection->addAttributeToFilter('template_description_title',  array('like' => '%' . $inputValue . '%'));
+            $collection->addAttributeToFilter('template_product_type_title',  array('like' => '%' . $inputValue . '%'));
         }
 
         if (isset($value['select'])) {
             switch ($value['select']) {
                 case '0':
-                    $collection->addAttributeToFilter('template_description_id', array('null' => true));
+                    $collection->addAttributeToFilter('template_product_type_id', array('null' => true));
                     break;
                 case '1':
-                    $collection->addAttributeToFilter('template_description_id', array('notnull' => true));
+                    $collection->addAttributeToFilter('template_product_type_id', array('notnull' => true));
                     break;
             }
         }

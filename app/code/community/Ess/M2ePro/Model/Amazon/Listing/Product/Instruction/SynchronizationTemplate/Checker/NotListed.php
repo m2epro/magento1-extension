@@ -25,10 +25,19 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Instruction_SynchronizationTemplat
 
         /** @var Ess_M2ePro_Model_Amazon_Listing_Product $amazonListingProduct */
         $amazonListingProduct = $listingProduct->getChildObject();
+
+        if (
+            $amazonListingProduct->isGeneralIdOwner()
+            && $amazonListingProduct->getProductTypeTemplate() === null
+        ) {
+            return false;
+        }
+
         $variationManager = $amazonListingProduct->getVariationManager();
 
-        $searchGeneralId   = $amazonListingProduct->getListingSource()->getSearchGeneralId();
-        $searchWorldwideId = $amazonListingProduct->getListingSource()->getSearchWorldwideId();
+        $identifiers = $amazonListingProduct->getIdentifiers();
+        $searchGeneralId = $identifiers->getGeneralId();
+        $searchWorldwideId = $identifiers->getWorldwideId();
 
         if ($variationManager->isVariationProduct()) {
             if ($variationManager->isPhysicalUnit() &&
@@ -57,16 +66,18 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Instruction_SynchronizationTemplat
                 }
             }
 
-            if ($variationManager->isRelationParentType() &&
-                empty($searchGeneralId) &&
-                !$amazonListingProduct->isGeneralIdOwner()
+            if ($variationManager->isRelationParentType()
+                && $searchGeneralId === null
+                && !$amazonListingProduct->isGeneralIdOwner()
             ) {
                 return false;
             }
         }
 
-        if (!$amazonListingProduct->getGeneralId() && !$amazonListingProduct->isGeneralIdOwner() &&
-            empty($searchGeneralId) && empty($searchWorldwideId)
+        if (!$amazonListingProduct->getGeneralId()
+            && !$amazonListingProduct->isGeneralIdOwner()
+            && $searchGeneralId === null
+            && $searchWorldwideId === null
         ) {
             return false;
         }

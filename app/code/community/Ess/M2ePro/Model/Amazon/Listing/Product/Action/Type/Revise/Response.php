@@ -20,9 +20,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Revise_Response
     {
         $data = array();
 
-        if ($this->getConfigurator()->isDetailsAllowed() ||
-            $this->getConfigurator()->isImagesAllowed()
-        ) {
+        if ($this->getConfigurator()->isDetailsAllowed()) {
             $data['defected_messages'] = null;
         }
 
@@ -32,7 +30,6 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Revise_Response
         $data = $this->appendBusinessPriceValues($data);
         $data = $this->appendGiftSettingsStatus($data);
         $data = $this->appendDetailsValues($data);
-        $data = $this->appendImagesValues($data);
         $data = $this->appendIsStoppedManually($data, false);
 
         if (isset($data['additional_data'])) {

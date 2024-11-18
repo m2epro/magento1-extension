@@ -14,7 +14,6 @@ abstract class Ess_M2ePro_Model_Amazon_Template_ChangeProcessor_Abstract
     const INSTRUCTION_TYPE_QTY_DATA_CHANGED     = 'template_qty_data_changed';
     const INSTRUCTION_TYPE_PRICE_DATA_CHANGED   = 'template_price_data_changed';
     const INSTRUCTION_TYPE_DETAILS_DATA_CHANGED = 'template_details_data_changed';
-    const INSTRUCTION_TYPE_IMAGES_DATA_CHANGED  = 'template_images_data_changed';
 
     //########################################
 }

@@ -1,13 +1,6 @@
 <?php
-/*
- * @author     M2E Pro Developers Team
- * @copyright  M2E LTD
- * @license    Commercial use is forbidden
- */
 
-// @codingStandardsIgnoreFile
-
-/** @var $this Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Variation_Product_Manage_Tabs_Settings */
+/** @var Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Variation_Product_Manage_Tabs_Settings $this */
 
 $channelThemes = $this->getChannelThemes();
 $channelThemeNote = $this->getChannelThemeNote();
@@ -27,6 +20,8 @@ $magentoProductVariations = $this->getListingProduct()->getMagentoProduct()->get
     </div>
 </div>
 
+<?php if($this->isNotExistsMissedProductTypeTemplate()) return; ?>
+
 <div class="entry-edit" id="magento_block_amazon_variation_manager_variation_general_id">
 
     <div class="entry-edit-head">
@@ -40,12 +35,10 @@ $magentoProductVariations = $this->getListingProduct()->getMagentoProduct()->get
 
                 In case you create New Amazon Parent-Child Product using M2E Pro you will be considered as a Creator of this Product. <br/><br/>
 
-                In case ASIN/ISBN was found using M2E Pro Search Tool, you can specify that you created this Amazon Parent Product earlier by clicking <i class="underline">"I am the Creator"</i> Button. You should enter SKU of the Amazon Parent Product from your Amazon Inventory at the next step. <br/><br/>
-
                 What you should know if you are the Creator of the Parent Product:
                 <ul class="list">
                     <li>Only you have an ability to add new Options of Attributes (for example, Option Red of Attribute Color) and Child Products for them;</li>
-                    <li>New Amazon Child Product will be created using a Description Policy assigned to the Amazon Parent Product.</li>
+                    <li>New Amazon Child Product will be created using a Product Type assigned to the Amazon Parent Product.</li>
                 </ul>
 
                 If you are not the Creator of this Product, you can only sell existing Child Products of the Parent Product.
@@ -55,36 +48,18 @@ $magentoProductVariations = $this->getListingProduct()->getMagentoProduct()->get
 <?php if ($this->hasGeneralId() && !$this->isGeneralIdOwner()) { ?>
 
     <p><?php echo Mage::helper('M2ePro')->__('You are not the Creator of Amazon Parent Product: %asin%. It is not allowed to you to create New Amazon Child Products.', $this->getGeneralIdLink()) ?>
-    <?php if ($this->showGeneralIdActions()) { ?>
-        <br/>
-        <button onclick="ListingGridObj.variationProductManageHandler.setGeneralIdOwner(<?php echo Ess_M2ePro_Model_Amazon_Listing_Product::IS_GENERAL_ID_OWNER_YES ?>)"><?php echo Mage::helper('M2ePro')->__('I am the Creator'); ?></button>
-        <span style="display: inline-block; vertical-align: middle">
-            <img src="<?php echo $this->getSkinUrl('M2ePro/images/tool-tip-icon.png'); ?>"
-                 class="tool-tip-image"
-                 style="display: block; margin: 2px 0 2px 6px;">
-            <span class="tool-tip-message tip" style="display: none; width: auto; padding-top: 4px;">
-                <img src="<?php echo $this->getSkinUrl('M2ePro/images/help.png'); ?>">
-                <span>
-                    <?php echo Mage::helper('M2ePro')->__(
-                        'In case your Amazon Parent Product is in your Amazon Inventory and has SKU there, you can specify for M2E Pro that you created this Product earlier.<br/>
-                         To do that just enter Amazon Parent Product SKU.'
-                    ); ?>
-                </span>
-            </span>
-        </span>
-    <?php } ?>
     </p>
 
 <?php } elseif ($this->hasGeneralId() && $this->isGeneralIdOwner()) { ?>
 
-    <p><?php echo Mage::helper('M2ePro')->__('You are the Creator of Amazon Parent Product %asin%. It is allowed to you to create New Amazon Child Products. <br/><br/><b>Please Note:</b> New Amazon Child Products will be created based on Description Policy %template_link%.', array('asin' => $this->getGeneralIdLink(), 'template_link' => $this->getDescriptionTemplateLink())) ?>
+    <p><?php echo Mage::helper('M2ePro')->__('You are the Creator of Amazon Parent Product %asin%. It is allowed to you to create New Amazon Child Products. <br/><br/><b>Please Note:</b> New Amazon Child Products will be created based on Product Type %pt_link%.', array('asin' => $this->getGeneralIdLink(), 'pt_link' => $this->getProductTypeLink())) ?>
     <?php if ($this->showGeneralIdActions()) { ?>
         <a href="javascript:void(0);" onclick="ListingGridObj.variationProductManageHandler.setGeneralIdOwner(<?php echo Ess_M2ePro_Model_Amazon_Listing_Product::IS_GENERAL_ID_OWNER_NO ?>)"><?php echo Mage::helper('M2ePro')->__('I am not Creator'); ?></a></p>
     <?php } ?>
 
 <?php } elseif (!$this->hasGeneralId() && $this->isGeneralIdOwner()) { ?>
 
-    <p><?php echo Mage::helper('M2ePro')->__('New Amazon Parent Product will be created based on %desctemplate% Description Policy.<br/> You will be able to create New Amazon Child Products.', $this->getDescriptionTemplateLink())?></p>
+    <p><?php echo Mage::helper('M2ePro')->__('New Amazon Parent Product will be created based on %pt_link% Product Type.<br/> You will be able to create New Amazon Child Products.', $this->getProductTypeLink())?></p>
 
 <?php } ?>
 
@@ -137,7 +112,7 @@ $magentoProductVariations = $this->getListingProduct()->getMagentoProduct()->get
                     your product will vary on Amazon. To create new Amazon Multi-Variation Products, 
                     a Variation Theme is required.<br><br>
                     The list of available Variation Themes depends on the Category and Product Type selected 
-                    in the Description Policy.
+                    in the Product Type.
                     The Variation Themes are strictly regulated by Amazon, so they cannot be modified or added.<br><br>
                     <b>Note:</b> You cannot change the Variation Theme once the ASIN/ISBN is assigned 
                     to the Parent Product.

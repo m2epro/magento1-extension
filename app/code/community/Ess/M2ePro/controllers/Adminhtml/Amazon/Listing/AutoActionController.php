@@ -90,11 +90,11 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_AutoActionController
             'auto_mode'                                   => Ess_M2ePro_Model_Listing::AUTO_MODE_NONE,
             'auto_global_adding_mode'                     => Ess_M2ePro_Model_Listing::ADDING_MODE_NONE,
             'auto_global_adding_add_not_visible'          => Ess_M2ePro_Model_Listing::AUTO_ADDING_ADD_NOT_VISIBLE_YES,
-            'auto_global_adding_description_template_id'  => null,
+            'auto_global_adding_product_type_template_id'  => null,
             'auto_website_adding_mode'                    => Ess_M2ePro_Model_Listing::ADDING_MODE_NONE,
             'auto_website_adding_add_not_visible'         => Ess_M2ePro_Model_Listing::AUTO_ADDING_ADD_NOT_VISIBLE_YES,
             'auto_website_deleting_mode'                  => Ess_M2ePro_Model_Listing::DELETING_MODE_NONE,
-            'auto_website_adding_description_template_id' => null
+            'auto_website_adding_product_type_template_id' => null
         );
 
         $groupData = array(
@@ -113,7 +113,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_AutoActionController
         if ($data['auto_mode'] == Ess_M2ePro_Model_Listing::AUTO_MODE_GLOBAL) {
             $listingData['auto_mode'] = Ess_M2ePro_Model_Listing::AUTO_MODE_GLOBAL;
             $listingData['auto_global_adding_mode'] = $data['auto_global_adding_mode'];
-            $listingData['auto_global_adding_description_template_id'] = $data['adding_description_template_id'];
+            $listingData['auto_global_adding_product_type_template_id'] = $data['adding_product_type_template_id'];
 
             if ($listingData['auto_global_adding_mode'] != Ess_M2ePro_Model_Listing::ADDING_MODE_NONE) {
                 $listingData['auto_global_adding_add_not_visible'] = $data['auto_global_adding_add_not_visible'];
@@ -126,7 +126,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_AutoActionController
             $listingData['auto_mode'] = Ess_M2ePro_Model_Listing::AUTO_MODE_WEBSITE;
             $listingData['auto_website_adding_mode'] = $data['auto_website_adding_mode'];
             $listingData['auto_website_deleting_mode'] = $data['auto_website_deleting_mode'];
-            $listingData['auto_website_adding_description_template_id'] = $data['adding_description_template_id'];
+            $listingData['auto_website_adding_product_type_template_id'] = $data['adding_product_type_template_id'];
 
             if ($listingData['auto_website_adding_mode'] != Ess_M2ePro_Model_Listing::ADDING_MODE_NONE) {
                 $listingData['auto_website_adding_add_not_visible'] = $data['auto_website_adding_add_not_visible'];
@@ -175,11 +175,11 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_AutoActionController
             'auto_mode' => Ess_M2ePro_Model_Listing::AUTO_MODE_NONE,
             'auto_global_adding_mode' => Ess_M2ePro_Model_Listing::ADDING_MODE_NONE,
             'auto_global_adding_add_not_visible' => Ess_M2ePro_Model_Listing::AUTO_ADDING_ADD_NOT_VISIBLE_YES,
-            'auto_global_adding_description_template_id' => null,
+            'auto_global_adding_product_type_template_id' => null,
             'auto_website_adding_mode' => Ess_M2ePro_Model_Listing::ADDING_MODE_NONE,
             'auto_website_adding_add_not_visible' => Ess_M2ePro_Model_Listing::AUTO_ADDING_ADD_NOT_VISIBLE_YES,
             'auto_website_deleting_mode' => Ess_M2ePro_Model_Listing::DELETING_MODE_NONE,
-            'auto_website_adding_description_template_id' => null,
+            'auto_website_adding_product_type_template_id' => null,
         );
 
         $listing->addData($data)->save();

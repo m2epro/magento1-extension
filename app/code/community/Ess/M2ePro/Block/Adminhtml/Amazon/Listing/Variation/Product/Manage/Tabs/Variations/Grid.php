@@ -945,13 +945,13 @@ HTML;
 
         $errorChangingProductOptions = $helper->escapeJs($helper->__('Please Select Product Options.'));
 
-        $mapToTemplateDescription = $this->getUrl('*/adminhtml_amazon_listing/mapToTemplateDescription');
-        $unmapFromTemplateDescription = $this->getUrl('*/adminhtml_amazon_listing/unmapFromTemplateDescription');
-        $validateProductsForTemplateDescriptionAssign = $this->getUrl(
-            '*/adminhtml_amazon_listing/validateProductsForTemplateDescriptionAssign'
+        $mapToTemplateProductType = $this->getUrl('*/adminhtml_amazon_listing/mapToTemplateProductType');
+        $unmapFromTemplateProductType = $this->getUrl('*/adminhtml_amazon_listing/unmapFromTemplateProductType');
+        $validateProductsForTemplateProductTypeAssign = $this->getUrl(
+            '*/adminhtml_amazon_listing/validateProductsForTemplateProductTypeAssign'
         );
-        $viewTemplateDescriptionsGrid = $this->getUrl('*/adminhtml_amazon_listing/viewTemplateDescriptionsGrid');
-        $templateDescriptionPopupTitle = $helper->escapeJs($helper->__('Assign Description Policy for Products'));
+        $viewTemplateProductTypesGrid = $this->getUrl('*/adminhtml_amazon_listing/viewTemplateProductTypesGrid');
+        $productTypePopupTitle = $helper->escapeJs($helper->__('Assign Product Type for Products'));
 
         $getUpdatedRepricingPriceBySkus = $this->getUrl(
             '*/adminhtml_amazon_listing_repricing/getUpdatedPriceBySkus'
@@ -989,10 +989,10 @@ HTML;
     M2ePro.url.runDeleteAndRemoveProducts = '{$runDeleteAndRemoveProducts}';
     M2ePro.url.setChildListingProductOptions = '{$setChildListingProductOptions}';
 
-    M2ePro.url.mapToTemplateDescription = '{$mapToTemplateDescription}';
-    M2ePro.url.unmapFromTemplateDescription = '{$unmapFromTemplateDescription}';
-    M2ePro.url.validateProductsForTemplateDescriptionAssign = '{$validateProductsForTemplateDescriptionAssign}';
-    M2ePro.url.viewTemplateDescriptionsGrid = '{$viewTemplateDescriptionsGrid}';
+    M2ePro.url.mapToTemplateProductType = '{$mapToTemplateProductType}';
+    M2ePro.url.unmapFromTemplateProductType = '{$unmapFromTemplateProductType}';
+    M2ePro.url.validateProductsForTemplateProductTypeAssign = '{$validateProductsForTemplateProductTypeAssign}';
+    M2ePro.url.viewTemplateProductTypesGrid = '{$viewTemplateProductTypesGrid}';
 
     M2ePro.url.getUpdatedRepricingPriceBySkus = '{$getUpdatedRepricingPriceBySkus}';
 
@@ -1013,7 +1013,7 @@ HTML;
 
     M2ePro.text.error_changing_product_options = '{$errorChangingProductOptions}';
 
-    M2ePro.text.templateDescriptionPopupTitle = '{$templateDescriptionPopupTitle}';
+    M2ePro.text.productTypePopupTitle = '{$productTypePopupTitle}';
 
     M2ePro.customData.componentMode = '{$component}';
     M2ePro.customData.gridId = 'amazonVariationProductManageGrid';
@@ -1160,28 +1160,6 @@ HTML;
         }
 
         return $this->_lockedDataCache[$listingProductId];
-    }
-
-    //########################################
-
-    protected function getTemplateDescriptionLinkHtml($listingProduct)
-    {
-        $templateDescriptionEditUrl = $this->getUrl(
-            '*/adminhtml_amazon_template_description/edit', array(
-                'id' => $listingProduct->getChildObject()->getTemplateDescriptionId()
-            )
-        );
-
-        $helper = Mage::helper('M2ePro');
-        $templateTitle = $listingProduct->getChildObject()->getDescriptionTemplate()->getTitle();
-
-        return <<<HTML
-<span style="font-size: 9px;">{$helper->__('Description Title')}:&nbsp;
-    <a target="_blank" href="{$templateDescriptionEditUrl}">
-        {$helper->escapeHtml($templateTitle)}</a>
-</span>
-<br/>
-HTML;
     }
 
     //########################################

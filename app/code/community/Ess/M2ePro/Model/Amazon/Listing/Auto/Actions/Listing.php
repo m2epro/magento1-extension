@@ -8,7 +8,13 @@
 
 class Ess_M2ePro_Model_Amazon_Listing_Auto_Actions_Listing extends Ess_M2ePro_Model_Listing_Auto_Actions_Listing
 {
-    //########################################
+    /** @var Ess_M2ePro_Model_Amazon_Template_ProductType_Repository*/
+    private $templateProductTypeRepository;
+
+    public function __construct()
+    {
+        $this->templateProductTypeRepository = Mage::getModel('M2ePro/Amazon_Template_ProductType_Repository');
+    }
 
     /**
      * @param Mage_Catalog_Model_Product $product
@@ -106,7 +112,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Auto_Actions_Listing extends Ess_M2ePro_Mo
         $amazonCategoryGroup = $categoryGroup->getChildObject();
 
         $params = array(
-            'template_description_id' => $amazonCategoryGroup->getAddingDescriptionTemplateId(),
+            'template_product_type_id' => $amazonCategoryGroup->getAddingProductTypeTemplateId(),
         );
 
         $this->processAddedListingProduct($listingProduct, $params);
@@ -137,7 +143,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Auto_Actions_Listing extends Ess_M2ePro_Mo
         $amazonListing = $listing->getChildObject();
 
         $params = array(
-            'template_description_id' => $amazonListing->getAutoGlobalAddingDescriptionTemplateId(),
+            'template_product_type_id' => $amazonListing->getAutoGlobalAddingProductTypeTemplateId(),
         );
 
         $this->processAddedListingProduct($listingProduct, $params);
@@ -166,7 +172,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Auto_Actions_Listing extends Ess_M2ePro_Mo
         $amazonListing = $listing->getChildObject();
 
         $params = array(
-            'template_description_id' => $amazonListing->getAutoWebsiteAddingDescriptionTemplateId(),
+            'template_product_type_id' => $amazonListing->getAutoWebsiteAddingProductTypeTemplateId(),
         );
 
         $this->processAddedListingProduct($listingProduct, $params);
@@ -176,7 +182,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Auto_Actions_Listing extends Ess_M2ePro_Mo
 
     protected function processAddedListingProduct(Ess_M2ePro_Model_Listing_Product $listingProduct, array $params)
     {
-        if (empty($params['template_description_id'])) {
+        if (empty($params['template_product_type_id'])) {
             return;
         }
 
@@ -184,7 +190,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Auto_Actions_Listing extends Ess_M2ePro_Mo
         $amazonListingProduct = $listingProduct->getChildObject();
 
         if (!$amazonListingProduct->getVariationManager()->isRelationParentType()) {
-            $listingProduct->setData('template_description_id', $params['template_description_id']);
+            $listingProduct->setData('template_product_type_id', $params['template_product_type_id']);
             $listingProduct->setData(
                 'is_general_id_owner',
                 Ess_M2ePro_Model_Amazon_Listing_Product::IS_GENERAL_ID_OWNER_YES
@@ -202,21 +208,16 @@ class Ess_M2ePro_Model_Amazon_Listing_Auto_Actions_Listing extends Ess_M2ePro_Mo
             $listingProduct->getMagentoProduct()->isDownloadableTypeWithSeparatedLinks()
         ) {
             $processor->process();
+
             return;
         }
 
-        $detailsModel = Mage::getModel('M2ePro/Amazon_Marketplace_Details');
-        $detailsModel->setMarketplaceId($listingProduct->getListing()->getMarketplaceId());
+        $productTypeTemplate = $this->templateProductTypeRepository->find($params['template_product_type_id']);
+        if ($productTypeTemplate === null) {
+            return;
+        }
 
-        /** @var Ess_M2ePro_Model_Template_Description $descriptionTemplate */
-        $descriptionTemplate = Mage::helper('M2ePro/Component_Amazon')
-            ->getModel('Template_Description')
-            ->load($params['template_description_id']);
-
-        /** @var Ess_M2ePro_Model_Amazon_Template_Description $amazonDescriptionTemplate */
-        $amazonDescriptionTemplate = $descriptionTemplate->getChildObject();
-
-        $possibleThemes = $detailsModel->getVariationThemes($amazonDescriptionTemplate->getProductDataNick());
+        $possibleThemes = $productTypeTemplate->getDictionary()->getVariationThemes();
 
         $productAttributes = $amazonListingProduct->getVariationManager()
             ->getTypeModel()
@@ -227,7 +228,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Auto_Actions_Listing extends Ess_M2ePro_Mo
                 continue;
             }
 
-            $listingProduct->setData('template_description_id', $params['template_description_id']);
+            $listingProduct->setData('template_product_type_id', $params['template_product_type_id']);
             $listingProduct->setData(
                 'is_general_id_owner',
                 Ess_M2ePro_Model_Amazon_Listing_Product::IS_GENERAL_ID_OWNER_YES

@@ -14,7 +14,8 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Configuration_Tabs extends Ess_M2ePro_Bl
     const TAB_ID_SYNCHRONIZATION        = 'synchronization';
     const TAB_ID_GLOBAL                 = 'global';
     const TAB_ID_TEMPLATE               = 'template';
-    const TAB_ID_DESCRIPTION_TEMPLATE   = 'description_template';
+
+    const TAB_ID_PRODUCT_TYPE           = 'product_type';
 
     //########################################
 
@@ -35,8 +36,8 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Configuration_Tabs extends Ess_M2ePro_Bl
         }
 
         $this->addTab(self::TAB_ID_ACCOUNT, $this->prepareTabAccount());
-        $this->addTab(self::TAB_ID_MARKETPLACE, $this->prepareTabMarketplace());
         $this->addTab(self::TAB_ID_TEMPLATE, $this->prepareTabTemplate());
+        $this->addTab(self::TAB_ID_PRODUCT_TYPE, $this->prepareTabProductType());
         $this->addTab(self::TAB_ID_SYNCHRONIZATION, $this->prepareTabSynchronization());
         $this->addTab(self::TAB_ID_GLOBAL, $this->prepareTabGlobal());
 
@@ -118,6 +119,24 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Configuration_Tabs extends Ess_M2ePro_Bl
 
         return $tab;
     }
+
+    private function prepareTabProductType()
+    {
+        $tab = array(
+            'label' => Mage::helper('M2ePro')->__('Product Types'),
+            'title' => Mage::helper('M2ePro')->__('Product Types')
+        );
+
+        if ($this->getData('active_tab') == self::TAB_ID_PRODUCT_TYPE) {
+            $tab['content'] = $this->getLayout()->createBlock('M2ePro/adminhtml_amazon_productType_help')->toHtml();
+            $tab['content'] .= $this->getLayout()->createBlock('M2ePro/adminhtml_amazon_productType')->toHtml();
+        } else {
+            $tab['url'] = $this->getUrl('*/adminhtml_amazon_productTypes/index');
+        }
+
+        return $tab;
+    }
+
 
     protected function prepareTabAccount()
     {

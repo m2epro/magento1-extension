@@ -33,17 +33,19 @@ class Ess_M2ePro_Model_Amazon_Listing extends Ess_M2ePro_Model_Component_Child_A
     const CONDITION_MODE_DEFAULT          = 1;
     const CONDITION_MODE_CUSTOM_ATTRIBUTE = 2;
 
-    const CONDITION_NEW                    = 'New';
-    const CONDITION_USED_LIKE_NEW          = 'UsedLikeNew';
-    const CONDITION_USED_VERY_GOOD         = 'UsedVeryGood';
-    const CONDITION_USED_GOOD              = 'UsedGood';
-    const CONDITION_USED_ACCEPTABLE        = 'UsedAcceptable';
-    const CONDITION_COLLECTIBLE_LIKE_NEW   = 'CollectibleLikeNew';
-    const CONDITION_COLLECTIBLE_VERY_GOOD  = 'CollectibleVeryGood';
-    const CONDITION_COLLECTIBLE_GOOD       = 'CollectibleGood';
-    const CONDITION_COLLECTIBLE_ACCEPTABLE = 'CollectibleAcceptable';
-    const CONDITION_REFURBISHED            = 'Refurbished';
-    const CONDITION_CLUB                   = 'Club';
+    const CONDITION_NEW = 'new_new';
+    const CONDITION_NEW_OEM = 'new_oem';
+    const CONDITION_NEW_OPEN_BOX = 'new_open_box';
+    const CONDITION_USED_LIKE_NEW = 'used_like_new';
+    const CONDITION_USED_VERY_GOOD = 'used_very_good';
+    const CONDITION_USED_GOOD = 'used_good';
+    const CONDITION_USED_ACCEPTABLE = 'used_acceptable';
+    const CONDITION_COLLECTIBLE_LIKE_NEW = 'collectible_like_new';
+    const CONDITION_COLLECTIBLE_VERY_GOOD = 'collectible_very_good';
+    const CONDITION_COLLECTIBLE_GOOD = 'collectible_good';
+    const CONDITION_COLLECTIBLE_ACCEPTABLE = 'collectible_acceptable';
+    const CONDITION_REFURBISHED = 'refurbished_refurbished';
+    const CONDITION_CLUB = 'club_club';
 
     const CONDITION_NOTE_MODE_NONE         = 3;
     const CONDITION_NOTE_MODE_CUSTOM_VALUE = 1;
@@ -51,12 +53,6 @@ class Ess_M2ePro_Model_Amazon_Listing extends Ess_M2ePro_Model_Component_Child_A
     const IMAGE_MAIN_MODE_NONE      = 0;
     const IMAGE_MAIN_MODE_PRODUCT   = 1;
     const IMAGE_MAIN_MODE_ATTRIBUTE = 2;
-
-    const GALLERY_IMAGES_MODE_NONE      = 0;
-    const GALLERY_IMAGES_MODE_PRODUCT   = 1;
-    const GALLERY_IMAGES_MODE_ATTRIBUTE = 2;
-
-    const GALLERY_IMAGES_COUNT_MAX = 5;
 
     const HANDLING_TIME_MODE_NONE             = 3;
     const HANDLING_TIME_MODE_RECOMMENDED      = 1;
@@ -247,7 +243,7 @@ class Ess_M2ePro_Model_Amazon_Listing extends Ess_M2ePro_Model_Component_Child_A
      */
     public function getTemplateShippingId()
     {
-        return (int)($this->getData('template_shipping_id'));
+        return (int)$this->getData('template_shipping_id');
     }
 
     /**
@@ -255,7 +251,7 @@ class Ess_M2ePro_Model_Amazon_Listing extends Ess_M2ePro_Model_Component_Child_A
      */
     public function isExistShippingTemplate()
     {
-        return $this->getTemplateShippingId() > 0;
+        return $this->getData('template_shipping_id') !== null;
     }
 
     /**
@@ -275,20 +271,6 @@ class Ess_M2ePro_Model_Amazon_Listing extends Ess_M2ePro_Model_Component_Child_A
         );
     }
 
-    // ---------------------------------------
-
-    /**
-     * @param Ess_M2ePro_Model_Magento_Product $magentoProduct
-     * @return Ess_M2ePro_Model_Amazon_Template_Shipping_Source
-     */
-    public function getShippingTemplateSource(Ess_M2ePro_Model_Magento_Product $magentoProduct)
-    {
-        if (!$this->isExistShippingTemplate()) {
-            return null;
-        }
-
-        return $this->getShippingTemplate()->getSource($magentoProduct);
-    }
 
     //########################################
 
@@ -304,20 +286,17 @@ class Ess_M2ePro_Model_Amazon_Listing extends Ess_M2ePro_Model_Component_Child_A
 
     //########################################
 
-    /**
-     * @return int
-     */
-    public function getAutoGlobalAddingDescriptionTemplateId()
+    public function getAutoGlobalAddingProductTypeTemplateId()
     {
-        return (int)$this->getData('auto_global_adding_description_template_id');
+        return (int)$this->getData('auto_global_adding_product_type_template_id');
     }
 
     /**
      * @return int
      */
-    public function getAutoWebsiteAddingDescriptionTemplateId()
+    public function getAutoWebsiteAddingProductTypeTemplateId()
     {
-        return (int)$this->getData('auto_website_adding_description_template_id');
+        return (int)$this->getData('auto_website_adding_product_type_template_id');
     }
 
     //########################################
@@ -471,13 +450,21 @@ class Ess_M2ePro_Model_Amazon_Listing extends Ess_M2ePro_Model_Component_Child_A
     }
 
     /**
+     * @return string|null
+     */
+    public function getGeneralIdAttribute()
+    {
+        return $this->getData('general_id_custom_attribute');
+    }
+
+    /**
      * @return array
      */
     public function getGeneralIdSource()
     {
         return array(
             'mode'      => $this->getGeneralIdMode(),
-            'attribute' => $this->getData('general_id_custom_attribute')
+            'attribute' => $this->getGeneralIdAttribute()
         );
     }
 
@@ -505,6 +492,14 @@ class Ess_M2ePro_Model_Amazon_Listing extends Ess_M2ePro_Model_Component_Child_A
     public function isWorldwideIdAttributeMode()
     {
         return $this->getWorldwideIdMode() == self::WORLDWIDE_ID_MODE_CUSTOM_ATTRIBUTE;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getWorldwideIdAttribute()
+    {
+        return $this->getData('worldwide_id_custom_attribute');
     }
 
     /**
@@ -680,90 +675,6 @@ class Ess_M2ePro_Model_Amazon_Listing extends Ess_M2ePro_Model_Component_Child_A
             'mode'      => $this->getImageMainMode(),
             'attribute' => $this->getData('image_main_attribute')
         );
-    }
-
-    /**
-     * @return array
-     */
-    public function getImageMainAttributes()
-    {
-        $attributes = array();
-        $src = $this->getImageMainSource();
-
-        if ($src['mode'] == self::IMAGE_MAIN_MODE_PRODUCT) {
-            $attributes[] = 'image';
-        } else {
-            if ($src['mode'] == self::IMAGE_MAIN_MODE_ATTRIBUTE) {
-                $attributes[] = $src['attribute'];
-            }
-        }
-
-        return $attributes;
-    }
-
-    // ---------------------------------------
-
-    /**
-     * @return int
-     */
-    public function getGalleryImagesMode()
-    {
-        return (int)$this->getData('gallery_images_mode');
-    }
-
-    /**
-     * @return bool
-     */
-    public function isGalleryImagesModeNone()
-    {
-        return $this->getGalleryImagesMode() == self::GALLERY_IMAGES_MODE_NONE;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isGalleryImagesModeProduct()
-    {
-        return $this->getGalleryImagesMode() == self::GALLERY_IMAGES_MODE_PRODUCT;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isGalleryImagesModeAttribute()
-    {
-        return $this->getGalleryImagesMode() == self::GALLERY_IMAGES_MODE_ATTRIBUTE;
-    }
-
-    /**
-     * @return array
-     */
-    public function getGalleryImagesSource()
-    {
-        return array(
-            'mode'      => $this->getGalleryImagesMode(),
-            'limit'     => $this->getData('gallery_images_limit'),
-            'attribute' => $this->getData('gallery_images_attribute')
-        );
-    }
-
-    /**
-     * @return array
-     */
-    public function getGalleryImagesAttributes()
-    {
-        $attributes = array();
-        $src = $this->getGalleryImagesSource();
-
-        if ($src['mode'] == self::GALLERY_IMAGES_MODE_PRODUCT) {
-            $attributes[] = 'media_gallery';
-        } else {
-            if ($src['mode'] == self::GALLERY_IMAGES_MODE_ATTRIBUTE) {
-                $attributes[] = $src['attribute'];
-            }
-        }
-
-        return $attributes;
     }
 
     // ---------------------------------------
@@ -1159,8 +1070,8 @@ class Ess_M2ePro_Model_Amazon_Listing extends Ess_M2ePro_Model_Component_Child_A
 
             if ($sourceListing->getMarketplaceId() == $this->getParentObject()->getMarketplaceId()) {
                 $listingProduct->getChildObject()->setData(
-                    'template_description_id',
-                    $sourceListingProduct->getChildObject()->getTemplateDescriptionId()
+                    'template_product_type_id',
+                    $sourceListingProduct->getChildObject()->getTemplateProductTypeId()
                 );
                 $listingProduct->getChildObject()->setData(
                     'template_shipping_id',

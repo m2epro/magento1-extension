@@ -49,9 +49,9 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Product_Add_SearchAsin
 
         $this->_addButton(
             'edit_search_settings', array(
-                'label'   => Mage::helper('M2ePro')->__('Edit Search Settings'),
+                'label'   => Mage::helper('M2ePro')->__('Edit Product Identifiers'),
                 'onclick' => 'ListingGridObj.editSearchSettings(\'' .
-                             Mage::helper('M2ePro')->__('Listing Search Settings') . '\' ,' .
+                             Mage::helper('M2ePro')->__('Listing Product Identifiers') . '\' ,' .
                              $this->getListing()->getId() .
                              ');'
             )

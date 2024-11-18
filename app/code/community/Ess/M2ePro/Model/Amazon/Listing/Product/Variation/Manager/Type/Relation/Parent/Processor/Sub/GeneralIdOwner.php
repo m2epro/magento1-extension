@@ -16,12 +16,6 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Pa
         if (!$this->getProcessor()->isGeneralIdSet()) {
             $this->getProcessor()->getListingProduct()->setData('sku', null);
         }
-
-        if ($this->getProcessor()->isGeneralIdOwner() &&
-            !$this->getProcessor()->getAmazonListingProduct()->isExistDescriptionTemplate()
-        ) {
-            $this->getProcessor()->getListingProduct()->setData('is_general_id_owner', 0);
-        }
     }
 
     protected function execute()

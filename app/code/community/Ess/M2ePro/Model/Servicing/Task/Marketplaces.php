@@ -27,7 +27,25 @@ class Ess_M2ePro_Model_Servicing_Task_Marketplaces extends Ess_M2ePro_Model_Serv
      */
     public function getRequestData()
     {
-        return array();
+        return array(
+            'amazon' => $this->buildAmazonMarketplaceData()
+        );
+    }
+
+    private function buildAmazonMarketplaceData()
+    {
+        $result = array();
+        /** @var Ess_M2ePro_Model_Amazon_Dictionary_ProductType_Repository $amazonDictionaryPTRepository */
+        $amazonDictionaryPTRepository = Mage::getModel('M2ePro/Amazon_Dictionary_ProductType_Repository');
+        $marketplacePtMap = $amazonDictionaryPTRepository->getValidNickMapByMarketplaceNativeId();
+        foreach ($marketplacePtMap as $nativeMarketplaceId => $productTypesNicks) {
+            $result[] = array(
+                'marketplace' => $nativeMarketplaceId,
+                'product_types' => $productTypesNicks
+            );
+        }
+
+        return $result;
     }
 
     public function processResponseData(array $data)
@@ -36,8 +54,8 @@ class Ess_M2ePro_Model_Servicing_Task_Marketplaces extends Ess_M2ePro_Model_Serv
             $this->processEbayLastUpdateDates($data['ebay_last_update_dates']);
         }
 
-        if (isset($data['amazon_last_update_dates']) && is_array($data['amazon_last_update_dates'])) {
-            $this->processAmazonLastUpdateDates($data['amazon_last_update_dates']);
+        if (isset($data['amazon']) && is_array($data['amazon'])) {
+            $this->processAmazonLastUpdateDates($data['amazon']);
         }
 
         if ($this->_needToCleanCache) {
@@ -94,50 +112,41 @@ class Ess_M2ePro_Model_Servicing_Task_Marketplaces extends Ess_M2ePro_Model_Serv
         }
     }
 
-    protected function processAmazonLastUpdateDates($lastUpdateDates)
+    protected function processAmazonLastUpdateDates($lastUpdateDatesByProductTypes)
     {
-        $enabledMarketplaces = Mage::helper('M2ePro/Component_Amazon')
-            ->getMarketplacesAvailableForApiCreation();
+        foreach ($lastUpdateDatesByProductTypes as $row) {
+            $nativeMarketplaceId = (int)$row['marketplace'];
+            $productTypesLastUpdateByNick = array();
+            foreach ($row['product_types'] as  $productType) {
+                if (!isset($productType['name']) || !isset($productType['last_update']) ) {
+                    continue;
+                }
+                $productTypesLastUpdateByNick[$productType['name']] = Mage::helper('M2ePro')->createGmtDateTime(
+                    $productType['last_update']
+                );
+            }
 
-        $writeConn = Mage::getSingleton('core/resource')->getConnection('core_write');
-        $dictionaryTable = Mage::helper('M2ePro/Module_Database_Structure')
-            ->getTableNameWithPrefix('m2epro_amazon_dictionary_marketplace');
-
-        /** @var $marketplace Ess_M2ePro_Model_Marketplace */
-        foreach ($enabledMarketplaces as $marketplace) {
-            if (!isset($lastUpdateDates[$marketplace->getNativeId()])) {
+            /** @var Ess_M2ePro_Model_Amazon_Marketplace_Repository $amazonMarketplaceRepository */
+            $amazonMarketplaceRepository = Mage::getModel('M2ePro/Amazon_Marketplace_Repository');
+            $marketplace = $amazonMarketplaceRepository->findByNativeId($nativeMarketplaceId);
+            if ($marketplace === null) {
                 continue;
             }
 
-            $serverLastUpdateDate = $lastUpdateDates[$marketplace->getNativeId()];
+            $amazonDictionaryPTRepository = Mage::getModel('M2ePro/Amazon_Dictionary_ProductType_Repository');
+            foreach ($amazonDictionaryPTRepository->findByMarketplace($marketplace) as $productType) {
+                if (!isset($productTypesLastUpdateByNick[$productType->getNick()])) {
+                    continue;
+                }
 
-            $select = $writeConn->select()
-                ->from(
-                    $dictionaryTable, array(
-                    'client_details_last_update_date'
-                    )
-                )
-                ->where('marketplace_id = ?', $marketplace->getId());
+                $productType->setServerDetailsLastUpdateDate($productTypesLastUpdateByNick[$productType->getNick()]);
 
-            $clientLastUpdateDate = $writeConn->fetchOne($select);
-
-            if ($clientLastUpdateDate === null) {
-                $clientLastUpdateDate = $serverLastUpdateDate;
+                $amazonDictionaryPTRepository->save($productType);
             }
-
-            if ($clientLastUpdateDate < $serverLastUpdateDate) {
-                $this->_needToCleanCache = true;
-            }
-
-            $writeConn->update(
-                $dictionaryTable,
-                array(
-                    'server_details_last_update_date' => $serverLastUpdateDate,
-                    'client_details_last_update_date' => $clientLastUpdateDate
-                ),
-                array('marketplace_id = ?' => $marketplace->getId())
-            );
         }
+
+        $productOutOfDateCache = Mage::getModel('M2ePro/Amazon_Marketplace_Issue_ProductTypeOutOfDate_Cache');
+        $productOutOfDateCache->clear();
     }
 
     //########################################

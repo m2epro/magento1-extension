@@ -1,19 +1,9 @@
 <?php
 
-/*
- * @author     M2E Pro Developers Team
- * @copyright  M2E LTD
- * @license    Commercial use is forbidden
- */
-
-/**
- * Class Ess_M2ePro_Block_Adminhtml_Amazon_Configuration_General_Form
- *
- * @method Ess_M2ePro_Helper_Component_Amazon_Configuration getConfigurationHelper()
- */
 class Ess_M2ePro_Block_Adminhtml_Amazon_Configuration_General_Form extends Mage_Adminhtml_Block_Widget_Form
 {
-    //########################################
+    /** @var Ess_M2ePro_Helper_Component_Amazon_Configuration */
+    private $configurationHelper;
 
     public function __construct()
     {
@@ -25,6 +15,8 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Configuration_General_Form extends Mage_
         $this->setContainerId('magento_block_amazon_configuration_general');
         $this->setTemplate('M2ePro/amazon/configuration/general/form.phtml');
         // ---------------------------------------
+
+        $this->configurationHelper = Mage::helper('M2ePro/Component_Amazon_Configuration');
     }
 
     protected function _prepareForm()
@@ -43,12 +35,23 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Configuration_General_Form extends Mage_
         return parent::_prepareForm();
     }
 
-    protected function _beforeToHtml()
+    public function getConfigurationHelper()
     {
-        $this->setData('configuration_helper', Mage::helper('M2ePro/Component_Amazon_Configuration'));
-
-        return parent::_beforeToHtml();
+        return $this->configurationHelper;
     }
 
-    //########################################
+    /**
+     * @return array
+     */
+    public function getMagentoAttributes()
+    {
+        /** @var Ess_M2ePro_Helper_Magento_Attribute $magentoAttributeHelper */
+        $magentoAttributeHelper = Mage::helper('M2ePro/Magento_Attribute');
+        $attributes = $magentoAttributeHelper->getAll();
+
+       return $magentoAttributeHelper->filterByInputTypes(
+           $attributes,
+           array('text', 'select')
+       );
+    }
 }

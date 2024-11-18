@@ -206,9 +206,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View extends Mage_Adminhtml_Bloc
         $ignoreListings = Mage::helper('M2ePro')->jsonEncode(array($this->_listing->getId()));
 
         $marketplace = Mage::helper('M2ePro')->jsonEncode($this->_listing->getMarketplace()->getData());
-        $isNewAsinAvailable = Mage::helper('M2ePro')->jsonEncode(
-            $this->_listing->getMarketplace()->getChildObject()->isNewAsinAvailable()
-        );
 
         $logViewUrl = $this->getUrl(
             '*/adminhtml_amazon_log/listing',
@@ -327,8 +324,8 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View extends Mage_Adminhtml_Bloc
         $variationProductSetListingProductSku = $this->getUrl(
             '*/adminhtml_amazon_listing_variation_product_manage/setListingProductSku'
         );
-        $manageVariationViewTemplateDescriptionsGrid = $this->getUrl(
-            '*/adminhtml_amazon_listing_variation_product_manage/viewTemplateDescriptionsGrid'
+        $manageVariationViewTemplateProductTypesGrid = $this->getUrl(
+            '*/adminhtml_amazon_listing_variation_product_manage/viewTemplateProductTypesGrid'
         );
         $manageVariationMapToTemplateDescription = $this->getUrl(
             '*/adminhtml_amazon_listing_variation_product_manage/mapToTemplateDescription'
@@ -364,13 +361,13 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View extends Mage_Adminhtml_Bloc
             )
         );
 
-        $mapToTemplateDescription = $this->getUrl('*/adminhtml_amazon_listing/mapToTemplateDescription');
-        $unmapFromTemplateDescription = $this->getUrl('*/adminhtml_amazon_listing/unmapFromTemplateDescription');
-        $validateProductsForTemplateDescriptionAssign = $this->getUrl(
-            '*/adminhtml_amazon_listing/validateProductsForTemplateDescriptionAssign'
+        $mapToTemplateProductType = $this->getUrl('*/adminhtml_amazon_listing/mapToTemplateProductType');
+        $unmapFromTemplateProductType = $this->getUrl('*/adminhtml_amazon_listing/unmapFromTemplateProductType');
+        $validateProductsForTemplateProductTypeAssign = $this->getUrl(
+            '*/adminhtml_amazon_listing/validateProductsForTemplateProductTypeAssign'
         );
-        $viewTemplateDescriptionsGrid = $this->getUrl('*/adminhtml_amazon_listing/viewTemplateDescriptionsGrid');
-        $templateDescriptionPopupTitle = $helper->escapeJs($helper->__('Assign Description Policy'));
+        $viewTemplateProductTypesGrid = $this->getUrl('*/adminhtml_amazon_listing/viewTemplateProductTypesGrid');
+        $templateProductTypePopupTitle = $helper->escapeJs($helper->__('Assign Product Type'));
 
         $assignShippingTemplate = $this->getUrl('*/adminhtml_amazon_listing/assignShippingTemplate');
         $unmapFromTemplateShipping = $this->getUrl('*/adminhtml_amazon_listing/unassignShippingTemplate');
@@ -474,7 +471,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View extends Mage_Adminhtml_Bloc
     M2ePro.url.variationProductSetMatchedAttributes = '{$variationProductSetMatchedAttributes}';
     M2ePro.url.variationProductSetListingProductSku = '{$variationProductSetListingProductSku}';
     M2ePro.url.variationProductSetListingProductSku = '{$variationProductSetListingProductSku}';
-    M2ePro.url.manageVariationViewTemplateDescriptionsGrid = '{$manageVariationViewTemplateDescriptionsGrid}';
+    M2ePro.url.manageVariationViewTemplateProductTypesGrid = '{$manageVariationViewTemplateProductTypesGrid}';
     M2ePro.url.manageVariationMapToTemplateDescription = '{$manageVariationMapToTemplateDescription}';
     M2ePro.url.viewVariationsSettingsAjax = '{$viewVariationsSettingsAjax}';
     M2ePro.url.addAttributesToVocabulary = '{$addAttributesToVocabularyUrl}';
@@ -486,10 +483,10 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View extends Mage_Adminhtml_Bloc
 
     M2ePro.url.newAsin = '{$newAsinUrl}';
 
-    M2ePro.url.mapToTemplateDescription = '{$mapToTemplateDescription}';
-    M2ePro.url.unmapFromTemplateDescription = '{$unmapFromTemplateDescription}';
-    M2ePro.url.validateProductsForTemplateDescriptionAssign = '{$validateProductsForTemplateDescriptionAssign}';
-    M2ePro.url.viewTemplateDescriptionsGrid = '{$viewTemplateDescriptionsGrid}';
+    M2ePro.url.mapToTemplateProductType = '{$mapToTemplateProductType}';
+    M2ePro.url.unmapFromTemplateProductType = '{$unmapFromTemplateProductType}';
+    M2ePro.url.validateProductsForTemplateProductTypeAssign = '{$validateProductsForTemplateProductTypeAssign}';
+    M2ePro.url.viewTemplateProductTypesGrid = '{$viewTemplateProductTypesGrid}';
 
     M2ePro.url.assignShippingTemplate = '{$assignShippingTemplate}';
     M2ePro.url.unassignShippingTemplate = '{$unmapFromTemplateShipping}';
@@ -531,7 +528,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View extends Mage_Adminhtml_Bloc
     M2ePro.text.deleting_and_removing_selected_items_message = '{$deletingAndRemovingSelectedItemsMessage}';
     M2ePro.text.removing_selected_items_message = '{$removingSelectedItemsMessage}';
 
-    M2ePro.text.templateDescriptionPopupTitle = '{$templateDescriptionPopupTitle}';
+    M2ePro.text.productTypePopupTitle = '{$templateProductTypePopupTitle}';
 
     M2ePro.text.templateShippingPopupTitle = '{$templateShippingPopupTitle}';
     M2ePro.text.templateProductTaxCodePopupTitle = '{$templateProductTaxCodePopupTitle}';
@@ -561,7 +558,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View extends Mage_Adminhtml_Bloc
     M2ePro.customData.ignoreListings = '{$ignoreListings}';
 
     M2ePro.customData.marketplace = {$marketplace};
-    M2ePro.customData.isNewAsinAvailable = {$isNewAsinAvailable};
 
     Event.observe(window, 'load', function() {
 
@@ -746,7 +742,7 @@ HTML;
         );
         $items[] = array(
             'url'    => $url,
-            'label'  => Mage::helper('M2ePro')->__('Search'),
+            'label'  => Mage::helper('M2ePro')->__('Product Identifiers'),
             'target' => '_blank'
         );
         // ---------------------------------------

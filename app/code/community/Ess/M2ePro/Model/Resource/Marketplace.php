@@ -3,8 +3,15 @@
 class Ess_M2ePro_Model_Resource_Marketplace
     extends Ess_M2ePro_Model_Resource_Component_Parent_Abstract
 {
+    const COLUMN_ID = 'id';
+    const COLUMN_NATIVE_ID = 'native_id';
+    const COLUMN_TITLE = 'title';
+    const COLUMN_CODE = 'code';
+    const COLUMN_URL = 'url';
     const COLUMN_STATUS = 'status';
     const COLUMN_SORDER = 'sorder';
+    const COLUMN_GROUP_TITLE = 'group_title';
+    const COLUMN_COMPONENT_MODE = 'component_mode';
 
     public function _construct()
     {

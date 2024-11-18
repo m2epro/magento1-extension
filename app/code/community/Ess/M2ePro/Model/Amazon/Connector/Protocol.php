@@ -15,6 +15,6 @@ class Ess_M2ePro_Model_Amazon_Connector_Protocol extends Ess_M2ePro_Model_Connec
 
     public function getComponentVersion()
     {
-        return 15;
+        return 23;
     }
 }

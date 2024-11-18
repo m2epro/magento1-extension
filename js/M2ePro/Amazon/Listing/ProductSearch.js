@@ -281,10 +281,6 @@ window.AmazonListingProductSearch = Class.create(Action, {
     {
         var self = this;
 
-        if (!M2ePro.customData.isNewAsinAvailable) {
-            return alert(M2ePro.text.new_asin_not_available.replace('%code%',M2ePro.customData.marketplace.code));
-        }
-
         listingProductIds = listingProductIds || self.params.productId;
 
         new Ajax.Request(M2ePro.url.mapToNewAsin, {
@@ -309,8 +305,8 @@ window.AmazonListingProductSearch = Class.create(Action, {
                 self.flagSuccess = true;
 
                 if(response.products_ids.length > 0) {
-                    ListingGridObj.templateDescription.openPopUp(
-                        0, M2ePro.text.templateDescriptionPopupTitle,
+                    ListingGridObj.templateProductType.openPopUp(
+                        0, M2ePro.text.productTypePopupTitle,
                         response.products_ids, null, response.data, 1
                     );
                 } else {

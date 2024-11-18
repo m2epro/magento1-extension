@@ -859,7 +859,8 @@ INSERT INTO `{$this->_installer->getTable('m2epro_wizard')}` VALUES
   (2,  'installationAmazon',             'amazon',  0, NULL, 1, 2),
   (10, 'installationWalmart',            'walmart', 0, NULL, 1, 10),
   (11, 'migrationToInnodb',              '*',       3, NULL, 1, 11),
-  (12, 'walmartMigrationToProductTypes', 'walmart', 3, NULL, 1, 12);
+  (12, 'walmartMigrationToProductTypes', 'walmart', 3, NULL, 1, 12),
+  (13, 'amazonMigrationToProductTypes',  'amazon',  3, NULL, 1, 6);
 
 SQL
         );

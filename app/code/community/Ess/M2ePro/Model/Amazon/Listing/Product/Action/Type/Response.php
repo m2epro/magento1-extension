@@ -289,21 +289,6 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Response
         return $data;
     }
 
-    protected function appendImagesValues($data)
-    {
-        $requestMetadata = $this->getRequestMetaData();
-        if (!isset($requestMetadata['images_data'])) {
-            return $data;
-        }
-
-        $data['online_images_data'] = Mage::helper('M2ePro')->hashString(
-            Mage::helper('M2ePro')->jsonEncode($requestMetadata['images_data']),
-            'md5'
-        );
-
-        return $data;
-    }
-
     /**
      * @param array $data
      * @param bool $value
@@ -387,15 +372,6 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Response
                 'type'               => ChangeProcessor::INSTRUCTION_TYPE_DETAILS_DATA_CHANGED,
                 'initiator'          => self::INSTRUCTION_INITIATOR,
                 'priority'           => 60
-            );
-        }
-
-        if ($this->getConfigurator()->isImagesAllowed()) {
-            $instructions[] = array(
-                'listing_product_id' => $this->getListingProduct()->getId(),
-                'type'               => ChangeProcessor::INSTRUCTION_TYPE_IMAGES_DATA_CHANGED,
-                'initiator'          => self::INSTRUCTION_INITIATOR,
-                'priority'           => 30
             );
         }
 

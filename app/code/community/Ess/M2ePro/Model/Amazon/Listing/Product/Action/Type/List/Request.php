@@ -52,8 +52,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Request
             $this->getQtyData(),
             $this->getRegularPriceData(),
             $this->getBusinessPriceData(),
-            $this->getDetailsData(),
-            $this->getImagesData()
+            $this->getDetailsData()
         );
 
         if ($this->getVariationManager()->isRelationParentType()) {
@@ -79,23 +78,18 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Request
         );
     }
 
-    protected function getNewProductIdentifierData()
+    /**
+     * @return array{product_id: string, product_id_type: string}|array
+     */
+    private function getNewProductIdentifierData()
     {
+        $worldwideId = $this->getAmazonListingProduct()
+                            ->getIdentifiers()
+                            ->getWorldwideId();
         $data = array();
-
-        $worldwideId = $this->getAmazonListingProduct()->getDescriptionTemplateSource()->getWorldwideId();
-
-        if (!empty($worldwideId)) {
-            $data['product_id']      = $worldwideId;
-            $data['product_id_type'] = Mage::helper('M2ePro')->isUPC($worldwideId) ? 'UPC' : 'EAN';
-        }
-
-        $registeredParameter = $this->getAmazonListingProduct()
-            ->getAmazonDescriptionTemplate()
-            ->getRegisteredParameter();
-
-        if (!empty($registeredParameter)) {
-            $data['registered_parameter'] = $registeredParameter;
+        if ($worldwideId !== null) {
+            $data['product_id'] = $worldwideId->getIdentifier();
+            $data['product_id_type'] = $worldwideId->isUPC() ? 'UPC' : 'EAN';
         }
 
         return $data;
@@ -109,10 +103,10 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Request
             return array();
         }
 
-        $descriptionTemplate = $this->getAmazonListingProduct()->getAmazonDescriptionTemplate();
+        $productTypeTemplate = $this->getAmazonListingProduct()->getProductTypeTemplate();
 
         $data = array(
-            'product_data_nick' => $descriptionTemplate->getProductDataNick(),
+            'product_type_nick' => $productTypeTemplate->getNick(),
             'variation_data'    => array(
                 'theme' => $this->getChannelTheme(),
             ),

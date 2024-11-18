@@ -133,7 +133,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Product_Add_SearchAsin_Grid
             $this->getListing()->getChildObject()->isWorldwideIdAttributeMode()) {
             $this->addColumn(
                 'settings', array(
-                    'header'         => Mage::helper('M2ePro')->__('Search Settings Values'),
+                    'header'         => Mage::helper('M2ePro')->__('Product Identifiers Values'),
                     'align'          => 'left',
                     'width'          => '240px',
                     'filter'         => false,
@@ -247,36 +247,30 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Product_Add_SearchAsin_Grid
 
     public function callbackColumnSettings($id, $row, $column, $isExport)
     {
-        $value = '';
-        /** @var Ess_M2ePro_Model_Amazon_Listing_Product $listingProduct */
-        $listingProduct = Mage::helper('M2ePro/Component_Amazon')->getObject('Listing_Product', $id)->getChildObject();
+        $result = '';
+        /** @var Ess_M2ePro_Model_Amazon_Listing_Product $amazonListingProduct */
+        $amazonListingProduct = Mage::helper('M2ePro/Component_Amazon')
+                              ->getObject('Listing_Product', $id)
+                              ->getChildObject();
+        $identifiers = $amazonListingProduct->getIdentifiers();
 
-        if ($this->getListing()->getChildObject()->isGeneralIdAttributeMode()) {
-            $attrValue = $listingProduct->getListingSource()->getSearchGeneralId();
-
-            if (empty($attrValue)) {
-                $attrValue = Mage::helper('M2ePro')->__('Not set');
-            } else if (!Mage::helper('M2ePro/Component_Amazon')->isASIN($attrValue) &&
-                        !Mage::helper('M2ePro')->isISBN($attrValue)) {
-                $attrValue = Mage::helper('M2ePro')->__('Inappropriate value');
-            }
-
-            $value .= '<b>' . Mage::helper('M2ePro')->__('ASIN/ISBN') . '</b>: ' . $attrValue . '<br/>';
+        $generalIdValue = Mage::helper('M2ePro')->__('Not set');
+        if ($generalId = $identifiers->getGeneralId()) {
+            $generalIdValue = $generalId->hasResolvedType()
+                ? $generalId->getIdentifier()
+                : Mage::helper('M2ePro')->__('Inappropriate value');
         }
+        $result .= '<b>' . Mage::helper('M2ePro')->__('ASIN/ISBN') . '</b>: ' . $generalIdValue . '<br/>';
 
-        if ($this->getListing()->getChildObject()->isWorldwideIdAttributeMode()) {
-            $attrValue = $listingProduct->getListingSource()->getSearchWorldwideId();
-
-            if (empty($attrValue)) {
-                $attrValue = Mage::helper('M2ePro')->__('Not Set');
-            } else if (!Mage::helper('M2ePro')->isUPC($attrValue) && !Mage::helper('M2ePro')->isEAN($attrValue)) {
-                $attrValue = Mage::helper('M2ePro')->__('Inappropriate value');
-            }
-
-            $value .= '<b>' . Mage::helper('M2ePro')->__('UPC/EAN') . '</b>: ' . $attrValue;
+        $worldwideIdValue = Mage::helper('M2ePro')->__('Not Set');
+        if ($worldwideId = $identifiers->getWorldwideId()) {
+            $worldwideIdValue = $worldwideId->hasResolvedType()
+                ? $worldwideId->getIdentifier()
+                : Mage::helper('M2ePro')->__('Inappropriate value');
         }
+        $result .= '<b>' . Mage::helper('M2ePro')->__('UPC/EAN') . '</b>: ' . $worldwideIdValue;
 
-        return $value;
+        return $result;
     }
 
     public function callbackColumnStatus($value, $row, $column, $isExport)
@@ -336,7 +330,7 @@ HTML;
                 $msg = Mage::helper('M2ePro')->__('Product was not found');
                 $tip = Mage::helper('M2ePro')->__(
                     'There are no Products found on Amazon after the Automatic Search
-                                                   was performed according to Listing Search Settings.'
+                                                   was performed according to Listing Product Identifiers.'
                 );
 
                 return <<<HTML

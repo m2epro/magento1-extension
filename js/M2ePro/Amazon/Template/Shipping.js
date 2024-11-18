@@ -12,7 +12,37 @@ window.AmazonTemplateShipping = Class.create(AmazonTemplateEdit, {
                                                 M2ePro.formData.id);
     },
 
+    initObservers: function()
+    {
+        $('account_id').observe('change', this.accountChange).simulate('change');
+        $('refresh_templates').observe('click', this.refreshTemplateShipping);
+    },
+
     // ---------------------------------------
+
+    submitForm: function(url, newWindow = false)
+    {
+        var form = $('edit_form');
+        form.target = newWindow ? '_blank' : '_self';
+
+        var formData = {};
+        $(form).select('input', 'select').each(function(element) {
+            formData[element.name] = element.getValue();
+        });
+
+        new Ajax.Request(url, {
+            method: 'post',
+            parameters: formData,
+            onSuccess: function (transport) {
+                var resultResponse = transport.responseText.evalJSON();
+                if (resultResponse.status === true) {
+                    window.location = resultResponse.url;
+                } else {
+                    MessageObj.addError(M2ePro.translator.translate('Policy Saving Error'));
+                }
+            }
+        });
+    },
 
     duplicate_click: function($headId)
     {
@@ -23,19 +53,81 @@ window.AmazonTemplateShipping = Class.create(AmazonTemplateEdit, {
         CommonObj.duplicate_click($headId, M2ePro.translator.translate('Add Shipping Policy'));
     },
 
-    // ---------------------------------------
-
-    templateNameModeChange: function()
+    accountChange: function()
     {
-        $('template_name_custom_value_tr').hide();
-        $('template_name_attribute').value = '';
+        var select = $('template_id');
+        var refresh = $('refresh_templates');
+        var options = '<option></option>';
 
-        if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Template_Shipping::TEMPLATE_NAME_VALUE')) {
-            $('template_name_custom_value_tr').show();
-        } else if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Template_Shipping::TEMPLATE_NAME_ATTRIBUTE')) {
-            AmazonTemplateShippingObj.updateHiddenValue(this, $('template_name_attribute'));
+        if (!$('account_id').hasAttribute('disabled')) {
+            select.update();
+            select.insert(options);
         }
-    }
+
+        if (!this.value) {
+            select.setAttribute("disabled", "disabled");
+            refresh.addClassName('disabled');
+        } else {
+            select.removeAttribute('disabled');
+            refresh.removeClassName('disabled');
+        }
+    },
+
+    refreshTemplateShipping: function (evt) {
+        evt.preventDefault();
+        if (this.className === 'disabled') {
+            return;
+        }
+
+        new Ajax.Request(M2ePro.url.get('refresh'), {
+            method: 'post',
+            parameters: {
+                account_id: $('account_id').value
+            },
+            onSuccess: function()
+            {
+                AmazonTemplateShippingObj.renderTemplates();
+            }
+        });
+    },
+
+    renderTemplates: function()
+    {
+        new Ajax.Request(M2ePro.url.get('getTemplates'), {
+            method: 'post',
+            parameters: {
+                account_id: $('account_id').value
+            },
+            onSuccess: function(transport)
+            {
+                var select = $('template_id');
+                var options = '<option></option>';
+                var firstItem = null;
+                var currentValue = select.value;
+
+                var data = transport.responseText.evalJSON(true);
+
+                data.each(function(item) {
+                    options += `<option value="${item.template_id}">${item.title}</option>`;
+
+                    if (!firstItem) {
+                        firstItem = item;
+                    }
+                });
+
+                select.update();
+                select.insert(options);
+
+                if (currentValue !== '') {
+                    select.value = currentValue;
+                } else if (typeof id !== 'undefined' && M2ePro.formData[id] > 0) {
+                    select.value = M2ePro.formData[id];
+                } else {
+                    select.value = firstItem.id;
+                }
+            }
+        });
+    },
 
     // ---------------------------------------
 

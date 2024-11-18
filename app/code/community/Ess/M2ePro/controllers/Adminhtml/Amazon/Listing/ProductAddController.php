@@ -47,13 +47,13 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
             ->addJs('M2ePro/Amazon/Listing/Product/Add.js')
 
             ->addJs('M2ePro/Amazon/Listing/Action.js')
-            ->addJs('M2ePro/Amazon/Listing/Template/Description.js')
+            ->addJs('M2ePro/Amazon/Listing/Template/ProductType.js')
             ->addJs('M2ePro/Amazon/Listing/Create/Search.js')
             ->addJs('M2ePro/Amazon/Listing/SearchAsinGrid.js')
             ->addJs('M2ePro/Amazon/Listing/ProductSearch.js')
             ->addJs('M2ePro/Amazon/Listing/VariationProductManage.js')
             ->addJs('M2ePro/Amazon/Listing/Fulfillment.js')
-            ->addJs('M2ePro/Amazon/Listing/NewAsinTemplateDescriptionGrid.js')
+            ->addJs('M2ePro/Amazon/Listing/NewAsinTemplateProductTypeGrid.js')
             ->addJs('M2ePro/Amazon/Listing/AutoAction.js');
 
         $this->_initPopUp();
@@ -675,8 +675,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
 
         $listingProductsIds = $this->filterProductsForNewAsin($listingProductsIds);
 
-        if (empty($listingProductsIds) ||
-            !$this->getListing()->getMarketplace()->getChildObject()->isNewAsinAvailable()) {
+        if (empty($listingProductsIds)) {
             $redirectUrl = $this->getUrl(
                 '*/*/index', array(
                     'step'   => 5,
@@ -755,12 +754,12 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
     public function viewTemplateDescriptionPopupAction()
     {
         $mainBlock = $this->loadLayout()->getLayout()
-            ->createBlock('M2ePro/adminhtml_amazon_listing_template_description_main');
+            ->createBlock('M2ePro/adminhtml_amazon_listing_template_productType_main');
 
         return $this->getResponse()->setBody($mainBlock->toHtml());
     }
 
-    public function viewTemplateDescriptionsGridAction()
+    public function viewTemplateProductTypesGridAction()
     {
         $listingProductsIds    = $this->getRequest()->getParam('products_ids');
         $magentoCategoryIds    = $this->getRequest()->getParam('magento_categories_ids');
@@ -773,14 +772,14 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
         !is_array($listingProductsIds) && $listingProductsIds = array_filter(explode(',', $listingProductsIds));
         !is_array($magentoCategoryIds) && $magentoCategoryIds = array_filter(explode(',', $magentoCategoryIds));
 
-        /** @var Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Template_Description_Grid $grid */
+        /** @var Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Template_ProductType_Grid $grid */
         $grid = $this->loadLayout()->getLayout()->createBlock(
-            'M2ePro/adminhtml_amazon_listing_template_description_grid'
+            'M2ePro/adminhtml_amazon_listing_template_productType_grid'
         );
         $grid->setCheckNewAsinAccepted(true);
         $grid->setProductsIds($listingProductsIds);
         $grid->setMagentoCategoryIds($magentoCategoryIds);
-        $grid->setMapToTemplateJsFn('selectTemplateDescription');
+        $grid->setMapToTemplateJsFn('selectTemplateProductType');
         $createNewTemplateJsFn !== null && $grid->setCreateNewTemplateJsFn($createNewTemplateJsFn);
 
         return $this->getResponse()->setBody($grid->toHtml());
@@ -788,13 +787,13 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
 
     //########################################
 
-    public function descriptionTemplateAssignTypeAction()
+    public function productTypeTemplateAssignTypeAction()
     {
         $listingId = $this->getRequest()->getParam('id');
         $listingProductsIds = $this->getRequest()->getParam('products_ids');
 
         $mode = $this->getRequest()->getParam('mode');
-        $descriptionTemplateId = $this->getRequest()->getParam('description_template_id');
+        $productTypeId = $this->getRequest()->getParam('product_type_template_id');
 
         if (empty($listingId) || empty($mode)) {
             $this->_forward('index');
@@ -813,14 +812,14 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
 
         $listing->setData('additional_data', Mage::helper('M2ePro')->jsonEncode($listingAdditionalData))->save();
 
-        if ($mode == NewAsinTemplateBlock::MODE_SAME && !empty($descriptionTemplateId)) {
-            /** @var Ess_M2ePro_Model_Amazon_Template_Description $descriptionTemplate */
-            $descriptionTemplate = Mage::helper('M2ePro/Component_Amazon')
-                ->getModel('Template_Description')->load($descriptionTemplateId);
+        if ($mode == NewAsinTemplateBlock::MODE_SAME && !empty($productTypeId)) {
+            /** @var Ess_M2ePro_Model_Amazon_Template_ProductType $productTypeTemplate */
+            $productTypeTemplate = Mage::getModel('M2ePro/Amazon_Template_ProductType')
+                ->load($productTypeId);
 
-            if (!$descriptionTemplate->isEmpty()) {
+            if (!$productTypeTemplate->isEmpty()) {
                 if (!empty($listingProductsIds)) {
-                    $this->setDescriptionTemplate($listingProductsIds, $descriptionTemplateId);
+                    $this->setProductTypeTemplate($listingProductsIds, $productTypeTemplate->getId());
                     $this->_forward('mapToNewAsin', 'adminhtml_amazon_listing');
                 }
 
@@ -837,13 +836,13 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
             $listing->setData('additional_data', Mage::helper('M2ePro')->jsonEncode($listingAdditionalData))->save();
         } else if ($mode == NewAsinTemplateBlock::MODE_CATEGORY) {
             return $this->_redirect(
-                '*/*/descriptionTemplateAssignByMagentoCategory', array(
+                '*/*/productTypeTemplateAssignByMagentoCategory', array(
                     '_current' => true,
                 )
             );
         } else if ($mode == NewAsinTemplateBlock::MODE_MANUALLY) {
             return $this->_redirect(
-                '*/*/descriptionTemplateAssignManually', array(
+                '*/*/productTypeTemplateAssignManually', array(
                     '_current' => true,
                 )
             );
@@ -852,7 +851,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
         $this->_forward('index');
     }
 
-    public function descriptionTemplateAssignByMagentoCategoryAction()
+    public function productTypeTemplateAssignByMagentoCategoryAction()
     {
         $listingProductsIds = $this->getListing()->getSetting(
             'additional_data', 'adding_new_asin_listing_products_ids'
@@ -865,12 +864,14 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
 
         if ($this->getRequest()->isXmlHttpRequest()) {
             $grid = $this->getLayout()->createBlock(
-                'M2ePro/adminhtml_amazon_listing_product_add_newAsin_category_grid'
+                'M2ePro/adminhtml_amazon_listing_product_add_newAsin_productType_category_grid'
             );
             return $this->getResponse()->setBody($grid->toHtml());
         }
 
-        $block = $this->getLayout()->createBlock('M2ePro/adminhtml_amazon_listing_product_add_newAsin_category');
+        $block = $this->getLayout()->createBlock(
+            'M2ePro/adminhtml_amazon_listing_product_add_newAsin_productType_category'
+        );
 
         $this->_initAction();
 
@@ -879,7 +880,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
         $this->_addContent($block)->renderLayout();
     }
 
-    public function descriptionTemplateAssignManuallyAction()
+    public function productTypeTemplateAssignManuallyAction()
     {
         $listingProductsIds = $this->getListing()->getSetting(
             'additional_data', 'adding_new_asin_listing_products_ids'
@@ -891,7 +892,9 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
         }
 
         if ($this->getRequest()->isXmlHttpRequest()) {
-            $grid = $this->getLayout()->createBlock('M2ePro/adminhtml_amazon_listing_product_add_newAsin_manual_grid');
+            $grid = $this->getLayout()->createBlock(
+                'M2ePro/adminhtml_amazon_listing_product_add_newAsin_productType_manual_grid'
+            );
             return $this->getResponse()->setBody($grid->toHtml());
         }
 
@@ -901,7 +904,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
 
         $this->_addContent(
             $this->getLayout()->createBlock(
-                'M2ePro/adminhtml_amazon_listing_product_add_newAsin_manual'
+                'M2ePro/adminhtml_amazon_listing_product_add_newAsin_productType_manual'
             )
         )->renderLayout();
     }
@@ -962,7 +965,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
         /** @var Ess_M2ePro_Model_Resource_Amazon_Listing_Product_Collection $collection */
         $collection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Product');
         $collection->getSelect()->where(
-            "`main_table`.`id` IN (?) AND `second_table`.`template_description_id` IS NULL", $listingProductsIds
+            "`main_table`.`id` IN (?) AND `second_table`.`template_product_type_id` IS NULL", $listingProductsIds
         );
 
         $data = $collection->getData();
@@ -1029,7 +1032,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
                 }
             }
 
-            $this->setDescriptionTemplate($listingProductsIds, null);
+            $this->setProductTypeTemplate($listingProductsIds, null);
         }
 
         $this->getListing()->setSetting('additional_data', 'adding_category_templates_data', array());
@@ -1065,7 +1068,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
 
     //########################################
 
-    protected function setDescriptionTemplate($productsIds, $templateId)
+    protected function setProductTypeTemplate($productsIds, $templateId)
     {
         $connWrite = Mage::getSingleton('core/resource')->getConnection('core_write');
         $tableAmazonListingProduct = Mage::helper('M2ePro/Module_Database_Structure')
@@ -1075,7 +1078,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
         foreach ($productsIds as $productsIdsChunk) {
             $connWrite->update(
                 $tableAmazonListingProduct, array(
-                    'template_description_id' => $templateId
+                    'template_product_type_id' => $templateId
                 ), '`listing_product_id` IN ('.implode(',', $productsIdsChunk).')'
             );
         }

@@ -1,14 +1,8 @@
 <?php
 
-/**
- * @author     M2E Pro Developers Team
- * @copyright  M2E LTD
- * @license    Commercial use is forbidden
- */
+/** @var Ess_M2ePro_Block_Adminhtml_Amazon_Account_Create_Form  $this */
 
-// @codingStandardsIgnoreFile
-
-/** @var $this Ess_M2ePro_Block_Adminhtml_Amazon_Account_Create_Form */
+$marketplaces = $this->getMarketplaces();
 
 ?>
 
@@ -46,9 +40,9 @@
 
                                 <option style="display:none;"></option>
 
-                                <?php foreach ($this->marketplaces as $marketplaceRow) { ?>
-                                    <option value="<?php echo $marketplaceRow['id']; ?>">
-                                        <?php echo Mage::helper('M2ePro')->__($marketplaceRow['title']); ?>
+                                <?php foreach ($marketplaces as $marketplace) { ?>
+                                    <option value="<?php echo $marketplace->getId(); ?>">
+                                        <?php echo Mage::helper('M2ePro')->__($marketplace->getTitle()); ?>
                                     </option>
                                 <?php } ?>
 

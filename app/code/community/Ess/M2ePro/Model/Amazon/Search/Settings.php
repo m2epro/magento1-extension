@@ -101,15 +101,25 @@ class Ess_M2ePro_Model_Amazon_Search_Settings
      */
     public function isIdentifierValid()
     {
-        $listingSource = $this->getAmazonListingProduct()->getListingSource();
-        $searchGeneralId = $listingSource->getSearchGeneralId();
-        $searchWorldwideId = $listingSource->getSearchWorldwideId();
+        $identifiers = $this->getAmazonListingProduct()->getIdentifiers();
 
-        if (!$this->getIdentifierType($searchGeneralId) && !$this->getIdentifierType($searchWorldwideId)) {
-            return false;
+        $searchGeneralId = $identifiers->getGeneralId();
+        if (
+            $searchGeneralId !== null
+            && $searchGeneralId->hasResolvedType()
+        ) {
+            return true;
         }
 
-        return true;
+        $searchWorldwideId = $identifiers->getWorldwideId();
+        if (
+            $searchWorldwideId !== null
+            && $searchWorldwideId->hasResolvedType()
+        ) {
+            return true;
+        }
+
+        return false;
     }
 
     //----------------------------------
@@ -313,37 +323,61 @@ class Ess_M2ePro_Model_Amazon_Search_Settings
         return true;
     }
 
-    protected function getQueryParam()
+    /**
+     * @return string|null
+     */
+    private function getQueryParam()
     {
-        $validationHelper = Mage::helper('M2ePro');
-        $amazonHelper = Mage::helper('M2ePro/Component_Amazon');
-
-        switch ($this->_step) {
-            case self::STEP_GENERAL_ID:
-
-                $query = $this->getAmazonListingProduct()->getGeneralId();
-                empty($query) && $query = $this->getAmazonListingProduct()->getListingSource()->getSearchGeneralId();
-
-                if (!$amazonHelper->isASIN($query) && !$validationHelper->isISBN($query)) {
-                    $query = null;
-                }
-                break;
-
-            case self::STEP_WORLDWIDE_ID:
-
-                $query = $this->getAmazonListingProduct()->getListingSource()->getSearchWorldwideId();
-
-                if (!$validationHelper->isEAN($query) && !$validationHelper->isUPC($query)) {
-                    $query = null;
-                }
-                break;
-
-            default:
-
-                $query = null;
+        if ($this->_step == self::STEP_GENERAL_ID) {
+            return $this->getGeneralId();
         }
 
-        return $query;
+        if ($this->_step == self::STEP_WORLDWIDE_ID) {
+            return $this->getWorldwideId();
+        }
+
+        return null;
+    }
+
+    /**
+     * @return string|null
+     */
+    private function getGeneralId()
+    {
+        if ($productGeneralId = $this->getAmazonListingProduct()->getGeneralId()) {
+            $generalIdHasResolvedType = Mage::helper('M2ePro/Component_Amazon')->isASIN($productGeneralId)
+                || Mage::helper('M2ePro')->isISBN($productGeneralId);
+
+            return $generalIdHasResolvedType ? $productGeneralId : null;
+        }
+
+        $searchGeneralId = $this->getAmazonListingProduct()
+                                ->getIdentifiers()
+                                ->getGeneralId();
+
+        if ($searchGeneralId !== null) {
+            return $searchGeneralId->hasResolvedType()
+                ? $searchGeneralId->getIdentifier()
+                : null;
+        }
+
+        return null;
+    }
+
+    /**
+     * @return string|null
+     */
+    private function getWorldwideId()
+    {
+        $worldwideId = $this->getAmazonListingProduct()->getIdentifiers()->getWorldwideId();
+        if (
+            $worldwideId !== null
+            && $worldwideId->hasResolvedType()
+        ) {
+            return $worldwideId->getIdentifier();
+        }
+
+        return null;
     }
 
     protected function getSearchMethod()

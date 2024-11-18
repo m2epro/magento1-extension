@@ -26,7 +26,6 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Response
         $data = $this->appendStatusChangerValue($data);
         $data = $this->appendIdentifiersData($data, $generalId);
         $data = $this->appendDetailsValues($data);
-        $data = $this->appendImagesValues($data);
         $data = $this->appendIsStoppedManually($data, false);
 
         $variationManager = $this->getAmazonListingProduct()->getVariationManager();
@@ -89,12 +88,9 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Response
         $typeModel = $variationManager->getTypeModel();
 
         if ($variationManager->isRelationParentType()) {
-            $detailsModel = Mage::getModel('M2ePro/Amazon_Marketplace_Details');
-            $detailsModel->setMarketplaceId($this->getMarketplace()->getId());
+            $dictionary = $this->getAmazonListingProduct()->getProductTypeTemplate()->getDictionary();
 
-            $channelAttributes = $detailsModel->getVariationThemeAttributes(
-                $this->getRequestData()->getProductDataNick(), $typeModel->getChannelTheme()
-            );
+            $channelAttributes = $dictionary->getVariationThemesAttributes((string)$typeModel->getChannelTheme());
 
             $typeModel->setChannelAttributesSets(array_fill_keys($channelAttributes, array()), false);
 

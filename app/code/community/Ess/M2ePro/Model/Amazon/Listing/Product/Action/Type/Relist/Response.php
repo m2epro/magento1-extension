@@ -13,7 +13,6 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Relist_Response
     const INSTRUCTION_TYPE_CHECK_PRICE_REGULAR  = 'success_relist_check_price_regular';
     const INSTRUCTION_TYPE_CHECK_PRICE_BUSINESS = 'success_relist_check_price_business';
     const INSTRUCTION_TYPE_CHECK_DETAILS        = 'success_relist_check_details';
-    const INSTRUCTION_TYPE_CHECK_IMAGES         = 'success_relist_check_images';
 
     //########################################
 
@@ -24,7 +23,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Relist_Response
     {
         $data = array();
 
-        if ($this->getConfigurator()->isDetailsAllowed() || $this->getConfigurator()->isImagesAllowed()) {
+        if ($this->getConfigurator()->isDetailsAllowed()) {
             $data['defected_messages'] = null;
         }
 
@@ -83,11 +82,6 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Relist_Response
 
                 case 'details':
                     $instructionType     = self::INSTRUCTION_TYPE_CHECK_DETAILS;
-                    $instructionPriority = 30;
-                    break;
-
-                case 'images':
-                    $instructionType     = self::INSTRUCTION_TYPE_CHECK_IMAGES;
                     $instructionPriority = 30;
                     break;
             }

@@ -70,7 +70,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Product_Add_NewAsin
             'next', array(
                 'label'   => Mage::helper('M2ePro')->__('Continue'),
                 'class'   => 'scalable next',
-                'onclick' => "descriptionTemplateModeFormSubmit()"
+                'onclick' => "templateProductTypeModeFormSubmit()"
             )
         );
 
@@ -141,7 +141,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Product_Add_NewAsin
 
     //########################################
 
-    public function getDescriptionTemplateMode()
+    public function getProductTypeTemplateMode()
     {
         $listingAdditionalData = $this->getListing()->getData('additional_data');
         $listingAdditionalData = Mage::helper('M2ePro')->jsonDecode($listingAdditionalData);

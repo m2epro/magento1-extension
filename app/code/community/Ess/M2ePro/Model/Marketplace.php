@@ -77,6 +77,16 @@ class Ess_M2ePro_Model_Marketplace extends Ess_M2ePro_Model_Component_Parent_Abs
         return (int)$this->getData('status');
     }
 
+    /**
+     * @return $this
+     */
+    public function setStatus($status)
+    {
+        $this->setData('status', $status);
+
+        return $this;
+    }
+
     public function getGroupTitle()
     {
         return $this->getData('group_title');

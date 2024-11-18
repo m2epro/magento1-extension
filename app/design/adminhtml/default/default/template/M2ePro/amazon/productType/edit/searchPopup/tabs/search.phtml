@@ -1,0 +1,11 @@
+<div class="chooser_input_container">
+    <input id="product_type_search_query" type="text" placeholder="<?= Mage::helper('M2ePro')->__('Enter product type name'); ?>"
+           onkeyup="AmazonProductTypeSearchObj.applySearchFilter();">
+    <a onclick="AmazonProductTypeSearchObj.resetSearchFilter()" style="margin-left: 2rem; cursor: pointer"><?=
+        Mage::helper('M2ePro')->__('Reset'); ?></a>
+</div>
+<div class="chooser_browser">
+    <select id="product_type_search_results" size="8"
+            class="multiselect admin__control-multiselect"></select>
+    <div id="product_type_search_error_content" class="product_type_error_content"></div>
+</div>

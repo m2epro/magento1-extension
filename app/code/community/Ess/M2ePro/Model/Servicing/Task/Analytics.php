@@ -122,7 +122,6 @@ class Ess_M2ePro_Model_Servicing_Task_Analytics extends Ess_M2ePro_Model_Servici
                 'Account',
                 'Listing',
                 'Template_Synchronization',
-                'Template_Description',
                 'Template_SellingFormat',
                 'Amazon_Template_ProductTaxCode',
                 'Amazon_Template_Shipping',

@@ -820,7 +820,6 @@ class Ess_M2ePro_Model_Servicing_Task_Statistic extends Ess_M2ePro_Model_Servici
     {
         $this->_appendComponentPolicyInfo('selling_format', 'amazon', $data);
         $this->_appendComponentPolicyInfo('synchronization', 'amazon', $data);
-        $this->_appendComponentPolicyInfo('description', 'amazon', $data);
         $this->_appendComponentPolicyInfo('product_tax_code', 'amazon', $data);
         $this->_appendComponentPolicyInfo('shipping', 'amazon', $data);
 

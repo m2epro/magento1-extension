@@ -148,6 +148,20 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Variation_Product_Manage_Tabs_Se
 
     // ---------------------------------------
 
+    /**
+     * @return bool
+     */
+    public function isNotExistsMissedProductTypeTemplate()
+    {
+        /** @var Ess_M2ePro_Model_Amazon_Listing_Product $amazonListingProduct */
+        $amazonListingProduct = $this->getListingProduct()->getChildObject();
+        $isExistProductTypeTemplate = $amazonListingProduct->isExistProductTypeTemplate();
+
+        return $this->isGeneralIdOwner() && !$isExistProductTypeTemplate;
+    }
+
+    // ---------------------------------------
+
     public function getWarnings()
     {
         $warnings = '';
@@ -168,6 +182,23 @@ HTML;
     {
         if (!$this->_warningsCalculated) {
             $this->_warningsCalculated = true;
+
+            if ($this->isNotExistsMissedProductTypeTemplate()) {
+                $url = 'https://help.m2epro.com/support/solutions/articles/9000226190';
+
+                $this->addMessage(
+                    Mage::helper('M2ePro')
+                        ->__(
+                            'Variation Theme is not set. Please assign a Product Type to the Item first and then select 
+                            the Variation Theme. Follow the steps in
+                            <a href="%url%" target="_blank" class="external-link">this article</a>.',
+                            array('url' => $url)
+                        ),
+                    self::MESSAGE_TYPE_ERROR
+                );
+
+                return;
+            }
 
             if (!$this->hasGeneralId() && $this->isGeneralIdOwner()) {
                 if (!$this->hasChannelTheme() || !$this->hasMatchedAttributes()) {
@@ -284,18 +315,27 @@ HTML;
 
     // ---------------------------------------
 
-    public function getDescriptionTemplateLink()
+    /**
+     * @return string
+     */
+    public function getProductTypeLink()
     {
+        /** @var Ess_M2ePro_Model_Amazon_Listing_Product $amazonListingProduct */
+        $amazonListingProduct = $this->getListingProduct()->getChildObject();
+        if (!$amazonListingProduct->isExistProductTypeTemplate()) {
+            throw new \LogicException('Product Type is not set.');
+        }
+
         $url = $this->getUrl(
-            '*/adminhtml_amazon_template_description/edit', array(
-                'id' => $this->getListingProduct()->getChildObject()->getTemplateDescriptionId()
+            '*/adminhtml_amazon_productType/edit', array(
+                'id' => $amazonListingProduct->getTemplateProductTypeId()
             )
         );
 
-        $templateTitle = $this->getListingProduct()->getChildObject()->getDescriptionTemplate()->getTitle();
-
+        $productTypeTitle = $amazonListingProduct->getProductTypeTemplate()
+                                                 ->getTitle();
         return <<<HTML
-<a href="{$url}" target="_blank" title="{$templateTitle}" >{$templateTitle}</a>
+<a href="{$url}" target="_blank" title="{$productTypeTitle}" >{$productTypeTitle}</a>
 HTML;
     }
 
@@ -319,18 +359,17 @@ HTML;
 
         /** @var Ess_M2ePro_Model_Amazon_Listing_Product $amazonListingProduct */
         $amazonListingProduct = $this->getListingProduct()->getChildObject();
-        $descriptionTemplate = $amazonListingProduct->getAmazonDescriptionTemplate();
+        $productTypeTemplate = $amazonListingProduct->getProductTypeTemplate();
 
-        if (!$descriptionTemplate) {
+        if (!$productTypeTemplate) {
             return array();
         }
 
         $marketPlaceId = $this->getListingProduct()->getListing()->getMarketplaceId();
 
-        $detailsModel = Mage::getModel('M2ePro/Amazon_Marketplace_Details');
-        $detailsModel->setMarketplaceId($marketPlaceId);
+        $productTypeDictionary = $productTypeTemplate->getDictionary();
 
-        $channelThemes = $detailsModel->getVariationThemes($descriptionTemplate->getProductDataNick());
+        $channelThemes = $productTypeDictionary->getVariationThemes();
 
         $variationHelper = Mage::helper('M2ePro/Component_Amazon_Variation');
         $themesUsageData = $variationHelper->getThemesUsageData();
@@ -363,6 +402,10 @@ HTML;
     {
         $theme = $this->getChannelTheme();
         $themes = $this->getChannelThemes();
+
+        if (!isset($themes[$theme]) || !isset($themes[$theme]['note'])) {
+            return null;
+        }
 
         if (!empty($themes[$theme])) {
             return $themes[$theme]['note'];

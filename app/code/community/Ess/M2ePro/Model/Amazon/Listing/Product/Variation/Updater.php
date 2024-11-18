@@ -60,7 +60,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Updater
             $listingProduct->setData(
                 'is_general_id_owner', Ess_M2ePro_Model_Amazon_Listing_Product::IS_GENERAL_ID_OWNER_NO
             );
-            $listingProduct->setData('template_description_id', null);
+            $listingProduct->setData('template_product_type_id', null);
         }
 
         // need to be added to parent

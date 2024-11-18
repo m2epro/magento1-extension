@@ -53,16 +53,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Template extends Mage_Adminhtml_Block_Wi
                     'label' => Mage::helper('M2ePro')->__('Selling')
                 ),
                 array(
-                    'id'    => 'add_policy_description',
-                    'url'   => $this->getUrl(
-                        '*/adminhtml_amazon_template/new',
-                        array(
-                            'type' => Ess_M2ePro_Block_Adminhtml_Amazon_Template_Grid::TEMPLATE_DESCRIPTION
-                        )
-                    ),
-                    'label' => Mage::helper('M2ePro')->__('Description')
-                ),
-                array(
                     'id'    => 'add_policy_synchronization',
                     'url'   => $this->getUrl(
                         '*/adminhtml_amazon_template/new',

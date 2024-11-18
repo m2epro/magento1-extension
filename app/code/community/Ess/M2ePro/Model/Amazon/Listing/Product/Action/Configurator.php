@@ -12,7 +12,6 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Configurator
     const DATA_TYPE_QTY            = 'qty';
     const DATA_TYPE_REGULAR_PRICE  = 'regular_price';
     const DATA_TYPE_BUSINESS_PRICE = 'business_price';
-    const DATA_TYPE_IMAGES         = 'images';
     const DATA_TYPE_DETAILS        = 'details';
 
     //########################################
@@ -27,7 +26,6 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Configurator
             self::DATA_TYPE_REGULAR_PRICE,
             self::DATA_TYPE_BUSINESS_PRICE,
             self::DATA_TYPE_DETAILS,
-            self::DATA_TYPE_IMAGES,
         );
     }
 
@@ -133,32 +131,6 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Configurator
     public function disallowDetails()
     {
         return $this->disallow(self::DATA_TYPE_DETAILS);
-    }
-
-    // ---------------------------------------
-
-    /**
-     * @return bool
-     */
-    public function isImagesAllowed()
-    {
-        return $this->isAllowed(self::DATA_TYPE_IMAGES);
-    }
-
-    /**
-     * @return $this
-     */
-    public function allowImages()
-    {
-        return $this->allow(self::DATA_TYPE_IMAGES);
-    }
-
-    /**
-     * @return $this
-     */
-    public function disallowImages()
-    {
-        return $this->disallow(self::DATA_TYPE_IMAGES);
     }
 
     //########################################

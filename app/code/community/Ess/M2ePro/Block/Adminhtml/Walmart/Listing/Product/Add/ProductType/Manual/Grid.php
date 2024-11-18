@@ -280,8 +280,7 @@ HTML;
     {
         $errorMessage = Mage::helper('M2ePro')
             ->__(
-                "To proceed, the category data must be specified.
-                  Please select a relevant Product Type for at least one product."
+                "Please select a relevant Product Type for at least one product."
             );
         $isNotExistProductsWithProductType = (int)$this->isNotExistProductsWithProductType();
 

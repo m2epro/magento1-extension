@@ -26,43 +26,43 @@
 
 <?php echo $this->getChildHtml('view_header'); ?>
 
-<div class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Description Policy is required to Create New ASIN/ISBN.'); ?>" subtitle="" collapseable="no" hideblock="no" always_show="yes">
+<div class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Product Type is required to Create New ASIN/ISBN.'); ?>" subtitle="" collapseable="no" hideblock="no" always_show="yes">
 
     <div style="padding: 2px"></div>
 
     <span>
-        <?php echo Mage::helper('M2ePro')->__('To use Creation of New ASIN/ISBN feature it is necessary to specify Description Policy. <br/><br/>
+        <?php echo Mage::helper('M2ePro')->__('To use Creation of New ASIN/ISBN feature it is necessary to specify Product Type. <br/><br/>
 
-        Description Policies should be configured and ready to be used for creation of New Amazon Products. <br/>
-        More detailed information about creation of New Amazon Products and Description Policies you can find in an article <a href="%url%" target="_blank">here</a>. <br/><br/>
+        Product Types should be configured and ready to be used for creation of New Amazon Products. <br/>
+        More detailed information about creation of New Amazon Products and Product Types you can find in an article <a href="%url%" target="_blank">here</a>. <br/><br/>
 
-        Below you can select the most convenient for you way to set Description Policy:',
-        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'description-policies')
+        Below you can select the most convenient for you way to set Product Type:',
+        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'product-types')
         );?>
     </span>
 
-    <form id="description_template_mode_form" method="post" action="<?php echo $this->getUrl('*/*/descriptionTemplateAssignType', array('_current' => true)); ?>">
+    <form id="description_template_mode_form" method="post" action="<?php echo $this->getUrl('*/*/productTypeTemplateAssignType', array('_current' => true)); ?>">
 
         <input name="form_key" value="<?php echo $this->getFormKey(); ?>" type="hidden" />
 
         <div style="margin:15px 0 0 10px">
 
             <input id="same" name="mode" type="radio" value="<?php echo Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Product_Add_NewAsin::MODE_SAME; ?>">&nbsp;&nbsp;
-            <label style="font-weight: bold" for="same"><?php echo Mage::helper('M2ePro')->__('All Products same Description Policy'); ?></label>
+            <label style="font-weight: bold" for="same"><?php echo Mage::helper('M2ePro')->__('All Products same Product Type'); ?></label>
 
             <div style="margin-left: 22px">
                 <div style="margin: 7px 0">
-                    <?php echo Mage::helper('M2ePro')->__('New ASIN(s)/ISBN(s) will be created using the same Description Policy.'); ?>
+                    <?php echo Mage::helper('M2ePro')->__('New ASIN(s)/ISBN(s) will be created using the same Product Type Template.'); ?>
                 </div>
                 <div style="margin: 7px 28px">
-                    <b><?php echo Mage::helper('M2ePro')->__('Description Policy') ?></b>:
-                    <span id="description_template_title" style="font-style: italic; color: #808080"><?php echo Mage::helper('M2ePro')->__('Not selected'); ?></span>
-                    &nbsp;<a href="javascript:void(0);" id="edit_description_template"><?php echo Mage::helper('M2ePro')->__('Edit'); ?></a>
-                    <input id="description_template_id" name="description_template_id" value="" type="hidden" />
+                    <b><?php echo Mage::helper('M2ePro')->__('Product Type Template') ?></b>:
+                    <span id="product_type_template_title" style="font-style: italic; color: #808080"><?php echo Mage::helper('M2ePro')->__('Not selected'); ?></span>
+                    &nbsp;<a href="javascript:void(0);" id="edit_product_type_template"><?php echo Mage::helper('M2ePro')->__('Edit'); ?></a>
+                    <input id="product_type_template_id" name="product_type_template_id" value="" type="hidden" />
                     <input id="products_ids" name="products_ids" type="hidden" value="">
                 </div>
                 <div style="margin: 7px 28px; display: none;" class="validation-advice" id="same_description_template_error" >
-                    <?php echo Mage::helper('M2ePro')->__('Please select Description Policy.'); ?>
+                    <?php echo Mage::helper('M2ePro')->__('Please select Product Type.'); ?>
                 </div>
             </div>
 
@@ -70,14 +70,14 @@
             <label style="font-weight: bold" for="category"><?php echo Mage::helper('M2ePro')->__('Based on Magento Categories'); ?></label>
 
             <div style="margin: 10px 22px">
-                <?php echo Mage::helper('M2ePro')->__('Products will have Description Policies set according to the Magento Categories.'); ?>
+                <?php echo Mage::helper('M2ePro')->__('Products will have Product Types set according to the Magento Categories.'); ?>
             </div>
 
             <input id="manually" name="mode" type="radio" value="<?php echo Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Product_Add_NewAsin::MODE_MANUALLY; ?>">&nbsp;&nbsp;
             <label style="font-weight: bold" for="manually"><?php echo Mage::helper('M2ePro')->__('Set Manually for each Product'); ?></label>
 
             <div style="margin: 10px 22px">
-                <?php echo Mage::helper('M2ePro')->__('Set Description Policies for each Product (or a group of Products) manually.'); ?>
+                <?php echo Mage::helper('M2ePro')->__('Set Product Type for each Product (or a group of Products) manually.'); ?>
             </div>
 
         </div>
@@ -90,7 +90,7 @@
     var init = function() {
 
         $('same').observe('change', function (e) {
-            $('edit_description_template').show();
+            $('edit_product_type_template').show();
         });
 
         $('description_template_mode_form').observe('change', function(e) {
@@ -99,18 +99,18 @@
             }
 
             if (e.target.value != M2ePro.php.constant('Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Product_Add_NewAsin::MODE_SAME')) {
-                $('edit_description_template').hide();
+                $('edit_product_type_template').hide();
             } else {
-                $('edit_description_template').show();
+                $('edit_product_type_template').show();
             }
         });
 
-        newDescriptionTemplateUrl = '<?php echo $this->getUrl('*/adminhtml_amazon_template_description/new', array(
+        newDescriptionTemplateUrl = '<?php echo $this->getUrl('*/adminhtml_amazon_productType/new', array(
             'is_new_asin_accepted'  => 1,
             'marketplace_id'        => $this->getListing()->getMarketplaceId()
         )); ?>';
 
-        createTemplateDescriptionInNewTab = function(stepWindowUrl) {
+        createTemplateProductTypeInNewTab = function(stepWindowUrl) {
             var win = window.open(stepWindowUrl);
 
             var intervalId = setInterval(function(){
@@ -120,53 +120,53 @@
 
                 clearInterval(intervalId);
 
-                loadTemplateDescriptionGrid();
+                loadTemplateProductTypeGrid();
             }, 1000);
         };
 
-        loadTemplateDescriptionGrid = function() {
+        loadTemplateProductTypeGrid = function() {
 
-            new Ajax.Request('<?php echo $this->getUrl('*/*/viewTemplateDescriptionsGrid'); ?>', {
+            new Ajax.Request('<?php echo $this->getUrl('*/*/viewTemplateProductTypesGrid'); ?>', {
                 method: 'post',
                 parameters: {
                     products_ids : filteredProductsIds,
-                    create_new_template_js_function: 'createTemplateDescriptionInNewTab'
+                    create_new_template_js_function: 'createTemplateProductTypeInNewTab'
                 },
                 onSuccess: function (transport) {
-                    $('template_description_grid').update(transport.responseText);
-                    $('template_description_grid').show();
+                    $('template_product_type_grid').update(transport.responseText);
+                    $('template_product_type_grid').show();
                 }
             })
         };
 
-        descriptionTemplateModeFormSubmit = function()
+        templateProductTypeModeFormSubmit = function()
         {
-            if ($('same').checked && $('description_template_id').value == '') {
+            if ($('same').checked && $('product_type_template_id').value == '') {
                 $('same_description_template_error').show();
                 return;
             }
             $('description_template_mode_form').submit();
         };
 
-        selectTemplateDescription = function(el, templateId)
+        selectTemplateProductType = function(el, templateId)
         {
-            $('description_template_id').value = templateId;
+            $('product_type_template_id').value = templateId;
             $('products_ids').value = filteredProductsIds;
-            $('description_template_title').innerHTML = el.up('tr').down('td').down('a').innerHTML;
+            $('product_type_template_title').innerHTML = el.up('tr').down('td').down('a').innerHTML;
             $('same_description_template_error').hide();
-            templateDescriptionPopup.close();
+            templateProductTypePopup.close();
         };
 
-        var modeElement = $$('input[value="<?php echo $this->getDescriptionTemplateMode(); ?>"]').shift();
+        var modeElement = $$('input[value="<?php echo $this->getProductTypeTemplateMode(); ?>"]').shift();
 
         modeElement.checked = true;
         if (modeElement.value != M2ePro.php.constant('Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Product_Add_NewAsin::MODE_SAME')) {
-            $('edit_description_template').hide();
+            $('edit_product_type_template').hide();
         } else {
-            $('edit_description_template').show();
+            $('edit_product_type_template').show();
         }
 
-        $('edit_description_template').observe('click', function(event) {
+        $('edit_product_type_template').observe('click', function(event) {
 
             var popupContent = '';
             new Ajax.Request('<?php echo $this->getUrl('*/adminhtml_amazon_listing/mapToNewAsin'); ?>', {
@@ -187,13 +187,13 @@
                 }
             });
 
-            templateDescriptionPopup = Dialog.info(null, {
+            templateProductTypePopup = Dialog.info(null, {
                 draggable: true,
                 resizable: true,
                 closable: true,
                 className: "magento",
                 windowClassName: "popup-window",
-                title: '<?php echo Mage::helper('M2ePro')->__('Please select the Description Policy for the process of New ASIN/ISBN creation'); ?>',
+                title: '<?php echo Mage::helper('M2ePro')->__('Please select the Product Type for the process of New ASIN/ISBN creation'); ?>',
                 top: 70,
                 width: 800,
                 height: 550,
@@ -202,11 +202,11 @@
                 hideEffect: Element.hide,
                 showEffect: Element.show
             });
-            templateDescriptionPopup.options.destroyOnClose = true;
+            templateProductTypePopup.options.destroyOnClose = true;
 
             $('modal_dialog_message').insert(popupContent);
 
-            loadTemplateDescriptionGrid();
+            loadTemplateProductTypeGrid();
 
             setTimeout(function() {
                 Windows.getFocusedWindow().content.style.height = '';

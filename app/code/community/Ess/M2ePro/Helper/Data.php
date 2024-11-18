@@ -237,6 +237,11 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
         return !empty($prefix) ? $prefix.$hash : $hash;
     }
 
+    public function md5String($string)
+    {
+        return $this->hashString($string, 'md5');
+    }
+
     //########################################
 
     /**

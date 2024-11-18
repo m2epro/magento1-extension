@@ -68,19 +68,6 @@ class Ess_M2ePro_Model_Amazon_Listing_ChangeProcessor
             );
         }
 
-        if ($diff->isImagesDifferent()) {
-            $priority = 5;
-
-            if ($status == Ess_M2ePro_Model_Listing_Product::STATUS_LISTED) {
-                $priority = 30;
-            }
-
-            $data[] = array(
-                'type'      => self::INSTRUCTION_TYPE_IMAGES_DATA_CHANGED,
-                'priority'  => $priority,
-            );
-        }
-
         if ($diff->isSkuSettingsDifferent()) {
             $priority = 0;
 

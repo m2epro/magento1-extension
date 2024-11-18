@@ -235,11 +235,11 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Linking
             'sku'                => $this->getSku(),
         );
 
-        $descriptionTemplate = $this->getAmazonListingProduct()->getAmazonDescriptionTemplate();
+        $productTypeTemplate = $this->getAmazonListingProduct()->getproductTypeTemplate();
         $listingProductSku = $this->getAmazonListingProduct()->getSku();
 
         // improve check is sku existence
-        if (empty($listingProductSku) && !empty($descriptionTemplate) && $descriptionTemplate->isNewAsinAccepted()) {
+        if (empty($listingProductSku) && $productTypeTemplate !== null) {
             $dataForUpdate['is_general_id_owner'] = Ess_M2ePro_Model_Amazon_Listing_Product::IS_GENERAL_ID_OWNER_YES;
         } else {
             $dataForUpdate['is_general_id_owner'] = Ess_M2ePro_Model_Amazon_Listing_Product::IS_GENERAL_ID_OWNER_NO;

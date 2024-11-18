@@ -6,6 +6,8 @@
  * @license    Commercial use is forbidden
  */
 
+use Ess\M2ePro\Model\Amazon\Listing\Product\Action\Type\ListAction\Request as ListActionRequest;
+
 class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Revise_Request
     extends Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Request
 {
@@ -17,14 +19,21 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Revise_Request
             array(
                 'sku' => $this->getAmazonListingProduct()->getSku()
             ),
+            $this->getProductIdentifierData(),
             $this->getQtyData(),
             $this->getRegularPriceData(),
             $this->getBusinessPriceData(),
-            $this->getDetailsData(),
-            $this->getImagesData()
+            $this->getDetailsData()
         );
 
-        if ($this->getVariationManager()->isRelationChildType()) {
+        if ($this->getVariationManager()->isRelationParentType()) {
+            $channelTheme = $this->getVariationManager()->getTypeModel()->getChannelTheme();
+
+            $data['variation_data'] = array(
+                'parentage' => Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Request::PARENTAGE_PARENT,
+                'theme' => $channelTheme,
+            );
+        } elseif ($this->getVariationManager()->isRelationChildType()) {
             $variationData = array(
                 'parentage'  => Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Request::PARENTAGE_CHILD,
                 'attributes' => $this->getVariationManager()->getTypeModel()->getChannelOptions(),
@@ -47,6 +56,27 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Revise_Request
             }
 
             $data['variation_data'] = $variationData;
+        }
+
+        return $data;
+    }
+
+    private function getProductIdentifierData()
+    {
+        $productType = $this->getAmazonListingProduct()->getProductTypeTemplate();
+        if (
+            $productType === null
+            || $productType->getNick() === Ess_M2ePro_Model_Amazon_Template_ProductType::GENERAL_PRODUCT_TYPE_NICK
+        ) {
+            return array();
+        }
+
+        $productIdentifiers = $this->getAmazonListingProduct()->getIdentifiers();
+        $data = array();
+
+        if ($worldwideId = $productIdentifiers->getWorldwideId()) {
+            $data['product_id'] = $worldwideId->getIdentifier();
+            $data['product_id_type'] = $worldwideId->isUPC() ? 'UPC' : 'EAN';
         }
 
         return $data;

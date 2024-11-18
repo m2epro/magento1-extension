@@ -45,6 +45,20 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Validator_General
             return false;
         }
 
+        if ($this->getAmazonListingProduct()->isGeneralIdOwner()) {
+            $productType = $this->getAmazonListingProduct()->getProductTypeTemplate();
+            if (
+                $productType === null
+                || $productType->getNick() === Ess_M2ePro_Model_Amazon_Template_ProductType::GENERAL_PRODUCT_TYPE_NICK
+            ) {
+                $this->addMessage(
+                    "To list a new ASIN/ISBN on Amazon, please assign a valid Product Type. "
+                    . "Product Type 'General' cannot be used."
+                );
+                return false;
+            }
+        }
+
         $condition = $this->getAmazonListingProduct()->getListingSource()->getCondition();
         if (empty($condition)) {
             $this->addMessage(

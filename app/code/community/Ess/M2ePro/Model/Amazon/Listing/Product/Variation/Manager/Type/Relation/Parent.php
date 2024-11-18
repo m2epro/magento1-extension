@@ -157,12 +157,9 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Pa
             return false;
         }
 
-        $themeAttributes = Mage::getModel('M2ePro/Amazon_Marketplace_Details')
-            ->setMarketplaceId($this->getListingProduct()->getMarketplace()->getId())
-            ->getVariationThemeAttributes(
-                $this->getAmazonListingProduct()->getAmazonDescriptionTemplate()->getProductDataNick(),
-                $this->getChannelTheme()
-            );
+        $dictionary = $this->getAmazonListingProduct()->getProductTypeTemplate()->getDictionary();
+
+        $themeAttributes = $dictionary->getVariationThemesAttributes((string)$this->getChannelTheme());
 
         $channelAttributes = $this->getRealChannelAttributes();
 
@@ -252,14 +249,15 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Pa
             return array_keys($this->getChannelAttributesSets());
         }
 
-        if ($this->hasChannelTheme()) {
-            $marketplaceDetails = Mage::getModel('M2ePro/Amazon_Marketplace_Details');
-            $marketplaceDetails->setMarketplaceId($this->getListingProduct()->getListing()->getMarketplaceId());
+        $productTypeTemplate = $this->getAmazonListingProduct()
+                                    ->getProductTypeTemplate();
+        if (
+            $this->hasChannelTheme()
+            && $productTypeTemplate !== null
+        ) {
+            $dictionary = $productTypeTemplate->getDictionary();
 
-            return $marketplaceDetails->getVariationThemeAttributes(
-                $this->getAmazonListingProduct()->getAmazonDescriptionTemplate()->getProductDataNick(),
-                $this->getChannelTheme()
-            );
+            return $dictionary->getVariationThemesAttributes((string)$this->getChannelTheme());
         }
 
         return array();
@@ -399,14 +397,9 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Pa
         }
 
         if ($this->getChannelTheme()) {
-            $marketplaceDetails = Mage::getModel('M2ePro/Amazon_Marketplace_Details');
-            $marketplaceDetails->setMarketplaceId($this->getListingProduct()->getListing()->getMarketplaceId());
+            $dictionary = $this->getAmazonListingProduct()->getProductTypeTemplate()->getDictionary();
 
-            $themeAttributes = $marketplaceDetails->getVariationThemeAttributes(
-                $this->getAmazonListingProduct()->getAmazonDescriptionTemplate()->getProductDataNick(),
-                $this->getChannelTheme()
-            );
-
+            $themeAttributes =  $dictionary->getVariationThemesAttributes((string)$this->getChannelTheme());
             $virtualProductAttributes = array_keys($this->getVirtualProductAttributes());
 
             return !array_diff($virtualProductAttributes, $themeAttributes);
@@ -818,7 +811,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Pa
             'is_variation_product'    => 1,
             'is_variation_parent'     => 0,
             'variation_parent_id'     => $this->getListingProduct()->getId(),
-            'template_description_id' => $this->getAmazonListingProduct()->getTemplateDescriptionId(),
+            'template_product_type_id' => $this->getAmazonListingProduct()->getTemplateProductTypeId(),
             'template_shipping_id'    => $this->getAmazonListingProduct()->getTemplateShippingId(),
             'template_product_tax_code_id' => $this->getAmazonListingProduct()->getTemplateProductTaxCodeId(),
         );

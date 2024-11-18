@@ -356,8 +356,6 @@ class Ess_M2ePro_Helper_Magento_Attribute extends Ess_M2ePro_Helper_Magento_Abst
         );
     }
 
-    //########################################
-
     public function getSetsFromProductsWhichLacksAttributes(array $attributes, array $productIds)
     {
         if (empty($attributes) || empty($productIds)) {

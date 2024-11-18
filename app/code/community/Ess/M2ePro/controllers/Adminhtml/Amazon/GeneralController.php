@@ -17,6 +17,12 @@ class Ess_M2ePro_Adminhtml_Amazon_GeneralController
             ->_title(Mage::helper('M2ePro')->__('Configuration'))
             ->_title(Mage::helper('M2ePro')->__('General'));
 
+        $this->getLayout()
+             ->getBlock('head')
+             ->addJs('M2ePro/Amazon/Configuration.js');
+
+        $this->_initPopUp();
+
         $this->setPageHelpLink(null, null, "configurations");
 
         return $this;

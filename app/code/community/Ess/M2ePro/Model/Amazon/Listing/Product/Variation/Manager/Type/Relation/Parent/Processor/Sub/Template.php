@@ -18,7 +18,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Pa
 
     protected function execute()
     {
-        $descriptionTemplateId    = $this->getProcessor()->getAmazonListingProduct()->getTemplateDescriptionId();
+        $productTypeTemplateId    = $this->getProcessor()->getAmazonListingProduct()->getTemplateProductTypeId();
         $shippingTemplateId       = $this->getProcessor()->getAmazonListingProduct()->getTemplateShippingId();
         $productTaxCodeTemplateId = $this->getProcessor()->getAmazonListingProduct()->getTemplateProductTaxCodeId();
 
@@ -29,8 +29,8 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Pa
 
             $needSave = false;
 
-            if ($amazonListingProduct->getTemplateDescriptionId() != $descriptionTemplateId) {
-                $listingProduct->setData('template_description_id', $descriptionTemplateId);
+            if ($amazonListingProduct->getTemplateProductTypeId() != $productTypeTemplateId) {
+                $listingProduct->setData('template_product_type_id', $productTypeTemplateId);
                 $needSave = true;
             }
 

@@ -181,18 +181,6 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Option extends Ess_M2ePr
         return $this->getAmazonListingProductVariation()->getDescriptionTemplate();
     }
 
-    /**
-     * @return Ess_M2ePro_Model_Amazon_Template_Description
-     */
-    public function getAmazonDescriptionTemplate()
-    {
-        if (!$templateModel = $this->getDescriptionTemplate()) {
-            return null;
-        }
-
-        return $templateModel->getChildObject();
-    }
-
     //########################################
 
     /**

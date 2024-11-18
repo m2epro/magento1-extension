@@ -45,11 +45,6 @@ class Ess_M2ePro_Model_Amazon_Connector_Product_Revise_Responser
             $isPlural = true;
         }
 
-        if ($this->getConfigurator()->isImagesAllowed()) {
-            $sequenceStrings[] = 'Images';
-            $isPlural = true;
-        }
-
         if (empty($sequenceStrings)) {
             return null;
         }

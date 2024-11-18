@@ -6,12 +6,11 @@
  * @license    Commercial use is forbidden
  */
 
-use Ess_M2ePro_Model_Amazon_Template_Description as AmazonTemplateDescription;
 use Ess_M2ePro_Model_Ebay_Template_Description as EbayTemplateDescription;
 use Ess_M2ePro_Model_Walmart_Template_Description as WalmartTemplateDescription;
 
 /**
- * @method AmazonTemplateDescription|EbayTemplateDescription|WalmartTemplateDescription getChildObject()
+ * @method EbayTemplateDescription|WalmartTemplateDescription getChildObject()
  */
 class Ess_M2ePro_Model_Template_Description extends Ess_M2ePro_Model_Component_Parent_Abstract
 {

@@ -152,14 +152,6 @@ class Ess_M2ePro_Model_Amazon_Template_Synchronization extends Ess_M2ePro_Model_
         return $this->getData('revise_update_details') != 0;
     }
 
-    /**
-     * @return bool
-     */
-    public function isReviseWhenChangeImages()
-    {
-        return $this->getData('revise_update_images') != 0;
-    }
-
     // ---------------------------------------
 
     /**

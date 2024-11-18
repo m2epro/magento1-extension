@@ -48,6 +48,11 @@ window.WizardInstallationAmazon = Class.create(Common, {
         });
     },
 
+    settingsStep: function ()
+    {
+        this.submitForm(M2ePro.url.get('adminhtml_wizard_installationAmazon/settingsContinue'));
+    },
+
     listingTutorialStep: function ()
     {
         WizardObj.setStep(WizardObj.getNextStep(), setLocation.bind(window, location.href));

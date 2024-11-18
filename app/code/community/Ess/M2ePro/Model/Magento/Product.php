@@ -1224,7 +1224,7 @@ class Ess_M2ePro_Model_Magento_Product
             return '';
         }
 
-        if (!$productObject->hasData($attributeCode)) {
+        if ($attributeCode !== 'gallery' && !$productObject->hasData($attributeCode)) {
             $this->addNotFoundAttributes($attributeCode);
             return '';
         }

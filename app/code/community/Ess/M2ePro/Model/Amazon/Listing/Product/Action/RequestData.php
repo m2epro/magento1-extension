@@ -190,9 +190,9 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_RequestData
     /**
      * @return bool
      */
-    public function hasProductDataNick()
+    public function hasProductTypeNick()
     {
-        return isset($this->_data['product_data_nick']);
+        return isset($this->_data['product_type_nick']);
     }
 
     // ---------------------------------------
@@ -205,23 +205,8 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_RequestData
         return isset($this->_data['product_data']);
     }
 
-    /**
-     * @return bool
-     */
-    public function hasDescriptionData()
-    {
-        return isset($this->_data['description_data']);
-    }
-
     // ---------------------------------------
 
-    /**
-     * @return bool
-     */
-    public function hasImagesData()
-    {
-        return isset($this->_data['images_data']);
-    }
 
     // ---------------------------------------
 
@@ -455,9 +440,9 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_RequestData
     /**
      * @return string|null
      */
-    public function getProductDataNick()
+    public function getProductTypeNick()
     {
-        return $this->hasProductDataNick() ? $this->_data['product_data_nick'] : null;
+        return $this->hasProductTypeNick() ? $this->_data['product_type_nick'] : null;
     }
 
     // ---------------------------------------
@@ -473,10 +458,6 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_RequestData
     /**
      * @return string|null
      */
-    public function getDescriptionData()
-    {
-        return $this->hasDescriptionData() ? $this->_data['description_data'] : null;
-    }
 
     // ---------------------------------------
 

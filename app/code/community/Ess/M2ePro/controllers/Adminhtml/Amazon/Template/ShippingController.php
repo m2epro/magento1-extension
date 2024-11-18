@@ -24,10 +24,6 @@ class Ess_M2ePro_Adminhtml_Amazon_Template_ShippingController
 
         $this->_initPopUp();
 
-        // todo must be added when develop branch becomes "public"
-//        $this->pageHelpLink = Mage::helper('M2ePro/Module_Support')
-//                                    ->getDocumentationUrl(null, null, 'TODO LINK');
-
         return $this;
     }
 
@@ -106,6 +102,23 @@ class Ess_M2ePro_Adminhtml_Amazon_Template_ShippingController
         );
 
         $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Policy was saved'));
+        if (Mage::app()->getRequest()->isAjax()) {
+            $this->getResponse()->setBody(
+                Mage::helper('M2ePro')->jsonEncode(
+                    array(
+                        'status' => true,
+                        'url' =>  Mage::helper('M2ePro')->getBackUrl(
+                            '*/adminhtml_amazon_template/index', array(), array(
+                                'edit' => array('id' => $model->getId())
+                            )
+                        )
+                    )
+                )
+            );
+
+            return;
+        }
+
         $this->_redirectUrl(
             Mage::helper('M2ePro')->getBackUrl(
                 '*/adminhtml_amazon_template/index', array(), array(
@@ -150,5 +163,79 @@ class Ess_M2ePro_Adminhtml_Amazon_Template_ShippingController
         return $this->_redirect('*/adminhtml_amazon_template/index');
     }
 
-    //########################################
+    public function refreshAction()
+    {
+        $accountId = $this->getRequest()->getParam('account_id');
+        $account = $this->findAccount($accountId);
+        if ($account === null) {
+            throw new RuntimeException('Account not found by ID ' . $accountId);
+        }
+
+        /** @var Ess_M2ePro_Model_Amazon_Template_Shipping_Update $templateShippingUpdate */
+        $templateShippingUpdate = Mage::getModel('M2ePro/Amazon_Template_Shipping_Update');
+        $templateShippingUpdate->process($account);
+    }
+
+    public function getTemplatesAction()
+    {
+        $accountId = $this->getRequest()->getParam('account_id');
+        $account = $this->findAccount($accountId);
+        if ($account === null) {
+            throw new RuntimeException('Account not found by ID ' . $accountId);
+        }
+
+        /** @var Ess_M2ePro_Model_Amazon_Dictionary_TemplateShipping_Repository $dictionaryRepository */
+        $dictionaryRepository = Mage::getModel('M2ePro/Amazon_Dictionary_TemplateShipping_Repository');
+        $dictionaries = $dictionaryRepository->retrieveByAccountId($accountId);
+
+        $arrayDictionaries = array();
+        foreach ($dictionaries as $dictionary) {
+            $arrayDictionaries[] = $dictionary->toArray();
+        }
+
+        $this->getResponse()->setBody(
+            Mage::helper('M2ePro')->jsonEncode($arrayDictionaries)
+        );
+    }
+
+    public function getOptionsOfShippingTemplatesAction()
+    {
+        $marketplaceId = $this->getRequest()->getParam('marketplace_id');
+
+        /** @var $collection Ess_M2ePro_Model_Resource_Collection_Abstract */
+        $collection = Mage::getModel('M2ePro/Amazon_Template_Shipping')->getCollection();
+        if ($marketplaceId !== null) {
+            $collection->addFieldToFilter('marketplace_id', $marketplaceId);
+        }
+        $collection->setOrder('title', Varien_Data_Collection::SORT_ORDER_ASC);
+        /** @var Ess_M2ePro_Model_Amazon_Template_Shipping[] $templates */
+        $templates = $collection->getItems();
+
+        $result = array();
+        foreach ($templates as $template) {
+            $result[] = array(
+                'id' => $template->getId(),
+                'title' => $template->getTitle(),
+            );
+        }
+
+        $this->getResponse()->setBody(
+            Mage::helper('M2ePro')->jsonEncode($result)
+        );
+    }
+
+    /**
+     * @return Ess_M2ePro_Model_Account|null
+     */
+    private function findAccount($accountId)
+    {
+        /** @var Ess_M2ePro_Model_Account $account */
+        $account = Mage::getModel('M2ePro/Account')->load($accountId);
+
+        if ($account->isObjectNew()) {
+            return null;
+        }
+
+        return $account;
+    }
 }

@@ -20,10 +20,9 @@ class Ess_M2ePro_Model_Amazon_Listing_Auto_Category_Group extends Ess_M2ePro_Mod
     }
 
     //########################################
-
-    public function getAddingDescriptionTemplateId()
+    public function getAddingProductTypeTemplateId()
     {
-        return $this->getData('adding_description_template_id');
+        return $this->getData('adding_product_type_template_id');
     }
 
     //########################################

@@ -8,8 +8,8 @@
 
 class Ess_M2ePro_Block_Adminhtml_Amazon_Account_Create_Form extends Mage_Adminhtml_Block_Widget
 {
-    /** @var array */
-    protected $marketplaces;
+    /** @var Ess_M2ePro_Model_Amazon_Marketplace_Repository */
+    private $marketplaceRepository;
 
     public function __construct()
     {
@@ -17,14 +17,15 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Account_Create_Form extends Mage_Adminht
 
         $this->setId('amazonAccountCreateForm');
         $this->setTemplate('M2ePro/amazon/account/create/form.phtml');
+
+        $this->marketplaceRepository = Mage::getModel('M2ePro/Amazon_Marketplace_Repository');
     }
 
-    protected function _prepareLayout()
+    /**
+     * @return Ess_M2ePro_Model_Amazon_Marketplace[]
+     */
+    public function getMarketplaces()
     {
-        $marketplaces = Mage::helper('M2ePro/Component_Amazon')->getMarketplacesAvailableForApiCreation();
-        $marketplaces = $marketplaces->toArray();
-        $this->marketplaces = $marketplaces['items'];
-
-        return parent::_prepareLayout();
+        return $this->marketplaceRepository->getAll();
     }
 }

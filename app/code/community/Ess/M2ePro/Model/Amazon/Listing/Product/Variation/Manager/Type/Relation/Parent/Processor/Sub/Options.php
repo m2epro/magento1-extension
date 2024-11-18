@@ -16,6 +16,11 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Pa
 
     protected function check()
     {
+        $additionalData = $this->getProcessor()->getListingProduct()->getAdditionalData();
+        if (!empty($additionalData['running_migration_to_product_types'])) {
+            return;
+        }
+
         $products = $this->getProcessor()->getTypeModel()->getChildListingsProducts();
         if (empty($products)) {
             return;
@@ -90,6 +95,11 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Pa
         }
 
         if (!$this->getProcessor()->getTypeModel()->hasMatchedAttributes()) {
+            return;
+        }
+
+        $additionalData = $this->getProcessor()->getListingProduct()->getAdditionalData();
+        if (!empty($additionalData['running_migration_to_product_types'])) {
             return;
         }
 

@@ -24,7 +24,8 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationAmazonController
              ->addJs('M2ePro/Plugin/AreaWrapper.js')
              ->addJs('M2ePro/SynchProgress.js')
              ->addJs('M2ePro/Marketplace.js')
-             ->addJs('M2ePro/Wizard/InstallationAmazon.js');
+             ->addJs('M2ePro/Wizard/InstallationAmazon.js')
+             ->addJs('M2ePro/Amazon/Configuration.js');
 
         return $this;
     }
@@ -66,6 +67,27 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationAmazonController
                 'wizard'      => true
             )
         );
+    }
+
+    public function settingsAction()
+    {
+        return $this->renderSimpleStep();
+    }
+
+    public function settingsContinueAction()
+    {
+        $params = $this->getRequest()->getParams();
+        if (empty($params)) {
+            return $this->indexAction();
+        }
+
+        /** @var Ess_M2ePro_Helper_Component_Amazon_Configuration $amazonConfig */
+        $amazonConfig = Mage::helper('M2ePro/Component_Amazon_Configuration');
+        $amazonConfig->setConfigValues($params);
+
+        $this->setStep($this->getNextStep());
+
+        return $this->_redirect('*/*/installation');
     }
 
     public function productSelectionAction()

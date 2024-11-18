@@ -228,23 +228,6 @@ HTML;
 
     // ---------------------------------------
 
-    public function getDescriptionTemplateLink()
-    {
-        $url = $this->getUrl(
-            '*/adminhtml_walmart_template_description/edit', array(
-                'id' => $this->getListingProduct()->getChildObject()->getTemplateDescriptionId()
-            )
-        );
-
-        $templateTitle = $this->getListingProduct()->getChildObject()->getDescriptionTemplate()->getTitle();
-
-        return <<<HTML
-<a href="{$url}" target="_blank" title="{$templateTitle}" >{$templateTitle}</a>
-HTML;
-    }
-
-    // ---------------------------------------
-
     public function getPossibleAttributes()
     {
         $walmartListingProduct = $this->getListingProduct()->getChildObject();

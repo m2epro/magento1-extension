@@ -3,13 +3,23 @@
 class Ess_M2ePro_Model_Amazon_Search_Dispatcher
 {
     /**
+     * @param string $query
+     * @return bool
+     */
+    public function canRunCustom($query)
+    {
+        return $this->createCustomSearchHandler()
+                    ->resolveIdentifierType($query) !== null;
+    }
+
+    /**
      * @param Ess_M2ePro_Model_Listing_Product $listingProduct
-     * @param $query
+     * @param string $query
      * @return array|bool
      */
     public function runCustom(Ess_M2ePro_Model_Listing_Product $listingProduct, $query)
     {
-        if (empty($query)) {
+        if (!$this->canRunCustom($query)) {
             return false;
         }
 
@@ -31,7 +41,7 @@ class Ess_M2ePro_Model_Amazon_Search_Dispatcher
     /**
      * @return Ess_M2ePro_Model_Amazon_Search_Custom
      */
-    public function createCustomSearchHandler()
+    private function createCustomSearchHandler()
     {
         /** @var Ess_M2ePro_Model_Amazon_Search_Custom */
         return Mage::getModel('M2ePro/Amazon_Search_Custom');

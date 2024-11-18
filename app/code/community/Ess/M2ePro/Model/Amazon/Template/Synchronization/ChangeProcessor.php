@@ -19,9 +19,6 @@ class Ess_M2ePro_Model_Amazon_Template_Synchronization_ChangeProcessor
     const INSTRUCTION_TYPE_REVISE_DETAILS_ENABLED          = 'template_synchronization_revise_details_enabled';
     const INSTRUCTION_TYPE_REVISE_DETAILS_DISABLED         = 'template_synchronization_revise_details_disabled';
 
-    const INSTRUCTION_TYPE_REVISE_IMAGES_ENABLED          = 'template_synchronization_revise_images_enabled';
-    const INSTRUCTION_TYPE_REVISE_IMAGES_DISABLED         = 'template_synchronization_revise_images_disabled';
-
     //########################################
 
     protected function getInstructionsData(Ess_M2ePro_Model_ActiveRecord_Diff $diff, $status)
@@ -71,20 +68,6 @@ class Ess_M2ePro_Model_Amazon_Template_Synchronization_ChangeProcessor
         } elseif ($diff->isReviseDetailsDisabled()) {
             $data[] = array(
                 'type'      => self::INSTRUCTION_TYPE_REVISE_DETAILS_DISABLED,
-                'priority'  => 5,
-            );
-        }
-
-        //----------------------------------------
-
-        if ($diff->isReviseImagesEnabled()) {
-            $data[] = array(
-                'type'      => self::INSTRUCTION_TYPE_REVISE_IMAGES_ENABLED,
-                'priority'  => $status === Ess_M2ePro_Model_Listing_Product::STATUS_LISTED ? 80 : 5,
-            );
-        } elseif ($diff->isReviseImagesDisabled()) {
-            $data[] = array(
-                'type'      => self::INSTRUCTION_TYPE_REVISE_IMAGES_DISABLED,
                 'priority'  => 5,
             );
         }

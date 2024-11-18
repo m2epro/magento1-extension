@@ -28,17 +28,17 @@ class Ess_M2ePro_Model_Amazon_Marketplace extends Ess_M2ePro_Model_Component_Chi
 
     //########################################
 
+    /**
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->getData('title');
+    }
+
     public function getDefaultCurrency()
     {
         return $this->getData('default_currency');
-    }
-
-    /**
-     * @return bool
-     */
-    public function isNewAsinAvailable()
-    {
-        return (bool)$this->getData('is_new_asin_available');
     }
 
     /**

@@ -203,12 +203,7 @@ window.AmazonListingCreateGeneral = Class.create(Common, {
 
                         var title = 'Amazon ' + $('marketplace_title').innerHTML;
 
-                        self.marketplaceSynchProgressObj.runTask(
-                            title,
-                            M2ePro.url.get('adminhtml_amazon_marketplace/runSynchNow', {marketplace_id: marketplaceId}),
-                            M2ePro.url.get('adminhtml_amazon_marketplace/synchGetExecutingInfo'),
-                            'AmazonListingCreateGeneralObj.marketplaceSynchProgressObj.end()'
-                        );
+                        self.marketplaceSynchProgressObj.end()
                     }
                 });
             }

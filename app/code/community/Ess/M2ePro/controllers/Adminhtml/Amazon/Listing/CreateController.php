@@ -117,9 +117,11 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_CreateController
         if ($this->getRequest()->isPost()) {
             $this->setSessionValue('marketplace_id', $this->getMarketplaceId());
 
-            $dataKeys = $this->getLayout()->createBlock(
+            /** @var Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Create_Selling_Form $sellingForm */
+            $sellingForm = $this->getLayout()->createBlock(
                 'M2ePro/adminhtml_amazon_listing_create_selling_form'
-            )->getDefaultFieldsValues();
+            );
+            $dataKeys = $sellingForm->getDefaultFieldsValues();
 
             $post = $this->getRequest()->getPost();
             foreach ($dataKeys as $key => $value) {
@@ -225,6 +227,10 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_CreateController
             $data['restock_date_value'] = Mage::helper('M2ePro')->timezoneDateToGmt(
                 $this->getSessionValue('restock_date_value')
             );
+        }
+
+        if (empty($data['template_shipping_id'])) {
+            $data['template_shipping_id'] = null;
         }
 
         /** @var Ess_M2ePro_Model_Listing $listing */

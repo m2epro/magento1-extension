@@ -168,21 +168,6 @@ class Ess_M2ePro_Helper_Component_Amazon extends Mage_Core_Helper_Abstract
         return $title;
     }
 
-    // ----------------------------------------
-
-    public function getMarketplacesAvailableForApiCreation()
-    {
-        return $this->getCollection('Marketplace')
-                    ->addFieldToFilter('status', Ess_M2ePro_Model_Marketplace::STATUS_ENABLE)
-                    ->setOrder('sorder', 'ASC');
-    }
-
-    public function getMarketplacesAvailableForAsinCreation()
-    {
-        $collection = $this->getMarketplacesAvailableForApiCreation();
-        return $collection->addFieldToFilter('is_new_asin_available', 1);
-    }
-
     //########################################
 
     public function getStatesList()

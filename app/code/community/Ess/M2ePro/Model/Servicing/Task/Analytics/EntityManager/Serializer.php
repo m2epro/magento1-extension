@@ -49,13 +49,6 @@ class Ess_M2ePro_Model_Servicing_Task_Analytics_EntityManager_Serializer
                 );
                 break;
 
-            case Ess_M2ePro_Helper_Component_Amazon::NICK . '::Template_Description':
-                /**@var $item Ess_M2ePro_Model_Template_Description */
-                $data['specifics'] = $this->unsetDataInRelatedItems(
-                    $item->getChildObject()->getSpecifics(), 'template_description_id'
-                );
-                break;
-
             // ---------------------------------------
 
             case Ess_M2ePro_Helper_Component_Ebay::NICK . '::Account':

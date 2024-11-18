@@ -81,6 +81,11 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Pa
             return;
         }
 
+        $additionalData = $this->getProcessor()->getListingProduct()->getAdditionalData();
+        if (!empty($additionalData['running_migration_to_product_types'])) {
+            return;
+        }
+
         if ($this->getProcessor()->isGeneralIdSet()) {
             $this->processExistProduct();
             return;

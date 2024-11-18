@@ -371,7 +371,7 @@ window.AmazonListingVariationProductManage = Class.create(Action,{
             closable: true,
             className: "magento",
             windowClassName: "popup-window",
-            title: M2ePro.text.templateDescriptionPopupTitle,
+            title: M2ePro.text.productTypePopupTitle,
             top: 70,
             width: 800,
             height: 550,
@@ -385,7 +385,7 @@ window.AmazonListingVariationProductManage = Class.create(Action,{
 
         $('modal_dialog_message').insert(contentData);
 
-        new Ajax.Request(M2ePro.url.manageVariationViewTemplateDescriptionsGrid, {
+        new Ajax.Request(M2ePro.url.manageVariationViewTemplateProductTypesGrid, {
             method: 'get',
             parameters: {
                 product_id : variationProductManagePopup.productId

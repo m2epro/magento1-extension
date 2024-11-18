@@ -186,9 +186,53 @@ class Ess_M2ePro_Helper_Component_Amazon_Variation extends Mage_Core_Helper_Abst
         return $listingProductsIds;
     }
 
-    //########################################
+    public function filterProductsByAvailableWorldwideIdentifiers(array $listingProductsIds)
+    {
+        $worldwideIdSeemsLikeAvailable = array();
+        $parentWithChildWithoutWorldwideId = array();
 
-    public function filterProductsByDescriptionTemplate($productsIds)
+        $productsIdsChunks = array_chunk($listingProductsIds, 1000);
+        foreach ($productsIdsChunks as $chunk) {
+            $idsCondition = implode(',', $chunk);
+            $listingProductResource = Mage::getResourceModel('M2ePro/Listing_Product');
+            $listingProductResource->setChildMode(Ess_M2ePro_Helper_Component_Amazon::NICK);
+
+            $collection = Mage::getResourceModel('M2ePro/Listing_Product_Collection', $listingProductResource);
+            $collection->getSelect()
+                ->where("id IN($idsCondition) OR variation_parent_id IN($idsCondition)");
+
+            /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
+            foreach ($collection->getItems() as $listingProduct) {
+                $amazonListingProduct = $listingProduct->getChildObject();
+                $variationManager = $amazonListingProduct->getVariationManager();
+                $identifiers = $amazonListingProduct->getIdentifiers();
+
+                if ($variationManager->isRelationParentType()) {
+                    // variation parent does not require worldwide id,
+                    // but variation children will be checked for worldwide id availability
+                    $id = $listingProduct->getId();
+                    $worldwideIdSeemsLikeAvailable[$id] = true;
+                } elseif ($variationManager->isRelationChildType()) {
+                    if ($identifiers->getWorldwideId() === null) {
+                        $id = $variationManager->getVariationParentId();
+                        $parentWithChildWithoutWorldwideId[$id] = true;
+                    }
+                } else {
+                    if ($identifiers->getWorldwideId() !== null) {
+                        $id = $listingProduct->getId();
+                        $worldwideIdSeemsLikeAvailable[$id] = true;
+                    }
+                }
+            }
+        }
+
+        return array_diff(
+            array_keys($worldwideIdSeemsLikeAvailable),
+            array_keys($parentWithChildWithoutWorldwideId)
+        );
+    }
+
+    public function filterProductsByProductType($productsIds)
     {
         $productsIdsChunks = array_chunk($productsIds, 1000);
         $productsIds = array();
@@ -196,19 +240,12 @@ class Ess_M2ePro_Helper_Component_Amazon_Variation extends Mage_Core_Helper_Abst
         $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
         $tableAmazonListingProduct = Mage::helper('M2ePro/Module_Database_Structure')
             ->getTableNameWithPrefix('m2epro_amazon_listing_product');
-        $tableAmazonTemplateDescription = Mage::helper('M2ePro/Module_Database_Structure')
-            ->getTableNameWithPrefix('m2epro_amazon_template_description');
 
         foreach ($productsIdsChunks as $productsIdsChunk) {
             $select = $connRead->select();
             $select->from(array('alp' => $tableAmazonListingProduct), array('listing_product_id'))
-                ->where('listing_product_id IN (?)', $productsIdsChunk);
-
-            $select->join(
-                array('atd' => $tableAmazonTemplateDescription),
-                'alp.template_description_id=atd.template_description_id',
-                array()
-            )->where('atd.is_new_asin_accepted = 1');
+                ->where('listing_product_id IN (?)', $productsIdsChunk)
+                ->where('template_product_type_id IS NOT NULL');
 
             $productsIds = array_merge(
                 $productsIds,
@@ -221,8 +258,6 @@ class Ess_M2ePro_Helper_Component_Amazon_Variation extends Mage_Core_Helper_Abst
 
     public function filterParentProductsByVariationTheme($productsIds)
     {
-        $detailsModel = Mage::getModel('M2ePro/Amazon_Marketplace_Details');
-
         foreach ($productsIds as $key => $productId) {
             /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
             $listingProduct = Mage::helper('M2ePro/Component_Amazon')->getObject('Listing_Product', $productId);
@@ -234,11 +269,10 @@ class Ess_M2ePro_Helper_Component_Amazon_Variation extends Mage_Core_Helper_Abst
                 continue;
             }
 
-            $detailsModel->setMarketplaceId($listingProduct->getListing()->getMarketplaceId());
+            $dictionaryProductTypeModel = $amazonListingProduct->getProductTypeTemplate()
+                                                               ->getDictionary();
 
-            $themes = $detailsModel->getVariationThemes(
-                $amazonListingProduct->getAmazonDescriptionTemplate()->getProductDataNick()
-            );
+            $themes = $dictionaryProductTypeModel->getVariationThemes();
 
             if (empty($themes)) {
                 unset($productsIds[$key]);
