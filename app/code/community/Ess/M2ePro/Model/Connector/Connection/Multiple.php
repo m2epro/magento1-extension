@@ -32,6 +32,7 @@ class Ess_M2ePro_Model_Connector_Connection_Multiple extends Ess_M2ePro_Model_Co
 
         return Mage::helper('M2ePro/Server_Request')->multiple(
             $packages,
+            $this->isAsynchronous(),
             $this->isCanIgnoreMaintenance()
         );
     }
