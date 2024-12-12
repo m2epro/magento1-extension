@@ -97,11 +97,10 @@ class Ess_M2ePro_Model_Walmart_Marketplace_Synchronization
             (int)$this->marketplace->getId()
         );
 
-        $lastUpdateDate = Mage::helper('M2ePro/Data')->createGmtDateTime($details['last_update']);
         $marketplaceDictionary = $this->dictionaryMarketplaceFactory->createWithoutProductTypes(
             (int)$this->marketplace->getId(),
-            $lastUpdateDate,
-            $lastUpdateDate
+            Mage::helper('M2ePro/Data')->createCurrentGmtDateTime(),
+            Mage::helper('M2ePro/Data')->createGmtDateTime($details['last_update'])
         );
 
         $this->dictionaryMarketplaceRepository->create($marketplaceDictionary);

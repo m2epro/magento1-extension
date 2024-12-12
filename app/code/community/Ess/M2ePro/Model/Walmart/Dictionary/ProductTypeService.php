@@ -22,9 +22,7 @@ class Ess_M2ePro_Model_Walmart_Dictionary_ProductTypeService
      */
     public function retrieve($productTypeNick, Ess_M2ePro_Model_Marketplace $marketplace)
     {
-        if (!$marketplace->isComponentModeWalmart()) {
-            throw new \LogicException('Marketplace is not Walmart component mode.');
-        }
+        $this->checkMarketplace($marketplace);
 
         $productTypeDictionary = $this->productTypeDictionaryRepository->findByNick(
             $productTypeNick,
@@ -50,5 +48,38 @@ class Ess_M2ePro_Model_Walmart_Dictionary_ProductTypeService
         $this->productTypeDictionaryRepository->create($productTypeDictionary);
 
         return $productTypeDictionary;
+    }
+
+    /**
+     * @return void
+     */
+    public function update(Ess_M2ePro_Model_Marketplace $marketplace)
+    {
+        $this->checkMarketplace($marketplace);
+
+        $productTypeDictionaries = $this->productTypeDictionaryRepository
+            ->retrieveByMarketplace($marketplace);
+
+        foreach ($productTypeDictionaries as $productTypeDictionary) {
+            if ($productTypeDictionary->isInvalid()) {
+                continue;
+            }
+            $response = $this->getInfoConnectProcessor->process(
+                $productTypeDictionary->getNick(),
+                $marketplace
+            );
+
+            $productTypeDictionary->setAttributes($response->getAttributes())
+                                  ->setVariationAttributes($response->getVariationAttributes());
+
+            $this->productTypeDictionaryRepository->save($productTypeDictionary);
+        }
+    }
+
+    private function checkMarketplace(Ess_M2ePro_Model_Marketplace $marketplace)
+    {
+        if (!$marketplace->isComponentModeWalmart()) {
+            throw new \LogicException('Marketplace is not Walmart component mode.');
+        }
     }
 }

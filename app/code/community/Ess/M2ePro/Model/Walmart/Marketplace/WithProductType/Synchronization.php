@@ -16,11 +16,14 @@ class Ess_M2ePro_Model_Walmart_Marketplace_WithProductType_Synchronization
     private $progressManager = null;
     /** @var Ess_M2ePro_Model_Synchronization_Log */
     private $synchronizationLog = null;
+    /** @var Ess_M2ePro_Model_Walmart_Dictionary_ProductTypeService */
+    private $productTypeDictionaryService;
 
     public function __construct()
     {
         $this->marketplaceDictionaryService = Mage::getModel('M2ePro/Walmart_Dictionary_MarketplaceService');
         $this->categoryDictionaryService = Mage::getModel('M2ePro/Walmart_Dictionary_CategoryService');
+        $this->productTypeDictionaryService = Mage::getModel('M2ePro/Walmart_Dictionary_ProductTypeService');
     }
 
     /**
@@ -65,9 +68,13 @@ class Ess_M2ePro_Model_Walmart_Marketplace_WithProductType_Synchronization
 
         $this->marketplaceDictionaryService->update($this->marketplace);
 
-        $this->getProgressManager()->setPercentage(50);
+        $this->getProgressManager()->setPercentage(30);
 
         $this->categoryDictionaryService->update($this->marketplace);
+
+        $this->getProgressManager()->setPercentage(60);
+
+        $this->productTypeDictionaryService->update($this->marketplace);
 
         $this->getProgressManager()->setPercentage(80);
 

@@ -22,14 +22,8 @@ class Ess_M2ePro_Model_Walmart_Dictionary_ProductType extends Ess_M2ePro_Model_A
         $this->setData(DictionaryResource::COLUMN_MARKETPLACE_ID, $marketplaceId);
         $this->setData(DictionaryResource::COLUMN_NICK, $nick);
         $this->setData(DictionaryResource::COLUMN_TITLE, $title);
-        $this->setData(
-            DictionaryResource::COLUMN_ATTRIBUTES,
-            json_encode($attributes)
-        );
-        $this->setData(
-            DictionaryResource::COLUMN_VARIATION_ATTRIBUTES,
-            json_encode($variationAttributes)
-        );
+        $this->setAttributes($attributes);
+        $this->setVariationAttributes($variationAttributes);
         $this->markAsValid();
     }
     
@@ -90,6 +84,19 @@ class Ess_M2ePro_Model_Walmart_Dictionary_ProductType extends Ess_M2ePro_Model_A
     }
 
     /**
+     * @return $this
+     */
+    public function setAttributes(array $attributes)
+    {
+        $this->setData(
+            DictionaryResource::COLUMN_ATTRIBUTES,
+            json_encode($attributes)
+        );
+
+        return $this;
+    }
+
+    /**
      * @return string[]
      */
     public function getVariationAttributes()
@@ -100,6 +107,16 @@ class Ess_M2ePro_Model_Walmart_Dictionary_ProductType extends Ess_M2ePro_Model_A
         }
 
         return json_decode($variationAttributes, true);
+    }
+
+    public function setVariationAttributes(array $variationAttributes)
+    {
+        $this->setData(
+            DictionaryResource::COLUMN_VARIATION_ATTRIBUTES,
+            json_encode($variationAttributes)
+        );
+
+        return $this;
     }
 
     /**

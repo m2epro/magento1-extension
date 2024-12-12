@@ -41,7 +41,7 @@ class Ess_M2ePro_Model_Walmart_Dictionary_MarketplaceService
         $marketplaceDictionary = $this->dictionaryMarketplaceFactory->createWithProductTypes(
             (int)$marketplace->getId(),
             $response->getProductTypes(),
-            $response->getLastUpdate(),
+            Mage::helper('M2ePro/Data')->createCurrentGmtDateTime(),
             $response->getLastUpdate()
         );
 
