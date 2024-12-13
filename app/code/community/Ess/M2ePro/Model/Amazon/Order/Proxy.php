@@ -76,19 +76,51 @@ class Ess_M2ePro_Model_Amazon_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
 
     //########################################
 
+    public function getCustomer()
+    {
+        $customer = parent::getCustomer();
+
+        $amazonAccount = $this->_order->getParentObject()->getAccount()->getChildObject();
+
+        $buyerCompanyName = $this->getBuyerCompanyName();
+        if (
+            !empty($buyerCompanyName)
+            && $amazonAccount->isMagentoOrdersCustomerNew()
+        ) {
+            foreach ($customer->getAddresses() as $address) {
+                if (!$address->isDefaultBilling()) {
+                    continue;
+                }
+
+                $address->setCompany($buyerCompanyName);
+                $address->save();
+            }
+        }
+
+        return $customer;
+    }
+
+    // ----------------------------------------
+
     /**
      * @return array
      */
     public function getBillingAddressData()
     {
         if ($this->_order->getAmazonAccount()->useMagentoOrdersShippingAddressAsBillingAlways()) {
-            return parent::getBillingAddressData();
+            $billingAddress = parent::getBillingAddressData();
+            $billingAddress = $this->appendCompanyToBillingAddressData($billingAddress);
+
+            return $billingAddress;
         }
 
         if ($this->_order->getAmazonAccount()->useMagentoOrdersShippingAddressAsBillingIfSameCustomerAndRecipient() &&
             $this->_order->getShippingAddress()->hasSameBuyerAndRecipient()
         ) {
-            return parent::getBillingAddressData();
+            $billingAddress = parent::getBillingAddressData();
+            $billingAddress = $this->appendCompanyToBillingAddressData($billingAddress);
+
+            return $billingAddress;
         }
 
         $customerNameParts = $this->getNameParts($this->_order->getBuyerName());
@@ -471,5 +503,22 @@ class Ess_M2ePro_Model_Amazon_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
         }
 
         return parent::getGeneralComments();
+    }
+
+    private function appendCompanyToBillingAddressData(array $billingAddressData)
+    {
+        $buyerCompanyName = $this->getBuyerCompanyName();
+        if (!empty($buyerCompanyName)) {
+            $billingAddressData['company'] = $buyerCompanyName;
+        }
+
+        return $billingAddressData;
+    }
+
+    private function getBuyerCompanyName()
+    {
+        $addressData = $this->_order->getShippingAddress()->getRawData();
+
+        return isset($addressData['buyer_company_name']) ? $addressData['buyer_company_name'] : '';
     }
 }

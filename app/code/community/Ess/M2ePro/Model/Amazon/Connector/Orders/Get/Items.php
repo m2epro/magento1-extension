@@ -169,7 +169,7 @@ class Ess_M2ePro_Model_Amazon_Connector_Orders_Get_Items extends Ess_M2ePro_Mode
                 $order['shipping_price'] = isset($orderData['price']['shipping'])
                     ? (float)$orderData['price']['shipping'] : 0;
 
-                $order['shipping_address'] = $this->parseShippingAddress($shipping, $marketplace);
+                $order['shipping_address'] = $this->parseShippingAddress($orderData, $marketplace);
 
                 $order['shipping_date_to'] = $shipping['ship_date']['to'];
                 $order['delivery_date_from'] = $shipping['delivery_date']['from'];
@@ -233,8 +233,9 @@ class Ess_M2ePro_Model_Amazon_Connector_Orders_Get_Items extends Ess_M2ePro_Mode
         }
     }
 
-    protected function parseShippingAddress(array $shippingData, Ess_M2ePro_Model_Marketplace $marketplace)
+    protected function parseShippingAddress(array $orderData, Ess_M2ePro_Model_Marketplace $marketplace)
     {
+        $shippingData = $orderData['shipping'];
         $location = isset($shippingData['location']) ? $shippingData['location'] : array();
         $address  = isset($shippingData['address']) ? $shippingData['address'] : array();
 
@@ -246,13 +247,14 @@ class Ess_M2ePro_Model_Amazon_Connector_Orders_Get_Items extends Ess_M2ePro_Mode
             'postal_code'    => isset($location['postal_code']) ? $location['postal_code'] : '',
             'recipient_name' => isset($shippingData['buyer']) ? trim($shippingData['buyer']) : '',
             'phone'          => isset($shippingData['phone']) ? $shippingData['phone'] : '',
-            'company'        => '',
+            'company'        => isset($shippingData['company_name']) ? $shippingData['company_name'] : '',
             'address_type'   => isset($shippingData['address_type']) ? $shippingData['address_type'] : '',
             'street'         => array(
                 isset($address['first']) ? $address['first'] : '',
                 isset($address['second']) ? $address['second'] : '',
                 isset($address['third']) ? $address['third'] : ''
-            )
+            ),
+            'buyer_company_name' => isset($orderData['buyer_company_name']) ? $orderData['buyer_company_name'] : '',
         );
         $parsedAddress['street'] = array_filter($parsedAddress['street']);
 
@@ -263,6 +265,7 @@ class Ess_M2ePro_Model_Amazon_Connector_Orders_Get_Items extends Ess_M2ePro_Mode
 
         if (
             $useFirstStreetLineAsCompany
+            && empty($parsedAddress['company'])
             && $parsedAddress['address_type'] === self::AMAZON_ADDRESS_TYPE_COMMERCIAL
             && count($parsedAddress['street']) > 1
         ) {

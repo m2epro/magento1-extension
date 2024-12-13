@@ -63,7 +63,8 @@ window.AmazonProductTypeContent = Class.create(Common, {
         settings,
         groups,
         timezoneShift,
-        specificsDefaultSettings
+        specificsDefaultSettings,
+        recommendedBrowseNodeLink
     ) {
         this.settings = settings;
         this.specificsDefaultSettings = specificsDefaultSettings;
@@ -84,6 +85,19 @@ window.AmazonProductTypeContent = Class.create(Common, {
                 this.renderFieldset(group, groupFieldsets[group][i]);
             }
         }
+        this.appendRecommendedBrowseNodeLink(recommendedBrowseNodeLink);
+    },
+
+    appendRecommendedBrowseNodeLink: function (recommendedBrowseNodeLink) {
+        if (recommendedBrowseNodeLink === '') {
+            return;
+        }
+
+        var wrapper = document.createElement('div');
+        wrapper.innerHTML = recommendedBrowseNodeLink.trim();
+
+
+        $$('[id^="field_container_recommended_browse_nodes"] label')[0].after(wrapper.firstChild)
     },
 
     initDictionaryHtmlIdToScheme: function (scheme, path = []) {

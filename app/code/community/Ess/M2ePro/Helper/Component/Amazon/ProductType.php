@@ -60,7 +60,7 @@ class Ess_M2ePro_Helper_Component_Amazon_ProductType
         }
 
         return Mage::helper('M2ePro')->__(
-            '<a style="display: block; margin-top: -10px" href="%url%">View latest Browse Node ID List</a>',
+            '<a style="display: block;" href="%url%" target="_blank">View latest Browse Node ID List</a>',
             array('url' => $map[$marketplaceId])
         );
     }

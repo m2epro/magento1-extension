@@ -231,6 +231,7 @@ window.AmazonProductType = Class.create(Common, {
                     response.data['groups'],
                     response.data['timezone_shift'],
                     response.data['specifics_default_settings'],
+                    response.data['recommended_browse_node_link'],
                 );
 
                 self.originalFormData = $('edit_form').serialize();

@@ -240,6 +240,10 @@ if (empty($currency)) {
 
                                     <?php echo Mage::helper('M2ePro')->escapeHtml($this->shippingAddress['recipient_name']) ?>
 
+                                    <?php if (!empty($this->shippingAddress['company'])) : ?>
+                                        <br/><?php echo Mage::helper('M2ePro')->escapeHtml($this->shippingAddress['company']) ?>
+                                    <?php endif; ?>
+
                                     <?php if (!empty($this->shippingAddress['country_code']) || !empty($this->shippingAddress['city'])): ?>
 
                                         <?php if (!empty($this->shippingAddress['street'][0])): ?>

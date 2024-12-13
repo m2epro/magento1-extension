@@ -25,7 +25,8 @@ class Ess_M2ePro_Model_Amazon_Order_ShippingAddress extends Ess_M2ePro_Model_Ord
             'postcode'       => $this->getPostalCode(),
             'telephone'      => $this->getPhone(),
             'company'        => $this->getData('company'),
-            'street'         => array_filter($this->getData('street'))
+            'street'         => array_filter($this->getData('street')),
+            'buyer_company_name' => $this->getData('buyer_company_name') ? $this->getData('buyer_company_name') : '',
         );
     }
 

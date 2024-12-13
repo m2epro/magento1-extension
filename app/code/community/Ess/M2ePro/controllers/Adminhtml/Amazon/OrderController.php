@@ -223,7 +223,8 @@ class Ess_M2ePro_Adminhtml_Amazon_OrderController
             'postal_code',
             'recipient_name',
             'phone',
-            'street'
+            'street',
+            'company',
         );
 
         foreach ($keys as $key) {
