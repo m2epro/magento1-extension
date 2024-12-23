@@ -292,7 +292,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
         $this->instructionForCheckingProductData[] = array(
             'listing_product_id' => $listingProduct->getId(),
             'component' => Ess_M2ePro_Helper_Component_Ebay::NICK,
-            'type' => ChangeProcessorAbstract::INSTRUCTION_TYPE_PRODUCT_STATUS_DATA_POTENTIALLY_CHANGED,
+            'type' => ChangeProcessorAbstract::INSTRUCTION_TYPE_PRODUCT_DATA_POTENTIALLY_CHANGED,
             'initiator' => self::INSTRUCTION_INITIATOR,
             'priority' => 100,
         );
