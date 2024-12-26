@@ -56,17 +56,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_SynchronizationTempla
             return false;
         }
 
-        /** @var Ess_M2ePro_Model_Walmart_Listing_Product $walmartListingProduct */
-        $walmartListingProduct = $listingProduct->getChildObject();
-        if (
-            $walmartListingProduct
-                ->getWalmartMarketplace()
-                ->isSupportedProductType()
-            && !$walmartListingProduct->isExistsProductType()
-        ) {
-            return false;
-        }
-
         if ($scheduledAction = $this->_input->getScheduledAction()) {
             if ($scheduledAction->isActionTypeDelete() && $scheduledAction->isForce()) {
                 return false;
@@ -261,15 +250,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_SynchronizationTempla
         $variationResource = Mage::getResourceModel('M2ePro/Listing_Product_Variation');
 
         if (!$walmartSynchronizationTemplate->isStopMode()) {
-            return false;
-        }
-
-        if (
-            $walmartListingProduct
-                ->getWalmartMarketplace()
-                ->isSupportedProductType()
-            && !$walmartListingProduct->isExistsProductType()
-        ) {
             return false;
         }
 

@@ -237,6 +237,8 @@ class Ess_M2ePro_Adminhtml_Amazon_ProductTypesController
     public function getProductTypeInfoAction()
     {
         $marketplaceId = $this->getRequest()->getParam('marketplace_id');
+        $isNewProductType = (bool)$this->getRequest()->getParam('is_new_product_type');
+
         if ($marketplaceId === null) {
             $this->getResponse()->setBody(
                 Mage::helper('M2ePro')->jsonEncode(
@@ -280,6 +282,13 @@ class Ess_M2ePro_Adminhtml_Amazon_ProductTypesController
             $template = $productTypeTemplates[0];
         }
 
+        $specificDefaultSettings = array();
+        if ($isNewProductType) {
+            /** @var Ess_M2ePro_Model_Amazon_ProductType_AttributeMappingService $attributeMappingService */
+            $attributeMappingService = Mage::getModel('M2ePro/Amazon_ProductType_AttributeMappingService');
+            $specificDefaultSettings = $attributeMappingService->getSuggestedAttributes();
+        }
+
         /** @var Ess_M2ePro_Helper_Component_Amazon_ProductType $productTypeHelper */
         $productTypeHelper = Mage::helper('M2ePro/Component_Amazon_ProductType');
         $contentData = array(
@@ -287,10 +296,10 @@ class Ess_M2ePro_Adminhtml_Amazon_ProductTypesController
             'settings' => $template !== null ? $template->getSelfSetting() : array(),
             'groups' => $productType->getAttributesGroups(),
             'timezone_shift' => $this->getTimezoneShift(),
-            'specifics_default_settings' => array(),
+            'specifics_default_settings' => $specificDefaultSettings,
             'main_image_specifics' => $productTypeHelper->getMainImageSpecifics(),
             'other_images_specifics' => $productTypeHelper->getOtherImagesSpecifics(),
-            'recommended_browse_node_link' => $productTypeHelper->getRecommendedBrowseNodesLink($marketplaceId)
+            'recommended_browse_node_link' => $productTypeHelper->getRecommendedBrowseNodesLink($marketplaceId),
         );
 
         $this->getResponse()->setBody(
@@ -388,13 +397,9 @@ class Ess_M2ePro_Adminhtml_Amazon_ProductTypesController
             }
         }
 
-        /**
-         * @var Ess_M2ePro_Model_Amazon_Template_ProductType_Builder $builder
-         */
+        /** @var Ess_M2ePro_Model_Amazon_Template_ProductType_Builder $builder */
         $builder = Mage::getModel('M2ePro/Amazon_Template_ProductType_Builder');
-        /**
-         * @var Ess_M2ePro_Model_Amazon_Template_ProductType $productTypeFactory
-         */
+        /** @var Ess_M2ePro_Model_Amazon_Template_ProductType $productType */
         $productType = Mage::getModel('M2ePro/Amazon_Template_ProductType');
 
         $templateProductTypeRepository =  Mage::getModel('M2ePro/Amazon_Template_ProductType_Repository');
@@ -432,6 +437,10 @@ class Ess_M2ePro_Adminhtml_Amazon_ProductTypesController
             $affectedListingsProducts->getData(array('id', 'status'))
         );
 
+        /** @var Ess_M2ePro_Model_Amazon_ProductType_AttributeMappingService $attributeMappingService */
+        $attributeMappingService = Mage::getModel('M2ePro/Amazon_ProductType_AttributeMappingService');
+        $attributeMappingService->create($productType);
+
         $backUrl = Mage::helper('M2ePro')->getBackUrl(
             '*/adminhtml_amazon_productTypes/index',
             array(),
@@ -444,15 +453,19 @@ class Ess_M2ePro_Adminhtml_Amazon_ProductTypesController
         );
 
         if ($this->getRequest()->isXmlHttpRequest()) {
+            $responseContent =  array(
+                'status' => true,
+                'product_type_id' => $productType->getId(),
+                'back_url' => $backUrl,
+                'edit_url' => $editUrl,
+            );
+
+            if ($attributeMappingService->hasChangedMappings($productType)) {
+                $responseContent['has_changed_mappings_product_type_id'] = $productType->getId();
+            }
+
             return $this->getResponse()->setBody(
-                Mage::helper('M2ePro')->jsonEncode(
-                    array(
-                        'status' => true,
-                        'product_type_id' => $productType->getId(),
-                        'back_url' => $backUrl,
-                        'edit_url' => $editUrl,
-                    )
-                )
+                Mage::helper('M2ePro')->jsonEncode($responseContent)
             );
         }
 
@@ -486,6 +499,41 @@ class Ess_M2ePro_Adminhtml_Amazon_ProductTypesController
         $snapshotBuilder->setModel($productType);
 
         return $snapshotBuilder->getSnapshot();
+    }
+
+    //----------------------------------
+
+    public function updateAttributeMappingAction()
+    {
+        $productTypeId = $this->getRequest()
+                              ->getParam('product_type_id');
+        $productType = null;
+        if ($productTypeId !== null) {
+            /** @var Ess_M2ePro_Model_Amazon_Template_ProductType_Repository $repository */
+            $repository = Mage::getModel('M2ePro/Amazon_Template_ProductType_Repository');
+            $productType = $repository->find((int)$productTypeId);
+        }
+
+        if ($productType === null) {
+            return $this->getResponse()->setBody(
+                Mage::helper('M2ePro')->jsonEncode(
+                    array(
+                        'status' => false,
+                        'message' => $this->__('Incorrect Product Type id'),
+                    )
+                )
+            );
+        }
+
+        /** @var Ess_M2ePro_Model_Amazon_ProductType_AttributeMappingService $attributeMappingService */
+        $attributeMappingService = Mage::getModel('M2ePro/Amazon_ProductType_AttributeMappingService');
+        $attributeMappingService->update($productType);
+
+        return $this->getResponse()->setBody(
+            Mage::helper('M2ePro')->jsonEncode(
+                array('status' => true)
+            )
+        );
     }
 
     //----------------------------------

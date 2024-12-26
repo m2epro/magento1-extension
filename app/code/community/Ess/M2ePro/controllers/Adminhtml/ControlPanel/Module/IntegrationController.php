@@ -198,6 +198,7 @@ HTML
             //--
 
             //--
+            /** @var Ess_M2ePro_Model_Amazon_Listing_Product_Instruction_SynchronizationTemplate_Checker_Active $checker */
             $checker = Mage::getModel(
                 'M2ePro/Amazon_Listing_Product_Instruction_SynchronizationTemplate_Checker_Active'
             );
@@ -211,7 +212,6 @@ HTML
             $html .= 'isMeetRevisePriceReg: '.json_encode($checker->isMeetRevisePriceRegularRequirements()).'<br>';
             $html .= 'isMeetRevisePriceBus: '.json_encode($checker->isMeetRevisePriceBusinessRequirements()).'<br>';
             $html .= 'isMeetReviseDetails: '.json_encode($checker->isMeetReviseDetailsRequirements()).'<br>';
-            $html .= 'isMeetReviseImages: '.json_encode($checker->isMeetReviseImagesRequirements()).'<br><br>';
             //--
 
             //--

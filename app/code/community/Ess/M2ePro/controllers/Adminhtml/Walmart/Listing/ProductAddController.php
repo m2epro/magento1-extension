@@ -237,7 +237,10 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
 
     private function stepThree(Ess_M2ePro_Model_Marketplace $marketplace)
     {
-        if (!$marketplace->getChildObject()->isSupportedProductType()) {
+        if (
+            $this->isMovedFromOther($this->getListing())
+            || !$marketplace->getChildObject()->isSupportedProductType()
+        ) {
             $this->review();
 
             return;
@@ -272,18 +275,33 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
             return $this->_redirect('*/adminhtml_walmart_listing/view', array('id' => $listingId));
         }
 
-        if ($marketplace->getChildObject()->isSupportedProductType()) {
+        $isMovedFromOther = $this->isMovedFromOther($this->getListing());
+        if (
+            !$isMovedFromOther
+            && $marketplace->getChildObject()->isSupportedProductType()
+        ) {
             $this->removeProductsWithoutProductTypes($additionalData['adding_listing_products_ids']);
         }
 
         //-- Remove successfully moved Unmanaged items
-        if (isset($additionalData['source']) && $additionalData['source'] == SourceModeBlock::SOURCE_OTHER) {
+        if ($isMovedFromOther) {
             $this->deleteListingOthers();
         }
 
         //--
 
         $this->review();
+    }
+
+    /**
+     * @return bool
+     */
+    private function isMovedFromOther(Ess_M2ePro_Model_Listing $listing)
+    {
+        $additionalData = $this->getListing()->getSettings('additional_data');
+
+        return isset($additionalData['source'])
+            && $additionalData['source'] == SourceModeBlock::SOURCE_OTHER;
     }
 
     private function removeProductsWithoutProductTypes(array $addingListingProductsIds)
@@ -935,7 +953,12 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
         );
     }
 
-    protected function setProductType($productsIds, $productTypeId)
+    /**
+     * @param int[] $productsIds
+     * @param int $productTypeId
+     * @return void
+     */
+    private function setProductType($productsIds, $productTypeId)
     {
         $connWrite = Mage::getSingleton('core/resource')->getConnection('core_write');
         $tableWalmartListingProduct = Mage::helper('M2ePro/Module_Database_Structure')

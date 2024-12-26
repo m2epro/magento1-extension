@@ -224,25 +224,6 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Validator
 
     // ---------------------------------------
 
-    /**
-     * @return bool
-     */
-    protected function validateWalmartProductType()
-    {
-        if (
-            $this->getWalmartMarketplace()->isSupportedProductType()
-            && !$this->getWalmartListingProduct()->isExistsProductType()
-        ) {
-            $this->addMessage('Product Type are not set.');
-
-            return false;
-        }
-
-        return true;
-    }
-
-    // ---------------------------------------
-
     protected function validateOnlinePriceInvalidBlocked()
     {
         if ($this->getListingProduct()->isBlocked() && $this->getWalmartListingProduct()->isOnlinePriceInvalid()) {

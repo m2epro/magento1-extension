@@ -14,8 +14,8 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Configuration_Tabs extends Ess_M2ePro_Bl
     const TAB_ID_SYNCHRONIZATION        = 'synchronization';
     const TAB_ID_GLOBAL                 = 'global';
     const TAB_ID_TEMPLATE               = 'template';
-
     const TAB_ID_PRODUCT_TYPE           = 'product_type';
+    const TAB_ID_MAPPING                = 'mapping';
 
     //########################################
 
@@ -38,6 +38,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Configuration_Tabs extends Ess_M2ePro_Bl
         $this->addTab(self::TAB_ID_ACCOUNT, $this->prepareTabAccount());
         $this->addTab(self::TAB_ID_TEMPLATE, $this->prepareTabTemplate());
         $this->addTab(self::TAB_ID_PRODUCT_TYPE, $this->prepareTabProductType());
+        $this->addTab(self::TAB_ID_MAPPING, $this->prepareTabMapping());
         $this->addTab(self::TAB_ID_SYNCHRONIZATION, $this->prepareTabSynchronization());
         $this->addTab(self::TAB_ID_GLOBAL, $this->prepareTabGlobal());
 
@@ -64,23 +65,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Configuration_Tabs extends Ess_M2ePro_Bl
             )->toHtml();
         } else {
             $tab['url'] = $this->getUrl('*/adminhtml_amazon_general/index');
-        }
-
-        return $tab;
-    }
-
-    protected function prepareTabMarketplace()
-    {
-        $tab = array(
-            'label' => Mage::helper('M2ePro')->__('Marketplaces'),
-            'title' => Mage::helper('M2ePro')->__('Marketplaces')
-        );
-
-        if ($this->getData('active_tab') == self::TAB_ID_MARKETPLACE) {
-            $tab['content'] = $this->getLayout()->createBlock('M2ePro/adminhtml_amazon_marketplace_help')->toHtml();
-            $tab['content'] .= $this->getLayout()->createBlock('M2ePro/adminhtml_amazon_marketplace')->toHtml();
-        } else {
-            $tab['url'] = $this->getUrl('*/adminhtml_amazon_marketplace/index');
         }
 
         return $tab;
@@ -137,6 +121,21 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Configuration_Tabs extends Ess_M2ePro_Bl
         return $tab;
     }
 
+    private function prepareTabMapping()
+    {
+        $tab = array(
+            'label' => Mage::helper('M2ePro')->__('Mapping'),
+            'title' => Mage::helper('M2ePro')->__('Mapping')
+        );
+
+        if ($this->getData('active_tab') == self::TAB_ID_MAPPING) {
+            $tab['content'] = $this->getLayout()->createBlock('M2ePro/adminhtml_amazon_mapping_edit')->toHtml();
+        } else {
+            $tab['url'] = $this->getUrl('*/adminhtml_amazon_mapping/index');
+        }
+
+        return $tab;
+    }
 
     protected function prepareTabAccount()
     {

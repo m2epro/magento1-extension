@@ -1,0 +1,72 @@
+<?php
+
+/** @var Ess_M2ePro_Block_Adminhtml_Amazon_Mapping_Edit_Form $this */
+
+$form = $this->getForm();
+$mappedAttributes = $this->getMappedAttributes();
+
+?>
+
+<style>
+    .mapping th {
+        width: 250px;
+        padding-bottom: 20px;
+    }
+
+    .mapping .grid td {
+        padding-bottom: 15px;
+    }
+</style>
+
+<div class="block_notices_module" title="Attribute Mapping">
+    <?= $this->__('On this page, the attribute mapping demonstrates the connection between your
+         Product Type specifics and the corresponding Magento Product attributes.<br> This mapping guarantees that the
+         correct attributes are consistently associated with each Product Type specific. You can edit the saved mapping
+         if a different Magento attribute value is more appropriate for a certain Amazon Product Type specific.'); ?>
+</div>
+
+<form id="<?= $form->getId(); ?>" class="mapping" action="<?= $form->getData('action'); ?>" method="post" enctype="multipart/form-data">
+    <input name="form_key" value="<?= $this->getFormKey(); ?>" type="hidden" />
+
+    <div class="entry-edit" id="amazon_mapping_attribute" collapseable="no">
+
+        <div class="entry-edit-head">
+            <h4 class="icon-head head-edit-form fieldset-legend">
+                <?php echo Mage::helper('M2ePro')->__('Attribute Mapping'); ?>
+            </h4>
+        </div>
+
+        <div class="fieldset">
+            <div class="hor-scroll">
+                <?php if (count($mappedAttributes) > 0) : ?>
+                    <table class="grid" cellspacing="0" cellpadding="0">
+                        <thead>
+                        <tr>
+                            <th><?= $this->__('Product Type Attribute') ?></th>
+                            <th><?= $this->__('Magento Attribute') ?></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <?php foreach ($mappedAttributes as $mappedAttribute) : ?>
+                            <tr>
+                                <td><?= $mappedAttribute->getProductTypeAttributeName() ?></td>
+                                <td><?= $this->makeMagentoAttributesDropDownHtml($mappedAttribute) ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                <?php else : ?>
+                    <div style="text-align: center">
+                        <p>
+                            <?= $this->__(
+                                'Create a <a href="%s">Product Type</a> to review default attribute mappings on this page.',
+                                $this->getUrl('*/adminhtml_amazon_productTypes/index')
+                            ) ?>
+                        </p>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+
+    </div>
+</form>

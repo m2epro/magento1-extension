@@ -79,6 +79,9 @@ class Ess_M2ePro_Model_Amazon_Template_ProductType extends Ess_M2ePro_Model_Comp
         return array_unique($customAttributes);
     }
 
+    /**
+     * @return list<array{mode: int, attribute_code: string}>
+     */
     public function getCustomAttributesList()
     {
         $result = array();

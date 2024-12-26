@@ -185,15 +185,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_SynchronizationTempla
             return false;
         }
 
-        if (
-            $walmartListingProduct
-                ->getWalmartMarketplace()
-                ->isSupportedProductType()
-            && !$walmartListingProduct->isExistsProductType()
-        ) {
-            return false;
-        }
-
         $variationResource = Mage::getResourceModel('M2ePro/Listing_Product_Variation');
 
         if ($walmartSynchronizationTemplate->isRelistStatusEnabled()) {

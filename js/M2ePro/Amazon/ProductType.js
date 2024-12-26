@@ -11,6 +11,11 @@ window.AmazonProductType = Class.create(Common, {
             this.originalFormData = $('edit_form').serialize();
         }
 
+        const changedMappingsProductTypeId = this.getProductTypeIdOfChangedMappings();
+        if (changedMappingsProductTypeId) {
+            this.showUpdateProductTypeAttributeMappingPopup(changedMappingsProductTypeId)
+        }
+
         Validation.add(
             'M2ePro-general-product-type-title',
             M2ePro.translator.translate(
@@ -98,6 +103,39 @@ window.AmazonProductType = Class.create(Common, {
         }
 
         this.updateProductTypeScheme();
+    },
+
+    showUpdateProductTypeAttributeMappingPopup: function (productTypeId) {
+        Dialog.confirm(
+            M2ePro.translator.translate('Change Attribute Mapping Confirm Message'),
+            {
+                draggable: true,
+                resizable: true,
+                closable: true,
+                className: 'magento',
+                title: M2ePro.translator.translate('Update Attribute Mapping'),
+                top: 150,
+                width: 640,
+                height: 145,
+                zIndex: 2100,
+                destroyOnClose: true,
+                hideEffect: Element.hide,
+                showEffect: Element.show,
+                id: 'change-mapping',
+                ok: () => {
+                    new Ajax.Request(M2ePro.url.get('update_attribute_mappings'), {
+                        method: 'post',
+                        parameters: {
+                            product_type_id: productTypeId
+                        }
+                    });
+
+                    return true;
+                },
+                cancel: () => {},
+                onClose: () => {},
+            }
+        );
     },
 
     onChangeMarketplaceId: function () {
@@ -306,6 +344,8 @@ window.AmazonProductType = Class.create(Common, {
     },
 
     saveFormUsingAjax: function (successCallback) {
+        const self = this;
+
         new Ajax.Request(M2ePro.url.get('formSubmit'), {
             method: 'post',
             parameters: Form.serialize($('edit_form')),
@@ -316,7 +356,14 @@ window.AmazonProductType = Class.create(Common, {
                     messageObj.addError(response.message);
 
                     return;
+                } else {
+                    if (response.hasOwnProperty('has_changed_mappings_product_type_id')) {
+                        self.setProductTypeIdOfChangedMappings(
+                            response['has_changed_mappings_product_type_id']
+                        );
+                    }
                 }
+
                 if (successCallback) {
                     successCallback({
                         backUrl: response.back_url,
@@ -343,5 +390,16 @@ window.AmazonProductType = Class.create(Common, {
         if (adviceTitle) {
             adviceTitle.remove();
         }
+    },
+
+    getProductTypeIdOfChangedMappings: function () {
+        const productTypeId = LocalStorageObj.get('has_changed_mappings_product_type_id');
+        LocalStorageObj.remove('has_changed_mappings_product_type_id')
+
+        return productTypeId
+    },
+
+    setProductTypeIdOfChangedMappings: function (id) {
+        LocalStorageObj.set('has_changed_mappings_product_type_id', id)
     },
 });

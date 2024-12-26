@@ -122,25 +122,42 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_ProductType_Edit_Tabs_General
 
     protected function _beforeToHtml()
     {
-        Mage::helper('M2ePro/View')->getJsUrlsRenderer()->addControllerActions('adminhtml_amazon_productTypes');
-        Mage::helper('M2ePro/View')->getJsPhpRenderer()->addClassConstants('Ess_M2ePro_Model_Amazon_Template_ProductType');
+        /** @var Ess_M2ePro_Helper_View $viewHelper */
+        $viewHelper = Mage::helper('M2ePro/View');
 
-        Mage::helper('M2ePro/View')->getJsTranslatorRenderer()->addTranslations(
+        $viewHelper->getJsUrlsRenderer()
+                   ->addControllerActions('adminhtml_amazon_productTypes')
+                   ->add(
+                       $this->getUrl('*/adminhtml_amazon_productTypes/updateAttributeMapping'),
+                       'update_attribute_mappings'
+                   );
+
+        $viewHelper->getJsPhpRenderer()->addClassConstants('Ess_M2ePro_Model_Amazon_Template_ProductType');
+
+        $changeAttributeMappingConfirmMessage = $this->__(
+            '<p style="padding-top: 10px;">New Magento attributes have been mapped to some of the Specifics.</p>
+            <p>Do you want to save these new Attribute mappings as the default ones?</p>
+            <p>Once confirmed, the records in <strong><i>Amazon > Configuration > Mapping</i></strong>
+            will be updated accordingly.</p>'
+        );
+        $viewHelper->getJsTranslatorRenderer()->addTranslations(
             array(
                 'The specified Product Title is already used for other Product Type. Product Type Title must be unique.'
                 => Mage::helper('M2ePro')->__(
                     'The specified Product Title is already used for other Product Type. Product Type Title must be unique.
-                    ')
+                    '),
+                'Update Attribute Mapping' => $this->__('Update Attribute Mapping'),
+                'Change Attribute Mapping Confirm Message' => $changeAttributeMappingConfirmMessage,
             )
         );
 
-        Mage::helper('M2ePro/View')->getJsUrlsRenderer()->add(
+        $viewHelper->getJsUrlsRenderer()->add(
             $this->getUrl('*/adminhtml_walmart_productType/isUniqueTitle'),
             'amazon_productType/isUniqueTitle'
         );
 
         $isMarketplaceSuggested = $this->getSuggestedMarketplaceId() ? 'true' : 'false';
-        Mage::helper('M2ePro/View')->getJsRenderer()->addOnReadyJs(<<<JS
+        $viewHelper->getJsRenderer()->addOnReadyJs(<<<JS
            window.AmazonProductTypeTabsObj = new AmazonProductTypeTabs();
            window.AmazonProductTypeContentObj = new AmazonProductTypeContent();
            window.AmazonProductTypeObj = new AmazonProductType();
@@ -154,7 +171,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_ProductType_Edit_Tabs_General
 JS
         );
 
-        Mage::helper('M2ePro/View')->getCssRenderer()->add(
+        $viewHelper->getCssRenderer()->add(
             <<<CSS
 .admin__field-label {
     text-align: left;
