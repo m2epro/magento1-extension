@@ -298,7 +298,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
      */
     private function isMovedFromOther(Ess_M2ePro_Model_Listing $listing)
     {
-        $additionalData = $this->getListing()->getSettings('additional_data');
+        $additionalData = $listing->getSettings('additional_data');
 
         return isset($additionalData['source'])
             && $additionalData['source'] == SourceModeBlock::SOURCE_OTHER;

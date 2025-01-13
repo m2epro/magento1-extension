@@ -33,9 +33,15 @@ class Ess_M2ePro_Model_Walmart_ProductType_AttributeSetting_Provider
         Ess_M2ePro_Model_Magento_Product $product
     ) {
         $result = array();
+        /** @var \Ess_M2ePro_Helper_Module_Renderer_Description $descriptionRender */
+        $descriptionRender = Mage::helper('M2ePro/Module_Renderer_Description');
         foreach ($attributeSetting->getValues() as $settingValue) {
             if ($settingValue->isCustom()) {
-                $result[] = $settingValue->getValue();
+                $result[] = $descriptionRender->parseWithoutMagentoTemplate(
+                    $settingValue->getValue(),
+                    $product
+                );
+
                 continue;
             }
 

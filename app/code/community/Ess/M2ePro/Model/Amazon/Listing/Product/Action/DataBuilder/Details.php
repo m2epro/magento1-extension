@@ -326,7 +326,9 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Details
 
         foreach ($fieldSpecifications as $item) {
             if ($item['mode'] === Ess_M2ePro_Model_Amazon_Template_ProductType::FIELD_CUSTOM_VALUE) {
-                $resultData[] = $this->replaceAttributesInValue($magentoProduct, $item['value']);
+                /** @var \Ess_M2ePro_Helper_Module_Renderer_Description $renderer */
+                $renderer = Mage::helper('M2ePro/Module_Renderer_Description');
+                $resultData[] = $renderer->parseWithoutMagentoTemplate($item['value'], $magentoProduct);
             } else {
                 $resultData[] = $magentoProduct->getAttributeValue($item['attribute_code'], false);
             }

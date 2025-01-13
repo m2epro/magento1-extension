@@ -571,7 +571,6 @@ class Ess_M2ePro_Adminhtml_Amazon_ListingController
                 $tag = '/qty/';
             } elseif ($listingProduct->getChildObject()->getVariationManager()->isRelationParentType()) {
                 $configurator->disableAll();
-                $configurator->allowImages();
                 $configurator->allowDetails();
                 $tag = '/details/';
             }

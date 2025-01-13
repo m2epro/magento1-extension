@@ -31,9 +31,7 @@ class Ess_M2ePro_Helper_Module_Renderer_Description extends Mage_Core_Helper_Abs
         );
         //--
 
-        $text = $this->insertAttributes($text, $magentoProduct);
-        $text = $this->insertImages($text, $magentoProduct);
-        $text = $this->insertMediaGalleries($text, $magentoProduct);
+        $this->parseWithoutMagentoTemplate($text, $magentoProduct);
 
         // the CMS static block replacement i.e. {{media url=’image.jpg’}}
         $filter = new Mage_Core_Model_Email_Template_Filter();
@@ -44,6 +42,15 @@ class Ess_M2ePro_Helper_Module_Renderer_Description extends Mage_Core_Helper_Abs
         //-- Stop store emulation process
         $appEmulation->stopEnvironmentEmulation($initialEnvironmentInfo);
         //--
+
+        return $text;
+    }
+
+    public function parseWithoutMagentoTemplate($text, Ess_M2ePro_Model_Magento_Product $magentoProduct)
+    {
+        $text = $this->insertAttributes($text, $magentoProduct);
+        $text = $this->insertImages($text, $magentoProduct);
+        $text = $this->insertMediaGalleries($text, $magentoProduct);
 
         return $text;
     }
@@ -132,7 +139,7 @@ class Ess_M2ePro_Helper_Module_Renderer_Description extends Mage_Core_Helper_Abs
                 'linked_mode'  => $realImageAttributes[3],
                 'watermark'    => $realImageAttributes[4],
                 'src'          => $tempImageLink,
-                'index_number' => $key
+                'index_number' => $key,
             );
             $search[] = $match;
             $replace[] = ($tempImageLink == '')
@@ -204,7 +211,7 @@ class Ess_M2ePro_Helper_Module_Renderer_Description extends Mage_Core_Helper_Abs
                 'gallery_hint' => trim($realMediaGalleryAttributes[6], '"'),
                 'watermark'    => (int)$realMediaGalleryAttributes[7],
                 'images'       => $galleryImagesLinks,
-                'index_number' => $key
+                'index_number' => $key,
             );
 
             $blockObj = Mage::getSingleton('core/layout')->createBlock(
