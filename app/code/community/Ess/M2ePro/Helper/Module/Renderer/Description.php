@@ -31,7 +31,7 @@ class Ess_M2ePro_Helper_Module_Renderer_Description extends Mage_Core_Helper_Abs
         );
         //--
 
-        $this->parseWithoutMagentoTemplate($text, $magentoProduct);
+        $text = $this->parseWithoutMagentoTemplate($text, $magentoProduct);
 
         // the CMS static block replacement i.e. {{media url=’image.jpg’}}
         $filter = new Mage_Core_Model_Email_Template_Filter();
