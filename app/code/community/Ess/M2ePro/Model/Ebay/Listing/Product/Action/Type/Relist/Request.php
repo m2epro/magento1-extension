@@ -47,7 +47,8 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Relist_Request
             $this->getPriceData(),
             $this->getCategoriesData(),
             $this->getPartsData(),
-            $this->getVariationsData()
+            $this->getVariationsData(),
+            $this->getConditionData()
         );
 
         if ($this->getConfigurator()->isGeneralAllowed()) {

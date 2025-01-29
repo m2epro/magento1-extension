@@ -13,7 +13,7 @@ class Ess_M2ePro_Block_Adminhtml_Wizard_AmazonMigrationToProductTypes_Content
 
     public function getSupportArticleUrl()
     {
-        return 'https://help.m2epro.com/support/solutions/articles/9000225982';
+        return 'https://docs-m1.m2epro.com/latest-amazon-updates-in-m2e-pro-v6-71-0-and-higher-for-magento-1-users';
     }
 
     protected function _toHtml()

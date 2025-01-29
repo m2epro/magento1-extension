@@ -4,6 +4,16 @@
 
 ?>
 
+<div class="content-header">
+    <table cellspacing="0">
+        <tbody>
+        <tr>
+            <td><h3 class="icon-head head-empty"><?= $this->__('M2E Pro Amazon Integration Updates') ?></h3></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
 <div class="wizard-note">
     <div>
         <?php
@@ -14,18 +24,18 @@
             and listing under new ASINs.<br><br>
 
             Important! Before you continue managing your Amazon business, read
-            <a target="_blank" href="%url%">the article with key recommendations</a> to adjust your workflow
+            <a target="_blank" href="%s">the article with key recommendations</a> to adjust your workflow
             with new ASINs.<br><br>',
             $this->getSupportArticleUrl()
         );
 
         ?>
     </div>
-
-    <button title="<?php echo $this->__('Proceed'); ?>"
-            type="button"
-            class="action-default scalable action primary"
-            onclick="WizardAmazonMigrationToProductTypesObj.proceed()">
-        <span><?php echo $this->__('Proceed'); ?></span>
-    </button>
 </div>
+
+<button title="<?php echo $this->__('Proceed'); ?>"
+        type="button"
+        class="action-default scalable action primary"
+        onclick="WizardAmazonMigrationToProductTypesObj.proceed()">
+    <span><?php echo $this->__('Proceed'); ?></span>
+</button>

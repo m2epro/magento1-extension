@@ -585,6 +585,16 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Request
         return $data;
     }
 
+    /**
+     * @return array
+     */
+    public function getConditionData()
+    {
+        $dataBuilder = $this->getDataBuilder('condition');
+
+        return $dataBuilder->getData();
+    }
+
     //########################################
 
     /**

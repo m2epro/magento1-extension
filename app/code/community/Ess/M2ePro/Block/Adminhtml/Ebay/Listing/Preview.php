@@ -577,8 +577,12 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Preview extends Mage_Adminhtml_Blo
                 Mage::helper('M2ePro')->__('Seller Refurbished, Re-manufactured'),
             Ess_M2ePro_Model_Ebay_Template_Description::CONDITION_EBAY_LIKE_NEW =>
                 Mage::helper('M2ePro')->__('Like New'),
-            Ess_M2ePro_Model_Ebay_Template_Description::CONDITION_EBAY_USED                  =>
-                Mage::helper('M2ePro')->__('Used'),
+            Ess_M2ePro_Model_Ebay_Template_Description::CONDITION_EBAY_PRE_OWNED_EXCELLENT   =>
+                Mage::helper('M2ePro')->__('Excellent (Pre-owned)'),
+            Ess_M2ePro_Model_Ebay_Template_Description::CONDITION_EBAY_USED_EXCELLENT        =>
+                Mage::helper('M2ePro')->__('Good (Pre-owned)'),
+            Ess_M2ePro_Model_Ebay_Template_Description::CONDITION_EBAY_PRE_OWNED_FAIR        =>
+                Mage::helper('M2ePro')->__('Fair (Pre-owned)'),
             Ess_M2ePro_Model_Ebay_Template_Description::CONDITION_EBAY_VERY_GOOD             =>
                 Mage::helper('M2ePro')->__('Very Good'),
             Ess_M2ePro_Model_Ebay_Template_Description::CONDITION_EBAY_GOOD                  =>

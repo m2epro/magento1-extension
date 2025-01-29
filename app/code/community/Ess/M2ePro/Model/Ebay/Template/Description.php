@@ -35,7 +35,9 @@ class Ess_M2ePro_Model_Ebay_Template_Description extends Ess_M2ePro_Model_Compon
     const CONDITION_EBAY_GOOD_REFURBISHED           = 2030;
     const CONDITION_EBAY_SELLER_REFURBISHED         = 2500;
     const CONDITION_EBAY_LIKE_NEW                   = 2750;
-    const CONDITION_EBAY_USED                       = 3000;
+    const CONDITION_EBAY_PRE_OWNED_EXCELLENT        = 2990;
+    const CONDITION_EBAY_USED_EXCELLENT             = 3000;
+    const CONDITION_EBAY_PRE_OWNED_FAIR             = 3010;
     const CONDITION_EBAY_VERY_GOOD                  = 4000;
     const CONDITION_EBAY_GOOD                       = 5000;
     const CONDITION_EBAY_ACCEPTABLE                 = 6000;

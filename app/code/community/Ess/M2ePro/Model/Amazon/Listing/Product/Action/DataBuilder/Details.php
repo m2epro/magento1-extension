@@ -106,21 +106,6 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Details
                 continue;
             }
 
-            $specificKeys = array(
-                Ess_M2ePro_Helper_Component_Amazon_ProductType::SPECIFIC_KEY_NAME,
-                Ess_M2ePro_Helper_Component_Amazon_ProductType::SPECIFIC_KEY_DESCRIPTION,
-                Ess_M2ePro_Helper_Component_Amazon_ProductType::SPECIFIC_KEY_BULLET_POINT,
-            );
-
-            if (in_array($name, $specificKeys)) {
-                $fieldData = $this->prepareFieldValue($values);
-
-                if ($fieldData !== null && $fieldData !== '') {
-                    $result[$name] = $fieldData;
-                }
-                continue;
-            }
-
             $finalValues = array();
             foreach ($values as $value) {
                 if ($finalValue = $this->buildSingleSpecificData($value)) {
@@ -143,16 +128,17 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Details
      */
     private function buildSingleSpecificData(array $setting)
     {
+        $magentoProduct = $this->getAmazonListingProduct()->getActualMagentoProduct();
+        if (!$magentoProduct->exists()) {
+            return null;
+        }
+
         switch ((int)$setting['mode']) {
             case Ess_M2ePro_Model_Amazon_Template_ProductType::FIELD_CUSTOM_VALUE:
-                return $setting['value'];
+                /** @var \Ess_M2ePro_Helper_Module_Renderer_Description $renderer */
+                $renderer = Mage::helper('M2ePro/Module_Renderer_Description');
+                return $renderer->parseWithoutMagentoTemplate($setting['value'], $magentoProduct);
             case Ess_M2ePro_Model_Amazon_Template_ProductType::FIELD_CUSTOM_ATTRIBUTE:
-                $magentoProduct = $this->getAmazonListingProduct()
-                    ->getActualMagentoProduct();
-                if (!$magentoProduct->exists()) {
-                    return null;
-                }
-
                 $attributeValue = $magentoProduct->getAttributeValue($setting['attribute_code'], false);
 
                 if (!empty($setting['images_limit'])) {
@@ -312,48 +298,5 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Details
         }
 
         return array('list_price' => $regularListPrice);
-    }
-
-    protected function prepareFieldValue(array $fieldSpecifications)
-    {
-        $magentoProduct = $this->getAmazonListingProduct()
-            ->getActualMagentoProduct();
-        if (!$magentoProduct->exists()) {
-            return null;
-        }
-
-        $resultData = array();
-
-        foreach ($fieldSpecifications as $item) {
-            if ($item['mode'] === Ess_M2ePro_Model_Amazon_Template_ProductType::FIELD_CUSTOM_VALUE) {
-                /** @var \Ess_M2ePro_Helper_Module_Renderer_Description $renderer */
-                $renderer = Mage::helper('M2ePro/Module_Renderer_Description');
-                $resultData[] = $renderer->parseWithoutMagentoTemplate($item['value'], $magentoProduct);
-            } else {
-                $resultData[] = $magentoProduct->getAttributeValue($item['attribute_code'], false);
-            }
-        }
-
-        if (count($resultData) === 1) {
-            return reset($resultData);
-        }
-
-        return $resultData;
-    }
-
-    private function replaceAttributesInValue($magentoProduct, $value)
-    {
-        preg_match_all("/#([a-z_0-9]+?)#/i", $value, $matches);
-
-        if (empty($matches[0])) {
-            return $value;
-        }
-
-        foreach ($matches[1] as $attributeCode) {
-            $attributeValue = $magentoProduct->getAttributeValue($attributeCode);
-            $value = str_replace("#$attributeCode#", $attributeValue, $value);
-        }
-
-        return $value;
     }
 }
