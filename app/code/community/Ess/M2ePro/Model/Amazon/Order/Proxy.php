@@ -76,32 +76,6 @@ class Ess_M2ePro_Model_Amazon_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
 
     //########################################
 
-    public function getCustomer()
-    {
-        $customer = parent::getCustomer();
-
-        $amazonAccount = $this->_order->getParentObject()->getAccount()->getChildObject();
-
-        $buyerCompanyName = $this->getBuyerCompanyName();
-        if (
-            !empty($buyerCompanyName)
-            && $amazonAccount->isMagentoOrdersCustomerNew()
-        ) {
-            foreach ($customer->getAddresses() as $address) {
-                if (!$address->isDefaultBilling()) {
-                    continue;
-                }
-
-                $address->setCompany($buyerCompanyName);
-                $address->save();
-            }
-        }
-
-        return $customer;
-    }
-
-    // ----------------------------------------
-
     /**
      * @return array
      */
