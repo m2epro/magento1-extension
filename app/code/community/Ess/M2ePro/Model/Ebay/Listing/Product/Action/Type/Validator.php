@@ -349,7 +349,9 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Validator
             foreach ($variation->getOptions(true) as $option) {
                 /** @var Ess_M2ePro_Model_Listing_Product_Variation_Option $option */
 
-                $uniqueAttributesValues[$option->getAttribute()][$option->getOption()] = true;
+                if (!$ebayVariation->isDeleted()) {
+                    $uniqueAttributesValues[$option->getAttribute()][$option->getOption()] = true;
+                }
 
                 // Max 5 pair attribute-option:
                 // Color: Blue, Size: XL, ...

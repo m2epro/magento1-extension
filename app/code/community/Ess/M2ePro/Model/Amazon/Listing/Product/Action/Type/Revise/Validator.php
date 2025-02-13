@@ -84,7 +84,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Revise_Validator
             return false;
         }
 
-        if (!$this->validateQty()) {
+        if (!$this->validateQuantity()) {
             return false;
         }
 
@@ -93,6 +93,18 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Revise_Validator
         }
 
         return true;
+    }
+
+    /**
+     * @return bool
+     */
+    private function validateQuantity()
+    {
+        if ($this->getListingProduct()->isBlocked()) {
+            return $this->forceValidateQty();
+        }
+
+        return $this->validateQty();
     }
 
     //########################################

@@ -40,7 +40,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit_Tabs_Order_ExcludedCountrie
     {
         return array_chunk(
             Mage::helper('M2ePro/Component_Amazon')->getEEACountriesList(),
-            6,
+            7,
             true
         );
     }

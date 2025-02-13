@@ -267,6 +267,14 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Validator
             return true;
         }
 
+        return $this->forceValidateQty();
+    }
+
+    /**
+     * @return bool
+     */
+    protected function forceValidateQty()
+    {
         $qty = $this->getQty();
         $clearQty = $this->getClearQty();
 

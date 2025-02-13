@@ -220,6 +220,7 @@ class Ess_M2ePro_Helper_Component_Amazon extends Mage_Core_Helper_Abstract
             'IT', 'LV', 'LI', 'LT', 'LU',
             'MT', 'NL', 'NO', 'PL', 'PT',
             'RO', 'SK', 'SI', 'ES', 'SE',
+            'CH',
         );
     }
 
