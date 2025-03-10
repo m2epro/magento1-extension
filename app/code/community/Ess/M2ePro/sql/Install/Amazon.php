@@ -439,6 +439,7 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_order')}` (
   `purchase_create_date` DATETIME DEFAULT NULL,
   `merchant_fulfillment_data` TEXT NULL DEFAULT NULL,
   `merchant_fulfillment_label` BLOB NULL DEFAULT NULL,
+  `replaced_amazon_order_id` VARCHAR(255) NULL DEFAULT NULL,
   PRIMARY KEY (`order_id`),
   INDEX `amazon_order_id` (`amazon_order_id`),
   INDEX `seller_order_id` (`seller_order_id`),
@@ -450,7 +451,8 @@ CREATE TABLE `{$this->_installer->getTable('m2epro_amazon_order')}` (
   INDEX `buyer_name` (`buyer_name`),
   INDEX `shipping_date_to` (`shipping_date_to`),
   INDEX `paid_amount` (`paid_amount`),
-  INDEX `purchase_create_date` (`purchase_create_date`)
+  INDEX `purchase_create_date` (`purchase_create_date`),
+  INDEX `replaced_amazon_order_id` (`replaced_amazon_order_id`)
 )
 ENGINE = INNODB
 CHARACTER SET utf8

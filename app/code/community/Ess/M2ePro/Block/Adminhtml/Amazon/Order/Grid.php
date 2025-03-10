@@ -389,8 +389,17 @@ HTML;
  src="{$this->getSkinUrl('M2ePro/images/view_amazon.png')}" alt="{$helper->__('View on Amazon')}" /></a>
 HTML;
 
+        $isReplacementOrder = '';
+        if ($row->getChildObject()->getReplacedAmazonOrderId()) {
+            $isReplacementOrder = sprintf(
+                '<div class="label-replacement-order">%s</div>',
+                $helper->__('Replacement')
+            );
+        }
+
         $returnString .= $primeImageHtml;
         $returnString .= $businessImageHtml;
+        $returnString .= $isReplacementOrder;
 
         /** @var $notes Ess_M2ePro_Model_Order_Note[] */
         $notes = $this->_notesCollection->getItemsByColumnValue('order_id', $row->getData('id'));

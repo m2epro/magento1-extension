@@ -159,6 +159,8 @@ class Ess_M2ePro_Model_Amazon_Connector_Orders_Get_Items extends Ess_M2ePro_Mode
                 $order['buyer_email'] = trim($orderData['buyer']['email']);
 
                 $order['is_replacement'] = (int)$orderData['is_replacement'];
+                $order['replaced_amazon_order_id'] = empty($orderData['replaced_order_id']) ? null :
+                    trim((string)$orderData['replaced_order_id']);
 
                 $order['qty_shipped'] = (int)$orderData['qty']['shipped'];
                 $order['qty_unshipped'] = (int)$orderData['qty']['unshipped'];

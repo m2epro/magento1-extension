@@ -17,6 +17,7 @@ class Ess_M2ePro_Model_Amazon_Order_Builder extends Mage_Core_Model_Abstract
     const UPDATE_STATUS = 'status';
     const UPDATE_EMAIL   = 'email';
     const UPDATE_B2B_VAT = 'b2b_vat';
+    const UPDATE_REPLACEMENT_ORDER_ID = 'replacement_order_id';
 
     /** @var $_helper Ess_M2ePro_Model_Amazon_Order_Helper */
     protected $_helper = null;
@@ -66,6 +67,7 @@ class Ess_M2ePro_Model_Amazon_Order_Builder extends Mage_Core_Model_Abstract
         $this->setData('is_prime', $data['is_prime']);
         $this->setData('is_business', $data['is_business']);
         $this->setData('is_replacement', $data['is_replacement']);
+        $this->setData('replaced_amazon_order_id', $data['replaced_amazon_order_id']);
 
         $this->setData('purchase_update_date', $data['purchase_update_date']);
         $this->setData('purchase_create_date', $data['purchase_create_date']);
@@ -407,6 +409,17 @@ class Ess_M2ePro_Model_Amazon_Order_Builder extends Mage_Core_Model_Abstract
             }
         }
 
+        $replacedAmazonOrderId = $this->getData('replaced_amazon_order_id');
+        if (
+            $this->getData('is_replacement') &&
+            $replacedAmazonOrderId &&
+            ($this->isNew() || $this->hasUpdate(self::UPDATE_REPLACEMENT_ORDER_ID)) &&
+            ($originalOrder = $this->findOriginalOrder($replacedAmazonOrderId))
+        ) {
+            $this->createReplacementOrderNote($replacedAmazonOrderId);
+            $this->createOriginalOrderLog($originalOrder);
+        }
+
         if ($this->getData('status') == Ess_M2ePro_Model_Amazon_Order::STATUS_CANCELLATION_REQUESTED) {
             if ($reason = $this->getData('buyer_cancel_reason')) {
                 $noteText = 'A buyer requested order cancellation. Reason: ' .
@@ -422,6 +435,10 @@ class Ess_M2ePro_Model_Amazon_Order_Builder extends Mage_Core_Model_Abstract
             $noteModel->save();
         }
 
+        if ($this->isNew()) {
+            $this->createNoteBuyerCustomizedItem($this->_items);
+        }
+
         $this->_order->setAccount($this->_account);
 
         if ($this->_order->getChildObject()->isCanceled() && $this->_order->getReserve()->isPlaced()) {
@@ -429,7 +446,97 @@ class Ess_M2ePro_Model_Amazon_Order_Builder extends Mage_Core_Model_Abstract
         }
     }
 
+    private function createNoteBuyerCustomizedItem(array $orderItemsData)
+    {
+        foreach ($orderItemsData as $item) {
+            if (empty($item['buyer_customized_info'])) {
+                continue;
+            }
+            /** @var Ess_M2ePro_Helper_Data $dataHelper */
+            $dataHelper = Mage::helper('M2ePro');
+
+            $noteText = $dataHelper->__(
+                "Customization for SKU %sku: <a href='%customized_link'>Link</a><br>",
+                array(
+                    'sku' => $item['sku'],
+                    'customized_link' => $item['buyer_customized_info'],
+                )
+            );
+
+            /** @var Ess_M2ePro_Model_Order_Note $noteModel */
+            $noteModel = Mage::getModel('M2ePro/Order_Note');
+            $noteModel->setData('note', $noteText);
+            $noteModel->setData('order_id', $this->_order->getId());
+            $noteModel->save();
+        }
+    }
+
     //########################################
+
+    /**
+     * @param string $replacedAmazonOrderId
+     * @return Ess_M2ePro_Model_Order|null
+     */
+    private function findOriginalOrder($replacedAmazonOrderId)
+    {
+        /** @var Ess_M2ePro_Model_Resource_Amazon_Order_Collection $collection */
+        $collection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Order');
+
+        $existOrders = $collection
+            ->addFieldToFilter('account_id', $this->_account->getId())
+            ->addFieldToFilter('amazon_order_id', $replacedAmazonOrderId)
+            ->setOrder('id', Varien_Data_Collection::SORT_ORDER_ASC)
+            ->getItems();
+
+        if (!empty($existOrders)) {
+            return reset($existOrders);
+        }
+
+        return null;
+    }
+
+    /**
+     * @param string $replacedAmazonOrderId
+     * @return void
+     * @throws \Exception
+     */
+    private function createReplacementOrderNote($replacedAmazonOrderId)
+    {
+        /** @var Ess_M2ePro_Helper_Data $dataHelper */
+        $dataHelper = Mage::helper('M2ePro');
+        $noteText = $dataHelper->__('Original order ID %1%', $replacedAmazonOrderId);
+
+        $noteModel = Mage::getModel('M2ePro/Order_Note');
+        $noteModel->setData('note', $noteText);
+        $noteModel->setData('order_id', $this->_order->getId());
+        $noteModel->save();
+    }
+
+    /**
+     * @param Ess_M2ePro_Model_Order $originalOrder
+     * @return void
+     */
+    private function createOriginalOrderLog($originalOrder)
+    {
+        /** @var Ess_M2ePro_Helper_Data $dataHelper */
+        $dataHelper = Mage::helper('M2ePro');
+
+        $message = $dataHelper->__(
+            "Replacement order ID %1% was requested",
+            $this->getData('amazon_order_id')
+        );
+        $originalOrder->addInfoLog($message);
+    }
+
+    private function hasReplacementOrderIdUpdate()
+    {
+        if (!$this->isUpdated()) {
+            return false;
+        }
+
+        return $this->_order->getChildObject()
+                ->getReplacedAmazonOrderId() !== $this->getData('replaced_amazon_order_id');
+    }
 
     protected function checkUpdates()
     {
@@ -443,6 +550,10 @@ class Ess_M2ePro_Model_Amazon_Order_Builder extends Mage_Core_Model_Abstract
 
         if ($this->hasUpdatedVat()) {
             $this->_updates[] = self::UPDATE_B2B_VAT;
+        }
+
+        if ($this->hasReplacementOrderIdUpdate()) {
+            $this->_updates[] = self::UPDATE_REPLACEMENT_ORDER_ID;
         }
     }
 

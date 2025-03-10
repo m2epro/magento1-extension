@@ -318,8 +318,11 @@ class Ess_M2ePro_Adminhtml_Amazon_ProductTypesController
      */
     private function getTimezoneShift()
     {
-        $dateLocal = new DateTime(Mage::helper('M2ePro')->gmtDateToTimezone('2024-01-01'));
-        $timestampUTC = Mage::helper('M2ePro')->timezoneDateToGmt($dateLocal->format('Y-m-d H:i:s'), true);
+        /** @var Ess_M2ePro_Helper_Data $dataHelper */
+        $dataHelper = Mage::helper('M2ePro');
+
+        $dateLocal = new DateTime($dataHelper->gmtDateToTimezone('2024-01-01'));
+        $timestampUTC = $dataHelper->timezoneDateToGmt($dateLocal->format('Y-m-d H:i:s'), true);
 
         return $dateLocal->getTimestamp() - $timestampUTC;
     }

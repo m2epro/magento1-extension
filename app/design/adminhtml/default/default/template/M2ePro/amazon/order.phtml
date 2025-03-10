@@ -55,6 +55,11 @@ if (empty($currency)) {
                 <?php if ($this->order->getChildObject()->isBusiness()): ?>
                     <img width="70px" src="<?php echo $this->getSkinUrl('M2ePro/images/amazon-business.png'); ?>" />
                 <?php endif; ?>
+                <?php if ($this->order->getChildObject()->getReplacedAmazonOrderId()) : ?>
+                    &nbsp;<div class="label-replacement-order">
+                        <?php echo Mage::helper('M2ePro')->__('Replacement');?>
+                    </div>
+                <?php endif; ?>
             </h4>
             <div style="float: right;">
                 <?php $url = Mage::helper('M2ePro/Component_Amazon')->getOrderUrl($this->order->getChildObject()->getAmazonOrderId(), $this->order->getMarketplaceId()); ?>

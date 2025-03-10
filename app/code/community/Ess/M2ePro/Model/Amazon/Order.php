@@ -1136,6 +1136,16 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
         return true;
     }
 
+    public function getReplacedAmazonOrderId()
+    {
+        return $this->getData('replaced_amazon_order_id');
+    }
+
+    public function setReplacedAmazonOrderId($value)
+    {
+        $this->setData('replaced_amazon_order_id', $value);
+    }
+
     //########################################
 
     public function deleteInstance()

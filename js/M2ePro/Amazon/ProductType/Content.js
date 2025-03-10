@@ -9,6 +9,8 @@ window.AmazonProductTypeContent = Class.create(Common, {
     groups: {},
     settings: {},
     specificsDefaultSettings: {},
+    mainImageSpecifics: [],
+    otherImagesSpecifics: [],
     arraySize: {},
     htmlIdToScheme: {},
     controlElementInit: {},
@@ -64,10 +66,14 @@ window.AmazonProductTypeContent = Class.create(Common, {
         groups,
         timezoneShift,
         specificsDefaultSettings,
+        mainImageSpecifics,
+        otherImagesSpecifics,
         recommendedBrowseNodeLink
     ) {
         this.settings = settings;
         this.specificsDefaultSettings = specificsDefaultSettings;
+        this.mainImageSpecifics = mainImageSpecifics;
+        this.otherImagesSpecifics = otherImagesSpecifics;
         this.initGroups(groups);
         this.timezoneShift = timezoneShift;
 
@@ -275,6 +281,19 @@ window.AmazonProductTypeContent = Class.create(Common, {
         }
 
         var additionalAttributeOptions = '';
+
+        const isMainImageField = this.mainImageSpecifics
+            .includes(htmlId.slice(0, -2));
+        if (isMainImageField) {
+            additionalAttributeOptions = this.templates['image_option'];
+        }
+
+        const isOtherImagesField = this.otherImagesSpecifics
+            .includes(htmlId.slice(0, -2));
+        if (isOtherImagesField) {
+            additionalAttributeOptions = this.templates['images_optgroup'];
+        }
+
         const html = this.templates.field
             .replaceAll('%id%', htmlId)
             .replaceAll('%formId%', formId)
@@ -507,8 +526,14 @@ window.AmazonProductTypeContent = Class.create(Common, {
             if (itemData['mode'] == this.constFieldCustomAttribute) {
                 modeElement.value = itemData['mode'];
                 attributeElement.style.display = 'block';
-                attributeElement.value = itemData['attribute_code'];
                 customValueContainer.style.display = 'block';
+
+                var isOtherImagesField = this.otherImagesSpecifics.includes(htmlId.slice(0, -2));
+                if (isOtherImagesField && itemData['images_limit'] > 0) {
+                    attributeElement.value = itemData['images_limit'];
+                } else {
+                    attributeElement.value = itemData['attribute_code'];
+                }
             } else if (itemData['mode'] == this.constFieldCustomValue) {
                 if (itemScheme['format'] === 'date-time') {
                     const date = new Date(itemData['value']);
