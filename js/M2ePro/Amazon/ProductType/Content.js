@@ -250,9 +250,9 @@ window.AmazonProductTypeContent = Class.create(Common, {
         path.push(scheme['name']);
 
         var addedElements = 0;
-        const settings = this.getSettings(path);
-        if (settings !== null && settings[0] !== undefined) {
-            for (var i = 0; i < settings.length; i++) {
+        const settings = this.findSettings(path, scheme);
+        if (settings !== null) {
+            for (let i = 0; i < settings.length; i++) {
                 this.renderSimpleFieldValue(insertCallback, container, path, scheme, settings[i], isParentRequired);
                 addedElements++;
             }
@@ -262,6 +262,29 @@ window.AmazonProductTypeContent = Class.create(Common, {
         }
 
         return [this.getHtmlId(path), addedElements];
+    },
+
+    findSettings: function (path, scheme)
+    {
+        const htmlId = this.getHtmlId(path);
+        const isValid = this.settings[htmlId] !== undefined
+            && typeof this.settings[htmlId] === 'object'
+            && this.settings[htmlId][0] !== undefined;
+
+        if (!isValid) {
+            return null;
+        }
+
+        const settings = this.settings[htmlId];
+        const maxItems = scheme['validation_rules']['max_items'] !== undefined
+            ? scheme['validation_rules']['max_items']
+            : 0;
+
+        if (maxItems !== 0 && settings.length !== maxItems) {
+            settings.splice(maxItems);
+        }
+
+        return settings;
     },
 
     renderSimpleFieldValue: function (insertCallback, container, path, scheme, settings, isParentRequired) {
@@ -349,12 +372,6 @@ window.AmazonProductTypeContent = Class.create(Common, {
         for (var i = 0; i < field['children'].length; i++) {
             this.renderFieldGeneral(insertCallback, container, field['children'][i], path, required);
         }
-    },
-
-    getSettings: function (path) {
-        const htmlId = this.getHtmlId(path);
-        return (this.settings[htmlId] !== undefined && typeof this.settings[htmlId] === 'object') ?
-            this.settings[htmlId] : null;
     },
 
     getArraySize: function (htmlId) {

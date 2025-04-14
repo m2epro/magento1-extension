@@ -18,6 +18,7 @@ class Ess_M2ePro_Adminhtml_Amazon_ProductTypesController
             ->addJs('M2ePro/Plugin/ProgressBar.js')
             ->addCss('M2ePro/css/Plugin/ProgressBar.css')
             ->addCss('M2ePro/css/Amazon/ProductType.css')
+            ->addJs('M2ePro/Amazon/ProductType/Validator/Popup.js')
             ->addJs('M2ePro/Plugin/AreaWrapper.js')
             ->addCss('M2ePro/css/Plugin/AreaWrapper.css')
             ->addJs('M2ePro/Amazon/Marketplace/Sync.js')
@@ -105,6 +106,26 @@ class Ess_M2ePro_Adminhtml_Amazon_ProductTypesController
                 ''
             )
         );
+
+        $validationPopupBlock =  $this->getLayout()->createBlock(
+            'M2ePro/adminhtml_amazon_listing_product_add_validateProductTypes_popup',
+            ''
+        );
+
+        /**
+         * @var $registryManager Ess_M2ePro_Model_Registry_Manager
+         */
+        $registryManager = Mage::getModel('M2ePro/Registry_Manager');
+        $registryKey = "/amazon/product_type/validation/validate_by_id/$productTypeId/";
+        if ($registryManager->getValue($registryKey)) {
+            $registryManager->deleteValue($registryKey);
+            $validationPopupBlock->setData(
+                'validate_product_type_function',
+                "ProductTypeValidatorPopup.openForProductType($productTypeId);"
+            );
+        }
+
+        $this->_addContent($validationPopupBlock);
 
         $this->renderLayout();
     }
@@ -471,6 +492,12 @@ class Ess_M2ePro_Adminhtml_Amazon_ProductTypesController
                 Mage::helper('M2ePro')->jsonEncode($responseContent)
             );
         }
+
+        /**
+         * @var $registryManager Ess_M2ePro_Model_Registry_Manager
+         */
+        $registryManager = Mage::getModel('M2ePro/Registry_Manager');
+        $registryManager->setValue("/amazon/product_type/validation/validate_by_id/$id/", true);
 
         return $this->_redirect($backUrl);
     }

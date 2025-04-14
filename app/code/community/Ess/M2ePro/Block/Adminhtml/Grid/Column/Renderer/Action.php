@@ -24,6 +24,10 @@ class Ess_M2ePro_Block_Adminhtml_Grid_Column_Renderer_Action
             if (array_key_exists('only_remap_product', $value) && $value['only_remap_product']) {
                 $additionalData = (array)Mage::helper('M2ePro')->jsonDecode($row->getData('additional_data'));
 
+                if ($this->isNeedShowRemapActionForProduct($row)) {
+                    continue;
+                }
+
                 if (!isset($additionalData[Listing_Product::MOVING_LISTING_OTHER_SOURCE_KEY])) {
                     unset($actions[$columnName]);
                 }
@@ -132,4 +136,31 @@ HTML;
     }
 
     //########################################
+
+    private function isNeedShowRemapActionForProduct(Varien_Object $row)
+    {
+        $component = $row->getData('component_mode');
+        if (
+            $component !== Ess_M2ePro_Helper_Component_Amazon::NICK
+            && $component !== Ess_M2ePro_Helper_Component_Walmart::NICK
+        ) {
+            return false;
+        }
+
+        if (
+            $row->getData('is_general_id_owner')
+            == Ess_M2ePro_Model_Amazon_Listing_Product::IS_GENERAL_ID_OWNER_YES
+        ) {
+            return false;
+        }
+
+        if (
+            $row->hasData('is_variation_product')
+            && $row->getData('is_variation_product') != 0
+        ) {
+            return false;
+        }
+
+        return true;
+    }
 }

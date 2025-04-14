@@ -21,7 +21,7 @@ class Ess_M2ePro_Model_Amazon_Marketplace_Issue_ProductTypeOutOfDate
         $tempMessage = Mage::helper('M2ePro')->__(
             'Data for some Product Types was changed on Amazon.
  To avoid errors and have access to the latest updates,
-please use the <b>Refresh Amazon Data</b> button in Amazon > <a href="%url" target="_blank">Product Types</a>
+please use the <b>Refresh Amazon Data</b> button in Amazon > <a href="%s" target="_blank">Product Types</a>
 and re-save the Product Types you have configured.',
             Mage::helper('adminhtml')->getUrl('M2ePro/adminhtml_amazon_productTypes/index')
         );

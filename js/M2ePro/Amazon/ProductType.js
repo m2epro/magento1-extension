@@ -299,11 +299,17 @@ window.AmazonProductType = Class.create(Common, {
         if (isNeedConfirm) {
             this.confirm(isNeedConfirm, function () {
                 self.isPageLeavingSafe = true;
-                self.saveFormUsingAjax((response) => setLocation(response.backUrl))
+                ProductTypeValidatorPopup.closePopupCallback = function (response) {
+                    setLocation(response.back_url);
+                };
+                self.saveFormUsingAjax()
             });
         } else {
             self.isPageLeavingSafe = true;
-            self.saveFormUsingAjax((response) => setLocation(response.backUrl))
+            ProductTypeValidatorPopup.closePopupCallback = function (response) {
+                setLocation(response.back_url);
+            };
+            self.saveFormUsingAjax()
         }
     },
 
@@ -316,14 +322,20 @@ window.AmazonProductType = Class.create(Common, {
         if (isNeedConfirm) {
             this.confirm(isNeedConfirm, function () {
                 self.isPageLeavingSafe = true;
-                self.saveFormUsingAjax(response => setLocation(response.editUrl));
+                ProductTypeValidatorPopup.closePopupCallback = function (response) {
+                    setLocation(response.edit_url);
+                };
+                self.saveFormUsingAjax();
             });
 
             return;
         }
 
         self.isPageLeavingSafe = true;
-        self.saveFormUsingAjax(response => setLocation(response.editUrl));
+        ProductTypeValidatorPopup.closePopupCallback = function (response) {
+            setLocation(response.edit_url);
+        };
+        self.saveFormUsingAjax();
     },
 
     saveAndCloseClick: function (isNeedConfirm) {
@@ -335,17 +347,23 @@ window.AmazonProductType = Class.create(Common, {
         if (isNeedConfirm) {
             this.confirm(isNeedConfirm, function () {
                 self.isPageLeavingSafe = true;
-                self.saveFormUsingAjax(() => window.close());
+                ProductTypeValidatorPopup.closePopupCallback = function () {
+                    window.close();
+                };
+                self.saveFormUsingAjax();
             });
 
             return;
         }
 
         self.isPageLeavingSafe = true;
-        self.saveFormUsingAjax(() => window.close());
+        ProductTypeValidatorPopup.closePopupCallback = function () {
+            window.close();
+        };
+        self.saveFormUsingAjax();
     },
 
-    saveFormUsingAjax: function (successCallback) {
+    saveFormUsingAjax: function () {
         const self = this;
 
         new Ajax.Request(M2ePro.url.get('formSubmit'), {
@@ -359,18 +377,18 @@ window.AmazonProductType = Class.create(Common, {
 
                     return;
                 } else {
+                    LocalStorageObj.set('is_need_revalidate_product_types', true);
+                    ProductTypeValidatorPopup.closePopupCallbackArguments = [response];
+                    ProductTypeValidatorPopup.openForProductType(
+                        transport.request.parameters.is_new_product_type,
+                        (response.product_type_id)
+                    );
+
                     if (response.hasOwnProperty('has_changed_mappings_product_type_id')) {
                         self.setProductTypeIdOfChangedMappings(
                             response['has_changed_mappings_product_type_id']
                         );
                     }
-                }
-
-                if (successCallback) {
-                    successCallback({
-                        backUrl: response.back_url,
-                        editUrl: response.edit_url
-                    });
                 }
             }
         });

@@ -150,6 +150,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Product_Add_SearchAsin
         $notCompletedPopupTitle = $helper->escapeJs(
             $helper->__('Adding of New Products to the Listing was not competed')
         );
+
         // ---------------------------------------
 
         // URL
@@ -195,6 +196,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Product_Add_SearchAsin
                 'wizard' => $this->getRequest()->getParam('wizard')
             )
         );
+
         // ---------------------------------------
 
         $showNotCompletedPopup = '';
@@ -213,6 +215,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Product_Add_SearchAsin
     }
 
     M2ePro.text.sending_data_message = '{$sendingDataToAmazonMessage}';
+    M2ePro.text.not_completed_popup_title = '{$notCompletedPopupTitle}';
 
     M2ePro.text.new_asin_not_available = '{$newAsinNotAvailable}';
     M2ePro.text.not_synchronized_marketplace = '{$notSynchronizedMarketplace}';
@@ -223,7 +226,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Product_Add_SearchAsin
     M2ePro.text.automap_error_message = '{$autoMapAsinErrorMessage}';
 
     M2ePro.text.new_asin_popup_title = '{$newAsinPopupTitle}';
-    M2ePro.text.not_completed_popup_title = '{$notCompletedPopupTitle}';
 
     M2ePro.url.add_products = '{$addProductsUrl}';
     M2ePro.url.back = '{$backUrl}';
@@ -257,7 +259,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Product_Add_SearchAsin
 
         ListingProgressBarObj = new ProgressBar('search_asin_progress_bar');
         GridWrapperObj = new AreaWrapper('search_asin_products_container');
-
+        
         {$showNotCompletedPopup}
     });
 

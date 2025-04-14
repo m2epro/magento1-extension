@@ -306,6 +306,4 @@ HTML;
     {
         $this->_parentAndChildReviseScheduledCache = $data;
     }
-
-    //########################################
 }

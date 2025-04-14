@@ -196,6 +196,26 @@ class Ess_M2ePro_Model_Amazon_Dictionary_ProductType extends Ess_M2ePro_Model_Ab
         return $this;
     }
 
+    /**
+     * @param $path
+     * @return Ess_M2ePro_Model_Amazon_ProductType_Validator_ValidatorInterface|
+     * @throws Ess_M2ePro_Model_Exception
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
+    public function getValidatorByPath($path)
+    {
+        $flatScheme = $this->getFlatScheme();
+        if (!array_key_exists($path, $flatScheme)) {
+            throw new Ess_M2ePro_Model_Exception_Logic('Not found specific path');
+        }
+
+        $validatorBuilderData = $flatScheme[$path];
+        $validatorBuilderData['group_title'] = $this->getGroupTitleByNick($validatorBuilderData['group_nick']);
+        $validationBuilder = new Ess_M2ePro_Model_Amazon_ProductType_Validator_ValidatorBuilder($validatorBuilderData);
+
+        return $validationBuilder->build();
+    }
+
     // ----------------------------------------
 
     public function findNameByProductTypeCode($code)

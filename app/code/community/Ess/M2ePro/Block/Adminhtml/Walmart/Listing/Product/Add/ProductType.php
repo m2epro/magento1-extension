@@ -10,8 +10,6 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Product_Add_ProductType
     /** @var Ess_M2ePro_Model_Listing */
     protected $_listing;
 
-    //########################################
-
     public function __construct()
     {
         parent::__construct();

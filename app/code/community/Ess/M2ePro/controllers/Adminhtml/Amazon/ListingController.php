@@ -47,6 +47,7 @@ class Ess_M2ePro_Adminhtml_Amazon_ListingController
             ->addJs('M2ePro/Amazon/Listing/Action.js')
             ->addJs('M2ePro/Amazon/Listing/ProductSearch.js')
             ->addJs('M2ePro/Amazon/Listing/Template/ProductType.js')
+            ->addJs('M2ePro/Amazon/ProductType/Validator/Popup.js')
             ->addJs('M2ePro/Amazon/Listing/Template/Shipping.js')
             ->addJs('M2ePro/Amazon/Listing/Template/ProductTaxCode.js')
             ->addJs('M2ePro/Amazon/Listing/VariationProductManage.js')
@@ -193,6 +194,7 @@ class Ess_M2ePro_Adminhtml_Amazon_ListingController
         $listingProductsIds = $model->getSetting('additional_data', 'adding_listing_products_ids');
 
         if (!empty($listingProductsIds)) {
+            $step = $model->getSetting('additional_data', 'wizard_current_step', 0);
             $this->_redirect(
                 '*/adminhtml_amazon_listing_productAdd/index', array(
                 'id' => $id,
@@ -224,7 +226,8 @@ class Ess_M2ePro_Adminhtml_Amazon_ListingController
         $this->setPageHelpLink(null, null, "m2e-pro-listings");
 
         $this->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_amazon_listing_view'))
-            ->renderLayout();
+             ->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_amazon_listing_product_add_validateProductTypes_popup'))
+             ->renderLayout();
     }
 
     public function viewGridAction()

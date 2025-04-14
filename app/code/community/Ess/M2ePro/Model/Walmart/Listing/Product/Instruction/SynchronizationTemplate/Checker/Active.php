@@ -456,6 +456,14 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_SynchronizationTempla
         /** @var Ess_M2ePro_Model_Walmart_Listing_Product $walmartListingProduct */
         $walmartListingProduct = $listingProduct->getChildObject();
 
+        $walmartMarketplace = $walmartListingProduct->getWalmartMarketplace();
+        if (
+            $walmartMarketplace->isSupportedProductType()
+            && !$walmartListingProduct->isExistsProductType()
+        ) {
+            return false;
+        }
+
         $walmartSynchronizationTemplate = $walmartListingProduct->getWalmartSynchronizationTemplate();
 
         if (!$walmartSynchronizationTemplate->isReviseUpdateDetails()) {

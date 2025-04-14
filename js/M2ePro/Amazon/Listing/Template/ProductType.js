@@ -41,6 +41,7 @@ window.AmazonListingTemplateProductType = Class.create(Action, {
         });
 
         templateDescriptionPopup.close();
+        ProductTypeValidatorPopup.openForProductType('0', templateId, self.productIds)
     },
 
     // ---------------------------------------
@@ -141,6 +142,7 @@ window.AmazonListingTemplateProductType = Class.create(Action, {
         templateDescriptionPopup.options.destroyOnClose = true;
 
         templateDescriptionPopup.productsIds = productsIds;
+        self.productIds = productsIds;
         templateDescriptionPopup.magentoCategoriesIds = magentoCategoriesIds;
         templateDescriptionPopup.checkIsNewAsinAccepted = checkIsNewAsinAccepted || 0;
 
