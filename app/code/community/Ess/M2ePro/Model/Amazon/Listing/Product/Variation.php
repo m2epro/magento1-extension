@@ -321,6 +321,27 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation extends Ess_M2ePro_Model
 
     // ---------------------------------------
 
+    /**
+     * @return float
+     */
+    public function getRegularListPrice()
+    {
+        if (!$this->getAmazonListingProduct()->isAllowedForRegularCustomers()) {
+            return 0.0;
+        }
+
+        $src = $this->getAmazonSellingFormatTemplate()->getListPriceSource();
+
+        /** @var Ess_M2ePro_Model_Amazon_Listing_Product_PriceCalculator $calculator  */
+        $calculator = Mage::getModel('M2ePro/Amazon_Listing_Product_PriceCalculator');
+        $calculator->setSource($src);
+        $calculator->setProduct($this->getListingProduct());
+
+        return (float)$calculator->getVariationValue($this->getParentObject());
+    }
+
+    // ---------------------------------------
+
     public function getBusinessPrice()
     {
         if (!$this->getAmazonListingProduct()->isAllowedForBusinessCustomers()) {

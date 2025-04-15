@@ -1,16 +1,8 @@
 <?php
 
-/*
- * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
- * @license    Commercial use is forbidden
- */
-
 class Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Price_Regular
     extends Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Abstract
 {
-    //########################################
-
     /**
      * @return array
      */
@@ -18,16 +10,18 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Price_Regular
     {
         $data = array();
 
+        /** @var Ess_M2ePro_Model_Amazon_Listing_Product $amazonListingProduct */
+        $amazonListingProduct = $this->getAmazonListingProduct();
         if (!isset($this->_cachedData['regular_price'])) {
-            $this->_cachedData['regular_price'] = $this->getAmazonListingProduct()->getRegularPrice();
+            $this->_cachedData['regular_price'] = $amazonListingProduct->getRegularPrice();
         }
 
         if (!isset($this->_cachedData['regular_map_price'])) {
-            $this->_cachedData['regular_map_price'] = $this->getAmazonListingProduct()->getRegularMapPrice();
+            $this->_cachedData['regular_map_price'] = $amazonListingProduct->getRegularMapPrice();
         }
 
         if (!isset($this->_cachedData['regular_sale_price_info'])) {
-            $salePriceInfo                                = $this->getAmazonListingProduct()->getRegularSalePriceInfo();
+            $salePriceInfo                                = $amazonListingProduct->getRegularSalePriceInfo();
             $this->_cachedData['regular_sale_price_info'] = $salePriceInfo;
         }
 
@@ -47,8 +41,17 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Price_Regular
             $data['sale_price_end_date']   = $this->_cachedData['regular_sale_price_info']['end_date'];
         }
 
+        if (
+            !$amazonListingProduct->isGeneralIdOwner()
+            && !$amazonListingProduct->getVariationManager()
+                                     ->isVariationParent()
+        ) {
+            $listPrice = $amazonListingProduct->getRegularListPrice();
+            if ($listPrice > 0) {
+                $data['list_price'] = $listPrice;
+            }
+        }
+
         return $data;
     }
-
-    //########################################
 }

@@ -96,8 +96,15 @@ class Ess_M2ePro_Helper_Component_Amazon_Variation extends Mage_Core_Helper_Abst
         return $productsIds;
     }
 
-    public function filterProductsByMagentoProductType($listingProductsIds)
-    {
+    /**
+     * @param bool $skipSimpleWithCustomOptions Whether to skip simple products with custom options
+     *
+     * @return string|int[]
+     */
+    public function filterProductsByMagentoProductType(
+        $listingProductsIds,
+        $skipSimpleWithCustomOptions = false
+    ) {
         $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
         $tableListingProduct = Mage::helper('M2ePro/Module_Database_Structure')
             ->getTableNameWithPrefix('m2epro_listing_product');
@@ -162,9 +169,12 @@ class Ess_M2ePro_Helper_Component_Amazon_Variation extends Mage_Core_Helper_Abst
                     unset($productToListingProductIds[$product['entity_id']]);
                 }
 
-                if (Mage::helper('M2ePro/Magento_Product')->isSimpleType($product['type_id']) &&
-                    !empty($product['option_id']) && $product['option_is_require'] == 1 &&
-                    in_array($product['option_type'], array('drop_down', 'radio', 'multiple', 'checkbox'))) {
+                if (
+                    !$skipSimpleWithCustomOptions
+                    && Mage::helper('M2ePro/Magento_Product')->isSimpleType($product['type_id'])
+                    && !empty($product['option_id']) && $product['option_is_require'] == 1
+                    && in_array($product['option_type'], array('drop_down', 'radio', 'multiple', 'checkbox'))
+                ) {
                     unset($productToListingProductIds[$product['entity_id']]);
                 }
             }

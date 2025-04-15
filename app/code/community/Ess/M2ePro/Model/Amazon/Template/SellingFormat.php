@@ -607,6 +607,17 @@ class Ess_M2ePro_Model_Amazon_Template_SellingFormat extends Ess_M2ePro_Model_Co
     // ---------------------------------------
 
     /**
+     * @return array{mode: int, attribute: string}
+     */
+    public function getListPriceSource()
+    {
+        return array(
+            'mode' => $this->getListPriceMode(),
+            'attribute' => $this->getListPriceAttribute(),
+        );
+    }
+
+    /**
      * @return int
      */
     public function getListPriceMode()

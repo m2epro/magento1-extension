@@ -8,7 +8,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Details
         $listingProduct = $this->getListingProduct();
         $amazonListingProduct = $listingProduct->getChildObject();
 
-        $data = $this->getListPrice();
+        $data = array();
 
         if ($amazonListingProduct->isGeneralIdOwner()) {
             $variationManager = $amazonListingProduct->getVariationManager();
@@ -270,33 +270,5 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Details
         }
 
         return true;
-    }
-
-    private function getListPrice()
-    {
-        if ($this->getAmazonListingProduct()->isGeneralIdOwner()) {
-            return array();
-        }
-
-        $variationManager = $this->getAmazonListingProduct()->getVariationManager();
-        if ($variationManager->isVariationParent()) {
-            return array();
-        }
-
-        $productTypeTemplate = $this->getAmazonListingProduct()->getProductTypeTemplate();
-        if (
-            $productTypeTemplate !== null
-            && $productTypeTemplate->getNick()
-            !== Ess_M2ePro_Model_Amazon_Template_ProductType::GENERAL_PRODUCT_TYPE_NICK
-        ) {
-            return array();
-        }
-
-        $regularListPrice = $this->getAmazonListingProduct()->getRegularPrice();
-        if ($regularListPrice <= 0) {
-            return array();
-        }
-
-        return array('list_price' => $regularListPrice);
     }
 }

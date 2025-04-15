@@ -912,6 +912,49 @@ class Ess_M2ePro_Model_Amazon_Listing_Product extends Ess_M2ePro_Model_Component
     // ---------------------------------------
 
     /**
+     * @return float
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
+    public function getRegularListPrice()
+    {
+        if (!$this->isAllowedForRegularCustomers()) {
+            return 0.0;
+        }
+
+        if (
+            $this->getVariationManager()->isPhysicalUnit()
+            && $this->getVariationManager()->getTypeModel()->isVariationProductMatched()
+        ) {
+            $variations = $this->getVariations(true);
+            if (empty($variations)) {
+                throw new Ess_M2ePro_Model_Exception_Logic(
+                    'There are no variations for a variation product.',
+                    array('listing_product_id' => $this->getId())
+                );
+            }
+            /** @var Ess_M2ePro_Model_Listing_Product_Variation $variation */
+            $variation = reset($variations);
+            /** @var Ess_M2ePro_Model_Amazon_Listing_Product_Variation $amazonVariation */
+            $amazonVariation = $variation->getChildObject();
+
+            return $amazonVariation->getRegularListPrice();
+        }
+
+        $listPriceSource = $this
+            ->getAmazonSellingFormatTemplate()
+            ->getListPriceSource();
+
+        /** @var $calculator Ess_M2ePro_Model_Amazon_Listing_Product_PriceCalculator */
+        $calculator = Mage::getModel('M2ePro/Amazon_Listing_Product_PriceCalculator');
+        $calculator->setSource($listPriceSource);
+        $calculator->setProduct($this->getParentObject());
+
+        return (float)$calculator->getProductValue();
+    }
+
+    // ---------------------------------------
+
+    /**
      * @return float|int
      * @throws Ess_M2ePro_Model_Exception
      * @throws Ess_M2ePro_Model_Exception_Logic

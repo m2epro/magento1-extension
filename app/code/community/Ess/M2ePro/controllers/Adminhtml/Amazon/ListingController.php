@@ -1925,18 +1925,19 @@ class Ess_M2ePro_Adminhtml_Amazon_ListingController
             $productsIds = explode(',', $productsIds);
         }
 
+        /** @var Ess_M2ePro_Helper_Component_Amazon_Variation $variationHelper */
         $variationHelper = Mage::helper('M2ePro/Component_Amazon_Variation');
 
         $msgType = 'success';
         $messages = array();
 
-        $filteredProductsIdsByType = $variationHelper->filterProductsByMagentoProductType($productsIds);
+        $filteredProductsIdsByType = $variationHelper->filterProductsByMagentoProductType($productsIds, true);
 
         if (count($productsIds) != count($filteredProductsIdsByType)) {
             $msgType = 'warning';
             $messages[] = Mage::helper('M2ePro')->__(
-                'Product Type cannot be assigned because %count% Items are Simple
-                 with Custom Options or Bundle Magento Products.',
+                'Cannot assign Product Type because %count% items are Bundle Magento Products,'
+                . ' this actions is not eligible for this type of Magento Products.',
                 count($productsIds) - count($filteredProductsIdsByType)
             );
         }
@@ -2081,6 +2082,7 @@ class Ess_M2ePro_Adminhtml_Amazon_ListingController
             $productsIds = explode(',', $productsIds);
         }
 
+        /** @var Ess_M2ePro_Helper_Component_Amazon_Variation $variationHelper */
         $variationHelper = Mage::helper('M2ePro/Component_Amazon_Variation');
 
         $messages = array();
@@ -2091,19 +2093,20 @@ class Ess_M2ePro_Adminhtml_Amazon_ListingController
             $messages[] = array(
                 'type' => 'warning',
                 'text' => Mage::helper('M2ePro')->__(
-                    'Product Type cannot be assigned because the Products are in Action.'
+                    'Unable to assign Product Type. The selected action could not be completed'
+                    . ' because one or more products are currently being processed.'
                 )
             );
         }
 
-        $filteredProductsIdsByType = $variationHelper->filterProductsByMagentoProductType($productsIdsLocked);
+        $filteredProductsIdsByType = $variationHelper->filterProductsByMagentoProductType($productsIdsLocked, true);
 
         if (count($productsIdsLocked) != count($filteredProductsIdsByType)) {
             $messages[] = array(
                 'type' => 'warning',
                 'text' => Mage::helper('M2ePro')->__(
-                    'Selected action was not completed for one or more Items. Product Type cannot be assigned
-                    to Simple with Custom Options, Bundle and Downloadable with Separated Links Magento Products.'
+                    'Cannot assign Product Type to the following Magento product types:'
+                    . ' Bundle and Downloadable with Separated Links.'
                 )
             );
         }
