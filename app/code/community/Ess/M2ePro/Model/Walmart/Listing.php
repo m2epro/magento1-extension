@@ -1,17 +1,28 @@
 <?php
 
-/*
- * @author     M2E Pro Developers Team
- * @copyright  M2E LTD
- * @license    Commercial use is forbidden
- */
-
 /**
  * @method Ess_M2ePro_Model_Listing getParentObject()
  * @method Ess_M2ePro_Model_Resource_Walmart_Listing getResource()
  */
 class Ess_M2ePro_Model_Walmart_Listing extends Ess_M2ePro_Model_Component_Child_Walmart_Abstract
 {
+    const CONDITION_MODE_NONE = 0;
+    const CONDITION_MODE_RECOMMENDED = 1;
+    const CONDITION_MODE_CUSTOM_ATTRIBUTE = 2;
+
+    /** @var string[] */
+    public static $conditionRecommendedValues = array(
+        'New',
+        'New without box',
+        'New without tags',
+        'Pre-Owned: Fair',
+        'Pre-Owned: Good',
+        'Pre-Owned: Like New',
+        'Remanufactured',
+        'New with defects',
+        'Open Box',
+    );
+
     /**
      * @var Ess_M2ePro_Model_Template_Description
      */
@@ -201,7 +212,104 @@ class Ess_M2ePro_Model_Walmart_Listing extends Ess_M2ePro_Model_Component_Child_
         return $this->getSynchronizationTemplate()->getChildObject();
     }
 
-    //########################################
+    // ---------------------------------------
+
+    /**
+     * @return bool
+     */
+    public function isConditionModeNone()
+    {
+        return $this->getConditionMode() === self::CONDITION_MODE_NONE;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isConditionModeRecommended()
+    {
+        return $this->getConditionMode() === self::CONDITION_MODE_RECOMMENDED;
+    }
+
+    /**
+     * @param string $value
+     * @return Ess_M2ePro_Model_Walmart_Listing
+     */
+    public function installConditionModeRecommendedValue($value)
+    {
+        $this->setData(\Ess_M2ePro_Model_Resource_Walmart_Listing::COLUMN_CONDITION_VALUE, $value)
+             ->setData(\Ess_M2ePro_Model_Resource_Walmart_Listing::COLUMN_CONDITION_CUSTOM_ATTRIBUTE, null)
+             ->setData(
+                 \Ess_M2ePro_Model_Resource_Walmart_Listing::COLUMN_CONDITION_MODE,
+                 self::CONDITION_MODE_RECOMMENDED
+             );
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getConditionRecommendedValue()
+    {
+        if (!$this->isConditionModeRecommended()) {
+            throw new \LogicException('Inappropriate condition mode');
+        }
+
+        return $this->getData(
+            \Ess_M2ePro_Model_Resource_Walmart_Listing::COLUMN_CONDITION_VALUE
+        );
+    }
+
+    /**
+     * @return bool
+     */
+    public function isConditionModeCustomAttribute()
+    {
+        return $this->getConditionMode() === self::CONDITION_MODE_CUSTOM_ATTRIBUTE;
+    }
+
+    /**
+     * @param string $attribute
+     * @return Ess_M2ePro_Model_Walmart_Listing
+     */
+    public function installConditionModeCustomAttribute($attribute)
+    {
+        $this->setData(\Ess_M2ePro_Model_Resource_Walmart_Listing::COLUMN_CONDITION_CUSTOM_ATTRIBUTE, $attribute)
+             ->setData(\Ess_M2ePro_Model_Resource_Walmart_Listing::COLUMN_CONDITION_VALUE, null)
+             ->setData(
+                 \Ess_M2ePro_Model_Resource_Walmart_Listing::COLUMN_CONDITION_MODE,
+                 self::CONDITION_MODE_CUSTOM_ATTRIBUTE
+             );
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     * @throws LogicException
+     */
+    public function getConditionCustomAttribute()
+    {
+        if (!$this->isConditionModeCustomAttribute()) {
+            throw new \LogicException('Inappropriate condition mode');
+        }
+
+        return $this->getData(
+            \Ess_M2ePro_Model_Resource_Walmart_Listing::COLUMN_CONDITION_CUSTOM_ATTRIBUTE
+        );
+    }
+
+    /**
+     * @return int
+     */
+    private function getConditionMode()
+    {
+        return (int)$this->getData(
+            \Ess_M2ePro_Model_Resource_Walmart_Listing::COLUMN_CONDITION_MODE
+        );
+    }
+
+    // ---------------------------------------
 
     /**
      * @param bool $asObjects

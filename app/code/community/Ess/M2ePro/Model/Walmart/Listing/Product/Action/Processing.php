@@ -38,6 +38,9 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Processing extends Ess_M2e
         return $this;
     }
 
+    /**
+     * @return Ess_M2ePro_Model_Listing_Product
+     */
     public function getListingProduct()
     {
         if (!$this->getId()) {

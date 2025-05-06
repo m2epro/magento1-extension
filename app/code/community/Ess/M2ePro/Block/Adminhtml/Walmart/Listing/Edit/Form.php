@@ -227,6 +227,8 @@ HTML
             )
         );
 
+        $this->addConditionFieldset($form, $formData);
+
         $form->setUseContainer(true);
         $this->setForm($form);
 
@@ -237,7 +239,21 @@ HTML
 
     protected function _prepareLayout()
     {
-        Mage::helper('M2ePro/View')->getJsUrlsRenderer()->addUrls(
+        /** @var Ess_M2ePro_Helper_View $viewHelper */
+        $viewHelper = Mage::helper('M2ePro/View');
+
+        $viewHelper->getJsPhpRenderer()
+                   ->addConstants(
+                       array(
+                           array(
+                               'CONDITION_MODE_RECOMMENDED',
+                               Ess_M2ePro_Model_Walmart_Listing::CONDITION_MODE_RECOMMENDED,
+                           ),
+                       ),
+                       'Ess_M2ePro_Model_Walmart_Listing'
+                   );
+
+        $viewHelper->getJsUrlsRenderer()->addUrls(
             array(
                 'templateCheckMessages'         => $this->getUrl(
                     '*/adminhtml_template/checkMessages',
@@ -330,6 +346,7 @@ JS
         return parent::_prepareLayout();
     }
 
+
     //########################################
 
     protected function getSellingFormatTemplates()
@@ -391,6 +408,118 @@ JS
         $result = $collection->toArray();
 
         return $result['items'];
+    }
+
+    /**
+     * @return void
+     */
+    private function addConditionFieldset(Varien_Data_Form $form, array $formData)
+    {
+        /** @var Ess_M2ePro_Helper_Data $helper */
+        $helper = Mage::helper('M2ePro');
+
+        $fieldset = $form->addFieldset(
+            'condition_settings_fieldset',
+            array(
+                'legend' => $helper->__('Condition Settings'),
+                'collapsable' => true
+            )
+        );
+
+        $fieldset->addField(
+            'condition_custom_attribute',
+            'hidden',
+            array(
+                'name' => 'condition_custom_attribute',
+                'value' => $formData['condition_custom_attribute']
+            )
+        );
+
+        $fieldset->addField(
+            'condition_value',
+            'hidden',
+            array(
+                'name' => 'condition_value',
+                'value' => $formData['condition_value']
+            )
+        );
+
+        $preparedAttributes = array();
+
+        /** @var Ess_M2ePro_Helper_Magento_Attribute $magentoAttributeHelper */
+        $magentoAttributeHelper = Mage::helper('M2ePro/Magento_Attribute');
+        $magentoSelectTextAttrs =  $magentoAttributeHelper->filterByInputTypes(
+            $magentoAttributeHelper->getAll(),
+            array('text', 'select')
+        );
+
+        foreach ($magentoSelectTextAttrs as $attribute) {
+            $attrs = array(
+                'attribute_code' => $attribute['code'],
+            );
+            if (
+                $formData['condition_mode'] == Ess_M2ePro_Model_Walmart_Listing::CONDITION_MODE_CUSTOM_ATTRIBUTE
+                && $attribute['code'] == $formData['condition_custom_attribute']
+            ) {
+                $attrs['selected'] = 'selected';
+            }
+
+            $preparedAttributes[] = array(
+                'attrs' => $attrs,
+                'value' => Ess_M2ePro_Model_Walmart_Listing::CONDITION_MODE_CUSTOM_ATTRIBUTE,
+                'label' => $attribute['label'],
+            );
+        }
+
+        $fieldset->addField(
+            'condition_mode',
+            Ess_M2ePro_Block_Adminhtml_Magento_Form_Element_Form::SELECT,
+            array(
+                'name' => 'condition_mode',
+                'label' => $helper->__('Condition'),
+                'values' => array(
+                    array(
+                        'label' => $helper->__('Recommended Value'),
+                        'value' => $this->getRecommendedConditionValues($formData),
+                    ),
+                    array(
+                        'label' => $helper->__('Magento Attributes'),
+                        'value' => $preparedAttributes,
+                        'attrs' => array(
+                            'is_magento_attribute' => true
+                        )
+                    )
+                ),
+                'create_magento_attribute' => true,
+                'tooltip' => $helper->__(
+                    'Specify the condition that best describes the current state of your product.'
+                ),
+                'allowed_attribute_types' => 'text,select',
+            )
+        );
+    }
+
+    /**
+     * @return array
+     */
+    private function getRecommendedConditionValues(array $formData)
+    {
+        $values = array();
+        foreach (Ess_M2ePro_Model_Walmart_Listing::$conditionRecommendedValues as $condition) {
+            $value = array(
+                'attrs' => array('attribute_code' => $condition),
+                'value' => Ess_M2ePro_Model_Walmart_Listing::CONDITION_MODE_RECOMMENDED,
+                'label' => Mage::helper('M2ePro')->__($condition),
+            );
+
+            if ($condition === $formData[Ess_M2ePro_Model_Resource_Walmart_Listing::COLUMN_CONDITION_VALUE]) {
+                $value['attrs']['selected'] = 'selected';
+            }
+
+            $values[] = $value;
+        }
+
+        return $values;
     }
 
     //########################################

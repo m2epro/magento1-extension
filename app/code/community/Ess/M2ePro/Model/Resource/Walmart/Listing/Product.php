@@ -1,28 +1,19 @@
 <?php
 
-/*
- * @author     M2E Pro Developers Team
- * @copyright  M2E LTD
- * @license    Commercial use is forbidden
- */
-
 class Ess_M2ePro_Model_Resource_Walmart_Listing_Product
     extends Ess_M2ePro_Model_Resource_Component_Child_Abstract
 {
     const COLUMN_PRODUCT_TYPE_ID = 'product_type_id';
     const IS_STOPPED_MANUALLY_FIELD = 'is_stopped_manually';
+    const COLUMN_IS_NOT_MAPPED_TO_EXISTING_CHANNEL_ITEM = 'is_not_mapped_to_existing_channel_item';
 
     protected $_isPkAutoIncrement = false;
-
-    //########################################
 
     public function _construct()
     {
         $this->_init('M2ePro/Walmart_Listing_Product', 'listing_product_id');
         $this->_isPkAutoIncrement = false;
     }
-
-    //########################################
 
     public function getProductsDataBySkus(
         array $skus = array(),
@@ -59,8 +50,6 @@ class Ess_M2ePro_Model_Resource_Walmart_Listing_Product
 
         return $listingProductCollection->getData();
     }
-
-    //########################################
 
     public function mapChannelItemProduct(Ess_M2ePro_Model_Walmart_Listing_Product $listingProduct)
     {
@@ -115,6 +104,4 @@ class Ess_M2ePro_Model_Resource_Walmart_Listing_Product
 
         $connection->query($updateQuery);
     }
-
-    //########################################
 }

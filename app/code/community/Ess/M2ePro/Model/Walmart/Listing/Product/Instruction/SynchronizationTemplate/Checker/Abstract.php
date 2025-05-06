@@ -126,6 +126,7 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_Synchronizat
     protected function getReviseDetailsInstructionTypes()
     {
         return array(
+            Ess_M2ePro_Model_Walmart_Listing_ChangeProcessor::INSTRUCTION_TYPE_CONDITION_DATA_CHANGED,
             SynchronizationChangeProcessor::INSTRUCTION_TYPE_REVISE_DETAILS_ENABLED,
             SynchronizationChangeProcessor::INSTRUCTION_TYPE_REVISE_DETAILS_DISABLED,
             Ess_M2ePro_Model_Walmart_Magento_Product_ChangeProcessor::INSTRUCTION_TYPE_DETAILS_DATA_CHANGED,

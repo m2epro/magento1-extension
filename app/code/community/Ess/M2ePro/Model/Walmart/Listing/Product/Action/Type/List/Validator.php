@@ -31,7 +31,12 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_Validator
             return false;
         }
 
-        if (!$this->validateWalmartProductType()) {
+        $walmartListingProduct = $this->getWalmartListingProduct();
+        if (
+            $this->getWalmartMarketplace()->isSupportedProductType()
+            && !$walmartListingProduct->isExistsProductType()
+            && !$this->validateMappingToExistingChannelItem($walmartListingProduct)
+        ) {
             return false;
         }
 
@@ -68,21 +73,28 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_Validator
         return true;
     }
 
+
     /**
+     * @param Ess_M2ePro_Model_Walmart_Listing_Product $walmartListingProduct
      * @return bool
      */
-    private function validateWalmartProductType()
-    {
-        if (
-            $this->getWalmartMarketplace()->isSupportedProductType()
-            && !$this->getWalmartListingProduct()->isExistsProductType()
-        ) {
-            $this->addMessage('Product Type are not set.');
-
-            return false;
+    private function validateMappingToExistingChannelItem(
+        Ess_M2ePro_Model_Walmart_Listing_Product $walmartListingProduct
+    ) {
+        if ($walmartListingProduct->isAvailableMappingToExistingChannelItem()) {
+            return true;
         }
 
-        return true;
+        if (
+            $walmartListingProduct->getVariationManager()
+                                  ->isVariationProduct()
+        ) {
+            $this->addMessage(
+                'To list a Product with variations on Walmart, a relevant Product Type must be assigned first.'
+            );
+        }
+
+        return false;
     }
 
     //########################################

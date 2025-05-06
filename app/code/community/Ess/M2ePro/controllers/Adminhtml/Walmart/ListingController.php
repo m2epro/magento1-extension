@@ -3,6 +3,8 @@
 use Ess_M2ePro_Model_Walmart_Listing_Product_Variation_MigrationToProductTypeService
     as VariationMigrationToProductTypeService;
 
+use Ess_M2ePro_Model_Resource_Walmart_Listing_Product as WalmartListingProductResource;
+
 class Ess_M2ePro_Adminhtml_Walmart_ListingController
     extends Ess_M2ePro_Controller_Adminhtml_Walmart_MainController
 {
@@ -255,23 +257,24 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
         }
 
         $id = $this->getRequest()->getParam('id');
-        $model = Mage::helper('M2ePro/Component_Walmart')->getModel('Listing')->load($id);
-
-        if (!$model->getId() && $id) {
+        /** @var Ess_M2ePro_Model_Listing $listing */
+        $listing = Mage::helper('M2ePro/Component_Walmart')->getModel('Listing')
+                                                           ->load($id);
+        if (!$listing->getId() && $id) {
             $this->_getSession()->addError(Mage::helper('M2ePro')->__('Listing does not exist.'));
             return $this->_redirect('*/adminhtml_walmart_listing/index');
         }
 
         $snapshotBuilder = Mage::getModel('M2ePro/Walmart_Listing_SnapshotBuilder');
-        $snapshotBuilder->setModel($model);
+        $snapshotBuilder->setModel($listing);
 
         $oldData = $snapshotBuilder->getSnapshot();
 
         $data = array();
         $keys = array(
-            'template_selling_format_id',
-            'template_description_id',
-            'template_synchronization_id',
+            Ess_M2ePro_Model_Resource_Walmart_Listing::COLUMN_TEMPLATE_SELLING_FORMAT_ID,
+            Ess_M2ePro_Model_Resource_Walmart_Listing::COLUMN_TEMPLATE_DESCRIPTION_ID,
+            Ess_M2ePro_Model_Resource_Walmart_Listing::COLUMN_TEMPLATE_SYNCHRONIZATION_ID,
         );
         foreach ($keys as $key) {
             if (isset($post[$key])) {
@@ -279,18 +282,39 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
             }
         }
 
-        $model->addData($data)->save();
+        $listing->addData($data);
+        $listing->save();
 
+        /** @var Ess_M2ePro_Model_Walmart_Listing $walmartListing */
+        $walmartListing = $listing->getChildObject();
+        if (!empty($post['condition_value'])) {
+            $walmartListing->installConditionModeRecommendedValue($post['condition_value']);
+        } elseif (!empty($post['condition_custom_attribute'])) {
+            $walmartListing->installConditionModeCustomAttribute($post['condition_custom_attribute']);
+        }
+        $walmartListing->save();
+
+        /** @var Ess_M2ePro_Model_Walmart_Listing_SnapshotBuilder $snapshotBuilder */
         $snapshotBuilder = Mage::getModel('M2ePro/Walmart_Listing_SnapshotBuilder');
-        $snapshotBuilder->setModel($model);
+        $snapshotBuilder->setModel($listing);
 
         $newData = $snapshotBuilder->getSnapshot();
 
         $affectedListingsProducts = Mage::getModel('M2ePro/Walmart_Listing_AffectedListingsProducts');
-        $affectedListingsProducts->setModel($model);
+        $affectedListingsProducts->setModel($listing);
 
         $affectedListingsProductsData = $affectedListingsProducts->getData(
             array('id', 'status'), array('only_physical_units' => true)
+        );
+
+        /** @var Ess_M2ePro_Model_Walmart_Listing_ChangeProcessor $listingChangeProcessor */
+        $listingChangeProcessor = Mage::getModel('M2ePro/Walmart_Listing_ChangeProcessor');
+        /** @var Ess_M2ePro_Model_Walmart_Listing_DiffFactory $listingDiffFactory */
+        $listingDiffFactory = Mage::getModel('M2ePro/Walmart_Listing_DiffFactory');
+
+        $listingChangeProcessor->process(
+            $listingDiffFactory->create($newData, $oldData),
+            $affectedListingsProductsData
         );
 
         $this->processDescriptionTemplateChange($oldData, $newData, $affectedListingsProductsData);
@@ -1672,6 +1696,7 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
             return;
         }
 
+        /** @var Mage_Core_Model_Resource_Transaction $transaction */
         $transaction = Mage::getModel('core/resource_transaction');
         $oldProductTypeIds = array();
 
@@ -1679,17 +1704,18 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
             /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
             foreach ($collection->getItems() as $listingProduct) {
                 $oldProductTypeIds[$listingProduct->getId()] = $listingProduct->getData('product_type_id');
-                $listingProduct->setData('product_type_id', $productTypeId);
-
                 if ($productTypeId === null) {
                     $listingProduct->setData(
-                        Ess_M2ePro_Model_Resource_Walmart_Listing_Product::COLUMN_PRODUCT_TYPE_ID,
+                        WalmartListingProductResource::COLUMN_PRODUCT_TYPE_ID,
                         null
                     );
                 } else {
                     $listingProduct->setData(
-                        Ess_M2ePro_Model_Resource_Walmart_Listing_Product::COLUMN_PRODUCT_TYPE_ID,
+                        WalmartListingProductResource::COLUMN_PRODUCT_TYPE_ID,
                         $productTypeId
+                    )->setData(
+                        WalmartListingProductResource::COLUMN_IS_NOT_MAPPED_TO_EXISTING_CHANNEL_ITEM,
+                        null
                     );
                 }
 
@@ -1699,7 +1725,6 @@ class Ess_M2ePro_Adminhtml_Walmart_ListingController
             $transaction->save();
         } catch (Exception $e) {
             $oldProductTypeIds = array();
-            $transaction->rollback();
         }
 
         if ($oldProductTypeIds === array()) {

@@ -57,9 +57,6 @@
                     <input id="product_type_id" name="product_type_id" value="" type="hidden" />
                     <input id="products_ids" name="products_ids" type="hidden" value="">
                 </div>
-                <div style="margin: 7px 28px; display: none;" class="validation-advice" id="same_product_type_error" >
-                    <?php echo Mage::helper('M2ePro')->__('Please select Product Type.'); ?>
-                </div>
             </div>
 
             <input id="category" name="mode" type="radio" value="<?php echo Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Product_Add_ProductType::MODE_CATEGORY; ?>">&nbsp;&nbsp;
@@ -80,16 +77,6 @@
     </form>
 
     <div style="padding: 2px"></div>
-
-    <span>
-        <?php echo Mage::helper('M2ePro')->__(
-            '<strong>Note:</strong> Product Type is required when you create a new offer on Walmart.<br/><br/>
-
-            The detailed information can be found <a href="%url%" target="_blank">here</a>.',
-
-            Mage::helper("M2ePro/Module_Support")->getDocumentationUrl(null, null, "walmart-integration")
-        );?>
-    </span>
 
 </div>
 
@@ -148,10 +135,6 @@
 
         productTypeModeFormSubmit = function()
         {
-            if ($('same').checked && $('product_type_id').value == '') {
-                $('same_product_type_error').show();
-                return;
-            }
             $('product_type_mode_form').submit();
         };
 
@@ -160,7 +143,6 @@
             $('product_type_id').value = templateId;
             $('products_ids').value = '<?php echo implode(',', $this->getProductsIds()); ?>';
             $('product_type_title').innerHTML = el.up('tr').down('td').down('a').innerHTML;
-            $('same_product_type_error').hide();
             ProductTypePopup.close();
         };
 

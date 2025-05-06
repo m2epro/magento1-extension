@@ -1,11 +1,5 @@
 <?php
 
-/*
- * @author     M2E Pro Developers Team
- * @copyright  M2E LTD
- * @license    Commercial use is forbidden
- */
-
 use Ess_M2ePro_Model_Listing_Product_PriceCalculator as PriceCalculator;
 use Ess_M2ePro_Model_Walmart_Template_SellingFormat_Promotion as Promotion;
 use Ess_M2ePro_Model_Resource_Walmart_Listing_Product as Resource;
@@ -392,6 +386,53 @@ class Ess_M2ePro_Model_Walmart_Listing_Product extends Ess_M2ePro_Model_Componen
         );
     }
 
+    // ---------------------------------------
+
+    /**
+     * @return bool
+     */
+    public function isAvailableMappingToExistingChannelItem()
+    {
+        return !$this->hasFlagIsNotMappedToExistingChannelItem()
+            && !$this->getVariationManager()
+                     ->isVariationProduct();
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasFlagIsNotMappedToExistingChannelItem()
+    {
+        return (bool)$this->getData(
+            Ess_M2ePro_Model_Resource_Walmart_Listing_Product::COLUMN_IS_NOT_MAPPED_TO_EXISTING_CHANNEL_ITEM
+        );
+    }
+
+    /**
+     * @return $this
+     */
+    public function markAsNotMappedToExistingChannelItem()
+    {
+        $this->setData(
+            Ess_M2ePro_Model_Resource_Walmart_Listing_Product::COLUMN_IS_NOT_MAPPED_TO_EXISTING_CHANNEL_ITEM,
+            true
+        );
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function unmarkAsNotMappedToExistingChannelItem()
+    {
+        $this->setData(
+            Ess_M2ePro_Model_Resource_Walmart_Listing_Product::COLUMN_IS_NOT_MAPPED_TO_EXISTING_CHANNEL_ITEM,
+            false
+        );
+
+        return $this;
+    }
 
     // ---------------------------------------
 

@@ -20,6 +20,8 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_Processor
 
     const FIRST_CONNECTION_ERROR_DATE_REGISTRY_KEY = '/walmart/listing/product/action/first_connection_error/date/';
 
+    const MESSAGE_CODE_PRODUCT_NOT_MAPPED_TO_EXISTING_CHANNEL_ITEM = 6404;
+
     //########################################
 
     /**
@@ -215,6 +217,10 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_Processor
                     $resultActionData['errors'] = array();
                 }
 
+                if ($this->isProductNotMappedToExistingChannelItem($resultActionData['errors'])) {;
+                    $this->saveProductMarkedAsNotMappedToExistingChannelItem($listingProduct);
+                }
+
                 if (!empty($resultMessages)) {
                     $resultActionData['errors'] = array_merge($resultActionData['errors'], $resultMessages);
                 }
@@ -255,6 +261,54 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_Processor
 
             $requestPendingSingle->deleteInstance();
         }
+    }
+
+    // ---------------------------------------
+
+    /**
+     * @return bool
+     */
+    private function isProductNotMappedToExistingChannelItem(array $rawProductResponseMessages)
+    {
+        foreach ($rawProductResponseMessages as $rawMessage) {
+            /** @var Ess_M2ePro_Model_Connector_Connection_Response_Message $message */
+            $message = Mage::getModel('M2ePro/Connector_Connection_Response_Message');
+            $message->initFromResponseData($rawMessage);
+
+            if (
+                $message->isError()
+                && $message->isSenderComponent()
+                && $message->getCode() === self::MESSAGE_CODE_PRODUCT_NOT_MAPPED_TO_EXISTING_CHANNEL_ITEM
+            ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function saveProductMarkedAsNotMappedToExistingChannelItem(
+        Ess_M2ePro_Model_Listing_Product $listingProduct
+    ) {
+        /** @var Ess_M2ePro_Model_Walmart_Listing_Product $walmartListingProduct */
+        $walmartListingProduct = $listingProduct->getChildObject();
+        $walmartListingProduct->markAsNotMappedToExistingChannelItem();
+
+        /** @var Ess_M2ePro_Model_Walmart_Listing_ProductRepository $repository */
+        $repository = Mage::getModel('M2ePro/Walmart_Listing_ProductRepository');
+        $repository->save($walmartListingProduct);
+    }
+
+    private function saveProductUnmarkedNotMappedToExistingChannelItem(
+        Ess_M2ePro_Model_Listing_Product $listingProduct
+    ) {
+        /** @var Ess_M2ePro_Model_Walmart_Listing_Product $walmartListingProduct */
+        $walmartListingProduct = $listingProduct->getChildObject();
+        $walmartListingProduct->unmarkAsNotMappedToExistingChannelItem();
+
+        /** @var Ess_M2ePro_Model_Walmart_Listing_ProductRepository $repository */
+        $repository = Mage::getModel('M2ePro/Walmart_Listing_ProductRepository');
+        $repository->save($walmartListingProduct);
     }
 
     // ---------------------------------------
@@ -913,6 +967,15 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_Processor
             $params = array();
             if (isset($processingParams['requester_params'])) {
                 $params = $processingParams['requester_params'];
+            }
+
+            if (
+                $processingParams['action_type'] === Ess_M2ePro_Model_Listing_Product::ACTION_LIST
+                && $params['status_changer'] === Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_USER
+                && $listingProduct->getChildObject()
+                                  ->hasFlagIsNotMappedToExistingChannelItem()
+            ) {
+                $this->saveProductUnmarkedNotMappedToExistingChannelItem($listingProduct);
             }
 
             $dispatcher->process($processingParams['action_type'], $listingProduct, $params);

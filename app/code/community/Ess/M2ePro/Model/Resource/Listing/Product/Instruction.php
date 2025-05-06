@@ -1,20 +1,14 @@
 <?php
 
-/*
- * @author     M2E Pro Developers Team
- * @copyright  2011-2017 ESS-UA [M2E Pro]
- * @license    Commercial use is forbidden
- */
 class Ess_M2ePro_Model_Resource_Listing_Product_Instruction extends Ess_M2ePro_Model_Resource_Abstract
 {
-    //########################################
+    const COLUMN_TYPE = 'type';
+    const COLUMN_PRIORITY = 'priority';
 
     public function _construct()
     {
         $this->_init('M2ePro/Listing_Product_Instruction', 'id');
     }
-
-    //########################################
 
     public function add(array $instructionsData)
     {
@@ -94,6 +88,4 @@ class Ess_M2ePro_Model_Resource_Listing_Product_Instruction extends Ess_M2ePro_M
             )
         );
     }
-
-    //########################################
 }

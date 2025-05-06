@@ -237,9 +237,17 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
 
     private function stepThree(Ess_M2ePro_Model_Marketplace $marketplace)
     {
+        $productTypeIdParam = $this->getRequest()
+                                   ->getParam('product_type_id');
+
+        $isProductTypeUnfilled = $productTypeIdParam !== null
+            && empty($productTypeIdParam);
+
         if (
-            $this->isMovedFromOther($this->getListing())
-            || !$marketplace->getChildObject()->isSupportedProductType()
+            $isProductTypeUnfilled
+            || $this->isMovedFromOther($this->getListing())
+            || !$marketplace->getChildObject()
+                            ->isSupportedProductType()
         ) {
             $this->review();
 
@@ -275,16 +283,8 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
             return $this->_redirect('*/adminhtml_walmart_listing/view', array('id' => $listingId));
         }
 
-        $isMovedFromOther = $this->isMovedFromOther($this->getListing());
-        if (
-            !$isMovedFromOther
-            && $marketplace->getChildObject()->isSupportedProductType()
-        ) {
-            $this->removeProductsWithoutProductTypes($additionalData['adding_listing_products_ids']);
-        }
-
         //-- Remove successfully moved Unmanaged items
-        if ($isMovedFromOther) {
+        if ($this->isMovedFromOther($this->getListing())) {
             $this->deleteListingOthers();
         }
 
@@ -303,22 +303,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
         return isset($additionalData['source'])
             && $additionalData['source'] == SourceModeBlock::SOURCE_OTHER;
     }
-
-    private function removeProductsWithoutProductTypes(array $addingListingProductsIds)
-    {
-        /** @var Ess_M2ePro_Model_Resource_Walmart_Listing_Product_Collection $collection */
-        $collection = Mage::helper('M2ePro/Component_Walmart')->getCollection('Listing_Product');
-        $collection->getSelect()->reset(Zend_Db_Select::COLUMNS);
-        $collection->getSelect()->columns(array('id' => 'main_table.id'));
-        $collection->getSelect()->where(
-            "`main_table`.`id` IN (?) AND `second_table`.`product_type_id` IS NULL",
-            $addingListingProductsIds
-        );
-
-        $failedProductsIds = $collection->getColumnValues('id');
-        $this->deleteListingProducts($failedProductsIds);
-    }
-
+    
     protected function review()
     {
         $this->_initAction();

@@ -25,6 +25,15 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_SynchronizationTempla
 
         /** @var Ess_M2ePro_Model_Walmart_Listing_Product $walmartListingProduct */
         $walmartListingProduct = $listingProduct->getChildObject();
+        if (
+            $walmartListingProduct->getWalmartMarketplace()
+                                  ->isSupportedProductType()
+            && !$walmartListingProduct->isExistsProductType()
+            && !$walmartListingProduct->isAvailableMappingToExistingChannelItem()
+        ) {
+            return false;
+        }
+
         $variationManager = $walmartListingProduct->getVariationManager();
 
         if ($variationManager->isVariationProduct()) {
@@ -41,8 +50,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_SynchronizationTempla
 
         return true;
     }
-
-    //########################################
 
     public function process(array $params = array())
     {
@@ -79,8 +86,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_SynchronizationTempla
         }
     }
 
-    //########################################
-
     public function isMeetListRequirements()
     {
         $listingProduct = $this->_input->getListingProduct();
@@ -92,15 +97,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_SynchronizationTempla
         $walmartSynchronizationTemplate = $walmartListingProduct->getWalmartSynchronizationTemplate();
 
         if (!$walmartSynchronizationTemplate->isListMode()) {
-            return false;
-        }
-
-        if (
-            $walmartListingProduct
-                ->getWalmartMarketplace()
-                ->isSupportedProductType()
-            && !$walmartListingProduct->isExistsProductType()
-        ) {
             return false;
         }
 
@@ -224,6 +220,4 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_SynchronizationTempla
 
         return true;
     }
-
-    //########################################
 }

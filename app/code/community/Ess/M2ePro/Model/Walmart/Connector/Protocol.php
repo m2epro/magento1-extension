@@ -15,6 +15,6 @@ class Ess_M2ePro_Model_Walmart_Connector_Protocol extends Ess_M2ePro_Model_Conne
 
     public function getComponentVersion()
     {
-        return 6;
+        return 7;
     }
 }

@@ -5,8 +5,12 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_DataBuilder_Details
 {
     public function getData()
     {
-        $sellingFormatTemplateSource = $this->getWalmartListingProduct()->getSellingFormatTemplateSource();
         $walmartListingProduct = $this->getWalmartListingProduct();
+        $sellingFormatTemplateSource = $walmartListingProduct->getSellingFormatTemplateSource();
+
+        /** @var Ess_M2ePro_Model_Walmart_Listing_Product_ProviderFactory $listingProductProviderFactory */
+        $listingProductProviderFactory =  Mage::getModel('M2ePro/Walmart_Listing_Product_ProviderFactory');
+        $walmartListingProductProvider = $listingProductProviderFactory->create($walmartListingProduct);
 
         $data = array(
             'product_id_data'      => $this->getProductIdData(),
@@ -14,13 +18,26 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_DataBuilder_Details
             'shipping_weight'       => $sellingFormatTemplateSource->getItemWeight(),
         );
 
-        if ($walmartListingProduct->isExistsProductType()) {
-            $data['product_type_nick'] = $walmartListingProduct->getProductType()
-                                                               ->getNick();
-            $data['attributes'] = $this->getAttributes(
-                $walmartListingProduct->getProductType(),
-                $walmartListingProduct->getActualMagentoProduct()
-            );
+        if (
+            $this->getWalmartMarketplace()
+                 ->isSupportedProductType()
+        ) {
+            if ($walmartListingProduct->isExistsProductType()) {
+                $data['product_type_nick'] = $walmartListingProduct->getProductType()
+                                                                   ->getNick();
+                $data['attributes'] = $this->getAttributes(
+                    $walmartListingProduct->getProductType(),
+                    $walmartListingProduct->getActualMagentoProduct()
+                );
+            } else {
+                /** match with existing chanel item */
+                $data['matching_mode'] = true;
+            }
+        }
+
+        $condition = $this->retrieveCondition($walmartListingProductProvider);
+        if ($condition !== null) {
+            $data['condition'] = $condition;
         }
 
         if ($this->getWalmartListingProduct()->getWpid()) {
@@ -103,6 +120,27 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_DataBuilder_Details
         }
 
         return $resultData;
+    }
+
+    /**
+     * @return string|null
+     */
+    private function retrieveCondition(Ess_M2ePro_Model_Walmart_Listing_Product_Provider $provider)
+    {
+        $this->searchNotFoundAttributes();
+        $condition = $provider->retrieveCondition();
+
+        if ($condition === null) {
+            return null;
+        }
+
+        if ($condition->isNotFoundMagentoAttribute) {
+            $this->processNotFoundAttributes('Condition');
+
+            return null;
+        }
+
+        return $condition->value;
     }
 
     // ---------------------------------------
@@ -335,6 +373,4 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_DataBuilder_Details
 
         return $result;
     }
-
-    //########################################
 }

@@ -1,11 +1,5 @@
 <?php
 
-/*
- * @author     M2E Pro Developers Team
- * @copyright  M2E LTD
- * @license    Commercial use is forbidden
- */
-
 class Ess_M2ePro_Adminhtml_Walmart_Listing_CreateController
     extends Ess_M2ePro_Controller_Adminhtml_Walmart_MainController
 {
@@ -75,21 +69,51 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_CreateController
         $account = Mage::helper('M2ePro/Component_Walmart')->getCachedObject(
             'Account', (int)$post['account_id']
         );
-        $selling = Mage::helper('M2ePro/Component_Walmart')->getCachedObject(
+
+        // Saving models in a permanent cache
+        //----------------------------------
+        Mage::helper('M2ePro/Component_Walmart')->getCachedObject(
             'Template_SellingFormat', (int)$post['template_selling_format_id']
         );
-        $synchronization = Mage::helper('M2ePro/Component_Walmart')->getCachedObject(
+        Mage::helper('M2ePro/Component_Walmart')->getCachedObject(
             'Template_Synchronization', (int)$post['template_synchronization_id']
         );
-        $description = Mage::helper('M2ePro/Component_Walmart')->getCachedObject(
+        Mage::helper('M2ePro/Component_Walmart')->getCachedObject(
             'Template_Description', (int)$post['template_description_id']
         );
+        //----------------------------------
 
         $post['marketplace_id'] = $account->getMarketplaceId();
 
-        $listing = Mage::helper('M2ePro/Component')->getComponentModel('walmart', 'Listing')
-            ->addData($post)
-            ->save();
+        $skipForceSetFields = array(
+            Ess_M2ePro_Model_Resource_Walmart_Listing::COLUMN_CONDITION_MODE,
+            Ess_M2ePro_Model_Resource_Walmart_Listing::COLUMN_CONDITION_CUSTOM_ATTRIBUTE,
+            Ess_M2ePro_Model_Resource_Walmart_Listing::COLUMN_CONDITION_VALUE,
+        );
+        
+        $listingData = array();
+        foreach ($post as $field => $value) {
+            if (in_array($field, $skipForceSetFields)) {
+                continue;
+            }
+
+            $listingData[$field] = $value;
+        }
+
+        /** @var Ess_M2ePro_Model_Listing $listing */
+        $listing = Mage::helper('M2ePro/Component')->getComponentModel('walmart', 'Listing');
+        $listing->addData($listingData);
+        $listing->save();
+
+        // getChildObject() only called from an existing entity
+        /** @var Ess_M2ePro_Model_Walmart_Listing $walmartListing */
+        $walmartListing = $listing->getChildObject();
+        if (!empty($post['condition_value'])) {
+            $walmartListing->installConditionModeRecommendedValue($post['condition_value']);
+        } elseif (!empty($post['condition_custom_attribute'])) {
+            $walmartListing->installConditionModeCustomAttribute($post['condition_custom_attribute']);
+        }
+        $walmartListing->save();
 
         $tempLog = Mage::getModel('M2ePro/Listing_Log');
         $tempLog->setComponentMode($listing->getComponentMode());

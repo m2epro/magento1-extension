@@ -59,6 +59,10 @@ window.WalmartListingSettings = Class.create(Common, {
         if ($('template_synchronization_id').value) {
             $('template_synchronization_id').simulate('change');
         }
+
+        $('condition_mode')
+            .observe('change', WalmartListingSettingsObj.conditionModeChange)
+            .simulate('change');
     },
 
     // ---------------------------------------
@@ -259,7 +263,21 @@ window.WalmartListingSettings = Class.create(Common, {
             noteEl && $('template_synchronization_note').hide();
             $('template_synchronization_label').show();
         }
-    }
+    },
 
     // ---------------------------------------
+
+    conditionModeChange: function () {
+        const conditionValue = $('condition_value');
+        const conditionCustomAttribute = $('condition_custom_attribute');
+
+        conditionValue.value = '';
+        conditionCustomAttribute.value = '';
+
+        if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Walmart_Listing::CONDITION_MODE_RECOMMENDED')) {
+            WalmartListingSettingsObj.updateHiddenValue(this, conditionValue);
+        } else {
+            WalmartListingSettingsObj.updateHiddenValue(this, conditionCustomAttribute);
+        }
+    },
 });
