@@ -735,11 +735,35 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
             Mage::helper('M2ePro')->jsonEncode($actionDataBuilder->getData()),
             'md5'
         );
-        if ($hashShippingData == $ebayListingProduct->getOnlineShippingData()) {
-            return false;
+        if ($hashShippingData !== $ebayListingProduct->getOnlineShippingData()) {
+            return true;
         }
 
-        return true;
+        $itemBecameMultiQtyFromSingleOnline = $ebayListingProduct->getOnlineQty() <= 1
+            && $ebayListingProduct->getQty() > 1;
+        if (
+            $itemBecameMultiQtyFromSingleOnline
+            && $this->hasAnyShippingServiceAdditionalCost($ebayListingProduct)
+        ) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @return bool
+     */
+    private function hasAnyShippingServiceAdditionalCost(
+        Ess_M2ePro_Model_Ebay_Listing_Product $ebayListingProduct
+    ) {
+        $magentoProduct = $ebayListingProduct->getMagentoProduct();
+        $storeId = $ebayListingProduct->getListing()
+                                      ->getStoreId();
+
+        return $ebayListingProduct->getShippingTemplate()
+                                  ->getSource($magentoProduct)
+                                  ->hasAnyShippingServiceAdditionalCost($storeId);
     }
 
     // ---------------------------------------

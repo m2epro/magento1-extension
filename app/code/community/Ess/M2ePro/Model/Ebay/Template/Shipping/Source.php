@@ -131,4 +131,25 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Source
     }
 
     //########################################
+
+    /**
+     * @param int $storeId
+     * @return bool
+     */
+    public function hasAnyShippingServiceAdditionalCost($storeId)
+    {
+        $services = $this->getShippingTemplate()
+                         ->getServices(true);
+
+        foreach ($services as $service) {
+            if (
+                $service->getSource($this->getMagentoProduct())
+                        ->getCostAdditional($storeId) > 0
+            ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

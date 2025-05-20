@@ -207,7 +207,7 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
 
     /**
      * @param bool $asObjects
-     * @return array|Ess_M2ePro_Model_Abstract[]
+     * @return Ess_M2ePro_Model_Ebay_Template_Shipping_Service[]
      * @throws Ess_M2ePro_Model_Exception_Logic
      */
     public function getServices($asObjects = false)
@@ -216,7 +216,7 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
         $collection->addFieldToFilter('template_shipping_id', $this->getId());
         $collection->setOrder('priority', Varien_Data_Collection::SORT_ORDER_ASC);
 
-        /** @var $service Ess_M2ePro_Model_Ebay_Template_Shipping_Service */
+        /** @var Ess_M2ePro_Model_Ebay_Template_Shipping_Service $service */
         foreach ($collection->getItems() as $service) {
             $service->setShippingTemplate($this);
         }

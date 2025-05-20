@@ -83,8 +83,11 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
         $ebayListingProduct = $this->_input->getListingProduct()->getChildObject();
         $ebaySynchronizationTemplate = $ebayListingProduct->getEbaySynchronizationTemplate();
 
+        /** @var Ess_M2ePro_Model_Ebay_Listing_Product_Action_Configurator $configurator */
         $configurator = Mage::getModel('M2ePro/Ebay_Listing_Product_Action_Configurator');
-        $configurator->disableAll()->allowQty()->allowVariations();
+        $configurator->disableAll()
+                     ->allowQty()
+                     ->allowVariations();
 
         $tags = array('qty');
 
@@ -103,6 +106,11 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
         if ($this->_input->getListingProduct()->isHidden()) {
             $actionType = Ess_M2ePro_Model_Listing_Product::ACTION_REVISE;
             $params['replaced_action'] = Ess_M2ePro_Model_Listing_Product::ACTION_RELIST;
+        }
+
+        if ($actionType === Ess_M2ePro_Model_Listing_Product::ACTION_RELIST) {
+            $configurator->allowShipping();
+            $tags[] = 'shipping';
         }
 
         $scheduledAction->addData(
