@@ -54,7 +54,7 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Item_Requester
         }
 
         $this->marketplace = $this->_listingProduct->getMarketplace();
-        $this->account     = $this->_listingProduct->getAccount();
+        $this->account = $this->_listingProduct->getAccount();
     }
 
     //########################################
@@ -82,11 +82,11 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Item_Requester
         return array_merge(
             parent::getProcessingParams(),
             array(
-                'request_data'        => $this->getRequestData(),
-                'listing_product_id'  => $this->_listingProduct->getId(),
-                'lock_identifier'     => $this->getLockIdentifier(),
-                'action_type'         => $this->getActionType(),
-                'request_timeout'     => $this->getRequestTimeout(),
+                'request_data' => $this->getRequestData(),
+                'listing_product_id' => $this->_listingProduct->getId(),
+                'lock_identifier' => $this->getLockIdentifier(),
+                'action_type' => $this->getActionType(),
+                'request_timeout' => $this->getRequestTimeout(),
             )
         );
     }
@@ -201,22 +201,22 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Item_Requester
         $metaData['log_messages'] = $logMessages;
 
         $product = array(
-            'request'          => $this->getRequestDataObject()->getData(),
+            'request' => $this->getRequestDataObject()->getData(),
             'request_metadata' => $metaData,
-            'configurator'     => $this->_listingProduct->getActionConfigurator()->getData(),
-            'id'               => $this->_listingProduct->getId(),
+            'configurator' => $this->_listingProduct->getActionConfigurator()->getData(),
+            'id' => $this->_listingProduct->getId(),
         );
 
         return array(
-            'is_realtime'     => $this->isRealTime(),
-            'account_id'      => $this->account->getId(),
-            'action_type'     => $this->getActionType(),
+            'is_realtime' => $this->isRealTime(),
+            'account_id' => $this->account->getId(),
+            'action_type' => $this->getActionType(),
             'lock_identifier' => $this->getLockIdentifier(),
-            'logs_action'     => $this->getLogsAction(),
-            'logs_action_id'  => $this->getLogger()->getActionId(),
-            'status_changer'  => $this->_params['status_changer'],
-            'params'          => $this->_params,
-            'product'         => $product,
+            'logs_action' => $this->getLogsAction(),
+            'logs_action_id' => $this->getLogger()->getActionId(),
+            'status_changer' => $this->_params['status_changer'],
+            'params' => $this->_params,
+            'product' => $product,
         );
     }
 
@@ -275,6 +275,12 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Item_Requester
 
     protected function initializeVariations()
     {
+        /** @var Ess_M2ePro_Model_Ebay_Listing_Product $ebayListingProduct */
+        $ebayListingProduct = $this->_listingProduct->getChildObject();
+        if (!$ebayListingProduct->isVariationMode()) {
+            return null;
+        }
+
         /** @var Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Updater $variationUpdater */
         $variationUpdater = Mage::getModel('M2ePro/Ebay_Listing_Product_Variation_Updater');
         $variationUpdater->process($this->_listingProduct);
@@ -393,7 +399,7 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Item_Requester
 
             /** @var $validator Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Validator */
             $validator = Mage::getModel(
-                'M2ePro/Ebay_Listing_Product_Action_Type_'.$this->getOrmActionType().'_Validator'
+                'M2ePro/Ebay_Listing_Product_Action_Type_' . $this->getOrmActionType() . '_Validator'
             );
 
             $validator->setParams($this->_params);
@@ -425,7 +431,7 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Item_Requester
     {
         /** @var Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Request $request */
 
-        $request = Mage::getModel('M2ePro/Ebay_Listing_Product_Action_Type_'.$this->getOrmActionType().'_Request');
+        $request = Mage::getModel('M2ePro/Ebay_Listing_Product_Action_Type_' . $this->getOrmActionType() . '_Request');
 
         $request->setParams($this->_params);
         $request->setListingProduct($this->_listingProduct);
