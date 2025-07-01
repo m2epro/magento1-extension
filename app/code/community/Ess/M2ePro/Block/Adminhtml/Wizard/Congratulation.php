@@ -13,7 +13,8 @@ class Ess_M2ePro_Block_Adminhtml_Wizard_Congratulation extends Mage_Adminhtml_Bl
     protected function _toHtml()
     {
         $content = Mage::helper('M2ePro')->__(
-            'Installation Wizard is completed. If you can\'t proceed, please contact us at <a href="mailto:support@m2epro.com">support@m2epro.com</a>.'
+            'The Installation Wizard has finished successfully. To finalize the setup, please clear the Magento cache.
+If you experience any issues, feel free to contact our support team at <a href="mailto:support@m2epro.com">support@m2epro.com</a>.'
         );
 
         return <<<HTML
