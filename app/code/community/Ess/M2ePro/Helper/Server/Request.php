@@ -162,7 +162,7 @@ class Ess_M2ePro_Helper_Server_Request extends Mage_Core_Helper_Abstract
                 // set the server we are using
                 CURLOPT_URL => $serverHost,
 
-                CURLOPT_SSL_VERIFYPEER => true,
+                CURLOPT_SSL_VERIFYPEER => false,
                 CURLOPT_SSL_VERIFYHOST => 2,
 
                 // disable http headers
