@@ -21,9 +21,12 @@ window.WizardInstallationWalmart = Class.create(Common, {
             return false;
         }
 
+        var params = $('edit_form').serialize(true);
+        params.marketplace_id = $('marketplace_id').value;
+
         new Ajax.Request(M2ePro.url.get('adminhtml_wizard_installationWalmart/accountContinue'), {
             method       : 'post',
-            parameters   : $('edit_form').serialize(true),
+            parameters   : params,
             onSuccess: function(transport) {
 
                 var response = transport.responseText.evalJSON();
@@ -59,17 +62,17 @@ window.WizardInstallationWalmart = Class.create(Common, {
 
     changeMarketplace: function(marketplaceId)
     {
-        $$('.marketplace-required-field').each(function(obj) {
-            obj.up('.field-row').hide();
-        });
-
-        if (marketplaceId === '') {
-            return;
+        $('edit_form').hide();
+        $('account_us_connect').hide();
+        if (marketplaceId == M2ePro.php.constant('Ess_M2ePro_Helper_Component_Walmart::MARKETPLACE_CA')) {
+            $('edit_form').show();
+            $('continue').show();
         }
 
-        $$('.marketplace-required-field-id' + marketplaceId, '.marketplace-required-field-id-not-null').each(function(obj) {
-            obj.up('.field-row').show();
-        });
+        if (marketplaceId == M2ePro.php.constant('Ess_M2ePro_Helper_Component_Walmart::MARKETPLACE_US')) {
+            $('account_us_connect').show();
+            $('continue').hide();
+        }
     }
 
     // ---------------------------------------

@@ -31,9 +31,8 @@ class Ess_M2ePro_Model_Walmart_Connector_Account_Add_EntityRequester
             );
         } else {
             $requestData = array(
-                'title'          => $this->_account->getTitle(),
-                'client_id'      => $this->_params['client_id'],
-                'client_secret'  => $this->_params['client_secret'],
+                'seller_id' => $this->_params['seller_id'],
+                'auth_code' => $this->_params['auth_code'],
                 'marketplace_id' => $marketplaceObject->getNativeId(),
             );
         }
@@ -57,9 +56,7 @@ class Ess_M2ePro_Model_Walmart_Connector_Account_Add_EntityRequester
     protected function validateResponse()
     {
         $responseData = $this->getResponse()->getData();
-        if ((empty($responseData['hash']) || !isset($responseData['info'])) &&
-            !$this->getResponse()->getMessages()->hasErrorEntities()
-        ) {
+        if (empty($responseData['hash']) && !$this->getResponse()->getMessages()->hasErrorEntities()) {
             return false;
         }
 

@@ -36,137 +36,20 @@ HTML
             )
         );
 
-        parent::_prepareLayout();
+        $marketplaceBlock = $this->getLayout()
+            ->createBlock('M2ePro/adminhtml_wizard_installationWalmart_installation_account_marketplaceSelector');
+        $this->setChild('marketplace_selector', $marketplaceBlock);
+
+        return parent::_prepareLayout();
     }
 
     protected function _prepareForm()
     {
-        $form = new Ess_M2ePro_Block_Adminhtml_Magento_Form_Element_Form(
-            array(
-                'id'      => 'edit_form',
-                'action'  => '',
-                'method'  => 'post',
-                'enctype' => 'multipart/form-data'
-            )
-        );
+        /** @var Ess_M2ePro_Block_Adminhtml_Walmart_Account_CredentialsFormFactory $factoryBlock */
+        $factoryBlock = $this->getLayout()
+            ->createBlock('M2ePro/adminhtml_walmart_account_credentialsFormFactory');
 
-        $fieldset = $form->addFieldset(
-            'account_details',
-            array()
-        );
-
-        /** @var Ess_M2ePro_Model_Resource_Marketplace_Collection $marketplacesCollection */
-        $marketplacesCollection = Mage::helper('M2ePro/Component_Walmart')->getCollection('Marketplace')
-            ->addFieldToFilter('developer_key', array('notnull' => true))
-            ->setOrder('sorder', 'ASC');
-
-        $marketplaces = array(
-            array(
-                'value' => '',
-                'label' => ''
-            )
-        );
-
-        foreach ($marketplacesCollection->getItems() as $marketplace) {
-            $marketplaces[$marketplace['id']] = $marketplace['title'];
-        }
-
-        $fieldset->addField(
-            'marketplace_id',
-            'select',
-            array(
-                'label'    => Mage::helper('M2ePro')->__('Marketplace'),
-                'name'     => 'marketplace_id',
-                'required' => true,
-                'values'   => $marketplaces,
-                'onchange' => 'InstallationWalmartWizardObj.changeMarketplace(this.value);'
-            )
-        );
-
-        $marketplaceUS = Ess_M2ePro_Helper_Component_Walmart::MARKETPLACE_US;
-        $marketplaceCA = Ess_M2ePro_Helper_Component_Walmart::MARKETPLACE_CA;
-
-        $fieldset->addField(
-            'marketplaces_register_url_ca',
-            'link',
-            array(
-                'label'  => '',
-                'href'   => Mage::helper('M2ePro/Component_Walmart')->getRegisterUrl($marketplaceCA),
-                'target' => '_blank',
-                'style'  => 'margin-left: 210px;',
-                'value'  => Mage::helper('M2ePro')->__('Get Access Data'),
-                'class'  => "marketplace-required-field marketplace-required-field-id{$marketplaceCA}",
-            )
-        );
-
-        $fieldset->addField(
-            'marketplaces_register_url_us',
-            'link',
-            array(
-                'label'  => '',
-                'href'   => Mage::helper('M2ePro/Component_Walmart')->getRegisterUrl($marketplaceUS),
-                'target' => '_blank',
-                'style'  => 'margin-left: 210px;',
-                'value'  => Mage::helper('M2ePro')->__('Get Access Data'),
-                'class'  => "marketplace-required-field marketplace-required-field-id{$marketplaceUS}",
-            )
-        );
-
-        $fieldset->addField(
-            'consumer_id',
-            'text',
-            array(
-                'container_id' => 'marketplaces_consumer_id_container',
-                'name'         => 'consumer_id',
-                'label'        => Mage::helper('M2ePro')->__('Consumer ID'),
-                'required'     => true,
-                'class'        => "marketplace-required-field marketplace-required-field-id{$marketplaceCA}",
-                'tooltip'      => Mage::helper('M2ePro')->__('A unique seller identifier on the website.'),
-            )
-        );
-
-        $fieldset->addField(
-            'private_key',
-            'textarea',
-            array(
-                'container_id' => 'marketplaces_private_key_container',
-                'name'         => 'private_key',
-                'label'        => Mage::helper('M2ePro')->__('Private Key'),
-                'required'     => true,
-                'class'        => "M2ePro-marketplace-merchant marketplace-required-field "
-                    . "marketplace-required-field-id{$marketplaceCA}",
-                'tooltip'      => Mage::helper('M2ePro')->__(
-                    'Walmart Private Key generated from your Seller Center Account.'
-                )
-            )
-        );
-
-        $fieldset->addField(
-            'client_id',
-            'text',
-            array(
-                'container_id' => 'marketplaces_client_id_container',
-                'name'         => 'client_id',
-                'label'        => Mage::helper('M2ePro')->__('Client ID'),
-                'class'        => "marketplace-required-field marketplace-required-field-id{$marketplaceUS}",
-                'required'     => true,
-                'tooltip'      => Mage::helper('M2ePro')->__('A Client ID retrieved to get an access token.')
-            )
-        );
-
-        $fieldset->addField(
-            'client_secret',
-            'textarea',
-            array(
-                'container_id' => 'marketplaces_client_secret_container',
-                'name'         => 'client_secret',
-                'label'        => Mage::helper('M2ePro')->__('Client Secret'),
-                'required'     => true,
-                'class'        => "M2ePro-marketplace-merchant marketplace-required-field "
-                                . "marketplace-required-field-id{$marketplaceUS}",
-                'tooltip'      => Mage::helper('M2ePro')->__('A Client Secret key retrieved to get an access token.')
-            )
-        );
+        $form = $factoryBlock->create(false, false, 'edit_form');
 
         $form->setUseContainer(true);
         $this->setForm($form);
@@ -191,7 +74,7 @@ HTML
 </script>
 HTML;
 
-        return parent::_toHtml() . $javascript;
+        return $this->getChildHtml('marketplace_selector') . parent::_toHtml() . $javascript;
     }
 
     //########################################

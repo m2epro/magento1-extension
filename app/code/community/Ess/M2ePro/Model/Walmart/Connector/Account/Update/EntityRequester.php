@@ -41,8 +41,7 @@ class Ess_M2ePro_Model_Walmart_Connector_Account_Update_EntityRequester
      */
     protected function validateResponse()
     {
-        $responseData = $this->getResponse()->getData();
-        if (!isset($responseData['info']) && !$this->getResponse()->getMessages()->hasErrorEntities()) {
+        if ($this->getResponse()->getMessages()->hasErrorEntities()) {
             return false;
         }
 

@@ -113,7 +113,7 @@ HTML
                             'label'   => $helper->__('Add Another'),
                             'style'   => 'margin-left: 10px;' . $isAddAccountButtonHidden,
                             'onclick' => '',
-                            'class'   => 'primary'
+                            'class'   => 'add add-account-drop-down'
                         )
                     )->toHtml(),
                 'tooltip'            => $helper->__('Select Account under which you want to manage this Listing.')
@@ -461,6 +461,14 @@ HTML
 
     protected function _prepareLayout()
     {
+        /** @var Mage_Page_Block_Html_Head $headBlock */
+        $headBlock = $this->getLayout()->getBlock('head');
+        if ($headBlock) {
+            $headBlock
+                ->addCss('M2ePro/css/Plugin/DropDown.css')
+                ->addJs('M2ePro/Plugin/DropDown.js');
+        }
+
         /** @var Ess_M2ePro_Helper_View $viewHelper */
         $viewHelper = Mage::helper('M2ePro/View');
 
@@ -573,7 +581,6 @@ HTML
     
     WalmartListingCreateGeneralObj.initObservers();
     WalmartListingSettingsObj.initObservers();
-
 JS
         );
 
@@ -618,7 +625,23 @@ JS
             )
         );
 
-        return $helpBlock->toHtml() . parent::_toHtml();
+        /** @var Ess_M2ePro_Block_Adminhtml_Walmart_Account_CredentialsForm $credentialsForm */
+        $credentialsForm = $this->getLayout()
+            ->createBlock('M2ePro/adminhtml_walmart_account_credentialsForm',
+                '',
+                array(
+                    'with_title' => true,
+                    'with_button' => true,
+                    'form_id' => 'account_credentials'
+                )
+            );
+
+        return $this->getAddAccountButtonHtml()
+            . '<div id="account_credentials_form" style="display: none;">'
+            . $credentialsForm->toHtml()
+            . '</div>'
+            . $helpBlock->toHtml()
+            . parent::_toHtml();
     }
 
     //########################################
@@ -696,5 +719,53 @@ JS
             Ess_M2ePro_Model_Resource_Walmart_Listing::COLUMN_CONDITION_VALUE => '',
             Ess_M2ePro_Model_Resource_Walmart_Listing::COLUMN_CONDITION_CUSTOM_ATTRIBUTE => '',
         );
+    }
+
+    public function getAddAccountButtonHtml()
+    {
+        $data = array(
+            'target_css_class' => 'add-account-drop-down',
+            'items'            => $this->getAddAccountButtonDropDownItems()
+        );
+
+        $addAccountDropDownBlock = $this->getLayout()->createBlock('M2ePro/adminhtml_widget_button_dropDown');
+        $addAccountDropDownBlock->setData($data);
+
+        return $addAccountDropDownBlock->toHtml();
+    }
+    private function getAddAccountButtonDropDownItems()
+    {
+        $items = array();
+        $specificEndUrl = urlencode($this->getUrl('*/*/*', array('_current' => true)));
+
+        $url = $this->getUrl(
+            '*/adminhtml_walmart_account_unitedStates_beforeGetToken/beforeGetToken',
+            array(
+                '_current' => true,
+                'marketplace_id' => Ess_M2ePro_Helper_Component_Walmart::MARKETPLACE_US,
+                'specific_end_url' => $specificEndUrl,
+            )
+        );
+
+        $items[] = array(
+            'url'    => $url,
+            'label'  => Mage::helper('M2ePro')->__('United States')
+        );
+
+        $addAccount = $this->getUrl(
+            '*/adminhtml_walmart_account_canada_accountCreate/addAccount',
+            array(
+                'marketplace_id' => Ess_M2ePro_Helper_Component_Walmart::MARKETPLACE_CA,
+                'specific_end_url' => $specificEndUrl,
+            )
+        );
+        $items[] = array(
+            'url'     => '#',
+            'id'      => 'account-ca',
+            'label'   => Mage::helper('M2ePro')->__('Canada'),
+            'onclick' => "WalmartListingCreateGeneralObj.openAccessDataPopup('{$addAccount}')"
+        );
+
+        return $items;
     }
 }

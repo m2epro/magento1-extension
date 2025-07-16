@@ -20,11 +20,7 @@ class Ess_M2ePro_Model_Walmart_Account_Builder extends Ess_M2ePro_Model_ActiveRe
         // ---------------------------------------
         $keys = array(
             'title',
-            'marketplace_id',
-            'consumer_id',
-            'private_key',
-            'client_id',
-            'client_secret'
+            'marketplace_id'
         );
         foreach ($keys as $key) {
             if (isset($this->_rawData[$key])) {
@@ -345,10 +341,6 @@ class Ess_M2ePro_Model_Walmart_Account_Builder extends Ess_M2ePro_Model_ActiveRe
         return array(
             'title'          => '',
             'marketplace_id' => 0,
-            'consumer_id'    => '',
-            'private_key'    => '',
-            'client_id'      => '',
-            'client_secret'  => '',
 
             'related_store_id' => 0,
 

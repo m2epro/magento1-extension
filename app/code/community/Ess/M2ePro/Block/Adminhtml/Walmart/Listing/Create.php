@@ -66,16 +66,6 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Create extends Mage_Adminhtml_B
 
         Mage::helper('M2ePro/View')->getJsUrlsRenderer()->add(
             $this->getUrl(
-                '*/adminhtml_walmart_account/new', array(
-                    'close_on_save' => true,
-                    'wizard'        => $this->getRequest()->getParam('wizard')
-                )
-            ),
-            'adminhtml_walmart_account/new'
-        );
-
-        Mage::helper('M2ePro/View')->getJsUrlsRenderer()->add(
-            $this->getUrl(
                 '*/adminhtml_walmart_log/synchronization', array(
                     'wizard' => $this->getRequest()->getParam('wizard')
                 )

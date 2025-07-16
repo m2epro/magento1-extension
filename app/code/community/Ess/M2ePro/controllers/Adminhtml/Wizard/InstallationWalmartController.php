@@ -50,77 +50,29 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationWalmartController
             return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('message' => $error)));
         }
 
-        $accountData = array();
-
-        $requiredFields = array(
-            'marketplace_id',
-            'consumer_id',
-            'private_key',
-            'client_id',
-            'client_secret'
-        );
-
-        foreach ($requiredFields as $requiredField) {
-            if (!empty($params[$requiredField])) {
-                $accountData[$requiredField] = $params[$requiredField];
-            }
-        }
+        $marketplaceId = (int)$this->getRequest()->getParam('marketplace_id');
+        $consumerId = $this->getRequest()->getPost('consumer_id');
+        $privateKey = $this->getRequest()->getPost('private_key');
 
         /** @var Ess_M2ePro_Model_Marketplace $marketplace */
-        $marketplace = Mage::getModel('M2ePro/Marketplace')->loadInstance($accountData['marketplace_id']);
+        $marketplace = Mage::getModel('M2ePro/Marketplace')->loadInstance($marketplaceId);
         $marketplace->setData('status', Ess_M2ePro_Model_Marketplace::STATUS_ENABLE);
         $marketplace->save();
 
-        $accountData = array_merge(
-            $this->getAccountDefaultSettings(),
-            array(
-                'title' => "Default - {$marketplace->getCode()}",
-            ),
-            $accountData
-        );
-
-        /** @var $account Ess_M2ePro_Model_Account */
-        $account = Mage::helper('M2ePro/Component_Walmart')->getModel('Account');
-        Mage::getModel('M2ePro/Walmart_Account_Builder')->build($account, $accountData);
+        $title = "Default - {$marketplace->getCode()}";
 
         try {
-            $requestData = array(
-                'marketplace_id' => $params['marketplace_id']
+            /** @var $account Ess_M2ePro_Model_Account */
+            $account = Mage::getModel('M2ePro/Walmart_Account_Canada_Create')->createAccount(
+                $marketplaceId,
+                $consumerId,
+                $privateKey,
+                $title
             );
 
-            if ($params['marketplace_id'] == Ess_M2ePro_Helper_Component_Walmart::MARKETPLACE_US) {
-                $requestData['client_id'] = $params['client_id'];
-                $requestData['client_secret'] = $params['client_secret'];
-            } else {
-                $requestData['consumer_id'] = $params['consumer_id'];
-                $requestData['private_key'] = $params['private_key'];
-            }
-
-            /** @var $dispatcherObject Ess_M2ePro_Model_Walmart_Connector_Dispatcher */
-            $dispatcherObject = Mage::getModel('M2ePro/Walmart_Connector_Dispatcher');
-
-            $connectorObj = $dispatcherObject->getConnector(
-                'account',
-                'add',
-                'entityRequester',
-                $requestData,
-                $account
-            );
-            $dispatcherObject->process($connectorObj);
-
-            $responseData = $connectorObj->getResponseData();
-            $account->getChildObject()->addData(
-                array(
-                    'server_hash' => $responseData['hash'],
-                    'info' => Mage::helper('M2ePro')->jsonEncode($responseData['info'])
-                )
-            );
-
-            $account->getChildObject()->save();
+            Mage::getModel('M2ePro/Walmart_Account_Builder')->build($account, $this->getAccountDefaultStoreId());
         } catch (Exception $exception) {
             Mage::helper('M2ePro/Module_Exception')->process($exception);
-
-            $account->deleteInstance();
 
             Mage::getModel('M2ePro/Servicing_Dispatcher')->processTask(
                 \Ess_M2ePro_Model_Servicing_Task_License::NAME
@@ -181,10 +133,8 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationWalmartController
 
     //########################################
 
-    protected function getAccountDefaultSettings()
+    protected function getAccountDefaultStoreId()
     {
-        $data = Mage::getModel('M2ePro/Walmart_Account_Builder')->getDefaultData();
-
         $data['magento_orders_settings']['listing_other']['store_id'] = Mage::helper('M2ePro/Magento_Store')
             ->getDefaultStoreId();
 
@@ -197,14 +147,8 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationWalmartController
             return false;
         }
 
-        if ($params['marketplace_id'] == Ess_M2ePro_Helper_Component_Walmart::MARKETPLACE_US) {
-            if (empty($params['client_id']) || empty($params['client_secret'])) {
-                return false;
-            }
-        } else {
-            if (empty($params['consumer_id']) || empty($params['private_key'])) {
-                return false;
-            }
+        if (empty($params['consumer_id']) || empty($params['private_key'])) {
+            return false;
         }
 
         return true;

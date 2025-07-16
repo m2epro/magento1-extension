@@ -116,24 +116,12 @@ class Ess_M2ePro_Model_Walmart_Account extends Ess_M2ePro_Model_Component_Child_
         return (int)$this->getData('marketplace_id');
     }
 
-    public function getConsumerId()
+    /**
+     * @return string
+     */
+    public function getIdentifier()
     {
-        return $this->getData('consumer_id');
-    }
-
-    public function getPrivateKey()
-    {
-        return $this->getData('private_key');
-    }
-
-    public function getClientId()
-    {
-        return $this->getData('client_id');
-    }
-
-    public function getClientSecret()
-    {
-        return $this->getData('client_secret');
+        return (string)$this->getData(Ess_M2ePro_Model_Resource_Walmart_Account::COLUMN_IDENTIFIER);
     }
 
     /**

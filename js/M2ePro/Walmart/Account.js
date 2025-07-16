@@ -63,6 +63,74 @@ window.WalmartAccount = Class.create(Common, {
         });
     },
 
+    openAccessDataPopup: function (postUrl) {
+        var popupSource = $('account_credentials_form');
+
+        var dialogWindow = Dialog.info(popupSource.innerHTML, {
+            draggable: true,
+            resizable: true,
+            closable: true,
+            className: 'magento',
+            windowClassName: 'popup-window',
+            title: 'Add API Keys',
+            width: 600,
+            height: 250,
+            zIndex: 1000,
+            hideEffect: Element.hide,
+            showEffect: Element.show,
+            id: 'walmart-ca-popup'
+        });
+
+        popupSource.modalWindow = dialogWindow;
+
+        var popupContent = dialogWindow.getContent();
+
+        var form = popupContent.down('form#account_credentials');
+
+        form.setAttribute('id', 'account_credentials_popup');
+
+        popupContent.select('.tool-tip-image').each(function(element) {
+            element.observe('mouseover', MagentoFieldTipObj.showToolTip);
+            element.observe('mouseout', MagentoFieldTipObj.onToolTipIconMouseLeave);
+        });
+
+        popupContent.select('.tool-tip-message').each(function(element) {
+            element.observe('mouseout', MagentoFieldTipObj.onToolTipMouseLeave);
+            element.observe('mouseover', MagentoFieldTipObj.onToolTipMouseEnter);
+        });
+
+        form.observe('submit', function (e) {
+            Event.stop(e);
+
+            var formValidator = new varienForm('account_credentials_popup');
+            if (!formValidator.validate()) {
+                return;
+            }
+
+            MessageObj.clearAll();
+
+            new Ajax.Request(postUrl, {
+                method: 'post',
+                parameters: Form.serialize(form),
+                onSuccess: function (transport) {
+                    var response = transport.responseText.evalJSON(true);
+                    Windows.close('walmart-ca-popup');
+
+                    if (response.redirectUrl) {
+                        setLocation(response.redirectUrl);
+                    }
+
+                    if (response.message) {
+                        MessageObj.addError(response.message);
+                    }
+                },
+                onFailure: function () {
+                    Windows.close('walmart-ca-popup');
+                }
+            });
+        });
+    },
+
     initTokenValidation: function() {
         Validation.add('M2ePro-marketplace-merchant', M2ePro.translator.translate('M2E Pro was not able to get access to the Walmart Account'), function(value, el) {
 
@@ -76,19 +144,11 @@ window.WalmartAccount = Class.create(Common, {
             var marketplace_id = $('marketplace_id').value;
             var params = [];
 
-            if (marketplace_id == M2ePro.php.constant('Ess_M2ePro_Helper_Component_Walmart::MARKETPLACE_CA')) {
-                params = {
-                    consumer_id    : $('consumer_id').value,
-                    private_key    : $('private_key').value,
-                    marketplace_id : marketplace_id
-                };
-            } else {
-                params = {
-                    client_id      : $('client_id').value,
-                    client_secret  : $('client_secret').value,
-                    marketplace_id : marketplace_id
-                };
-            }
+            params = {
+                consumer_id    : $('consumer_id').value,
+                private_key    : $('private_key').value,
+                marketplace_id : marketplace_id
+            };
 
             var checkResult = false;
             var checkReason = null;
@@ -97,7 +157,7 @@ window.WalmartAccount = Class.create(Common, {
                 method: 'post',
                 asynchronous: false,
                 parameters: params,
-                onSuccess: function(transport) {
+                onSuccess: function (transport) {
                     var response = transport.responseText.evalJSON();
                     checkResult = response['result'];
                     checkReason = response['reason'];
@@ -124,23 +184,6 @@ window.WalmartAccount = Class.create(Common, {
 
     delete_click: function(accountId) {
         AccountObj.on_delete_popup(accountId);
-    },
-
-    // ---------------------------------------
-
-    changeMarketplace: function() {
-        $$('.marketplace-required-field').each(function(obj) {
-            obj.hide();
-        });
-
-        var marketplaceId = this.value;
-        if (marketplaceId === '') {
-            return;
-        }
-
-        $$('.marketplace-required-field-id' + marketplaceId, '.marketplace-required-field-id-not-null').each(function(obj) {
-            obj.show();
-        });
     },
 
     // ---------------------------------------

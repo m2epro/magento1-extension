@@ -57,114 +57,76 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Account_Edit extends Mage_Adminhtml_Blo
         $this->removeButton('edit');
         // ---------------------------------------
 
-        /** @var $wizardHelper Ess_M2ePro_Helper_Module_Wizard */
-        $wizardHelper = Mage::helper('M2ePro/Module_Wizard');
-
-        if ($wizardHelper->isActive('installationWalmart') &&
-            $wizardHelper->getStep('installationWalmart') == 'account') {
-            // ---------------------------------------
-            $this->_addButton(
-                'save_and_continue', array(
-                'label'     => Mage::helper('M2ePro')->__('Save And Continue Edit'),
-                'onclick'   => 'WalmartAccountObj.save_and_edit_click(\'\',\'walmartAccountEditTabs\')',
-                'class'     => 'save'
-                )
-            );
-            // ---------------------------------------
-
+        if ((bool)$this->getRequest()->getParam('close_on_save', false)) {
             if ($this->getRequest()->getParam('id')) {
-                // ---------------------------------------
-                $url = $this->getUrl('*/adminhtml_walmart_account/new', array('wizard' => true));
                 $this->_addButton(
-                    'add_new_account', array(
-                    'label'     => Mage::helper('M2ePro')->__('Add New Account'),
-                    'onclick'   => 'setLocation(\''. $url .'\')',
-                    'class'     => 'add_new_account'
+                    'save', array(
+                        'label' => Mage::helper('M2ePro')->__('Save And Close'),
+                        'onclick' => 'WalmartAccountObj.saveAndClose()',
+                        'class' => 'save'
                     )
                 );
-                // ---------------------------------------
-
-                // ---------------------------------------
+            } else {
                 $this->_addButton(
-                    'close', array(
-                    'label'     => Mage::helper('M2ePro')->__('Complete This Step'),
-                    'onclick'   => 'WalmartAccountObj.completeStep();',
-                    'class'     => 'close'
+                    'save_and_continue', array(
+                        'label' => Mage::helper('M2ePro')->__('Save And Continue Edit'),
+                        'onclick' => 'WalmartAccountObj.save_and_edit_click(\'\',\'walmartAccountEditTabs\')',
+                        'class' => 'save'
                     )
                 );
-                // ---------------------------------------
-            }
-        } else {
-            if ((bool)$this->getRequest()->getParam('close_on_save', false)) {
-                if ($this->getRequest()->getParam('id')) {
-                    $this->_addButton(
-                        'save', array(
-                        'label'     => Mage::helper('M2ePro')->__('Save And Close'),
-                        'onclick'   => 'WalmartAccountObj.saveAndClose()',
-                        'class'     => 'save'
-                        )
-                    );
-                } else {
-                    $this->_addButton(
-                        'save_and_continue', array(
-                        'label'     => Mage::helper('M2ePro')->__('Save And Continue Edit'),
-                        'onclick'   => 'WalmartAccountObj.save_and_edit_click(\'\',\'walmartAccountEditTabs\')',
-                        'class'     => 'save'
-                        )
-                    );
-                }
-
-                return;
             }
 
-            // ---------------------------------------
-            $url = Mage::helper('M2ePro')->getBackUrl('list');
-            $this->_addButton(
-                'back', array(
-                'label'     => Mage::helper('M2ePro')->__('Back'),
-                'onclick'   => 'WalmartAccountObj.back_click(\''. $url .'\')',
-                'class'     => 'back'
-                )
-            );
-            // ---------------------------------------
+            return;
+        }
 
-            // ---------------------------------------
-            if (Mage::helper('M2ePro/Data_Global')->getValue('temp_data') &&
-                Mage::helper('M2ePro/Data_Global')->getValue('temp_data')->getId()
-            ) {
-                // ---------------------------------------
-                $accountId = Mage::helper('M2ePro/Data_Global')->getValue('temp_data')->getId();
-                $this->_addButton(
-                    'delete', array(
-                    'label'     => Mage::helper('M2ePro')->__('Delete'),
-                    'onclick'   => "WalmartAccountObj.delete_click({$accountId})",
-                    'class'     => 'delete M2ePro_delete_button'
-                    )
-                );
-                // ---------------------------------------
-            }
+        // ---------------------------------------
+        $url = Mage::helper('M2ePro')->getBackUrl('list');
+        $this->_addButton(
+            'back', array(
+                'label' => Mage::helper('M2ePro')->__('Back'),
+                'onclick' => 'WalmartAccountObj.back_click(\'' . $url . '\')',
+                'class' => 'back'
+            )
+        );
+        // ---------------------------------------
 
+        // ---------------------------------------
+        if (Mage::helper('M2ePro/Data_Global')->getValue('temp_data') &&
+            Mage::helper('M2ePro/Data_Global')->getValue('temp_data')->getId()
+        ) {
             // ---------------------------------------
+            $accountId = Mage::helper('M2ePro/Data_Global')->getValue('temp_data')->getId();
             $this->_addButton(
-                'save', array(
-                'label'     => Mage::helper('M2ePro')->__('Save'),
-                'onclick'   => 'WalmartAccountObj.save_click()',
-                'class'     => 'save'
-                )
-            );
-            // ---------------------------------------
-
-            // ---------------------------------------
-            $this->_addButton(
-                'save_and_continue', array(
-                'label'     => Mage::helper('M2ePro')->__('Save And Continue Edit'),
-                'onclick'   => 'WalmartAccountObj.save_and_edit_click(\'\',\'walmartAccountEditTabs\')',
-                'class'     => 'save',
-                'id'        => 'save_and_continue-button'
+                'delete', array(
+                    'label' => Mage::helper('M2ePro')->__('Delete'),
+                    'onclick' => "WalmartAccountObj.delete_click({$accountId})",
+                    'class' => 'delete M2ePro_delete_button'
                 )
             );
             // ---------------------------------------
         }
+
+        // ---------------------------------------
+        $this->_addButton(
+            'save', array(
+                'label' => Mage::helper('M2ePro')->__('Save'),
+                'onclick' => 'WalmartAccountObj.save_click()',
+                'class' => 'save'
+            )
+        );
+        // ---------------------------------------
+
+        // ---------------------------------------
+        $this->_addButton(
+            'save_and_continue', array(
+                'label' => Mage::helper('M2ePro')->__('Save And Continue Edit'),
+                'onclick' => 'WalmartAccountObj.save_and_edit_click(\'\',\'walmartAccountEditTabs\')',
+                'class' => 'save',
+                'id' => 'save_and_continue-button'
+            )
+        );
+        // ---------------------------------------
+
     }
 
     //########################################
@@ -181,4 +143,23 @@ JS
     }
 
     //########################################
+
+    protected function _toHtml()
+    {
+        /** @var Ess_M2ePro_Block_Adminhtml_Walmart_Account_CredentialsForm $credentialsForm */
+        $credentialsForm = $this->getLayout()
+            ->createBlock('M2ePro/adminhtml_walmart_account_credentialsForm',
+                '',
+                array(
+                    'with_title' => false,
+                    'with_button' => true,
+                    'form_id' => 'account_credentials'
+                )
+            );
+
+        return '<div id="account_credentials_form" style="display: none;">'
+            . $credentialsForm->toHtml()
+            . '</div>'
+            . parent::_toHtml();
+    }
 }

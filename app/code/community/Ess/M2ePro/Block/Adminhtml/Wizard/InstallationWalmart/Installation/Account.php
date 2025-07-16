@@ -28,9 +28,7 @@ class Ess_M2ePro_Block_Adminhtml_Wizard_InstallationWalmart_Installation_Account
             array(
                 'M2E Pro was not able to get access to the Walmart Account' => Mage::helper('M2ePro')->__(
                     'M2E Pro could not get access to your Walmart account. <br>
-                 For Walmart CA, please check if you entered valid Consumer ID and Private Key. <br>
-                 For Walmart US, please ensure to provide M2E Pro with full access permissions
-                 to all API sections and enter valid Consumer ID, Client ID, and Client Secret.'
+                 M2E Pro could not get access to your Walmart account. Please make sure you entered valid Consumer ID and Private Key.'
                 ),
                 'M2E Pro was not able to get access to the Walmart Account. Reason: %error_message%' =>
                     Mage::helper('M2ePro')->__(

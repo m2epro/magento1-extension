@@ -63,21 +63,73 @@ window.WalmartListingCreateGeneral = Class.create(Common, {
         });
 
         self.renderAccounts();
+    },
 
-        $('add_account_button').observe('click', function() {
-            var win = window.open(M2ePro.url.get('adminhtml_walmart_account/new'));
+    openAccessDataPopup: function (postUrl) {
+        var popupSource = $('account_credentials_form');
 
-            var intervalId = setInterval(function() {
+        var dialogWindow = Dialog.info(popupSource.innerHTML, {
+            draggable: true,
+            resizable: true,
+            closable: true,
+            className: 'magento',
+            windowClassName: 'popup-window',
+            title: 'Add API Keys',
+            width: 600,
+            height: 250,
+            zIndex: 1000,
+            hideEffect: Element.hide,
+            showEffect: Element.show,
+            id: 'walmart-ca-popup'
+        });
 
-                if (!win.closed) {
-                    return;
+        popupSource.modalWindow = dialogWindow;
+
+        var popupContent = dialogWindow.getContent();
+
+        var form = popupContent.down('form#account_credentials');
+
+        form.setAttribute('id', 'account_credentials_popup');
+
+        popupContent.select('.tool-tip-image').each(function(element) {
+            element.observe('mouseover', MagentoFieldTipObj.showToolTip);
+            element.observe('mouseout', MagentoFieldTipObj.onToolTipIconMouseLeave);
+        });
+
+        popupContent.select('.tool-tip-message').each(function(element) {
+            element.observe('mouseout', MagentoFieldTipObj.onToolTipMouseLeave);
+            element.observe('mouseover', MagentoFieldTipObj.onToolTipMouseEnter);
+        });
+
+        form.observe('submit', function (e) {
+            Event.stop(e);
+
+            var formValidator = new varienForm('account_credentials_popup');
+            if (!formValidator.validate()) {
+                return;
+            }
+
+            MessageObj.clearAll();
+
+            new Ajax.Request(postUrl, {
+                method: 'post',
+                parameters: Form.serialize(form),
+                onSuccess: function (transport) {
+                    var response = transport.responseText.evalJSON(true);
+                    Windows.close('walmart-ca-popup');
+
+                    if (response.redirectUrl) {
+                        setLocation(response.redirectUrl);
+                    }
+
+                    if (response.message) {
+                        MessageObj.addError(response.message);
+                    }
+                },
+                onFailure: function () {
+                    Windows.close('walmart-ca-popup');
                 }
-
-                clearInterval(intervalId);
-
-                self.renderAccounts();
-
-            }, 1000);
+            });
         });
     },
 
