@@ -36,7 +36,9 @@ class Ess_M2ePro_Adminhtml_ControlPanel_Module_IntegrationController
                 $request->setListingProduct($lp);
                 $request->setConfigurator($configurator);
 
-                return $this->getResponse()->setBody('<pre>'.print_r($request->getData(), true).'</pre>');
+                return $this
+                    ->getResponse()
+                    ->setBody($this->printArrayToHtml($request->getData()));
             }
 
             if ($componentMode == 'amazon') {
@@ -55,12 +57,14 @@ class Ess_M2ePro_Adminhtml_ControlPanel_Module_IntegrationController
                         array(
                             'sku'        => 'placeholder',
                             'general_id' => 'placeholder',
-                            'list_type'  => 'placeholder'
+                            'list_type'  => 'placeholder',
                         )
                     );
                 }
 
-                return $this->getResponse()->setBody('<pre>'.print_r($request->getData(), true).'</pre>');
+                return $this
+                    ->getResponse()
+                    ->setBody($this->printArrayToHtml($request->getData()));
             }
 
             if ($componentMode == 'walmart') {
@@ -78,7 +82,9 @@ class Ess_M2ePro_Adminhtml_ControlPanel_Module_IntegrationController
                 $request->setListingProduct($lp);
                 $request->setConfigurator($configurator);
 
-                return $this->getResponse()->setBody('<pre>'.print_r($request->getData(), true).'</pre>');
+                return $this
+                    ->getResponse()
+                    ->setBody($this->printArrayToHtml($request->getData()));
             }
 
             return;
@@ -116,6 +122,14 @@ class Ess_M2ePro_Adminhtml_ControlPanel_Module_IntegrationController
 </form>
 HTML
         );
+    }
+
+    private function printArrayToHtml(array $data)
+    {
+        $data = print_r($data, true);
+        $data = htmlentities($data, ENT_COMPAT, 'UTF-8');
+
+        return '<pre>' . $data . '</pre>';
     }
 
     //########################################
@@ -393,7 +407,7 @@ HTML
                 'Quote Data'            => $quote->getData(),
                 'Shipping Address Data' => $shippingAddressData,
                 'Billing Address Data'  => $billingAddressData,
-                'Items'                 => $items
+                'Items'                 => $items,
             )), true), true));
         }
 

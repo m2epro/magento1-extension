@@ -23,7 +23,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_View_Tabs_
 
             if ($columnIndex == 'available_qty') {
                 $collection->getSelect()->order(
-                    '(elp.online_qty - elp.online_qty_sold) ' . strtoupper($column->getDir())
+                    '(CAST(elp.online_qty AS SIGNED) - CAST(elp.online_qty_sold AS SIGNED)) ' . strtoupper($column->getDir())
                 );
             } else {
                 $collection->setOrder($columnIndex, strtoupper($column->getDir()));
@@ -233,7 +233,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_View_Tabs_
         }
 
         $where = '';
-        $onlineQty = 'elp.online_qty - elp.online_qty_sold';
+        $onlineQty = '(CAST(elp.online_qty AS SIGNED) - CAST(elp.online_qty_sold AS SIGNED))';
 
         if (isset($cond['from']) || isset($cond['to'])) {
             if (isset($cond['from']) && $cond['from'] != '') {

@@ -80,7 +80,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Magento_Grid
                 'start_date'            => 'start_date',
                 'online_title'          => 'online_title',
                 'online_sku'            => 'online_sku',
-                'available_qty'         => new Zend_Db_Expr('(online_qty - online_qty_sold)'),
+                'available_qty'         => new Zend_Db_Expr('(CAST(online_qty AS SIGNED) - CAST(online_qty_sold AS SIGNED))'),
                 'ebay_item_id'          => 'ebay_item_id',
                 'online_main_category'  => 'online_main_category',
                 'online_qty_sold'       => 'online_qty_sold',

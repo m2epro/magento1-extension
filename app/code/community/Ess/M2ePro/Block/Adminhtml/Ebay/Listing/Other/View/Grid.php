@@ -70,7 +70,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View_Grid extends Mage_Admin
                 'title'                => 'second_table.title',
                 'sku'                  => 'second_table.sku',
                 'item_id'              => 'second_table.item_id',
-                'online_qty'           => new Zend_Db_Expr('(second_table.online_qty - second_table.online_qty_sold)'),
+                'online_qty'           => new Zend_Db_Expr('(CAST(second_table.online_qty AS SIGNED) - CAST(second_table.online_qty_sold AS SIGNED))'),
                 'online_qty_sold'      => 'second_table.online_qty_sold',
                 'online_price'         => 'second_table.online_price',
                 'online_main_category' => 'second_table.online_main_category',
@@ -140,7 +140,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View_Grid extends Mage_Admin
                 'width'             => '50px',
                 'type'              => 'number',
                 'index'             => 'online_qty',
-                'filter_index'      => new Zend_Db_Expr('(second_table.online_qty - second_table.online_qty_sold)'),
+                'filter_index'      => new Zend_Db_Expr('(CAST(second_table.online_qty AS SIGNED) - CAST(second_table.online_qty_sold AS SIGNED))'),
                 'renderer'          => 'M2ePro/adminhtml_ebay_grid_column_renderer_qty',
                 'render_online_qty' => OnlineQty::ONLINE_AVAILABLE_QTY,
             )

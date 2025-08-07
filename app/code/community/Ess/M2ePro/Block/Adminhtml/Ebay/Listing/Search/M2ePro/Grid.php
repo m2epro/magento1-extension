@@ -65,7 +65,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Search_M2ePro_Grid
                 'ebay_item_id'          => 'ebay_item_id',
                 'online_title'          => 'online_title',
                 'online_sku'            => 'online_sku',
-                'online_qty'            => new Zend_Db_Expr('(elp.online_qty - elp.online_qty_sold)'),
+                'online_qty'            => new Zend_Db_Expr('(CAST(elp.online_qty AS SIGNED) - CAST(elp.online_qty_sold AS SIGNED))'),
                 'online_qty_sold'       => 'online_qty_sold',
                 'online_bids'           => 'online_bids',
                 'online_start_price'    => 'online_start_price',
@@ -295,7 +295,7 @@ HTML;
         }
 
         $where = '';
-        $onlineQty = 'elp.online_qty - elp.online_qty_sold';
+        $onlineQty = '(CAST(elp.online_qty AS SIGNED) - CAST(elp.online_qty_sold AS SIGNED))';
 
         if (isset($cond['from']) || isset($cond['to'])) {
             if (isset($cond['from']) && $cond['from'] != '') {
@@ -368,7 +368,7 @@ HTML;
 
             if ($columnIndex == 'online_qty') {
                 $collection->getSelect()->order(
-                    '(elp.online_qty - elp.online_qty_sold) ' . strtoupper($column->getDir())
+                    '(CAST(elp.online_qty AS SIGNED) - CAST(elp.online_qty_sold AS SIGNED)) ' . strtoupper($column->getDir())
                 );
             } else {
                 $collection->setOrder($columnIndex, strtoupper($column->getDir()));

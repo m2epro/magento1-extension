@@ -57,7 +57,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Search_Other_Grid
                 'status'                => 'main_table.status',
                 'online_sku'            => new Zend_Db_Expr('NULL'),
                 'online_title'          => new Zend_Db_Expr('NULL'),
-                'online_qty'            => new Zend_Db_Expr('(second_table.online_qty - second_table.online_qty_sold)'),
+                'online_qty'            => new Zend_Db_Expr('(CAST(second_table.online_qty AS SIGNED) - CAST(second_table.online_qty_sold AS SIGNED))'),
                 'online_qty_sold'       => 'second_table.online_qty_sold',
                 'online_bids'           => new Zend_Db_Expr('NULL'),
                 'online_start_price'    => new Zend_Db_Expr('NULL'),
@@ -181,7 +181,7 @@ HTML;
 
         $collection->addFieldToFilter(
             new \Zend_Db_Expr(
-                'second_table.online_qty - second_table.online_qty_sold'
+                '(CAST(second_table.online_qty AS SIGNED) - CAST(second_table.online_qty_sold AS SIGNED))'
             ), $cond
         );
     }

@@ -91,7 +91,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Ebay_Grid
                 'start_date'            => 'start_date',
                 'online_title'          => 'online_title',
                 'online_sku'            => 'online_sku',
-                'available_qty'         => new Zend_Db_Expr('(elp.online_qty - elp.online_qty_sold)'),
+                'available_qty'         => new Zend_Db_Expr('(CAST(elp.online_qty AS SIGNED) - CAST(elp.online_qty_sold AS SIGNED))'),
                 'ebay_item_id'          => 'ebay_item_id',
                 'online_main_category'  => 'online_main_category',
                 'online_qty_sold'       => 'online_qty_sold',
@@ -476,7 +476,7 @@ HTML;
         }
 
         $where = '';
-        $onlineQty = 'elp.online_qty - elp.online_qty_sold';
+        $onlineQty = '(CAST(elp.online_qty AS SIGNED) - CAST(elp.online_qty_sold AS SIGNED))';
 
         if (isset($cond['from']) || isset($cond['to'])) {
             if (isset($cond['from']) && $cond['from'] != '') {
