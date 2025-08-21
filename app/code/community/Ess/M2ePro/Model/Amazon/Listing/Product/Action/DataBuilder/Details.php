@@ -164,11 +164,9 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Details
         $condition['condition'] = $this->getAmazonListingProduct()->getListingSource()->getCondition();
         $this->processNotFoundAttributes('Condition');
 
-        if ($condition['condition'] != Ess_M2ePro_Model_Amazon_Listing::CONDITION_NEW) {
-            $this->searchNotFoundAttributes();
-            $condition['condition_note'] = $this->getAmazonListingProduct()->getListingSource()->getConditionNote();
-            $this->processNotFoundAttributes('Condition Note');
-        }
+        $this->searchNotFoundAttributes();
+        $condition['condition_note'] = $this->getAmazonListingProduct()->getListingSource()->getConditionNote();
+        $this->processNotFoundAttributes('Condition Note');
 
         return $condition;
     }

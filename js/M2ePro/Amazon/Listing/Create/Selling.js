@@ -79,7 +79,6 @@ window.AmazonListingCreateSelling = Class.create(Common, {
 
     condition_mode_change: function () {
         var self = AmazonListingCreateSellingObj,
-            attributeCode = this.options[this.selectedIndex].getAttribute('attribute_code'),
             conditionValue = $('condition_value'),
             conditionCustomAttribute = $('condition_custom_attribute');
 
@@ -91,16 +90,9 @@ window.AmazonListingCreateSelling = Class.create(Common, {
 
         if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Listing::CONDITION_MODE_DEFAULT')) {
             self.updateHiddenValue(this, conditionValue);
-
-            if (attributeCode == M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Listing::CONDITION_NEW')) {
-                $('condition_note_mode').up('span').hide();
-                $('condition_note_value').up('span').hide();
-            } else {
-                self.condition_note_mode_change();
-            }
+            self.condition_note_mode_change();
         } else {
             self.updateHiddenValue(this, conditionCustomAttribute);
-            $('condition_note_mode').up('span').show();
             self.condition_note_mode_change();
         }
     },
