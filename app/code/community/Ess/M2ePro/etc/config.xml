@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Ess_M2ePro>
-            <version>6.84.0</version>
+            <version>6.84.1</version>
         </Ess_M2ePro>
     </modules>
     <default>
@@ -323,6 +323,17 @@
                 </M2ePro>
             </updates>
         </layout>
+        <events>
+            <controller_action_layout_generate_blocks_after>
+                <observers>
+                    <M2eProUpdater_observer>
+                        <type>model</type>
+                        <class>Ess_M2ePro_Observer_Dispatcher</class>
+                        <method>orderNotification</method>
+                    </M2eProUpdater_observer>
+                </observers>
+            </controller_action_layout_generate_blocks_after>
+        </events>
     </adminhtml>
     <global>
 
@@ -631,16 +642,6 @@
                     </M2ePro_observer_shipment_view_after>
                 </observers>
             </core_block_abstract_to_html_after>
-
-            <controller_action_layout_generate_blocks_after>
-                <observers>
-                    <M2eProUpdater_observer>
-                        <type>model</type>
-                        <class>Ess_M2ePro_Observer_Dispatcher</class>
-                        <method>orderNotification</method>
-                    </M2eProUpdater_observer>
-                </observers>
-            </controller_action_layout_generate_blocks_after>
 
             <sales_quote_address_collect_totals_after>
                 <observers>
