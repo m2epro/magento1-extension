@@ -423,8 +423,11 @@ class Ess_M2ePro_Adminhtml_Amazon_AccountController
 
             $repricingOldData = $snapshotBuilder->getSnapshot();
 
-            Mage::getModel('M2ePro/Amazon_Account_Repricing_Builder')->build($repricingModel, $data['repricing']);
+            /** @var \Ess_M2ePro_Model_Amazon_Account_Repricing_Builder $repricerBuilder */
+            $repricerBuilder = Mage::getModel('M2ePro/Amazon_Account_Repricing_Builder');
+            $repricerBuilder->build($repricingModel, $data['repricing']);
 
+            /** @var \Ess_M2ePro_Model_Amazon_Account_Repricing $snapshotBuilder */
             $snapshotBuilder = Mage::getModel('M2ePro/Amazon_Account_Repricing_SnapshotBuilder');
             $snapshotBuilder->setModel($repricingModel);
 

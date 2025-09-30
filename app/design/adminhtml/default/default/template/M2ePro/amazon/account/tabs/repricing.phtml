@@ -308,6 +308,8 @@ $repricerDocs = 'https://docs.m2ecloud.com/amazon-repricer';
                                 <option value="<?php echo Ess_M2ePro_Model_Amazon_Account_Repricing::PRICE_MODE_MANUAL; ?>" <?php if ($this->repricingObj->getMinPriceMode() == Ess_M2ePro_Model_Amazon_Account_Repricing::PRICE_MODE_MANUAL) echo 'selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Manually'); ?></option>
                                 <option value="<?php echo Ess_M2ePro_Model_Amazon_Account_Repricing::MIN_PRICE_MODE_REGULAR_VALUE; ?>" <?php if ($this->repricingObj->getMinPriceMode() == Ess_M2ePro_Model_Amazon_Account_Repricing::MIN_PRICE_MODE_REGULAR_VALUE) echo 'selected="selected"'; ?> class="repricing-min-price-mode-regular-depended"><?php echo Mage::helper('M2ePro')->__('Less than Regular Price by Value'); ?></option>
                                 <option value="<?php echo Ess_M2ePro_Model_Amazon_Account_Repricing::MIN_PRICE_MODE_REGULAR_PERCENT; ?>" <?php if ($this->repricingObj->getMinPriceMode() == Ess_M2ePro_Model_Amazon_Account_Repricing::MIN_PRICE_MODE_REGULAR_PERCENT) echo 'selected="selected"'; ?> class="repricing-min-price-mode-regular-depended"><?php echo Mage::helper('M2ePro')->__('Less than Regular Price by Percent'); ?></option>
+                                <option value="<?php echo Ess_M2ePro_Model_Amazon_Account_Repricing::MIN_PRICE_MODE_REGULAR_VALUE_ATTRIBUTE; ?>" <?php if ($this->repricingObj->getMinPriceMode() == Ess_M2ePro_Model_Amazon_Account_Repricing::MIN_PRICE_MODE_REGULAR_VALUE_ATTRIBUTE) echo 'selected="selected"'; ?> class="repricing-min-price-mode-regular-depended"><?php echo Mage::helper('M2ePro')->__('Less than Regular Price by Value from Attribute'); ?></option>
+                                <option value="<?php echo Ess_M2ePro_Model_Amazon_Account_Repricing::MIN_PRICE_MODE_REGULAR_PERCENT_ATTRIBUTE; ?>" <?php if ($this->repricingObj->getMinPriceMode() == Ess_M2ePro_Model_Amazon_Account_Repricing::MIN_PRICE_MODE_REGULAR_PERCENT_ATTRIBUTE) echo 'selected="selected"'; ?> class="repricing-min-price-mode-regular-depended"><?php echo Mage::helper('M2ePro')->__('Less than Regular Price by Percent from Attribute'); ?></option>
 
                                 <optgroup class="M2ePro-custom-attribute-optgroup" label="From Magento Attribute">
                                     <?php foreach($attributesByInputTypes['text_price'] as $attribute) : ?>
@@ -320,26 +322,16 @@ $repricerDocs = 'https://docs.m2ecloud.com/amazon-repricer';
                             </select>
                             <p class="note">
                                 <span id="min_price_note"><?php echo Mage::helper('M2ePro')->__('
-                                    <strong>Min Price</strong> is the lowest Price which you could sell your Item at. <a href="%url1%" target="_blank">Learn more</a>
-                                    about using the Max Price in Repricing Service.<br/><br/>
-
-                                    Specify the settings for automatic update of the Min Price:<br/><br/>
-
-                                    <strong>Manually</strong> - means that the Product Price value will be provided manually;<br/>
-                                    <strong>Less than Regular Price by Value</strong> - means that the Min Price value will be taken as a Regular Price
-                                    decreased by the value you set.<br/>
-                                    For example, you set the Value 5. Your Regular price is 17. So the Min Price will be 12.<br/>
-                                    <strong>Less than Regular Price by Percent</strong> - means that the Min Price value will be taken as a Regular Price
-                                    decreased by the percent you set.<br/>
-                                    For example, you set 50%. Your regular price is 10. So the Min Price will be 5.<br/>
-                                    <strong>From Magento Attribute</strong> - means that the Price value will be taken from the selected Magento Attribute.<br/><br/>
-
-                                    Please note, only common (available in all Attribute sets in your Magento) Text or Price field Attributes are available for the selection.<br/><br/>
-
-                                    More detailed information on how to work with this option can be found <a href="%url2%" target="_blank">here</a>.
+                                    <strong>Min Price</strong> is the lowest price you can sell your item for. You can set it in different ways:<br><br>   
+                                    <strong>Manual</strong> – enter a value yourself.<br>
+                                    <strong>By Value</strong> – Regular Price minus a fixed amount.<br>
+                                    <strong>By Percent</strong> – Regular Price minus a percentage.<br>
+                                    <strong>From Attribute</strong> – use a Magento attribute value.<br>
+                                    <strong>By Value/Percent</strong> from Attribute – Regular Price reduced by a set value or percent from the chosen attribute.<br><br>
+                                    <a href="%url%" target="_blank">Learn more</a>.
                                 ',
-                                        $repricerDocs,
-                                        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'repricing-tool-set-up')); ?></span>
+                                        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'repricing-tool-set-up')); ?>
+                                </span>
                             </p>
                         </td>
                         <td id="min_price_coefficient_td" class="coef">
@@ -381,6 +373,42 @@ $repricerDocs = 'https://docs.m2ecloud.com/amazon-repricer';
                         </td>
                     </tr>
 
+                    <?php if ($this->isRepricingLinked) { ?>
+                    <tr id="min_price_value_attribute_tr" style="display: none;">
+                        <td class="label">
+                            <label for="min_price_value_attribute"><?php echo Mage::helper('M2ePro')->__('Attribute'); ?>: <span class="required">*</span></label>
+                        </td>
+                        <td class="value">
+                            <select id="min_price_value_attribute" name="repricing[min_price_value_attribute]" class="select-main M2ePro-required-when-visible M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,price">
+                                <option value="" hidden="hidden"><?php echo Mage::helper('M2ePro')->__('Select Attribute'); ?></option>
+                                <?php foreach($attributesByInputTypes['text_price'] as $attribute) : ?>
+                                    <option value="<?php echo $attribute['code']; ?>" <?php if ($this->repricingObj->getMinPriceMode() == Ess_M2ePro_Model_Amazon_Account_Repricing::MIN_PRICE_MODE_REGULAR_VALUE_ATTRIBUTE && $attribute['code'] == $this->repricingObj->getData('min_price_value_attribute')) echo 'selected="selected"';?>>
+                                        <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </td>
+                    </tr>
+                    <?php } ?>
+
+                    <?php if ($this->isRepricingLinked) { ?>
+                    <tr id="min_price_percent_attribute_tr" style="display: none;">
+                        <td class="label">
+                            <label for="min_price_percent_attribute"><?php echo Mage::helper('M2ePro')->__('Attribute'); ?>: <span class="required">*</span></label>
+                        </td>
+                        <td class="value">
+                            <select id="min_price_percent_attribute" name="repricing[min_price_percent_attribute]" class="select-main M2ePro-required-when-visible M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,price">
+                                <option value="" hidden="hidden"><?php echo Mage::helper('M2ePro')->__('Select Attribute'); ?></option>
+                                <?php foreach($attributesByInputTypes['text_price'] as $attribute) : ?>
+                                    <option value="<?php echo $attribute['code']; ?>" <?php if ($this->repricingObj->getMinPriceMode() == Ess_M2ePro_Model_Amazon_Account_Repricing::MIN_PRICE_MODE_REGULAR_PERCENT_ATTRIBUTE && $attribute['code'] == $this->repricingObj->getData('min_price_percent_attribute')) echo 'selected="selected"';?>>
+                                        <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </td>
+                    </tr>
+                    <?php } ?>
+
                     <tr id="min_price_variation_mode_tr" style="display: none;">
                         <td class="label">
                             <label for="min_price_variation_mode"><?php echo Mage::helper('M2ePro')->__('Min Variation Price Source'); ?>:</label>
@@ -398,33 +426,6 @@ $repricerDocs = 'https://docs.m2ecloud.com/amazon-repricer';
                         </td>
                     </tr>
 
-                    <tr id="min_price_warning_tr" style="display: none;">
-                        <td class="label" colspan="2">
-                            <div style="margin-right: 5px;">
-                                <ul class="messages">
-                                    <li class="warning-msg">
-                                        <ul>
-                                            <li>
-                                                <span>
-                                                    <?php echo Mage::helper('M2ePro')->__('
-                                                        Min Price value is required to be specified to guarantee that M2E
-                                                        Amazon Repricing Service will never set the Price of your Offer
-                                                        lower than Min allowed Price. It allows Sellers to automatically
-                                                        prevent any incorrect Price values to be set for their Items.<br/><br/>
-                                                        The dynamic updating of the Min Price value cannot give the 100%
-                                                        assurance that all the data will be properly set and the correct
-                                                        Price will be used for the Item. Thus, more preferable and reliable
-                                                        option is Manual updating of the Min Price value.
-                                                    '); ?>
-                                                </span>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
-
                     <tr>
                         <td class="label">
                             <label for="max_price_mode"><?php echo Mage::helper('M2ePro')->__('Update Max Price'); ?>:</label>
@@ -439,6 +440,8 @@ $repricerDocs = 'https://docs.m2ecloud.com/amazon-repricer';
                                 <option value="<?php echo Ess_M2ePro_Model_Amazon_Account_Repricing::PRICE_MODE_MANUAL; ?>" <?php if ($this->repricingObj->getMaxPriceMode() == Ess_M2ePro_Model_Amazon_Account_Repricing::PRICE_MODE_MANUAL) echo 'selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Manually'); ?></option>
                                 <option value="<?php echo Ess_M2ePro_Model_Amazon_Account_Repricing::MAX_PRICE_MODE_REGULAR_VALUE; ?>" <?php if ($this->repricingObj->getMaxPriceMode() == Ess_M2ePro_Model_Amazon_Account_Repricing::MAX_PRICE_MODE_REGULAR_VALUE) echo 'selected="selected"'; ?> class="repricing-max-price-mode-regular-depended"><?php echo Mage::helper('M2ePro')->__('More than Regular Price by Value'); ?></option>
                                 <option value="<?php echo Ess_M2ePro_Model_Amazon_Account_Repricing::MAX_PRICE_MODE_REGULAR_PERCENT; ?>" <?php if ($this->repricingObj->getMaxPriceMode() == Ess_M2ePro_Model_Amazon_Account_Repricing::MAX_PRICE_MODE_REGULAR_PERCENT) echo 'selected="selected"'; ?> class="repricing-max-price-mode-regular-depended"><?php echo Mage::helper('M2ePro')->__('More than Regular Price by Percent'); ?></option>
+                                <option value="<?php echo Ess_M2ePro_Model_Amazon_Account_Repricing::MAX_PRICE_MODE_REGULAR_VALUE_ATTRIBUTE; ?>" <?php if ($this->repricingObj->getMaxPriceMode() == Ess_M2ePro_Model_Amazon_Account_Repricing::MAX_PRICE_MODE_REGULAR_VALUE_ATTRIBUTE) echo 'selected="selected"'; ?> class="repricing-max-price-mode-regular-depended"><?php echo Mage::helper('M2ePro')->__('More than Regular Price by Value from Attribute'); ?></option>
+                                <option value="<?php echo Ess_M2ePro_Model_Amazon_Account_Repricing::MAX_PRICE_MODE_REGULAR_PERCENT_ATTRIBUTE; ?>" <?php if ($this->repricingObj->getMaxPriceMode() == Ess_M2ePro_Model_Amazon_Account_Repricing::MAX_PRICE_MODE_REGULAR_PERCENT_ATTRIBUTE) echo 'selected="selected"'; ?> class="repricing-max-price-mode-regular-depended"><?php echo Mage::helper('M2ePro')->__('More than Regular Price by Percent from Attribute'); ?></option>
 
                                 <optgroup class="M2ePro-custom-attribute-optgroup" label="From Magento Attribute">
                                     <?php foreach($attributesByInputTypes['text_price'] as $attribute) : ?>
@@ -451,26 +454,14 @@ $repricerDocs = 'https://docs.m2ecloud.com/amazon-repricer';
                             </select>
                             <p class="note">
                                 <span id="max_price_note"><?php echo Mage::helper('M2ePro')->__('
-                                    <strong>Max Price</strong> is the highest Price which you could sell your Item at.
-                                    <a href="%url1%" target="_blank">Learn more</a> about using the Min Price in Repricing Service.<br/><br/>
-
-                                    Specify the settings for automatic update of the Max Price:<br/><br/>
-
-                                    <strong>Manually</strong> - means that the Product Price value will be provided manually;<br/>
-                                    <strong>More than Regular Price by Value</strong> - means that the Max Price value will be taken as a Regular
-                                    Price increased by the value you set.<br/>
-                                    For example, you set the Value 5. Your Regular price is 17. So the Max Price will be 22.<br/>
-                                    <strong>More than Regular Price by Percent</strong> - means that the Max Price value will be taken as a Regular
-                                    Price increased by the percent you set.<br/>
-                                    For example, you set 50 Percent. Your regular price is 10. So the Max Price will be 15.<br/>
-                                    <strong>From Magento Attribute</strong> - means that the Max Price value will be taken from the selected Attribute.<br/><br/>
-
-                                    Please note, only common (available in all Attribute sets in your Magento) Text or Price field Attributes are
-                                    available for the selection.<br/><br/>
-
-                                    More detailed information on how to work with this option can be found <a href="%url2%" target="_blank">here</a>.
+                                    <strong>Max Price</strong> is the highest price you can sell your item for. You can set it in different ways:<br><br>
+                                    <strong>Manual</strong> – enter a value yourself.<br>
+                                    <strong>By Value</strong> – Regular Price plus a fixed amount.<br>
+                                    <strong>By Percent</strong> – Regular Price plus a percentage.<br>
+                                    <strong>From Attribute</strong> – use a Magento attribute value.<br>
+                                    <strong>By Value/Percent from Attribute</strong> – Regular Price increased by a set value or percent from the chosen attribute.<br><br>
+                                    <a href="%url%" target="_blank">Learn more</a>.
                                 ',
-                                        $repricerDocs,
                                         Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'repricing-tool-set-up')); ?></span>
                             </p>
                         </td>
@@ -513,6 +504,42 @@ $repricerDocs = 'https://docs.m2ecloud.com/amazon-repricer';
                         </td>
                     </tr>
 
+                    <?php if ($this->isRepricingLinked) { ?>
+                    <tr id="max_price_value_attribute_tr" style="display: none;">
+                        <td class="label">
+                            <label for="max_price_value_attribute"><?php echo Mage::helper('M2ePro')->__('Attribute'); ?>: <span class="required">*</span></label>
+                        </td>
+                        <td class="value">
+                            <select id="max_price_value_attribute" name="repricing[max_price_value_attribute]" class="select-main M2ePro-required-when-visible M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,price">
+                                <?php foreach($attributesByInputTypes['text_price'] as $attribute) : ?>
+                                    <option value="" hidden="hidden"><?php echo Mage::helper('M2ePro')->__('Select Attribute'); ?></option>
+                                    <option value="<?php echo $attribute['code']; ?>" <?php if ($this->repricingObj->getMaxPriceMode() == Ess_M2ePro_Model_Amazon_Account_Repricing::MAX_PRICE_MODE_REGULAR_VALUE_ATTRIBUTE && $attribute['code'] == $this->repricingObj->getData('max_price_value_attribute')) echo 'selected="selected"';?>>
+                                        <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </td>
+                    </tr>
+                    <?php } ?>
+
+                    <?php if ($this->isRepricingLinked) { ?>
+                    <tr id="max_price_percent_attribute_tr" style="display: none;">
+                        <td class="label">
+                            <label for="max_price_percent_attribute"><?php echo Mage::helper('M2ePro')->__('Attribute'); ?>: <span class="required">*</span></label>
+                        </td>
+                        <td class="value">
+                            <select id="max_price_percent_attribute" name="repricing[max_price_percent_attribute]" class="select-main M2ePro-required-when-visible M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,price">
+                                <option value="" hidden="hidden"><?php echo Mage::helper('M2ePro')->__('Select Attribute'); ?></option>
+                                <?php foreach($attributesByInputTypes['text_price'] as $attribute) : ?>
+                                    <option value="<?php echo $attribute['code']; ?>" <?php if ($this->repricingObj->getMaxPriceMode() == Ess_M2ePro_Model_Amazon_Account_Repricing::MAX_PRICE_MODE_REGULAR_PERCENT_ATTRIBUTE && $attribute['code'] == $this->repricingObj->getData('max_price_percent_attribute')) echo 'selected="selected"';?>>
+                                        <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </td>
+                    </tr>
+                    <?php } ?>
+
                     <tr id="max_price_variation_mode_tr" style="display: none;">
                         <td class="label">
                             <label for="max_price_variation_mode"><?php echo Mage::helper('M2ePro')->__('Max Variation Price Source'); ?>:</label>
@@ -527,33 +554,6 @@ $repricerDocs = 'https://docs.m2ecloud.com/amazon-repricer';
                             <p class="note">
                                 <span><?php echo Mage::helper('M2ePro')->__('Choose the Magento Product Attribute to use for the Price for Configurable and Bundle Products Options.'); ?></span>
                             </p>
-                        </td>
-                    </tr>
-
-                    <tr id="max_price_warning_tr" style="display: none;">
-                        <td class="label" colspan="2">
-                            <div style="margin-right: 5px;">
-                                <ul class="messages">
-                                    <li class="warning-msg">
-                                        <ul>
-                                            <li>
-                                                <span>
-                                                    <?php echo Mage::helper('M2ePro')->__('
-                                                        Max Price value is required to be specified to guarantee that M2E
-                                                        Amazon Repricing Service will never set the Price of your Offer
-                                                        higher than Max allowed Price. It allows Sellers to automatically
-                                                        prevent any incorrect Price values to be set for their Items.<br/><br/>
-                                                        The dynamic updating of the Max Price value cannot give the 100%
-                                                        assurance that all the data will be properly set and the correct
-                                                        Price will be used for the Item. Thus, more preferable and reliable
-                                                        option is Manual updating of the Max Price value.
-                                                    '); ?>
-                                                </span>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                </ul>
-                            </div>
                         </td>
                     </tr>
 

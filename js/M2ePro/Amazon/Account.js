@@ -628,19 +628,14 @@ window.AmazonAccount = Class.create(Common, {
         var self = AmazonAccountObj,
             minPriceValueTr = $('min_price_value_tr'),
             minPricePercentTr = $('min_price_percent_tr'),
-            minPriceWarning = $('min_price_warning_tr'),
+            minPriceValueAttributeTr = $('min_price_value_attribute_tr'),
+            minPricePercentAttributeTr = $('min_price_percent_attribute_tr'),
             minPriceAttr = $('min_price_attribute'),
             minPriceCoeficient = $('min_price_coefficient_td'),
             variationMinPrice = $('min_price_variation_mode_tr');
 
-        minPriceWarning.hide();
-        if (this.value != M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account_Repricing::PRICE_MODE_MANUAL')) {
-            minPriceWarning.show();
-        }
-
         minPriceCoeficient.hide();
         variationMinPrice.hide();
-
         minPriceAttr.value = '';
         if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account_Repricing::PRICE_MODE_ATTRIBUTE')) {
             self.updateHiddenValue(this, minPriceAttr);
@@ -658,25 +653,30 @@ window.AmazonAccount = Class.create(Common, {
         if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account_Repricing::MIN_PRICE_MODE_REGULAR_PERCENT')) {
             minPricePercentTr.show();
         }
+
+        minPriceValueAttributeTr.hide();
+        if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account_Repricing::MIN_PRICE_MODE_REGULAR_VALUE_ATTRIBUTE')) {
+            minPriceValueAttributeTr.show()
+        }
+
+        minPricePercentAttributeTr.hide();
+        if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account_Repricing::MIN_PRICE_MODE_REGULAR_PERCENT_ATTRIBUTE')) {
+            minPricePercentAttributeTr.show()
+        }
     },
 
     max_price_mode_change: function() {
         var self = AmazonAccountObj,
             maxPriceValueTr = $('max_price_value_tr'),
             maxPricePercentTr = $('max_price_percent_tr'),
-            maxPriceWarning = $('max_price_warning_tr'),
+            maxPriceValueAttributeTr = $('max_price_value_attribute_tr'),
+            maxPricePercentAttributeTr = $('max_price_percent_attribute_tr'),
             maxPriceAttr = $('max_price_attribute'),
             maxPriceCoeficient = $('max_price_coefficient_td'),
             variationMaxPrice = $('max_price_variation_mode_tr');
 
-        maxPriceWarning.hide();
-        if (this.value != M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account_Repricing::PRICE_MODE_MANUAL')) {
-            maxPriceWarning.show();
-        }
-
         maxPriceCoeficient.hide();
         variationMaxPrice.hide();
-
         maxPriceAttr.value = '';
         if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account_Repricing::PRICE_MODE_ATTRIBUTE')) {
             self.updateHiddenValue(this, maxPriceAttr);
@@ -693,6 +693,16 @@ window.AmazonAccount = Class.create(Common, {
         maxPricePercentTr.hide();
         if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account_Repricing::MAX_PRICE_MODE_REGULAR_PERCENT')) {
             maxPricePercentTr.show();
+        }
+
+        maxPriceValueAttributeTr.hide();
+        if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account_Repricing::MAX_PRICE_MODE_REGULAR_VALUE_ATTRIBUTE')) {
+            maxPriceValueAttributeTr.show()
+        }
+
+        maxPricePercentAttributeTr.hide();
+        if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account_Repricing::MAX_PRICE_MODE_REGULAR_PERCENT_ATTRIBUTE')) {
+            maxPricePercentAttributeTr.show()
         }
     },
 

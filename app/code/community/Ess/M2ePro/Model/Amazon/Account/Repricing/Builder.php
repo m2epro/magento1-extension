@@ -44,6 +44,8 @@ class Ess_M2ePro_Model_Amazon_Account_Repricing_Builder extends Ess_M2ePro_Model
             'min_price_value' => '',
             'min_price_percent' => '',
             'min_price_variation_mode' => '',
+            'min_price_value_attribute' => '',
+            'min_price_percent_attribute' => '',
 
             'max_price_mode' => '',
             'max_price_attribute' => '',
@@ -51,6 +53,8 @@ class Ess_M2ePro_Model_Amazon_Account_Repricing_Builder extends Ess_M2ePro_Model
             'max_price_value' => '',
             'max_price_percent' => '',
             'max_price_variation_mode' => '',
+            'max_price_value_attribute' => '',
+            'max_price_percent_attribute' => '',
 
             'disable_mode' => '',
             'disable_mode_attribute' => '',

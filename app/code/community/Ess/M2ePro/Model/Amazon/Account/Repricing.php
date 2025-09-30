@@ -15,11 +15,15 @@ class Ess_M2ePro_Model_Amazon_Account_Repricing extends Ess_M2ePro_Model_Compone
 
     const REGULAR_PRICE_MODE_PRODUCT_POLICY  = 4;
 
-    const MIN_PRICE_MODE_REGULAR_VALUE       = 4;
-    const MIN_PRICE_MODE_REGULAR_PERCENT     = 5;
+    const MIN_PRICE_MODE_REGULAR_VALUE             = 4;
+    const MIN_PRICE_MODE_REGULAR_PERCENT           = 5;
+    const MIN_PRICE_MODE_REGULAR_VALUE_ATTRIBUTE   = 6;
+    const MIN_PRICE_MODE_REGULAR_PERCENT_ATTRIBUTE = 7;
 
-    const MAX_PRICE_MODE_REGULAR_VALUE       = 4;
-    const MAX_PRICE_MODE_REGULAR_PERCENT     = 5;
+    const MAX_PRICE_MODE_REGULAR_VALUE             = 4;
+    const MAX_PRICE_MODE_REGULAR_PERCENT           = 5;
+    const MAX_PRICE_MODE_REGULAR_VALUE_ATTRIBUTE   = 6;
+    const MAX_PRICE_MODE_REGULAR_PERCENT_ATTRIBUTE = 7;
 
     const PRICE_VARIATION_MODE_PARENT        = 1;
     const PRICE_VARIATION_MODE_CHILDREN      = 2;
@@ -263,9 +267,25 @@ class Ess_M2ePro_Model_Amazon_Account_Repricing extends Ess_M2ePro_Model_Compone
     /**
      * @return bool
      */
+    public function isMinPriceModeRegularValueAttribute()
+    {
+        return $this->getMinPriceMode() == self::MIN_PRICE_MODE_REGULAR_VALUE_ATTRIBUTE;
+    }
+
+    /**
+     * @return bool
+     */
     public function isMinPriceModeRegularPercent()
     {
         return $this->getMinPriceMode() == self::MIN_PRICE_MODE_REGULAR_PERCENT;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isMinPriceModeRegularPercentAttribute()
+    {
+        return $this->getMinPriceMode() == self::MIN_PRICE_MODE_REGULAR_PERCENT_ATTRIBUTE;
     }
 
     /**
@@ -292,6 +312,8 @@ class Ess_M2ePro_Model_Amazon_Account_Repricing extends Ess_M2ePro_Model_Compone
             'attribute'       => $this->getData('min_price_attribute'),
             'regular_value'   => $this->getData('min_price_value'),
             'regular_percent' => $this->getData('min_price_percent'),
+            'value_attribute' => $this->getData('min_price_value_attribute'),
+            'percent_attribute' => $this->getData('min_price_percent_attribute'),
         );
     }
 
@@ -305,6 +327,14 @@ class Ess_M2ePro_Model_Amazon_Account_Repricing extends Ess_M2ePro_Model_Compone
 
         if ($src['mode'] == self::PRICE_MODE_ATTRIBUTE) {
             $attributes[] = $src['attribute'];
+        }
+
+        if ($src['mode'] == self::MIN_PRICE_MODE_REGULAR_VALUE_ATTRIBUTE) {
+            $attributes[] = $src['value_attribute'];
+        }
+
+        if ($src['mode'] == self::MIN_PRICE_MODE_REGULAR_PERCENT_ATTRIBUTE) {
+            $attributes[] = $src['percent_attribute'];
         }
 
         return $attributes;
@@ -370,6 +400,16 @@ class Ess_M2ePro_Model_Amazon_Account_Repricing extends Ess_M2ePro_Model_Compone
         return $this->getMaxPriceMode() == self::MAX_PRICE_MODE_REGULAR_PERCENT;
     }
 
+    public function isMaxPriceModeRegularValueAttribute()
+    {
+        return $this->getMaxPriceMode() == self::MAX_PRICE_MODE_REGULAR_VALUE_ATTRIBUTE;
+    }
+
+    public function isMaxPriceModeRegularPercentAttribute()
+    {
+        return $this->getMaxPriceMode() == self::MAX_PRICE_MODE_REGULAR_PERCENT_ATTRIBUTE;
+    }
+
     /**
      * @return bool
      */
@@ -394,6 +434,8 @@ class Ess_M2ePro_Model_Amazon_Account_Repricing extends Ess_M2ePro_Model_Compone
             'attribute'       => $this->getData('max_price_attribute'),
             'regular_value'   => $this->getData('max_price_value'),
             'regular_percent' => $this->getData('max_price_percent'),
+            'value_attribute' => $this->getData('max_price_value_attribute'),
+            'percent_attribute' => $this->getData('max_price_percent_attribute'),
         );
     }
 
@@ -407,6 +449,14 @@ class Ess_M2ePro_Model_Amazon_Account_Repricing extends Ess_M2ePro_Model_Compone
 
         if ($src['mode'] == self::PRICE_MODE_ATTRIBUTE) {
             $attributes[] = $src['attribute'];
+        }
+
+        if ($src['mode'] == self::MAX_PRICE_MODE_REGULAR_VALUE_ATTRIBUTE) {
+            $attributes[] = $src['value_attribute'];
+        }
+
+        if ($src['mode'] == self::MAX_PRICE_MODE_REGULAR_PERCENT_ATTRIBUTE) {
+            $attributes[] = $src['percent_attribute'];
         }
 
         return $attributes;

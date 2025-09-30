@@ -19,7 +19,16 @@ class Ess_M2ePro_Model_Amazon_Repricing_Updating extends Ess_M2ePro_Model_Amazon
         $updatedSkus                      = array();
 
         foreach ($listingsProductsRepricing as $listingProductRepricing) {
-            $changeData = $this->getChangeData($listingProductRepricing);
+            try {
+                $changeData = $this->getChangeData($listingProductRepricing);
+            } catch (\Ess_M2ePro_Model_Exception_Logic $exception) {
+                $this->logListingProductMessage(
+                    $listingProductRepricing->getListingProduct(),
+                    $exception->getMessage()
+                );
+                $changeData = false;
+            }
+
             if ($changeData && !in_array($changeData['sku'], $updatedSkus, true)) {
                 $changesData[] = $changeData;
                 $updatedSkus[] = $changeData['sku'];
@@ -36,7 +45,12 @@ class Ess_M2ePro_Model_Amazon_Repricing_Updating extends Ess_M2ePro_Model_Amazon
         return $updatedSkus;
     }
 
-    protected function getChangeData(Ess_M2ePro_Model_Amazon_Listing_Product_Repricing $listingProductRepricing)
+    /**
+     * @param \Ess_M2ePro_Model_Amazon_Listing_Product_Repricing $listingProductRepricing
+     * @return array|false
+     * @throws \Ess_M2ePro_Model_Exception_Logic
+     */
+    public function getChangeData(Ess_M2ePro_Model_Amazon_Listing_Product_Repricing $listingProductRepricing)
     {
         $isDisabled = $listingProductRepricing->isDisabled();
 
@@ -57,27 +71,21 @@ class Ess_M2ePro_Model_Amazon_Repricing_Updating extends Ess_M2ePro_Model_Amazon
         }
 
         if ($maxPrice !== null && $regularPrice !== null && $regularPrice > $maxPrice) {
-            $this->logListingProductMessage(
-                $listingProductRepricing->getListingProduct(),
+            throw new Ess_M2ePro_Model_Exception_Logic(
                 Mage::helper('M2ePro')->__(
                     'Item price was not updated. Regular Price (value) must be equal to or lower than the 
                     Max Price(value) value.'
                 )
             );
-
-            return false;
         }
 
         if ($minPrice !== null && $regularPrice !== null && $regularPrice < $minPrice) {
-            $this->logListingProductMessage(
-                $listingProductRepricing->getListingProduct(),
+            throw new Ess_M2ePro_Model_Exception_Logic(
                 Mage::helper('M2ePro')->__(
                     'Item price was not updated. Regular Price(value) must be equal to or higher than the 
                     Min Price(value) value.'
                 )
             );
-
-            return false;
         }
 
         return array(

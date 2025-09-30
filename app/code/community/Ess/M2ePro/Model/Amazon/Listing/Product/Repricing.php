@@ -250,14 +250,17 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Repricing extends Ess_M2ePro_Model
     {
         $source = $this->getAccountRepricing()->getMinPriceSource();
 
-        if ($this->getAccountRepricing()->isMinPriceModeRegularPercent() ||
-            $this->getAccountRepricing()->isMinPriceModeRegularValue()
+        if ($this->getAccountRepricing()->isMinPriceModeRegularPercent()
+            || $this->getAccountRepricing()->isMinPriceModeRegularValue()
+            || $this->getAccountRepricing()->isMinPriceModeRegularValueAttribute()
+            || $this->getAccountRepricing()->isMinPriceModeRegularPercentAttribute()
         ) {
             if ($this->getAccountRepricing()->isRegularPriceModeManual()) {
                 return null;
             }
 
             $value = $this->getRegularPrice() - $this->calculateModificationValueBasedOnRegular($source);
+
             return $value <= 0 ? 0 : (float)$value;
         }
 
@@ -303,14 +306,17 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Repricing extends Ess_M2ePro_Model
     {
         $source = $this->getAccountRepricing()->getMaxPriceSource();
 
-        if ($this->getAccountRepricing()->isMaxPriceModeRegularPercent() ||
-            $this->getAccountRepricing()->isMaxPriceModeRegularValue()
+        if ($this->getAccountRepricing()->isMaxPriceModeRegularPercent()
+            || $this->getAccountRepricing()->isMaxPriceModeRegularValue()
+            || $this->getAccountRepricing()->isMaxPriceModeRegularValueAttribute()
+            || $this->getAccountRepricing()->isMaxPriceModeRegularPercentAttribute()
         ) {
             if ($this->getAccountRepricing()->isRegularPriceModeManual()) {
                 return null;
             }
 
             $value = $this->getRegularPrice() + $this->calculateModificationValueBasedOnRegular($source);
+
             return $value <= 0 ? 0 : (float)$value;
         }
 
@@ -339,7 +345,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Repricing extends Ess_M2ePro_Model
                 throw new Ess_M2ePro_Model_Exception_Logic(
                     'There are no variations for a variation product.',
                     array(
-                        'listing_product_id' => $this->getId()
+                        'listing_product_id' => $this->getId(),
                     )
                 );
             }
@@ -433,7 +439,34 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Repricing extends Ess_M2ePro_Model
             $value = round($regularPrice * ((int)$source['regular_percent'] / 100), 2);
         }
 
-        return $value;
+        if ($source['mode'] == Ess_M2ePro_Model_Amazon_Account_Repricing::MAX_PRICE_MODE_REGULAR_VALUE_ATTRIBUTE
+            || $source['mode'] == Ess_M2ePro_Model_Amazon_Account_Repricing::MIN_PRICE_MODE_REGULAR_VALUE_ATTRIBUTE
+        ) {
+            $attributeValue = $this->getValueFromAttribute($source['value_attribute']);
+            if ($attributeValue > 0) {
+                $value = round($attributeValue, 2);
+            }
+        }
+
+        if ($source['mode'] == Ess_M2ePro_Model_Amazon_Account_Repricing::MAX_PRICE_MODE_REGULAR_PERCENT_ATTRIBUTE
+            || $source['mode'] == Ess_M2ePro_Model_Amazon_Account_Repricing::MIN_PRICE_MODE_REGULAR_PERCENT_ATTRIBUTE
+        ) {
+            $attributeValue = $this->getValueFromAttribute($source['percent_attribute']);
+            if ($attributeValue > 0) {
+                $value = round($regularPrice * ($attributeValue / 100), 2);
+            }
+        }
+
+        return (float)$value;
+    }
+
+    /**
+     * @param string $attribute
+     * @return float
+     */
+    protected function getValueFromAttribute($attribute)
+    {
+        return (float)$this->getMagentoProduct()->getAttributeValue($attribute);
     }
 
     //########################################
