@@ -253,8 +253,8 @@ class Ess_M2EPro_Model_Ebay_Template_Description_Builder
                     'ean'   => array('mode' => Description::PRODUCT_DETAILS_MODE_NONE, 'attribute' => ''),
                     'brand' => array('mode' => Description::PRODUCT_DETAILS_MODE_NONE, 'attribute' => ''),
                     'mpn'   => array('mode' => Description::PRODUCT_DETAILS_MODE_DOES_NOT_APPLY, 'attribute' => ''),
-                    'include_ebay_details' => 1,
-                    'include_image'   => 1,
+                    'include_ebay_details' => 0,
+                    'include_image'   => 0,
                 )
             ),
 

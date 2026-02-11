@@ -181,20 +181,8 @@ class Ess_M2ePro_Model_Cron_Task_Listing_Product_StopQueue extends Ess_M2ePro_Mo
         $accountsCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Account');
         $accountsCollection->addFieldToFilter('server_hash', array_keys($accountsRequestData));
 
-        $throttlingManager = Mage::getSingleton('M2ePro/Amazon_ThrottlingManager');
-
         foreach ($accountsRequestData as $account => $accountRequestData) {
             $requestDataPacks = array_chunk($accountRequestData, self::AMAZON_REQUEST_MAX_ITEMS_COUNT);
-
-            $accountObject = $accountsCollection->getItemByColumnValue('server_hash', $account);
-
-            if ($accountObject !== null &&
-                $throttlingManager->getAvailableRequestsCount(
-                    $accountObject->getChildObject()->getMerchantId(),
-                    Ess_M2ePro_Model_Amazon_ThrottlingManager::REQUEST_TYPE_FEED
-                ) <= 0) {
-                continue;
-            }
 
             foreach ($requestDataPacks as $requestDataPack) {
                 $requestData = array(
@@ -205,14 +193,6 @@ class Ess_M2ePro_Model_Cron_Task_Listing_Product_StopQueue extends Ess_M2ePro_Mo
                 $dispatcher = Mage::getModel('M2ePro/Amazon_Connector_Dispatcher');
                 $connector = $dispatcher->getVirtualConnector('product', 'update', 'entities', $requestData);
                 $dispatcher->process($connector);
-
-                if ($accountObject !== null) {
-                    $throttlingManager->registerRequests(
-                        $accountObject->getChildObject()->getMerchantId(),
-                        Ess_M2ePro_Model_Amazon_ThrottlingManager::REQUEST_TYPE_FEED,
-                        1
-                    );
-                }
             }
         }
 

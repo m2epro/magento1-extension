@@ -56,14 +56,6 @@ class Ess_M2ePro_Model_Amazon_Order_Action_Processor
             return;
         }
 
-        $throttlingManager = Mage::getSingleton('M2ePro/Amazon_ThrottlingManager');
-
-        if ($throttlingManager->getAvailableRequestsCount(
-            $merchantId, Ess_M2ePro_Model_Amazon_ThrottlingManager::REQUEST_TYPE_FEED
-        ) < 1) {
-            return;
-        }
-
         $this->setLastProcessDate($merchantId);
 
         $requestDataKey = $this->getRequestDataKey();
@@ -114,10 +106,6 @@ class Ess_M2ePro_Model_Amazon_Order_Action_Processor
 
             return;
         }
-
-        $throttlingManager->registerRequests(
-            $merchantId, Ess_M2ePro_Model_Amazon_ThrottlingManager::REQUEST_TYPE_FEED, 1
-        );
 
         $responseData = $connector->getResponseData();
         $responseMessages = $connector->getResponseMessages();

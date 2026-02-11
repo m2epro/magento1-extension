@@ -46,16 +46,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Processor
             return;
         }
 
-        $throttlingManager = Mage::getSingleton('M2ePro/Amazon_ThrottlingManager');
-
         foreach ($merchantIds as $merchantId) {
-            $availableRequestsCount = $throttlingManager->getAvailableRequestsCount(
-                $merchantId, Ess_M2ePro_Model_Amazon_ThrottlingManager::REQUEST_TYPE_FEED
-            );
-            if ($availableRequestsCount <= 0) {
-                continue;
-            }
-
             $feedsPacks = array(
                 self::FEED_TYPE_ADD            => array(),
                 self::FEED_TYPE_DELETE         => array(),
@@ -66,8 +57,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Processor
 
             $this->fillFeedsPacks(
                 $feedsPacks,
-                $this->getScheduledActionsDataStatement($merchantId),
-                $availableRequestsCount
+                $this->getScheduledActionsDataStatement($merchantId)
             );
 
             $actionsDataForProcessing = $this->prepareAccountsActions($feedsPacks);
@@ -151,8 +141,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Processor
      */
     protected function fillFeedsPacks(
         array &$feedsPacks,
-        Zend_Db_Statement $scheduledActionsDataStatement,
-        $availableRequestsCount = null
+        Zend_Db_Statement $scheduledActionsDataStatement
     ) {
         $canCreateNewPacks = true;
 
@@ -167,7 +156,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Processor
                     continue;
                 }
 
-                if (!$canCreateNewPacks || ($availableRequestsCount !== null && $availableRequestsCount <= 0)) {
+                if (!$canCreateNewPacks) {
                     $canBeAdded = false;
                     break;
                 }
@@ -191,7 +180,6 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Processor
                 }
 
                 $this->addToNewPack($feedsPacks, $feedType, $scheduledActionData);
-                $availableRequestsCount--;
             }
         }
     }
