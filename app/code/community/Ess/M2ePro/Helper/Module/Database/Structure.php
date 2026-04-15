@@ -19,11 +19,13 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
 
         $result = array();
 
+        $dbPrefix = Mage::helper('M2ePro/Magento')->getDatabaseTablesPrefix();
+
         $queryStmt = Mage::getSingleton('core/resource')->getConnection('core_read')
             ->select()
             ->from('information_schema.tables', array('table_name'))
             ->where('table_schema = ?', Mage::helper('M2ePro/Magento')->getDatabaseName())
-            ->where('table_name LIKE ?', "%m2epro\_%")
+            ->where('table_name LIKE ?', $dbPrefix . 'm2epro\_%')
             ->query();
 
         while ($tableName = $queryStmt->fetchColumn()) {
