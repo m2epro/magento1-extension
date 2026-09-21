@@ -9,6 +9,8 @@
 class Ess_M2ePro_Block_Adminhtml_Walmart_Account_Edit_Tabs_InvoicesAndShipments_Form extends
     Mage_Adminhtml_Block_Widget_Form
 {
+    const MAX_OTHER_CARRIERS_LINES = 50;
+
     //########################################
 
     protected function _prepareForm()
@@ -93,7 +95,7 @@ HTML
         $otherCarriers = empty($formData['other_carriers']) ? array() : Mage::helper('M2ePro')->jsonDecode(
             $formData['other_carriers']
         );
-        for ($i = 0; $i < 30; $i++) {
+        for ($i = 0; $i < self::MAX_OTHER_CARRIERS_LINES; $i++) {
             $code = $url = '';
 
             if (!empty($otherCarriers[$i])) {
@@ -190,13 +192,14 @@ HTML
 CSS
         );
 
-        Mage::helper('M2ePro/View')->getJsRenderer()->addOnReadyJs(
-            <<<JS
-    WalmartAccountObj.otherCarrierInit(30);
-JS
-            ,
-            2
-        );
+        Mage::helper('M2ePro/View')
+            ->getJsRenderer()
+            ->addOnReadyJs(
+                sprintf(
+                    "WalmartAccountObj.otherCarrierInit(%s);",
+                    self::MAX_OTHER_CARRIERS_LINES
+                ), 2
+            );
 
         return parent::_prepareLayout();
     }
